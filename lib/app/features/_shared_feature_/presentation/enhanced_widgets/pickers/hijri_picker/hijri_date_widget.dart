@@ -85,8 +85,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
             value: selectedDate(currentDate)),
         selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
         onConfirm: (hijri_picker.Picker picker, List value) {
-          var date =
-              (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+          var date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
           currentDate = date!.toFormat("yyyy/mm/dd");
 

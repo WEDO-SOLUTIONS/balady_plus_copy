@@ -1,8 +1,6 @@
-
 import 'event_model.dart';
 
 class ErrorExceptionModel extends EventModel {
-
   final String stackTrace;
 
   ErrorExceptionModel({

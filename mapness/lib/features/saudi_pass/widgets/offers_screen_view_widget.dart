@@ -35,7 +35,7 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                             OffersOnMapRoute(
                               city: s.data!.city,
                               categories: s.data!.categories,
-                              isAll: _filtersIndex==1,
+                              isAll: _filtersIndex == 1,
                               recommendedTypes: s.data!.recommendedTypes,
                             ),
                           )

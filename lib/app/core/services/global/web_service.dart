@@ -7,13 +7,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http_certificate_pinning/http_certificate_pinning.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation, translator;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import '../../../core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
+import '../../../core/dependency_injection/dependency_injection_exports.dart' show sl;
 import '../../../events_logs/balady_logs.dart';
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
@@ -26,8 +24,7 @@ import '../../errors/errors_exports.dart'
         NoDataFoundException,
         NoInternetConnectionException,
         RequestNotFoundException;
-import '../../utils/utils_exports.dart'
-    show ApiHeader, CommonFunctions, CommonProperties, EnvType, Log;
+import '../../utils/utils_exports.dart' show ApiHeader, CommonFunctions, CommonProperties, EnvType, Log;
 import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
@@ -56,8 +53,7 @@ class WebService {
 
     dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(AppCertificatePinningInterceptor(
-        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,
-        callFollowingErrorInterceptor: true));
+        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints, callFollowingErrorInterceptor: true));
   }
 
   WebService.newDio({
@@ -89,8 +85,7 @@ class AppCertificatePinningInterceptor extends Interceptor {
         await secure;
       }
 
-      if (options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) ==
-          true) {
+      if (options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) == true) {
         var baseUrl = options.baseUrl;
 
         if (options.path.contains('http') || options.baseUrl.isEmpty) {
@@ -138,10 +133,7 @@ class AppCertificatePinningInterceptor extends Interceptor {
       }
 
       handler.reject(
-        DioException(
-            requestOptions: options,
-            error: error2,
-            type: DioExceptionType.badCertificate),
+        DioException(requestOptions: options, error: error2, type: DioExceptionType.badCertificate),
         callFollowingErrorInterceptor,
       );
     }
@@ -171,23 +163,14 @@ class AppInterceptors extends Interceptor {
         options.uri.toString().toLowerCase().contains("license/permits") ||
         options.uri.toString().toLowerCase().contains("send-to-new-owner") ||
         options.uri.toString().toLowerCase().contains("selected/permits") ||
-        options.uri
-            .toString()
-            .toLowerCase()
-            .contains("selected-permits/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("selected-permits/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("transfer/shop-info") ||
-        options.uri
-            .toString()
-            .toLowerCase()
-            .contains("transfer/shop-ownership-info") ||
+        options.uri.toString().toLowerCase().contains("transfer/shop-ownership-info") ||
         options.uri.toString().toLowerCase().contains("transfer/attachments") ||
         options.uri.toString().toLowerCase().contains("submit/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("accept/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("reject/by-new-owner") ||
-        options.uri
-            .toString()
-            .toLowerCase()
-            .contains("transfer/upload-attachment")) {
+        options.uri.toString().toLowerCase().contains("transfer/upload-attachment")) {
       // options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation, () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }
     if (await networkConnection.isConnected == false) {
@@ -212,10 +195,8 @@ class AppInterceptors extends Interceptor {
       options.headers.remove("Authorization");
     }
     if (options.data is! FormData) {
-      final verifyingKEY = CommonFunctions.hashRequest(
-          Uri.decodeQueryComponent(url), method,
-          body: (options.data != null &&
-                  !options.uri.toString().contains("bcg/upload-file"))
+      final verifyingKEY = CommonFunctions.hashRequest(Uri.decodeQueryComponent(url), method,
+          body: (options.data != null && !options.uri.toString().contains("bcg/upload-file"))
               ? json.encode(options.data)
               : null,
           authorization: !options.uri.toString().contains("bcg/upload-file")
@@ -225,8 +206,7 @@ class AppInterceptors extends Interceptor {
 
       print(verifyingKEY);
 
-      options.headers
-          .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
+      options.headers.putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
 
@@ -260,8 +240,7 @@ class AppInterceptors extends Interceptor {
             if (err.requestOptions.uri.path.contains(ApiUrl.weatherAlerts)) {
               break;
             }
-            final refreshToken =
-                sl<EntryPointCubit>().state.token?.refreshToken;
+            final refreshToken = sl<EntryPointCubit>().state.token?.refreshToken;
             if (refreshToken != null) {
               sl<EntryPointCubit>().refreshToken(refreshToken);
             }
@@ -309,8 +288,7 @@ class AppInterceptors extends Interceptor {
         Breadcrumb(
           message: 'Request Successful',
           data: {
-            "url":
-                response.requestOptions.baseUrl + response.requestOptions.path,
+            "url": response.requestOptions.baseUrl + response.requestOptions.path,
             "queryParameters": response.requestOptions.queryParameters,
             "requestBody": response.requestOptions.data,
             "headers": response.requestOptions.headers,

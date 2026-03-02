@@ -31,11 +31,9 @@ class MiniAppsItemWidget extends StatelessWidget {
             onTap: () => _handleTap(context),
             child: Card(
               elevation: 0.5,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+                  padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
                   child: Column(
                     children: [
                       ClipRRect(
@@ -44,9 +42,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                           icon: miniApp.logoKey!,
                           type: miniApp.cdnLogoRef?.split(".").last,
                           iconSize: 40,
-                          iconColor: isEvent
-                              ? AppColor.primary900LightEvent
-                              : AppColor.primary900Light,
+                          iconColor: isEvent ? AppColor.primary900LightEvent : AppColor.primary900Light,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -62,9 +58,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        miniApp.description?.isNotEmpty == true
-                            ? miniApp.description!
-                            : '',
+                        miniApp.description?.isNotEmpty == true ? miniApp.description! : '',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Colors.grey[600],
                               fontSize: 13,
@@ -95,8 +89,7 @@ class MiniAppsItemWidget extends StatelessWidget {
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkModel == null) {
+    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {

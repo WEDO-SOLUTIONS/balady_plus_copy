@@ -90,11 +90,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
             absorbing: !isEnabled,
             child: SizedBox.expand(
               child: TextFormField(
-                textAlign:
-                    CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
-                textDirection: CommonFunctions.isAppAR
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
+                textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
+                textDirection: CommonFunctions.isAppAR ? TextDirection.rtl : TextDirection.ltr,
                 textAlignVertical: TextAlignVertical.center,
                 readOnly: isReadOnly,
                 enabled: isEnabled,
@@ -104,10 +101,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 inputFormatters: inputFormatters ??
                     [
                       if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
-                      if (allowedInputPattern != null)
-                        FilteringTextInputFormatter.allow(allowedInputPattern!),
-                      if (deniedInputPattern != null)
-                        FilteringTextInputFormatter.deny(deniedInputPattern!),
+                      if (allowedInputPattern != null) FilteringTextInputFormatter.allow(allowedInputPattern!),
+                      if (deniedInputPattern != null) FilteringTextInputFormatter.deny(deniedInputPattern!),
                     ],
                 onChanged: onChanged,
                 focusNode: focusNode,
@@ -115,8 +110,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 cursorColor: const Color(0XFF2AB3A9),
                 style: const TextStyle(color: textColor),
                 decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                   filled: true,
                   fillColor: backgroundColor ?? const Color(0xFFF5F7FA),
                   errorStyle: const TextStyle(color: Colors.red),
@@ -166,8 +160,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           //  if (suffixString != null) suffixString!,
-          if (suffixString != null && suffixIcon != null)
-            const SizedBox(width: 8),
+          if (suffixString != null && suffixIcon != null) const SizedBox(width: 8),
           if (suffixIcon != null) suffixIcon!,
         ],
       ),

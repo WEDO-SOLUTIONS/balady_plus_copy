@@ -92,8 +92,7 @@ class LayersRepositories {
             ),
       );
       if (layersType.data != null) {
-        return subLayersFromJson(layersType.data['data']['result']
-            ['drawingInfo']['renderer']['uniqueValueInfos']);
+        return subLayersFromJson(layersType.data['data']['result']['drawingInfo']['renderer']['uniqueValueInfos']);
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -107,8 +106,7 @@ class LayersRepositories {
     return null;
   }
 
-  Future<List<PointLayersData>?> getPointsInLayers(
-      {required MapRequestParams params}) async {
+  Future<List<PointLayersData>?> getPointsInLayers({required MapRequestParams params}) async {
     var points;
     try {
       String q = "${Constants.mainUrl}/${params.layer.layerId}/query?";
@@ -206,8 +204,7 @@ class LayersRepositories {
     return null;
   }
 
-  Future<List<PointLayersData>?> getPointDetailsInLayers(
-      {required MapRequestParams params}) async {
+  Future<List<PointLayersData>?> getPointDetailsInLayers({required MapRequestParams params}) async {
     try {
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
@@ -257,8 +254,7 @@ class LayersRepositories {
     return null;
   }
 
-  Future<InvestmentDetailsResponse?> getInvetmentDetails(
-      String investmentId, String type) async {
+  Future<InvestmentDetailsResponse?> getInvetmentDetails(String investmentId, String type) async {
     try {
       bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
@@ -269,13 +265,11 @@ class LayersRepositories {
           'RFPID': investmentId,
         },
         options: Options(headers: {
-          'Authorization':
-              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+          'Authorization': "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
 
-      InvestmentDetailsResponse? investmentDetailsResponse =
-          InvestmentDetailsResponse.fromJson(response.data);
+      InvestmentDetailsResponse? investmentDetailsResponse = InvestmentDetailsResponse.fromJson(response.data);
 
       return investmentDetailsResponse;
     } catch (error, stackTrace) {
@@ -289,8 +283,7 @@ class LayersRepositories {
     }
   }
 
-  Future<RentalDetailsResponse?> getTempRentalDetails(
-      String investmentId, String type) async {
+  Future<RentalDetailsResponse?> getTempRentalDetails(String investmentId, String type) async {
     try {
       bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
@@ -301,13 +294,11 @@ class LayersRepositories {
           'RFPID': investmentId,
         },
         options: Options(headers: {
-          'Authorization':
-              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+          'Authorization': "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
 
-      RentalDetailsResponse? investmentDetailsResponse =
-          RentalDetailsResponse.fromJson(response.data);
+      RentalDetailsResponse? investmentDetailsResponse = RentalDetailsResponse.fromJson(response.data);
 
       return investmentDetailsResponse;
     } catch (error, stackTrace) {

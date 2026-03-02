@@ -49,49 +49,34 @@ class EventsDetailsWidget extends StatelessWidget {
         ),
         Column(
           children: [
-            EventItemWidget(
-                icon: IconPath.wallet, text: 'fees'.tr(), value: feesType),
+            EventItemWidget(icon: IconPath.wallet, text: 'fees'.tr(), value: feesType),
             SizedBox(
               height: 8,
             ),
-            EventItemWidget(
-                icon: IconPath.calendar, text: 'event_date'.tr(), value: date),
+            EventItemWidget(icon: IconPath.calendar, text: 'event_date'.tr(), value: date),
             SizedBox(
               height: 8,
             ),
-            EventItemWidget(
-                icon: IconPath.clock, text: 'event_time'.tr(), value: time),
+            EventItemWidget(icon: IconPath.clock, text: 'event_time'.tr(), value: time),
             SizedBox(
               height: 8,
             ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'events_filter_city'.tr(),
-                value: city),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'events_filter_city'.tr(), value: city),
             SizedBox(
               height: 8,
             ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'event_genre'.tr(),
-                value: genre),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'event_genre'.tr(), value: genre),
             SizedBox(
               height: 8,
             ),
             SizedBox(
               height: 8,
             ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'events_filter_category'.tr(),
-                value: category),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'events_filter_category'.tr(), value: category),
             SizedBox(
               height: 8,
             ),
-            EventItemWidget(
-                icon: IconPath.profileCircle,
-                text: 'events_filter_season'.tr(),
-                value: season),
+            EventItemWidget(icon: IconPath.profileCircle, text: 'events_filter_season'.tr(), value: season),
             /*  Container(
               padding: const EdgeInsets.all(12),
               decoration: ShapeDecoration(
@@ -136,8 +121,7 @@ class EventItemWidget extends StatelessWidget {
   final String icon;
   final String text;
   final String value;
-  const EventItemWidget(
-      {super.key, required this.icon, required this.text, required this.value});
+  const EventItemWidget({super.key, required this.icon, required this.text, required this.value});
 
   @override
   Widget build(BuildContext context) {

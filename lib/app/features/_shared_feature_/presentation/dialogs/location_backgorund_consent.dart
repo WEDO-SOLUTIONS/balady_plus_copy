@@ -22,9 +22,7 @@ class LocationBackgroundConsentDialog extends StatelessWidget {
         children: [
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 24),
-              decoration: BoxDecoration(
-                  color: AppColor.white,
-                  borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: AppColor.white, borderRadius: BorderRadius.circular(12)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[

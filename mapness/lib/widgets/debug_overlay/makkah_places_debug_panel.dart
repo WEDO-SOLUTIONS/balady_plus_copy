@@ -321,9 +321,7 @@ class _PlaceItem extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: useWalkIcon
-                      ? DebugTheme.success.withOpacity(0.15)
-                      : DebugTheme.info.withOpacity(0.15),
+                  color: useWalkIcon ? DebugTheme.success.withOpacity(0.15) : DebugTheme.info.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Row(
@@ -429,18 +427,14 @@ class _PlaceItem extends ConsumerWidget {
                   _MetricChip(
                     icon: Icons.directions_walk,
                     label: walkDuration,
-                    sublabel: walkDistanceMeters != null
-                        ? '(${_formatDistanceMeters(walkDistanceMeters)})'
-                        : null,
+                    sublabel: walkDistanceMeters != null ? '(${_formatDistanceMeters(walkDistanceMeters)})' : null,
                     color: sdkDataSuspicious ? DebugTheme.error : DebugTheme.success,
                   ),
                 if (carDuration != null)
                   _MetricChip(
                     icon: Icons.directions_car,
                     label: carDuration,
-                    sublabel: carDistanceMeters != null
-                        ? '(${_formatDistanceMeters(carDistanceMeters)})'
-                        : null,
+                    sublabel: carDistanceMeters != null ? '(${_formatDistanceMeters(carDistanceMeters)})' : null,
                     color: sdkDataSuspicious ? DebugTheme.error : DebugTheme.info,
                   ),
               ],
@@ -549,8 +543,7 @@ class _EnvironmentInfo extends StatelessWidget {
     final configUrl = MakkahConfigUrls.getConfigUrl(env);
 
     final textColor = isStaging ? Colors.white : DebugTheme.textPrimary;
-    final mutedColor =
-        isStaging ? Colors.white.withOpacity(0.7) : DebugTheme.textMuted;
+    final mutedColor = isStaging ? Colors.white.withOpacity(0.7) : DebugTheme.textMuted;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -585,9 +578,7 @@ class _EnvironmentInfo extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: isStaging
-                      ? Colors.white.withOpacity(0.2)
-                      : DebugTheme.warning.withOpacity(0.15),
+                  color: isStaging ? Colors.white.withOpacity(0.2) : DebugTheme.warning.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(

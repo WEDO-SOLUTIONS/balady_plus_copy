@@ -34,8 +34,7 @@ class NotificationsMessageItem extends Equatable {
     // required this.service,
   });
 
-  factory NotificationsMessageItem.fromJson(Map<String, dynamic> json) =>
-      NotificationsMessageItem(
+  factory NotificationsMessageItem.fromJson(Map<String, dynamic> json) => NotificationsMessageItem(
         id: json["id"],
         eventId: json["eventId"],
         eventTime: DateTime.parse(json["eventTime"]),
@@ -112,8 +111,7 @@ class NotificationType {
     required this.text,
   });
 
-  factory NotificationType.fromJson(Map<String, dynamic> json) =>
-      NotificationType(
+  factory NotificationType.fromJson(Map<String, dynamic> json) => NotificationType(
         id: json["id"],
         text: json["name"],
       );

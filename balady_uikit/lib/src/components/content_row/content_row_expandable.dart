@@ -41,13 +41,10 @@ class ContentRowExpandable extends StatelessWidget {
             onTap: toggleFunction,
             leading: leading,
             text: text,
-            trailing:
-                trailing ??
+            trailing: trailing ??
                 ContentRowCustomTrailingOptions(
                   builder: (_) => Padding(
-                    padding:
-                        ContentRow.verticalPadding +
-                        const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                    padding: ContentRow.verticalPadding + const EdgeInsetsDirectional.only(end: Spacing.$4x),
                     child: Align(
                       alignment: Alignment.center,
                       child: Transform.rotate(

@@ -230,25 +230,25 @@ class _Content extends HookConsumerWidget {
                           ),
                           if (showCode.value) _OfferCode(code: offer.code!),
                           Spacing.$3x.heightBox,
-                          if(offer.location.longitude!='0.0' && offer.location.latitude!='0.0')
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: AppButton(
-                                    primaryIcon: TransportIcons.locationDirectionNavigator,
-                                    iconColor: colors.accentSecondaryOnContainer,
-                                    primaryLabel: '${l10n.poiCardDirections} $durationString',
-                                    color: colors.accentSecondaryContainerDefault,
-                                    textColor: colors.accentSecondaryOnContainer,
-                                    buttonColorScheme: ButtonColorScheme.accent,
-                                    onTap: () => _openNavigationPage(context, l10n, offer),
+                          if (offer.location.longitude != '0.0' && offer.location.latitude != '0.0')
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: AppButton(
+                                      primaryIcon: TransportIcons.locationDirectionNavigator,
+                                      iconColor: colors.accentSecondaryOnContainer,
+                                      primaryLabel: '${l10n.poiCardDirections} $durationString',
+                                      color: colors.accentSecondaryContainerDefault,
+                                      textColor: colors.accentSecondaryOnContainer,
+                                      buttonColorScheme: ButtonColorScheme.accent,
+                                      onTap: () => _openNavigationPage(context, l10n, offer),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                           Spacing.$3x.heightBox,
                         ],
                       ),

@@ -77,16 +77,16 @@ class BaladyBadge extends StatelessWidget {
   ///Tertiary color scheme
   ///Used for less attention
   const BaladyBadge.tertiary(
-      this.text, {
-        required this.badgeType,
-        required this.iconPosition,
-        super.key,
-        this.icon,
-      })  : colorScheme = BadgeTypeColorScheme.tertiary,
+    this.text, {
+    required this.badgeType,
+    required this.iconPosition,
+    super.key,
+    this.icon,
+  })  : colorScheme = BadgeTypeColorScheme.tertiary,
         assert(
-        ((iconPosition == BadgeIconPosition.start || iconPosition == BadgeIconPosition.end) && icon != null) ||
-            iconPosition == BadgeIconPosition.none && icon == null,
-        'Icon must be provided when iconPosition is start or end',
+          ((iconPosition == BadgeIconPosition.start || iconPosition == BadgeIconPosition.end) && icon != null) ||
+              iconPosition == BadgeIconPosition.none && icon == null,
+          'Icon must be provided when iconPosition is start or end',
         );
 
   final IconData? icon;

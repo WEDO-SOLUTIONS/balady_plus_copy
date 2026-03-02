@@ -32,8 +32,7 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
       onWillPop: () {
         return Future.value(false);
       },
-      child:
-          Scaffold(body: Center(child: SingleChildScrollView(child: body()))),
+      child: Scaffold(body: Center(child: SingleChildScrollView(child: body()))),
     );
   }
 
@@ -78,9 +77,7 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
               text: "force_update_app".tr(),
               onPressed: () {
                 if (Platform.isAndroid) {
-                  LaunchReview.launch(
-                      androidAppId: "momra.balady.android",
-                      iOSAppId: "1522185123");
+                  LaunchReview.launch(androidAppId: "momra.balady.android", iOSAppId: "1522185123");
                 } else {
                   _openAppStore();
                 }

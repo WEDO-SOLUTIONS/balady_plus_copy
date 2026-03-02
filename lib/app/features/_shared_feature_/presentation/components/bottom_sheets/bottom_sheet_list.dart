@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, IconPath;
 import '../../../shared_feature_exports.dart'
-    show
-        BottomSheetWithActions,
-        CustomTextFieldWidget,
-        CustomTextWidget,
-        DrawIconBasedTypeWidget,
-        ElevatedButtonWidget;
+    show BottomSheetWithActions, CustomTextFieldWidget, CustomTextWidget, DrawIconBasedTypeWidget, ElevatedButtonWidget;
 
 class BottomSheetList extends StatefulWidget {
   final String title;
@@ -56,9 +50,7 @@ class _BottomSheetListState extends State<BottomSheetList> {
       searchable: widget.searchable,
       onSearchChanged: (String? text) {
         setState(() {
-          items = widget.items
-              .where((element) => element.toLowerCase().contains(text ?? ""))
-              .toList();
+          items = widget.items.where((element) => element.toLowerCase().contains(text ?? "")).toList();
         });
       },
       body: Flexible(

@@ -10,15 +10,15 @@ class ReadOnlyField extends StatelessWidget {
   final double? hieght;
   final BoxDecoration? decoration;
 
-  ReadOnlyField(
-      {super.key,
-        this.subTitle,
-        required this.title,
-        this.subTitleColor,
-        this.showSpace = true,
-        this.decoration,
-        this.hieght = 55,
-      });
+  ReadOnlyField({
+    super.key,
+    this.subTitle,
+    required this.title,
+    this.subTitleColor,
+    this.showSpace = true,
+    this.decoration,
+    this.hieght = 55,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class ReadOnlyField extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             width: double.infinity,
             height: hieght,
-            decoration:decoration??  BoxDecoration(
-                color: Colors.transparent,
-                border:
-                Border.all(color: AppColor.blackModern300Light, width: 2),
-                borderRadius: BorderRadius.circular(6)),
+            decoration: decoration ??
+                BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(color: AppColor.blackModern300Light, width: 2),
+                    borderRadius: BorderRadius.circular(6)),
             child: CustomTextWidget(
               subTitle ?? "",
               fontColor: subTitleColor ?? AppColor.blackModern700Light,

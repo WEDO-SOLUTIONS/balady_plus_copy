@@ -23,8 +23,7 @@ class _PoiCardContent extends StatefulWidget {
   State<_PoiCardContent> createState() => _ContentState();
 }
 
-class _ContentState extends State<_PoiCardContent>
-    with SingleTickerProviderStateMixin {
+class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStateMixin {
   PoiCardBottomSheetState? _bottomSheetPreviousState;
   late final VoidCallback _bottomSheetListener;
   bool _isClosing = false;
@@ -57,8 +56,7 @@ class _ContentState extends State<_PoiCardContent>
     });
   }
 
-  late final MultiStateSheetController<PoiCardBottomSheetState>
-  _bottomSheetController = MultiStateSheetController(
+  late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
       models: [
         FractionSnappingModel({0.0}),
@@ -127,10 +125,7 @@ class _ContentState extends State<_PoiCardContent>
 
   @override
   Widget build(BuildContext context) {
-    final name =
-        isGooglePoi
-            ? widget.poiCardDataFromGoogle?.displayName
-            : widget.data.buildingInfo.buildingName;
+    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo.buildingName;
     if (name != null) {
       widget.data.title = name;
     }
@@ -166,15 +161,14 @@ class _ContentState extends State<_PoiCardContent>
             ),
             header: _MakkahPoiHeader(
               colors: colors,
-              title:
-                  widget.makkahPlace != null
-                      ? MakkahMultilingualHelper.getTitle(
-                          widget.makkahPlace!,
-                          Directionality.of(context),
-                        )
-                      : (widget.data.address?.buildingName ??
-                          widget.poiCardDataFromGoogle?.displayName ??
-                          widget.data.title),
+              title: widget.makkahPlace != null
+                  ? MakkahMultilingualHelper.getTitle(
+                      widget.makkahPlace!,
+                      Directionality.of(context),
+                    )
+                  : (widget.data.address?.buildingName ??
+                      widget.poiCardDataFromGoogle?.displayName ??
+                      widget.data.title),
               subTitleWidget: _MakkahPoiSubtitle(
                 colors: colors,
                 data: widget.data,
@@ -221,4 +215,4 @@ class _ContentState extends State<_PoiCardContent>
       ),
     );
   }
- }
+}

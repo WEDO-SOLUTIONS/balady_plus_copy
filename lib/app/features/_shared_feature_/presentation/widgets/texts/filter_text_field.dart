@@ -4,10 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/extensions/number_text_input_formatter.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath;
-import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextFieldWidget, DrawIconBasedTypeWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, IconPath;
+import '../../../../_shared_feature_/shared_feature_exports.dart' show CustomTextFieldWidget, DrawIconBasedTypeWidget;
 
 class FilterTextField extends StatelessWidget {
   final Debouncer _debouncer = Debouncer(milliseconds: 1000);

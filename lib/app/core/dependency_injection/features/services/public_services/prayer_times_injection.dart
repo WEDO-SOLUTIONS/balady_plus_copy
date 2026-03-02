@@ -31,8 +31,7 @@ class PrayerTimesInjection {
 
     //! Bloc
     sl.registerFactory(
-      () => PrayerTimesCubit(
-          getPrayerTimes: sl(), getGISData: sl(), getPrayerTimesRange: sl()),
+      () => PrayerTimesCubit(getPrayerTimes: sl(), getGISData: sl(), getPrayerTimesRange: sl()),
     );
   }
 }

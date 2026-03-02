@@ -66,9 +66,7 @@ class _CredentialItemState extends State<_CredentialItem> {
 
   @override
   Widget build(BuildContext context) {
-    final displayValue = widget.isSecret && _isHidden
-        ? '••••••••'
-        : widget.value;
+    final displayValue = widget.isSecret && _isHidden ? '••••••••' : widget.value;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),

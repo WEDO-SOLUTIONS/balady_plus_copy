@@ -26,9 +26,7 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: isDashedAdd
-                    ? Border.all(color: Colors.white, width: 2)
-                    : null,
+                border: isDashedAdd ? Border.all(color: Colors.white, width: 2) : null,
               ),
             ),
           ),

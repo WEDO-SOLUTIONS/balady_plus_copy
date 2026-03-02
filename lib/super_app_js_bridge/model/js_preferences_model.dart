@@ -15,9 +15,7 @@ class JsPreferencesModel implements BaseData {
     return JsPreferencesModel(
       language: json['language'],
       themeType: json['themeType'],
-      colors: json['colors'] != null
-          ? Map<String, dynamic>.from(json['colors'])
-          : <String, dynamic>{},
+      colors: json['colors'] != null ? Map<String, dynamic>.from(json['colors']) : <String, dynamic>{},
     );
   }
 

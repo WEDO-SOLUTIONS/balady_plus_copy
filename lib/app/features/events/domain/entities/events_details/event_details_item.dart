@@ -95,13 +95,11 @@ class EventDetailsResponse {
   }
 
   DateTime? getStartDateFull() {
-    if (startDate != null && startTime != null)
-      return (setTimeInDateTime(startDate!, startTime!));
+    if (startDate != null && startTime != null) return (setTimeInDateTime(startDate!, startTime!));
   }
 
   DateTime? getEndDateFull() {
-    if (endDate != null && endTime != null)
-      return (setTimeInDateTime(endDate!, endTime!));
+    if (endDate != null && endTime != null) return (setTimeInDateTime(endDate!, endTime!));
   }
 
   String getFess() {
@@ -116,7 +114,7 @@ class EventDetailsResponse {
     double? lon = double.tryParse(location?.y ?? "");
     double? lat = double.tryParse(location?.x ?? "");
 
-    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
+    if (lat != null && lon != null) return LatLng(latitude: lat, longitude: lon);
     return null;
   }
 
@@ -129,8 +127,7 @@ class EventDetailsResponse {
     final match = regex.firstMatch(timeString);
 
     if (match == null) {
-      throw ArgumentError(
-          'Invalid time format. Should be in HH:mm AM/PM format');
+      throw ArgumentError('Invalid time format. Should be in HH:mm AM/PM format');
     }
 
     var hour = int.parse(match.group(1)!);
@@ -149,8 +146,7 @@ class EventDetailsResponse {
     }
 
     // Create a new DateTime object with the provided time and the date from the input DateTime
-    final newDateTime =
-        DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
+    final newDateTime = DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
 
     return newDateTime;
   }

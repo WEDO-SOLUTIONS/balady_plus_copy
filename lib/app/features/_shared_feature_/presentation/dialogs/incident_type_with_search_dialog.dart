@@ -35,8 +35,7 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   }
 }
 
-class _IncidentTypeWithSearchDialog
-    extends State<IncidentTypeWithSearchDialog> {
+class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> {
   List<DropDownItem> items = [];
   DropDownItem? currentSelected;
 
@@ -74,10 +73,8 @@ class _IncidentTypeWithSearchDialog
             onTextChanged: /* () {},*/
                 (value) {
               setState(() {
-                items = widget.items
-                    .where((element) =>
-                        element.name?.contains(value) ?? element.name == value)
-                    .toList();
+                items =
+                    widget.items.where((element) => element.name?.contains(value) ?? element.name == value).toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -104,8 +101,7 @@ class _IncidentTypeWithSearchDialog
           const CustomVerticalSpace(height: 5),
           // button
           EnhancedCustomElevatedButtonWidget(
-            btnColor:
-                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
+            btnColor: isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isButtonDisabled
                 ? null
@@ -148,13 +144,13 @@ class _IncidentTypeWithSearchDialog
     //         duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn)
     //   });
     // } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
+    //   LogsViewModel().sendEventFromModel(
+    //     event: ErrorExceptionModel(
+    //       nameEvent: EventsName.handledException,
+    //       message: error.toString(),
+    //       stackTrace: stackTrace.toString(),
+    //     ),
+    //   );
+    // }
   }
 }

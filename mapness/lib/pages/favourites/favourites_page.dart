@@ -78,9 +78,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   /// We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
-  Future<bool?> _onDeleteConfirmation(
-          FavouriteItem item, BuildContext ctx) async =>
-      showCupertinoModalPopup<bool>(
+  Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
         context: ctx,
         builder: (context) => CupertinoActionSheet(
           message: Padding(
@@ -186,18 +184,14 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     onTap: selectedItems.isEmpty
                         ? null
                         : () async {
-                            await ref
-                                .read(favouriteCacheProvider.notifier)
-                                .deleteItems(selectedItems.values.toList());
+                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
                             setState(() {
                               selectedItems.clear();
                             });
                           },
                     child: Icon(
                       GeneralIcons.trash,
-                      color: selectedItems.isEmpty
-                          ? ctx.colors.foregroundMuted
-                          : ctx.colors.errorDefault,
+                      color: selectedItems.isEmpty ? ctx.colors.foregroundMuted : ctx.colors.errorDefault,
                     ),
                   )
                 else
@@ -226,8 +220,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             ),
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                    child: FavouritesToggle(isEditing: isEditing)),
+                SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
                 SliverToBoxAdapter(child: Spacing.$4x.heightBox),
                 SliverToBoxAdapter(
                   child: Row(
@@ -256,8 +249,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                       label: context.l10n.myLocation,
                                     ),
                                     RouteParamsPointWithLabel(
-                                      value: coordinates?.latitude != null &&
-                                              coordinates?.longitude != null
+                                      value: coordinates?.latitude != null && coordinates?.longitude != null
                                           ? RouteParamsPoint(
                                               latitude: coordinates!.latitude,
                                               longitude: coordinates.longitude,
@@ -270,8 +262,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 ),
                               );
                             },
-                            onTapShare: () =>
-                                ShareUtil.share(entity?.id, context: context),
+                            onTapShare: () => ShareUtil.share(entity?.id, context: context),
                             onTapChange: () {
                               context.router.push(
                                 FavouritesSearchRoute(
@@ -282,8 +273,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             onTap: home == null
                                 ? () => context.router.push(
                                       FavouritesSearchRoute(
-                                        markerType:
-                                            FavouriteItemMarkerType.home,
+                                        markerType: FavouriteItemMarkerType.home,
                                       ),
                                     )
                                 : () => ctx.router.replaceOrPush(
@@ -293,9 +283,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                           entranceId: 0,
                                         ),
                                       ),
-                                      toCompareRoutes: [
-                                        PoiCardWidgetRoute.page
-                                      ],
+                                      toCompareRoutes: [PoiCardWidgetRoute.page],
                                     ),
                           ),
                         );
@@ -326,14 +314,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                         label: context.l10n.myLocation,
                                       ),
                                       RouteParamsPointWithLabel(
-                                        value: coordinates?.latitude != null &&
-                                                coordinates?.longitude != null
+                                        value: coordinates?.latitude != null && coordinates?.longitude != null
                                             ? RouteParamsPoint(
                                                 latitude: coordinates!.latitude,
-                                                longitude:
-                                                    coordinates.longitude,
-                                                objectId:
-                                                    int.tryParse(entity!.id),
+                                                longitude: coordinates.longitude,
+                                                objectId: int.tryParse(entity!.id),
                                               )
                                             : null,
                                         label: workTitle,
@@ -342,8 +327,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   ),
                                 );
                               },
-                              onTapShare: () =>
-                                  ShareUtil.share(entity?.id, context: context),
+                              onTapShare: () => ShareUtil.share(entity?.id, context: context),
                               onTapChange: () {
                                 context.router.push(
                                   FavouritesSearchRoute(
@@ -354,8 +338,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               onTap: work == null
                                   ? () => context.router.push(
                                         FavouritesSearchRoute(
-                                          markerType:
-                                              FavouriteItemMarkerType.work,
+                                          markerType: FavouriteItemMarkerType.work,
                                         ),
                                       )
                                   : () => ctx.router.replaceOrPush(
@@ -365,9 +348,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                             entranceId: 0,
                                           ),
                                         ),
-                                        toCompareRoutes: [
-                                          PoiCardWidgetRoute.page
-                                        ],
+                                        toCompareRoutes: [PoiCardWidgetRoute.page],
                                       ),
                             ),
                           );
@@ -392,18 +373,15 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             Padding(
                               padding: const EdgeInsets.all(Spacing.$4x),
                               child: Text(
-                                context.l10n
-                                    .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
+                                context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                                 textAlign: TextAlign.center,
                                 style: context.textStyle.text.copyWith(
-                                  color: context.staticColor
-                                      .textAndIconsBaseInversePrimary,
+                                  color: context.staticColor.textAndIconsBaseInversePrimary,
                                 ),
                               ),
                             ),
                             Container(
-                              margin: const EdgeInsets.all(Spacing.$4x)
-                                  .copyWith(top: 0),
+                              margin: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
@@ -412,19 +390,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 fit: BoxFit.fitWidth,
                                 ref.read(appLanguageProvider) == Language.arabic
                                     ? SaudiNationalDay.isNow()
-                                        ? Assets
-                                            .images
-                                            .favoritesExampleArabicSaudiday
-                                            .keyName
-                                        : Assets.images.favoritesExampleArabic
-                                            .keyName
+                                        ? Assets.images.favoritesExampleArabicSaudiday.keyName
+                                        : Assets.images.favoritesExampleArabic.keyName
                                     : SaudiNationalDay.isNow()
-                                        ? Assets
-                                            .images
-                                            .favoritesExampleEnglishSaudiday
-                                            .keyName
-                                        : Assets.images.favoritesExampleEnglish
-                                            .keyName,
+                                        ? Assets.images.favoritesExampleEnglishSaudiday.keyName
+                                        : Assets.images.favoritesExampleEnglish.keyName,
                               ),
                             ),
                           ],
@@ -442,9 +412,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         color: context.colors.backgroundSurface4,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
-                          bottom: index == state.items.length - 1
-                              ? radius
-                              : Radius.zero,
+                          bottom: index == state.items.length - 1 ? radius : Radius.zero,
                         ),
                       ),
                       child: FavouriteItemWidget(
@@ -461,8 +429,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             }
                           });
                         },
-                        onShareTap: () =>
-                            ShareUtil.share(item.entity?.id, context: context),
+                        onShareTap: () => ShareUtil.share(item.entity?.id, context: context),
                         onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
                           context.router.push(

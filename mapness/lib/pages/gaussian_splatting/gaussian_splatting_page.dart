@@ -24,12 +24,10 @@ class _GaussianSplattingPageWidget extends StatefulWidget {
   const _GaussianSplattingPageWidget({required this.ref});
 
   @override
-  State<_GaussianSplattingPageWidget> createState() =>
-      _GaussianSplattingPageWidgetState();
+  State<_GaussianSplattingPageWidget> createState() => _GaussianSplattingPageWidgetState();
 }
 
-class _GaussianSplattingPageWidgetState
-    extends State<_GaussianSplattingPageWidget> {
+class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidget> {
   late final WebViewController _controller;
   bool _isLoading = true;
 
@@ -51,20 +49,19 @@ class _GaussianSplattingPageWidgetState
       props: {'url': _getVirtualTourUrl()},
     );
 
-    _controller =
-        WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setBackgroundColor(Colors.transparent)
-          ..setNavigationDelegate(
-            NavigationDelegate(
-              onPageFinished: (_) {
-                // Track page load completed
-                Metrics.logEventAdvanced(
-                  MetricsConstants.kaabaTourKeys.pageLoadCompleted,
-                  group: MetricsConstants.kaabaTourTag,
-                );
-                // Mute all audio/video elements
-                _controller.runJavaScript('''
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.transparent)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onPageFinished: (_) {
+            // Track page load completed
+            Metrics.logEventAdvanced(
+              MetricsConstants.kaabaTourKeys.pageLoadCompleted,
+              group: MetricsConstants.kaabaTourTag,
+            );
+            // Mute all audio/video elements
+            _controller.runJavaScript('''
                   document.querySelectorAll('video, audio').forEach(function(el) {
                     el.muted = true;
                     el.volume = 0;
@@ -78,24 +75,24 @@ class _GaussianSplattingPageWidgetState
                   });
                   observer.observe(document.body, { childList: true, subtree: true });
                 ''');
-                if (mounted) {
-                  setState(() => _isLoading = false);
-                }
-              },
-              onWebResourceError: (error) {
-                // Track page load failed
-                Metrics.logEventAdvanced(
-                  MetricsConstants.kaabaTourKeys.pageLoadFailed,
-                  group: MetricsConstants.kaabaTourTag,
-                  props: {'error': error.description},
-                );
-                if (mounted) {
-                  setState(() => _isLoading = false);
-                }
-              },
-            ),
-          )
-          ..loadRequest(Uri.parse(_getVirtualTourUrl()));
+            if (mounted) {
+              setState(() => _isLoading = false);
+            }
+          },
+          onWebResourceError: (error) {
+            // Track page load failed
+            Metrics.logEventAdvanced(
+              MetricsConstants.kaabaTourKeys.pageLoadFailed,
+              group: MetricsConstants.kaabaTourTag,
+              props: {'error': error.description},
+            );
+            if (mounted) {
+              setState(() => _isLoading = false);
+            }
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(_getVirtualTourUrl()));
   }
 
   @override
@@ -112,46 +109,46 @@ class _GaussianSplattingPageWidgetState
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    backgroundColor: context.colors.backgroundSurface4,
-    body: Stack(
-      children: [
-        WebViewWidget(controller: _controller),
-        if (_isLoading) const Center(child: CircularProgressIndicator()),
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: GestureDetector(
-                onTap: () => context.router.maybePop(),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Balady',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+        backgroundColor: context.colors.backgroundSurface4,
+        body: Stack(
+          children: [
+            WebViewWidget(controller: _controller),
+            if (_isLoading) const Center(child: CircularProgressIndicator()),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: GestureDetector(
+                    onTap: () => context.router.maybePop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(width: 4),
-                    ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Balady',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }

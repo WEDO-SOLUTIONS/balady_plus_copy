@@ -15,7 +15,6 @@ import '../shared/circle_icon.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-
 class OpportunityMapCard extends StatelessWidget {
   final String type;
   final String? documentValue;

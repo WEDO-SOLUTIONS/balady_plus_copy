@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BorderType;
 import '../../../shared_feature_exports.dart'
-    show
-        CustomCupertinoDropDownWidget,
-        CustomMaterialDropDownWidget,
-        DropDownItem;
+    show CustomCupertinoDropDownWidget, CustomMaterialDropDownWidget, DropDownItem;
 
 class CustomPlatformDropDownWidget extends StatelessWidget {
   final bool isRequired;

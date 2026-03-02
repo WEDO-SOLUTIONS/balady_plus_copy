@@ -15,7 +15,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_language.g.dart';
 
 const _prefsKey = 'settings.language';
-const _cachedMiniAppsLangKey= 'cached.miniapps.language';
+const _cachedMiniAppsLangKey = 'cached.miniapps.language';
 
 enum Language {
   english,

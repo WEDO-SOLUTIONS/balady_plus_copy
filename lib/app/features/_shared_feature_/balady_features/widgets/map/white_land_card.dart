@@ -16,12 +16,7 @@ class WhiteLandMapCard extends StatelessWidget {
   final Function onClose;
 
   const WhiteLandMapCard(
-      {super.key,
-      this.municipality,
-      this.streetName,
-      this.parcelNo,
-      this.stageNo,
-      required this.onClose});
+      {super.key, this.municipality, this.streetName, this.parcelNo, this.stageNo, required this.onClose});
 
   @override
   Widget build(BuildContext context) {

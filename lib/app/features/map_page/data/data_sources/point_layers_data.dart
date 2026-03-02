@@ -1,6 +1,5 @@
 import 'package:dgis_map/library.dart';
 
-
 class PointLayersData {
   final String id;
   final String name;

@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocConsumer, BlocProvider, ReadContext;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocConsumer, BlocProvider, ReadContext;
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion;
 import '../../../shared_feature_exports.dart'
     show
         CustomElevatedIconButtonWidget,
@@ -103,15 +101,13 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
     );
   }
 
-  Color get _fillColor =>
-      readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
+  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
   Color get _borderColor => borderColor ?? AppColor.gray.withOpacity(0.60);
 
   TextStyle get hintStyle => dateStyle ?? AppStyle.pickerStyle;
 
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
-  DateTime get lastDate =>
-      endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
+  DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
   Future<void> onSelectedDate(
     BuildContext context, {
@@ -136,15 +132,9 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
                 onDateTimeChanged: (date) => ignoreHolidays
                     ? {
                         if (date.weekday == 5)
-                          {
-                            assignDate(
-                                context, date.add(const Duration(days: 2)))
-                          }
+                          {assignDate(context, date.add(const Duration(days: 2)))}
                         else if (date.weekday == 6)
-                          {
-                            assignDate(
-                                context, date.add(const Duration(days: 1)))
-                          }
+                          {assignDate(context, date.add(const Duration(days: 1)))}
                         else
                           {assignDate(context, date)}
                       }
@@ -168,6 +158,5 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
         ),
       );
 
-  void assignDate(BuildContext context, DateTime date) =>
-      context.read<DatePickerCubit>().onUpdatedDate(date);
+  void assignDate(BuildContext context, DateTime date) => context.read<DatePickerCubit>().onUpdatedDate(date);
 }

@@ -29,6 +29,5 @@ class ClickableWidget extends StatelessWidget {
     );
   }
 
-  BorderRadiusGeometry get _borderRadius =>
-      radius != null ? BorderRadius.circular(radius!) : BorderRadius.zero;
+  BorderRadiusGeometry get _borderRadius => radius != null ? BorderRadius.circular(radius!) : BorderRadius.zero;
 }

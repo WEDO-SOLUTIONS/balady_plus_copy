@@ -13,25 +13,22 @@ part 'splash_state.dart';
 class SplashCubit extends Cubit<SplashState> {
   final SplashRemoteDataSource splashRemoteDataSource;
 
-  SplashCubit({required this.splashRemoteDataSource})
-      : super(const InitialSplashState()) {
+  SplashCubit({required this.splashRemoteDataSource}) : super(const InitialSplashState()) {
     fetchSplashData();
   }
 
   void fetchSplashData() async {
     try {
-      Map<String, dynamic>? dataOffline = null;//sharedPrefs.getDataOfSplash();
+      Map<String, dynamic>? dataOffline = null; //sharedPrefs.getDataOfSplash();
       if (dataOffline == null) {
         emit(const OfflineSplashState());
-       // getNewOnlineSplashAndDownload();
+        // getNewOnlineSplashAndDownload();
       } else {
         SplashModel splashData = SplashModel.fromJson(dataOffline);
         final currentDate = DateTime.now();
         final startDate = splashData.startDate;
         final endDate = splashData.endDate;
-        if (currentDate.isAfter(startDate) &&
-            currentDate.isBefore(endDate) &&
-            splashData.splashImage != '') {
+        if (currentDate.isAfter(startDate) && currentDate.isBefore(endDate) && splashData.splashImage != '') {
           checkSaveFile(
             splashData.splashImage,
             splashData.seasonalSplashDuration,

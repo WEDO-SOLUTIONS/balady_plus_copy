@@ -1,7 +1,6 @@
 class SimpleMapObjectModel {
   factory SimpleMapObjectModel.fromJson(Map<String, dynamic> json) {
-    final levelIdMap = _asMap(
-        json['levelId']); // _Map<Object?, Object?> -> Map<String, dynamic>
+    final levelIdMap = _asMap(json['levelId']); // _Map<Object?, Object?> -> Map<String, dynamic>
     final boundsMap = _asMap(json['bounds']);
 
     return SimpleMapObjectModel(
@@ -22,8 +21,7 @@ class SimpleMapObjectModel {
   });
 
   /// Если приходит Object? из платформ-канала
-  factory SimpleMapObjectModel.fromAny(Object? any) =>
-      SimpleMapObjectModel.fromJson(_asMap(any));
+  factory SimpleMapObjectModel.fromAny(Object? any) => SimpleMapObjectModel.fromJson(_asMap(any));
   final String? id;
   final bool isVisible;
   final int zIndex;

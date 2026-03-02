@@ -14,11 +14,7 @@ class TabPageContainer extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColor.primary900Light,
-            AppColor.primary900Light,
-            AppColor.primary900Light
-          ],
+          colors: [AppColor.primary900Light, AppColor.primary900Light, AppColor.primary900Light],
         ),
       ),
       height: double.infinity,

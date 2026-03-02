@@ -37,8 +37,7 @@ class HorizontalRadioGroup<T> extends StatelessWidget {
           children: items
               .map((e) => Expanded(
                     child: Padding(
-                      padding: EdgeInsetsDirectional.only(
-                          end: items.last == e ? 0 : 16),
+                      padding: EdgeInsetsDirectional.only(end: items.last == e ? 0 : 16),
                       child: CustomRadioButtonEnd<T>(
                         title: e.radioText,
                         value: e.radioValue,

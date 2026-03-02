@@ -47,22 +47,15 @@ class SearchEventsParams {
       page: page ?? this.page,
       size: size ?? this.size,
       keyword: keyword == null ? this.keyword : keyword.value,
-      selectedCity:
-          selectedCity == null ? this.selectedCity : selectedCity.value,
-      selectedSeason:
-          selectedSeason == null ? this.selectedSeason : selectedSeason.value,
-      selectedAudince: selectedAudince == null
-          ? this.selectedAudince
-          : selectedAudince.value,
-      selectedCategory: selectedCategory == null
-          ? this.selectedCategory
-          : selectedCategory.value,
+      selectedCity: selectedCity == null ? this.selectedCity : selectedCity.value,
+      selectedSeason: selectedSeason == null ? this.selectedSeason : selectedSeason.value,
+      selectedAudince: selectedAudince == null ? this.selectedAudince : selectedAudince.value,
+      selectedCategory: selectedCategory == null ? this.selectedCategory : selectedCategory.value,
       dateFrom: dateFrom == null ? this.dateFrom : dateFrom.value,
       dateTo: dateTo == null ? this.dateTo : dateTo.value,
       isFree: isFree == null ? this.isFree : isFree.value,
       sortBy: sortBy == null ? this.sortBy : sortBy.value,
-      selectedFees:
-          selectedFees == null ? this.selectedFees : selectedFees.value,
+      selectedFees: selectedFees == null ? this.selectedFees : selectedFees.value,
     );
   }
 

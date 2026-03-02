@@ -8,8 +8,8 @@ class PinOnMapPointDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SvgPicture.asset(
-    Assets.icons.svg.mapControls.icPinYellow.path,
-    package: packageName,
-    fit: BoxFit.scaleDown,
-  );
+        Assets.icons.svg.mapControls.icPinYellow.path,
+        package: packageName,
+        fit: BoxFit.scaleDown,
+      );
 }

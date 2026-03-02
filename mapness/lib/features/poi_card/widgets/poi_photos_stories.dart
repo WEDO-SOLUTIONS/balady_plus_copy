@@ -141,7 +141,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
           widget.state == PoiCardBottomSheetState.open ? const NeverScrollableScrollPhysics() : null,
         ),
         IgnorePointer(
-          ignoring: widget.state==PoiCardBottomSheetState.halfOpen,
+          ignoring: widget.state == PoiCardBottomSheetState.halfOpen,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

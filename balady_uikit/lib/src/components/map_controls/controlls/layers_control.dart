@@ -10,7 +10,7 @@ class LayersControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MapButton(
-          onTap: onTap,
+        onTap: onTap,
         child: const AppIcons(iconData: SystemIcons.layers),
       );
 }

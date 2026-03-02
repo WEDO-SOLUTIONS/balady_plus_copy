@@ -85,9 +85,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           isTextCenter: true,
                           width: context.screenWidth,
                           height: context.h(35),
-                          text: CommonFunctions.isAppAR
-                              ? appGroup.nameAr
-                              : appGroup.nameEn,
+                          text: CommonFunctions.isAppAR ? appGroup.nameAr : appGroup.nameEn,
                           fontColor: const Color(0XFF242424),
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
@@ -134,12 +132,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     width: double.infinity,
                                     suffixPadding: value.text.isNotEmpty
                                         ? EdgeInsets.symmetric(
-                                            horizontal:
-                                                context.screenWidth * 0.02,
+                                            horizontal: context.screenWidth * 0.02,
                                           )
                                         : EdgeInsets.symmetric(
-                                            horizontal:
-                                                context.screenWidth * 0.04,
+                                            horizontal: context.screenWidth * 0.04,
                                           ),
                                     autoFocus: false,
                                     autofocus: false,
@@ -160,9 +156,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
-                                              context
-                                                  .read<NewMiniAppLogicCubit>()
-                                                  .searchMiniApp(
+                                              context.read<NewMiniAppLogicCubit>().searchMiniApp(
                                                     '',
                                                     source: appGroup.apps,
                                                   );
@@ -173,9 +167,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                             ),
                                           ),
                                     onChanged: (query) {
-                                      context
-                                          .read<NewMiniAppLogicCubit>()
-                                          .searchMiniApp(
+                                      context.read<NewMiniAppLogicCubit>().searchMiniApp(
                                             query,
                                             source: appGroup.apps,
                                           );
@@ -192,18 +184,15 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                     SizedBox(height: context.screenHeight * 0.04),
 
                     Expanded(
-                      child: BlocBuilder<NewMiniAppLogicCubit,
-                          NewMiniAppLogicState>(
+                      child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                         builder: (context, state) {
-                          final isInitial = controller.text.isEmpty &&
-                              state.searchResults.isEmpty &&
-                              !state.isSearching;
+                          final isInitial =
+                              controller.text.isEmpty && state.searchResults.isEmpty && !state.isSearching;
 
                           if (isInitial) {
                             return GridView.builder(
                               physics: const BouncingScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
                                 crossAxisSpacing: 16,
                                 mainAxisSpacing: 16,
@@ -213,19 +202,15 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               itemBuilder: (context, index) {
                                 final miniApp = appGroup.apps[index];
                                 return StaggeredAppear(
-                                  initialDelay:
-                                      const Duration(milliseconds: 150),
-                                  itemDuration:
-                                      const Duration(milliseconds: 150),
+                                  initialDelay: const Duration(milliseconds: 150),
+                                  itemDuration: const Duration(milliseconds: 150),
                                   itemDelay: const Duration(milliseconds: 200),
                                   children: [
                                     AppsGroupMiniAppsCardWidgets(
                                       title: miniApp.name,
                                       iconPath: miniApp.iconPath,
                                       onTap: () {
-                                        context
-                                            .read<NewMiniAppLogicCubit>()
-                                            .openMiniApp(miniApp);
+                                        context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
                                       },
                                     ),
                                   ],
@@ -255,8 +240,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
 
                           return GridView.builder(
                             physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               crossAxisSpacing: 16,
                               mainAxisSpacing: 16,
@@ -269,9 +253,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 title: miniApp.name,
                                 iconPath: miniApp.iconPath,
                                 onTap: () {
-                                  context
-                                      .read<NewMiniAppLogicCubit>()
-                                      .openMiniApp(miniApp);
+                                  context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
                                 },
                               );
                             },

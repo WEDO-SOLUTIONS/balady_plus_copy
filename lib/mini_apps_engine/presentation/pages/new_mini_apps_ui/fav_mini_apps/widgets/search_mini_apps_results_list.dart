@@ -104,9 +104,7 @@ class SearchMiniAppsResultsList extends StatelessWidget {
                             CustomMiniAppSwitch(
                               isActive: isFav,
                               onChanged: (_) {
-                                context
-                                    .read<NewMiniAppLogicCubit>()
-                                    .toggleFavoriteLocal(app.id);
+                                context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(app.id);
                               },
                             ),
                           ],

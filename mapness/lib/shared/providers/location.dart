@@ -32,17 +32,16 @@ class _Location extends _$Location {
         try {
           const locationSettings = LocationSettings();
 
-          final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
-              .handleError((e) {
-                if (e is TimeoutException) {
-                  logger.log('Geolocator stream timeout');
-                } else {
-                  logger.log('Geolocator stream error: $e');
-                }
-              })
-              .listen((event) async {
-                state = await _getLocation(event);
-              });
+          final locationSubscription =
+              Geolocator.getPositionStream(locationSettings: locationSettings).handleError((e) {
+            if (e is TimeoutException) {
+              logger.log('Geolocator stream timeout');
+            } else {
+              logger.log('Geolocator stream error: $e');
+            }
+          }).listen((event) async {
+            state = await _getLocation(event);
+          });
           ref.onDispose(locationSubscription.cancel);
 
           return null;
@@ -51,9 +50,9 @@ class _Location extends _$Location {
         }
       } else if (isHMS) {
         try {
-          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen((event) async {
-            state = await _getLocation(
-              Position(
+          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen(
+            (event) async {
+              state = await _getLocation(Position(
                 longitude: event.longitude!,
                 latitude: event.latitude!,
                 timestamp: DateTime.now(),
@@ -79,17 +78,16 @@ class _Location extends _$Location {
           logger.log('Using Geolocator fallback for location stream');
           const locationSettings = LocationSettings();
 
-          final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
-              .handleError((e) {
-                if (e is TimeoutException) {
-                  logger.log('Geolocator stream timeout');
-                } else {
-                  logger.log('Geolocator stream error: $e');
-                }
-              })
-              .listen((event) async {
-                state = await _getLocation(event);
-              });
+          final locationSubscription =
+              Geolocator.getPositionStream(locationSettings: locationSettings).handleError((e) {
+            if (e is TimeoutException) {
+              logger.log('Geolocator stream timeout');
+            } else {
+              logger.log('Geolocator stream error: $e');
+            }
+          }).listen((event) async {
+            state = await _getLocation(event);
+          });
           ref.onDispose(locationSubscription.cancel);
         } catch (ex) {
           logger.log('Error listening to Geolocator fallback stream: ${ex.toString()}');

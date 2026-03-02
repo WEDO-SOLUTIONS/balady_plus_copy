@@ -18,8 +18,7 @@ class AppsGroupSectionShimmerWidget extends StatelessWidget {
 
     // CustomLargMoreApps default dimensions:
     final double cardOuterWidth = context.w(168); // The main DecoratedBox width
-    final double cardOuterHeight =
-        context.h(168); // The main DecoratedBox height
+    final double cardOuterHeight = context.h(168); // The main DecoratedBox height
     final double textContainerWidth = context.screenWidth * 0.20;
     final double textContainerHeight = context.screenHeight * 0.04;
 
@@ -80,9 +79,7 @@ class AppsGroupSectionShimmerWidget extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(
-                              height: context.screenHeight *
-                                  0.02), // Matches spacing
+                          SizedBox(height: context.screenHeight * 0.02), // Matches spacing
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [

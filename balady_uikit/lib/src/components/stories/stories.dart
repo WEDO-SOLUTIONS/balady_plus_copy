@@ -38,17 +38,12 @@ class Stories extends StatelessWidget {
     final _networkImage = networkImage;
 
     Widget frameBuilder(BuildContext context, Widget child, int? frame, __) =>
-        isLoading || frame == null
-            ? buildStoriesPlaceholder(context)
-            : buildStoriesImage(context, child);
+        isLoading || frame == null ? buildStoriesPlaceholder(context) : buildStoriesImage(context, child);
 
-    Widget loadingBuilder(
-            BuildContext context, Widget child, ImageChunkEvent? progress) =>
+    Widget loadingBuilder(BuildContext context, Widget child, ImageChunkEvent? progress) =>
         progress == null ? child : buildStoriesPlaceholder(context);
 
-    Widget errorBuilder(
-            BuildContext context, Object error, StackTrace? stackTrace) =>
-        buildStoriesPlaceholder(context);
+    Widget errorBuilder(BuildContext context, Object error, StackTrace? stackTrace) => buildStoriesPlaceholder(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -193,8 +188,7 @@ class Stories extends StatelessWidget {
         child: child,
       );
 
-  Widget _buildImagePlaceholder(BuildContext context, {Widget? child}) =>
-      SizedBox(
+  Widget _buildImagePlaceholder(BuildContext context, {Widget? child}) => SizedBox(
         height: SizeConstraints.storiesVertical,
         width: SizeConstraints.storiesHorizontal,
         child: ColoredBox(

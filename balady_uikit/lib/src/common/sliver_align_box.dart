@@ -254,7 +254,8 @@ class _RenderSliverAlignBox extends RenderSliver
   double childMainAxisPosition(RenderBox child) => 0.0;
 
   @override
-  bool hitTestChildren(SliverHitTestResult result, {
+  bool hitTestChildren(
+    SliverHitTestResult result, {
     required double mainAxisPosition,
     required double crossAxisPosition,
   }) {
@@ -277,7 +278,8 @@ class _RenderSliverAlignBox extends RenderSliver
     }
 
     if (_sliver != null) {
-      return _sliver.hitTest(result,
+      return _sliver.hitTest(
+        result,
         mainAxisPosition: mainAxisPosition,
         crossAxisPosition: crossAxisPosition,
       );

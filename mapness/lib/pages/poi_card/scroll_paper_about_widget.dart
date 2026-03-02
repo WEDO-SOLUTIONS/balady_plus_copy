@@ -24,69 +24,67 @@ class _ScrollPaperState extends State<ScrollPaper> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) {
-      final width = constraints.maxWidth;
+        builder: (context, constraints) {
+          final width = constraints.maxWidth;
 
-      final bodyTop = ScrollPainter.topVisualBottomForWidth(width);
+          final bodyTop = ScrollPainter.topVisualBottomForWidth(width);
 
-      final rollLeft = ScrollPainter.rollLeftForWidth(width);
-      final rollRight = ScrollPainter.rollRightForWidth(width);
+          final rollLeft = ScrollPainter.rollLeftForWidth(width);
+          final rollRight = ScrollPainter.rollRightForWidth(width);
 
-      final stroke = ScrollPainter.strokeWidthForWidth(width);
-      final visualInset = stroke / 2 + ScrollPainter.maxRoughnessInset(width, widget.roughness);
+          final stroke = ScrollPainter.strokeWidthForWidth(width);
+          final visualInset = stroke / 2 + ScrollPainter.maxRoughnessInset(width, widget.roughness);
 
-      final bodyLeft = rollLeft + visualInset;
-      final bodyRight = rollRight - visualInset;
-      final bodyWidth = bodyRight - bodyLeft;
+          final bodyLeft = rollLeft + visualInset;
+          final bodyRight = rollRight - visualInset;
+          final bodyWidth = bodyRight - bodyLeft;
 
-      return Padding(
-        padding: widget.padding,
-        child: Stack(
-          children: [
-            Offstage(
-              child: _MeasureSize(
-                onChange: (size) {
-                  if (size.height != _childHeight) {
-                    setState(() => _childHeight = size.height);
-                  }
-                },
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: bodyWidth),
-                  child: Padding(padding: widget.margin, child: widget.child),
-                ),
-              ),
-            ),
-
-            if (_childHeight > 0)
-              SizedBox(
-                width: width,
-                height: bodyTop + _childHeight,
-                child: CustomPaint(
-                  painter: ScrollPainter(roughness: widget.roughness),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      SizedBox(height: bodyTop),
-
-                      Padding(
-                        padding: widget.margin,
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: bodyWidth - widget.margin.horizontal),
-                            child: widget.child,
-                          ),
-                        ),
-                      ),
-                    ],
+          return Padding(
+            padding: widget.padding,
+            child: Stack(
+              children: [
+                Offstage(
+                  child: _MeasureSize(
+                    onChange: (size) {
+                      if (size.height != _childHeight) {
+                        setState(() => _childHeight = size.height);
+                      }
+                    },
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: bodyWidth),
+                      child: Padding(padding: widget.margin, child: widget.child),
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
+                if (_childHeight > 0)
+                  SizedBox(
+                    width: width,
+                    height: bodyTop + _childHeight,
+                    child: CustomPaint(
+                      painter: ScrollPainter(roughness: widget.roughness),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          SizedBox(height: bodyTop),
+                          Padding(
+                            padding: widget.margin,
+                            child: Align(
+                              alignment: Alignment.topCenter,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: bodyWidth - widget.margin.horizontal),
+                                child: widget.child,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       );
-    },
-  );
 }
 
 class _MeasureSize extends StatefulWidget {

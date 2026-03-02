@@ -50,8 +50,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         ),
       ),
     ];
-    return await ShowDialogOnWebView.showAlertDialog<bool>(
-            context: context, title: title, actions: (_) => actions) ??
+    return await ShowDialogOnWebView.showAlertDialog<bool>(context: context, title: title, actions: (_) => actions) ??
         false;
   }
 
@@ -64,8 +63,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.navigatorKey.currentState
-                  ?.pushNamed(RouteName.chatbot);
+              NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
             }
           },
         ),
@@ -131,12 +129,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                                     child: SizedBox(
                                       height: 10,
                                       child: LinearProgressIndicator(
-                                        value: (double.parse(state.progress) /
-                                            100),
+                                        value: (double.parse(state.progress) / 100),
                                         backgroundColor: Colors.grey[200],
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                                AppColor.primary900Light),
+                                        valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
                                       ),
                                     ),
                                   ),
@@ -157,8 +152,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                   content,
 
                   // Error / reload overlay
-                  if (state is FailedDownloadState ||
-                      state is MiniAppsEngineErrorState)
+                  if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
                     Center(
                       child: ReloadWidget(
                         errorMessage: "errors_server_error_1".tr(),

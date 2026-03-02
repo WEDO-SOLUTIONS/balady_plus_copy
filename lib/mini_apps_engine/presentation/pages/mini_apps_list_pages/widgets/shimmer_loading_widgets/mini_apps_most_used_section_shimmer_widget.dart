@@ -40,8 +40,7 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
                   width: iconWidth,
                   height: iconHeight,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(
-                        0.5), // A slightly different shade for the icon area
+                    color: Colors.white.withOpacity(0.5), // A slightly different shade for the icon area
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -92,8 +91,7 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
           width: context.screenWidth, // Matches width
           child: ListView.separated(
             separatorBuilder: (context, index) {
-              return SizedBox(
-                  width: context.screenWidth * 0.03); // Matches separator
+              return SizedBox(width: context.screenWidth * 0.03); // Matches separator
             },
             scrollDirection: Axis.horizontal,
             itemCount: 4, // Shimmer a few items

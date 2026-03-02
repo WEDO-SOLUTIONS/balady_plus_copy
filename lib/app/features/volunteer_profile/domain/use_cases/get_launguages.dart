@@ -9,6 +9,5 @@ class GetLaunguages extends UseCase<List<VolunteerLookup>, NoParams> {
 
   GetLaunguages({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
-      repository.getLaunguages();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getLaunguages();
 }

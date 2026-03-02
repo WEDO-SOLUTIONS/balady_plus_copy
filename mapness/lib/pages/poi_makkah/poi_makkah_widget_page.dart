@@ -62,34 +62,30 @@ DirectoryObjectMessage _createDummyDirectoryObject({
   required LatLng? closestPoint,
   MakkahPlace? makkahPlace,
 }) {
-  final resolvedLatLng =
-      (makkahPlace?.lat != null && makkahPlace?.lon != null)
-          ? LatLng(latitude: makkahPlace!.lat!, longitude: makkahPlace.lon!)
-          : closestPoint;
+  final resolvedLatLng = (makkahPlace?.lat != null && makkahPlace?.lon != null)
+      ? LatLng(latitude: makkahPlace!.lat!, longitude: makkahPlace.lon!)
+      : closestPoint;
 
-  final markerPosition =
-      resolvedLatLng != null
-          ? GeoPointWithElevationMessage(
-            latitude: resolvedLatLng.latitude,
-            longitude: resolvedLatLng.longitude,
-            elevation: 0,
-          )
-          : GeoPointWithElevationMessage(
-            // Default coordinates: Masjid al-Haram, Makkah
-            latitude: 21.4225,
-            longitude: 39.8262,
-            elevation: 0,
-          );
+  final markerPosition = resolvedLatLng != null
+      ? GeoPointWithElevationMessage(
+          latitude: resolvedLatLng.latitude,
+          longitude: resolvedLatLng.longitude,
+          elevation: 0,
+        )
+      : GeoPointWithElevationMessage(
+          // Default coordinates: Masjid al-Haram, Makkah
+          latitude: 21.4225,
+          longitude: 39.8262,
+          elevation: 0,
+        );
 
   final direction = Directionality.of(context);
-  final title =
-      makkahPlace == null
-          ? context.l10n.exploreNearby
-          : MakkahMultilingualHelper.getTitle(makkahPlace, direction, defaultValue: context.l10n.exploreNearby);
-  final description =
-      makkahPlace == null
-          ? context.l10n.whatIsNewInBalady
-          : MakkahMultilingualHelper.getDescription(makkahPlace, direction);
+  final title = makkahPlace == null
+      ? context.l10n.exploreNearby
+      : MakkahMultilingualHelper.getTitle(makkahPlace, direction, defaultValue: context.l10n.exploreNearby);
+  final description = makkahPlace == null
+      ? context.l10n.whatIsNewInBalady
+      : MakkahMultilingualHelper.getDescription(makkahPlace, direction);
 
   return DirectoryObjectMessage(
     types: const [],

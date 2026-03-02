@@ -66,8 +66,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<CustomNetworkImageWidget> createState() =>
-      _CustomNetworkImageWidgetState();
+  State<CustomNetworkImageWidget> createState() => _CustomNetworkImageWidgetState();
 }
 
 class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
@@ -81,17 +80,13 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
         : widget.isVerifyingKey
             ? //null
             {
-                "verifyingKEY":
-                    CommonFunctions.hashRequest(widget.imagePath, "GET")
+                "verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET")
 
                 //  "Authorization":
                 //      "Bearer ${locator<AuthService>().accessToken}"
               }
             : !widget.isVerifyingKey //MM
-                ? {
-                    'Authorization':
-                        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
-                  }
+                ? {'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'}
                 : null;
 
     if (widget.addHeader == true && header != null) {
@@ -120,8 +115,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                 height: widget.imageHeight,
                 fit: widget.imageFit,
                 headers: header,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
+                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;
                   return widget.placeHolderWidget ??
                       Container(
@@ -130,8 +124,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                         height: widget.imageHeight,
                       );
                 },
-                errorBuilder: (BuildContext context, Object exception,
-                    StackTrace? stackTrace) {
+                errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
                   print(exception.toString());
                   return widget.placeHolderWidget ??
                       Container(
@@ -183,8 +176,7 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
         ? CachedNetworkImage(
             imageUrl: widget.imagePath,
             httpHeaders: {
-              "verifyingKEY":
-                  CommonFunctions.hashRequest(widget.imagePath, "GET"),
+              "verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET"),
             },
             width: widget.imageWidth,
             height: widget.imageHeight,

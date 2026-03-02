@@ -75,12 +75,8 @@ class CustomLargMoreApps extends StatelessWidget {
     /// Helper: returns app cards aligned based on language
     List<Widget> buildTopRow() {
       final widgets = [
-        displayApps.isNotEmpty
-            ? CustomSubCardsOfLargCard(iconPath: displayApps[0].iconPath)
-            : const EmptyCardWidget(),
-        displayApps.length >= 2
-            ? CustomSubCardsOfLargCard(iconPath: displayApps[1].iconPath)
-            : const EmptyCardWidget(),
+        displayApps.isNotEmpty ? CustomSubCardsOfLargCard(iconPath: displayApps[0].iconPath) : const EmptyCardWidget(),
+        displayApps.length >= 2 ? CustomSubCardsOfLargCard(iconPath: displayApps[1].iconPath) : const EmptyCardWidget(),
       ];
       return isArabic ? widgets.reversed.toList() : widgets;
     }
@@ -100,9 +96,7 @@ class CustomLargMoreApps extends StatelessWidget {
               height: 64.37,
             );
 
-      final widgets = isArabic
-          ? [remainingWidget, thirdAppWidget]
-          : [thirdAppWidget, remainingWidget];
+      final widgets = isArabic ? [remainingWidget, thirdAppWidget] : [thirdAppWidget, remainingWidget];
 
       return CommonFunctions.isAppAR ? widgets.reversed.toList() : widgets;
     }
@@ -129,15 +123,13 @@ class CustomLargMoreApps extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      textDirection:
-                          isArabic ? TextDirection.rtl : TextDirection.ltr,
+                      textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
                       children: buildTopRow(),
                     ),
                     SizedBox(height: context.screenHeight * 0.02),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      textDirection:
-                          isArabic ? TextDirection.rtl : TextDirection.ltr,
+                      textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
                       children: buildBottomRow(),
                     ),
                   ],

@@ -68,9 +68,7 @@ class WindAndWeatherCard extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: 4),
                           child: CustomTextWidget(
-                            state.allWeatherInfo?.current?.humidity
-                                    .toString() ??
-                                "",
+                            state.allWeatherInfo?.current?.humidity.toString() ?? "",
                             fontWeight: AppFontWeight.bold,
                             fontSize: 14,
                             fontColor: AppColor.primary200Light,

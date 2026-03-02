@@ -11,7 +11,6 @@ class CameraState extends Equatable {
   bool? isCameraInitialized;
   AttachmentItem? files;
 
-
   CameraState({
     this.status = BlocStatus.initial,
     this.errorMessage,

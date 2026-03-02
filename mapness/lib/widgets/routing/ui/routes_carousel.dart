@@ -79,13 +79,13 @@ class RoutesCarousel extends ConsumerWidget {
 
           if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
             return PathCardFailure.nearestMetroTooFar(
-                  refresh: () {
-                    ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
-                  },
-                  text: context.l10n.nearestMetroTooFar,
-                  labelButton: context.l10n.goByCar,
-                );
-              }
+              refresh: () {
+                ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+              },
+              text: context.l10n.nearestMetroTooFar,
+              labelButton: context.l10n.goByCar,
+            );
+          }
 
           return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
         },

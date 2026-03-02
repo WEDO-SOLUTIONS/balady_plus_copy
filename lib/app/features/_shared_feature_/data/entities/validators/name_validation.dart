@@ -14,8 +14,7 @@ class NameValidation extends FormzInput<String?, Validation> {
     if (enteredValue != null && enteredValue.isEmpty) {
       return Validation.empty;
     } else if (enteredValue != null &&
-        (!CommonFunctions.hasArabicOrEnglishCharacters(enteredValue.trim()) ||
-            enteredValue.trim().length < 2)) {
+        (!CommonFunctions.hasArabicOrEnglishCharacters(enteredValue.trim()) || enteredValue.trim().length < 2)) {
       return Validation.invalidName;
     } else {
       return null;

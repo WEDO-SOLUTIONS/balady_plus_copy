@@ -14,8 +14,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final showButtonsRow = data.floors != null || (data.entrances != null && data.entrances!.count > 0);
     final type = data.types?.firstOrNull?.type;
-    final hasMetro =
-        type == ObjectTypeMessage.stationMetro ||
+    final hasMetro = type == ObjectTypeMessage.stationMetro ||
         type == ObjectTypeMessage.station ||
         type == ObjectTypeMessage.stationPlatform ||
         type == ObjectTypeMessage.stationEntrance;
@@ -75,12 +74,12 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AppButton(
-    padding: EdgeInsets.zero,
-    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
-    primaryLabel: title,
-    trailing: Counter(count: count, color: context.colors.accentDefault),
-    buttonColorScheme: ButtonColorScheme.accent,
-    buttonType: ButtonType.secondary,
-    onTap: onTap,
-  );
+        padding: EdgeInsets.zero,
+        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
+        primaryLabel: title,
+        trailing: Counter(count: count, color: context.colors.accentDefault),
+        buttonColorScheme: ButtonColorScheme.accent,
+        buttonType: ButtonType.secondary,
+        onTap: onTap,
+      );
 }

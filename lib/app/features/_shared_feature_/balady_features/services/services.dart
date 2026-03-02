@@ -24,8 +24,7 @@ class BaladyServices {
 
   BaladyServices({required this.webService});
 
-  Future<InvestmentDetailsResponse?> getInvestmentDetails(
-      String id, String type) async {
+  Future<InvestmentDetailsResponse?> getInvestmentDetails(String id, String type) async {
     EasyLoading.show();
 
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
@@ -38,13 +37,11 @@ class BaladyServices {
           'RFPID': id,
         },
         options: Options(headers: {
-          'Authorization':
-              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+          'Authorization': "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
 
-      investmentDetailsResponse =
-          InvestmentDetailsResponse.fromJson(response.data);
+      investmentDetailsResponse = InvestmentDetailsResponse.fromJson(response.data);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -58,9 +55,8 @@ class BaladyServices {
     EasyLoading.dismiss();
 
     if (investmentDetailsResponse != null) {
-      NavigationService.navigatorKey.currentState!.pushNamed(
-          RouteName.investmentPage,
-          arguments: investmentDetailsResponse);
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.investmentPage, arguments: investmentDetailsResponse);
     }
     return investmentDetailsResponse;
   }
@@ -74,13 +70,11 @@ class BaladyServices {
       final response = await webService.dio.get(
         "${sl<EnvType>().domain}v1/ims/direct-rental-opportunities/$id",
         options: Options(headers: {
-          'Authorization':
-              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+          'Authorization': "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
 
-      investmentDetailsResponse =
-          InvestmentDetailsResponse.fromJson(response.data);
+      investmentDetailsResponse = InvestmentDetailsResponse.fromJson(response.data);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -94,15 +88,13 @@ class BaladyServices {
     EasyLoading.dismiss();
 
     if (investmentDetailsResponse != null) {
-      NavigationService.navigatorKey.currentState!.pushNamed(
-          RouteName.DirectRentalPage,
-          arguments: investmentDetailsResponse);
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.DirectRentalPage, arguments: investmentDetailsResponse);
     }
     return investmentDetailsResponse;
   }
 
-  Future<RentalDetailsResponse?> getTempRentalDetails(
-      String id, String type) async {
+  Future<RentalDetailsResponse?> getTempRentalDetails(String id, String type) async {
     EasyLoading.show();
 
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
@@ -115,8 +107,7 @@ class BaladyServices {
           'RFPID': id,
         },
         options: Options(headers: {
-          'Authorization':
-              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+          'Authorization': "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
 
@@ -132,9 +123,8 @@ class BaladyServices {
     }
     EasyLoading.dismiss();
     if (investmentDetailsResponse != null) {
-      NavigationService.navigatorKey.currentState!.pushNamed(
-          RouteName.tempRentalPage,
-          arguments: investmentDetailsResponse);
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.tempRentalPage, arguments: investmentDetailsResponse);
     }
     return investmentDetailsResponse;
   }
@@ -142,8 +132,7 @@ class BaladyServices {
   /// To Retrieve the list of events
   Future<List<SearchEventsItem>?> getEvents() async {
     final searchEvents = GetSearchEvents(repository: sl());
-    final getEventsFailureOrSuccess =
-        await searchEvents(SearchEventsParams(size: 1000, page: 1));
+    final getEventsFailureOrSuccess = await searchEvents(SearchEventsParams(size: 1000, page: 1));
 
     return await getEventsFailureOrSuccess.fold((l) {
       return null;
@@ -155,9 +144,7 @@ class BaladyServices {
   static String getSearchText() => CommonProperties.userLocationGIS != null &&
           CommonProperties.userLocationGIS!.cityName != null &&
           CommonProperties.userLocationGIS!.cityName!.isNotEmpty
-      ? "search_map_text"
-          .tr()
-          .replaceAll("{}", CommonProperties.userLocationGIS!.cityName!)
+      ? "search_map_text".tr().replaceAll("{}", CommonProperties.userLocationGIS!.cityName!)
       : "search_map_text".tr();
 
   // static enableLocationTracking(bool check) {
@@ -236,7 +223,6 @@ class BaladyServices {
     return null;
   }
 
-
   static Future<bool> checkLocationSettings(BuildContext context) {
     return CommonFunctions.checkLocationSettings(context);
   }
@@ -274,11 +260,9 @@ class BaladyServices {
     } else {
       showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) =>
-              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+          builder: (ctx) => NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
-                  NavigationService.navigatorKey.currentState
-                      ?.pushNamed(RouteName.chatbot);
+                  NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
                 }
               }));
     }
@@ -290,8 +274,7 @@ class BaladyServices {
     } else {
       return await showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) =>
-              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+          builder: (ctx) => NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
                   return Future.value(true);
                 }
@@ -305,16 +288,13 @@ class BaladyServices {
 
   static void navigateToLicenseMangments() {
     if (CommonProperties.isLoggedInMunicipality) {
-      NavigationService.navigatorKey.currentState
-          ?.pushNamed(RouteName.requests);
+      NavigationService.navigatorKey.currentState?.pushNamed(RouteName.requests);
     } else {
       showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) =>
-              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+          builder: (ctx) => NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
-                  NavigationService.navigatorKey.currentState
-                      ?.pushNamed(RouteName.requests);
+                  NavigationService.navigatorKey.currentState?.pushNamed(RouteName.requests);
                 }
               }));
     }
@@ -322,16 +302,13 @@ class BaladyServices {
 
   static void navigateToLicense() {
     if (CommonProperties.isLoggedInMunicipality) {
-      NavigationService.navigatorKey.currentState
-          ?.pushNamed(RouteName.licenses);
+      NavigationService.navigatorKey.currentState?.pushNamed(RouteName.licenses);
     } else {
       showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) =>
-              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+          builder: (ctx) => NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
-                  NavigationService.navigatorKey.currentState
-                      ?.pushNamed(RouteName.licenses);
+                  NavigationService.navigatorKey.currentState?.pushNamed(RouteName.licenses);
                 }
               }));
     }

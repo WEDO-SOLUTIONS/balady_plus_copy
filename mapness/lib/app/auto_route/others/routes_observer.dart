@@ -15,8 +15,7 @@ class RoutesObserver extends AutoRouterObserver {
     super.didPush(route, previousRoute);
     final analytics = ref.read(urbiAnalyticsProvider);
 
-    if (route.settings is AutoRoutePage &&
-        previousRoute?.settings is AutoRoutePage) {
+    if (route.settings is AutoRoutePage && previousRoute?.settings is AutoRoutePage) {
       final path = (route.settings as AutoRoutePage).routeData.path;
 
       final currentPath = path.startsWith('/') ? path : '/$path';

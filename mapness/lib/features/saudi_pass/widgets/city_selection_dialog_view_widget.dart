@@ -47,7 +47,9 @@ class CitySelectionDialogViewWidget extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyles.h2SemiBold),
-               CustomCloseButton(onClose: () => scrollController.close(),),
+              CustomCloseButton(
+                onClose: () => scrollController.close(),
+              ),
             ],
           ),
         ),

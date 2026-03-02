@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:dgis_map_platform_interface/library.dart';
 
 class CameraStateEventHandler {
-  Stream<CameraStateEvent> get cameraStateEvents =>
-      _cameraStateController.stream;
+  Stream<CameraStateEvent> get cameraStateEvents => _cameraStateController.stream;
 
   final _cameraStateController = StreamController<CameraStateEvent>.broadcast();
 

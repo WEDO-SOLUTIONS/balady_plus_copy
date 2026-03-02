@@ -24,19 +24,18 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-    child: GestureDetector(
-      onTap: onTap,
-      child: SizedBox(
-        height: _cardHeight,
-        width: double.infinity,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.all(
-            Radius.circular(RadiusBorder.xl),
-          ),
-          child: LayoutBuilder(
-            builder:
-                (context, constraints) => Stack(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: GestureDetector(
+          onTap: onTap,
+          child: SizedBox(
+            height: _cardHeight,
+            width: double.infinity,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(RadiusBorder.xl),
+              ),
+              child: LayoutBuilder(
+                builder: (context, constraints) => Stack(
                   fit: StackFit.expand,
                   children: [
                     Image.asset(path, fit: BoxFit.cover, matchTextDirection: true),
@@ -99,9 +98,9 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 }

@@ -1,18 +1,10 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppFontWeight,
-        AppStyle,
-        ContextConversion,
-        DIRECTION,
-        DirectionConversion,
-        UIHelper;
+    show AppColor, AppFontWeight, AppStyle, ContextConversion, DIRECTION, DirectionConversion, UIHelper;
 import '../../shared_feature_exports.dart'
     show
         ClickableWidget,
@@ -42,12 +34,10 @@ class CustomEnhancedExpansionPanelListWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CustomEnhancedExpansionPanelListWidget> createState() =>
-      _CustomEnhancedExpansionPanelListWidgetState();
+  State<CustomEnhancedExpansionPanelListWidget> createState() => _CustomEnhancedExpansionPanelListWidgetState();
 }
 
-class _CustomEnhancedExpansionPanelListWidgetState
-    extends State<CustomEnhancedExpansionPanelListWidget> {
+class _CustomEnhancedExpansionPanelListWidgetState extends State<CustomEnhancedExpansionPanelListWidget> {
   late List<ExpandableController> _controllers;
 
   late List<ExpansionPanelInfo> _children;
@@ -84,9 +74,7 @@ class _CustomEnhancedExpansionPanelListWidgetState
   Widget build(BuildContext context) {
     return ExpandableTheme(
       data: ExpandableThemeData(
-        bodyAlignment: context.isRTL
-            ? ExpandablePanelBodyAlignment.right
-            : ExpandablePanelBodyAlignment.left,
+        bodyAlignment: context.isRTL ? ExpandablePanelBodyAlignment.right : ExpandablePanelBodyAlignment.left,
         hasIcon: false,
         useInkWell: false,
         tapHeaderToExpand: false,
@@ -203,8 +191,7 @@ class _PanelCard extends StatelessWidget {
   }
 
   Color get _bgColor => panelInfo.bgColor ?? bgColor ?? AppColor.ghostWhite;
-  Color get _borderColor =>
-      panelInfo.borderColor ?? borderColor ?? AppColor.brightGray;
+  Color get _borderColor => panelInfo.borderColor ?? borderColor ?? AppColor.brightGray;
   double get _borderWidth => panelInfo.borderWidth ?? borderWidth;
   double get _borderRadius => panelInfo.borderRadius ?? borderRadius;
 
@@ -245,8 +232,7 @@ class _HeaderWidget extends StatelessWidget {
         final width = constraints.maxWidth;
         // 25.0 for leading & 25.0 for trailing
         // 8.0*2 for two spaces
-        final titleWidth =
-            leading != null ? width - (25.0 * 2 + 8 * 2) : width - (25.0 + 8.0);
+        final titleWidth = leading != null ? width - (25.0 * 2 + 8 * 2) : width - (25.0 + 8.0);
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -313,8 +299,7 @@ class _ExpansionLeadingWidget extends StatelessWidget {
         : const SizedBox();
   }
 
-  Color get leadingBGColor =>
-      expanded ? AppColor.bleuDeFrance : AppColor.brightGray;
+  Color get leadingBGColor => expanded ? AppColor.bleuDeFrance : AppColor.brightGray;
   Color get leadingColor => expanded ? AppColor.indigo : AppColor.uclaBlue;
 }
 
@@ -368,7 +353,6 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
 
   // because original arrow looks at the left,
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
-  double get angle =>
-      expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
+  double get angle => expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
   Color get iconColor => AppColor.maastrichtBlue;
 }

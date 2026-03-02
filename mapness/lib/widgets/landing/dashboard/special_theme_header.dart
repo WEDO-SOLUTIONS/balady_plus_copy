@@ -1,8 +1,7 @@
 import 'dart:ui';
 
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart'
-    as balady_ctx;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart' as balady_ctx;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
@@ -48,9 +47,7 @@ class SpecialThemeHeader extends StatelessWidget {
 
   Widget? _buildBanner(BuildContext context) {
     final bool hasBanner =
-        mode == SpecialThemeMode.nationalDay ||
-        mode == SpecialThemeMode.mekkahBase ||
-        mode == SpecialThemeMode.ramadan;
+        mode == SpecialThemeMode.nationalDay || mode == SpecialThemeMode.mekkahBase || mode == SpecialThemeMode.ramadan;
     if (!hasBanner) return null;
 
     final BoxDecoration bannerDecoration;
@@ -115,39 +112,31 @@ class SpecialThemeHeader extends StatelessWidget {
 
     return MultiStateSheetBuilder<ThreeStateSheet>(
       defaultState: ThreeStateSheet.hidden,
-      builder:
-          (context, state, interpolation, child) => Padding(
-            padding: EdgeInsets.only(
-              top:
-                  state == ThreeStateSheet.hidden
-                      ? Spacing.$4x * (1 - interpolation)
-                      : 0,
-            ),
-            child: GestureDetector(
-              onTap: () => controller.setState(ThreeStateSheet.open),
-              child: SizedBox(
-                height:
-                    Spacing.$12x *
-                    (state == ThreeStateSheet.hidden
-                        ? clampDouble(interpolation * 3, 0, 1)
-                        : 1.0),
-                width: double.infinity,
-                child: DecoratedBox(
-                  decoration: bannerDecoration,
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        right: Spacing.$4x,
-                        bottom: Spacing.$4x,
-                      ),
-                      child: _buildBannerText(context),
-                    ),
+      builder: (context, state, interpolation, child) => Padding(
+        padding: EdgeInsets.only(
+          top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0,
+        ),
+        child: GestureDetector(
+          onTap: () => controller.setState(ThreeStateSheet.open),
+          child: SizedBox(
+            height: Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+            width: double.infinity,
+            child: DecoratedBox(
+              decoration: bannerDecoration,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: Spacing.$4x,
+                    bottom: Spacing.$4x,
                   ),
+                  child: _buildBannerText(context),
                 ),
               ),
             ),
           ),
+        ),
+      ),
     );
   }
 
@@ -158,8 +147,8 @@ class SpecialThemeHeader extends StatelessWidget {
         style: balady_ctx.BuildContextExt(
           context,
         ).textStyles.bodySmallSemiBold.copyWith(
-          color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
-        ),
+              color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
+            ),
         textAlign: TextAlign.center,
       );
     }
@@ -170,8 +159,8 @@ class SpecialThemeHeader extends StatelessWidget {
         style: balady_ctx.BuildContextExt(
           context,
         ).textStyles.bodySmallSemiBold.copyWith(
-          color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
-        ),
+              color: balady_ctx.BuildContextExt(context).colors.successOnSuccess,
+            ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.center,
@@ -227,8 +216,7 @@ class _MekkahQiblahIcon extends ConsumerStatefulWidget {
   ConsumerState<_MekkahQiblahIcon> createState() => _MekkahQiblahIconState();
 }
 
-class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon>
-    with SingleTickerProviderStateMixin {
+class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon> with SingleTickerProviderStateMixin {
   late final AnimationController scaleController = AnimationController(
     vsync: this,
     duration: Durations.medium1,
@@ -267,10 +255,7 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon>
     return MultiStateSheetBuilder<ThreeStateSheet>(
       defaultState: ThreeStateSheet.hidden,
       builder: (context, state, interpolation, child) {
-        final delta =
-            state == ThreeStateSheet.hidden
-                ? clampDouble(interpolation * 3, 0, 1)
-                : 1.0;
+        final delta = state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0;
         return IgnorePointer(
           ignoring: state == ThreeStateSheet.hidden,
           child: Align(
@@ -282,11 +267,9 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon>
       },
       child: GestureDetector(
         onTap: _handleTap,
-        onTapDown:
-            (_) =>
-                scaleController
-                  ..value = 0
-                  ..animateTo(.4, curve: Curves.easeOut),
+        onTapDown: (_) => scaleController
+          ..value = 0
+          ..animateTo(.4, curve: Curves.easeOut),
         onLongPressEnd: (_) {
           scaleController.animateTo(1, curve: Curves.easeOut);
           _handleTap();
@@ -321,8 +304,7 @@ class _RamadanIcon extends ConsumerStatefulWidget {
   ConsumerState<_RamadanIcon> createState() => _RamadanIconState();
 }
 
-class _RamadanIconState extends ConsumerState<_RamadanIcon>
-    with SingleTickerProviderStateMixin {
+class _RamadanIconState extends ConsumerState<_RamadanIcon> with SingleTickerProviderStateMixin {
   late final AnimationController scaleController = AnimationController(
     vsync: this,
     duration: Durations.medium1,
@@ -361,10 +343,7 @@ class _RamadanIconState extends ConsumerState<_RamadanIcon>
     return MultiStateSheetBuilder<ThreeStateSheet>(
       defaultState: ThreeStateSheet.hidden,
       builder: (context, state, interpolation, child) {
-        final delta =
-            state == ThreeStateSheet.hidden
-                ? clampDouble(interpolation * 3, 0, 1)
-                : 1.0;
+        final delta = state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0;
         return IgnorePointer(
           ignoring: state == ThreeStateSheet.hidden,
           child: Align(
@@ -376,11 +355,9 @@ class _RamadanIconState extends ConsumerState<_RamadanIcon>
       },
       child: GestureDetector(
         onTap: _handleTap,
-        onTapDown:
-            (_) =>
-                scaleController
-                  ..value = 0
-                  ..animateTo(.4, curve: Curves.easeOut),
+        onTapDown: (_) => scaleController
+          ..value = 0
+          ..animateTo(.4, curve: Curves.easeOut),
         onLongPressEnd: (_) {
           scaleController.animateTo(1, curve: Curves.easeOut);
           _handleTap();

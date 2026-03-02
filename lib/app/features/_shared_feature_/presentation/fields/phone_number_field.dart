@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextFieldWidget;
+import '../../../_shared_feature_/shared_feature_exports.dart' show CustomTextFieldWidget;
 
 class PhoneNumberField extends StatelessWidget {
   final bool readOnly;

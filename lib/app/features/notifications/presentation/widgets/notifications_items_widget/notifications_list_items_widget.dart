@@ -16,8 +16,7 @@ class ListItemsEventsWidget extends StatelessWidget {
     return BlocBuilder<NotificationsListCubit, NotificationsListState>(
       bloc: cubit,
       builder: (_, state) {
-        if (state is InitialNotificationsListState ||
-            state is LoadingEventsListState) {
+        if (state is InitialNotificationsListState || state is LoadingEventsListState) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -54,8 +53,7 @@ class ListItemsEventsWidget extends StatelessWidget {
             controller: scrollController
               ..addListener(
                 () {
-                  if (scrollController.position.pixels ==
-                      scrollController.position.maxScrollExtent) {
+                  if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
                     cubit.getNotificationsMessagesList(loadMore: true);
                   }
                 },
@@ -67,8 +65,7 @@ class ListItemsEventsWidget extends StatelessWidget {
           return ListView.builder(
             padding: const EdgeInsets.all(12.0),
             itemBuilder: (BuildContext context, int index) {
-              return NotificationsItemWidget(
-                  message: state.listMessages[index]);
+              return NotificationsItemWidget(message: state.listMessages[index]);
             },
             itemCount: state.listMessages.length,
           );

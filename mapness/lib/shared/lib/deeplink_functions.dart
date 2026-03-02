@@ -16,7 +16,6 @@ class BaldayDeeplink {
   static const String miniAppPath = 'pt';
   static const String miniAppItemId = 'dt_Id';
 
-
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 
   // My location

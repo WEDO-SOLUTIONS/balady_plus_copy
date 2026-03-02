@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ImagePath;
-import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget, ElevatedButtonWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ImagePath;
+import '../../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget, ElevatedButtonWidget;
 import '../../../home_exports.dart' show HomeSection;
 
 class GameChallenge extends StatelessWidget {

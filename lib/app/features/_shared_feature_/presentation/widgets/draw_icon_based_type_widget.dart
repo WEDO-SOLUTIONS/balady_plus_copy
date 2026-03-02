@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, StringIconChecker;
+import '../../../../core/utils/utils_exports.dart' show AppColor, StringIconChecker;
 import '../../shared_feature_exports.dart' show CustomSvgIconWidget;
 
 class DrawIconBasedTypeWidget extends StatelessWidget {

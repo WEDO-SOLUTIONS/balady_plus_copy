@@ -8,7 +8,6 @@ import '../dependency_injection_exports.dart' show sl;
 
 class VDInjection {
   static void init() {
-
     //! Use Case
 
     sl.registerLazySingleton(() => GetGISData(repository: sl()));

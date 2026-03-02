@@ -21,9 +21,7 @@ class PhotoPermissionDialog extends StatelessWidget {
         children: [
           Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  color: AppColor.white,
-                  borderRadius: BorderRadius.circular(12)),
+              decoration: BoxDecoration(color: AppColor.white, borderRadius: BorderRadius.circular(12)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[

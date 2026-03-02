@@ -29,6 +29,5 @@ class FilePickerState extends Equatable {
       );
 
   @override
-  String toString() =>
-      'FilePickerState(status: $status, fileName: $fileName, file: $file)';
+  String toString() => 'FilePickerState(status: $status, fileName: $fileName, file: $file)';
 }

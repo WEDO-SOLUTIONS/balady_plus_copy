@@ -3,15 +3,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/extensions/int_extension.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle, IconPath;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle, IconPath;
 import '../../../shared_feature_exports.dart'
-    show
-        BottomSheetWithActions,
-        CustomTextFieldWidget,
-        CustomTextWidget,
-        DrawIconBasedTypeWidget,
-        ElevatedButtonWidget;
+    show BottomSheetWithActions, CustomTextFieldWidget, CustomTextWidget, DrawIconBasedTypeWidget, ElevatedButtonWidget;
 
 class GenericBottomSheetList<T> extends StatefulWidget {
   final String title;
@@ -34,8 +28,7 @@ class GenericBottomSheetList<T> extends StatefulWidget {
   });
 
   @override
-  State<GenericBottomSheetList> createState() =>
-      _GenericBottomSheetListState<T>();
+  State<GenericBottomSheetList> createState() => _GenericBottomSheetListState<T>();
 }
 
 class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
@@ -55,19 +48,14 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
 
   @override
   Widget build(BuildContext context) {
-    bool showNoDataMsg = (widget.items != null &&
-        widget.items.isEmpty &&
-        widget.noDataMsg != null);
+    bool showNoDataMsg = (widget.items != null && widget.items.isEmpty && widget.noDataMsg != null);
     return BottomSheetWithActions(
       title: widget.title,
       isList: true,
       searchable: widget.searchable,
       onSearchChanged: (String? text) {
         setState(() {
-          items = widget.items
-              .where(
-                  (element) => element.text.toLowerCase().contains(text ?? ""))
-              .toList();
+          items = widget.items.where((element) => element.text.toLowerCase().contains(text ?? "")).toList();
         });
       },
       body: !showNoDataMsg
@@ -83,8 +71,7 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
                           onTap: () => selectItem(item),
                           child: Container(
                             height: 56,
-                            padding:
-                                const EdgeInsetsDirectional.only(start: 12),
+                            padding: const EdgeInsetsDirectional.only(start: 12),
                             margin: const EdgeInsets.symmetric(vertical: 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
@@ -93,8 +80,7 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width - 125,
+                                  width: MediaQuery.of(context).size.width - 125,
                                   child: CustomTextWidget(
                                     item.text,
                                     textStyle: AppStyle.listTitleTextStyle,

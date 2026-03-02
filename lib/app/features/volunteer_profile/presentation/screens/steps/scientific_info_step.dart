@@ -10,8 +10,7 @@ class ScientificInfoStep extends StatelessWidget {
   const ScientificInfoStep({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) =>
-      BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
         builder: (context, state) => SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -33,8 +32,7 @@ class ScientificInfoStep extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text('educational_qualification_required'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               if (state.isLoadingQualifications)
                 const Center(child: CircularProgressIndicator())
@@ -52,15 +50,11 @@ class ScientificInfoStep extends StatelessWidget {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.educationalQualificationId?.isEmpty == true
-                      ? null
-                      : state.educationalQualificationId,
+                  value: state.educationalQualificationId?.isEmpty == true ? null : state.educationalQualificationId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12.0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                   ),
                   items: state.qualificationsList
                       .map((qualification) => DropdownMenuItem<String>(
@@ -76,15 +70,12 @@ class ScientificInfoStep extends StatelessWidget {
                       .toList(),
                   onChanged: (value) {
                     if (value != null) {
-                      final selectedQualification =
-                          state.qualificationsList.firstWhere(
-                        (qualification) =>
-                            qualification.tid.toString() == value,
+                      final selectedQualification = state.qualificationsList.firstWhere(
+                        (qualification) => qualification.tid.toString() == value,
                       );
                       context.read<VolunteerProfileBloc>().add(
                             UpdateScientificInfo(
-                              educationalQualification:
-                                  selectedQualification.name,
+                              educationalQualification: selectedQualification.name,
                               educationalQualificationId: value,
                               specialization: state.specialization,
                               specializationId: state.specializationId,
@@ -92,8 +83,7 @@ class ScientificInfoStep extends StatelessWidget {
                               workExperience: state.workExperience,
                               language: state.language,
                               languageId: state.languageId,
-                              scientificExperienceSummary:
-                                  state.scientificExperienceSummary,
+                              scientificExperienceSummary: state.scientificExperienceSummary,
                             ),
                           );
                     }
@@ -106,9 +96,7 @@ class ScientificInfoStep extends StatelessWidget {
                   },
                 ),
               const SizedBox(height: 16),
-              Text('specialization_required'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+              Text('specialization_required'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               if (state.isLoadingSpecializations)
                 const Center(child: CircularProgressIndicator())
@@ -126,15 +114,11 @@ class ScientificInfoStep extends StatelessWidget {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.specializationId?.isEmpty == true
-                      ? null
-                      : state.specializationId,
+                  value: state.specializationId?.isEmpty == true ? null : state.specializationId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12.0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                   ),
                   items: state.specializationsList
                       .map((specialization) => DropdownMenuItem<String>(
@@ -150,25 +134,20 @@ class ScientificInfoStep extends StatelessWidget {
                       .toList(),
                   onChanged: (value) {
                     if (value != null) {
-                      final selectedSpecialization =
-                          state.specializationsList.firstWhere(
-                        (specialization) =>
-                            specialization.tid.toString() == value,
+                      final selectedSpecialization = state.specializationsList.firstWhere(
+                        (specialization) => specialization.tid.toString() == value,
                       );
                       context.read<VolunteerProfileBloc>().add(
                             UpdateScientificInfo(
-                              educationalQualification:
-                                  state.educationalQualification,
-                              educationalQualificationId:
-                                  state.educationalQualificationId,
+                              educationalQualification: state.educationalQualification,
+                              educationalQualificationId: state.educationalQualificationId,
                               specialization: selectedSpecialization.name,
                               specializationId: value,
                               profession: state.profession,
                               workExperience: state.workExperience,
                               language: state.language,
                               languageId: state.languageId,
-                              scientificExperienceSummary:
-                                  state.scientificExperienceSummary,
+                              scientificExperienceSummary: state.scientificExperienceSummary,
                             ),
                           );
                     }
@@ -181,54 +160,42 @@ class ScientificInfoStep extends StatelessWidget {
                   },
                 ),
               const SizedBox(height: 16),
-              Text('profession'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+              Text('profession'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextFormField(
-                initialValue:
-                    state.profession == 'null' ? '' : state.profession,
+                initialValue: state.profession == 'null' ? '' : state.profession,
                 decoration: InputDecoration(
                   hintText: 'enter_profession'.tr(),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 15.0),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 ),
                 onChanged: (value) {
                   context.read<VolunteerProfileBloc>().add(
                         UpdateScientificInfo(
-                          educationalQualification:
-                              state.educationalQualification,
-                          educationalQualificationId:
-                              state.educationalQualificationId,
+                          educationalQualification: state.educationalQualification,
+                          educationalQualificationId: state.educationalQualificationId,
                           specialization: state.specialization,
                           specializationId: state.specializationId,
                           profession: value,
                           workExperience: state.workExperience,
                           language: state.language,
                           languageId: state.languageId,
-                          scientificExperienceSummary:
-                              state.scientificExperienceSummary,
+                          scientificExperienceSummary: state.scientificExperienceSummary,
                         ),
                       );
                 },
                 // No validator - profession is optional
               ),
               const SizedBox(height: 16),
-              Text('work_experience'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+              Text('work_experience'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: state.workExperience?.isEmpty == true ||
-                        state.workExperience == 'null'
+                value: state.workExperience?.isEmpty == true || state.workExperience == 'null'
                     ? null
                     : state.workExperience,
                 decoration: InputDecoration(
                   hintText: 'choose_years_of_experience'.tr(),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                 ),
                 items: List.generate(51, (index) => index)
@@ -247,27 +214,22 @@ class ScientificInfoStep extends StatelessWidget {
                 onChanged: (value) {
                   context.read<VolunteerProfileBloc>().add(
                         UpdateScientificInfo(
-                          educationalQualification:
-                              state.educationalQualification,
-                          educationalQualificationId:
-                              state.educationalQualificationId,
+                          educationalQualification: state.educationalQualification,
+                          educationalQualificationId: state.educationalQualificationId,
                           specialization: state.specialization,
                           specializationId: state.specializationId,
                           profession: state.profession,
                           workExperience: value,
                           language: state.language,
                           languageId: state.languageId,
-                          scientificExperienceSummary:
-                              state.scientificExperienceSummary,
+                          scientificExperienceSummary: state.scientificExperienceSummary,
                         ),
                       );
                 },
                 // No validator - work experience is optional
               ),
               const SizedBox(height: 16),
-              Text('language_required'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+              Text('language_required'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               if (state.isLoadingLanguages)
                 const Center(child: CircularProgressIndicator())
@@ -285,15 +247,11 @@ class ScientificInfoStep extends StatelessWidget {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.languageId?.isEmpty == true
-                      ? null
-                      : state.languageId,
+                  value: state.languageId?.isEmpty == true ? null : state.languageId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12.0),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                   ),
                   items: state.languagesList
                       .map((language) => DropdownMenuItem<String>(
@@ -314,18 +272,15 @@ class ScientificInfoStep extends StatelessWidget {
                       );
                       context.read<VolunteerProfileBloc>().add(
                             UpdateScientificInfo(
-                              educationalQualification:
-                                  state.educationalQualification,
-                              educationalQualificationId:
-                                  state.educationalQualificationId,
+                              educationalQualification: state.educationalQualification,
+                              educationalQualificationId: state.educationalQualificationId,
                               specialization: state.specialization,
                               specializationId: state.specializationId,
                               profession: state.profession,
                               workExperience: state.workExperience,
                               language: selectedLanguage.name,
                               languageId: value,
-                              scientificExperienceSummary:
-                                  state.scientificExperienceSummary,
+                              scientificExperienceSummary: state.scientificExperienceSummary,
                             ),
                           );
                     }
@@ -339,19 +294,14 @@ class ScientificInfoStep extends StatelessWidget {
                 ),
               const SizedBox(height: 16),
               Text('scientific_experience_summary_required'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextFormField(
-                initialValue: state.scientificExperienceSummary == 'null'
-                    ? ''
-                    : state.scientificExperienceSummary,
+                initialValue: state.scientificExperienceSummary == 'null' ? '' : state.scientificExperienceSummary,
                 decoration: InputDecoration(
                   hintText: 'write_scientific_experience_summary'.tr(),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 15.0),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
                 ),
                 maxLines: 4,
                 validator: (value) {
@@ -363,10 +313,8 @@ class ScientificInfoStep extends StatelessWidget {
                 onChanged: (value) {
                   context.read<VolunteerProfileBloc>().add(
                         UpdateScientificInfo(
-                          educationalQualification:
-                              state.educationalQualification,
-                          educationalQualificationId:
-                              state.educationalQualificationId,
+                          educationalQualification: state.educationalQualification,
+                          educationalQualificationId: state.educationalQualificationId,
                           specialization: state.specialization,
                           specializationId: state.specializationId,
                           profession: state.profession,
@@ -379,25 +327,20 @@ class ScientificInfoStep extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 16),
-              Text('resume_cv'.tr(),
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+              Text('resume_cv'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               ElevatedButton(
                 onPressed: () => _pickAndUploadFile(context),
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                     backgroundColor: Colors.teal),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.add, color: Colors.white),
                     const SizedBox(width: 8),
-                    Text('attach'.tr(),
-                        style:
-                            const TextStyle(fontSize: 16, color: Colors.white)),
+                    Text('attach'.tr(), style: const TextStyle(fontSize: 16, color: Colors.white)),
                   ],
                 ),
               ),
@@ -426,8 +369,7 @@ class ScientificInfoStep extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle,
-                          color: Colors.green, size: 16),
+                      const Icon(Icons.check_circle, color: Colors.green, size: 16),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -438,9 +380,7 @@ class ScientificInfoStep extends StatelessWidget {
                     ],
                   ),
                 ),
-              if (state.cvUploadMessage != null &&
-                  state.cvUploadMessage!.contains('Failed') &&
-                  !state.isUploadingCV)
+              if (state.cvUploadMessage != null && state.cvUploadMessage!.contains('Failed') && !state.isUploadingCV)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Row(
@@ -477,8 +417,7 @@ Future<void> _pickAndUploadFile(BuildContext context) async {
         if (file.size > 10 * 1024 * 1024) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content:
-                  Text('File size too large. Please select a file under 10MB.'),
+              content: Text('File size too large. Please select a file under 10MB.'),
               backgroundColor: Colors.red,
             ),
           );

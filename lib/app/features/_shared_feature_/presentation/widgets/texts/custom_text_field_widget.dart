@@ -1,18 +1,12 @@
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show FilteringTextInputFormatter, TextInputFormatter;
+import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/enums/enums.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, BorderConversion, BorderType;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, BorderConversion, BorderType;
 import '../../../shared_feature_exports.dart'
-    show
-        CustomHorizontalSpace,
-        CustomVerticalSpace,
-        LabelTextWithOptional,
-        WidgetLabel;
+    show CustomHorizontalSpace, CustomVerticalSpace, LabelTextWithOptional, WidgetLabel;
 import '../custom_tooltip_widget.dart';
 
 class CustomTextFieldWidget extends StatelessWidget {
@@ -172,8 +166,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           focusNode: focusNode,
           autocorrect: autocorrect,
           autofillHints: autofillHints,
-          autovalidateMode:
-              autovalidateMode ?? AutovalidateMode.onUserInteraction,
+          autovalidateMode: autovalidateMode ?? AutovalidateMode.onUserInteraction,
           cursorColor: cursorColor ?? AppColor.blue,
           cursorHeight: cursorHeight,
           showCursor: showCursor,
@@ -186,10 +179,8 @@ class CustomTextFieldWidget extends StatelessWidget {
           inputFormatters: inputFormatters ??
               [
                 if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
-                if (allowedInputPattern != null)
-                  FilteringTextInputFormatter.allow(allowedInputPattern!),
-                if (deniedInputPattern != null)
-                  FilteringTextInputFormatter.deny(deniedInputPattern!),
+                if (allowedInputPattern != null) FilteringTextInputFormatter.allow(allowedInputPattern!),
+                if (deniedInputPattern != null) FilteringTextInputFormatter.deny(deniedInputPattern!),
               ],
           keyboardType: keyboardType,
           maxLength: maxLength,
@@ -211,9 +202,7 @@ class CustomTextFieldWidget extends StatelessWidget {
               hintText: hintText,
               hintStyle: hintStyle,
               filled: filled,
-              fillColor: readOnly
-                  ? disabledColor ?? AppColor.gray
-                  : fillColor ?? AppColor.white,
+              fillColor: readOnly ? disabledColor ?? AppColor.gray : fillColor ?? AppColor.white,
               /*
             **First scenario:
             contentPadding: add padding before prefix-icon and after suffix-icon
@@ -480,8 +469,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                     textInputAction: textInputAction,
                     inputFormatters: inputFormatter ??
                         [
-                          if (isDigitsOnly)
-                            FilteringTextInputFormatter.digitsOnly,
+                          if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
                         ],
                     style: textFieldStyle ??
                         const TextStyle(
@@ -514,10 +502,8 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       errorMaxLines: errorMaxLines,
                       errorStyle: const TextStyle(color: AppColor.redBrown),
                       suffixIcon: suffixIcon,
-                      suffixIconConstraints: suffixSize != null
-                          ? BoxConstraints(
-                              minHeight: suffixSize!, minWidth: suffixSize!)
-                          : null,
+                      suffixIconConstraints:
+                          suffixSize != null ? BoxConstraints(minHeight: suffixSize!, minWidth: suffixSize!) : null,
                     ),
                     onChanged: onChanged,
                     onFieldSubmitted: onFieldSubmitted,
@@ -671,12 +657,10 @@ class CustomTextFieldWithValueWidget extends StatefulWidget {
       this.value});
 
   @override
-  State<CustomTextFieldWithValueWidget> createState() =>
-      _CustomTextFieldWithValueWidgetState();
+  State<CustomTextFieldWithValueWidget> createState() => _CustomTextFieldWithValueWidgetState();
 }
 
-class _CustomTextFieldWithValueWidgetState
-    extends State<CustomTextFieldWithValueWidget> {
+class _CustomTextFieldWithValueWidgetState extends State<CustomTextFieldWithValueWidget> {
   TextEditingController controller = TextEditingController();
 
   @override
@@ -710,8 +694,7 @@ class _CustomTextFieldWithValueWidgetState
           focusNode: widget.focusNode,
           autocorrect: widget.autocorrect,
           autofillHints: widget.autofillHints,
-          autovalidateMode:
-              widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
+          autovalidateMode: widget.autovalidateMode ?? AutovalidateMode.onUserInteraction,
           cursorColor: widget.cursorColor ?? AppColor.blue,
           cursorHeight: widget.cursorHeight,
           showCursor: widget.showCursor,
@@ -724,11 +707,8 @@ class _CustomTextFieldWithValueWidgetState
           inputFormatters: widget.inputFormatters ??
               [
                 if (widget.isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
-                if (widget.allowedInputPattern != null)
-                  FilteringTextInputFormatter.allow(
-                      widget.allowedInputPattern!),
-                if (widget.deniedInputPattern != null)
-                  FilteringTextInputFormatter.deny(widget.deniedInputPattern!),
+                if (widget.allowedInputPattern != null) FilteringTextInputFormatter.allow(widget.allowedInputPattern!),
+                if (widget.deniedInputPattern != null) FilteringTextInputFormatter.deny(widget.deniedInputPattern!),
               ],
           keyboardType: widget.keyboardType,
           maxLength: widget.maxLength,
@@ -750,9 +730,7 @@ class _CustomTextFieldWithValueWidgetState
             hintText: widget.hintText,
             hintStyle: widget.hintStyle,
             filled: widget.filled,
-            fillColor: widget.readOnly
-                ? widget.disabledColor ?? AppColor.gray
-                : widget.fillColor ?? Colors.transparent,
+            fillColor: widget.readOnly ? widget.disabledColor ?? AppColor.gray : widget.fillColor ?? Colors.transparent,
             /*
             **First scenario:
             contentPadding: add padding before prefix-icon and after suffix-icon
@@ -869,9 +847,7 @@ class _CustomTextFieldWithValueWidgetState
 
   BorderType get fieldBorderType => widget.borderType ?? BorderType.outline;
 
-  Color get fieldBorderColor =>
-      widget.borderColor ?? AppColor.blackModern300Light;
+  Color get fieldBorderColor => widget.borderColor ?? AppColor.blackModern300Light;
 
-  Color get fieldBorderFocusedColor =>
-      widget.borderColor ?? AppColor.primary900Light;
+  Color get fieldBorderFocusedColor => widget.borderColor ?? AppColor.primary900Light;
 }

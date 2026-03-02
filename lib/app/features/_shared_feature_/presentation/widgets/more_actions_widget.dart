@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor;
-import '../../shared_feature_exports.dart'
-    show BottomSheetDialog, CustomIconButtonWidget;
+import '../../shared_feature_exports.dart' show BottomSheetDialog, CustomIconButtonWidget;
 
 class MoreActionsWidget extends StatelessWidget {
   final Widget action;

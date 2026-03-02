@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../../core/services/services_exports.dart'
-    show NavigationService;
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, ContextConversion, WidgetConversion;
-import '../../../shared_feature_exports.dart'
-    show CustomElevatedButtonWidget, DraggableSheetComponent;
+import '../../../../../core/services/services_exports.dart' show NavigationService;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, ContextConversion, WidgetConversion;
+import '../../../shared_feature_exports.dart' show CustomElevatedButtonWidget, DraggableSheetComponent;
 
 class CloseRequestBottomSheetComponent extends StatelessWidget {
   const CloseRequestBottomSheetComponent({super.key});

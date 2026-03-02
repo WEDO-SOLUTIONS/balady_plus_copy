@@ -58,9 +58,8 @@ class ColorCollection {
   ColorCollection({required this.name, required this.modes});
 
   factory ColorCollection.fromJson(Map<String, dynamic> json) {
-    final List<ColorMode> modesList = (json['modes'] as List)
-        .map((mode) => ColorMode.fromJson(mode as Map<String, dynamic>))
-        .toList();
+    final List<ColorMode> modesList =
+        (json['modes'] as List).map((mode) => ColorMode.fromJson(mode as Map<String, dynamic>)).toList();
 
     return ColorCollection(
       name: json['name'] as String,
@@ -82,8 +81,7 @@ class ColorPalette {
 
   factory ColorPalette.fromJson(Map<String, dynamic> json) {
     final List<ColorCollection> collectionsList = (json['collections'] as List)
-        .map((collection) =>
-            ColorCollection.fromJson(collection as Map<String, dynamic>))
+        .map((collection) => ColorCollection.fromJson(collection as Map<String, dynamic>))
         .toList();
 
     return ColorPalette(

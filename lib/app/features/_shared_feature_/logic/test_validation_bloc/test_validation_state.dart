@@ -30,14 +30,11 @@ class TestValidationState extends Equatable {
   });
 
   //! Validators
-  PhoneNumberValidation get phoneNumberValidator =>
-      PhoneNumberValidation.dirty(value: phoneNumber ?? '');
+  PhoneNumberValidation get phoneNumberValidator => PhoneNumberValidation.dirty(value: phoneNumber ?? '');
 
-  EmailValidation get emailValidator =>
-      EmailValidation.dirty(email: email ?? '');
+  EmailValidation get emailValidator => EmailValidation.dirty(email: email ?? '');
 
-  RequiredFieldValidation get startDateValidator =>
-      RequiredFieldValidation.dirty(value: startDate ?? '');
+  RequiredFieldValidation get startDateValidator => RequiredFieldValidation.dirty(value: startDate ?? '');
   DateAfterValidation get endDateValidator => DateAfterValidation.dirty(
         startDate: startDate ?? '',
         endDate: endDate ?? '',
@@ -45,31 +42,22 @@ class TestValidationState extends Equatable {
 
   OptionalFieldValidation get addressValidator =>
       OptionalFieldValidation.dirty(value: isAddress ? address ?? '' : null);
-  RequiredFieldValidation get descriptionValidator =>
-      RequiredFieldValidation.dirty(value: description ?? '');
+  RequiredFieldValidation get descriptionValidator => RequiredFieldValidation.dirty(value: description ?? '');
 
-  RequiredDropDownValidation get cityValidator =>
-      RequiredDropDownValidation.dirty(value: city ?? sl<DropDownItem>());
+  RequiredDropDownValidation get cityValidator => RequiredDropDownValidation.dirty(value: city ?? sl<DropDownItem>());
 
   //! Errors
-  String? get phoneNumberErrorText =>
-      phoneNumber != null ? phoneNumberValidator.error?.message : null;
+  String? get phoneNumberErrorText => phoneNumber != null ? phoneNumberValidator.error?.message : null;
 
-  String? get emailErrorText =>
-      email != null ? emailValidator.error?.message : null;
+  String? get emailErrorText => email != null ? emailValidator.error?.message : null;
 
-  String? get startDateErrorText =>
-      startDate != null ? startDateValidator.error?.message : null;
-  String? get endDateErrorText =>
-      endDate != null ? endDateValidator.error?.message : null;
+  String? get startDateErrorText => startDate != null ? startDateValidator.error?.message : null;
+  String? get endDateErrorText => endDate != null ? endDateValidator.error?.message : null;
 
-  String? get addressErrorText =>
-      address != null ? addressValidator.error?.message : null;
-  String? get descriptionErrorText =>
-      description != null ? descriptionValidator.error?.message : null;
+  String? get addressErrorText => address != null ? addressValidator.error?.message : null;
+  String? get descriptionErrorText => description != null ? descriptionValidator.error?.message : null;
 
-  String? get cityErrorText =>
-      city != null ? cityValidator.error?.message : null;
+  String? get cityErrorText => city != null ? cityValidator.error?.message : null;
 
   bool get isAddress => true;
 

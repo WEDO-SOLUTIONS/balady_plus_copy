@@ -23,8 +23,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
   List<Widget> textActions(BuildContext context) => [
         const SizedBox(height: 10),
         TextButton(
-          onPressed: () =>
-              CommonFunctions.onLogin(isMunicipality: true, mainPage: mainPage),
+          onPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: mainPage),
           child: Text(
             "signInButton".tr(),
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -61,8 +60,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
                           color: Colors.grey,
                           width: 1.0,
                         ),
-                        borderRadius: BorderRadius.circular(
-                            12), // Applies rounded corners
+                        borderRadius: BorderRadius.circular(12), // Applies rounded corners
                       ),
                       width: 40,
                       height: 40,

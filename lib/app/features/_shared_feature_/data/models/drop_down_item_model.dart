@@ -47,16 +47,13 @@ class DropDownItemModel extends DropDownItem {
 
   String toJson() => toMap().toJson();
 
-  factory DropDownItemModel.fromJson(String source) =>
-      DropDownItemModel.fromMap(source.fromJson());
+  factory DropDownItemModel.fromJson(String source) => DropDownItemModel.fromMap(source.fromJson());
 }
 
 class DropDownItemsModel extends DropDownItems {
-  const DropDownItemsModel({required List<DropDownItemModel> items})
-      : super(items: items);
+  const DropDownItemsModel({required List<DropDownItemModel> items}) : super(items: items);
 
-  factory DropDownItemsModel.itemsFromMap(List<dynamic> list) =>
-      DropDownItemsModel(
+  factory DropDownItemsModel.itemsFromMap(List<dynamic> list) => DropDownItemsModel(
         items: list.map((item) => DropDownItemModel.fromMap(item)).toList(),
       );
 }

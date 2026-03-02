@@ -19,13 +19,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
   final Function? onPress;
   final Function? onPrint;
   final Function? procedures;
-  const DetailsHeader(
-      {super.key,
-      this.title,
-      this.onPrint,
-      this.procedures,
-      this.onPress,
-      this.titleWidget});
+  const DetailsHeader({super.key, this.title, this.onPrint, this.procedures, this.onPress, this.titleWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -84,11 +78,8 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (onPrint != null)
-                  GeneralIcon(onTap: () => onPrint!(), icon: IconPath.printer),
-                if (procedures != null)
-                  GeneralIcon(
-                      onTap: () => procedures!(), icon: IconPath.settings),
+                if (onPrint != null) GeneralIcon(onTap: () => onPrint!(), icon: IconPath.printer),
+                if (procedures != null) GeneralIcon(onTap: () => procedures!(), icon: IconPath.settings),
               ],
             ),
           )

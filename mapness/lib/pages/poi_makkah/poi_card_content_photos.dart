@@ -1,7 +1,6 @@
 part of 'poi_makkah_widget_page.dart';
 
-class _MakkahPoiPhotosHeaderDummy
-    extends SheetAnimatedWidget<PoiCardBottomSheetState> {
+class _MakkahPoiPhotosHeaderDummy extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final int objectId;
   final List<String> photoUrls;
 
@@ -33,14 +32,12 @@ class _MakkahPoiPhotosHeaderDummy
     final showPhotos = !photosEmpty || photosAreLoading;
 
     return Directionality(
-      textDirection:
-          photosEmpty ? TextDirection.ltr : Directionality.of(context),
+      textDirection: photosEmpty ? TextDirection.ltr : Directionality.of(context),
       child: Opacity(
         opacity: _resolveOpacity(state, interpolation),
         child: Align(
           heightFactor: topHeaderHeightTransform,
-          alignment:
-              photosEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
+          alignment: photosEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
           child: Padding(
             padding: _topHeaderPaddingDelegate(
               state,
@@ -72,8 +69,7 @@ class _MakkahPoiPhotosHeaderDummy
     final opacity = switch (state) {
       PoiCardBottomSheetState.hidden => Curves.easeIn.transform(interpolation),
       PoiCardBottomSheetState.halfOpen => 1.0,
-      PoiCardBottomSheetState.open =>
-        1 - Curves.easeIn.transform(interpolation),
+      PoiCardBottomSheetState.open => 1 - Curves.easeIn.transform(interpolation),
       PoiCardBottomSheetState.expanded => 0.0,
     };
     return opacity.clamp(0, 1);
@@ -85,8 +81,7 @@ class _MakkahPoiPhotosHeaderDummy
     required bool photosEmpty,
     required bool photosAreLoading,
   }) {
-    if (state == PoiCardBottomSheetState.hidden ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.hidden || state == PoiCardBottomSheetState.expanded) {
       return HeaderComponent.photosMinHeight * interpolation;
     }
 
@@ -112,8 +107,7 @@ class _MakkahPoiPhotosHeaderDummy
     double interpolation, {
     bool showPhotos = true,
   }) {
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return EdgeInsets.zero;
     }
     if (state == PoiCardBottomSheetState.hidden) {
@@ -191,11 +185,8 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: url,
           fit: BoxFit.cover,
-          placeholder:
-              (_, __) => ColoredBox(color: context.colors.backgroundSurface3),
-          errorWidget:
-              (_, __, ___) =>
-                  ColoredBox(color: context.colors.backgroundSurface3),
+          placeholder: (_, __) => ColoredBox(color: context.colors.backgroundSurface3),
+          errorWidget: (_, __, ___) => ColoredBox(color: context.colors.backgroundSurface3),
         ),
       );
     }
@@ -212,37 +203,33 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
 
     if (photoUrls.length <= 3) {
       return LayoutBuilder(
-        builder:
-            (context, constraints) => PoiPhotosStories(
-              itemCount: photoUrls.length,
-              state: state,
-              interpolation: interpolation,
-              builder:
-                  (scrollController, physics) => ListView.separated(
-                    controller: scrollController,
-                    scrollDirection: Axis.horizontal,
-                    key: ValueKey(photoUrls.length),
-                    padding: EdgeInsets.symmetric(horizontal: padding),
-                    itemBuilder:
-                        (context, index) => ClipRRect(
-                          borderRadius: borderRadius,
-                          child: AspectRatio(
-                            aspectRatio: _calculateFewAspectRatio(
-                              width: constraints.maxWidth,
-                              height: constraints.maxHeight,
-                              itemCount: photoUrls.length,
-                              padding: padding,
-                              separatorWidth: separatorWidth,
-                            ),
-                            child: itemBuilder(context, index),
-                          ),
-                        ),
-                    itemCount: photoUrls.length,
-                    physics: physics,
-                    separatorBuilder:
-                        (_, __) => SizedBox(width: separatorWidth),
-                  ),
+        builder: (context, constraints) => PoiPhotosStories(
+          itemCount: photoUrls.length,
+          state: state,
+          interpolation: interpolation,
+          builder: (scrollController, physics) => ListView.separated(
+            controller: scrollController,
+            scrollDirection: Axis.horizontal,
+            key: ValueKey(photoUrls.length),
+            padding: EdgeInsets.symmetric(horizontal: padding),
+            itemBuilder: (context, index) => ClipRRect(
+              borderRadius: borderRadius,
+              child: AspectRatio(
+                aspectRatio: _calculateFewAspectRatio(
+                  width: constraints.maxWidth,
+                  height: constraints.maxHeight,
+                  itemCount: photoUrls.length,
+                  padding: padding,
+                  separatorWidth: separatorWidth,
+                ),
+                child: itemBuilder(context, index),
+              ),
             ),
+            itemCount: photoUrls.length,
+            physics: physics,
+            separatorBuilder: (_, __) => SizedBox(width: separatorWidth),
+          ),
+        ),
       );
     }
 
@@ -250,28 +237,26 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
       itemCount: photoUrls.length,
       state: state,
       interpolation: interpolation,
-      builder:
-          (scrollController, physics) => ListView.separated(
-            controller: scrollController,
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            itemBuilder:
-                (context, index) => ClipRRect(
-                  borderRadius: borderRadius,
-                  child: AspectRatio(
-                    key: ValueKey(photoUrls.length),
-                    aspectRatio: _getManyAspectRatio(
-                      context: context,
-                      state: state,
-                      interpolation: interpolation,
-                    ),
-                    child: itemBuilder(context, index),
-                  ),
-                ),
-            itemCount: min(photoUrls.length, 10),
-            scrollDirection: Axis.horizontal,
-            physics: physics,
-            separatorBuilder: (_, __) => SizedBox(width: separatorWidth),
+      builder: (scrollController, physics) => ListView.separated(
+        controller: scrollController,
+        padding: EdgeInsets.symmetric(horizontal: padding),
+        itemBuilder: (context, index) => ClipRRect(
+          borderRadius: borderRadius,
+          child: AspectRatio(
+            key: ValueKey(photoUrls.length),
+            aspectRatio: _getManyAspectRatio(
+              context: context,
+              state: state,
+              interpolation: interpolation,
+            ),
+            child: itemBuilder(context, index),
           ),
+        ),
+        itemCount: min(photoUrls.length, 10),
+        scrollDirection: Axis.horizontal,
+        physics: physics,
+        separatorBuilder: (_, __) => SizedBox(width: separatorWidth),
+      ),
     );
   }
 
@@ -282,22 +267,15 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
     required double padding,
     required double separatorWidth,
   }) {
-    var aspectRatio =
-        (width - 2 * padding - separatorWidth * (itemCount - 1)) / height;
+    var aspectRatio = (width - 2 * padding - separatorWidth * (itemCount - 1)) / height;
     if (state == PoiCardBottomSheetState.hidden) {
-      aspectRatio =
-          ((width - 2 * padding - separatorWidth * (itemCount - 1)) /
-              itemCount) /
-          height;
-    } else if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+      aspectRatio = ((width - 2 * padding - separatorWidth * (itemCount - 1)) / itemCount) / height;
+    } else if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       aspectRatio = width / _makkahPhotosMaxHeight;
     } else {
       final paddings = 2 * padding + separatorWidth * (itemCount - 1);
       final interpolation = 1 - this.interpolation;
-      aspectRatio =
-          (width - paddings * interpolation) /
-          (1 + (itemCount - 1) * interpolation);
+      aspectRatio = (width - paddings * interpolation) / (1 + (itemCount - 1) * interpolation);
       aspectRatio = aspectRatio / height;
     }
 
@@ -319,8 +297,7 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
     final width = size.width;
     final finalAspectRatio = width / _makkahPhotosMaxHeight;
 
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return finalAspectRatio;
     }
 
@@ -339,13 +316,10 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
       return initialValue;
     }
 
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return expandedValue ?? finalValue;
     }
 
-    return (finalValue - initialValue) *
-            (curve?.transform(interpolation) ?? interpolation) +
-        initialValue;
+    return (finalValue - initialValue) * (curve?.transform(interpolation) ?? interpolation) + initialValue;
   }
 }

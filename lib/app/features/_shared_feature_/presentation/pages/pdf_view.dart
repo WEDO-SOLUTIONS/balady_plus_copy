@@ -49,8 +49,7 @@ class _PDFViewerState extends State<PDFViewer> {
             child: Align(
               alignment: Alignment.topRight,
               child: Container(
-                margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 10, right: 16),
+                margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, right: 16),
                 child: Image.asset(
                   IconPath.qrWhiteCloseIcon,
                   height: 24.0,
@@ -77,8 +76,7 @@ class FullImageView extends StatelessWidget {
       appBar: DefaultAppBarWidget(
         title: ("lbl_attachments").tr(),
       ),
-      body: Center(
-          child: Image.memory(base64Decode(imageBase64), fit: BoxFit.cover)),
+      body: Center(child: Image.memory(base64Decode(imageBase64), fit: BoxFit.cover)),
     );
   }
 }
@@ -86,8 +84,7 @@ class FullImageView extends StatelessWidget {
 class FullImageViewBytes extends StatelessWidget {
   final Uint8List imageBase64;
 
-  const FullImageViewBytes({Key? key, required this.imageBase64})
-      : super(key: key);
+  const FullImageViewBytes({Key? key, required this.imageBase64}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -232,14 +232,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-    icon: SaudiNationalDay.isNow()
-        ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
-        : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
-    text: '$objectCount',
-    textStyle: MarkerTextStyleMessage(
-      textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
-    ),
-  );
+        icon: SaudiNationalDay.isNow()
+            ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
+            : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
+        text: '$objectCount',
+        textStyle: MarkerTextStyleMessage(
+          textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+        ),
+      );
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {

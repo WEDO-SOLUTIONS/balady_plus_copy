@@ -13,8 +13,7 @@ class FavSearchSectionShimmerLoadingWidget extends StatelessWidget {
 
     final double horizontalPadding = context.screenWidth * 0.02;
     return ListView.separated(
-        separatorBuilder: (context, index) =>
-            SizedBox(height: context.screenHeight * 0.02),
+        separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.02),
         scrollDirection: Axis.vertical,
         itemCount: 10,
         itemBuilder: (context, index) {

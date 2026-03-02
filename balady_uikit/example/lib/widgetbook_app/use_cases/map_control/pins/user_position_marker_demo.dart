@@ -39,11 +39,12 @@ class UserPositionMarkerDemo extends StatelessWidget {
               package: packageName,
               fit: BoxFit.scaleDown,
             ),
-            if (area) SvgPicture.asset(
-              Assets.icons.svg.mapControls.backArea.path,
-              package: packageName,
-              fit: BoxFit.scaleDown,
-            ),
+            if (area)
+              SvgPicture.asset(
+                Assets.icons.svg.mapControls.backArea.path,
+                package: packageName,
+                fit: BoxFit.scaleDown,
+              ),
           ],
         );
 }

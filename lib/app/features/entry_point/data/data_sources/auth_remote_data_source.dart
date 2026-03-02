@@ -47,7 +47,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     authorizationEndpoint: '${RemoteConfig.ssoUrl}/connect/authorize',
     tokenEndpoint: '${RemoteConfig.ssoUrl}/connect/token',
     endSessionEndpoint: "${RemoteConfig.ssoUrl}/connect/endsession",
-  );//https://ssoappdev.momra.gov.sa/connect/endsession
+  ); //https://ssoappdev.momra.gov.sa/connect/endsession
 
   EntryPointRemoteDataSourceImpl({required this.webService});
 
@@ -59,7 +59,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       print("ssoLoginUrl:${RemoteConfig.ssoLoginUrl}");
       print("ssoLoginUrl:${RemoteConfig.ssoLoginUrl}");
       print("ssoSecret:${RemoteConfig.ssoSecret}");
-
 
       final request = AuthorizationTokenRequest(
         RemoteConfig.ssoClient,
@@ -159,7 +158,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future<String> logout() async {
     Response? response;
     try {
-      if(sl<EntryPointCubit>().state.token != null) {
+      if (sl<EntryPointCubit>().state.token != null) {
         response = await webService.dio.get(
           "${RemoteConfig.ssoUrl}/connect/endsession",
           queryParameters: {
@@ -184,11 +183,12 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       throw serverException(ex, response);
     }
   }
+
   @override
   Future<bool> endSession() async {
     try {
       String? idToken = await sharedPrefs.getIsNafathLogin();
-      if(idToken != null) {
+      if (idToken != null) {
         EndSessionRequest endSessionRequest = EndSessionRequest(
           idTokenHint: idToken,
           postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
@@ -368,8 +368,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
   // HANDLERS
 
-
-
   @override
   Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params}) async {
     Response? response;
@@ -404,7 +402,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       throw serverException(ex, response);
     }
   }
-
 
   Exception serverException(Object ex, Response? response) => ServerException(
         "errors_server_error_2".tr(),

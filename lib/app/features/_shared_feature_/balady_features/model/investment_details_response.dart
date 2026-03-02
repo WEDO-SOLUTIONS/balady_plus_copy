@@ -15,12 +15,10 @@ class InvestmentDetailsResponse {
   List<StatusDetail>? statusDetails;
   Data? data;
 
-  factory InvestmentDetailsResponse.fromJson(Map<String, dynamic> json) =>
-      InvestmentDetailsResponse(
+  factory InvestmentDetailsResponse.fromJson(Map<String, dynamic> json) => InvestmentDetailsResponse(
         statusDetails: json["statusDetails"] == null
             ? null
-            : List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+            : List<StatusDetail>.from(json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 }
@@ -34,8 +32,7 @@ class RequiredAttachmentCategory {
   String? id;
   String? name;
 
-  factory RequiredAttachmentCategory.fromJson(Map<String, dynamic> json) =>
-      RequiredAttachmentCategory(
+  factory RequiredAttachmentCategory.fromJson(Map<String, dynamic> json) => RequiredAttachmentCategory(
         id: json["ID"],
         name: json["Name"],
       );
@@ -200,9 +197,7 @@ class Result {
 
   factory Result.fromJson(Map<String, dynamic> json) {
     Result r = Result(
-        appendixList: json["AppendixList"] == null
-            ? null
-            : List<dynamic>.from(json["AppendixList"].map((x) => x)),
+        appendixList: json["AppendixList"] == null ? null : List<dynamic>.from(json["AppendixList"].map((x) => x)),
         announcementDate: json["AnnouncementDate"],
         message: json["message"],
         mainActivityId: json["MainActivityID"],
@@ -223,8 +218,7 @@ class Result {
         offeringTime: json["OfferingTime"],
         opportunityList: json["OpportunityList"] == null
             ? null
-            : List<OpportunityList>.from(json["OpportunityList"]
-                .map((x) => OpportunityList.fromJson(x))),
+            : List<OpportunityList>.from(json["OpportunityList"].map((x) => OpportunityList.fromJson(x))),
         //  offeringPeriod: json["OfferingPeriod"],
         envelopeOpeningLocation: json["EnvelopeOpeningLocation"],
         subMunicipalityId: json["SubMunicipalityID"],
@@ -235,25 +229,20 @@ class Result {
         opportunityDescription: json["OpportunityDescription"],
         termsSpecDocument: json["TermsSpecDocument"] == null
             ? null
-            : List<ContractTemplate>.from(json["TermsSpecDocument"]
-                .map((x) => ContractTemplate.fromJson(x))),
+            : List<ContractTemplate>.from(json["TermsSpecDocument"].map((x) => ContractTemplate.fromJson(x))),
         opportunityNumber: json["OpportunityNumber"],
-        documentValue: json["DocumentValue"] != null
-            ? json["DocumentValue"].toDouble()
-            : null,
+        documentValue: json["DocumentValue"] != null ? json["DocumentValue"].toDouble() : null,
         contractTemplate: json["ContractTemplate"] == null
             ? null
-            : List<ContractTemplate>.from(json["ContractTemplate"]
-                .map((x) => ContractTemplate.fromJson(x))),
+            : List<ContractTemplate>.from(json["ContractTemplate"].map((x) => ContractTemplate.fromJson(x))),
         opportunityType: json["OpportunityType"],
         requiredAttachmentCategoryList: json["RequiredAttachmentCategoryList"] == null
             ? null
-            : List<RequiredAttachmentCategoryList>.from(json["RequiredAttachmentCategoryList"]
-                .map((x) => RequiredAttachmentCategoryList.fromJson(x))),
+            : List<RequiredAttachmentCategoryList>.from(
+                json["RequiredAttachmentCategoryList"].map((x) => RequiredAttachmentCategoryList.fromJson(x))),
         paymentType: json["PaymentType"],
-        preparationPeriodPercentage: json["PreparationPeriodPercentage"] != null
-            ? json["PreparationPeriodPercentage"].toDouble()
-            : null,
+        preparationPeriodPercentage:
+            json["PreparationPeriodPercentage"] != null ? json["PreparationPeriodPercentage"].toDouble() : null,
         sadadStatus: json["SadadStatus"],
         purchaseDocumentStatus: json["PurchaseDocumentStatus"],
         caseStatusEN: json["CaseStatusEN"],
@@ -267,14 +256,14 @@ class Result {
         isEntityOpportunity: json["IsEntityOpportunity"],
         regions: json["Regions"],
         applyAnnualRaise: json["ApplyAnnualRaise"],
-        yearsForAnnualRaise:
-            json["YearsForAnnualRaise"] != null ? json["YearsForAnnualRaise"] : null,
+        yearsForAnnualRaise: json["YearsForAnnualRaise"] != null ? json["YearsForAnnualRaise"] : null,
         annualRaisePercentage: json["AnnualRaisePercentage"] != null ? json["AnnualRaisePercentage"].toDouble() : null,
         isBillingApplicableForEntityOpportunity: json["IsBillingApplicableForEntityOpportunity"],
         bankWarrantyType: json["BankWarrantyType"],
         deductInitialyWarrantyFirstYear: json["DeductInitialyWarrantyFirstYear"],
         isBiddingNotAllowed: json["IsBiddingNotAllowed"],
-        initialWarrantyPercentage: json["InitialWarrantyPercentage"] != null ? json["InitialWarrantyPercentage"].toDouble() : null,
+        initialWarrantyPercentage:
+            json["InitialWarrantyPercentage"] != null ? json["InitialWarrantyPercentage"].toDouble() : null,
         rfpHasPrice: json["RFPHasPrice"],
         bidEndDateTime: json["BidEndDateTime"],
         queryEndDateTime: json["QueryEndDateTime"],
@@ -285,8 +274,7 @@ class Result {
         totalContractValue: json["TotalContractValue"] != null ? json["TotalContractValue"].toDouble() : null);
     r.allLocations = getAllLocations(r.opportunityList ?? []);
 
-    r.contractTemplateAndTerms =
-        getContractTemplate(r.contractTemplate, r.termsSpecDocument);
+    r.contractTemplateAndTerms = getContractTemplate(r.contractTemplate, r.termsSpecDocument);
 
     return r;
   }
@@ -377,8 +365,7 @@ class Result {
   }
 
   DateTime? getEnvelopOpeningDate() {
-    if (envelopOpeningDate != null)
-      return DateTime.tryParse(envelopOpeningDate!);
+    if (envelopOpeningDate != null) return DateTime.tryParse(envelopOpeningDate!);
     return null;
   }
 
@@ -386,20 +373,18 @@ class Result {
     String date = "";
     try {
       if (bidEndDate != null) {
-        date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-            .format(DateTime.parse(bidEndDate!));
+        date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(DateTime.parse(bidEndDate!));
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-    if (CommonFunctions.isAppAR)
-      date = CommonFunctions.replaceArabicNumberWithEnglish(date);
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    if (CommonFunctions.isAppAR) date = CommonFunctions.replaceArabicNumberWithEnglish(date);
 
     return date;
   }
@@ -425,14 +410,14 @@ class Result {
         }
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
 
     return paymentType ?? "";
   }
@@ -457,15 +442,13 @@ class Result {
     for (OpportunityList location in opportunityList) {
       int maxLength = 0;
       if (location.coOrdinatesList != null) {
-        maxLength = location.coOrdinatesList!.length > 100
-            ? 100
-            : location.coOrdinatesList!.length;
+        maxLength = location.coOrdinatesList!.length > 100 ? 100 : location.coOrdinatesList!.length;
       }
       for (int i = 0; i < maxLength; i++) {
         double? xCoordinate = location.coOrdinatesList![i].xCoordinate;
         double? yCoordinate = location.coOrdinatesList![i].yCoordinate;
         if (xCoordinate != null && yCoordinate != null) {
-          locations.add(LatLng(latitude:yCoordinate, longitude:xCoordinate));
+          locations.add(LatLng(latitude: yCoordinate, longitude: xCoordinate));
         }
       }
     }
@@ -486,14 +469,10 @@ class Result {
 
   String getContractDurationYearsAndMonth() {
     String contract = "";
-    if (contractDuration != null &&
-        contractDuration!.isNotEmpty &&
-        contractDuration != "0") {
+    if (contractDuration != null && contractDuration!.isNotEmpty && contractDuration != "0") {
       contract += "$contractDuration ${("years").tr()}";
     }
-    if (contractDurationMonths != null &&
-        contractDurationMonths!.isNotEmpty &&
-        contractDurationMonths != "0") {
+    if (contractDurationMonths != null && contractDurationMonths!.isNotEmpty && contractDurationMonths != "0") {
       if (contract.isNotEmpty) contract += " ";
       contract += "$contractDurationMonths ${("months").tr()}";
     }
@@ -502,15 +481,12 @@ class Result {
   }
 
   static List<ContractTemplate> getContractTemplate(
-      List<ContractTemplate>? contractTemplate,
-      List<ContractTemplate>? termsSpecDocument) {
+      List<ContractTemplate>? contractTemplate, List<ContractTemplate>? termsSpecDocument) {
     List<ContractTemplate> contractTemplateAndTerms = [];
 
     List<ContractTemplate> list1 = contractTemplate != null
         ? contractTemplate
-            .where((element) =>
-                element.pxLinkedRefTo != null &&
-                element.pxLinkedRefTo!.isNotEmpty)
+            .where((element) => element.pxLinkedRefTo != null && element.pxLinkedRefTo!.isNotEmpty)
             .toList()
         : [];
     for (int i = 0; i < list1.length; i++) {
@@ -524,9 +500,7 @@ class Result {
 
     List<ContractTemplate> list2 = termsSpecDocument != null
         ? termsSpecDocument
-            .where((element) =>
-                element.pxLinkedRefTo != null &&
-                element.pxLinkedRefTo!.isNotEmpty)
+            .where((element) => element.pxLinkedRefTo != null && element.pxLinkedRefTo!.isNotEmpty)
             .toList()
         : [];
 
@@ -575,17 +549,13 @@ class Result {
   }
 
   String getAdminMuncipalityOrCity() {
-    return getEntityOpportunity()
-        ? (getCitiesOrRegions().firstOrNull ?? "")
-        : (subMunicipality ?? "");
+    return getEntityOpportunity() ? (getCitiesOrRegions().firstOrNull ?? "") : (subMunicipality ?? "");
     //return cities?.split(",").first ?? ;
     //   return getEntityOpportunity() ? (city ?? "") : (municipality ?? "");
   }
 
   String getEntityImage() {
-    return getEntityOpportunity()
-        ? getEntityImagePath(entityID)
-        : ("" + "momra.png"); //MM
+    return getEntityOpportunity() ? getEntityImagePath(entityID) : ("" + "momra.png"); //MM
   }
 
   String? getOfferType() {
@@ -624,8 +594,7 @@ class ContractTemplate {
   String? pxLinkedRefFrom;
   String? pyMemo;
 
-  factory ContractTemplate.fromJson(Map<String, dynamic> json) =>
-      ContractTemplate(
+  factory ContractTemplate.fromJson(Map<String, dynamic> json) => ContractTemplate(
         pyCategory: json["pyCategory"],
         pxLinkedRefTo: json["pxLinkedRefTo"],
         pxLinkedRefFrom: json["pxLinkedRefFrom"],
@@ -661,8 +630,7 @@ class RequiredAttachmentCategoryList {
   bool? isMandatory;
 
   factory RequiredAttachmentCategoryList.fromJson(Map<String, dynamic> json) =>
-      RequiredAttachmentCategoryList(
-          id: json["ID"], name: json["Name"], isMandatory: json["IsMandatory"]);
+      RequiredAttachmentCategoryList(id: json["ID"], name: json["Name"], isMandatory: json["IsMandatory"]);
 }
 
 class OpportunityList {
@@ -690,8 +658,7 @@ class OpportunityList {
   String? landNumber;
   String? orgSketchNumber;
 
-  factory OpportunityList.fromJson(Map<String, dynamic> json) =>
-      OpportunityList(
+  factory OpportunityList.fromJson(Map<String, dynamic> json) => OpportunityList(
         sourceCaseKey: json["SourceCaseKey"],
         sourceCaseId: json["SourceCaseID"],
         siteAddress: json["SiteAddress"],
@@ -700,8 +667,7 @@ class OpportunityList {
         siteNumber: json["SiteNumber"],
         coOrdinatesList: json["CoOrdinatesList"] == null
             ? null
-            : List<CoOrdinatesList>.from(json["CoOrdinatesList"]
-                .map((x) => CoOrdinatesList.fromJson(x))),
+            : List<CoOrdinatesList>.from(json["CoOrdinatesList"].map((x) => CoOrdinatesList.fromJson(x))),
         district: json["District"],
         landNumber: json["LandNumber"],
         orgSketchNumber: json["OrgSketchNumber"],
@@ -714,9 +680,7 @@ class OpportunityList {
         "SiteArea": siteArea,
         "Street": street,
         "SiteNumber": siteNumber,
-        "CoOrdinatesList": coOrdinatesList == null
-            ? null
-            : List<dynamic>.from(coOrdinatesList!.map((x) => x.toJson())),
+        "CoOrdinatesList": coOrdinatesList == null ? null : List<dynamic>.from(coOrdinatesList!.map((x) => x.toJson())),
         "District": district,
         "LandNumber": landNumber,
         "OrgSketchNumber": orgSketchNumber,
@@ -741,14 +705,10 @@ class CoOrdinatesList {
   String? pzInsKey;
   double? yCoordinate;
 
-  factory CoOrdinatesList.fromJson(Map<String, dynamic> json) =>
-      CoOrdinatesList(
-        xCoordinate:
-            json["XCoordinate"] != null ? json["XCoordinate"].toDouble() : null,
+  factory CoOrdinatesList.fromJson(Map<String, dynamic> json) => CoOrdinatesList(
+        xCoordinate: json["XCoordinate"] != null ? json["XCoordinate"].toDouble() : null,
         pzInsKey: json["pzInsKey"],
-        yCoordinate: json["YCoordinate"] != null
-            ? json["YCoordinate"].toDouble()
-            : json["YCoordinate"],
+        yCoordinate: json["YCoordinate"] != null ? json["YCoordinate"].toDouble() : json["YCoordinate"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -758,7 +718,7 @@ class CoOrdinatesList {
       };
   LatLng? getLocation() {
     if (xCoordinate != null && yCoordinate != null) {
-      return LatLng(latitude:yCoordinate!, longitude:xCoordinate!);
+      return LatLng(latitude: yCoordinate!, longitude: xCoordinate!);
     }
 
     return null;
@@ -780,18 +740,11 @@ String getFormattedDateAndTimeV2(String dateStr) {
       dateAndTime = DateTime.parse(dateWithT).toLocal();
     }
 
-    String date = DateFormat.yMMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-        .format(dateAndTime!)
-        .toString();
+    String date = DateFormat.yMMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(dateAndTime!).toString();
 
-    String time =
-        DateFormat("h:mm a", CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
-            .format(dateAndTime)
-            .toString();
+    String time = DateFormat("h:mm a", CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(dateAndTime).toString();
     if (CommonFunctions.isAppAR) {
-      time = time
-          .replaceAll("ص", ("am_full").tr())
-          .replaceAll("م", ("pm_full").tr());
+      time = time.replaceAll("ص", ("am_full").tr()).replaceAll("م", ("pm_full").tr());
     }
     formmatedDateAndTime = date + "  |  " + time;
   } catch (error, stackTrace) {
@@ -804,7 +757,6 @@ String getFormattedDateAndTimeV2(String dateStr) {
     );
   }
   if (CommonFunctions.isAppAR)
-    formmatedDateAndTime =
-        CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
+    formmatedDateAndTime = CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
   return formmatedDateAndTime;
 }

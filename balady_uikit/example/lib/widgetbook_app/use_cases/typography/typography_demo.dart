@@ -52,8 +52,7 @@ enum TextStylesDemo {
 class _TypographyTestState extends State<TypographyTest> {
   @override
   Widget build(BuildContext context) {
-    final stylesKnob = context.knobs
-        .list(label: 'Text Styles', options: TextStylesDemo.values);
+    final stylesKnob = context.knobs.list(label: 'Text Styles', options: TextStylesDemo.values);
     final mapOfStyles = {
       TextStylesDemo.bodyLargeMedium: context.textStyles.bodyLargeMedium,
       TextStylesDemo.bodyLargeRegular: context.textStyles.bodyLargeRegular,
@@ -64,21 +63,14 @@ class _TypographyTestState extends State<TypographyTest> {
       TextStylesDemo.buttonL: context.textStyles.buttonL,
       TextStylesDemo.buttonM: context.textStyles.buttonM,
       TextStylesDemo.captionLargeMedium: context.textStyles.captionLargeMedium,
-      TextStylesDemo.captionLargeRegular:
-          context.textStyles.captionLargeRegular,
-      TextStylesDemo.captionLargeSemiBold:
-          context.textStyles.captionLargeSemiBold,
-      TextStylesDemo.captionMediumMedium:
-          context.textStyles.captionMediumMedium,
-      TextStylesDemo.captionMediumRegular:
-          context.textStyles.captionMediumRegular,
-      TextStylesDemo.captionMediumSemiBold:
-          context.textStyles.captionMediumSemiBold,
+      TextStylesDemo.captionLargeRegular: context.textStyles.captionLargeRegular,
+      TextStylesDemo.captionLargeSemiBold: context.textStyles.captionLargeSemiBold,
+      TextStylesDemo.captionMediumMedium: context.textStyles.captionMediumMedium,
+      TextStylesDemo.captionMediumRegular: context.textStyles.captionMediumRegular,
+      TextStylesDemo.captionMediumSemiBold: context.textStyles.captionMediumSemiBold,
       TextStylesDemo.captionSmallMedium: context.textStyles.captionSmallMedium,
-      TextStylesDemo.captionSmallRegular:
-          context.textStyles.captionSmallRegular,
-      TextStylesDemo.captionSmallSemiBold:
-          context.textStyles.captionSmallSemiBold,
+      TextStylesDemo.captionSmallRegular: context.textStyles.captionSmallRegular,
+      TextStylesDemo.captionSmallSemiBold: context.textStyles.captionSmallSemiBold,
       TextStylesDemo.h1Medium: context.textStyles.h1Medium,
       TextStylesDemo.h1SemiBold: context.textStyles.h1SemiBold,
       TextStylesDemo.h2Medium: context.textStyles.h2Medium,
@@ -94,8 +86,7 @@ class _TypographyTestState extends State<TypographyTest> {
         initialValue: isAr
             ? 'السعادة البشرية، فلا أحد يرفض أو يكره أو يتجنب الشعور بالسعادة، ولكن بفضل هؤ'
             : 'Fox jumps over the lazy dog and runs away. 1234567890');
-    final children = mapOfStyles.entries
-        .map((e) => fontContent(e.key.name, e.value, context, text));
+    final children = mapOfStyles.entries.map((e) => fontContent(e.key.name, e.value, context, text));
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -144,32 +135,27 @@ class _TypographyTestState extends State<TypographyTest> {
         const SizedBox(height: 4),
         Text(
           'Name: $name',
-          style: context.textStyles.bodySmallMedium
-              .copyWith(color: context.colors.foregroundSoft),
+          style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
         ),
         const SizedBox(height: 4),
         Text(
           'Font weight: ${textStyle.fontWeight?.value}',
-          style: context.textStyles.bodySmallMedium
-              .copyWith(color: context.colors.foregroundSoft),
+          style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
         ),
         const SizedBox(height: 4),
         Text(
           'Font size: ${textStyle.fontSize}',
-          style: context.textStyles.bodySmallMedium
-              .copyWith(color: context.colors.foregroundSoft),
+          style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
         ),
         const SizedBox(height: 4),
         Text(
           'Line height: ${textStyle.height?.toStringAsFixed(2)}',
-          style: context.textStyles.bodySmallMedium
-              .copyWith(color: context.colors.foregroundSoft),
+          style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
         ),
         const SizedBox(height: 4),
         Text(
           'Letter spacing: ${textStyle.letterSpacing?.toStringAsFixed(0)}',
-          style: context.textStyles.bodySmallMedium
-              .copyWith(color: context.colors.foregroundSoft),
+          style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
         ),
         const SizedBox(height: 32),
       ],

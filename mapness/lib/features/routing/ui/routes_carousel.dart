@@ -34,15 +34,15 @@ class RoutesCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) => _RoutesCarousel(
-      points: points,
-      startNavigation: startNavigation,
-      biggestWidth: constraints.biggest.width,
-      navType: navType,
-      publicTransportVisibility: publicTransportVisibility,
-      routes: routes,
-    ),
-  );
+        builder: (context, constraints) => _RoutesCarousel(
+          points: points,
+          startNavigation: startNavigation,
+          biggestWidth: constraints.biggest.width,
+          navType: navType,
+          publicTransportVisibility: publicTransportVisibility,
+          routes: routes,
+        ),
+      );
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
@@ -79,15 +79,15 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
   @override
   Widget build(BuildContext context) => widgets.RoutesCarousel(
-    navType: widget.navType,
-    pageController: _pageController,
-    routes: widget.routes,
-    onActiveChanged: _onActiveChanged,
-    refresh: _refresh,
-    points: widget.points,
-    startNavigation: _startNavigation,
-    publicTransportVisibility: widget.publicTransportVisibility,
-  );
+        navType: widget.navType,
+        pageController: _pageController,
+        routes: widget.routes,
+        onActiveChanged: _onActiveChanged,
+        refresh: _refresh,
+        points: widget.points,
+        startNavigation: _startNavigation,
+        publicTransportVisibility: widget.publicTransportVisibility,
+      );
 
   void _onActiveChanged(int index) {
     if (_animating) {
@@ -134,9 +134,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         ? finishPoint!.etaPoint
         : EtaRoutePoint(lat: finishLocation.latitude, lon: finishLocation.longitude, label: finishPoint?.label);
 
-    ref
-        .read(etaRouteInfoProvider.notifier)
-        .setRoute(
+    ref.read(etaRouteInfoProvider.notifier).setRoute(
           eta.EtaRoute(
             startPoint: startPointEta,
             endPoint: finishPointEta,

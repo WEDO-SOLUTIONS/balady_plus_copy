@@ -2,10 +2,8 @@ import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, CommonFunctions;
-import '../../../shared_feature_exports.dart'
-    show CustomVerticalSpace, CustomTextWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, CommonFunctions;
+import '../../../shared_feature_exports.dart' show CustomVerticalSpace, CustomTextWidget;
 
 class CustomRadioButtonWidget extends StatelessWidget {
   final double height;
@@ -75,9 +73,7 @@ class CustomRadioButtonWidget extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: GeneralKey.semiMediumPadding),
           decoration: BoxDecoration(
             border: Border.all(
-              color: (isSelected || radioGroupValue == radioValue)
-                  ? borderSelectedColor
-                  : borderColor,
+              color: (isSelected || radioGroupValue == radioValue) ? borderSelectedColor : borderColor,
             ),
             borderRadius: BorderRadius.circular(borderRadius),
           ),
@@ -98,19 +94,13 @@ class CustomRadioButtonWidget extends StatelessWidget {
             leading: _RadioWidget(
               width: radioWidth,
               height: radioHeight,
-              color: (isSelected || radioGroupValue == radioValue)
-                  ? radioSelectedColor
-                  : radioUnSelectedColor,
-              borderColor: (isSelected || radioGroupValue == radioValue)
-                  ? radioSelectedColor
-                  : _unselectedBorderColor,
+              color: (isSelected || radioGroupValue == radioValue) ? radioSelectedColor : radioUnSelectedColor,
+              borderColor: (isSelected || radioGroupValue == radioValue) ? radioSelectedColor : _unselectedBorderColor,
             ),
             title: Container(
               // color: Colors.blue,
               height: radioHeight,
-              alignment: CommonFunctions.isAppAR
-                  ? Alignment.centerRight
-                  : Alignment.centerLeft,
+              alignment: CommonFunctions.isAppAR ? Alignment.centerRight : Alignment.centerLeft,
               child: CustomTextWidget(
                 title,
                 fontWeight: titleFontWeight,
@@ -248,9 +238,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                       title,
                       fontSize: textSize,
                       fontWeight: AppFontWeight.medium,
-                      fontColor: isDisabled == true
-                          ? AppColor.warmGrey2
-                          : AppColor.black,
+                      fontColor: isDisabled == true ? AppColor.warmGrey2 : AppColor.black,
                       maxLines: 4,
                       textAlign: TextAlign.start,
                     ),
@@ -292,11 +280,7 @@ class CustomRadioButtonWithoutDecoration extends StatelessWidget {
   final Function onChange;
 
   const CustomRadioButtonWithoutDecoration(
-      {Key? key,
-      required this.title,
-      required this.value,
-      required this.currentSelected,
-      required this.onChange})
+      {Key? key, required this.title, required this.value, required this.currentSelected, required this.onChange})
       : super(key: key);
 
   @override

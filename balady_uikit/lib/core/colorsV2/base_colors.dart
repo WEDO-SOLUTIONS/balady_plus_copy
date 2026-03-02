@@ -68,6 +68,7 @@ class BaseColors {
         ),
       ];
 }
+
 class ColorInfo {
   final String name;
   final Color color;

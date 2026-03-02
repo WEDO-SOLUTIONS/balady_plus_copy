@@ -2,13 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../core/errors/errors_exports.dart'
-    show APIException, ServerException;
+import '../../../../../core/errors/errors_exports.dart' show APIException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
-import '../../../../../core/utils/utils_exports.dart'
-    show ApiHeader, ApiUrl, CommonFunctions, EnvType, Log;
-import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show ResponseBodyModel;
+import '../../../../../core/utils/utils_exports.dart' show ApiHeader, ApiUrl, CommonFunctions, EnvType, Log;
+import '../../../../_shared_feature_/shared_feature_exports.dart' show ResponseBodyModel;
 import '../../prayer_times_exports.dart'
     show
         PrayerTimeRangeParams,
@@ -20,12 +17,10 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class PrayerTimesRemoteDataSource {
   Future<PrayerTimesResponse> getPrayerTimes(PrayerTimesParams params);
-  Future<List<PrayerTimeRangeResponseModel>> getPrayerTimesRange(
-      PrayerTimeRangeParams params);
+  Future<List<PrayerTimeRangeResponseModel>> getPrayerTimesRange(PrayerTimeRangeParams params);
 }
 
-class PrayerTimesRemoteDataSourceImplementation
-    implements PrayerTimesRemoteDataSource {
+class PrayerTimesRemoteDataSourceImplementation implements PrayerTimesRemoteDataSource {
   final WebService webService;
 
   PrayerTimesRemoteDataSourceImplementation({
@@ -111,11 +106,7 @@ class PrayerTimesRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return result != null
-          ? ((result) as List)
-              .map((i) => PrayerTimeRangeResponseModel.fromJson(i))
-              .toList()
-          : [];
+      return result != null ? ((result) as List).map((i) => PrayerTimeRangeResponseModel.fromJson(i)).toList() : [];
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

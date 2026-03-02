@@ -74,13 +74,13 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
         child: Row(
           children: [
             if (offerImage != null)
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-              child: SizedBox.square(
-                dimension: Spacing.$12x,
-                child:  SaudiPassImage(imageId: offerDetails.provider.logo),
+              ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                child: SizedBox.square(
+                  dimension: Spacing.$12x,
+                  child: SaudiPassImage(imageId: offerDetails.provider.logo),
+                ),
               ),
-            ),
             const SizedBox(width: Spacing.$3x),
             Expanded(
               child: Column(

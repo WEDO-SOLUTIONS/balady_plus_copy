@@ -27,6 +27,5 @@ class DeviceDetails extends Equatable {
   }
 
   @override
-  String toString() =>
-      'DeviceDetails(deviceOs: $deviceOs, deviceId: $deviceId, deviceName: $deviceName)';
+  String toString() => 'DeviceDetails(deviceOs: $deviceOs, deviceId: $deviceId, deviceName: $deviceName)';
 }

@@ -30,15 +30,13 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.data['source'] == 'Insider') {
-    FlutterInsider.Instance.handleNotification(
-        <String, dynamic>{"data": message.data});
+    FlutterInsider.Instance.handleNotification(<String, dynamic>{"data": message.data});
   }
 }
 
 class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
-  static final StreamController<String?> selectNotificationStream =
-      StreamController<String?>.broadcast();
+  static final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
 
   static init({bool initScheduled = false}) async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -54,8 +52,7 @@ class NotificationService {
     await _notifications.initialize(
       settings,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-      onDidReceiveNotificationResponse:
-          (NotificationResponse notificationResponse) {
+      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
         switch (notificationResponse.notificationResponseType) {
           case NotificationResponseType.selectedNotification:
             selectNotificationStream.add(notificationResponse.payload);
@@ -83,11 +80,7 @@ class NotificationService {
   }
 
   static Future<void> showScheduledNotification(
-      {int id = 0,
-      String? title,
-      String? body,
-      String? payload,
-      required DateTime scheduledDate}) async {
+      {int id = 0, String? title, String? body, String? payload, required DateTime scheduledDate}) async {
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,
@@ -97,8 +90,7 @@ class NotificationService {
         _notificationDetails(),
         payload: payload,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
   }
@@ -121,8 +113,7 @@ class NotificationService {
     }
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -153,9 +144,9 @@ class NotificationService {
       }
       Future.delayed(
         const Duration(seconds: 2),
-            () {
+        () {
           // Open notifications List Screen  if user is login and have the idNo
-          if(CommonProperties.userInfo?.idNo != null) {
+          if (CommonProperties.userInfo?.idNo != null) {
             NavigationService.pushNamed(
               routeName: RouteName.notificationsListScreen,
             );
@@ -165,9 +156,7 @@ class NotificationService {
     }
 
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) {
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
       if (message != null) {
         // Future.delayed(const Duration(seconds: 2), () {
         handleMessage(message);
@@ -178,8 +167,7 @@ class NotificationService {
     // Register Background Handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if (message.data['source'] == 'Insider') {
-        FlutterInsider.Instance.handleNotification(
-            <String, dynamic>{"data": message.data});
+        FlutterInsider.Instance.handleNotification(<String, dynamic>{"data": message.data});
       } else {
         RemoteNotification? notification = message.notification;
 

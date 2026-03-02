@@ -41,18 +41,15 @@ class RemoteConfig {
   ////   just used in one place in the app
   static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
 
-  static String get baladyCommercialUrl =>
-      _RemoteConfig.baladyCommercialUrl[env]!;
+  static String get baladyCommercialUrl => _RemoteConfig.baladyCommercialUrl[env]!;
 
-  static String get publicAppointmentShareURL =>
-      _RemoteConfig.publicAppointmentShareURL[env]!;
+  static String get publicAppointmentShareURL => _RemoteConfig.publicAppointmentShareURL[env]!;
 
   static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
 
   static String get regaClass => _RemoteConfig.regaClass[env]!;
 
-  static List<String> get MSRAllowedMuncipalites =>
-      _RemoteConfig.MSRAllowedMuncipalites[env]!;
+  static List<String> get MSRAllowedMuncipalites => _RemoteConfig.MSRAllowedMuncipalites[env]!;
 
 //////////////////////////////////////////////////////
 //   static String get apigeeURL => "__APIGEE-URL__";
@@ -61,11 +58,8 @@ class RemoteConfig {
     // String apigeeURL = const String.fromEnvironment(
     //   'APIGEE_URL',
     // );
-    return apigeeURL != "__APIGEE_URL__"
-        ? apigeeURL
-        : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
+    return apigeeURL != "__APIGEE_URL__" ? apigeeURL : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
   }
-
 
   // static String get hmCode => "__HM-CODE__";
   static String get hmCode {
@@ -78,9 +72,7 @@ class RemoteConfig {
     // print("HM_CODE : $hmCode");
     // print("HM_CODE : $hmCode");
     // print("HM_CODE : $hmCode");
-    return hmCode != "__HM_CODE__"
-        ? hmCode
-        : dotenv.env['HM_CODE'] ?? "default"; // Get from .env
+    return hmCode != "__HM_CODE__" ? hmCode : dotenv.env['HM_CODE'] ?? "default"; // Get from .env
   }
 
   //////////////////////////////////////////////////////
@@ -98,9 +90,7 @@ class RemoteConfig {
     // String ssoSecret = const String.fromEnvironment(
     //   'SSO_SECRET',
     // );
-    return ssoSecret != "__SSO_SECRET__"
-        ? ssoSecret
-        : dotenv.env['SSO_SECRET'] ?? "default"; // Get from .env
+    return ssoSecret != "__SSO_SECRET__" ? ssoSecret : dotenv.env['SSO_SECRET'] ?? "default"; // Get from .env
   }
 
   // static String get ssoClient => "__SSO-CLINT__";
@@ -109,9 +99,7 @@ class RemoteConfig {
     // String ssoClient = const String.fromEnvironment(
     //   'SSO_CLINT'
     // );
-    return ssoClient != "__SSO_CLINT__"
-        ? ssoClient
-        : dotenv.env['SSO_CLINT'] ?? "default"; // Get from .env
+    return ssoClient != "__SSO_CLINT__" ? ssoClient : dotenv.env['SSO_CLINT'] ?? "default"; // Get from .env
   }
 
   //////////////////////////////////////////////////////
@@ -121,11 +109,9 @@ class RemoteConfig {
 
   static double get mapRadius => _RemoteConfig.mapRadius[env]!;
 
-  static String get specialConditionOldId =>
-      _RemoteConfig.specialConditionOldId[env]!;
+  static String get specialConditionOldId => _RemoteConfig.specialConditionOldId[env]!;
 
-  static String get specialConditionId =>
-      _RemoteConfig.specialConditionId[env]!;
+  static String get specialConditionId => _RemoteConfig.specialConditionId[env]!;
 
   // List<String> get munciplities => _RemoteConfig.munciplities[env]!;
 
@@ -135,16 +121,13 @@ class RemoteConfig {
 
   static EnvType get env => sl<EnvType>();
 
-  static Map<String, dynamic> get MunicipalServicesIDs =>
-      _RemoteConfig.municipal_services_IDS[env]!;
+  static Map<String, dynamic> get MunicipalServicesIDs => _RemoteConfig.municipal_services_IDS[env]!;
 
   static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
 
-  static String get movingVeichleCategoryKey =>
-      _RemoteConfig.movingVeichleCategoryKey[env]!;
+  static String get movingVeichleCategoryKey => _RemoteConfig.movingVeichleCategoryKey[env]!;
 
-  static String get QaseemCategoryKey =>
-      _RemoteConfig.QaseemCategoryKey[env]!;
+  static String get QaseemCategoryKey => _RemoteConfig.QaseemCategoryKey[env]!;
 }
 
 //! First solution
@@ -191,9 +174,6 @@ class _RemoteConfig {
   //   prodVal: "__PROD-SSO-SECRET__",
   //   urbiPreVal: "__STG-SSO-SECRET__",
   // );
-
-
-
 
   static final gis = _initValues<String>(
     devVal: "https://gisappstg.momra.gov.sa",
@@ -343,79 +323,14 @@ class _RemoteConfig {
     stgVal: "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
     preVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
-    urbiPreVal:
-        "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
+    urbiPreVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
   );
 
   static final MSRAllowedMuncipalites = _initValues<List<String>>(
-    devVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
-    stgVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
-    preVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
-    prodVal: [
-      "007",
-      "010",
-      "016",
-      "002",
-      "008",
-      "009",
-      "012",
-      "011",
-      "013",
-      "014",
-      "015",
-      "017",
-      "018",
-      "003",
-      "005"
-    ],
+    devVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
+    stgVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
+    preVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
+    prodVal: ["007", "010", "016", "002", "008", "009", "012", "011", "013", "014", "015", "017", "018", "003", "005"],
     urbiPreVal: [
       "007",
       "010",

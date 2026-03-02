@@ -57,8 +57,7 @@ void _onMakkahDirectionsTap(
 }
 
 class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
-  final MultiStateSheetController<PoiCardBottomSheetState>
-      bottomSheetController;
+  final MultiStateSheetController<PoiCardBottomSheetState> bottomSheetController;
   final DirectoryObjectMessage data;
   final LatLng? closestPoint;
   final MakkahPlace? makkahPlace;
@@ -272,68 +271,67 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     return ColoredBox(
       color: Colors.white,
       child: Container(
-          padding: const EdgeInsetsDirectional.only(
-            start: Spacing.$4x,
-            top: Spacing.$3x,
-            bottom: Spacing.$3x,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 16,
-                offset: const Offset(0, -4),
-                color: context.colors.foregroundSoft.withOpacity(0.08),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Directionality(
-                textDirection: TextDirection.rtl,
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonType: ButtonType.primary,
-                  size: ButtonSize.medium,
-                  onTap:
-                      () => _onMakkahDirectionsTap(
-                        context,
-                        ref,
-                        data,
-                        closestPoint,
-                      ),
-                  trailing: SvgPicture.asset(
-                    'assets/icons/makkah/directions.svg',
-                    width: 24,
-                    height: 24,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                    matchTextDirection: true,
-                  ),
-                  primaryLabel: context.l10n.poiCardDirections,
-                  color: const Color(0xFF307457),
-                  textColor: Colors.white,
-                  iconColor: Colors.white,
-                  innerPadding: const EdgeInsets.symmetric(
-                    vertical: Spacing.$2x,
-                    horizontal: Spacing.$3x,
-                  ),
-                ),
-              ),
-              const SizedBox(width: Spacing.$2x),
-              Flexible(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  primary: false,
-                  physics: const ClampingScrollPhysics(),
-                  child: Row(children: spacedButtons),
-                ),
-              ),
-            ],
-          ),
+        padding: const EdgeInsetsDirectional.only(
+          start: Spacing.$4x,
+          top: Spacing.$3x,
+          bottom: Spacing.$3x,
         ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 16,
+              offset: const Offset(0, -4),
+              color: context.colors.foregroundSoft.withOpacity(0.08),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: AppButton(
+                buttonColorScheme: ButtonColorScheme.accentSecondary,
+                buttonType: ButtonType.primary,
+                size: ButtonSize.medium,
+                onTap: () => _onMakkahDirectionsTap(
+                  context,
+                  ref,
+                  data,
+                  closestPoint,
+                ),
+                trailing: SvgPicture.asset(
+                  'assets/icons/makkah/directions.svg',
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                  matchTextDirection: true,
+                ),
+                primaryLabel: context.l10n.poiCardDirections,
+                color: const Color(0xFF307457),
+                textColor: Colors.white,
+                iconColor: Colors.white,
+                innerPadding: const EdgeInsets.symmetric(
+                  vertical: Spacing.$2x,
+                  horizontal: Spacing.$3x,
+                ),
+              ),
+            ),
+            const SizedBox(width: Spacing.$2x),
+            Flexible(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                primary: false,
+                physics: const ClampingScrollPhysics(),
+                child: Row(children: spacedButtons),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -353,22 +351,19 @@ class _MakkahFooterSquareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = isFilled
-        ? MakkahPoiConstants.filledActionIconColor
-        : MakkahPoiConstants.normalActionIconColor;
+    final iconColor = isFilled ? MakkahPoiConstants.filledActionIconColor : MakkahPoiConstants.normalActionIconColor;
     return AppButton(
       buttonColorScheme: ButtonColorScheme.neutral,
       buttonType: ButtonType.secondary,
       onTap: onPressed,
-      trailing:
-          svgAsset == null
-              ? null
-              : _makkahFooterSvgIcon(
-                  context,
-                  svgAsset!,
-                  color: iconColor,
-                  matchTextDirection: matchTextDirection,
-                ),
+      trailing: svgAsset == null
+          ? null
+          : _makkahFooterSvgIcon(
+              context,
+              svgAsset!,
+              color: iconColor,
+              matchTextDirection: matchTextDirection,
+            ),
       color: const Color(0xFFF3EEE7),
       iconColor: context.colors.foregroundDefault,
       padding: EdgeInsets.zero,

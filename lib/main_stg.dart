@@ -1,5 +1,4 @@
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
@@ -17,11 +16,10 @@ import 'app/events_logs/balady_logs.dart';
 void main() async {
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
-
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
       await setupMapness(EnvType.stg);
-        runApp(
+      runApp(
         const MapnessProviderScope(
           child: LocalizedApp(
             child: App(),

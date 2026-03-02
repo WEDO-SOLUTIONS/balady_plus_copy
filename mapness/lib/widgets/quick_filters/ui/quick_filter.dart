@@ -24,23 +24,19 @@ class QuickFilter extends ConsumerWidget {
     final specialThemeMode = ref.watch(specialThemeModeProvider);
 
     final bool isMekkahTheme =
-        specialThemeMode == SpecialThemeMode.mekkahBase ||
-        specialThemeMode == SpecialThemeMode.ramadan;
+        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
 
     final Color themedColor =
-        specialThemeMode == SpecialThemeMode.ramadan
-            ? const Color(0xFF806E5C)
-            : const Color(0xFF307457);
+        specialThemeMode == SpecialThemeMode.ramadan ? const Color(0xFF806E5C) : const Color(0xFF307457);
 
     final Color iconColor = isMekkahTheme ? themedColor : colors.foregroundSoft;
     final Color? labelColor = isMekkahTheme ? themedColor : null;
 
-    final leadingIcon =
-        item.icon != null
-            ? ChipIconWidget(
-              ({color}) => Icon(item.icon, size: 24, color: color ?? iconColor),
-            )
-            : null;
+    final leadingIcon = item.icon != null
+        ? ChipIconWidget(
+            ({color}) => Icon(item.icon, size: 24, color: color ?? iconColor),
+          )
+        : null;
     final label = item.title;
     if (label == null || label.isEmpty == true) {
       if (leadingIcon == null) {

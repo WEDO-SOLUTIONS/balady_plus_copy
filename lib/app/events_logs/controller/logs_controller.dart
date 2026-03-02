@@ -39,7 +39,7 @@ class LogsViewModel {
 
   void sendEventFromModel({required EventModel event}) async {
 // UX Cam Events
-    try{
+    try {
       FlutterUxcam.logEventWithProperties(
         event.nameEvent,
         event.toJson(),
@@ -51,7 +51,7 @@ class LogsViewModel {
           unknown: event.toJson(),
         ),
       );
-    }catch(e){
+    } catch (e) {
       print("Error From INSIDE FRAME_WORK");
       print("--------------------------------");
       print("Error :  $e");

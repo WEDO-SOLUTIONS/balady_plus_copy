@@ -58,8 +58,8 @@ class SaudiPassChipsWidget extends StatelessWidget {
                 trailingIcon: trailingIcon,
               )
             : (leadingIcon != null || trailingIcon != null)
-            ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
-            : null,
+                ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
+                : null,
       ),
     );
   }

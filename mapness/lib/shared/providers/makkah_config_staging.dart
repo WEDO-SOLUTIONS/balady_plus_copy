@@ -29,10 +29,8 @@ class MakkahConfigUrls {
   }
 
   /// Get places URL based on environment
-  static String getPlacesUrl(DgisEnv env) =>
-      isStagingEnv(env) ? placesUrlStaging : placesUrlProd;
+  static String getPlacesUrl(DgisEnv env) => isStagingEnv(env) ? placesUrlStaging : placesUrlProd;
 
   /// Get config URL based on environment
-  static String getConfigUrl(DgisEnv env) =>
-      isStagingEnv(env) ? configUrlStaging : configUrlProd;
+  static String getConfigUrl(DgisEnv env) => isStagingEnv(env) ? configUrlStaging : configUrlProd;
 }

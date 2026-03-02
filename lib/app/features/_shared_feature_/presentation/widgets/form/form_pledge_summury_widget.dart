@@ -40,9 +40,7 @@ class FormPledgesSummuryWidget extends StatelessWidget {
         CustomVerticalSpace(height: 8),
         Container(
             padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                color: Color(0x80E6EFEF),
-                borderRadius: BorderRadius.circular(8)),
+            decoration: BoxDecoration(color: Color(0x80E6EFEF), borderRadius: BorderRadius.circular(8)),
             child: Row(
               children: [
                 Checkbox(

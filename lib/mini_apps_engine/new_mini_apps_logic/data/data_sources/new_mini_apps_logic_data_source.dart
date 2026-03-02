@@ -24,8 +24,7 @@ class NewMiniAppsLogicDataSourceImpl implements NewMiniAppsLogicDataSource {
         return Left(Exception('Response data is null'));
       }
 
-      final Map<String, dynamic> responseData =
-          response.data as Map<String, dynamic>;
+      final Map<String, dynamic> responseData = response.data as Map<String, dynamic>;
 
       final model = NewMiniAppLogicResponseModel.fromJson(responseData);
       return Right(model);

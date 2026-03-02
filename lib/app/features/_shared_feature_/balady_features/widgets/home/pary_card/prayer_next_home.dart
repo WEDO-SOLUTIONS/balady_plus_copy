@@ -72,19 +72,13 @@ class _NextPrayerState extends State<NextPrayerHome> {
         return hours != "00"
             ? Text(
                 "$hours:$minutes:$seconds",
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accent
-                    .copyWith(
+                style: Theme.of(context).extension<ThemeTextStyles>()!.accent.copyWith(
                       color: Colors.white,
                     ),
               )
             : Text(
                 "$minutes:$seconds",
-                style: Theme.of(context)
-                    .extension<ThemeTextStyles>()!
-                    .accent
-                    .copyWith(
+                style: Theme.of(context).extension<ThemeTextStyles>()!.accent.copyWith(
                       color: Colors.white,
                     ),
               );

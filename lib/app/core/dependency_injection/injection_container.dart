@@ -2,8 +2,7 @@ import 'package:balady_plus/app/core/dependency_injection/features/old_injection
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/features/_shared_features/check_commercial_license/data/data_sources/check_commercial_license_data_source.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
-    as events;
+import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart' as events;
 import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:balady_plus/app/features/weather/data/datasources/weather_local_datasource.dart';
@@ -21,17 +20,14 @@ import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_case
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 
 import 'package:dio/dio.dart' show Dio;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart'
-    show FlutterSecureStorage;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart' show FlutterSecureStorage;
 import 'package:get_it/get_it.dart' show GetIt;
-import 'package:internet_connection_checker/internet_connection_checker.dart'
-    show InternetConnectionChecker;
+import 'package:internet_connection_checker/internet_connection_checker.dart' show InternetConnectionChecker;
 import '../../features/_shared_feature_/balady_features/services/services.dart';
 import '../../features/_shared_feature_/balady_features/widgets/UrbiMap/search_provider.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../features/_shared_feature_/shared_feature_exports.dart'
-    show BridgeParams, DropDownItem, FileInfo;
+import '../../features/_shared_feature_/shared_feature_exports.dart' show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
@@ -39,19 +35,9 @@ import '../../features/notifications/data/repositories/notification_repository_i
 import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/volunteer_profile/injection/volunteer_profile_injection.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
-    show
-        DelegatorsInjection,
-        EntryPointInjection,
-        OTPInjection,
-        PrayerTimesInjection,
-        SignUpInjection,
-        VDInjection;
+    show DelegatorsInjection, EntryPointInjection, OTPInjection, PrayerTimesInjection, SignUpInjection, VDInjection;
 import '../services/services_exports.dart'
-    show
-        EntryPointBridge,
-        NetworkConnection,
-        NetworkConnectionImplementation,
-        WebService;
+    show EntryPointBridge, NetworkConnection, NetworkConnectionImplementation, WebService;
 import '../utils/enums/bottom_nav_bar.dart';
 import 'features/events_injection.dart';
 
@@ -93,8 +79,7 @@ void initialize() {
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   // sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
-  sl.registerLazySingleton(
-      () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
+  sl.registerLazySingleton(() => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
 
 // Weather
   //Blocs
@@ -154,17 +139,14 @@ void initialize() {
 
   sl.registerLazySingleton<NotificationRepositoryImplementation>(
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
-  sl.registerLazySingleton<NotificationManager>(
-      () => NotificationManager(repository: sl()));
+  sl.registerLazySingleton<NotificationManager>(() => NotificationManager(repository: sl()));
 
-  sl.registerLazySingleton<SplashRemoteDataSource>(
-      () => SplashRemoteDataSourceImpl(webService: sl()));
+  sl.registerLazySingleton<SplashRemoteDataSource>(() => SplashRemoteDataSourceImpl(webService: sl()));
 
   //// For Mini Apps Engine
-  sl.registerLazySingleton<MiniAppsLocalDataSource>(
-      () => MiniAppsDataSourceImplementation(
-            webServices: sl<WebService>(),
-          ));
+  sl.registerLazySingleton<MiniAppsLocalDataSource>(() => MiniAppsDataSourceImplementation(
+        webServices: sl<WebService>(),
+      ));
   sl.registerLazySingleton<MiniAppsRepository>(() => MiniAppsRepository(
         localDataSource: sl<MiniAppsLocalDataSource>(),
       ));
@@ -188,11 +170,7 @@ void initialize() {
 
   //* Cubits
   sl.registerLazySingleton<NewMiniAppLogicCubit>(
-    () => NewMiniAppLogicCubit(
-      sl<GetNewMiniAppsLogicUseCase>(),
-      sl<FlutterSecureStorage>(),
-      sl<MiniAppsRepository>()
-    ),
+    () => NewMiniAppLogicCubit(sl<GetNewMiniAppsLogicUseCase>(), sl<FlutterSecureStorage>(), sl<MiniAppsRepository>()),
   );
 
   //! New mini apps logic ==========================================================
@@ -200,23 +178,18 @@ void initialize() {
   /////////////// get All Authentication Model Injection Container
   switch (sl<EnvType>().name) {
     case "dev":
-      slAuthentication
-          .registerLazySingleton(() => BaladyAuthorizationEnvType.dev);
+      slAuthentication.registerLazySingleton(() => BaladyAuthorizationEnvType.dev);
       break;
     case "stg":
-      slAuthentication
-          .registerLazySingleton(() => BaladyAuthorizationEnvType.stg);
+      slAuthentication.registerLazySingleton(() => BaladyAuthorizationEnvType.stg);
       break;
     case "pre":
-      slAuthentication
-          .registerLazySingleton(() => BaladyAuthorizationEnvType.pre);
+      slAuthentication.registerLazySingleton(() => BaladyAuthorizationEnvType.pre);
       break;
     case "prod":
-      slAuthentication
-          .registerLazySingleton(() => BaladyAuthorizationEnvType.prod);
+      slAuthentication.registerLazySingleton(() => BaladyAuthorizationEnvType.prod);
     case "urbiPre":
-      slAuthentication
-          .registerLazySingleton(() => BaladyAuthorizationEnvType.urbiPre);
+      slAuthentication.registerLazySingleton(() => BaladyAuthorizationEnvType.urbiPre);
       break;
   }
   AuthenticationInjection.initialize();

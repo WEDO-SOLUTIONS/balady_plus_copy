@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
-import '../../../shared_feature_exports.dart'
-    show CustomElevatedIconButtonWidget, ErrorUnderWidget, WidgetLabel;
+import '../../../shared_feature_exports.dart' show CustomElevatedIconButtonWidget, ErrorUnderWidget, WidgetLabel;
 
 class CustomMaterialDatePickerWidget extends StatelessWidget {
   final bool ignoreHolidays;
@@ -81,15 +80,13 @@ class CustomMaterialDatePickerWidget extends StatelessWidget {
     );
   }
 
-  Color get _fillColor =>
-      readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
+  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
   Color get _borderColor => borderColor ?? AppColor.gray.withOpacity(0.60);
 
   TextStyle get hintStyle => dateStyle ?? AppStyle.pickerStyle;
 
-  String get dateString => initialDate != null
-      ? "${initialDate!.year}/${initialDate!.month}/${initialDate!.day}"
-      : "yyyy-mm-dd";
+  String get dateString =>
+      initialDate != null ? "${initialDate!.year}/${initialDate!.month}/${initialDate!.day}" : "yyyy-mm-dd";
 
   DateTime? get validateDate => initialDate?.weekday == 5
       ? initialDate!.add(const Duration(days: 2))
@@ -98,8 +95,7 @@ class CustomMaterialDatePickerWidget extends StatelessWidget {
           : initialDate;
 
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
-  DateTime get lastDate =>
-      endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
+  DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
   Future<void> onSelectedDate(
     BuildContext context, {
@@ -110,8 +106,7 @@ class CustomMaterialDatePickerWidget extends StatelessWidget {
       initialDate: selectedDate,
       firstDate: firstDate,
       lastDate: lastDate,
-      selectableDayPredicate: (date) =>
-          ignoreHolidays ? date.weekday != 5 && date.weekday != 6 : true,
+      selectableDayPredicate: (date) => ignoreHolidays ? date.weekday != 5 && date.weekday != 6 : true,
     );
 
     if (picked != null && picked != selectedDate) {

@@ -37,9 +37,9 @@ final class RouteDetailsStateMapperV2 implements SheetStateMapper<TwoStateSheet>
 
   @override
   TwoStateSheet state(int state) => switch (state) {
-    0 => TwoStateSheet.hidden,
-    _ => TwoStateSheet.expanded,
-  };
+        0 => TwoStateSheet.hidden,
+        _ => TwoStateSheet.expanded,
+      };
 
   @override
   int index(TwoStateSheet state) => state.index.clamp(0, 2);

@@ -1,4 +1,5 @@
 part of '../map_controls.dart';
+
 class IndoorControl extends StatelessWidget {
   final LevelsState? indoorState;
   final Function(IndoorLevel) onSelect;

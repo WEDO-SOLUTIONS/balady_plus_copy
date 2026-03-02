@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../shared_feature_exports.dart'
-    show CustomMaterialDropDownWidget, DropDownItem;
+import '../../shared_feature_exports.dart' show CustomMaterialDropDownWidget, DropDownItem;
 
 abstract class _MaterialDropDown extends StatelessWidget {
   final Widget child;

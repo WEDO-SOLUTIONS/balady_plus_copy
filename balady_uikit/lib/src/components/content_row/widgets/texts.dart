@@ -139,10 +139,10 @@ List<TextSpan> _textSpanGenerator({
   // fix offsets
   final resultSpans = spans
       .map((s) {
-    final fixed = _utf8ToUtf16(text, s.offset, s.length);
+        final fixed = _utf8ToUtf16(text, s.offset, s.length);
 
-    return UIMarkedUpTextSpan(offset: fixed.index, length: fixed.length);
-  })
+        return UIMarkedUpTextSpan(offset: fixed.index, length: fixed.length);
+      })
       .where((s) => s.offset + s.length <= text.length) // safety
       .toList()
     ..sort((a, b) => a.offset.compareTo(b.offset));
@@ -151,11 +151,11 @@ List<TextSpan> _textSpanGenerator({
   var cursor = 0;
 
   void add(String part, Color c) => out.add(
-    TextSpan(
-      text: part,
-      style: style?.copyWith(color: c),
-    ),
-  );
+        TextSpan(
+          text: part,
+          style: style?.copyWith(color: c),
+        ),
+      );
 
   for (final s in resultSpans) {
     if (cursor < s.offset) {

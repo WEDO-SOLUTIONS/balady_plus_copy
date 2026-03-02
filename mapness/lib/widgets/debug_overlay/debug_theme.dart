@@ -238,9 +238,7 @@ class DebugToggleRow extends StatelessWidget {
                 Text(
                   title,
                   style: context.textStyles.bodySmallMedium.copyWith(
-                    color: value
-                        ? DebugTheme.textPrimary
-                        : DebugTheme.textSecondary,
+                    color: value ? DebugTheme.textPrimary : DebugTheme.textSecondary,
                   ),
                 ),
                 if (subtitle != null)

@@ -20,12 +20,10 @@ class VolunteerPresentationMode extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<VolunteerPresentationMode> createState() =>
-      _VolunteerPresentationModeState();
+  State<VolunteerPresentationMode> createState() => _VolunteerPresentationModeState();
 
   // Static method to handle cancel logic
-  static void cancelEditMode(BuildContext context, VolunteerProfileBloc bloc,
-      Map<String, dynamic> originalValues) {
+  static void cancelEditMode(BuildContext context, VolunteerProfileBloc bloc, Map<String, dynamic> originalValues) {
     print('Static cancelEditMode called');
 
     // Restore original values
@@ -44,23 +42,18 @@ class VolunteerPresentationMode extends StatefulWidget {
       ))
       ..add(UpdateScientificInfo(
         educationalQualification: originalValues['educationalQualification'],
-        educationalQualificationId:
-            originalValues['educationalQualificationId'],
+        educationalQualificationId: originalValues['educationalQualificationId'],
         specialization: originalValues['specialization'],
         specializationId: originalValues['specializationId'],
         profession: originalValues['profession'],
         workExperience: originalValues['workExperience'],
         language: originalValues['language'],
         languageId: originalValues['languageId'],
-        scientificExperienceSummary:
-            originalValues['scientificExperienceSummary'],
+        scientificExperienceSummary: originalValues['scientificExperienceSummary'],
       ))
       ..add(UpdateVolunteeringInterests(
-        skills:
-            originalValues['skills'] != null ? [originalValues['skills']] : [],
-        skillsIds: originalValues['skillsIds'] != null
-            ? [originalValues['skillsIds']]
-            : [],
+        skills: originalValues['skills'] != null ? [originalValues['skills']] : [],
+        skillsIds: originalValues['skillsIds'] != null ? [originalValues['skillsIds']] : [],
         volunteeringLevel: originalValues['volunteeringLevel'],
         volunteeringLevelId: originalValues['volunteeringLevelId'],
         volunteeringWorkField: originalValues['volunteeringWorkField'],
@@ -119,8 +112,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   void initState() {
     super.initState();
     _isEditMode = widget.isEditMode;
-    print(
-        'initState - isEditMode: $_isEditMode, widget.isEditMode: ${widget.isEditMode}');
+    print('initState - isEditMode: $_isEditMode, widget.isEditMode: ${widget.isEditMode}');
     _initializeControllers();
     // Initial validation
     WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
@@ -159,8 +151,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
     // Debug: Print original values
     print('Stored original city: $_originalCity, cityId: $_originalCityId');
-    print(
-        'Stored original region: $_originalRegion, regionId: $_originalRegionId');
+    print('Stored original region: $_originalRegion, regionId: $_originalRegionId');
   }
 
   @override
@@ -236,8 +227,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   void _cancelEdit() {
     // Debug: Print what we're restoring
     print('Restoring city to: $_originalCity, cityId: $_originalCityId');
-    print(
-        'Restoring region to: $_originalRegion, regionId: $_originalRegionId');
+    print('Restoring region to: $_originalRegion, regionId: $_originalRegionId');
 
     // Reset controllers to original values (only unified step fields)
     _emailController.text = _originalEmail ?? '';
@@ -330,18 +320,16 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   void _validateForm() {
     final state = context.read<VolunteerProfileBloc>().state;
     // Unified Step validation - only required fields
-    final isEmailValid = Helpers.validateEmail(_emailController.text) == null &&
-        _emailController.text.trim().isNotEmpty;
+    final isEmailValid =
+        Helpers.validateEmail(_emailController.text) == null && _emailController.text.trim().isNotEmpty;
     final isPhoneValid =
-        Helpers.validateMobile(_phoneController.text) == null &&
-            _phoneController.text.trim().isNotEmpty;
+        Helpers.validateMobile(_phoneController.text) == null && _phoneController.text.trim().isNotEmpty;
     final isRegionValid = state.regionId != null && state.regionId!.isNotEmpty;
     final isCityValid = state.cityId != null && state.cityId!.isNotEmpty;
-    final isQualificationValid = state.educationalQualificationId != null &&
-        state.educationalQualificationId!.isNotEmpty;
+    final isQualificationValid =
+        state.educationalQualificationId != null && state.educationalQualificationId!.isNotEmpty;
     final isVolunteeringWorkFieldValid =
-        state.volunteeringWorkFieldId != null &&
-            state.volunteeringWorkFieldId!.isNotEmpty;
+        state.volunteeringWorkFieldId != null && state.volunteeringWorkFieldId!.isNotEmpty;
 
     // All required unified step fields must be valid
     final valid = isEmailValid &&
@@ -359,8 +347,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      BlocListener<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) => BlocListener<VolunteerProfileBloc, VolunteerProfileState>(
         listener: (context, state) {
           // Update controllers when state changes (for state restoration)
           if (_isEditMode) {
@@ -374,16 +361,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           builder: (context, state) => PopScope(
             canPop: !_isEditMode, // Prevent pop only in edit mode
             onPopInvokedWithResult: (didPop, result) {
-              print(
-                  'PopScope triggered - didPop: $didPop, isEditMode: $_isEditMode, canPop: ${!_isEditMode}');
+              print('PopScope triggered - didPop: $didPop, isEditMode: $_isEditMode, canPop: ${!_isEditMode}');
               if (!didPop && _isEditMode) {
                 print('Canceling edit mode...');
                 // Exit edit mode when back button is pressed
                 _cancelEdit();
                 Navigator.of(context).pop();
               } else {
-                print(
-                    'Not canceling - didPop: $didPop, isEditMode: $_isEditMode');
+                print('Not canceling - didPop: $didPop, isEditMode: $_isEditMode');
               }
             },
             child: Column(
@@ -398,9 +383,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                         _buildExpandableSection(
                           title: 'lbl_personal_info'.tr(),
                           isExpanded: _isPersonalInfoExpanded,
-                          onToggle: () => setState(() =>
-                              _isPersonalInfoExpanded =
-                                  !_isPersonalInfoExpanded),
+                          onToggle: () => setState(() => _isPersonalInfoExpanded = !_isPersonalInfoExpanded),
                           children: _buildUnifiedStepRows(state),
                         ),
 
@@ -470,20 +453,15 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   List<Widget> _buildUnifiedStepRows(VolunteerProfileState state) => [
         // Read-only fields (locked)
         _buildInfoRow('full_name'.tr(), state.fullName ?? '', isReadOnly: true),
-        _buildInfoRow('national_id'.tr(), state.nationalId ?? '',
-            isReadOnly: true),
+        _buildInfoRow('national_id'.tr(), state.nationalId ?? '', isReadOnly: true),
 
         // Editable fields
-        _buildEditableInfoRow('email'.tr(), _emailController,
-            keyboardType: TextInputType.emailAddress),
-        _buildEditableInfoRow('personal_mobile'.tr(), _phoneController,
-            keyboardType: TextInputType.phone),
+        _buildEditableInfoRow('email'.tr(), _emailController, keyboardType: TextInputType.emailAddress),
+        _buildEditableInfoRow('personal_mobile'.tr(), _phoneController, keyboardType: TextInputType.phone),
 
         // Location fields - editable in edit mode via dropdowns
-        _buildLocationRow('region'.tr(), state.region ?? '',
-            isRegion: true, state: state),
-        _buildLocationRow('city'.tr(), state.city ?? '',
-            isRegion: false, state: state),
+        _buildLocationRow('region'.tr(), state.region ?? '', isRegion: true, state: state),
+        _buildLocationRow('city'.tr(), state.city ?? '', isRegion: false, state: state),
 
         // Educational Qualification - dropdown in edit mode
         _buildDropdownOrInfoRow(
@@ -506,8 +484,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                       workExperience: state.workExperience,
                       language: state.language,
                       languageId: state.languageId,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
+                      scientificExperienceSummary: state.scientificExperienceSummary,
                     ),
                   );
             }
@@ -691,9 +668,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         // Skills - dropdown in edit mode
         _buildDropdownOrInfoRow(
           'skills_required'.tr(),
-          state.skills.isNotEmpty
-              ? state.skills.join(', ')
-              : 'not_selected'.tr(),
+          state.skills.isNotEmpty ? state.skills.join(', ') : 'not_selected'.tr(),
           _isEditMode ? state.skillsList : null,
           state.skillsIds.isNotEmpty ? state.skillsIds.first : null,
           (value) {
@@ -747,14 +722,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         // Interests - dropdown in edit mode
         _buildDropdownOrInfoRow(
           'interests'.tr(),
-          state.interests.isNotEmpty
-              ? state.interests.join(', ')
-              : 'not_selected'.tr(),
+          state.interests.isNotEmpty ? state.interests.join(', ') : 'not_selected'.tr(),
           _isEditMode ? state.interestsList : null,
-          state.interests.isNotEmpty
-              ? _getInterestIdFromName(
-                  state.interests.first, state.interestsList)
-              : null,
+          state.interests.isNotEmpty ? _getInterestIdFromName(state.interests.first, state.interestsList) : null,
           (value) {
             context.read<VolunteerProfileBloc>().add(
                   UpdateVolunteeringInterests(
@@ -868,16 +838,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             // Section Header (Clickable)
             InkWell(
               onTap: onToggle,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: const Color(0xFF00796B).withOpacity(0.05),
                   borderRadius: BorderRadius.vertical(
                     top: const Radius.circular(12),
-                    bottom:
-                        isExpanded ? Radius.zero : const Radius.circular(12),
+                    bottom: isExpanded ? Radius.zero : const Radius.circular(12),
                   ),
                 ),
                 child: Row(
@@ -922,9 +890,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             // Section Content (Expandable)
             AnimatedCrossFade(
               duration: const Duration(milliseconds: 300),
-              crossFadeState: isExpanded
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
+              crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
               firstChild: const SizedBox.shrink(),
               secondChild: Column(
                 children: children,
@@ -949,9 +915,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     return Icons.info;
   }
 
-  Widget _buildInfoRow(String label, String value,
-          {bool isLast = false, bool isReadOnly = false}) =>
-      Container(
+  Widget _buildInfoRow(String label, String value, {bool isLast = false, bool isReadOnly = false}) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           border: isLast
@@ -961,9 +925,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     color: Color(0xFFF0F0F0),
                   ),
                 ),
-          borderRadius: isLast
-              ? const BorderRadius.vertical(bottom: Radius.circular(12))
-              : null,
+          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -995,9 +957,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       );
 
   Widget _buildEditableInfoRow(String label, TextEditingController controller,
-          {TextInputType keyboardType = TextInputType.text,
-          int maxLines = 1,
-          bool isLast = false}) =>
+          {TextInputType keyboardType = TextInputType.text, int maxLines = 1, bool isLast = false}) =>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -1008,9 +968,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     color: Color(0xFFF0F0F0),
                   ),
                 ),
-          borderRadius: isLast
-              ? const BorderRadius.vertical(bottom: Radius.circular(12))
-              : null,
+          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1035,8 +993,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                       maxLines: maxLines,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                       style: const TextStyle(
                         fontSize: 14,
@@ -1058,9 +1015,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       );
 
   Widget _buildLocationRow(String label, String value,
-          {required bool isRegion,
-          required VolunteerProfileState state,
-          bool isLast = false}) =>
+          {required bool isRegion, required VolunteerProfileState state, bool isLast = false}) =>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -1071,9 +1026,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     color: Color(0xFFF0F0F0),
                   ),
                 ),
-          borderRadius: isLast
-              ? const BorderRadius.vertical(bottom: Radius.circular(12))
-              : null,
+          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1106,8 +1059,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         ),
       );
 
-  Widget _buildLocationDropdown(
-      {required bool isRegion, required VolunteerProfileState state}) {
+  Widget _buildLocationDropdown({required bool isRegion, required VolunteerProfileState state}) {
     if (isRegion) {
       // Region dropdown
       if (state.isLoadingRegions) {
@@ -1237,8 +1189,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     return 'not_selected'.tr();
   }
 
-  String? _getInterestIdFromName(
-      String interestName, List<dynamic> interestsList) {
+  String? _getInterestIdFromName(String interestName, List<dynamic> interestsList) {
     try {
       final interest = interestsList.firstWhere(
         (interest) => interest.name == interestName,
@@ -1252,11 +1203,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   // Helper method to build dropdown or info row based on edit mode
   Widget _buildDropdownOrInfoRow(
-          String label,
-          String value,
-          List<dynamic>? items,
-          String? selectedValue,
-          Function(String?)? onChanged,
+          String label, String value, List<dynamic>? items, String? selectedValue, Function(String?)? onChanged,
           {bool isLast = false}) =>
       Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1268,9 +1215,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     color: Color(0xFFF0F0F0),
                   ),
                 ),
-          borderRadius: isLast
-              ? const BorderRadius.vertical(bottom: Radius.circular(12))
-              : null,
+          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1289,12 +1234,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             Expanded(
               child: _isEditMode && items != null
                   ? DropdownButtonFormField<String>(
-                      value:
-                          selectedValue?.isEmpty == true ? null : selectedValue,
+                      value: selectedValue?.isEmpty == true ? null : selectedValue,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                       items: items
                           .map((item) => DropdownMenuItem<String>(
@@ -1344,14 +1287,12 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             Expanded(
               child: _isEditMode
                   ? DropdownButtonFormField<String>(
-                      value: state.workExperience?.isEmpty == true ||
-                              state.workExperience == 'null'
+                      value: state.workExperience?.isEmpty == true || state.workExperience == 'null'
                           ? null
                           : state.workExperience,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                       items: List.generate(51, (index) => index)
                           .map((year) => DropdownMenuItem<String>(
@@ -1363,18 +1304,15 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                       onChanged: (value) {
                         context.read<VolunteerProfileBloc>().add(
                               UpdateScientificInfo(
-                                educationalQualification:
-                                    state.educationalQualification,
-                                educationalQualificationId:
-                                    state.educationalQualificationId,
+                                educationalQualification: state.educationalQualification,
+                                educationalQualificationId: state.educationalQualificationId,
                                 specialization: state.specialization,
                                 specializationId: state.specializationId,
                                 profession: state.profession,
                                 workExperience: value,
                                 language: state.language,
                                 languageId: state.languageId,
-                                scientificExperienceSummary:
-                                    state.scientificExperienceSummary,
+                                scientificExperienceSummary: state.scientificExperienceSummary,
                               ),
                             );
                       },
@@ -1426,17 +1364,12 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                                         UpdateVolunteeringInterests(
                                           skills: state.skills,
                                           skillsIds: state.skillsIds,
-                                          volunteeringLevel:
-                                              state.volunteeringLevel,
-                                          volunteeringLevelId:
-                                              state.volunteeringLevelId,
-                                          volunteeringWorkField:
-                                              state.volunteeringWorkField,
-                                          volunteeringWorkFieldId:
-                                              state.volunteeringWorkFieldId,
+                                          volunteeringLevel: state.volunteeringLevel,
+                                          volunteeringLevelId: state.volunteeringLevelId,
+                                          volunteeringWorkField: state.volunteeringWorkField,
+                                          volunteeringWorkFieldId: state.volunteeringWorkFieldId,
                                           isIndividualSelected: value ?? false,
-                                          isGroupSelected:
-                                              state.isGroupSelected,
+                                          isGroupSelected: state.isGroupSelected,
                                         ),
                                       );
                                 },
@@ -1456,16 +1389,11 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                                         UpdateVolunteeringInterests(
                                           skills: state.skills,
                                           skillsIds: state.skillsIds,
-                                          volunteeringLevel:
-                                              state.volunteeringLevel,
-                                          volunteeringLevelId:
-                                              state.volunteeringLevelId,
-                                          volunteeringWorkField:
-                                              state.volunteeringWorkField,
-                                          volunteeringWorkFieldId:
-                                              state.volunteeringWorkFieldId,
-                                          isIndividualSelected:
-                                              state.isIndividualSelected,
+                                          volunteeringLevel: state.volunteeringLevel,
+                                          volunteeringLevelId: state.volunteeringLevelId,
+                                          volunteeringWorkField: state.volunteeringWorkField,
+                                          volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+                                          isIndividualSelected: state.isIndividualSelected,
                                           isGroupSelected: value ?? false,
                                         ),
                                       );
@@ -1558,8 +1486,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                             decoration: BoxDecoration(
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(
-                                  color: Colors.green.withOpacity(0.3)),
+                              border: Border.all(color: Colors.green.withOpacity(0.3)),
                             ),
                             child: Row(
                               children: [
@@ -1596,17 +1523,12 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.upload_file,
-                                  color: Colors.white, size: 16),
+                              const Icon(Icons.upload_file, color: Colors.white, size: 16),
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 8.0, right: 8),
+                                padding: const EdgeInsets.only(left: 8.0, right: 8),
                                 child: Text(
-                                  state.cvFileName != null
-                                      ? 'change_cv'.tr()
-                                      : 'attach_cv'.tr(),
-                                  style: const TextStyle(
-                                      fontSize: 14, color: Colors.white),
+                                  state.cvFileName != null ? 'change_cv'.tr() : 'attach_cv'.tr(),
+                                  style: const TextStyle(fontSize: 14, color: Colors.white),
                                 ),
                               ),
                             ],
@@ -1621,8 +1543,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                                 const SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child:
-                                      CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(strokeWidth: 2),
                                 ),
                                 const SizedBox(width: 8),
                                 Text(

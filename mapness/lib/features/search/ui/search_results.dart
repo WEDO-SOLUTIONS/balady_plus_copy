@@ -144,7 +144,8 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
           return const SizedBox.shrink();
         }
 
-        return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex, offers[results[actualResultIndex].tradeLicense?.license.trim()] ?? []);
+        return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex,
+            offers[results[actualResultIndex].tradeLicense?.license.trim()] ?? []);
       },
       itemCount: _calculateTotalItemCount(results.length),
       separatorBuilder: (context, index) => const SizedBox(height: 12),

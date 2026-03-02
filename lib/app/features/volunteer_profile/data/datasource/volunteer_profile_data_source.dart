@@ -28,8 +28,7 @@ abstract class VolunteerProfileRemoteDataSource {
   Future<List<VolunteerLookup>> getInterests();
   Future<List<VolunteerLookup>> getVolunteeringFields();
   Future<CVUploadResponse> uploadCV(FileDataItem file);
-  Future<void> submitProfile(
-      Map<String, dynamic> profileData, String profileId);
+  Future<void> submitProfile(Map<String, dynamic> profileData, String profileId);
 }
 
 class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
@@ -95,10 +94,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -107,8 +103,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -148,10 +143,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -160,8 +152,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -200,10 +191,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -212,8 +200,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -252,10 +239,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -264,8 +248,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -304,10 +287,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -316,8 +296,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -356,10 +335,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -368,8 +344,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -408,10 +383,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -420,8 +392,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -460,10 +431,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -472,8 +440,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -512,10 +479,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -524,8 +488,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -564,10 +527,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -576,8 +536,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -616,10 +575,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -628,8 +584,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -668,10 +623,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
 
       final data = response.data;
       final List result = ResponseBodyModel.fromMap(data).data?.result;
-      return result
-          .map<VolunteerLookup>(
-              (e) => VolunteerLookup.fromJson(e as Map<String, dynamic>))
-          .toList();
+      return result.map<VolunteerLookup>((e) => VolunteerLookup.fromJson(e as Map<String, dynamic>)).toList();
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -680,8 +632,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -716,8 +667,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
       // Read file bytes
       final fileBytes = await File(file.filePath).readAsBytes();
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
-      String newFileName = file.fileName
-          .replaceRange(0, file.fileName.indexOf("."), "$timeStamp");
+      String newFileName = file.fileName.replaceRange(0, file.fileName.indexOf("."), "$timeStamp");
 
       response = await webService.dio.post(
         ApiUrl.uploadVolunteerCV,
@@ -777,8 +727,7 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
   }
 
   @override
-  Future<void> submitProfile(
-      Map<String, dynamic> profileData, String profileId) async {
+  Future<void> submitProfile(Map<String, dynamic> profileData, String profileId) async {
     Response? response;
     try {
       response = await webService.dio.put(

@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
 import '../../../shared_feature_exports.dart'
-    show
-        ClickableWidget,
-        CustomHorizontalSpace,
-        CustomTextWidget,
-        DrawIconBasedTypeWidget;
+    show ClickableWidget, CustomHorizontalSpace, CustomTextWidget, DrawIconBasedTypeWidget;
 
 class DropDownComponent extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
@@ -61,9 +57,6 @@ class DropDownComponent extends StatelessWidget {
     );
   }
 
-  Color get borderColor => isSelected
-      ? AppColor.gray.withOpacity(0.5)
-      : AppColor.gray.withOpacity(0.2);
-  Color get color =>
-      isSelected ? AppColor.gray.withOpacity(0.1) : AppColor.white;
+  Color get borderColor => isSelected ? AppColor.gray.withOpacity(0.5) : AppColor.gray.withOpacity(0.2);
+  Color get color => isSelected ? AppColor.gray.withOpacity(0.1) : AppColor.white;
 }

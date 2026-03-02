@@ -17,8 +17,7 @@ abstract class MakkahPlaceFeature with _$MakkahPlaceFeature {
     @JsonKey(name: 'short_tag_ar') String? shortTagAr,
   }) = _MakkahPlaceFeature;
 
-  factory MakkahPlaceFeature.fromJson(Map<String, dynamic> json) =>
-      _$MakkahPlaceFeatureFromJson(json);
+  factory MakkahPlaceFeature.fromJson(Map<String, dynamic> json) => _$MakkahPlaceFeatureFromJson(json);
 }
 
 @freezed
@@ -57,6 +56,5 @@ abstract class MakkahPlace with _$MakkahPlace {
     @JsonKey(name: 'poi_id') String? poiId,
   }) = _MakkahPlace;
 
-  factory MakkahPlace.fromJson(Map<String, dynamic> json) =>
-      _$MakkahPlaceFromJson(json);
+  factory MakkahPlace.fromJson(Map<String, dynamic> json) => _$MakkahPlaceFromJson(json);
 }

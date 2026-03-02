@@ -4,8 +4,7 @@ import '../../../../../core/utils/utils_exports.dart' show Validation;
 
 class DateAfterValidation extends FormzInput<String, Validation> {
   final String startDate;
-  const DateAfterValidation.pure({required this.startDate})
-      : super.pure(startDate);
+  const DateAfterValidation.pure({required this.startDate}) : super.pure(startDate);
   const DateAfterValidation.dirty({
     required this.startDate,
     required String endDate,

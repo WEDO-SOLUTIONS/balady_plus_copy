@@ -28,19 +28,14 @@ class QuickActionButton extends StatelessWidget {
     final colors = context.colors;
 
     // Determine if Makkah theme is active based on explicit theme mode
-    final isMekkahTheme = themeMode == SpecialThemeMode.mekkahBase ||
-        themeMode == SpecialThemeMode.ramadan;
+    final isMekkahTheme = themeMode == SpecialThemeMode.mekkahBase || themeMode == SpecialThemeMode.ramadan;
 
     final baseTextStyle = context.textStyles.captionSmallMedium.copyWith(
       fontSize: 11,
     );
-    final textStyle =
-        isMekkahTheme
-            ? baseTextStyle.copyWith(color: const Color(0xFF4A3016))
-            : baseTextStyle;
+    final textStyle = isMekkahTheme ? baseTextStyle.copyWith(color: const Color(0xFF4A3016)) : baseTextStyle;
 
-    final displayText =
-        isMekkahTheme && mekkahText != null ? mekkahText! : text;
+    final displayText = isMekkahTheme && mekkahText != null ? mekkahText! : text;
 
     Widget buildIcon() {
       if (isMekkahTheme && assetPath != null) {

@@ -40,12 +40,7 @@ class ActionModel {
           isEnabled == other.isEnabled;
 
   @override
-  int get hashCode =>
-      icon.hashCode ^
-      iconSize.hashCode ^
-      text.hashCode ^
-      onPressed.hashCode ^
-      isEnabled.hashCode;
+  int get hashCode => icon.hashCode ^ iconSize.hashCode ^ text.hashCode ^ onPressed.hashCode ^ isEnabled.hashCode;
 
   @override
   String toString() =>

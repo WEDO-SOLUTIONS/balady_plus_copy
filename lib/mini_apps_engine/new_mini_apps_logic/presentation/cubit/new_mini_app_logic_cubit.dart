@@ -97,12 +97,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
         final appsById = {for (final app in allApps) app.id: app};
 
-        final favoriteApps =
-            savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
+        final favoriteApps = savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
 
         final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-        final unFavoriteApps =
-            allApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
+        final unFavoriteApps = allApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
 
         // Process app groups before emitting state
         final processedAppGroups = processAppGroups(data.appGroups);
@@ -216,14 +214,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         return;
       }
 
-      final baseList =
-          source ?? [...state.favoriteApps, ...state.unFavoriteApps];
+      final baseList = source ?? [...state.favoriteApps, ...state.unFavoriteApps];
 
       final q = trimmed.toLowerCase();
 
       final results = baseList.where((app) {
-        return app.name.toLowerCase().contains(q) ||
-            app.description.toLowerCase().contains(q);
+        return app.name.toLowerCase().contains(q) || app.description.toLowerCase().contains(q);
       }).toList();
 
       emit(
@@ -276,7 +272,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           backgroundColor: Colors.transparent,
           builder: (context) {
             return NeedLoginBottomSheet(
-
               onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
                   Navigator.pop(context);
@@ -292,8 +287,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     /// continue flow
 
-    if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkDto == null) {
+    if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.latestVersion?.deepLinkDto != null) {
@@ -306,8 +300,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         }
       } else {
         if (miniApp.childDeepLinkUrl != null) {
-          MiniApp? parentMAiniApp =
-              state.parentMiniApp[miniApp.parentServiceKey];
+          MiniApp? parentMAiniApp = state.parentMiniApp[miniApp.parentServiceKey];
 
           if (parentMAiniApp != null) {
             NavigationService.pushNamed(
@@ -319,8 +312,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
               ),
             );
           } else {
-            CommonFunctions.showError(
-                'Show errors Not Fund The Parent Maini App'.tr());
+            CommonFunctions.showError('Show errors Not Fund The Parent Maini App'.tr());
           }
         } else {
           NavigationService.pushNamed(
@@ -337,9 +329,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     String? path,
   }) async {
     try {
-      MiniApp miniApp = state.allMiniApps
-          .firstWhere((service) => service.serviceKey == serviceKey)
-          .copyWith();
+      MiniApp miniApp = state.allMiniApps.firstWhere((service) => service.serviceKey == serviceKey).copyWith();
 
       openMiniApp(miniApp);
     } catch (e) {
@@ -365,8 +355,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     MiniApp model = miniApp;
 
     try {
-      final response =
-          await homeServicesUseCases.getMiniAppAcessToken(model.id);
+      final response = await homeServicesUseCases.getMiniAppAcessToken(model.id);
 
       return response.fold(
         (error) {

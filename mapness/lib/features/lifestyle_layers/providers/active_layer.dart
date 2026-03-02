@@ -6,7 +6,6 @@ part 'active_layer.g.dart';
 
 @Riverpod()
 class ActiveLayer extends _$ActiveLayer {
-
   @override
   LayerType? build() => null;
 

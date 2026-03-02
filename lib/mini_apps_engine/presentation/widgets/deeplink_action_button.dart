@@ -30,8 +30,7 @@ class DeepLinkDialogService {
 
 class _DialogControllers {
   final TextEditingController deeplinkController = TextEditingController();
-  final TextEditingController androidPackageController =
-      TextEditingController();
+  final TextEditingController androidPackageController = TextEditingController();
   final TextEditingController iosUrlSchemeController = TextEditingController();
   final TextEditingController appStoreIdController = TextEditingController();
   final TextEditingController playStoreIdController = TextEditingController();
@@ -59,8 +58,7 @@ class _DeepLinkDialogContent extends StatefulWidget {
 }
 
 class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
-  final PlatformType _selectedPlatform =
-      (Platform.isAndroid ? PlatformType.android : PlatformType.ios);
+  final PlatformType _selectedPlatform = (Platform.isAndroid ? PlatformType.android : PlatformType.ios);
 
   @override
   Widget build(BuildContext context) {
@@ -141,22 +139,18 @@ class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
             // If deeplink is provided, we can launch with minimal app info
             if (hasDeeplink) {
               final appInfo = AppInfo(
-                androidPackageName:
-                    widget.controllers.androidPackageController.text.isNotEmpty
-                        ? widget.controllers.androidPackageController.text
-                        : "unknown.package",
-                iosUrlScheme:
-                    widget.controllers.iosUrlSchemeController.text.isNotEmpty
-                        ? widget.controllers.iosUrlSchemeController.text
-                        : null,
-                appStoreId:
-                    widget.controllers.appStoreIdController.text.isNotEmpty
-                        ? widget.controllers.appStoreIdController.text
-                        : null,
-                playStoreId:
-                    widget.controllers.playStoreIdController.text.isNotEmpty
-                        ? widget.controllers.playStoreIdController.text
-                        : null,
+                androidPackageName: widget.controllers.androidPackageController.text.isNotEmpty
+                    ? widget.controllers.androidPackageController.text
+                    : "unknown.package",
+                iosUrlScheme: widget.controllers.iosUrlSchemeController.text.isNotEmpty
+                    ? widget.controllers.iosUrlSchemeController.text
+                    : null,
+                appStoreId: widget.controllers.appStoreIdController.text.isNotEmpty
+                    ? widget.controllers.appStoreIdController.text
+                    : null,
+                playStoreId: widget.controllers.playStoreIdController.text.isNotEmpty
+                    ? widget.controllers.playStoreIdController.text
+                    : null,
               );
 
               Navigator.of(context).pop();
@@ -166,23 +160,20 @@ class _DeepLinkDialogContentState extends State<_DeepLinkDialogContent> {
 
             // Original validation for app info when no deeplink
             final appInfo = AppInfo(
-              androidPackageName:
-                  widget.controllers.androidPackageController.text,
+              androidPackageName: widget.controllers.androidPackageController.text,
               iosUrlScheme: widget.controllers.iosUrlSchemeController.text,
               appStoreId: widget.controllers.appStoreIdController.text,
               playStoreId: widget.controllers.playStoreIdController.text,
             );
 
-            if (_selectedPlatform == PlatformType.android &&
-                widget.controllers.androidPackageController.text.isEmpty) {
+            if (_selectedPlatform == PlatformType.android && widget.controllers.androidPackageController.text.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('android_package_required'.tr())),
               );
               return;
             }
 
-            if (_selectedPlatform == PlatformType.ios &&
-                widget.controllers.iosUrlSchemeController.text.isEmpty) {
+            if (_selectedPlatform == PlatformType.ios && widget.controllers.iosUrlSchemeController.text.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('ios_url_scheme_required'.tr())),
               );
@@ -232,8 +223,7 @@ class DeepLinkActionButton extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.open_in_new,
-                      size: 24, color: AppColor.primary700Light),
+                  const Icon(Icons.open_in_new, size: 24, color: AppColor.primary700Light),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -258,10 +248,7 @@ class DeepLinkActionButton extends StatelessWidget {
               Text(
                 "launch_external_app_description".tr(),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                     ),
               ),
             ],

@@ -6,10 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
-import '../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
-    as hijri_picker;
-import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget, DropDownWithTitle;
+import '../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart' as hijri_picker;
+import '../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget, DropDownWithTitle;
 
 class EventFilterDatePicker extends StatelessWidget {
   final String title;
@@ -52,11 +50,9 @@ class EventFilterDatePicker extends StatelessWidget {
   }
 
   void showPickerHijriDate(DateTime? currentDate, BuildContext context) {
-    final minValue =
-        startDate == null ? null : HijriCalendar.fromDate(startDate!);
+    final minValue = startDate == null ? null : HijriCalendar.fromDate(startDate!);
     final maxValue = endDate == null ? null : HijriCalendar.fromDate(endDate!);
-    final date =
-        currentDate == null ? null : HijriCalendar.fromDate(currentDate);
+    final date = currentDate == null ? null : HijriCalendar.fromDate(currentDate);
 
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
@@ -80,8 +76,7 @@ class EventFilterDatePicker extends StatelessWidget {
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        final date =
-            (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+        final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
         initialDate = date?.hijriToGregorian(
           date.hYear,

@@ -20,8 +20,7 @@ class PoiCardActions extends _$PoiCardActions {
   @override
   void build() {}
 
-  void onError() => Future(() =>
-      ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
+  void onError() => Future(() => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
 
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
@@ -115,8 +114,7 @@ class PoiCardActions extends _$PoiCardActions {
         );
   }
 
-  Future<void> toggleEntrances(DirectoryObjectMessage data,
-      VoidCallback callBack, LatLng? closestPoint) async {
+  Future<void> toggleEntrances(DirectoryObjectMessage data, VoidCallback callBack, LatLng? closestPoint) async {
     Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
         group: MetricsConstants.poiTag,
         action: MetricAction.tap.toString(),
@@ -132,18 +130,13 @@ class PoiCardActions extends _$PoiCardActions {
     }
 
     await _animateToEntrance(
-      data.entrances
-          .map((e) => e.geometry?.entrancePoints ?? [])
-          .toList()
-          .expand((element) => element)
-          .toList(),
+      data.entrances.map((e) => e.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
       closestPoint,
     );
     callBack.call();
   }
 
-  Future<void> _animateToEntrance(
-      List<GeoPointMessage?> data, LatLng? closestPoint) async {
+  Future<void> _animateToEntrance(List<GeoPointMessage?> data, LatLng? closestPoint) async {
     if (data.isEmpty) {
       return;
     }

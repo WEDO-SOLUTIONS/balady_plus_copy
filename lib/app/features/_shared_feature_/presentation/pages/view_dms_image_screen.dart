@@ -32,8 +32,7 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
               Navigator.of(context).pop();
             },
             child: Container(
-              margin: EdgeInsetsDirectional.only(
-                  top: MediaQuery.of(context).padding.top + 5, start: 12),
+              margin: EdgeInsetsDirectional.only(top: MediaQuery.of(context).padding.top + 5, start: 12),
               child: Image.asset(
                 Constants.imgPath + 'exit@3x.png',
                 height: 38,

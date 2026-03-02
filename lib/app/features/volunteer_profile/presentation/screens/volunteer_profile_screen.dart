@@ -31,7 +31,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
 
   // Define the list of steps
   final List<Widget> _steps = [
-     UnifiedStep(),
+    UnifiedStep(),
     // const PersonalInfoStep(),
     // const ScientificInfoStep(),
     // const VolunteeringInterestsStep(),
@@ -130,8 +130,9 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                     IconButton(
                       icon: const Icon(Icons.edit, color: Color(0xFF00796B)),
                       onPressed: () async {
-
-                        Navigator.of(context).pushNamed(RouteName.VolunteerEditProfile,);
+                        Navigator.of(context).pushNamed(
+                          RouteName.VolunteerEditProfile,
+                        );
                         // Store current state before entering edit mode
                         // final currentState = widget.volunteerProfileBloc.state;
                         // final originalValues = {
@@ -230,7 +231,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                         //       ),
                         //     ),
                         //   ),
-                       // );
+                        // );
                       },
                     ),
                   ],
@@ -299,8 +300,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                                       color: Colors.grey[300],
                                       shape: BoxShape.circle,
                                     ),
-                                    child: const Icon(Icons.close,
-                                        color: Colors.blueGrey),
+                                    child: const Icon(Icons.close, color: Colors.blueGrey),
                                   ),
                                 ),
                               ],
@@ -308,8 +308,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                             const SizedBox(height: 8),
                             // Second row: Progress indicator and text, aligned to the right
                             Row(
-                              mainAxisSize:
-                                  MainAxisSize.min, // Shrink row to fit content
+                              mainAxisSize: MainAxisSize.min, // Shrink row to fit content
                               children: [
                                 // Stack(
                                 //   alignment: Alignment.center,
@@ -352,8 +351,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    if (getNextStepTitle(state.currentStep)
-                                        .isNotEmpty) ...[
+                                    if (getNextStepTitle(state.currentStep).isNotEmpty) ...[
                                       const SizedBox(height: 2),
                                       Text(
                                         getNextStepTitle(state.currentStep),
@@ -385,8 +383,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors
-                            .white, // Background color for the curved container
+                        color: Colors.white, // Background color for the curved container
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
@@ -395,65 +392,46 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                           ),
                         ],
                         borderRadius: const BorderRadius.only(
-                          topLeft:
-                              Radius.circular(25.0), // Curved top left corner
-                          topRight:
-                              Radius.circular(25.0), // Curved top right corner
+                          topLeft: Radius.circular(25.0), // Curved top left corner
+                          topRight: Radius.circular(25.0), // Curved top right corner
                         ),
                       ),
                       padding: const EdgeInsets.only(
-                          top: 16.0,
-                          left: 20.0,
-                          right: 20.0,
-                          bottom: 20.0), // Padding inside the container
+                          top: 16.0, left: 20.0, right: 20.0, bottom: 20.0), // Padding inside the container
                       child: ElevatedButton(
                         onPressed: state.isCurrentStepValid
                             ? () {
                                 if (state.currentStep < _steps.length - 1) {
                                   // For non-last steps, validate the form before moving to the next step
-                                  final isFormValid =
-                                      _formKey.currentState?.validate() ??
-                                          false;
+                                  final isFormValid = _formKey.currentState?.validate() ?? false;
 
                                   if (isFormValid) {
                                     // Move to next step
-                                    context
-                                        .read<VolunteerProfileBloc>()
-                                        .add(ChangeStep(state.currentStep + 1));
+                                    context.read<VolunteerProfileBloc>().add(ChangeStep(state.currentStep + 1));
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              'FillFields'.tr())),
+                                      SnackBar(content: Text('FillFields'.tr())),
                                     );
                                   }
                                 } else {
                                   // Last step - submit the form without form validation (social media fields are all optional)
-                                  context
-                                      .read<VolunteerProfileBloc>()
-                                      .add(const SubmitVolunteerProfile());
+                                  context.read<VolunteerProfileBloc>().add(const SubmitVolunteerProfile());
                                 }
                               }
                             : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(
-                              0xFF00796B), // Teal color from screenshot
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 50, vertical: 15),
+                          backgroundColor: const Color(0xFF00796B), // Teal color from screenshot
+                          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                           textStyle: const TextStyle(fontSize: 18),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                8.0), // Slightly less rounded than container
+                            borderRadius: BorderRadius.circular(8.0), // Slightly less rounded than container
                           ),
-                          minimumSize: const Size(double.infinity,
-                              50), // Full width button relative to container padding
+                          minimumSize:
+                              const Size(double.infinity, 50), // Full width button relative to container padding
                         ),
                         child: Text(
-                          state.currentStep < _steps.length - 1
-                              ? 'next'.tr()
-                              : 'submit'.tr(),
-                          style: const TextStyle(
-                              color: Colors.white), // White text color
+                          state.currentStep < _steps.length - 1 ? 'next'.tr() : 'submit'.tr(),
+                          style: const TextStyle(color: Colors.white), // White text color
                         ),
                       ),
                     ),

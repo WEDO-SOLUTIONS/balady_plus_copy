@@ -21,12 +21,10 @@ class SingleEventDescriptionPage extends StatefulWidget {
   const SingleEventDescriptionPage({Key? key}) : super(key: key);
 
   @override
-  State<SingleEventDescriptionPage> createState() =>
-      _SingleEventDescriptionPageState();
+  State<SingleEventDescriptionPage> createState() => _SingleEventDescriptionPageState();
 }
 
-class _SingleEventDescriptionPageState
-    extends State<SingleEventDescriptionPage> {
+class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage> {
   @override
   void initState() {
     super.initState();
@@ -46,8 +44,7 @@ class _SingleEventDescriptionPageState
         body: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
             if (img.isEmpty) img = state.eventDetails.logoUrl ?? "";
-            if (state.status == BlocStatus.loading)
-              return const Center(child: CustomCircularLoadingWidget());
+            if (state.status == BlocStatus.loading) return const Center(child: CustomCircularLoadingWidget());
 
             if (state.status == BlocStatus.failure)
               return Center(child: RetryWidget(
@@ -102,12 +99,9 @@ class _SingleEventDescriptionPageState
                           child: Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).padding.top,
-                                    left: 16),
+                                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 16),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     InkWell(
@@ -115,8 +109,7 @@ class _SingleEventDescriptionPageState
                                         iconSize: 24,
                                         circleSize: 36,
                                         icon: Icons.close,
-                                        backgroundColor:
-                                            Colors.white.withOpacity(0.7),
+                                        backgroundColor: Colors.white.withOpacity(0.7),
                                       ),
                                       onTap: () {
                                         Navigator.of(context).pop();
@@ -129,21 +122,15 @@ class _SingleEventDescriptionPageState
                                       startDay: state.eventDetails.getStartDay(),
                                       startMonth: state.eventDetails.getStartMonth(),
                                     ),*/
-                                    if (state.eventDetails.getEndDateFull() !=
-                                            null &&
-                                        state.eventDetails.getStartDateFull() !=
-                                            null)
+                                    if (state.eventDetails.getEndDateFull() != null &&
+                                        state.eventDetails.getStartDateFull() != null)
                                       GestureDetector(
                                         onTap: () {
-                                          if (state.eventDetails.ticketUrl !=
-                                              null)
-                                            safeShareText(
-                                                state.eventDetails.ticketUrl ??
-                                                    "",
-                                                context: context);
+                                          if (state.eventDetails.ticketUrl != null)
+                                            safeShareText(state.eventDetails.ticketUrl ?? "", context: context);
 
-                                          CommonFunctions.sendUXCamEvent(UXCamEvents
-                                              .Events_List_Click_Item_Share_Event);
+                                          CommonFunctions.sendUXCamEvent(
+                                              UXCamEvents.Events_List_Click_Item_Share_Event);
                                         },
                                         child: Container(
                                           width: 36,
@@ -152,8 +139,7 @@ class _SingleEventDescriptionPageState
                                           decoration: ShapeDecoration(
                                             color: AppColor.primary100Light,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                              borderRadius: BorderRadius.circular(10),
                                             ),
                                           ),
                                           child: SvgPicture.asset(
@@ -194,10 +180,7 @@ class _SingleEventDescriptionPageState
                             height: 16,
                           ),
                           EventCategoryWidget(
-                            category: [
-                              state.eventDetails.season ?? '',
-                              state.eventDetails.category ?? ''
-                            ],
+                            category: [state.eventDetails.season ?? '', state.eventDetails.category ?? ''],
                           ),
                           const SizedBox(
                             height: 16,
@@ -215,9 +198,7 @@ class _SingleEventDescriptionPageState
                           const SizedBox(
                             height: 16,
                           ),
-                          EventsDescriptionWidget(
-                              description:
-                                  state.eventDetails.description ?? ''),
+                          EventsDescriptionWidget(description: state.eventDetails.description ?? ''),
                           const SizedBox(
                             height: 16,
                           ),
@@ -232,11 +213,10 @@ class _SingleEventDescriptionPageState
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedIconButtonWidget.export(
                               onPressed: () {
-                                CommonFunctions.externalLaunch(
-                                    state.eventDetails.ticketUrl);
+                                CommonFunctions.externalLaunch(state.eventDetails.ticketUrl);
 
-                                CommonFunctions.sendUXCamEvent(UXCamEvents
-                                    .Events_List_Click_Item_Move_To_Details_Event);
+                                CommonFunctions.sendUXCamEvent(
+                                    UXCamEvents.Events_List_Click_Item_Move_To_Details_Event);
                               },
                             ),
                           ),

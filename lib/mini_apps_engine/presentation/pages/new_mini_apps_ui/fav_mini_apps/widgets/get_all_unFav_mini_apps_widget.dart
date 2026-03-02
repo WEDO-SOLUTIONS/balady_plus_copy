@@ -32,8 +32,7 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
         }
 
         return ListView.separated(
-          separatorBuilder: (context, index) =>
-              SizedBox(height: context.screenHeight * 0.01),
+          separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.01),
           scrollDirection: Axis.vertical,
           itemCount: state.unFavoriteApps.length,
           shrinkWrap: true,
@@ -85,9 +84,7 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                       CustomMiniAppSwitch(
                         isActive: false,
                         onChanged: (_) {
-                          context
-                              .read<NewMiniAppLogicCubit>()
-                              .toggleFavoriteLocal(miniApp.id);
+                          context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(miniApp.id);
                         },
                       ),
                     ],

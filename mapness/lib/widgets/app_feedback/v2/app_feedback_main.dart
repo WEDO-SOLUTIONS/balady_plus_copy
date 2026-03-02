@@ -206,8 +206,8 @@ class AppFeedbackMain extends HookConsumerWidget {
   String _feedbackSubtitleText(AppLocalizations l10n, int rating, FeedbackSource source) =>
       source is FeedbackSourceOffer ? l10n.offerFeedbackMessage : _ratingText(l10n, rating);
 
-  void openInAppReviewRating (ratingValue) async {
-    if(ratingValue > 3) {
+  void openInAppReviewRating(ratingValue) async {
+    if (ratingValue > 3) {
       final InAppReview inAppReview = InAppReview.instance;
       try {
         final available = await inAppReview.isAvailable();

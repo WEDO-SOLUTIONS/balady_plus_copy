@@ -13,8 +13,7 @@ class HiveManager {
   //   await openBox(boxName: LocalStorageKey.onboardingKey);
   // }
 
-  static Future<bool> checkExistsBox({required String boxName}) async =>
-      await Hive.boxExists(boxName);
+  static Future<bool> checkExistsBox({required String boxName}) async => await Hive.boxExists(boxName);
 
   static Future<bool> checkExistsKeyBox({
     required String boxName,
@@ -24,11 +23,9 @@ class HiveManager {
     return Future.value(box.containsKey(key));
   }
 
-  static bool checkOpenedBox({required String boxName}) =>
-      Hive.isBoxOpen(boxName);
+  static bool checkOpenedBox({required String boxName}) => Hive.isBoxOpen(boxName);
 
-  static Future<Box> openBox({required String boxName}) async =>
-      await Hive.openBox(boxName);
+  static Future<Box> openBox({required String boxName}) async => await Hive.openBox(boxName);
 
   static Future<Box> getOpenedBox({required String boxName}) async {
     final checkIfOpened = Hive.isBoxOpen(boxName);
@@ -123,8 +120,7 @@ class HiveManager {
     await box.deleteAll(keys);
   }
 
-  static Future<void> closeOpenedBox({required Box box}) async =>
-      await box.close();
+  static Future<void> closeOpenedBox({required Box box}) async => await box.close();
 
   static Future<void> closeOpenedBoxWithName({required String boxName}) async {
     Box box = await getOpenedBox(boxName: boxName);

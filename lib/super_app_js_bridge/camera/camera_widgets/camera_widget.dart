@@ -19,8 +19,7 @@ class CameraWidget extends StatefulWidget {
   State<CameraWidget> createState() => _CameraWidgetState();
 }
 
-class _CameraWidgetState extends State<CameraWidget>
-    with WidgetsBindingObserver {
+class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver {
   late CameraBloc bloc;
 
   @override
@@ -37,8 +36,7 @@ class _CameraWidgetState extends State<CameraWidget>
           !context.read<CameraBloc>().cameraController!.value.isInitialized) {
         return;
       }
-      if (state == AppLifecycleState.inactive ||
-          state == AppLifecycleState.paused) {
+      if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
         context.read<CameraBloc>().cameraController?.dispose();
       } else if (state == AppLifecycleState.resumed) {
         context.read<CameraBloc>().add(OnNewCameraSelected());
@@ -74,14 +72,10 @@ class _CameraWidgetState extends State<CameraWidget>
                 ? GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onScaleStart: (details) {
-                      context
-                          .read<CameraBloc>()
-                          .add(SetZoomLevelEvent(zoom: state.scaleFactor));
+                      context.read<CameraBloc>().add(SetZoomLevelEvent(zoom: state.scaleFactor));
                     },
                     onScaleUpdate: (details) {
-                      context
-                          .read<CameraBloc>()
-                          .add(UpdateScaleLevelEvent(scale: details.scale));
+                      context.read<CameraBloc>().add(UpdateScaleLevelEvent(scale: details.scale));
                     },
                     child: SizedBox(
                       height: double.infinity,
@@ -181,9 +175,7 @@ class _CameraWidgetState extends State<CameraWidget>
                     },
                   ),
                   CustomIconButtonWidget(
-                    icon: state.isFlashOn
-                        ? IconPath.vdCameraFlashOff
-                        : IconPath.vdCameraFlashOn,
+                    icon: state.isFlashOn ? IconPath.vdCameraFlashOff : IconPath.vdCameraFlashOn,
                     iconSize: 32,
                     btnHeight: 32,
                     btnWidth: 32,

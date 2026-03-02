@@ -89,8 +89,7 @@ class _MakkahPoiSubtitle extends ConsumerWidget {
 
     // Use coordinates hash as objectId when real id is not available
     // This ensures unique cache keys for briefRouteInfoProvider
-    final coordsHash =
-        markerPosition.latitude.hashCode ^ markerPosition.longitude.hashCode;
+    final coordsHash = markerPosition.latitude.hashCode ^ markerPosition.longitude.hashCode;
     final objectId = data.id?.objectId ?? coordsHash;
 
     final finishPoint = RouteSearchPoint(
@@ -149,8 +148,7 @@ class _MakkahPoiSubtitle extends ConsumerWidget {
     final iconColor = const Color(0xFF4A3016).withOpacity(0.8);
 
     final isArabic = Directionality.of(context) == TextDirection.rtl;
-    final generalTag =
-        isArabic ? makkahPlace?.generalTagAr : makkahPlace?.generalTagEn;
+    final generalTag = isArabic ? makkahPlace?.generalTagAr : makkahPlace?.generalTagEn;
 
     final hasGeneralTag = generalTag != null && generalTag.isNotEmpty;
     final hasDuration = durationText != null && durationText.isNotEmpty;
@@ -160,9 +158,7 @@ class _MakkahPoiSubtitle extends ConsumerWidget {
     }
 
     // Choose icon based on useWalkIcon flag
-    final iconPath = (useWalkIcon ?? false)
-        ? MakkahPoiConstants.walkIconPath
-        : MakkahPoiConstants.carIconPath;
+    final iconPath = (useWalkIcon ?? false) ? MakkahPoiConstants.walkIconPath : MakkahPoiConstants.carIconPath;
 
     return Row(
       children: [

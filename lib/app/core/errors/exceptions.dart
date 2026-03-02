@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart' show DioError, RequestOptions, Response;
 
-import '../utils/utils_exports.dart'
-    show APIResponsesConversion, ApiResponse, CommonFunctions;
+import '../utils/utils_exports.dart' show APIResponsesConversion, ApiResponse, CommonFunctions;
 
 // Global Exceptions
 class ServerException implements Exception {
@@ -14,12 +13,7 @@ class ServerException implements Exception {
   final Exception? exception;
 
   ServerException(this.errorMessage,
-      {this.statusCode,
-      this.statusMessage,
-      this.dioError,
-      this.response,
-      this.errorCode,
-      this.exception}) {
+      {this.statusCode, this.statusMessage, this.dioError, this.response, this.errorCode, this.exception}) {
     // CommonFunctions.sendEvent(
     //     dioError: dioError,
     //     response: response,
@@ -48,8 +42,7 @@ class CannotDrawAppBarTitleWidgetException implements Exception {}
 
 /* ------------ Web Services Exceptions ------------ */
 class DeadlineExceededException extends DioError {
-  DeadlineExceededException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  DeadlineExceededException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
   String toString() => ApiResponse.deadlineExceeded.getErrorMessage(response);
@@ -122,40 +115,33 @@ class InternalServerErrorException extends DioError {
   ) : super(requestOptions: requestOptions, response: response);
 
   @override
-  String toString() =>
-      ApiResponse.internalServerError.getErrorMessage(response);
+  String toString() => ApiResponse.internalServerError.getErrorMessage(response);
 }
 
 class NoInternetConnectionException extends DioError {
-  NoInternetConnectionException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  NoInternetConnectionException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
-  String toString() =>
-      ApiResponse.noInternetConnection.getErrorMessage(response);
+  String toString() => ApiResponse.noInternetConnection.getErrorMessage(response);
 }
 
 //! Tokens Exceptions
 class TokenNotFoundException extends DioError {
-  TokenNotFoundException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  TokenNotFoundException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
   String toString() => ApiResponse.tokenNotFound.getErrorMessage(response);
 }
 
 class FailedToGenerateTokenException extends DioError {
-  FailedToGenerateTokenException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  FailedToGenerateTokenException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
-  String toString() =>
-      ApiResponse.failedToGenerateToken.getErrorMessage(response);
+  String toString() => ApiResponse.failedToGenerateToken.getErrorMessage(response);
 }
 
 class TokenHasExpiredException extends DioError {
-  TokenHasExpiredException(RequestOptions requestOptions)
-      : super(requestOptions: requestOptions);
+  TokenHasExpiredException(RequestOptions requestOptions) : super(requestOptions: requestOptions);
 
   @override
   String toString() => ApiResponse.tokenHasExpired.getErrorMessage(response);

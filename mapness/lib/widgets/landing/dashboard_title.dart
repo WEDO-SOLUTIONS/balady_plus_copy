@@ -12,10 +12,7 @@ class DashboardTitle extends StatelessWidget {
     final colors = context.colors;
     final isMekkahTheme = colors.accentSecondaryDefault.value == 0xFFC56846;
     final baseStyle = context.textStyles.h3SemiBold;
-    final textStyle =
-        isMekkahTheme
-            ? baseStyle.copyWith(color: const Color(0xFF4A3016))
-            : baseStyle;
+    final textStyle = isMekkahTheme ? baseStyle.copyWith(color: const Color(0xFF4A3016)) : baseStyle;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),

@@ -61,8 +61,7 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     );
   }
 
-  Map<String, EntryPoints> mapOnMiniAppEntryPoint(
-      Map<String, EntryPoints> mapEntryPoints, MiniApp item) {
+  Map<String, EntryPoints> mapOnMiniAppEntryPoint(Map<String, EntryPoints> mapEntryPoints, MiniApp item) {
     for (var entryPoints in item.entryPoints) {
       if (mapEntryPoints[entryPoints.entryPointKey] == null) {
         mapEntryPoints[entryPoints.entryPointKey] = EntryPoints(
@@ -80,8 +79,7 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     return mapEntryPoints;
   }
 
-  Map<String, CategoryGroup> mapOnAppCategoryGroup(
-      Map<String, CategoryGroup> mapAppCategoryGroup, MiniApp item) {
+  Map<String, CategoryGroup> mapOnAppCategoryGroup(Map<String, CategoryGroup> mapAppCategoryGroup, MiniApp item) {
     for (var category in item.categories) {
       if (mapAppCategoryGroup[category.id] == null) {
         mapAppCategoryGroup[category.id] = CategoryGroup(

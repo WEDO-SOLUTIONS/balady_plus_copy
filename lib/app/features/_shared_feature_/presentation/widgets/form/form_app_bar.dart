@@ -7,8 +7,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show CommonFunctions, IconPath;
+import '../../../../../core/utils/utils_exports.dart' show CommonFunctions, IconPath;
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../home_page/home_exports.dart' show CircleIcon;
@@ -19,11 +18,7 @@ class FormAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback backOnPress;
   final VoidCallback onClose;
   const FormAppBar(
-      {Key? key,
-      required this.currentStep,
-      required this.backOnPress,
-      required this.pageLength,
-      required this.onClose})
+      {Key? key, required this.currentStep, required this.backOnPress, required this.pageLength, required this.onClose})
       : super(key: key);
 
   @override

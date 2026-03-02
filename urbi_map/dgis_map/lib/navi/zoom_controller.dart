@@ -33,8 +33,7 @@ class NaviZoomController {
 
   /// All events without filtering
   final Stream<ZoomControlEnabledEvent> _events;
-  final Future<void> Function(ZoomControlType, {required bool isPressed})
-      _onZoomAction;
+  final Future<void> Function(ZoomControlType, {required bool isPressed}) _onZoomAction;
   late List<StreamSubscription> _subscriptions;
 
   final zoomInState = ValueNotifier(true);
@@ -48,8 +47,7 @@ class NaviZoomController {
     return _onZoomAction(type, isPressed: true);
   }
 
-  Stream<ZoomControlEnabledEvent> get zoomInEvents =>
-      _events.where((event) => event.button == ZoomControlType.zoomIn);
+  Stream<ZoomControlEnabledEvent> get zoomInEvents => _events.where((event) => event.button == ZoomControlType.zoomIn);
 
   Stream<ZoomControlEnabledEvent> get zoomOutEvents =>
       _events.where((event) => event.button == ZoomControlType.zoomOut);

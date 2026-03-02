@@ -25,8 +25,7 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
       response = await webServices.dio.get("/v1/balady-mini-apps/services");
 
       var result = response.data["data"]["result"]['items'];
-      List<MiniAppModel> list =
-          result.map<MiniAppModel>((e) => MiniAppModel.fromJson(e)).toList();
+      List<MiniAppModel> list = result.map<MiniAppModel>((e) => MiniAppModel.fromJson(e)).toList();
       return list;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

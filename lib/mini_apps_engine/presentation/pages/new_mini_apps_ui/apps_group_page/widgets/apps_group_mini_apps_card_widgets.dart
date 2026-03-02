@@ -43,8 +43,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
           ? Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: context.screenWidth * 0.01),
+                  padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
                   child: SizedBox(
                     width: width ?? context.w(87.12268829345703),
                     height: height ?? context.h(87.12268829345703),
@@ -61,8 +60,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                           isVerifyingKey: true,
                           imageWidth: iconWidth ?? context.w(60),
                           imageHeight: iconHeight ?? context.h(60),
-                          placeHolderWidget:
-                              SvgPicture.asset(ImagePath.calendarBackground),
+                          placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
                         ),
                         // SvgPicture.asset(
                         //   IconPath.defaultMiniAppIcon,
@@ -94,8 +92,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
               ],
             )
           : Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+              padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
               child: SizedBox(
                 width: width ?? context.w(87.12268829345703),
                 height: height ?? context.h(87.12268829345703),
@@ -112,8 +109,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                       isVerifyingKey: true,
                       imageWidth: iconWidth ?? context.w(60),
                       imageHeight: iconHeight ?? context.h(60),
-                      placeHolderWidget:
-                          SvgPicture.asset(ImagePath.calendarBackground),
+                      placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
                     ),
                   ),
                 ),

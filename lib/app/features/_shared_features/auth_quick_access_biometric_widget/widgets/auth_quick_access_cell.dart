@@ -16,8 +16,7 @@ class AuthQuickAccessCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticatedState state =
-        context.read<AuthenticationBloc>().state as AuthenticatedState;
+    AuthenticatedState state = context.read<AuthenticationBloc>().state as AuthenticatedState;
     return Column(
       children: [
         Padding(
@@ -30,8 +29,7 @@ class AuthQuickAccessCell extends StatelessWidget {
             child: InkWell(
               onTap: () {
                 NavigationService.pushNamed(
-                  routeName:
-                      AuthenticationRouteName.registerPassCodeStep1Screen,
+                  routeName: AuthenticationRouteName.registerPassCodeStep1Screen,
                   args: LoginDataModel.fromJson(state.loginData.toJson()),
                 );
               },
@@ -58,14 +56,13 @@ class AuthQuickAccessCell extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 2.0),
                         child: Text(
                           'quick_access'.tr(),
-                          style:
-                              Theme.of(context).textTheme.labelMedium!.copyWith(
-                                    color: const Color(0xFF1E2A36),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: AppConfig.appFontType,
-                                    // height: 24,
-                                  ),
+                          style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                color: const Color(0xFF1E2A36),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: AppConfig.appFontType,
+                                // height: 24,
+                              ),
                         ),
                       ),
                       const Spacer(),

@@ -1,13 +1,9 @@
-import 'package:country_picker/country_picker.dart'
-    show Country, showCountryPicker;
+import 'package:country_picker/country_picker.dart' show Country, showCountryPicker;
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, UIHelper;
-import '../../../shared_feature_exports.dart'
-    show CustomElevatedIconButtonWidget, ErrorUnderWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, UIHelper;
+import '../../../shared_feature_exports.dart' show CustomElevatedIconButtonWidget, ErrorUnderWidget;
 
 class CustomCountryPickerWidget extends StatelessWidget {
   final Country? initialCountry;
@@ -64,11 +60,9 @@ class CustomCountryPickerWidget extends StatelessWidget {
     );
   }
 
-  String get btnText =>
-      initialCountry?.displayNameNoCountryCode ?? "selectFromHere".tr();
+  String get btnText => initialCountry?.displayNameNoCountryCode ?? "selectFromHere".tr();
   TextStyle get btnTextStyle => AppStyle.pickerStyle;
-  EdgeInsetsGeometry get btnPadding =>
-      padding ?? const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding);
+  EdgeInsetsGeometry get btnPadding => padding ?? const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding);
   Color get btnColor => filledColor ?? AppColor.gray.withOpacity(0.5);
   Color get btnBorderColor => borderColor ?? AppColor.gray;
 

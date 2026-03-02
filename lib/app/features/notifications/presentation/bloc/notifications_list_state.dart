@@ -41,8 +41,7 @@ final class SucceedEventsListState extends NotificationsListState {
   List<Object?> get props => [listMessages, listMessages.length];
 }
 
-final class SucceedWithPaginationNotificationsListState
-    extends SucceedEventsListState {
+final class SucceedWithPaginationNotificationsListState extends SucceedEventsListState {
   final int page;
 
   SucceedWithPaginationNotificationsListState({

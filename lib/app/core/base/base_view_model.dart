@@ -56,10 +56,7 @@ class BaseViewModel extends ChangeNotifier {
             title: error,
             backgroundColor: const Color.fromARGB(255, 204, 51, 51),
             titleStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.normal,
-                fontSize: 16.0),
+                color: Colors.white, fontWeight: FontWeight.w500, fontStyle: FontStyle.normal, fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
       } catch (error, stackTrace) {

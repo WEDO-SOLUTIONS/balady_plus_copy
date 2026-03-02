@@ -15,8 +15,7 @@ class BridgeParams extends Equatable {
     this.clearAuth = false,
   });
 
-  BridgeFlow get flowType =>
-      flow ?? (isAuthenticated ? BridgeFlow.home : BridgeFlow.signIn);
+  BridgeFlow get flowType => flow ?? (isAuthenticated ? BridgeFlow.home : BridgeFlow.signIn);
 
   @override
   List<Object?> get props => [flow, clearAuth];
@@ -34,6 +33,5 @@ class BridgeParams extends Equatable {
   }
 
   @override
-  String toString() =>
-      'BridgeParams(flow: $flow, isAuthenticated: $isAuthenticated, clearAuth: $clearAuth)';
+  String toString() => 'BridgeParams(flow: $flow, isAuthenticated: $isAuthenticated, clearAuth: $clearAuth)';
 }

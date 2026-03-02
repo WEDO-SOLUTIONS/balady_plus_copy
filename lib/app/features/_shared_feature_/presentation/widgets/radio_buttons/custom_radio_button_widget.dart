@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, WidgetConversion;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, ErrorUnderWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, WidgetConversion;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, ErrorUnderWidget;
 
 class CustomRadioButtonWidget extends StatelessWidget {
   final TextDirection? directionality;
@@ -61,8 +59,7 @@ class CustomRadioButtonWidget extends StatelessWidget {
               // Radio
               _RadioWidget(
                 radius: radioRadius,
-                radioColor: radioColor ??
-                    (isSelected ? AppColor.white : Colors.transparent),
+                radioColor: radioColor ?? (isSelected ? AppColor.white : Colors.transparent),
                 fillColor: _fillColor,
                 borderColor: _borderColor,
                 radioValue: radioValue,
@@ -87,10 +84,8 @@ class CustomRadioButtonWidget extends StatelessWidget {
 
   bool get isSelected => selected || radioGroupValue == radioValue;
 
-  Color get _fillColor =>
-      isSelected ? radioColor ?? AppColor.primary900Light : Colors.transparent;
-  Color get _borderColor =>
-      isSelected ? fillColor ?? Colors.transparent : AppColor.primary900Light;
+  Color get _fillColor => isSelected ? radioColor ?? AppColor.primary900Light : Colors.transparent;
+  Color get _borderColor => isSelected ? fillColor ?? Colors.transparent : AppColor.primary900Light;
 }
 
 class _RadioWidget extends StatelessWidget {

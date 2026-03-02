@@ -53,8 +53,7 @@ class SaudiNationalDay extends _$SaudiNationalDay {
     final now = DateTime.now();
 
     // If the current time is more than 2 hours before the start or after end date, don't start the timer
-    final isBeforeStart =
-        now.isBefore(SaudiNationalDayConfig.startDate.subtract(const Duration(hours: 2)));
+    final isBeforeStart = now.isBefore(SaudiNationalDayConfig.startDate.subtract(const Duration(hours: 2)));
     final isAfterEnd = now.isAfter(SaudiNationalDayConfig.endDate.add(const Duration(hours: 2)));
     if (isBeforeStart || isAfterEnd) {
       return;
@@ -72,8 +71,7 @@ class SaudiNationalDay extends _$SaudiNationalDay {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-    return now.isAfter(SaudiNationalDayConfig.startDate) &&
-        now.isBefore(SaudiNationalDayConfig.endDate);
+    return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
   }
 
   /// Manually triggers an update of the state
@@ -101,8 +99,7 @@ class SaudiNationalDay extends _$SaudiNationalDay {
     }
 
     final now = DateTime.now();
-    return now.isAfter(SaudiNationalDayConfig.startDate) &&
-        now.isBefore(SaudiNationalDayConfig.endDate);
+    return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
   }
 
   /// Provider that returns the remaining time until Saudi National Day

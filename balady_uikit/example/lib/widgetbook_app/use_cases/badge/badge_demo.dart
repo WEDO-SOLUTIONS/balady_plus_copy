@@ -157,7 +157,6 @@ Widget badgeDemo(BuildContext context) {
               badgeSecondary(context, BadgeType.info3),
             ],
           ),
-
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [

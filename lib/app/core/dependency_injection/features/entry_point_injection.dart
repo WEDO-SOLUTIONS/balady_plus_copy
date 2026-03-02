@@ -59,8 +59,7 @@ class EntryPointInjection {
 
     //! Repository
     sl.registerLazySingleton<EntryPointRepository>(
-      () => EntryPointRepositoryImpl(
-          localDataSource: sl(), remoteDataSource: sl()),
+      () => EntryPointRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()),
     );
 
     //! Data Sources

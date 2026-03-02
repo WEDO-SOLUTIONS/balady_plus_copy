@@ -50,8 +50,7 @@ class StaggeredAppear extends StatefulWidget {
   State<StaggeredAppear> createState() => _StaggeredAppearState();
 }
 
-class _StaggeredAppearState extends State<StaggeredAppear>
-    with SingleTickerProviderStateMixin {
+class _StaggeredAppearState extends State<StaggeredAppear> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   bool _done = false;
 
@@ -62,8 +61,7 @@ class _StaggeredAppearState extends State<StaggeredAppear>
     final total = widget.initialDelay +
         (widget.children.isEmpty
             ? Duration.zero
-            : widget.itemDuration +
-                widget.itemDelay * (widget.children.length - 1));
+            : widget.itemDuration + widget.itemDelay * (widget.children.length - 1));
 
     _controller = AnimationController(vsync: this, duration: total)
       ..addStatusListener((status) {
@@ -101,8 +99,7 @@ class _StaggeredAppearState extends State<StaggeredAppear>
   Interval _intervalForIndex(int i) {
     // Compute each item’s time window within controller’s [0..1]
     final totalMs = (_controller.duration?.inMilliseconds ?? 1).toDouble();
-    final startMs = widget.initialDelay.inMilliseconds +
-        (widget.itemDelay.inMilliseconds * i);
+    final startMs = widget.initialDelay.inMilliseconds + (widget.itemDelay.inMilliseconds * i);
     final endMs = startMs + widget.itemDuration.inMilliseconds;
     final start = (startMs / totalMs).clamp(0.0, 1.0);
     final end = (endMs / totalMs).clamp(start + 0.001, 1.0);

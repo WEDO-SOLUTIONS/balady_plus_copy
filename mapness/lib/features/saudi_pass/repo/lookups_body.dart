@@ -102,7 +102,7 @@ class OfferType extends NameId {
 class OfferProvider extends NameId {
   final String logo;
 
-  const OfferProvider({this.logo='', required super.id, required super.name});
+  const OfferProvider({this.logo = '', required super.id, required super.name});
 
   factory OfferProvider.fromJson(Map<String, dynamic> json) => _$OfferProviderFromJson(json);
 }
