@@ -56,4 +56,5 @@ class DelegatorsState extends Equatable {
         errorMessage,
         tab
       ];
+
 }

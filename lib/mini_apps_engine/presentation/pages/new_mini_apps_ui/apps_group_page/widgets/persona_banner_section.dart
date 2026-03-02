@@ -56,14 +56,14 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                       final selectionChanged = previousSelection != currentSelection;
 
                       if (selectionChanged) {
-                        debugPrint("DEBUG: Selection actually changed from '$previousSelection' to '$currentSelection'");
+                        print("DEBUG: Selection actually changed from '$previousSelection' to '$currentSelection'");
                       }
 
                       return selectionChanged;
                     },
                     listener: (context, state) {
                       // Refresh dashboard when delegator/agent selection changes
-                      debugPrint(
+                      print(
                         "DEBUG: Delegator selection changed - Delegator: ${state.selectedDelegate?.entityName}, Agent: ${state.selectedAgent?.grantorName}",
                       );
                       final dashboardBloc = context.read<DashboardBloc>();
@@ -163,7 +163,7 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                                     WidgetsBinding.instance.addPostFrameCallback((_) {
                                       final dashboardBloc = context.read<DashboardBloc>();
                                       if (dashboardBloc.state.status == BlocRequestStatus.initial) {
-                                        debugPrint("DEBUG: Initializing dashboard with selected account");
+                                        print("DEBUG: Initializing dashboard with selected account");
                                         dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
                                       }
                                     });
@@ -329,7 +329,7 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
 
   void _applyAccountSelection(DelegatorsCubit cubit) {
     // Apply account selection logic immediately
-    debugPrint("DEBUG: Applying account selection for group: ${widget.groupId}");
+    print("DEBUG: Applying account selection for group: ${widget.groupId}");
     AccountSelectionService.applyAccountSelectionForGroup(widget.groupId, cubit);
   }
 
