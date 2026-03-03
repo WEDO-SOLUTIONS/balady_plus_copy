@@ -343,7 +343,7 @@ class Data extends ConsumerWidget {
                   const SizedBox(width: Spacing.$0_5x),
                   Text(
                     counter,
-                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.staticMutedBlue),
+                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundMuted),
                   ),
                 ],
               ),

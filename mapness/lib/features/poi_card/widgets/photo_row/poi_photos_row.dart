@@ -11,7 +11,9 @@ import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photo_failure.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photo_loading.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:provider/provider.dart';
 
 class PoiPhotosRow extends ConsumerWidget {

@@ -2,9 +2,9 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../app/core/utils/constants/app_colors.dart';
 
 class MiniAppsItemWidget extends StatelessWidget {
-  final MiniAppModel miniApp;
+  final MiniApp miniApp;
   final bool isEvent;
 
   const MiniAppsItemWidget({super.key, required this.miniApp, required this.isEvent});
@@ -37,7 +37,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: ImageIconBasedTypeWidget(
-                        icon: miniApp.logoKey!,
+                        icon: miniApp.iconPath,
                         type: miniApp.cdnLogoRef?.split(".").last,
                         iconSize: 40,
                         iconColor: isEvent ? AppColor.primary900LightEvent : AppColor.primary900Light,
@@ -45,7 +45,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      miniApp.serviceName ?? '',
+                      miniApp.name,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 17,
@@ -75,7 +75,7 @@ class MiniAppsItemWidget extends StatelessWidget {
   void _handleTap(BuildContext context) async {
     if (miniApp.latestVersion?.nafathLogin == true &&
         !CommonProperties.isLoggedInMunicipality &&
-        miniApp.latestVersion?.deepLinkModel == null) {
+        miniApp.latestVersion?.deepLinkDto == null) {
       showDialog(
         context: context,
         builder: (ctx) => NeedLoginDialog(
@@ -86,19 +86,19 @@ class MiniAppsItemWidget extends StatelessWidget {
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel == null) {
+    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
-        context.read<HomeMiniAppsListCubit>().openMiniApp(
+        context.read<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
           serviceKey: "municipalservice",
           path: "#Volunteer_Home_Screen",
         );
       } else {
-        if (miniApp.latestVersion?.deepLinkModel != null) {
+        if (miniApp.latestVersion?.deepLinkDto != null) {
           try {
             await AppLaunchService.launchApp(
-              deepLinkInfo: miniApp.latestVersion!.deepLinkModel!,
+              deepLinkInfo: miniApp.latestVersion!.deepLinkDto!,
               //deepLink: deeplink,
             );
           } catch (e) {

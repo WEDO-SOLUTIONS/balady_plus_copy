@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
@@ -200,6 +201,8 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       BaladyAppThemes.light => AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
       BaladyAppThemes.dark => AppColorsThemeV3.palette(themes: BaladyAppThemes.dark),
       BaladyAppThemes.saudiDay => AppColorsThemeV3.palette(themes: BaladyAppThemes.saudiDay),
+      BaladyAppThemes.foundationDay => AppColorsThemeV3.palette(themes: BaladyAppThemes.foundationDay),
+      BaladyAppThemes.mekkah => AppColorsThemeV3.palette(themes: BaladyAppThemes.mekkah),
     };
     return Center(
       child: Text(

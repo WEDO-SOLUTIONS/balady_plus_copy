@@ -63,7 +63,7 @@ class RoutingMapControls extends ConsumerWidget {
                           if (onAddStop != null) ...[
                             const SizedBox(width: uikit.Spacing.$2x),
                             uikit.AppButton(
-                              color: context.colors.onMapSurfaceOnMap,
+                              color: context.colors.onmapSurfaceOnMap,
                               iconColor: context.colors.foregroundSoft,
                               innerPadding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
                               primaryLabel: context.l10n.addStop,

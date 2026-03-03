@@ -179,8 +179,6 @@ class CategoryHeader extends StatelessWidget {
       key: ValueKey<bool>(isHighlighted),
       leading: getCategorySvg(category.id, context),
       onTap: () => onTap(category.id),
-      startTextPadding: 0,
-      endTextPadding: 0,
       text: ContentRowTextOptions(
         titleOptions: ContentRowTextOption(
           builder: (context) => Text(
@@ -230,7 +228,7 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsetsDirectional.only(top: Spacing.$2_5x, bottom: Spacing.$2_5x),
+    padding: const EdgeInsetsDirectional.only(top: Spacing.$2x, bottom: Spacing.$2x),
     margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
@@ -257,8 +255,6 @@ class SubCategoryWidget extends StatelessWidget {
         key: ValueKey<bool>(view.isHighlighted),
         leading: categoryId != null ? getCategorySvg(categoryId!, context) : null,
         onTap: () => view.onTap(context),
-        startTextPadding: 0,
-        endTextPadding: 0,
         text: ContentRowTextOptions(
           titleOptions: ContentRowTextOption(
             builder: (context) {

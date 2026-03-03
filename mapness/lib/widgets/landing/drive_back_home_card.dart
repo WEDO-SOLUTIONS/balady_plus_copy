@@ -9,11 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,6 +25,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:provider/provider.dart';
+import 'package:dgis_map/library.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class DriveBackHomeCard extends ConsumerStatefulWidget {
@@ -36,7 +40,9 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
   @override
   Widget build(BuildContext context) {
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final activeCityEvent = ref.watch(activeCityEventProvider);
+
+    final showBlueCircles = activeCityEvent?.showBlueCircles ?? true;
 
     super.build(context);
     return Padding(
@@ -46,55 +52,57 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
         child: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(RadiusBorder.xl), boxShadow: Shadows.s),
           width: double.infinity,
-          height: 114,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.xl),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.colors.backgroundSurface5,
-                image: DecorationImage(
-                  image: switch (context.read<ThemeController>().currentTheme) {
-                    BaladyAppThemes.dark => Assets.images.driveHomeBackgroundDark.provider(),
-                    BaladyAppThemes.light => Assets.images.driveHomeBackgroundSaudiday.provider(),
-                    BaladyAppThemes.saudiDay => Assets.images.driveHomeBackgroundSaudiday.provider(),
-                  },
-                  matchTextDirection: true,
-                  fit: BoxFit.cover,
-                  alignment: AlignmentDirectional.centerEnd,
-                ),
+          height: 123,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              boxShadow: Shadows.s,
+              image: DecorationImage(
+                image: activeCityEvent?.driveHomeBackground ?? Assets.images.driveHomeBackground.provider(),
+                matchTextDirection: true,
+                fit: BoxFit.cover,
+                alignment: AlignmentDirectional.centerEnd,
               ),
-              child: Stack(
-                children: [
-                  if (!isNationalDay) ...[
-                    const Positioned(top: -17, left: -45, child: _BluredCircle(size: 190, blur: 60, opacity: 0.6)),
-                    const Positioned(top: -42, right: -7, child: _BluredCircle(size: 150, blur: 60, opacity: 0.6)),
-                  ],
-                  Align(
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: isNationalDay
-                        ? Assets.images.driveHomeArrowSaudiday.image(matchTextDirection: true)
-                        : Assets.images.driveHomeArrow.image(matchTextDirection: true),
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.topStart,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
-                      child: RichText(
-                        text: TextSpan(
-                          text: context.l10n.driveBack,
-                          style: context.textStyles.h3Medium.copyWith(color: context.colors.foregroundDefault),
-                          children: [
-                            TextSpan(
-                              text: '\n${context.l10n.homeQuestionMark}',
-                              style: context.textStyles.h3Medium.copyWith(color: context.colors.accentDefault),
-                            ),
-                          ],
-                        ),
-                      ),
+            ),
+            child: Stack(
+              children: [
+                if (showBlueCircles) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    child: const Stack(
+                      children: [
+                        Positioned(top: 40, left: -60, child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4)),
+                        Positioned(top: -110, right: -140, child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3)),
+                      ],
                     ),
                   ),
                 ],
-              ),
+                Align(
+                  alignment: AlignmentDirectional.topEnd,
+                  child:
+                      activeCityEvent?.driveHomeArrow ?? Assets.images.driveHomeArrow.image(matchTextDirection: true),
+                ),
+                Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
+                    child: RichText(
+                      text: TextSpan(
+                        text: context.l10n.driveBack,
+                        style: context.textStyles.h3Medium.copyWith(
+                          color: activeCityEvent?.textColor(context.colors) ?? context.colors.staticWhite,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '\n${context.l10n.homeQuestionMark}',
+                            style: context.textStyles.h3Medium.copyWith(color: context.colors.accentDefault),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -108,9 +116,15 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final router = context.router;
 
     debouncer.debounce(
-      () async => ref
-          .read(authMethodsProvider.notifier)
-          .authAndOpen(context, callback: () async => authAndOpenNavigator(ref, router, locationLabel, homeLabel)),
+      () async => ref.read(authMethodsProvider.notifier).authAndOpen(
+            context,
+            callback: () async => authAndOpenNavigator(
+              ref,
+              router,
+              locationLabel,
+              homeLabel,
+            ),
+          ),
     );
   }
 
@@ -147,7 +161,11 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
     /// If there is no home ask user to add it.
     if (home == null) {
-      await router.push(FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home));
+      await router.push(
+        FavouritesSearchRoute(
+          markerType: FavouriteItemMarkerType.home,
+        ),
+      );
       return ref.refresh(favouriteCacheProvider).value?.home;
     }
     return home;
@@ -168,6 +186,25 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     );
 
     return (startLocation, finishLocation);
+  }
+
+  Future<void> navigateBackHomeCallback(
+    AsyncValue<List<RouteInfo>> current,
+    String locationLabel,
+    String homeLabel,
+    WidgetRef ref,
+    RouteParamsPoint startLocation,
+    RouteParamsPoint finishLocation,
+  ) async {
+    final routes = current.value;
+    final route = routes?.firstOrNull;
+    if (route == null) {
+      return;
+    }
+
+    await setupMap(ref);
+
+    await openNavigation(ref, locationLabel, homeLabel, startLocation, finishLocation);
   }
 
   Future<void> openNavigation(
@@ -197,7 +234,10 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   Future<void> setupMap(WidgetRef ref) async {
     final mapSetting = MapObjectManagerSettings.search();
     await ref
-        .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
+        .read(mapObjectManagerProvider(
+          named: mapSetting.name,
+          layerId: mapSetting.layerId,
+        ).notifier)
         .removeAllMarkers();
 
     Metrics.logEventAdvanced(

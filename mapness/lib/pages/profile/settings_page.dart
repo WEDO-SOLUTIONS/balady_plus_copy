@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_features/auth_quick_access_biometric_widget/widgets/auth_quick_access_biometric_widget.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';

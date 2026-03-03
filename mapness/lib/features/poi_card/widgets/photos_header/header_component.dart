@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
@@ -16,19 +17,27 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   static const photosMinHeight = 96.0;
   static const photosMaxHeight = 216 + PoiHeader.poiHeaderBorderRadius;
 
-  final bool photosEmpty;
   final bool photosAreLoading;
   final int objectId;
-
-  const HeaderComponent({required this.photosEmpty, required this.photosAreLoading, required this.objectId, super.key})
-    : super(defaultState: PoiCardBottomSheetState.halfOpen);
+final int photosCount;
+  const HeaderComponent({
+    required this.photosCount,
+    required this.photosAreLoading,
+    required this.objectId,
+    super.key,
+  }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final photosSizeTransform = _transformPhotoSize(state, interpolation);
-    final isItParkingSpot = objectId == parkingObjectId;
+final topHeaderHeightTransform = min(1.0, photosSizeTransform / photosMinHeight);
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
+    final isItParkingSpot = objectId == parkingObjectId;
+    final photosEmpty = photosCount == 0;
     final showPhotos = !photosEmpty || photosAreLoading || isItParkingSpot;
+
+    final fitWidth = photosCount == 1;
 
     return Directionality(
       textDirection: photosEmpty ? TextDirection.ltr : Directionality.of(context),
@@ -40,8 +49,13 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
             builder: (context) {
               if (showPhotos) {
                 return SizedBox(
-                  height: photosSizeTransform > 0 ? photosSizeTransform : photosMinHeight,
-                  child: PoiPhotosRow(objectId: objectId, state: state, interpolation: interpolation),
+height: photosSizeTransform,
+                  width: fitWidth ? screenWidth : null,
+                  child: PoiPhotosRow(
+                    objectId: objectId,
+                    state: state,
+                    interpolation: interpolation,
+                  ),
                 );
               }
               return Row(
@@ -86,7 +100,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
 
     final _parkingObjectId = objectId == parkingObjectId;
 
-    final hidePhotos = photosEmpty && !photosAreLoading && !_parkingObjectId;
+    final hidePhotos = photosCount == 0 && !photosAreLoading && !_parkingObjectId;
     if (hidePhotos && state == PoiCardBottomSheetState.halfOpen) {
       return photosMinHeight * (1 - interpolation);
     }

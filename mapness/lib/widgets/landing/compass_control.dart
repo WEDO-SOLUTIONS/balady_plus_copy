@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'dart:math';
 
 import 'package:balady_uikit/core/colorsV2/themes.dart';
@@ -17,6 +18,8 @@ class CompassControl extends HookConsumerWidget {
     BaladyAppThemes.dark => Assets.icons.svg.icDarkCompass.keyName,
     BaladyAppThemes.light => Assets.icons.svg.icControlCompass.keyName,
     BaladyAppThemes.saudiDay => Assets.icons.svg.icControlCompass.keyName,
+    BaladyAppThemes.foundationDay => Assets.icons.svg.icControlCompass.keyName,
+    BaladyAppThemes.mekkah => Assets.icons.svg.icControlCompass.keyName,
   };
 
   @override

@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -12,8 +13,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -167,11 +170,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     ref.listen(searchProvider(_scope), (previous, next) {
       _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
     });
-    final isCloseButton = ref.watch(
-      searchProvider(
-        _scope,
-      ).select((state) => state is SearchStateResults || state is SearchStateEmpty || state is SearchStateLoading),
-    );
 
     return SearchScope(
       named: SearchScopeEnum.map,
@@ -198,12 +196,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               header: Container(
                 color: contentColor,
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
+                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose),
               ),
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-              sliver: SliverToBoxAdapter(
-                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
-              ),
+              content: [MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController)],
             ),
           ),
         ],
@@ -223,12 +219,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
         theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
@@ -260,11 +258,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-    icon: switch (context.read<ThemeController>().currentTheme) {
-      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
-      BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),
-      BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
-    },
+    icon: SaudiNationalDay.isNow()
+        ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
+        : Assets.icons.svg.placesNew.old.icMarkerMNew.keyName.markerIcon(),
     text: '$objectCount',
     textStyle: MarkerTextStyleMessage(
       textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),

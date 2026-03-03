@@ -1,5 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/mini_apps_item_widget.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +18,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   void initState() {
     super.initState();
     // Load mini apps when the widget is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeMiniAppsListCubit>().loadMiniApps();
-    });
+      context.read<NewMiniAppLogicCubit>().loadMiniApps();
   }
 
   @override
@@ -42,7 +40,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
             child: Container(
               color: context.colors.backgroundSurface4,
-              child: BlocBuilder<HomeMiniAppsListCubit, HomeMiniAppsListState>(
+              child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                 builder: (context, state) {
                   return _buildContent(state);
                 },
@@ -65,33 +63,29 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
     );
   }
 
-  Widget _buildContent(HomeMiniAppsListState state) {
-    if (state is HomeMiniAppsListFiledState) {
-      return _buildErrorState(context, state.errors);
-    }
-
-    if (state is HomeMiniAppsListSuccessState) {
-      return _buildSuccessState(state);
-    }
-
-    if (state is HomeMiniAppsListLoadingState) {
+  Widget _buildContent(NewMiniAppLogicState state) {
+    if (state.isAppsGroupLoading || state.isEntryPointsLoading || state.isFavLoading) {
       return _buildLoadingState();
     }
+    
+    if (state.favError != null || state.entryPointsError != null || state.unFavError != null || state.searchError != null) {
+      return _buildErrorState(context, state.favError ?? state.entryPointsError ?? state.unFavError ?? state.searchError ?? "Error loading mini apps");
+    }
 
-    return _buildLoadingState();
+    return _buildSuccessState(state);
   }
 
-  Widget _buildSuccessState(HomeMiniAppsListSuccessState state) {
+  Widget _buildSuccessState(NewMiniAppLogicState state) {
     return RefreshIndicator(
       onRefresh: () async {
-        context.read<HomeMiniAppsListCubit>().loadMiniApps();
+        context.read<NewMiniAppLogicCubit>().loadMiniApps();
       },
       child: ListView.separated(
         padding: const EdgeInsets.only(top: 20, left: 12, right: 12),
-        itemCount: state.miniAppsList.length,
+        itemCount: state.allMiniApps.length,
         separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          return MiniAppsItemWidget(miniApp: state.miniAppsList[index], isEvent: CommonFunctions.isTodayInRanges);
+          return MiniAppsItemWidget(miniApp: state.allMiniApps[index], isEvent: CommonFunctions.isTodayInRanges);
         },
       ),
     );
@@ -158,7 +152,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  context.read<HomeMiniAppsListCubit>().loadMiniApps();
+                  context.read<NewMiniAppLogicCubit>().loadMiniApps();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.colors.accentDefault,

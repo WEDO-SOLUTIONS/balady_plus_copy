@@ -7,6 +7,13 @@ extension PoiCardHandlerStack on StackRouter {
   Future<void> replaceOrPush({
     required PageRouteInfo route,
     required List<PageInfo> toCompareRoutes,
-  }) async =>
-      toCompareRoutes.any((e) => isRouteActive(e.name)) ? await replace(route) : await push(route);
+  }) async {
+    if (toCompareRoutes.any((e) => isRouteActive(e.name))) {
+      // Use popAndPush to properly close the current route and open the new one
+      // This ensures the widget rebuilds with new parameters
+      await replace(route);
+    } else {
+      await push(route);
+    }
+  }
 }

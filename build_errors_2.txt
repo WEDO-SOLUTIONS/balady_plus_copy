@@ -1,0 +1,29 @@
+Running Gradle task 'assembleDebug'...                          
+mapness/lib/pages/poi_makkah/poi_card_content.dart:162:15: Error: No named parameter with the name 'bottomSheetController'.
+              bottomSheetController: _bottomSheetController,
+              ^^^^^^^^^^^^^^^^^^^^^
+mapness/lib/pages/poi_makkah/poi_card_content_footer.dart:7:9: Context: Found this candidate, but the arguments don't match.
+  const _MakkahPoiFooterPlaceholder({
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+mapness/lib/shared/providers/analytic/models/payload/bss_contacts.dart:1:1: Error: This part doesn't have a containing library.
+Try removing the 'part of' declaration.
+part of 'bss_payload.dart';
+^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildPreDebug'.
+> Process 'command '/Users/amrbakr/fvm/versions/3.38.5/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 9s
+Running Gradle task 'assembleDebug'...                              9.9s
+Gradle task assembleDebug failed with exit code 1

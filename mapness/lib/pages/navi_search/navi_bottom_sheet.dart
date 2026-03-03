@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -193,6 +195,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
         theme: theme,
@@ -200,6 +203,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
         isDark: dark.isDark,
+        activeCityEvent: activeCityEvent,
       );
       if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
         ref.read(searchInRectProvider(_scope).notifier).searchInThisAreaSwitch(value: false);

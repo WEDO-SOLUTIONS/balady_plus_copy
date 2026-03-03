@@ -41,7 +41,7 @@ class _MapButtonState extends State<MapButton> {
     ),
     child: Material(
       borderRadius: widget.borderRadius,
-      color: context.colors.onMapSurfaceOnMap,
+      color: context.colors.backgroundSurface1,
       child: InkWell(
         customBorder: RoundedRectangleBorder(borderRadius: widget.borderRadius),
         onTap: widget.onTap,

@@ -1,9 +1,9 @@
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/sso_credential_info.dart';
-import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
+import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
 class SsoCredentialView extends ConsumerWidget {
   const SsoCredentialView({super.key});
@@ -12,60 +12,117 @@ class SsoCredentialView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final credential = ref.watch(ssoCredentialProvider);
 
-    return Column(
-      children: [
-        Text(
-          'SSO Credentials',
-          style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
-        ),
-        _infoItem(
-          context,
-          title: 'Username',
-          value: credential?.username ?? '',
-        ),
-        const SizedBox(height: 4),
-        _infoItem(
-          context,
-          title: 'Password',
-          value: credential?.password ?? '',
-        ),
-        const SizedBox(height: 4),
-        _infoItem(
-          context,
-          title: 'OTP',
-          value: credential?.otp ?? '',
-        ),
-        const SizedBox(height: 4),
-      ],
+    if (credential == null) {
+      return const SizedBox.shrink();
+    }
+
+    return DebugCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DebugSectionHeader(
+            icon: Icons.key_rounded,
+            title: 'SSO Credentials',
+            subtitle: 'Authentication information',
+            gradient: DebugTheme.gradientPink,
+          ),
+          const SizedBox(height: 12),
+          _CredentialItem(
+            label: 'Username',
+            value: credential.username ?? '',
+          ),
+          _CredentialItem(
+            label: 'Password',
+            value: credential.password ?? '',
+            isSecret: true,
+          ),
+          _CredentialItem(
+            label: 'OTP',
+            value: credential.otp ?? '',
+          ),
+        ],
+      ),
     );
   }
 }
 
-Widget _infoItem(
-  BuildContext context, {
-  required String title,
-  required String value,
-}) =>
-    Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
+class _CredentialItem extends StatefulWidget {
+  const _CredentialItem({
+    required this.label,
+    required this.value,
+    this.isSecret = false,
+  });
+
+  final String label;
+  final String value;
+  final bool isSecret;
+
+  @override
+  State<_CredentialItem> createState() => _CredentialItemState();
+}
+
+class _CredentialItemState extends State<_CredentialItem> {
+  bool _isHidden = true;
+
+  @override
+  Widget build(BuildContext context) {
+    final displayValue = widget.isSecret && _isHidden
+        ? '••••••••'
+        : widget.value;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: DebugTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 80,
+            child: Text(
+              widget.label,
+              style: context.textStyles.captionSmallRegular.copyWith(
+                color: DebugTheme.textMuted,
               ),
-              Text(
-                value,
-                style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
-              ),
-            ],
+            ),
           ),
-        ),
-        LabeledElevatedButton(
-          onPressed: () => Clipboard.setData(ClipboardData(text: value)),
-          label: 'copy',
-        ),
-      ],
+          Expanded(
+            child: Text(
+              displayValue,
+              style: context.textStyles.captionSmallMedium.copyWith(
+                color: DebugTheme.textPrimary,
+                fontFamily: widget.isSecret ? null : 'monospace',
+              ),
+            ),
+          ),
+          if (widget.isSecret)
+            GestureDetector(
+              onTap: () => setState(() => _isHidden = !_isHidden),
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  _isHidden ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                  size: 16,
+                  color: DebugTheme.textMuted,
+                ),
+              ),
+            ),
+          const SizedBox(width: 4),
+          GestureDetector(
+            onTap: () => Clipboard.setData(ClipboardData(text: widget.value)),
+            child: const Padding(
+              padding: EdgeInsets.all(4),
+              child: Icon(
+                Icons.copy_rounded,
+                size: 16,
+                color: DebugTheme.textMuted,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
+  }
+}

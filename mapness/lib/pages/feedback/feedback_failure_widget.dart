@@ -1,47 +1,33 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/error_widget/fullscreen_error_widget.dart';
-import 'package:provider/provider.dart';
 
 class FeedbackFailureWidget extends StatelessWidget {
   final VoidCallback? onRetry;
-  final bool isFullscreen;
-  final String? screenTitle;
-  const FeedbackFailureWidget({this.isFullscreen = true, this.onRetry, this.screenTitle, super.key});
+
+  const FeedbackFailureWidget({this.onRetry, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final child = FullscreenErrorWidget(
-      onRetry: () {
-        onRetry?.call();
-      },
-      errorLabel: onRetry != null
-          ? context.l10n.somethingDidntGoAsPlannedDescription
-          : context.l10n.somethingDidntGoAsPlanned,
-      errorTitle: context.l10n.failedToLoadData,
-      withRetryButton: onRetry != null,
-    );
-
-    if (isFullscreen) {
-      return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: context.read<ThemeController>().systemOverlayStyle,
-        child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: BaladyTopBar.iconAndText(
-            title: screenTitle,
-            leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: context.router.pop),
-            colorEnabled: context.colors.accentDefault,
-            colorDisabled: context.colors.foregroundDefault,
-          ),
-          body: Center(child: child),
+  Widget build(BuildContext context) => Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              context.l10n.somethingWentWrong,
+              style: context.textStyles.bodySmallRegular,
+            ),
+            if (onRetry != null)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.$4x),
+                child: AppButton(
+                  buttonType: ButtonType.secondary,
+                  buttonColorScheme: ButtonColorScheme.primary,
+                  primaryLabel: context.l10n.tryAgain,
+                  onTap: onRetry,
+                ),
+              ),
+          ],
         ),
       );
-    }
-    return child;
-  }
 }

@@ -31,11 +31,11 @@ class Routes {
                 page: ProfileRoute.page,
                 transitionsBuilder: TransitionsBuilders.noTransition,
               ),
-              CustomRoute(
-                path: 'change_profile_photo_sheet',
-                page: ChangeProfilePhotoRoute.page,
-                customRouteBuilder: RouteBuilders.modalSheetBuilder,
-              ),
+              // CustomRoute(
+              //   path: 'change_profile_photo_sheet',
+              //   page: ChangeProfilePhotoRoute.page,
+              //   customRouteBuilder: RouteBuilders.modalSheetBuilder,
+              // ),
               CustomRoute(
                 path: 'help_center',
                 page: HelpCenterRoute.page,

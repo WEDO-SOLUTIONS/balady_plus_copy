@@ -74,8 +74,6 @@ extension BssContactTypeExt on PoiContentSocialMediaTypes {
         PoiContentSocialMediaTypes.instagram => BssContactType.instagram,
         PoiContentSocialMediaTypes.facebook => BssContactType.facebook,
         PoiContentSocialMediaTypes.youtube => BssContactType.youtube,
-        PoiContentSocialMediaTypes.linkedin => BssContactType.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => BssContactType.whatsapp,
-        PoiContentSocialMediaTypes.telegram => BssContactType.telegram,
+        _ => BssContactType.website, // Fallback for unsupported types
       };
 }

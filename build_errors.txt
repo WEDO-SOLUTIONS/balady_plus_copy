@@ -1,0 +1,93 @@
+Running Gradle task 'assembleDebug'...                          
+mapness/lib/features/poi_card/widgets/poi_content_sliver.dart:39:8: Error: Error when reading 'mapness/lib/shared/providers/analytic/metrics_constants.dart': No such file or directory
+import 'package:mapness/shared/providers/analytic/metrics_constants.dart';
+       ^
+mapness/lib/features/poi_card/provider/poi_card_provider.dart:96:25: Error: The method 'PoiCardProvider.build' has more required arguments than those of overridden method '_$PoiCardProvider.build'.
+  Future<PoiCardState?> build(
+                        ^
+mapness/lib/features/poi_card/provider/poi_card_provider.g.dart:117:27: Context: This is the overridden method ('build').
+  FutureOr<PoiCardState?> build(
+                          ^
+mapness/lib/features/poi_card/provider/poi_card_provider.dart:98:9: Error: The parameter 'entranceId' of the method 'PoiCardProvider.build' has type 'int', which does not match the corresponding type, 'BaladyAppThemes', in the overridden method, '_$PoiCardProvider.build'.
+ - 'BaladyAppThemes' is from 'package:balady_uikit/core/colorsV2/themes.dart' ('balady_uikit/lib/core/colorsV2/themes.dart').
+Change to a supertype of 'BaladyAppThemes', or, for a covariant parameter, a subtype.
+    int entranceId,
+        ^
+mapness/lib/features/poi_card/provider/poi_card_provider.g.dart:117:27: Context: This is the overridden method ('build').
+  FutureOr<PoiCardState?> build(
+                          ^
+mapness/lib/app/auto_route/app_routes.dart:50:17: Error: The getter 'ServiceNotAvailableSheetRoute' isn't defined for the type 'AppRouter'.
+ - 'AppRouter' is from 'package:mapness/app/auto_route/app_routes.dart' ('mapness/lib/app/auto_route/app_routes.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'ServiceNotAvailableSheetRoute'.
+          page: ServiceNotAvailableSheetRoute.page,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+mapness/lib/pages/poi_card/poi_functions.dart:12:55: Error: The method 'read' isn't defined for the type 'BuildContext'.
+ - 'BuildContext' is from 'package:flutter/src/widgets/framework.dart' ('../../fvm/versions/3.38.5/packages/flutter/lib/src/widgets/framework.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'read'.
+  await ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
+                                                      ^^^^
+mapness/lib/pages/poi_makkah/poi_card_content.dart:162:15: Error: No named parameter with the name 'bottomSheetController'.
+              bottomSheetController: _bottomSheetController,
+              ^^^^^^^^^^^^^^^^^^^^^
+mapness/lib/pages/poi_makkah/poi_card_content_footer.dart:7:9: Context: Found this candidate, but the arguments don't match.
+  const _MakkahPoiFooterPlaceholder({
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lib/app/features/_shared_feature_/presentation/widgets/form/form_app_bar.dart:75:40: Error: 'ThemeController' isn't a type.
+      systemOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+                                       ^^^^^^^^^^^^^^^
+mapness/lib/pages/free_roam/ui/road_panel.dart:76:47: Error: The getter 'onMapSurfaceOnMap' isn't defined for the type 'AppColorsThemeV3'.
+ - 'AppColorsThemeV3' is from 'package:balady_uikit/core/colorsV2/app_theme.dart' ('balady_uikit/lib/core/colorsV2/app_theme.dart').
+Try correcting the name to the name of an existing getter, or defining a getter or field named 'onMapSurfaceOnMap'.
+                        color: context.colors.onMapSurfaceOnMap,
+                                              ^^^^^^^^^^^^^^^^^
+mapness/lib/features/poi_card/widgets/poi_content_sliver.dart:101:21: Error: The method 'RouteSearchPoint' isn't defined for the type 'PoiContentSliver'.
+ - 'PoiContentSliver' is from 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart' ('mapness/lib/features/poi_card/widgets/poi_content_sliver.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'RouteSearchPoint'.
+final finishPoint = RouteSearchPoint(
+                    ^^^^^^^^^^^^^^^^
+mapness/lib/features/poi_card/widgets/poi_content_sliver.dart:102:41: Error: The method 'toGeoPointMessage' isn't defined for the type 'GeoPointWithElevationMessage'.
+ - 'GeoPointWithElevationMessage' is from 'package:dgis_map_platform_interface/src/pigeons/messages.g.dart' ('urbi_map/dgis_map_platform_interface/lib/src/pigeons/messages.g.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'toGeoPointMessage'.
+      coordinates: data.markerPosition?.toGeoPointMessage() ?? GeoPointMessage(latitude: 0, longitude: 0),
+                                        ^^^^^^^^^^^^^^^^^
+mapness/lib/features/poi_card/widgets/poi_content_sliver.dart:106:7: Error: The method 'briefRouteInfoProvider' isn't defined for the type 'PoiContentSliver'.
+ - 'PoiContentSliver' is from 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart' ('mapness/lib/features/poi_card/widgets/poi_content_sliver.dart').
+Try correcting the name to the name of an existing method, or defining a method named 'briefRouteInfoProvider'.
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car),
+      ^^^^^^^^^^^^^^^^^^^^^^
+mapness/lib/features/poi_card/widgets/poi_inbuilding_sliver.dart:124:54: Error: Too many positional arguments: 2 allowed, but 3 found.
+Try removing the extra positional arguments.
+    final viewModelProvider = poiCardProviderProvider(
+                                                     ^
+mapness/lib/pages/feedback/feedback_sheet_widget.dart:54:81: Error: The type 'BaladyAppThemes' is not exhaustively matched by the switch cases since it doesn't match 'BaladyAppThemes.foundationDay'.
+ - 'BaladyAppThemes' is from 'package:balady_uikit/core/colorsV2/themes.dart' ('balady_uikit/lib/core/colorsV2/themes.dart').
+Try adding a wildcard pattern or cases that match 'BaladyAppThemes.foundationDay'.
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+                                                                                ^
+mapness/lib/shared/ui/error_widget/base_error_widget.dart:55:81: Error: The type 'BaladyAppThemes' is not exhaustively matched by the switch cases since it doesn't match 'BaladyAppThemes.foundationDay'.
+ - 'BaladyAppThemes' is from 'package:balady_uikit/core/colorsV2/themes.dart' ('balady_uikit/lib/core/colorsV2/themes.dart').
+Try adding a wildcard pattern or cases that match 'BaladyAppThemes.foundationDay'.
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+                                                                                ^
+mapness/lib/shared/providers/analytic/models/payload/bss_contacts.dart:1:1: Error: This part doesn't have a containing library.
+Try removing the 'part of' declaration.
+part of 'bss_payload.dart';
+^
+Target kernel_snapshot_program failed: Exception
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileFlutterBuildPreDebug'.
+> Process 'command '/Users/amrbakr/fvm/versions/3.38.5/bin/flutter'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 8s
+Running Gradle task 'assembleDebug'...                              8.8s
+Gradle task assembleDebug failed with exit code 1

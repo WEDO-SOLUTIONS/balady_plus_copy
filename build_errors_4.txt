@@ -1,0 +1,747 @@
+Running Gradle task 'assembleDebug'...                          
+/Users/amrbakr/.pub-cache/hosted/pub.dev/camera_android_camerax-0.6.10+3/android/src/main/java/io/flutter/plugins/camerax/PreviewHostApiImpl.java:95: warning: [removal] onSurfaceDestroyed() in Callback has been deprecated and marked for removal
+              public void onSurfaceDestroyed() {
+                          ^
+1 warning
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_fgbg-0.3.0/android/src/main/java/com/ajinasokan/flutter_fgbg/FlutterFGBGPlugin.java:7: warning: [deprecation] OnLifecycleEvent in androidx.lifecycle has been deprecated
+import androidx.lifecycle.OnLifecycleEvent;
+                         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_fgbg-0.3.0/android/src/main/java/com/ajinasokan/flutter_fgbg/FlutterFGBGPlugin.java:43: warning: [deprecation] OnLifecycleEvent in androidx.lifecycle has been deprecated
+  @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_fgbg-0.3.0/android/src/main/java/com/ajinasokan/flutter_fgbg/FlutterFGBGPlugin.java:50: warning: [deprecation] OnLifecycleEvent in androidx.lifecycle has been deprecated
+  @OnLifecycleEvent(Lifecycle.Event.ON_START)
+   ^
+3 warnings
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:14: warning: [deprecation] CookieSyncManager in android.webkit has been deprecated
+import android.webkit.CookieSyncManager;
+                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:14: warning: [deprecation] CookieSyncManager in android.webkit has been deprecated
+import android.webkit.CookieSyncManager;
+                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/MyCookieManager.java:6: warning: [deprecation] CookieSyncManager in android.webkit has been deprecated
+import android.webkit.CookieSyncManager;
+                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:151: warning: [deprecation] Handler() in Handler has been deprecated
+  static Handler mHandler = new Handler();
+                            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:291: warning: [deprecation] setDatabaseEnabled(boolean) in WebSettings has been deprecated
+    settings.setDatabaseEnabled(customSettings.databaseEnabled);
+            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:307: warning: [deprecation] clearCache in InAppWebViewSettings has been deprecated
+    if (customSettings.clearCache)
+                      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:309: warning: [deprecation] clearSessionCache in InAppWebViewSettings has been deprecated
+    else if (customSettings.clearSessionCache)
+                           ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:310: warning: [deprecation] removeSessionCookie() in CookieManager has been deprecated
+      CookieManager.getInstance().removeSessionCookie();
+                                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:331: warning: [deprecation] setAllowFileAccessFromFileURLs(boolean) in WebSettings has been deprecated
+    settings.setAllowFileAccessFromFileURLs(customSettings.allowFileAccessFromFileURLs);
+            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:332: warning: [deprecation] setAllowUniversalAccessFromFileURLs(boolean) in WebSettings has been deprecated
+    settings.setAllowUniversalAccessFromFileURLs(customSettings.allowUniversalAccessFromFileURLs);
+            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:357: warning: [deprecation] setForceDark(WebSettings,int) in WebSettingsCompat has been deprecated
+        WebSettingsCompat.setForceDark(settings, customSettings.forceDark);
+                         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:359: warning: [deprecation] setForceDark(int) in WebSettings has been deprecated
+        settings.setForceDark(customSettings.forceDark);
+                ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:362: warning: [deprecation] setForceDarkStrategy(WebSettings,int) in WebSettingsCompat has been deprecated
+      WebSettingsCompat.setForceDarkStrategy(settings, customSettings.forceDarkStrategy);
+                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:388: warning: [deprecation] setSaveFormData(boolean) in WebSettings has been deprecated
+    settings.setSaveFormData(customSettings.saveFormData);
+            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:460: warning: [deprecation] onFindResultReceived(int,int,boolean) in WebViewChannelDelegate has been deprecated
+          channelDelegate.onFindResultReceived(activeMatchOrdinal, numberOfMatches, isDoneCounting);
+                         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:591: warning: [deprecation] removeAllCookie() in CookieManager has been deprecated
+        CookieManager.getInstance().removeAllCookie();
+                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:606: warning: [deprecation] setSavePassword(boolean) in WebSettings has been deprecated
+      settings.setSavePassword(false);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:607: warning: [deprecation] setSaveFormData(boolean) in WebSettings has been deprecated
+      settings.setSaveFormData(false);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:615: warning: [deprecation] setSavePassword(boolean) in WebSettings has been deprecated
+      settings.setSavePassword(true);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:616: warning: [deprecation] setSaveFormData(boolean) in WebSettings has been deprecated
+      settings.setSaveFormData(true);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:717: warning: [unchecked] unchecked cast
+            Map<String, Double> rect = (Map<String, Double>) screenshotConfiguration.get("rect");
+                                                                                        ^
+  required: Map<String,Double>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:829: warning: [deprecation] setDatabaseEnabled(boolean) in WebSettings has been deprecated
+      settings.setDatabaseEnabled(newCustomSettings.databaseEnabled);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:845: warning: [deprecation] clearCache in InAppWebViewSettings has been deprecated
+    if (newSettingsMap.get("clearCache") != null && newCustomSettings.clearCache)
+                                                                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:847: warning: [deprecation] clearSessionCache in InAppWebViewSettings has been deprecated
+    else if (newSettingsMap.get("clearSessionCache") != null && newCustomSettings.clearSessionCache)
+                                                                                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:848: warning: [deprecation] removeSessionCookie() in CookieManager has been deprecated
+      CookieManager.getInstance().removeSessionCookie();
+                                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:898: warning: [deprecation] setAllowFileAccessFromFileURLs(boolean) in WebSettings has been deprecated
+      settings.setAllowFileAccessFromFileURLs(newCustomSettings.allowFileAccessFromFileURLs);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:901: warning: [deprecation] setAllowUniversalAccessFromFileURLs(boolean) in WebSettings has been deprecated
+      settings.setAllowUniversalAccessFromFileURLs(newCustomSettings.allowUniversalAccessFromFileURLs);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:950: warning: [deprecation] setForceDark(WebSettings,int) in WebSettingsCompat has been deprecated
+        WebSettingsCompat.setForceDark(settings, newCustomSettings.forceDark);
+                         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:952: warning: [deprecation] setForceDark(int) in WebSettings has been deprecated
+        settings.setForceDark(newCustomSettings.forceDark);
+                ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:958: warning: [deprecation] setForceDarkStrategy(WebSettings,int) in WebSettingsCompat has been deprecated
+      WebSettingsCompat.setForceDarkStrategy(settings, newCustomSettings.forceDarkStrategy);
+                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1019: warning: [deprecation] setSaveFormData(boolean) in WebSettings has been deprecated
+      settings.setSaveFormData(newCustomSettings.saveFormData);
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1452: warning: [deprecation] createPrintDocumentAdapter() in WebView has been deprecated
+          printAdapter = createPrintDocumentAdapter();
+                         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1620: warning: [unchecked] unchecked cast
+      customMenuItems = (List<Map<String, Object>>) contextMenu.get("menuItems");
+                                                                   ^
+  required: List<Map<String,Object>>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1621: warning: [unchecked] unchecked cast
+      Map<String, Object> contextMenuSettingsMap = (Map<String, Object>) contextMenu.get("settings");
+                                                                                        ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1689: warning: [deprecation] LayoutParams in AbsoluteLayout has been deprecated
+      addView(floatingContextMenu, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, x, y));
+                                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1689: warning: [deprecation] LayoutParams(int,int,int,int) in LayoutParams has been deprecated
+      addView(floatingContextMenu, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, x, y));
+                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1720: warning: [deprecation] LayoutParams in AbsoluteLayout has been deprecated
+            new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, curx + getScrollX(), ((int) cury) + getScrollY())
+                ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebView.java:1720: warning: [deprecation] LayoutParams(int,int,int,int) in LayoutParams has been deprecated
+            new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, curx + getScrollX(), ((int) cury) + getScrollY())
+            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:108: warning: [deprecation] shouldOverrideUrlLoading(WebView,String) in WebViewClient has been deprecated
+  public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:97: warning: [unchecked] unchecked cast
+          Map<String, Object> urlRequest = (Map<String, Object>) call.argument("urlRequest");
+                                                                              ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:137: warning: [unchecked] unchecked cast
+          Map<String, Object> contentWorldMap = (Map<String, Object>) call.argument("contentWorld");
+                                                                                   ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:152: warning: [unchecked] unchecked cast
+          Map<String, Object> scriptHtmlTagAttributes = (Map<String, Object>) call.argument("scriptHtmlTagAttributes");
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:167: warning: [unchecked] unchecked cast
+          Map<String, Object> cssLinkHtmlTagAttributes = (Map<String, Object>) call.argument("cssLinkHtmlTagAttributes");
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:211: warning: [unchecked] unchecked cast
+          Map<String, Object> screenshotConfiguration = (Map<String, Object>) call.argument("screenshotConfiguration");
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:220: warning: [unchecked] unchecked cast
+          HashMap<String, Object> inAppBrowserSettingsMap = (HashMap<String, Object>) call.argument("settings");
+                                                                                          ^
+  required: HashMap<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:225: warning: [unchecked] unchecked cast
+          HashMap<String, Object> inAppWebViewSettingsMap = (HashMap<String, Object>) call.argument("settings");
+                                                                                          ^
+  required: HashMap<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:290: warning: [deprecation] clearAllCache() in InAppWebView has been deprecated
+          webView.clearAllCache();
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:363: warning: [unchecked] unchecked cast
+          Map<String, Object> settingsMap = (Map<String, Object>) call.argument("settings");
+                                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:479: warning: [unchecked] unchecked cast
+          Map<String, Object> contextMenu = (Map<String, Object>) call.argument("contextMenu");
+                                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:527: warning: [unchecked] unchecked cast
+          Map<String, Object> userScriptMap = (Map<String, Object>) call.argument("userScript");
+                                                                                 ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:537: warning: [unchecked] unchecked cast
+          Map<String, Object> userScriptMap = (Map<String, Object>) call.argument("userScript");
+                                                                                 ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:560: warning: [unchecked] unchecked cast
+          Map<String, Object> functionArguments = (Map<String, Object>) call.argument("arguments");
+                                                                                     ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:561: warning: [unchecked] unchecked cast
+          Map<String, Object> contentWorldMap = (Map<String, Object>) call.argument("contentWorld");
+                                                                                   ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:598: warning: [unchecked] unchecked cast
+          WebMessageCompatExt message = WebMessageCompatExt.fromMap((Map<String, Object>) call.argument("message"));
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:636: warning: [unchecked] unchecked cast
+          Map<String, Object> webMessageListenerMap = (Map<String, Object>) call.argument("webMessageListener");
+                                                                                         ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:769: warning: [unchecked] unchecked cast
+      return JsAlertResponse.fromMap((Map<String, Object>) obj);
+                                                           ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:790: warning: [unchecked] unchecked cast
+      return JsConfirmResponse.fromMap((Map<String, Object>) obj);
+                                                             ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:811: warning: [unchecked] unchecked cast
+      return JsPromptResponse.fromMap((Map<String, Object>) obj);
+                                                            ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:833: warning: [unchecked] unchecked cast
+      return JsBeforeUnloadResponse.fromMap((Map<String, Object>) obj);
+                                                                  ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:877: warning: [unchecked] unchecked cast
+      return GeolocationPermissionShowPromptResponse.fromMap((Map<String, Object>) obj);
+                                                                                   ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:945: warning: [unchecked] unchecked cast
+      return PermissionResponse.fromMap((Map<String, Object>) obj);
+                                                              ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:1036: warning: [unchecked] unchecked cast
+      return HttpAuthResponse.fromMap((Map<String, Object>) obj);
+                                                            ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:1053: warning: [unchecked] unchecked cast
+      return ServerTrustAuthResponse.fromMap((Map<String, Object>) obj);
+                                                                   ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:1070: warning: [unchecked] unchecked cast
+      return ClientCertResponse.fromMap((Map<String, Object>) obj);
+                                                              ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:1096: warning: [unchecked] unchecked cast
+      return SafeBrowsingResponse.fromMap((Map<String, Object>) obj);
+                                                                ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:1162: warning: [unchecked] unchecked cast
+      return CustomSchemeResponse.fromMap((Map<String, Object>) obj);
+                                                                ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/WebViewChannelDelegate.java:1199: warning: [unchecked] unchecked cast
+      return WebResourceResponseExt.fromMap((Map<String, Object>) obj);
+                                                                  ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:237: warning: [deprecation] CookieSyncManager in android.webkit has been deprecated
+      CookieSyncManager.getInstance().sync();
+      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:237: warning: [deprecation] getInstance() in CookieSyncManager has been deprecated
+      CookieSyncManager.getInstance().sync();
+                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:237: warning: [deprecation] sync() in CookieSyncManager has been deprecated
+      CookieSyncManager.getInstance().sync();
+                                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:299: warning: [deprecation] onReceivedError(WebView,int,String,String) in WebViewClient has been deprecated
+  public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:334: warning: [deprecation] onReceivedError(WebView,int,String,String) in WebViewClient has been deprecated
+    super.onReceivedError(view, errorCode, description, failingUrl);
+         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClient.java:721: warning: [deprecation] shouldInterceptRequest(WebView,String) in WebViewClient has been deprecated
+  public WebResourceResponse shouldInterceptRequest(WebView view, final String url) {
+                             ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:108: warning: [deprecation] shouldOverrideUrlLoading(WebView,String) in WebViewClient has been deprecated
+  public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:237: warning: [deprecation] CookieSyncManager in android.webkit has been deprecated
+      CookieSyncManager.getInstance().sync();
+      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:237: warning: [deprecation] getInstance() in CookieSyncManager has been deprecated
+      CookieSyncManager.getInstance().sync();
+                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:237: warning: [deprecation] sync() in CookieSyncManager has been deprecated
+      CookieSyncManager.getInstance().sync();
+                                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:309: warning: [deprecation] onReceivedError(WebView,int,String,String) in WebViewClient has been deprecated
+  public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:344: warning: [deprecation] onReceivedError(WebView,int,String,String) in WebViewClient has been deprecated
+    super.onReceivedError(view, errorCode, description, failingUrl);
+         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewClientCompat.java:748: warning: [deprecation] shouldInterceptRequest(WebView,String) in WebViewClient has been deprecated
+  public WebResourceResponse shouldInterceptRequest(WebView view, final String url) {
+                             ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:79: warning: [unchecked] unchecked conversion
+  final Map<DialogInterface, JsResult> dialogs = new HashMap();
+                                                 ^
+  required: Map<DialogInterface,JsResult>
+  found:    HashMap
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:85: warning: [deprecation] SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION in View has been deprecated
+  protected static final int FULLSCREEN_SYSTEM_UI_VISIBILITY_KITKAT = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                                                                          ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:86: warning: [deprecation] SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN in View has been deprecated
+          View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:87: warning: [deprecation] SYSTEM_UI_FLAG_LAYOUT_STABLE in View has been deprecated
+          View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:88: warning: [deprecation] SYSTEM_UI_FLAG_HIDE_NAVIGATION in View has been deprecated
+          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:89: warning: [deprecation] SYSTEM_UI_FLAG_FULLSCREEN in View has been deprecated
+          View.SYSTEM_UI_FLAG_FULLSCREEN |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:90: warning: [deprecation] SYSTEM_UI_FLAG_IMMERSIVE in View has been deprecated
+          View.SYSTEM_UI_FLAG_IMMERSIVE |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:91: warning: [deprecation] SYSTEM_UI_FLAG_IMMERSIVE_STICKY in View has been deprecated
+          View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:93: warning: [deprecation] SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION in View has been deprecated
+  protected static final int FULLSCREEN_SYSTEM_UI_VISIBILITY = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                                                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:94: warning: [deprecation] SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN in View has been deprecated
+          View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:95: warning: [deprecation] SYSTEM_UI_FLAG_LAYOUT_STABLE in View has been deprecated
+          View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:96: warning: [deprecation] SYSTEM_UI_FLAG_HIDE_NAVIGATION in View has been deprecated
+          View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:97: warning: [deprecation] SYSTEM_UI_FLAG_FULLSCREEN in View has been deprecated
+          View.SYSTEM_UI_FLAG_FULLSCREEN;
+              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:162: warning: [deprecation] setSystemUiVisibility(int) in View has been deprecated
+    decorView.setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+             ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:195: warning: [deprecation] getSystemUiVisibility() in View has been deprecated
+    this.mOriginalSystemUiVisibility = decorView.getSystemUiVisibility();
+                                                ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:203: warning: [deprecation] setSystemUiVisibility(int) in View has been deprecated
+      decorView.setSystemUiVisibility(FULLSCREEN_SYSTEM_UI_VISIBILITY_KITKAT);
+               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewChromeClient.java:205: warning: [deprecation] setSystemUiVisibility(int) in View has been deprecated
+      decorView.setSystemUiVisibility(FULLSCREEN_SYSTEM_UI_VISIBILITY);
+               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewSettings.java:90: warning: [deprecation] DARK_STRATEGY_PREFER_WEB_THEME_OVER_USER_AGENT_DARKENING in WebSettingsCompat has been deprecated
+  public Integer forceDarkStrategy = WebSettingsCompat.DARK_STRATEGY_PREFER_WEB_THEME_OVER_USER_AGENT_DARKENING;
+                                                      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewSettings.java:185: warning: [unchecked] unchecked cast
+          resourceCustomSchemes = (List<String>) value;
+                                                 ^
+  required: List<String>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_inappwebview_android-1.1.3/android/src/main/java/com/pichillilorenzo/flutter_inappwebview_android/webview/in_app_webview/InAppWebViewSettings.java:188: warning: [unchecked] unchecked cast
+          contentBlockers = (List<Map<String, Map<String, Object>>>) value;
+                                                                     ^
+  required: List<Map<String,Map<String,Object>>>
+  found:    Object
+Note: Some input files additionally use or override a deprecated API.
+Note: Some input files additionally use unchecked or unsafe operations.
+100 warnings
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:7: warning: [deprecation] AsyncTask in android.os has been deprecated
+import android.os.AsyncTask;
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:122: warning: [deprecation] setHybridPushToken(String) in Insider has been deprecated
+                            Insider.Instance.setHybridPushToken(task.getResult());
+                                            ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:185: warning: [deprecation] AsyncTask in android.os has been deprecated
+                    new AsyncTask<Void, Void, String>() {
+                        ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:185: warning: [deprecation] AsyncTask() in AsyncTask has been deprecated
+                    new AsyncTask<Void, Void, String>() {
+                    ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:187: warning: [deprecation] doInBackground(Params...) in AsyncTask has been deprecated
+                        protected String doInBackground(Void... params) {
+                                         ^
+  where Params,Result are type-variables:
+    Params extends Object declared in class AsyncTask
+    Result extends Object declared in class AsyncTask
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:185: warning: [deprecation] AsyncTask() in AsyncTask has been deprecated
+                    new AsyncTask<Void, Void, String>() {
+                                                        ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:201: warning: [deprecation] execute(Params...) in AsyncTask has been deprecated
+                    }.execute();
+                     ^
+  where Params,Progress,Result are type-variables:
+    Params extends Object declared in class AsyncTask
+    Progress extends Object declared in class AsyncTask
+    Result extends Object declared in class AsyncTask
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:283: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_MUST_MAP),
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:284: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_OPT_MAP));
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:295: warning: [unchecked] unchecked cast
+                    String[] productIDs = ((ArrayList<String>) call.argument("productIDs")).toArray(new String[0]);
+                                                                            ^
+  required: ArrayList<String>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:311: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_MUST_MAP),
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:312: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_OPT_MAP));
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:569: warning: [unchecked] unchecked cast
+                                    (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_MUST_MAP),
+                                                                       ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:570: warning: [unchecked] unchecked cast
+                                    (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_OPT_MAP)));
+                                                                       ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:577: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_MUST_MAP),
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:578: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_OPT_MAP)));
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:592: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument("parameters"));
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:600: warning: [unchecked] unchecked cast
+                    String[] taxonomy = ((ArrayList<String>) call.argument("taxonomy")).toArray(new String[0]);
+                                                                          ^
+  required: ArrayList<String>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:608: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_MUST_MAP),
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:609: warning: [unchecked] unchecked cast
+                            (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_OPT_MAP));
+                                                               ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:616: warning: [unchecked] unchecked cast
+                            (ArrayList<Map<String, Object>>) call.argument(InsiderHybridMethods.PRODUCTS));
+                                                                          ^
+  required: ArrayList<Map<String,Object>>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:666: warning: [unchecked] unchecked cast
+                                    (ArrayList<Map<String, Object>>) call.argument(InsiderHybridMethods.PRODUCTS)
+                                                                                  ^
+  required: ArrayList<Map<String,Object>>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:677: warning: [unchecked] unchecked cast
+                                    (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_MUST_MAP),
+                                                                       ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_insider-4.0.7+nh/android/src/main/java/com/useinsider/insider/flutter_insider/FlutterInsiderPlugin.java:678: warning: [unchecked] unchecked cast
+                                    (Map<String, Object>) call.argument(InsiderHybridMethods.PRODUCT_OPT_MAP))
+                                                                       ^
+  required: Map<String,Object>
+  found:    Object
+24 warnings
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:183: warning: [deprecation] setMultiSessionRecord(boolean) in UXCam has been deprecated
+            UXCam.setMultiSessionRecord(multiSessionRecord);
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:201: warning: [deprecation] setAutomaticScreenNameTagging(boolean) in UXCam has been deprecated
+            UXCam.setAutomaticScreenNameTagging(enable);
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:215: warning: [deprecation] setSessionProperty(String,String) in UXCam has been deprecated
+            UXCam.setSessionProperty(key, value);
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:272: warning: [deprecation] resumeShortBreakForAnotherApp() in UXCam has been deprecated
+            UXCam.resumeShortBreakForAnotherApp();
+                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:398: warning: [unchecked] unchecked cast
+                List<Map<String, Object>> occlusionObjects = (List<Map<String, Object>>) configMap.get(OCCLUSION);
+                                                                                          ^
+  required: List<Map<String,Object>>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:413: warning: [deprecation] enableImprovedScreenCapture(boolean) in Builder has been deprecated
+                uxConfigBuilder.enableImprovedScreenCapture(enableImprovedScreenCapture);
+                               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:447: warning: [unchecked] unchecked cast
+        List<String> screens = (List<String>) overlayMap.get(SCREENS);
+                                                            ^
+  required: List<String>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:449: warning: [unchecked] unchecked cast
+        Map<String, Object> configMap = (Map<String, Object>) overlayMap.get(CONFIG);
+                                                                            ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:466: warning: [unchecked] unchecked cast
+        List<String> screens = (List<String>) blurMap.get(SCREENS);
+                                                         ^
+  required: List<String>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/flutter_uxcam-2.7.10/android/src/main/java/com/uxcam/flutteruxcam/FlutterUxcamPlugin.java:468: warning: [unchecked] unchecked cast
+        Map<String, Object> configMap = (Map<String, Object>) blurMap.get(CONFIG);
+                                                                         ^
+  required: Map<String,Object>
+  found:    Object
+10 warnings
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:24: warning: [deprecation] NetworkInfo in android.net has been deprecated
+import android.net.NetworkInfo;
+                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:27: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+import com.huawei.agconnect.config.AGConnectServicesConfig;
+                                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:226: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+            return AGConnectServicesConfig.fromContext(getContext()).getString("client/app_id");
+                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:255: warning: [deprecation] NetworkInfo in android.net has been deprecated
+            final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:255: warning: [deprecation] getActiveNetworkInfo() in ConnectivityManager has been deprecated
+            final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                                                               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:256: warning: [deprecation] isConnected() in NetworkInfo has been deprecated
+            if (networkInfo != null && networkInfo.isConnected()) {
+                                                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:257: warning: [deprecation] getType() in NetworkInfo has been deprecated
+                final int networkType = networkInfo.getType();
+                                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:258: warning: [deprecation] TYPE_WIFI in ConnectivityManager has been deprecated
+                if (ConnectivityManager.TYPE_WIFI == networkType) {
+                                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:260: warning: [deprecation] TYPE_MOBILE in ConnectivityManager has been deprecated
+                } else if (ConnectivityManager.TYPE_MOBILE == networkType) {
+                                              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/logger/HMSLogger.java:261: warning: [deprecation] getSubtype() in NetworkInfo has been deprecated
+                    final int networkSubType = networkInfo.getSubtype();
+                                                          ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/FusedLocationMethodHandler.java:296: warning: [deprecation] Builder(Context) in Builder has been deprecated
+            builder = new Notification.Builder(activity.getApplicationContext());
+                      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/FusedLocationMethodHandler.java:303: warning: [deprecation] getNotification() in Builder has been deprecated
+            mNotification = builder.getNotification();
+                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/GeocoderMethodHandler.java:56: warning: [unchecked] unchecked method invocation: method fromMapToLocale in interface GeocoderUtils is applied to given types
+        Locale locale = GeocoderUtils.fromMapToLocale(localeMap);
+                                                     ^
+  required: Map<String,Object>
+  found:    Map
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/GeocoderMethodHandler.java:56: warning: [unchecked] unchecked conversion
+        Locale locale = GeocoderUtils.fromMapToLocale(localeMap);
+                                                      ^
+  required: Map<String,Object>
+  found:    Map
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/GeocoderMethodHandler.java:65: warning: [unchecked] unchecked method invocation: method fromMapToGetFromLocationRequest in interface GeocoderUtils is applied to given types
+        GetFromLocationRequest getFromLocationRequest = GeocoderUtils.fromMapToGetFromLocationRequest(requestMap);
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Map
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/GeocoderMethodHandler.java:65: warning: [unchecked] unchecked conversion
+        GetFromLocationRequest getFromLocationRequest = GeocoderUtils.fromMapToGetFromLocationRequest(requestMap);
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Map
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/GeocoderMethodHandler.java:80: warning: [unchecked] unchecked method invocation: method fromMapToGetFromLocationNameRequest in interface GeocoderUtils is applied to given types
+        GetFromLocationNameRequest getFromLocationNameRequest = GeocoderUtils.fromMapToGetFromLocationNameRequest(
+                                                                                          ^
+  required: Map<String,Object>
+  found:    Map
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/handlers/GeocoderMethodHandler.java:81: warning: [unchecked] unchecked conversion
+            requestMap);
+            ^
+  required: Map<String,Object>
+  found:    Map
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/GPSUtil.java:69: warning: [deprecation] ROUND_HALF_UP in BigDecimal has been deprecated
+        return object.divide(objectTwo, 20, BigDecimal.ROUND_HALF_UP).doubleValue(); 
+                                                      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/GPSUtil.java:69: warning: [deprecation] divide(BigDecimal,int,int) in BigDecimal has been deprecated
+        return object.divide(objectTwo, 20, BigDecimal.ROUND_HALF_UP).doubleValue(); 
+                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/GeocoderUtils.java:35: warning: [deprecation] Locale(String,String) in Locale has been deprecated
+        return new Locale(language, country);
+               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:73: warning: [deprecation] isFromMockProvider() in Location has been deprecated
+        map.put("isFromMockProvider", location.isFromMockProvider());
+                                              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:196: warning: [deprecation] isGpsPresent() in LocationSettingsStates has been deprecated
+        map.put("gpsPresent", states.isGpsPresent());
+                                    ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:197: warning: [deprecation] isGpsUsable() in LocationSettingsStates has been deprecated
+        map.put("gpsUsable", states.isGpsUsable());
+                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:414: warning: [deprecation] setContentInfo(CharSequence) in Builder has been deprecated
+            builder = builder.setContentInfo(ValueGetter.getString("contentInfo", map));
+                             ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:441: warning: [deprecation] setSound(Uri) in Builder has been deprecated
+            builder = builder.setSound(soundUri);
+                             ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:450: warning: [unchecked] unchecked cast
+            List<Integer> patternRA = (List<Integer>) map.get("vibrate");
+                                                             ^
+  required: List<Integer>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:456: warning: [deprecation] setVibrate(long[]) in Builder has been deprecated
+            builder = builder.setVibrate(pattern);
+                             ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_location-6.16.0+300/android/src/main/java/com/huawei/hms/flutter/location/utils/LocationUtils.java:466: warning: [deprecation] setPriority(int) in Builder has been deprecated
+                    .setPriority(ValueGetter.getInt("priority", map))
+                    ^
+29 warnings
+warning: unknown enum constant Mode.LOCAL
+  reason: class file for com.facebook.infer.annotation.Nullsafe$Mode not found
+warning: unknown enum constant Mode.LOCAL
+warning: unknown enum constant Mode.LOCAL
+warning: unknown enum constant Mode.LOCAL
+warning: unknown enum constant Mode.LOCAL
+warning: unknown enum constant Mode.LOCAL
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:226: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+            return AGConnectServicesConfig.fromContext(getContext()).getString("client/app_id");
+                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:255: warning: [deprecation] NetworkInfo in android.net has been deprecated
+            final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:255: warning: [deprecation] getActiveNetworkInfo() in ConnectivityManager has been deprecated
+            final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+                                                               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:256: warning: [deprecation] isConnected() in NetworkInfo has been deprecated
+            if (networkInfo != null && networkInfo.isConnected()) {
+                                                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:257: warning: [deprecation] getType() in NetworkInfo has been deprecated
+                final int networkType = networkInfo.getType();
+                                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:258: warning: [deprecation] TYPE_WIFI in ConnectivityManager has been deprecated
+                if (ConnectivityManager.TYPE_WIFI == networkType) {
+                                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:260: warning: [deprecation] TYPE_MOBILE in ConnectivityManager has been deprecated
+                } else if (ConnectivityManager.TYPE_MOBILE == networkType) {
+                                              ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/logger/HMSLogger.java:261: warning: [deprecation] getSubtype() in NetworkInfo has been deprecated
+                    final int networkSubType = networkInfo.getSubtype();
+                                                          ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/localnotification/HmsLocalNotificationController.java:445: warning: [deprecation] defaults in Notification has been deprecated
+                builtNotification.defaults |= Notification.DEFAULT_LIGHTS;
+                                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:88: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        String appId = AGConnectServicesConfig.fromContext(context).getString(Core.CLIENT_APP_ID);
+                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:97: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+            String appId = AGConnectServicesConfig.fromContext(context).getString(Core.CLIENT_APP_ID);
+                           ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:188: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+            String appId = AGConnectServicesConfig.fromContext(context).getString(Core.CLIENT_APP_ID);
+                           ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:225: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("app_id", AGConnectServicesConfig.fromContext(context).getString("client/app_id"));
+                                ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:226: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("cp_id", AGConnectServicesConfig.fromContext(context).getString("client/cp_id"));
+                               ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:227: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("client_id", AGConnectServicesConfig.fromContext(context).getString("client/client_id"));
+                                   ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:228: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("product_id", AGConnectServicesConfig.fromContext(context).getString("client/product_id"));
+                                    ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:229: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("package_name", AGConnectServicesConfig.fromContext(context).getString("client/package_name"));
+                                      ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:230: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("api_key", AGConnectServicesConfig.fromContext(context).getString("client/api_key"));
+                                 ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:231: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("client_secret", AGConnectServicesConfig.fromContext(context).getString("client/client_secret"));
+                                       ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/hms/FlutterHmsInstanceId.java:232: warning: [deprecation] AGConnectServicesConfig in com.huawei.agconnect.config has been deprecated
+        agconnect.put("agcw_url", AGConnectServicesConfig.fromContext(context).getString("agcgw/url"));
+                                  ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/utils/MapUtils.java:72: warning: [deprecation] get(String) in BaseBundle has been deprecated
+                Object value = bundle.get(key);
+                                     ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/utils/BundleUtils.java:110: warning: [unchecked] unchecked cast
+                v = convertJSON((Map<String, Object>) v);
+                                                      ^
+  required: Map<String,Object>
+  found:    Object
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/utils/BundleUtils.java:128: warning: [deprecation] get(String) in BaseBundle has been deprecated
+                    Object value = bundle.get(key);
+                                         ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/backgroundmessaging/BackgroundMessagingService.java:32: warning: [deprecation] JobIntentService in androidx.core.app has been deprecated
+public class BackgroundMessagingService extends JobIntentService {
+                                                ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/backgroundmessaging/BackgroundMessagingService.java:54: warning: [deprecation] JobIntentService in androidx.core.app has been deprecated
+        JobIntentService.enqueueWork(context, BackgroundMessagingService.class, JOB_ID, intent);
+        ^
+/Users/amrbakr/.pub-cache/hosted/pub.dev/huawei_push-6.14.0+300/android/src/main/java/com/huawei/hms/flutter/push/backgroundmessaging/FlutterBackgroundRunner.java:163: warning: [deprecation] get(String) in BaseBundle has been deprecated
+            RemoteMessage remoteMessage = (RemoteMessage) intent.getExtras().get(Param.MESSAGE.code());
+                                                                            ^
+32 warnings
+e: file:///Users/amrbakr/.pub-cache/hosted/pub.dev/otp_autofill-4.1.0/android/src/main/kotlin/ru/surfstudio/otp_autofill/AppSignatureHelper.kt:25:23 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'kotlin.Array<(out) android.content.pm.Signature!>?'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':otp_autofill:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 4s
+Running Gradle task 'assembleDebug'...                             64.4s
+Gradle task assembleDebug failed with exit code 1

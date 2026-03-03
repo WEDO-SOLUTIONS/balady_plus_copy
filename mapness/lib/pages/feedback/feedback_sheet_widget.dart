@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
@@ -5,10 +6,14 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
@@ -31,7 +36,7 @@ final confettiShapes = [
   (startPosition, velocity, scale, gradient, x, y, z) => ArcShape(startPosition, velocity, scale, gradient, x, y, z),
 ];
 
-class FeedbackSheetWidget extends HookWidget {
+class FeedbackSheetWidget extends HookConsumerWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
   final bool hasPhotos;
@@ -50,10 +55,12 @@ class FeedbackSheetWidget extends HookWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationNotificationsDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationNotifications.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationNotifications.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationNotifications.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationNotifications.keyName,
   };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final confettiController = useAnimationController();
     final sheetController = useToggleSheetController(onClose: (_) => popNavigation(context, confettiController));
 
@@ -112,25 +119,18 @@ class FeedbackSheetWidget extends HookWidget {
                       paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
                     ),
                     FeedbackSheetState.success => Column(
-                      key: const Key('feedback_success'),
-                      children: [
-                        Center(
-                          child: SizedBox(
-                            width: 180.0,
-                            child: SvgPicture.asset(asset(context), matchTextDirection: true),
-                          ),
-                        ),
-                        const SizedBox(height: AppSizes.$4xs),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
-                            child: Text(
-                              context.l10n.feedbackSuccessTitle,
-                              style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
-                              textAlign: TextAlign.center,
+key: const Key('feedback_success'),
+                        children: [
+                          Center(
+                            child: SizedBox(
+                              width: 180.0,
+                              child: SvgPicture.asset(
+                                ref.watch(activeCityEventProvider)?.illustrationNotifications ??
+                                    Assets.imagesSvg.illustrationNotifications.keyName,
+                                matchTextDirection: true,
+                              ),
                             ),
                           ),
-                        ),
                         if (hasPhotos) ...[
                           const SizedBox(height: Spacing.$2x),
                           Center(

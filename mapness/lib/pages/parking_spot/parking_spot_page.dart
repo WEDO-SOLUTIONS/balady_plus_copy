@@ -1,5 +1,6 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -10,21 +11,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:provider/provider.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
-import 'package:provider/provider.dart';
+
 
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
@@ -122,57 +126,46 @@ class ParkingSpotPage extends HookConsumerWidget {
         onLeadingPressed: () => context.router.pop(),
       ),
       body: SafeArea(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.$3x),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Spacing.$2x.heightBox,
-                SizedBox(
-                  height: 108,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                    child: UrbiMap(
-                      onMapCreated: (controller) async {
-                        final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-                        await dgisMapController.onMapCreated(controller);
-                        if (latLng.value != null) {
-                          await dgisMapController.setCameraPosition(
-                            GeoPointWithElevationMessage(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$3x),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Spacing.$2x.heightBox,
+              SizedBox(
+                height: 108,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                  child: UrbiMap(
+                    onMapCreated: (controller) async {
+                      final activeCityEvent = ref.read(activeCityEventProvider);
+                      final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
+                      await dgisMapController.onMapCreated(controller);
+                      if (latLng.value != null) {
+                        await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
+                          latitude: latLng.value!.latitude,
+                          longitude: latLng.value!.longitude,
+                          elevation: 0,
+                        ));
+                        await dgisMapController.addMarker(Marker(
+                          id: parkingId,
+                          options: MarkerOptionsMessage(
+                            position: GeoPointWithElevationMessage(
                               latitude: latLng.value!.latitude,
                               longitude: latLng.value!.longitude,
                               elevation: 0,
                             ),
-                          );
-                          await dgisMapController.addMarker(
-                            Marker(
-                              id: parkingId,
-                              options: MarkerOptionsMessage(
-                                position: GeoPointWithElevationMessage(
-                                  latitude: latLng.value!.latitude,
-                                  longitude: latLng.value!.longitude,
-                                  elevation: 0,
-                                ),
-                                icon: switch (context.read<ThemeController>().currentTheme) {
-                                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                                  BaladyAppThemes.light =>
-                                    Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                                  BaladyAppThemes.saudiDay =>
-                                    Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      key: const Key('ParkingSpotDGISMapKey'),
-                    ),
+                            icon:
+                                activeCityEvent?.icParking ?? Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
+                          ),
+                        ));
+                      }
+                    },
+                    key: const Key('ParkingSpotDGISMapKey'),
                   ),
                 ),
-                Spacing.$2x.heightBox,
+              ),
+              Spacing.$2x.heightBox,
                 if (addressNotifier.value.isNotEmpty)
                   Text(
                     addressNotifier.value,
@@ -233,7 +226,6 @@ class ParkingSpotPage extends HookConsumerWidget {
             ),
           ),
         ),
-      ),
       resizeToAvoidBottomInset: false,
     );
   }
@@ -270,12 +262,8 @@ class ParkingSpotPage extends HookConsumerWidget {
               elevation: 0,
             ),
             icon: SaudiNationalDay.isNow()
-                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                : switch (context.read<ThemeController>().currentTheme) {
-                    BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                    BaladyAppThemes.light => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                    BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-                  },
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32)
+              : Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
           ),
         ),
       );
@@ -333,13 +321,10 @@ class ParkingSpotPage extends HookConsumerWidget {
             query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
             query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
-            final context = rootNavigatorKey.currentContext;
-            if (context != null) {
-              await safeShareText(
-                '${context.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
-                context: context,
-              );
-            }
+            await balady_utils.safeShareText(
+              '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
+              context: context,
+            );
           },
         ),
       ],

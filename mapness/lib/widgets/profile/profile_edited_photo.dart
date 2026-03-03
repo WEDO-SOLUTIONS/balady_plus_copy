@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/profile_image/profile_image_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,10 +20,9 @@ class ProfileEditablePhoto extends StatelessWidget {
         onTap: () => _showBottomSheet(context),
         child: Stack(
           children: [
-            ProfileImageWidget(
-              dimension: AvatarSize.$80,
-              abbreviatedName: abbreviatedName,
-              style: AvatarEmptyStyle.accentSecondary,
+const ProfileImageWidget(
+              dimension: 2 * AppSizes.m,
+              isEditing: true,
             ),
             PositionedDirectional(
               start: Spacing.none,
@@ -50,15 +50,15 @@ class ProfileEditablePhoto extends StatelessWidget {
 
   Future<void> _showBottomSheet(BuildContext context) async {
     // Result of the bottom sheet is "Should we open sheet with text 'Open settings to give permission'?"
-    final res = await context.router.push<bool>(const ChangeProfilePhotoRoute());
+    // final res = await context.router.push<bool>(ChangeProfilePhotoRoute());
 
-    if (res == true) {
-      await Future.delayed(Durations.medium2);
-      if (!context.mounted) {
-        return;
-      }
-      await _showDialog(context);
-    }
+    // if (res == true) {
+    //   await Future.delayed(Durations.medium2);
+    //   if (!context.mounted) {
+    //     return;
+    //   }
+    //   await _showDialog(context);
+    // }
   }
 
   Future<void> _showIOSDialog(BuildContext context, String title, String cancel, String settings) async {

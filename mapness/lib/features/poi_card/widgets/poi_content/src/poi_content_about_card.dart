@@ -8,14 +8,12 @@ class PoiContentAboutCard extends StatefulWidget {
   final PoiContentAboutModel data;
   final Duration animationDuration;
   final Curve animationCurve;
-  final bool isExpandable;
 
   const PoiContentAboutCard({
     required this.data,
     this.collapsedLinesCount = 3,
     this.animationDuration = const Duration(milliseconds: 200),
     this.animationCurve = Curves.easeInOut,
-    this.isExpandable = true,
     super.key,
   });
 
@@ -25,16 +23,14 @@ class PoiContentAboutCard extends StatefulWidget {
 
 class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTickerProviderStateMixin {
   static const _heightOfGradient = 36.0;
-
   // This manages height and label "Show more"/"Show less"
   bool isFullVisible = false;
   bool truncateText = false;
   double _maxWidth = 100;
-
   // ignore: prefer_const_constructors
   _AboutTextModel _textHeight = _AboutTextModel(height: 0, heightTruncated: 0, linesCount: 0);
 
-  bool get _showExpandButton => _textHeight.linesCount > widget.collapsedLinesCount && widget.isExpandable;
+  bool get _showExpandButton => _textHeight.linesCount > widget.collapsedLinesCount;
 
   late final AnimationController _animationController;
   late final Animation<double> _animation;
@@ -68,61 +64,59 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
 
   @override
   Widget build(BuildContext context) => ContentWrapper.single(
-    color: context.colors.backgroundSurface1,
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        if (_maxWidth != constraints.maxWidth) {
-          _maxWidth = constraints.maxWidth;
-          _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
-        }
-        return ContentRow(
-          backgroundColor: context.colors.backgroundSurface1,
-          text: ContentRowTextOptions(
-            title: widget.data.aboutTitle,
-            titleOptions: const ContentRowTextOption(isBold: true),
-            subtitleExtraOptions: _showExpandButton
-                ? ContentRowTextOption(
-                    isBold: true,
-                    builder: (context) => GestureDetector(
-                      onTap: () {
-                        if (!isFullVisible) {
-                          _animationController.forward();
-                        } else {
-                          _animationController.reverse();
-                        }
-                      },
-                      child: AnimatedBuilder(
-                        animation: _animation,
-                        builder: (context, child) => Stack(
-                          children: [
-                            Text(
-                              maxLines: 1,
-                              widget.data.showLessTitle,
-                              style: context.textStyle.footNoteBold.copyWith(
-                                color: context.colors.accentDefault.withOpacity(_animation.value),
-                              ),
+child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (_maxWidth != constraints.maxWidth) {
+              _maxWidth = constraints.maxWidth;
+              _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
+            }
+            return ContentRow(
+              text: ContentRowTextOptions(
+                title: widget.data.aboutTitle,
+                titleOptions: const ContentRowTextOption(isBold: true),
+                subtitleExtraOptions: _showExpandButton
+                    ? ContentRowTextOption(
+                        isBold: true,
+                        builder: (context) => GestureDetector(
+                          onTap: () {
+                            if (!isFullVisible) {
+                              _animationController.forward();
+                            } else {
+                              _animationController.reverse();
+                            }
+                          },
+                          child: AnimatedBuilder(
+                            animation: _animation,
+                            builder: (context, child) => Stack(
+                              children: [
+                                Text(
+                                  maxLines: 1,
+                                  widget.data.showLessTitle,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: context.colors.accentDefault.withOpacity(_animation.value),
+                                  ),
+                                ),
+                                Text(
+                                  maxLines: 1,
+                                  widget.data.showMoreTitle,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: context.colors.accentDefault.withOpacity(1 - _animation.value),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              maxLines: 1,
-                              widget.data.showMoreTitle,
-                              style: context.textStyle.footNoteBold.copyWith(
-                                color: context.colors.accentDefault.withOpacity(1 - _animation.value),
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                : null,
-            subtitleOptions: ContentRowTextOption(
-              builder: (context) => AnimatedBuilder(
+                      )
+                    : null,
+                subtitleOptions: ContentRowTextOption(
+                  builder: (context) => AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) => Stack(
                   alignment: AlignmentDirectional.bottomStart,
                   children: [
                     SizedBox(
-                      height: widget.isExpandable
+                      height: _showExpandButton
                           ? _textHeight.heightTruncated +
                                 (_textHeight.height - _textHeight.heightTruncated) * _animation.value
                           : null,
@@ -143,8 +137,8 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                             // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
                             // When this colors will be added to UIKit
                             colors: [
-                              context.colors.gradientBackgroundSurface1opacity0,
-                              context.colors.gradientBackgroundSurface1opacity80,
+                              context.colors.backgroundSurface1.withOpacity(0.0),
+                              context.colors.backgroundSurface1.withOpacity(0.8),
                             ],
                           ),
                         ),

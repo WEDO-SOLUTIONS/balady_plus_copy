@@ -119,26 +119,24 @@ class _PoiPhotoRowBuilderState extends ConsumerState<PoiPhotoRowBuilder> {
     }
   }
 
-  Widget itemBuilder(BuildContext context, int index) => LoadingShimmerImage(
-        onImageTap: (name, {isAsset}) {
-          Metrics.logEventAdvanced(MetricsConstants.poiKeys.photo,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {
-                'poi_id': widget.objectId,
-                'photo_url': widget.photosUrls[index],
-              });
+Widget itemBuilder(BuildContext context, int index) {
+    final url = widget.previewUrls[index];
+    return LoadingShimmerImage(
+      onImageTap: (name, {isAsset}) {
+        Metrics.logEventAdvanced(MetricsConstants.poiKeys.photo,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+            props: {
+              'poi_id': widget.objectId,
+              'photo_url': widget.photosUrls[index],
+            });
 
-          context.router.push(
-            PhotoViewerRoute(
-              photoPaths: widget.photosUrls,
-              previewUrls: widget.previewUrls,
-              currentPhotoIndex: index,
-            ),
-          );
-        },
-        imageUrl: widget.previewUrls[index],
-        file: widget.photoFiles?[index],
-        fit: BoxFit.cover,
-      );
+        context.router.push(PhotoViewerRoute(photoPaths: widget.photosUrls, currentPhotoIndex: index));
+      },
+      imageUrl: url,
+      file: widget.photoFiles?[index],
+      isAssetImg: url.startsWith('package'),
+      fit: BoxFit.cover,
+    );
+  }
 }

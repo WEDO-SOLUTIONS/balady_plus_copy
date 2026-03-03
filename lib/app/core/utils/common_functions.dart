@@ -12,7 +12,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dgis_map/library.dart';
@@ -44,6 +44,7 @@ import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
 
 import '../../../mini_apps_engine/data/models/mini_app_model.dart';
+import '../../../mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
@@ -287,13 +288,11 @@ class CommonFunctions {
     return null;
   }
 
-  static void openMiniApp(MiniAppModel? miniApp) {
-    if (miniApp != null) {
-      sl<HomeMiniAppsListCubit>().openMiniApp(
-        serviceKey: miniApp.serviceKey!,
-        path: miniApp.path,
-      );
-    }
+  static void openMiniApp(String serviceKey, {String? path}) {
+    sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
+      serviceKey: serviceKey,
+      path: path,
+    );
   }
 
   static Future<LatLng?> handelLocationCatch(
@@ -1788,7 +1787,7 @@ class CommonFunctions {
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
 
-    sl<HomeMiniAppsListCubit>().loadMiniApps();
+    sl<NewMiniAppLogicCubit>().loadMiniApps();
     // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
     // BlocProvider.of<DashboardBloc>(
     //         NavigationService.navigatorKey.currentContext!)

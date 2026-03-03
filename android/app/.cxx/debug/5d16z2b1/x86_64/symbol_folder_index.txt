@@ -1,0 +1,1 @@
+/Users/amrbakr/StudioProjects/baladi/android/app/build/intermediates/cxx/debug/5d16z2b1/obj/x86_64

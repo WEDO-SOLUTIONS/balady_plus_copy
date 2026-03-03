@@ -48,7 +48,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
   final Alignment imageAlignment;
   final BoxFit imageFit;
   final Widget? placeHolderWidget;
-  final bool ssoAuth;
+  final bool isVerifyingKey;
   final bool sso;
   final bool addHeader;
 
@@ -60,7 +60,9 @@ class CustomNetworkImageWidget extends StatefulWidget {
       this.imageAlignment = Alignment.center,
       this.imageFit = BoxFit.cover,
       this.placeHolderWidget,
-      this.ssoAuth = false,  this.sso = false,this.addHeader=false})
+      this.isVerifyingKey = false,
+      this.sso = false,
+      this.addHeader = false})
       : super(key: key);
 
   @override
@@ -74,33 +76,27 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
     bool isSvgIcon = widget.imagePath.contains(".svg");
     bool isUrl = widget.imagePath.startsWith("http");
 
-    final header=  widget.sso ? {
+    final header = widget.sso
+        ? {"Authorization": "Bearer ${CommonProperties.token}"}
+        : widget.isVerifyingKey
+            ? //null
+            {
+                "verifyingKEY":
+                    CommonFunctions.hashRequest(widget.imagePath, "GET")
 
-      "Authorization":
-      "Bearer ${CommonProperties.token}"
-    } :  widget.ssoAuth
-        ? //null
-    {
+                //  "Authorization":
+                //      "Bearer ${locator<AuthService>().accessToken}"
+              }
+            : !widget.isVerifyingKey //MM
+                ? {
+                    'Authorization':
+                        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
+                  }
+                : null;
 
-      "verifyingKEY":
-      CommonFunctions.hashRequest(widget.imagePath, "GET")
-
-      //  "Authorization":
-      //      "Bearer ${locator<AuthService>().accessToken}"
+    if (widget.addHeader == true && header != null) {
+      header.addAll({"X-Service-Id": "2"});
     }
-        : !widget.ssoAuth //MM
-        ? {
-
-      'Authorization':
-      'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
-    }
-        : null;
-
-    if(widget.addHeader == true && header!= null)
-      {
-        header.addAll({"X-Service-Id":"2"});
-
-      }
 
     return isUrl
         ? isSvgIcon
@@ -123,7 +119,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                 width: widget.imageWidth,
                 height: widget.imageHeight,
                 fit: widget.imageFit,
-                headers:header,
+                headers: header,
                 loadingBuilder: (BuildContext context, Widget child,
                     ImageChunkEvent? loadingProgress) {
                   if (loadingProgress == null) return child;

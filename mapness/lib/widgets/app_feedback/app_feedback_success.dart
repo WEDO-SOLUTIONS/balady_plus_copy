@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:provider/provider.dart';
 
 class AppFeedbackSuccess extends StatelessWidget {
@@ -14,6 +15,8 @@ class AppFeedbackSuccess extends StatelessWidget {
     BaladyAppThemes.dark => Assets.images.successAppFeedbackDark.keyName,
     BaladyAppThemes.light => Assets.images.successAppFeedback.keyName,
     BaladyAppThemes.saudiDay => Assets.images.successAppFeedback.keyName,
+    BaladyAppThemes.foundationDay => Assets.images.successAppFeedback.keyName,
+    BaladyAppThemes.mekkah => Assets.images.successAppFeedback.keyName,
   };
 
   @override

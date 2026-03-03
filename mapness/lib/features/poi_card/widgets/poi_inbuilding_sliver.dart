@@ -11,14 +11,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -68,16 +71,17 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
 
   @override
   Widget build(BuildContext context) => MultiSliver(
-    children: [
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
-          child: PoiContentFeedbackCard(
-            data: PoiContentFeedbackType.addPlace,
-            onTap: () => context.router.push(QuickFeedbackRoute()),
+children: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
+              child: PoiContentFeedbackCard(
+                data: PoiContentFeedbackType.addPlace,
+                onTap: () => context.router.push(QuickFeedbackRoute()),
+                activeCityEvent: ref.watch(activeCityEventProvider),
+              ),
+            ),
           ),
-        ),
-      ),
       SliverPadding(
         padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x, top: Spacing.$0_5x),
         sliver: PagingListener(

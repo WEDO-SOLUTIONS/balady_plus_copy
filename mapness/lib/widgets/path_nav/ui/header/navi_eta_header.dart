@@ -16,6 +16,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/path_nav/ui/end_trip_modal.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -56,7 +58,7 @@ class EtaHeader extends HookConsumerWidget {
 
     final backgroundColor = state == PathNavState.paused
         ? context.colors.accentSecondaryDefault
-        : context.colors.onMapSurfaceOnMap;
+        : context.colors.backgroundSurface1;
 
     /// Animating hide and close buttons based on the sheet interpolation.
     final animation = useAnimationController(initialValue: sheetController.isClosed ? 1.0 : 0.0);

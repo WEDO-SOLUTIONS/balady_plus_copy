@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
@@ -46,17 +47,48 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                 ContentWrapper(
                   color: context.colors.backgroundSurface1,
                   children: [
-                    ContentRow(
-                      onTap: () => context.router.push(const MomraWebsiteRoute()),
-                      text: ContentRowTextOptions(title: context.l10n.baladyWebsite),
-                      leading: AppIcons(
-                        iconPath: Assets.icons.svg.profile.website.path,
-                        color: context.colors.accentDefault,
-                        package: Assets.package,
-                      ),
-                      trailing: ContentRowTextTrailingOptions(
-                        icon: SystemIcons.arrowCornerRightSmall.icon(color: context.colors.foregroundSoft).iconData,
-                        iconColor: context.colors.foregroundSoft,
+ContentWrapper(
+                      color: context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () => context.router.push(const MomraWebsiteRoute()),
+                          text: ContentRowTextOptions(title: context.l10n.baladyWebsite),
+                          leading: Assets.icons.svg.profile.website.svg(
+                            colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+                          ),
+                          trailing: ContentRowTextTrailingOptions(
+                            icon: SystemIcons.arrowCornerRightSmall.icon(color: context.colors.foregroundSoft).iconData,
+                            iconColor: context.colors.foregroundSoft,
+                          ),
+                        )
+                      ],
+                    ),
+                    Spacing.$4x.heightBox,
+                    ContactInfo(
+                      colorBegin: context.colors.foregroundSoft,
+                      colorEnd: context.colors.accentDefault,
+                    ),
+                    Spacing.$2x.heightBox,
+                    GestureDetector(
+                      onTap: () {
+                        ///TODO: UNCOMMENT AFTER TESTING WHEN ADD VARIABLE TO CI
+                        // if (const bool.fromEnvironment('URBI_DEBUG')) {
+                        setState(() {
+                          tapsToGo -= 1;
+                        });
+                        if (tapsToGo == 0) {
+                          ref.read(debugStateProvider.notifier).enable();
+                        }
+                        // }
+                      },
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                        child: Text(
+                          context.l10n.foInquiriesAndTheLatestNews,
+                          style: context.textStyles.captionMediumRegular.copyWith(
+                            color: context.colors.foregroundSoft,
+                          ),
+                        ),
                       ),
                     ),
                   ],

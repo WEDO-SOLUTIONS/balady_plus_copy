@@ -1,4 +1,4 @@
-part of 'bss_payload.dart';
+part of 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 
 /// Type of the contact.
 enum BssContactType {

@@ -2,7 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
-import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
+// import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart'; // File deleted
+import 'package:mapness/app/auto_route/guards/theme_splash_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -34,7 +35,7 @@ class AppRouter extends RootStackRouter {
       transitionsBuilder: TransitionsBuilders.zoomIn,
       guards: [
         OnboardRouteGuard(ref),
-        SaudiDaySplashGuard(ref),
+        ThemeSplashGuard(ref),
       ],
       children: [
         Routes.bottomMenuRoute,
@@ -46,7 +47,7 @@ class AppRouter extends RootStackRouter {
         ),
         CustomRoute(
           path: 'service_available',
-          page: ServiceNotAvailableSheetRoute.page,
+          page: ServiceNotAvailableSheet.page,
           opaque: false,
           customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
             context,
@@ -83,6 +84,10 @@ class AppRouter extends RootStackRouter {
         AppRoute(
           path: 'poi-map',
           page: PoiCardWidgetRoute.page,
+        ),
+        AppRoute(
+          path: 'poi-makkah',
+          page: PoiMakkahWidgetRoute.page,
         ),
         AppRoute(
           path: 'hajj-poi-card',
@@ -176,11 +181,7 @@ class AppRouter extends RootStackRouter {
           path: 'feedback/:objectId',
           page: FeedbackSelectTypeRoute.page,
         ),
-        CustomRoute(
-          path: ':categoryId',
-          page: FeedbackRoute.page,
-          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
-        ),
+
         CustomRoute(
           path: 'success',
           page: FeedbackSentRoute.page,
@@ -393,6 +394,11 @@ class AppRouter extends RootStackRouter {
           path: 'profile_preferences',
           page: ProfilePreferencesRoute.page,
         ),
+        CustomRoute(
+          path: ':categoryId',
+          page: FeedbackRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
       ],
     ),
     CustomRoute(
@@ -403,13 +409,6 @@ class AppRouter extends RootStackRouter {
         child: child,
       ),
     ),
-    CustomRoute(
-      page: SaudiDaySplashRoute.page,
-      opaque: false,
-      transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-        type: StoryTypes.saudiDay,
-        child: child,
-      ),
-    ),
+
   ];
 }

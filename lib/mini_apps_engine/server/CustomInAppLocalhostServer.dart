@@ -123,16 +123,31 @@ class CustomInAppLocalhostServer {
         }
       });
 
-      final server = await io.serve(
-        handler,
-        '127.0.0.1',
-        _port,
-        shared: _shared,
-      );
-      print('Server running on http://localhost:$_port');
-      _server = server;
+      try {
+        final server = await io.serve(
+          handler,
+          '127.0.0.1',
+          _port,
+          shared: _shared,
+        );
+
+        this._started = true;
+        _server = server;
+        print('✅ Server successfully started on http://localhost:$_port');
+
+      } on SocketException catch (e) {
+        // Port is already in use
+        this._started = false;
+        print('❌ Port $_port is already in use!');
+        print('Error details: ${e.message}');
+
+        // Rethrow so calling code can handle it
+        throw Exception('Failed to start server: Port $_port is already in use. ${e.message}');
+      }
     } catch (e) {
-      print(e.toString());
+      this._started = false;
+      print('❌ Failed to start server: ${e.toString()}');
+      rethrow; // Rethrow to let calling code handle it
     }
   }
 

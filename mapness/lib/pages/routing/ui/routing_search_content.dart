@@ -6,7 +6,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
-import 'package:mapness/pages/routing/ui/routing_search_history.dart';
+import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/routing/ui/routing_search_results.dart';
 import 'package:mapness/pages/routing/ui/routing_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -51,9 +51,7 @@ class RoutingSearchContent extends ConsumerWidget {
       ),
       history: () => SafeArea(
         top: false,
-        child: RoutingSearchHistory(
-          showMyLocation: showMyLocation,
-        ),
+        child: const MapSearchHistory(),
       ),
       loading: () => SafeArea(
         top: false,

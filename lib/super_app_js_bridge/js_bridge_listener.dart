@@ -14,7 +14,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
@@ -142,8 +142,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
-            await sl<HomeMiniAppsListCubit>()
-                .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+            await sl<NewMiniAppLogicCubit>()
+                .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
                 .then((result) {
                   response = result!;
                 });
@@ -174,8 +174,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: null,
       );
     } else {
-      await sl<HomeMiniAppsListCubit>()
-          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+      await sl<NewMiniAppLogicCubit>()
+          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
           .then((result) {
             response = result!;
           });
@@ -392,7 +392,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       late BaseResponse response;
       if (msg != null && msg is String) {
         Map data = jsonDecode(msg);
-        sl<HomeMiniAppsListCubit>().openMiniApp(
+        sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
           serviceKey: data["miniAppKey"],
           path: data['path'],
         );

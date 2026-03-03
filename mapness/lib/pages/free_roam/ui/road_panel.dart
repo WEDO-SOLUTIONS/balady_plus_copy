@@ -41,7 +41,7 @@ class RoadPanel extends ConsumerWidget {
                       onTap: onSearch,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: context.colors.onMapSurfaceOnMap,
+                          color: context.colors.onmapSurfaceOnMap,
                           borderRadius: BorderRadius.circular(RadiusBorder.xl),
                         ),
                         child: Padding(
@@ -56,7 +56,7 @@ class RoadPanel extends ConsumerWidget {
                       onTap: onEndTrip,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: context.colors.onMapSurfaceOnMap,
+                          color: context.colors.onmapSurfaceOnMap,
                           borderRadius: BorderRadius.circular(RadiusBorder.xl),
                         ),
                         child: Center(
@@ -73,7 +73,7 @@ class RoadPanel extends ConsumerWidget {
                     onTap: onOpenSheet,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: context.colors.onMapSurfaceOnMap,
+                        color: context.colors.onmapSurfaceOnMap,
                         borderRadius: BorderRadius.circular(RadiusBorder.xl),
                       ),
                       child: Padding(

@@ -20,6 +20,7 @@ import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -98,22 +99,22 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
-    state = const AsyncValue.loading();
-
-    final result = await ref
-        .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
-        .timeout(
-          const Duration(minutes: 1),
-          onTimeout: () {
-            ref.read(appRouterProvider).pop();
-            return null;
-          },
-        );
+    final result = await ref.read(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future).timeout(
+      const Duration(minutes: 10),
+      onTimeout: () {
+        ref.read(appRouterProvider).maybePop();
+        return null;
+      },
+    );
 
     await ref.watch(poiPhotoProvider(objectId).future);
 
     if (result != null) {
-      ref.read(paddingConfigProvider(result, closestPoint, cameraConfig));
+      ref.read(paddingConfigProvider(
+        result.markerPosition,
+        closestPoint,
+        cameraConfig,
+      ));
     }
     // We need to use [appLang] to cache different data for different locales
     // We don't want to show arabic text to english users and vise versa

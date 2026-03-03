@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 part of 'poi_card_widget_page.dart';
 
 Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {

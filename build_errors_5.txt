@@ -1,0 +1,25 @@
+Running Gradle task 'assembleDebug'...                          
+Warning: Flutter support for your project's Kotlin version (1.9.24) will soon be dropped. Please upgrade your Kotlin version to a version of at least 2.1.0 soon.
+Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+
+Potential fix: Your project's KGP version is typically defined in the plugins block of the `settings.gradle` file (/Users/amrbakr/StudioProjects/baladi/android/settings.gradle), by a plugin with the id of org.jetbrains.kotlin.android. 
+If you don't see a plugins block, your project was likely created with an older template version, in which case it is most likely defined in the top-level build.gradle file (/Users/amrbakr/StudioProjects/baladi/android/build.gradle) by the ext.kotlin_version property.
+
+e: file:///Users/amrbakr/.pub-cache/hosted/pub.dev/otp_autofill-4.1.0/android/src/main/kotlin/ru/surfstudio/otp_autofill/AppSignatureHelper.kt:25:23 Only safe (?.) or non-null asserted (!!.) calls are allowed on a nullable receiver of type 'kotlin.Array<(out) android.content.pm.Signature!>?'.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':otp_autofill:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 52s
+Running Gradle task 'assembleDebug'...                            112.6s
+Gradle task assembleDebug failed with exit code 1

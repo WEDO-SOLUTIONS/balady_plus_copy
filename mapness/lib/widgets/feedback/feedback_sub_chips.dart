@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/dragger.dart';
@@ -158,12 +159,14 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                       for (final item in entry.value)
                         ContentRow(
                           onTap: () => Navigator.pop(context, item),
-                          leadingPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
-                          leading: SvgPicture.network(
-                            entry.key.icon,
-                            width: 24,
-                            height: 24,
-                            colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
+                          leading: Padding(
+                            padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
+                            child: SvgPicture.network(
+                              entry.key.icon,
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
+                            ),
                           ),
                           text: ContentRowTextOptions(title: item.label),
                         )

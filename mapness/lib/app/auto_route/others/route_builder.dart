@@ -51,7 +51,7 @@ enum RouteBarrierColor {
       case RouteBarrierColor.dimming60:
         return context.colors.screenOverlayDimming60;
       case RouteBarrierColor.dimming90:
-        return context.colors.screenOverlayDimming80;
+        return context.colors.screenOverlayDimming40;
     }
   }
 }

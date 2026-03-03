@@ -1,4 +1,6 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -7,8 +9,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -19,6 +25,7 @@ import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 
 part 'landing_page_bottom_sheet_controller.dart';
 
@@ -31,28 +38,42 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver, TickerProviderStateMixin {
-  late final bottomSheetController = ref.read(bottomSheetControllerProvider.notifier);
-  final confettiConfig = ConfettiGeneratorConfig.confetti(
-    dissappearStartsAt: 0.33,
-    dissappearCurve: Curves.easeInOutQuint,
-    commonShapeAppearance: 1,
-    animationDuration: const Duration(seconds: 4),
-    mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
-        ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController = MultiStateSheetController(
+    initialState: ThreeStateSheet.open,
+    behavior: FractionSnappingBehavior(fractions: {0.0, if (Platform.isIOS) .3 else .38, 1.0}),
+    stateMapper: LandingStateMapper(),
   );
-  late final confettiController = AnimationController(vsync: this, duration: confettiConfig.animationDuration);
+
+  ConfettiGeneratorConfig getConfettiConfig(BuildContext context) {
+    final color = ref.read(activeCityEventProvider)?.fireworkGradientColors;
+    final colors = ref.read(activeCityEventProvider)?.fireworkGradientColors2;
+    return ConfettiGeneratorConfig.confetti(
+      dissappearStartsAt: 0.33,
+      dissappearCurve: Curves.easeInOutQuint,
+      commonShapeAppearance: 1,
+      animationDuration: const Duration(seconds: 4),
+      mostCommonGradientColors: color,
+      gradientColors: colors,
+      mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
+          ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+    );
+  }
+
+  late final confettiController =
+      AnimationController(vsync: this, duration: getConfettiConfig(context).animationDuration);
 
   MediaQueryData? _mediaQuery;
+  // Only first time when sheet is open
+  bool _sheetExpanded = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
-    bottomSheetController.state.controller?.addListener(_calculatePadding);
+_bottomSheetController.addListener(_bottomsheetListener);
 
     _setupTapListener();
   }
@@ -76,10 +97,24 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         );
   }
 
+  void _bottomsheetListener() {
+    if (_bottomSheetController.state == ThreeStateSheet.expanded && !_sheetExpanded) {
+      _sheetExpanded = true;
+      final isFoundingDayToday = ref.watch(foundingDayUrbiProvider);
+      if (isFoundingDayToday) {
+        confettiController
+          ..value = 0
+          ..animateTo(confettiController.upperBound, curve: Curves.easeOutQuint, duration: confettiController.duration);
+      }
+    }
+
+    _calculatePadding();
+  }
+
   @override
   void dispose() {
-    bottomSheetController.state.controller?.removeListener(_calculatePadding);
-    bottomSheetController.state.controller = null;
+    _bottomSheetController.dispose();
+    // bottomSheetController.state.controller = null;
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -110,8 +145,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(thermalMonitorProvider)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier)
-      ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier);
+      ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier)
+      ..watch(activeCityEventProvider);
 
+    final confettiConfig = getConfettiConfig(context);
     return HajjWrapperListeners(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: context.watch<ThemeController>().systemOverlayStyle,
@@ -144,7 +181,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   ),
                 ),
                 RepaintBoundary(
-                  child: ConfettiAnimation(animationController: confettiController, config: confettiConfig),
+child: ConfettiAnimation(
+                    key: ValueKey(confettiConfig.hashCode),
+                    animationController: confettiController,
+                    config: confettiConfig,
+                  ),
                 ),
               ],
             ),

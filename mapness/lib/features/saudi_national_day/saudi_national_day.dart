@@ -92,6 +92,7 @@ class SaudiNationalDay extends _$SaudiNationalDay {
 
   /// Simple provider that returns the current status without periodic updates
   /// Use this if you only need a one-time check
+  @Deprecated('Use the activeEventProvider instance instead')
   static bool isNow() {
     // Check if debug override is enabled
     if (saudiNationalDayDebugOverride) {

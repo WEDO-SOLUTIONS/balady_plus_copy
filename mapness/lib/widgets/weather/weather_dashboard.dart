@@ -101,7 +101,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [context.colors.gradientBackgroundSurface4opacity0, context.colors.backgroundSurface4],
+                    colors: [context.colors.backgroundSurface4.withOpacity(0.0), context.colors.backgroundSurface4],
                   ),
                 ),
               ),

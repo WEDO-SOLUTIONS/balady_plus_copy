@@ -30,14 +30,16 @@ class PoiContentFullAddressCard extends StatelessWidget {
             subtitle: data.fullAddress,
             subtitleOptions: const ContentRowTextOption(maxLines: 99),
           ),
-          trailing: data.networkLogoUrl != null
+          trailing: data.networkLogoUrl != null || data.assetLogoUrl != null
               ? ContentRowCustomTrailingOptions(
                   builder: (context) => Padding(
                     padding: const EdgeInsetsDirectional.only(end: Spacing.$4x, top: Spacing.$4x),
                     child: SizedBox(
                       width: 48,
                       height: 48,
-                      child: Image.network(data.networkLogoUrl ?? '', fit: BoxFit.cover),
+child: data.assetLogoUrl != null
+                          ? Image.asset(data.assetLogoUrl!, fit: BoxFit.cover)
+                          : Image.network(data.networkLogoUrl ?? '', fit: BoxFit.cover),
                     ),
                   ),
                 )

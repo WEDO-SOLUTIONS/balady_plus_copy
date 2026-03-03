@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -17,6 +18,30 @@ class PoiPhoto extends _$PoiPhoto {
   Future<DgisPhotosDto> build(int objectId) async {
     final dio = ref.watch(baseDioProvider);
     final locale = ref.watch(appLanguageProvider);
+
+    final isFoundingDay = ref.watch(foundingDayUrbiProvider);
+
+    if (isFoundingDay) {
+      final assets = ref.read(foundingDayUrbiProvider.notifier).getPhotoByDgisId(objectId);
+
+      if (assets.isNotEmpty) {
+        return DgisPhotosDto(
+          albums: [],
+          items: [
+            Item(
+              id: assets.hashCode.toString(),
+              url: assets,
+              height: 100,
+              width: 200,
+              previewUrls: null,
+              isPinned: false,
+              isAsset: true,
+            ),
+          ],
+        );
+      }
+    }
+
     final env = await ref.watch(dgisEnvironmentProvider.future);
 
     final baseApiUrl = env.baseApiDomain;
@@ -25,28 +50,32 @@ class PoiPhoto extends _$PoiPhoto {
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
 
-    final response = await dio.get(
-      'https://api.photo.$baseApiUrl/3.0/objects/$objectId/albums/all/photos',
-      queryParameters: {
-        'key': 'eTei6feebievaeh',
-        'locale': switch (locale) {
-          Language.english => 'en_SA',
-          Language.arabic => 'ar_AE',
+    try {
+      final response = await dio.get(
+        'https://api.photo.$baseApiUrl/3.0/objects/$objectId/albums/all/photos',
+        queryParameters: {
+          'key': 'eTei6feebievaeh',
+          'locale': switch (locale) {
+            Language.english => 'en_SA',
+            Language.arabic => 'ar_AE',
+          },
+          'preview_size': '600x',
         },
-        'preview_size': '600x',
-      },
-      options: Options(
-        validateStatus: (status) => status != null && status >= 200 && status < 300 || status == HttpStatus.notFound,
-      ),
-      cancelToken: cancelToken,
-    );
+        options: Options(
+          validateStatus: (status) => status != null && status >= 200 && status < 300 || status == HttpStatus.notFound,
+        ),
+        cancelToken: cancelToken,
+      );
 
-    if (response.statusCode == HttpStatus.notFound) {
+      if (response.statusCode == HttpStatus.notFound) {
+        return DgisPhotosDto(albums: [], items: []);
+      }
+
+      final data = DgisPhotosDto.fromJson(response.data as Map<String, dynamic>);
+
+      return data;
+    } catch (ex) {
       return DgisPhotosDto(albums: [], items: []);
     }
-
-    final data = DgisPhotosDto.fromJson(response.data as Map<String, dynamic>);
-
-    return data;
   }
 }

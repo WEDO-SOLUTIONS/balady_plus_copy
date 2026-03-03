@@ -95,7 +95,9 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final title = isCompleted ? context.l10n.shareYourFeelingsAboutPark : context.l10n.voteWhatDoYouWantToHaveInThePark;
     final onPressedSubmit = () async {
-      await ref.read(authMethodsProvider.notifier).authOrOpen(
+      await ref
+          .read(authMethodsProvider.notifier)
+          .authOrOpen(
             context,
             callback: feedbackNotifier.submitFeedback,
           );

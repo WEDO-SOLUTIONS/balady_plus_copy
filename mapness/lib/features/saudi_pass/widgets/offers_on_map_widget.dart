@@ -1,3 +1,4 @@
+import 'package:mapness/shared/providers/theme_controller.dart';
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
@@ -98,6 +99,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
           BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
           BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.light.icOffers.keyName,
         },
         width: _kMarkerWidth,
       ),
@@ -116,6 +119,12 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             size: _kClusterIconSize,
           ),
           BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+          BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+          BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
             size: _kClusterIconSize,
           ),
         },
@@ -147,6 +156,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
             BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
             BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+            BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+            BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
           },
           id: offerPoiPinId,
         ),
@@ -185,6 +196,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
           BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
           BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
         },
         id: offerPoiPinId,
       ),

@@ -1,3 +1,5 @@
+library bss_payload;
+
 import 'package:mapness/shared/providers/analytic/models/extensions/type_defs.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart';
 
