@@ -174,3 +174,7 @@ reports/
 
 # Build runner
 **/*.gen.dart
+
+# C++ Build output
+**/.cxx/
+.cxx/

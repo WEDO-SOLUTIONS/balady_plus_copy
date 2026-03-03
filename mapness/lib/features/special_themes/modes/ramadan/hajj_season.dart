@@ -7,7 +7,7 @@ part 'hajj_season.g.dart';
 /// Business requirement:
 ///   Hajj theme should be switched on only May 24 – May 29 (2026).
 @riverpod
-bool hajjSeason(HajjSeasonRef ref) {
+bool hajjSeason(Ref ref) {
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
 

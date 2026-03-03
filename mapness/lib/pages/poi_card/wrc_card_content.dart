@@ -1,5 +1,6 @@
 part of 'poi_card_widget_page.dart';
 
+
 class _WrcCardContent extends ConsumerStatefulWidget {
   final WRCEventPoint wrcEventPoint;
   final PoiCardState? poiCardState;

@@ -73,7 +73,10 @@ late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController = M
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
-_bottomSheetController.addListener(_bottomsheetListener);
+
+    // Provide the controller to the rest of the app
+    ref.read(bottomSheetControllerProvider.notifier).state.controller = _bottomSheetController;
+    _bottomSheetController.addListener(_bottomsheetListener);
 
     _setupTapListener();
   }
@@ -85,6 +88,7 @@ _bottomSheetController.addListener(_bottomsheetListener);
   }
 
   void _calculatePadding() {
+    final controller = ref.read(bottomSheetControllerProvider.notifier).state.controller;
     ref
         .read(cameraPaddingProvider.notifier)
         .resetPadding(
@@ -92,7 +96,7 @@ _bottomSheetController.addListener(_bottomsheetListener);
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: ref.read(bottomSheetControllerProvider.notifier).state.controller!.sheetHeight.toInt(),
+            bottomPadding: controller?.sheetHeight.toInt() ?? 0,
           ),
         );
   }
@@ -114,7 +118,7 @@ _bottomSheetController.addListener(_bottomsheetListener);
   @override
   void dispose() {
     _bottomSheetController.dispose();
-    // bottomSheetController.state.controller = null;
+    ref.read(bottomSheetControllerProvider.notifier).state.controller = null;
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -158,28 +162,29 @@ _bottomSheetController.addListener(_bottomsheetListener);
             type: MaterialType.transparency,
             child: Stack(
               children: [
-                ListenableBuilder(
-                  listenable: ref.read(bottomSheetControllerProvider.notifier).state.controller!,
-                  builder: (_, __) {
-                    if (ref.read(bottomSheetControllerProvider.notifier).state.controller?.state ==
-                        ThreeStateSheet.hidden) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return GestureDetector(
-                      onTapDown: (_) => _hideBottomSheet(),
-                      onTapUp: (_) => _hideBottomSheet(),
-                      onTap: _hideBottomSheet,
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: Spacing.$3x),
-                  child: Dashboard(
-                    bottomSheetController: ref.read(bottomSheetControllerProvider.notifier).state.controller!,
-                    fireworksController: confettiController,
+                if (ref.read(bottomSheetControllerProvider.notifier).state.controller != null)
+                  ListenableBuilder(
+                    listenable: ref.read(bottomSheetControllerProvider.notifier).state.controller!,
+                    builder: (_, __) {
+                      if (ref.read(bottomSheetControllerProvider.notifier).state.controller?.state ==
+                          ThreeStateSheet.hidden) {
+                        return const SizedBox.shrink();
+                      }
+                      return GestureDetector(
+                        onTapDown: (_) => _hideBottomSheet(),
+                        onTapUp: (_) => _hideBottomSheet(),
+                        onTap: _hideBottomSheet,
+                      );
+                    },
                   ),
-                ),
+                if (ref.read(bottomSheetControllerProvider.notifier).state.controller != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$3x),
+                    child: Dashboard(
+                      bottomSheetController: ref.read(bottomSheetControllerProvider.notifier).state.controller!,
+                      fireworksController: confettiController,
+                    ),
+                  ),
                 RepaintBoundary(
 child: ConfettiAnimation(
                     key: ValueKey(confettiConfig.hashCode),

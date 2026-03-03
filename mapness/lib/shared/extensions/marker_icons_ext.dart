@@ -231,11 +231,6 @@ extension _SmallIconMap on MapMarkersType {
             foundingDay: Assets.icons.svg.placesNewFoundingDay.icDefault.keyName,
             foundingDayDark: Assets.icons.svg.placesNewFoundingDayDark.icDefault.keyName,
           ),
-        MapMarkersType.makkahBus => _s(
-            def: Assets.icons.svg.placesNew.light.icNewPin.keyName,
-            foundingDay: Assets.icons.svg.placesNewFoundingDay.icDefault.keyName,
-            foundingDayDark: Assets.icons.svg.placesNewFoundingDayDark.icDefault.keyName,
-          ),
       };
 
   static ({String def, String? dark, String? saudi, String? saudiDark, String? founding, String? foundingDark}) _s({
