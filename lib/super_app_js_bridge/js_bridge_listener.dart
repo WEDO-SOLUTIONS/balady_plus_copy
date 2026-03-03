@@ -87,6 +87,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(closeCurrentMiniApp);
     registerFunction(selectedDelegator);
     registerFunction(selectedAgent);
+    registerFunction(updateSelectedAccount);
   }
 
   @pragma('vm:entry-point')
@@ -1484,6 +1485,148 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         code: 500,
         message: "Error getting selected agent: $e",
         eventName: "selectedAgent",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void updateSelectedAccount(dynamic msg, CompletionHandler handler) async {
+    try {
+      if (msg is! String || msg.isEmpty) {
+        final response = BaseResponse(
+          code: 400,
+          eventName: "updateSelectedAccount",
+          message: "Invalid payload",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+        return;
+      }
+
+      final Map<String, dynamic> payload = jsonDecode(msg) as Map<String, dynamic>;
+      final data = payload["data"];
+
+      final delegatorsCubit = sl<DelegatorsCubit>();
+
+      // data == null => switch to personal account (no delegator/agent)
+      if (data == null) {
+        delegatorsCubit.clearSelection();
+        final response = BaseResponse(
+          code: 200,
+          eventName: "updateSelectedAccount",
+          message: "Switched to personal account",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+        return;
+      }
+
+      if (data is! Map<String, dynamic>) {
+        final response = BaseResponse(
+          code: 400,
+          eventName: "updateSelectedAccount",
+          message: "Invalid data format",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+        return;
+      }
+
+      final String? profileType = data["profileType"] as String?;
+
+      // Helper: ensure delegators are loaded
+      Future<void> _ensureDelegatorsLoaded() async {
+        if (delegatorsCubit.state.delegators.isEmpty) {
+          delegatorsCubit.getDelegators();
+          int attempts = 0;
+          while (attempts < 20 &&
+              delegatorsCubit.state.status == BlocRequestStatus.submissionGetLoading) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            attempts++;
+          }
+        }
+      }
+
+      // Helper: ensure agents are loaded
+      Future<void> _ensureAgentsLoaded() async {
+        if (delegatorsCubit.state.agents.isEmpty) {
+          delegatorsCubit.getAgents();
+          int attempts = 0;
+          while (attempts < 20 &&
+              delegatorsCubit.state.agentStatus == BlocRequestStatus.submissionGetLoading) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            attempts++;
+          }
+        }
+      }
+
+      if (profileType == "Delegator") {
+        await _ensureDelegatorsLoaded();
+
+        final String? id = data["id"]?.toString();
+
+        DelegatorEntity? target;
+        if (id != null && id.isNotEmpty) {
+          try {
+            target = delegatorsCubit.state.delegators.firstWhere(
+              (d) => d.id == id,
+            );
+          } catch (_) {
+            // Not found; leave target null
+          }
+        }
+
+        if (target != null) {
+          delegatorsCubit.selectDelegator(target);
+        } else {
+          // If we cannot find a matching delegator, clear selection to avoid inconsistency
+          delegatorsCubit.clearSelection();
+        }
+      } else if (profileType == "Agent") {
+        await _ensureAgentsLoaded();
+
+        final String? agencyRequestKey = data["agencyRequestKey"]?.toString();
+        final String? id = data["id"]?.toString();
+
+        AgentEntity? target;
+        // Prefer agencyRequestKey (requestId) if present
+        if (agencyRequestKey != null && agencyRequestKey.isNotEmpty) {
+          try {
+            target = delegatorsCubit.state.agents.firstWhere(
+              (a) => a.requestId == agencyRequestKey,
+            );
+          } catch (_) {}
+        }
+        // Fallback: try by agencyNumber/id
+        if (target == null && id != null && id.isNotEmpty) {
+          try {
+            target = delegatorsCubit.state.agents.firstWhere(
+              (a) => a.agencyNumber == id,
+            );
+          } catch (_) {}
+        }
+
+        if (target != null) {
+          delegatorsCubit.selectAgent(target);
+        } else {
+          delegatorsCubit.clearSelection();
+        }
+      }
+
+      final response = BaseResponse(
+        code: 200,
+        eventName: "updateSelectedAccount",
+        message: "Selection updated",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    } catch (e) {
+      final response = BaseResponse(
+        code: 500,
+        eventName: "updateSelectedAccount",
+        message: "Failed to update selection: $e",
         data: null,
       );
       handler.complete(response.jsonEncodeModel());
