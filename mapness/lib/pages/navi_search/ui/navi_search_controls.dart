@@ -1,5 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -85,57 +84,56 @@ class _NaviSearchSheetControlsState extends ConsumerState<NaviSearchSheetControl
               child: Expanded(
                 child: OverflowBox(
                   child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: uikit.Spacing.$3x,
-                      top: uikit.Spacing.$3x,
-                      right: uikit.Spacing.$3x,
+                    padding: const EdgeInsets.all(
+                      uikit.Spacing.$3x,
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
                       children: [
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [WeatherControl()],
-                        ),
-                        const Spacer(),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const LayersControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const TrafficControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const DimensionControl(),
-                              const Spacer(),
-                              const ZoomControl(),
-                              const Spacer(),
-                              const CompassControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              ComplianceBuildingLegend(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              Row(
-                                children: [
-                                  ValueListenableBuilder(
-                                    valueListenable: _visibleSearchArea,
-                                    builder: (context, value, child) => uikit.SearchInArea(
-                                      visible: !value,
-                                      title: context.l10n.searchInThisArea,
-                                      onTap: _searchInArea,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  const FollowControl(),
-                                ],
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [WeatherControl()],
                               ),
-                              uikit.Spacing.$4x.heightBox,
-                              SizedBox(
-                                height: widget.scrollController.state == ThreeStateSheet.hidden
-                                    ? uikit.Spacing.$3x * (1 - interpolation)
-                                    : 0,
+                              const Spacer(),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const LayersControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    const TrafficControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    const DimensionControl(),
+                                    const Spacer(),
+                                    const ZoomControl(),
+                                    const Spacer(),
+                                    const CompassControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    ComplianceBuildingLegend(),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
+                        ),
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        Row(
+                          children: [
+                            ValueListenableBuilder(
+                              valueListenable: _visibleSearchArea,
+                              builder: (context, value, child) => uikit.AppButton(
+                                buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
+                                primaryLabel: context.l10n.searchInThisArea,
+                                onTap: _searchInArea,
+                                innerPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              ),
+                            ),
+                            const Spacer(),
+                            const FollowControl(),
+                          ],
                         ),
                       ],
                     ),

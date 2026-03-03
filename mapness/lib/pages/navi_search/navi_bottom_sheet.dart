@@ -15,6 +15,7 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
@@ -49,6 +50,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   final _settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
   final _scope = SearchScopeEnum.navi.value;
+  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
@@ -80,18 +82,25 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
           ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
-      stateMapper: const ThreeStateMapper(),
+      stateMapper: const LandingStateMapper(),
       initialState: ThreeStateSheet.expanded,
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
+    _multiStateSheetController.addListener(_onSheetChanged);
+  }
 
-    _multiStateSheetController.addListener(() {
-      if (_multiStateSheetController.state == ThreeStateSheet.hidden) {
-        _unfocusSearchField();
-      }
-    });
+  void _onSheetChanged() {
+    final newState = _multiStateSheetController.state;
+    if (newState == ThreeStateSheet.hidden) {
+      _unfocusSearchField();
+    }
+    if (newState != _sheetState) {
+      setState(() {
+        _sheetState = newState;
+      });
+    }
   }
 
   @override
@@ -125,7 +134,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       ]);
     }
 
-    _multiStateSheetController.dispose();
+    _multiStateSheetController
+      ..removeListener(_onSheetChanged)
+      ..dispose();
     _keyboardVisible.cancel();
 
     _streamSubscription?.cancel();
@@ -158,13 +169,14 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
-              animateOpening: false,
               keepContentBehindFooter: true,
               scrollController: _multiStateSheetController,
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
               outside: NaviSearchSheetControls(_multiStateSheetController),
-              safeAreaColor: context.colors.backgroundSurface2,
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden
+                  ? context.colors.backgroundSurface1
+                  : context.colors.backgroundSurface4,
               dragger: null,
               backgroundColor: context.colors.backgroundSurface4,
               key: const ValueKey('NAVI SEARCH SHEET'),
@@ -173,7 +185,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
                 requestFocus: true,
                 onClose: () => context.router.pop(),
               ),
-              sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              sliver: SliverToBoxAdapter(
+                child: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              ),
             ),
           ),
         ],

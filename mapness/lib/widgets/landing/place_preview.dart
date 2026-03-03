@@ -51,6 +51,7 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
               activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
               onTap: (item) {
                 final objectId = int.tryParse(item.entity.id) ?? 0;
+                final point = item.location.point;
                 Metrics.logEventAdvanced(
                   MetricsConstants.exploreKeys.placesToVisitBanner,
                   action: MetricAction.tap.name,
@@ -64,6 +65,7 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
                 context.router.replaceOrPush(
                   route: PoiCardWidgetRoute(
                     objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+                    closestPoint: LatLng(latitude: point.latitude, longitude: point.longitude),
                     cameraConfig: const PoiCameraConfig(zoom: 20),
                   ),
                   toCompareRoutes: [PoiCardWidgetRoute.page],
