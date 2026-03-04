@@ -24,7 +24,6 @@ class AttachmentItem extends BaseData with EquatableMixin {
   @override
   List<Object?> get props => [index, fileId, filePath, caseId, categoryId];
 
-
   toJson() {
     return {
       "index": index,

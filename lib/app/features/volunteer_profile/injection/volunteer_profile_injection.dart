@@ -20,9 +20,9 @@ import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/subm
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/upload_cv.dart';
 
 final slVolunteer = GetIt.instance;
+
 class VolunteerProfileInjection {
   static void initialize() {
-
     // Register BLoC
     slVolunteer.registerLazySingleton<VolunteerProfileBloc>(
       () => VolunteerProfileBloc(
@@ -81,8 +81,7 @@ class VolunteerProfileInjection {
     );
 
     slVolunteer.registerLazySingleton<GetVolunteeringFields>(
-      () => GetVolunteeringFields(
-          repository: slVolunteer<VolunteerProfileRepository>()),
+      () => GetVolunteeringFields(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
     slVolunteer.registerLazySingleton<GetBloodTypes>(

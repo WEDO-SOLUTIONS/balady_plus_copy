@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppStyle,
-        ContextConversion,
-        DIRECTION,
-        DirectionConversion,
-        UIHelper;
-import '../../shared_feature_exports.dart'
-    show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
+    show AppColor, AppStyle, ContextConversion, DIRECTION, DirectionConversion, UIHelper;
+import '../../shared_feature_exports.dart' show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
 
 class CustomExpansionPanelWidget extends StatelessWidget {
   /// Specifies whether the state of the children is maintained
@@ -118,26 +111,18 @@ class CustomExpansionPanelWidget extends StatelessWidget {
   // to get the half for right and second half for left
   // and get vetical padding and divide it by 2 for only top
   EdgeInsetsGeometry get tilePadding => EdgeInsets.fromLTRB(
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
+        expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
         expandedPadding?.vertical == null ? 4 : expandedPadding!.vertical / 2.0,
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
+        expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
         0.0,
       );
 
   // get horizontal padding from expandedPadding but divide it by 2
   // to get the half for right and second half for left
   EdgeInsetsGeometry get childrenPadding => EdgeInsets.fromLTRB(
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
+        expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
         8.0,
-        expandedPadding?.horizontal == null
-            ? UIHelper.middlePadding
-            : expandedPadding!.horizontal / 2.0,
+        expandedPadding?.horizontal == null ? UIHelper.middlePadding : expandedPadding!.horizontal / 2.0,
         UIHelper.mediumPadding,
       );
 }
@@ -201,10 +186,8 @@ class _ExpansionTitleWidget extends StatelessWidget {
   // double get titleWidth => leading == null
   //     ? width - (25.0 + 10.0)
   //     : width - (25.0 + 10.0 + 10.0 + 25.0);
-  TextStyle get textStyle => AppStyle.mainTextThirdStyle.copyWith(
-      fontSize: 15.0,
-      color: AppColor.blackModern600Light,
-      fontWeight: FontWeight.bold);
+  TextStyle get textStyle => AppStyle.mainTextThirdStyle
+      .copyWith(fontSize: 15.0, color: AppColor.blackModern600Light, fontWeight: FontWeight.bold);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
@@ -231,7 +214,6 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
 
   // because original arrow looks at the left,
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
-  double get angle =>
-      expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
+  double get angle => expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
   Color get iconColor => expanded ? AppColor.white : AppColor.white;
 }

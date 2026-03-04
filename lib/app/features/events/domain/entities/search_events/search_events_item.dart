@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:dgis_map/library.dart';
 
-
 class SearchEventsItem {
   String? id;
   String? eventName;
@@ -72,7 +71,7 @@ class SearchEventsItem {
     double? lon = double.tryParse(locationY ?? "");
     double? lat = double.tryParse(locationX ?? "");
 
-    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
+    if (lat != null && lon != null) return LatLng(latitude: lat, longitude: lon);
     return null;
   }
 

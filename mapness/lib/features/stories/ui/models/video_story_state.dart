@@ -3,6 +3,7 @@ part of '../story_video_player.dart';
 enum VidoErrorType {
   network,
   file,
+  asset,
 }
 
 sealed class VideoStoryState {}

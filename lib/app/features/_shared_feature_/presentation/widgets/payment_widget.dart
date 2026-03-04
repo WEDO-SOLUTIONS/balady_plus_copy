@@ -11,20 +11,18 @@ import '../../../entry_point/domain/entities/payment_request.dart';
 class PaymentWidget extends StatelessWidget {
   final String billNumber;
   final String requestKey;
-  const PaymentWidget(
-      {super.key, required this.billNumber, required this.requestKey});
+  const PaymentWidget({super.key, required this.billNumber, required this.requestKey});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButtonWidget.primaryCustom(
         onPressed: () async {
           EasyLoading.show();
-          final String? url = await sl<EntryPointCubit>().getPaymentURL(
-              PaymentRequest(accountNumber: billNumber, requestId: requestKey));
+          final String? url = await sl<EntryPointCubit>()
+              .getPaymentURL(PaymentRequest(accountNumber: billNumber, requestId: requestKey));
           EasyLoading.dismiss();
 
-          if (url != null)
-            CommonFunctions.openBaladyWebView(url, isObjections: false);
+          if (url != null) CommonFunctions.openBaladyWebView(url, isObjections: false);
         },
         text: "pay_bill".tr());
   }

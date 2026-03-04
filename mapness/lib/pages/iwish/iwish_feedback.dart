@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
@@ -95,7 +94,9 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final title = isCompleted ? context.l10n.shareYourFeelingsAboutPark : context.l10n.voteWhatDoYouWantToHaveInThePark;
     final onPressedSubmit = () async {
-      await ref.read(authMethodsProvider.notifier).authOrOpen(
+      await ref
+          .read(authMethodsProvider.notifier)
+          .authOrOpen(
             context,
             callback: feedbackNotifier.submitFeedback,
           );

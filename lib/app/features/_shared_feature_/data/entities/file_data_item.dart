@@ -52,8 +52,7 @@ class FileDataItem extends Equatable {
   }
 
   @override
-  List<Object?> get props =>
-      [id, isUploaded, filePath, fileName, sizeInMB, fileKey];
+  List<Object?> get props => [id, isUploaded, filePath, fileName, sizeInMB, fileKey];
 
   @override
   String toString() {

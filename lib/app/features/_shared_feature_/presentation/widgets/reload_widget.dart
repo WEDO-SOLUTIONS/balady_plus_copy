@@ -28,13 +28,7 @@ class ReloadWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: AppColor.white,
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x14d1d5db),
-              offset: Offset(-2, 4),
-              blurRadius: 8,
-              spreadRadius: 0)
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x14d1d5db), offset: Offset(-2, 4), blurRadius: 8, spreadRadius: 0)],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

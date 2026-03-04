@@ -14,8 +14,8 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/saudi_pass/widgets/favorite_delete_menu.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -187,7 +187,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 ctx.router.push(
                                   RoutingRoutesRoute(
                                     points: [
-                                      RouteParamsPointWithLabel(value: null, label: context.l10n.myLocation),
+                                      RouteParamsPointWithLabel(
+                                        value: null,
+                                        label: context.l10n.myLocation,
+                                      ),
                                       RouteParamsPointWithLabel(
                                         value: coordinates?.latitude != null && coordinates?.longitude != null
                                             ? RouteParamsPoint(
@@ -204,11 +207,17 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               },
                               onTapShare: () => ShareUtil.share(objectId?.toString(), context: context),
                               onTapChange: () {
-                                context.router.push(FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home));
+                                context.router.push(
+                                  FavouritesSearchRoute(
+                                    markerType: FavouriteItemMarkerType.home,
+                                  ),
+                                );
                               },
                               onTap: home == null
                                   ? () => context.router.push(
-                                      FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home),
+                                      FavouritesSearchRoute(
+                                        markerType: FavouriteItemMarkerType.home,
+                                      ),
                                     )
                                   : () => ctx.router.replaceOrPush(
                                       route: PoiCardWidgetRoute(

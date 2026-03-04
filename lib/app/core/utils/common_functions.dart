@@ -12,7 +12,8 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dgis_map/library.dart';
@@ -35,6 +36,8 @@ import 'package:mime/mime.dart' as mime;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart'
     show getExternalStorageDirectory, getTemporaryDirectory;
+import 'package:open_file_plus/open_file_plus.dart';
+import 'package:path_provider/path_provider.dart' show getExternalStorageDirectory, getTemporaryDirectory;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -43,7 +46,6 @@ import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
 
-import '../../../mini_apps_engine/data/models/mini_app_model.dart';
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
@@ -80,6 +82,8 @@ import './utils_exports.dart'
         RouteName,
         UIHelper,
         WithDelay;
+import '../errors/exceptions.dart';
+import './utils_exports.dart' show AppColor, AppLanguage, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 
@@ -287,13 +291,14 @@ class CommonFunctions {
     return null;
   }
 
-  static void openMiniApp(MiniAppModel? miniApp) {
-    if (miniApp != null) {
-      sl<HomeMiniAppsListCubit>().openMiniApp(
-        serviceKey: miniApp.serviceKey!,
-        path: miniApp.path,
-      );
-    }
+  static void openMiniApp({
+    required String serviceKey,
+    String? path,
+  }) {
+    sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
+      serviceKey: serviceKey,
+      path: path,
+    );
   }
 
   static Future<LatLng?> handelLocationCatch(
@@ -1208,8 +1213,7 @@ class CommonFunctions {
         hoursFromAS12 = hoursFromAS12 - 12;
       }
 
-      if (fromTime.period == DayPeriod.pm)
-        return "$hoursFromAS12:$minuteStr ${"pm".tr()}";
+      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr ${"pm".tr()}";
 
       if (fromTime.period == DayPeriod.am) {
         if (isAppAR == false) {
@@ -1788,7 +1792,8 @@ class CommonFunctions {
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
 
-    sl<HomeMiniAppsListCubit>().loadMiniApps();
+    // sl<HomeMiniAppsListCubit>().loadMiniApps();
+    await sl<NewMiniAppLogicCubit>().loadMiniApps();
     // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
     // BlocProvider.of<DashboardBloc>(
     //         NavigationService.navigatorKey.currentContext!)
@@ -1798,6 +1803,7 @@ class CommonFunctions {
   static void sendUXCamEvent(String event) {
     try {
       FlutterUxcam.logEvent(event);
+      Sentry.addBreadcrumb(Breadcrumb(message: event));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1815,6 +1821,7 @@ class CommonFunctions {
   ) {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
+      Sentry.addBreadcrumb(Breadcrumb(message: event, data: data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1929,9 +1936,7 @@ class CommonFunctions {
     try {
       if (hijriDate != null && hijriDate.isNotEmpty) {
         List<int> dateSplitted =
-            CommonFunctions.replaceArabicNumberWithEnglish(
-              hijriDate,
-            ).split("/").map((e) => int.parse(e)).toList();
+            CommonFunctions.replaceArabicNumberWithEnglish(hijriDate).split("/").map((e) => int.parse(e)).toList();
         var gDate = HijriCalendar();
         DateTime gorgianDate = gDate.hijriToGregorian(
           dateSplitted[0],
@@ -2084,10 +2089,7 @@ Future<void> safeShareText(String text, {required BuildContext context}) async {
     if (Platform.isIOS) {
       // Try to get the RenderBox from the context to determine position
       final RenderBox? box = context.findRenderObject() as RenderBox?;
-      if (box != null &&
-          box.hasSize &&
-          box.size.width > 0 &&
-          box.size.height > 0) {
+      if (box != null && box.hasSize && box.size.width > 0 && box.size.height > 0) {
         final size = box.size;
         final position = box.localToGlobal(Offset.zero);
         final rect = Rect.fromLTWH(

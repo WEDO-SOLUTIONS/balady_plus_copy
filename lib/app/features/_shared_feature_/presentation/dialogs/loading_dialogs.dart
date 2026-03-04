@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart'
-    show LoadingAnimationWidget;
+import 'package:loading_animation_widget/loading_animation_widget.dart' show LoadingAnimationWidget;
 
 import '../../../../core/utils/utils_exports.dart' show AppColor;
 

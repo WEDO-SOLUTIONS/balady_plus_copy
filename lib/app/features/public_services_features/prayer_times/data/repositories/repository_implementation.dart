@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../../core/errors/errors_exports.dart'
-    show Failure, ServerException, ServerFailure;
+import '../../../../../core/errors/errors_exports.dart' show Failure, ServerException, ServerFailure;
 import '../../prayer_times_exports.dart'
     show
         PrayerTimeRangeEntity,
@@ -20,8 +19,7 @@ class PrayerTimesRepositoryImplementation implements PrayerTimesRepository {
   });
 
   @override
-  Future<Either<Failure, PrayerTimesResponse>> getPrayerTimes(
-      PrayerTimesParams params) async {
+  Future<Either<Failure, PrayerTimesResponse>> getPrayerTimes(PrayerTimesParams params) async {
     try {
       final data = await remoteDataSource.getPrayerTimes(params);
       return Right(data);
@@ -38,8 +36,7 @@ class PrayerTimesRepositoryImplementation implements PrayerTimesRepository {
   }
 
   @override
-  Future<Either<Failure, List<PrayerTimeRangeEntity>>> getPrayerTimesRange(
-      PrayerTimeRangeParams params) async {
+  Future<Either<Failure, List<PrayerTimeRangeEntity>>> getPrayerTimesRange(PrayerTimeRangeParams params) async {
     try {
       final data = await remoteDataSource.getPrayerTimesRange(params);
       return Right(data);

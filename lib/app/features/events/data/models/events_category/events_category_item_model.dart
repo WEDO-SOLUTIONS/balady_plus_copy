@@ -6,8 +6,7 @@ class EventCategoryItemModel extends EventCategoryItem {
     super.name,
     super.nameEn,
   });
-  factory EventCategoryItemModel.fromMap(Map<String, dynamic> json) =>
-      EventCategoryItemModel(
+  factory EventCategoryItemModel.fromMap(Map<String, dynamic> json) => EventCategoryItemModel(
         id: json["id"],
         name: json["name"],
         nameEn: json["nameEn"],

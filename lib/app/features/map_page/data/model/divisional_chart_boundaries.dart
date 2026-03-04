@@ -3,8 +3,7 @@ import 'package:dgis_map/library.dart';
 import '../data_sources/point_layers_data.dart';
 
 List<DivisionalChartBoundaries> divisionalChartBoundariesFromJson(List list) =>
-    List<DivisionalChartBoundaries>.from(
-        list.map((x) => DivisionalChartBoundaries.fromJson(x)));
+    List<DivisionalChartBoundaries>.from(list.map((x) => DivisionalChartBoundaries.fromJson(x)));
 
 class DivisionalChartBoundaries extends PointLayersData {
   final List<GeoPointMessage> paths;
@@ -34,16 +33,14 @@ class DivisionalChartBoundaries extends PointLayersData {
           latLng: latLng,
         );
 
-  factory DivisionalChartBoundaries.fromJson(Map<String, dynamic> json) =>
-      DivisionalChartBoundaries(
+  factory DivisionalChartBoundaries.fromJson(Map<String, dynamic> json) => DivisionalChartBoundaries(
         id: json['attributes']["OBJECTID"].toString(),
         name: json['attributes']["SUBDIVISIONNAME_AR"] ?? '',
         description: json['attributes']["DATAOWNER"] ?? '',
         type: json['attributes']["AREANAME_SPLIT"] ?? '',
         color: 0x26000000,
         strokeColor: 0xFF000000,
-        SUBDIVISIONPARCELNUMBER:
-            json['attributes']["SUBDIVISIONPARCELNUMBER"] ?? '',
+        SUBDIVISIONPARCELNUMBER: json['attributes']["SUBDIVISIONPARCELNUMBER"] ?? '',
         BLOCK_ID: json['attributes']["BLOCK_ID"] ?? '',
         SUBDIVISIONPLAN_ID: json['attributes']["SUBDIVISIONPLAN_ID"] ?? '',
 

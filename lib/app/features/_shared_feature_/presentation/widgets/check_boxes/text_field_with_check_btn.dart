@@ -71,8 +71,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
             focusNode: _focusNode,
             hintText: widget.hint ?? "",
             errorText: widget.errorText,
-            keyboardType: widget.textInputType ??
-                const TextInputType.numberWithOptions(signed: false),
+            keyboardType: widget.textInputType ?? const TextInputType.numberWithOptions(signed: false),
             maxLength: widget.maxLength,
             onValidate: (String? t) => widget.validate(t),
             enabled: widget.enabled,

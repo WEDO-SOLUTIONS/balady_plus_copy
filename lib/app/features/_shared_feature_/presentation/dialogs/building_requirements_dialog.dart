@@ -16,12 +16,10 @@ class BuildingRequirementsDialog extends StatefulWidget {
   const BuildingRequirementsDialog({super.key});
 
   @override
-  State<BuildingRequirementsDialog> createState() =>
-      _BuildingRequirementsDialogState();
+  State<BuildingRequirementsDialog> createState() => _BuildingRequirementsDialogState();
 }
 
-class _BuildingRequirementsDialogState
-    extends State<BuildingRequirementsDialog> {
+class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog> {
   List<ConditionsModel> data2 = [];
 
   @override
@@ -95,8 +93,7 @@ class _BuildingRequirementsDialogState
                     padding: const EdgeInsets.all(12),
                     decoration: ShapeDecoration(
                       color: const Color(0x7FE6EFEF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: CustomTextWidget(
                       "building_requirements_warning".tr(),
@@ -117,18 +114,15 @@ class _BuildingRequirementsDialogState
   }
 
   Future<void> readComplianceData() async {
-    String qa = await rootBundle
-        .loadString("assets/compliance_pdf/text/conditions.json");
+    String qa = await rootBundle.loadString("assets/compliance_pdf/text/conditions.json");
     if (!CommonFunctions.isAppAR) {
-      qa = await rootBundle
-          .loadString("assets/compliance_pdf/text/conditions_en.json");
+      qa = await rootBundle.loadString("assets/compliance_pdf/text/conditions_en.json");
     }
 
     var r = json.decode(qa);
     {
-      List<ConditionsModel>? model = r != null
-          ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x)))
-          : null;
+      List<ConditionsModel>? model =
+          r != null ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x))) : null;
       data2 = model ?? [];
       setState(() {});
     }

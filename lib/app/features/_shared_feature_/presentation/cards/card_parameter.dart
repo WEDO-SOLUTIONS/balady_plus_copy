@@ -8,8 +8,7 @@ class CardParameter extends StatelessWidget {
   final String value;
   Color? bgColor;
   int? lines;
-  CardParameter(
-      {super.key, required this.title, required this.value, this.bgColor,this.lines});
+  CardParameter({super.key, required this.title, required this.value, this.bgColor, this.lines});
 
   @override
   Widget build(BuildContext context) {

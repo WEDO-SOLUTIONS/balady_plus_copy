@@ -2,17 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:bot_toast/bot_toast.dart' show BotToast;
 
 import '../../../../core/utils/utils_exports.dart' show MessageType;
-import '../../shared_feature_exports.dart'
-    show CustomAlertDialogWidget, ToastNotification;
+import '../../shared_feature_exports.dart' show CustomAlertDialogWidget, ToastNotification;
 
 class MessageDialog {
   //! --------- BotToast -----------
-  static void showSuccessNotification({required String msg}) =>
-      BotToast.showCustomNotification(
+  static void showSuccessNotification({required String msg}) => BotToast.showCustomNotification(
         toastBuilder: (_) => ToastNotification.success(msg),
       );
-  static void showErrorNotification({required String msg}) =>
-      BotToast.showCustomNotification(
+  static void showErrorNotification({required String msg}) => BotToast.showCustomNotification(
         toastBuilder: (_) => ToastNotification.error(msg),
       );
 

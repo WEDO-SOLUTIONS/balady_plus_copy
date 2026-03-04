@@ -78,9 +78,7 @@ class _CustomCheckBoxWidgetState extends State<CustomCheckBoxWidget> {
       margin: const EdgeInsets.only(bottom: GeneralKey.semiMediumPadding),
       decoration: BoxDecoration(
           border: Border.all(
-            color: widget.checkboxValue
-                ? widget.borderSelectedColor
-                : widget.borderColor,
+            color: widget.checkboxValue ? widget.borderSelectedColor : widget.borderColor,
           ),
           borderRadius: BorderRadius.circular(widget.borderRadius),
           color: widget.containerBackgroundColor),
@@ -186,12 +184,10 @@ class CustomCheckBoxTopStartWidget extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<CustomCheckBoxTopStartWidget> createState() =>
-      _CustomCheckBoxTopStartWidget();
+  State<CustomCheckBoxTopStartWidget> createState() => _CustomCheckBoxTopStartWidget();
 }
 
-class _CustomCheckBoxTopStartWidget
-    extends State<CustomCheckBoxTopStartWidget> {
+class _CustomCheckBoxTopStartWidget extends State<CustomCheckBoxTopStartWidget> {
   late ValueNotifier<bool> _checkBoxValue;
 
   @override
@@ -207,9 +203,7 @@ class _CustomCheckBoxTopStartWidget
       margin: const EdgeInsets.only(bottom: GeneralKey.semiMediumPadding),
       decoration: BoxDecoration(
           border: Border.all(
-            color: widget.checkboxValue
-                ? widget.borderSelectedColor
-                : widget.borderColor,
+            color: widget.checkboxValue ? widget.borderSelectedColor : widget.borderColor,
           ),
           borderRadius: BorderRadius.circular(widget.borderRadius),
           color: widget.containerBackgroundColor),

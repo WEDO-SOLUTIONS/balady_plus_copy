@@ -25,22 +25,11 @@ class PickerLocalizations extends PickerLocalizationsBase {
   }
 
   static PickerLocalizations of(BuildContext context) {
-    return Localizations.of<PickerLocalizations>(
-            context, PickerLocalizations) ??
-        static;
+    return Localizations.of<PickerLocalizations>(context, PickerLocalizations) ?? static;
   }
 
   /// Language Support
-  static const List<String> languages = [
-    'en',
-    'zh',
-    'ko',
-    'it',
-    'ar',
-    'fr',
-    'es',
-    'tr'
-  ];
+  static const List<String> languages = ['en', 'zh', 'ko', 'it', 'ar', 'fr', 'es', 'tr'];
 
   /// Language Values
   static const Map<dynamic, dynamic> localizedValues = {
@@ -83,20 +72,7 @@ class PickerLocalizations extends PickerLocalizationsBase {
       'cancelText': 'İptal',
       'confirmText': 'Onay',
       'ampm': ['ÖÖ', 'ÖS'],
-      'months': [
-        'Oca',
-        'Şub',
-        'Mar',
-        'Nis',
-        'May',
-        'Haz',
-        'Tem',
-        'Ağu',
-        'Eyl',
-        'Eki',
-        'Kas',
-        'Ara'
-      ],
+      'months': ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
       'monthsLong': [
         'Ocak',
         'Şubat',

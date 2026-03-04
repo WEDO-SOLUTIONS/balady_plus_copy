@@ -137,13 +137,12 @@ class MapSearchResults extends ConsumerWidget {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).unfocus();
-      final markerPosition = item.markerPosition;
       context.router.replaceOrPush(
         route: PoiCardWidgetRoute(
-          objectId: item.id,
-          closestPoint: markerPosition != null
-              ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)
-              : null,
+          objectId: DgisObjectIdMessage(
+            objectId: item.id!.objectId,
+            entranceId: 0,
+          ),
           cameraConfig: const PoiCameraConfig(zoom: 18),
           poiCardDataFromGoogle: isGoogleSearch
               ? PoiCardDataFromGoogle(

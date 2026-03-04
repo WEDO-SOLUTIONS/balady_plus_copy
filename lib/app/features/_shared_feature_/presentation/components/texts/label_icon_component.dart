@@ -9,8 +9,7 @@ class LabelIconComponent extends StatelessWidget {
   final String text;
   final String? icon;
   final double? iconSize;
-  const LabelIconComponent(
-      {required this.text, this.icon, this.iconSize, super.key});
+  const LabelIconComponent({required this.text, this.icon, this.iconSize, super.key});
 
   @override
   Widget build(BuildContext context) {

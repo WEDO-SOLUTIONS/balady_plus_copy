@@ -19,7 +19,7 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   ConsumerState<_PoiCardWrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends ConsumerState<_PoiCardWrapper> {
+class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProviderStateMixin {
   bool prevRouteNavi = false;
 
   @override
@@ -30,7 +30,39 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final routes = context.router.stack;
       prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
+
+      // Hide Makkah place markers when regular POI is open
+      // ignore: avoid_print
+      print('[MakkahPinDebug] Wrapper: initState setActive(true)');
+      ref.read(regularPoiActiveProvider.notifier).setActive(true);
     });
+
+    Future.delayed(Duration.zero, () {
+      final isFoundinDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
+
+      final isFoundingDayObject = ref
+          .read(foundingDayUrbiProvider.notifier)
+          .isFoundationObject(widget.objectId.objectId);
+
+      if (isFoundinDay && isFoundingDayObject) {
+        ConfettiAnimation.explodeInOverlay(context, this, config: getConfettiConfig(context));
+      }
+    });
+  }
+
+  ConfettiGeneratorConfig getConfettiConfig(BuildContext context) {
+    final color = ref.read(activeCityEventProvider)?.fireworkGradientColors;
+    final colors = ref.read(activeCityEventProvider)?.fireworkGradientColors2;
+    return ConfettiGeneratorConfig.confetti(
+      dissappearStartsAt: 0.33,
+      dissappearCurve: Curves.easeInOutQuint,
+      commonShapeAppearance: 1,
+      animationDuration: const Duration(seconds: 4),
+      mostCommonGradientColors: color,
+      gradientColors: colors,
+      mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
+          ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+    );
   }
 
   @override
@@ -65,6 +97,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
+          ref.read(regularPoiActiveProvider.notifier).setActive(false);
           context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
         }
       });
@@ -93,10 +126,20 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       );
     }
 
-    final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
+    final isFoundingDayObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(widget.objectId.objectId);
 
+    final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
     if (wrcEventPoint != null) {
       return _WrcCardContent(wrcEventPoint: wrcEventPoint, poiCardState: poiCardState);
+    }
+    if (isFoundingDayObject && data != null) {
+      return _FoundingDayPoiCardContent(
+        objectId: widget.objectId.objectId,
+        closestPoint: widget.closestPoint,
+        cameraConfig: widget.cameraConfig,
+        poiCardState: poiCardState,
+        data: data,
+      );
     }
 
     // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
@@ -135,6 +178,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             onClose: () async {
               await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+              ref.read(regularPoiActiveProvider.notifier).setActive(false);
               context.router.pop();
             },
             onRetry: () {
@@ -146,7 +190,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           errorTitle: context.l10n.somethingWentWrong,
           errorContent: context.l10n.saudiPassSomethingWentWrongHint,
           buttonLabel: context.l10n.complete,
-          onRetry: () => context.router.pop(),
+          onRetry: () {
+            ref.read(regularPoiActiveProvider.notifier).setActive(false);
+            context.router.pop();
+          },
         );
       }
     }();

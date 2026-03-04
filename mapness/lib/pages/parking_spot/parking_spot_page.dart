@@ -12,7 +12,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
@@ -136,6 +138,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                     child: UrbiMap(
                       onMapCreated: (controller) async {
+                        final activeCityEvent = ref.read(activeCityEventProvider);
                         final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
                         await dgisMapController.onMapCreated(controller);
                         if (latLng.value != null) {
@@ -155,14 +158,16 @@ class ParkingSpotPage extends HookConsumerWidget {
                                   longitude: latLng.value!.longitude,
                                   elevation: 0,
                                 ),
-                                icon: switch (context.read<ThemeController>().currentTheme) {
-                                  BaladyAppThemes.dark =>
-                                    Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
-                                  BaladyAppThemes.light =>
-                                    Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
-                                  BaladyAppThemes.saudiDay =>
-                                    Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-                                },
+                                icon:
+                                    activeCityEvent?.icParking ??
+                                    switch (context.read<ThemeController>().currentTheme) {
+                                      BaladyAppThemes.dark =>
+                                        Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
+                                      BaladyAppThemes.light =>
+                                        Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
+                                      BaladyAppThemes.saudiDay =>
+                                        Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                    },
                               ),
                             ),
                           );
@@ -270,9 +275,9 @@ class ParkingSpotPage extends HookConsumerWidget {
               elevation: 0,
             ),
             icon: switch (context.read<ThemeController>().currentTheme) {
-              BaladyAppThemes.dark => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
-              BaladyAppThemes.light => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
-              BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+              BaladyAppThemes.dark => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
+              BaladyAppThemes.light => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+              BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
             },
           ),
         ),

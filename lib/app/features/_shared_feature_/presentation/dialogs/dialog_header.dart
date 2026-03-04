@@ -14,8 +14,7 @@ class DialogHeader extends StatelessWidget {
   final String title;
   final withDivider;
 
-  const DialogHeader({Key? key, required this.title, this.withDivider = false})
-      : super(key: key);
+  const DialogHeader({Key? key, required this.title, this.withDivider = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +29,8 @@ class DialogHeader extends StatelessWidget {
                   title,
                   textAlign: TextAlign.start,
                   maxLines: 3,
-                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                      fontSize: 20.0,
-                      color: AppColor.black,
-                      fontWeight: FontWeight.bold),
+                  textStyle: AppStyle.mainTextSecondaryStyle
+                      .copyWith(fontSize: 20.0, color: AppColor.black, fontWeight: FontWeight.bold),
                 ),
               ),
               InkWell(
@@ -48,9 +45,7 @@ class DialogHeader extends StatelessWidget {
             ],
           ),
         ),
-        withDivider
-            ? const DrawLineWidget()
-            : const CustomVerticalSpace(height: 12)
+        withDivider ? const DrawLineWidget() : const CustomVerticalSpace(height: 12)
       ],
     );
   }

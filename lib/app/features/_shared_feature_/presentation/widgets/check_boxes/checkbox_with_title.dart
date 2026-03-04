@@ -21,8 +21,7 @@ class CheckBoxWithTitle extends StatelessWidget {
       this.forceSelection,
       this.initialValue,
       this.textStyle,
-      this.fontSize
-      })
+      this.fontSize})
       : super(key: key);
 
   final String title;
@@ -49,12 +48,10 @@ class CheckBoxWithTitle extends StatelessWidget {
                   height: 20,
                   child: Material(
                     child: Checkbox(
-                        side: const BorderSide(
-                            color: AppColor.blackModern500Light, width: 2),
+                        side: const BorderSide(color: AppColor.blackModern500Light, width: 2),
                         value: forceSelection ?? state,
                         activeColor: AppColor.primary700Light,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                         onChanged: (value) {
                           context.read<CheckboxCubit>().onChanged();
                           onChanged(value);

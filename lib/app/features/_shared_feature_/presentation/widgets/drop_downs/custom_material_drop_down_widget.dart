@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, BorderConversion, BorderType, UIHelper;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, DropDownItem, ErrorUnderWidget, WidgetLabel;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, BorderConversion, BorderType, UIHelper;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, DropDownItem, ErrorUnderWidget, WidgetLabel;
 
 class CustomMaterialDropDownWidget extends StatelessWidget {
   final bool isRequired;
@@ -92,9 +89,7 @@ class CustomMaterialDropDownWidget extends StatelessWidget {
                         ),
                       ))
                   .toList(),
-              onChanged: readOnly
-                  ? (_) => onDisabledTapped != null ? onDisabledTapped!() : null
-                  : onSelected,
+              onChanged: readOnly ? (_) => onDisabledTapped != null ? onDisabledTapped!() : null : onSelected,
             ),
           ),
         ),
@@ -104,15 +99,11 @@ class CustomMaterialDropDownWidget extends StatelessWidget {
     );
   }
 
-  EdgeInsetsGeometry get _padding =>
-      padding ?? const EdgeInsets.all(UIHelper.middlePadding - 2.0);
+  EdgeInsetsGeometry get _padding => padding ?? const EdgeInsets.all(UIHelper.middlePadding - 2.0);
   BorderType get _borderType => borderType ?? BorderType.outline;
-  Color get _fillColor =>
-      readOnly ? AppColor.gray : fillColor ?? AppColor.white;
-  BoxBorder? get _border =>
-      _borderType.boxBorder(color: borderColor ?? AppColor.gray);
-  BorderRadiusGeometry? get _borderRadius =>
-      _borderType.boxBorderRadius(radius: borderRadius);
+  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.white;
+  BoxBorder? get _border => _borderType.boxBorder(color: borderColor ?? AppColor.gray);
+  BorderRadiusGeometry? get _borderRadius => _borderType.boxBorderRadius(radius: borderRadius);
 
   TextStyle get _hintStyle => hintStyle ?? AppStyle.pickerStyle;
   String get initialHint => hintText ?? "selectFromHere".tr();

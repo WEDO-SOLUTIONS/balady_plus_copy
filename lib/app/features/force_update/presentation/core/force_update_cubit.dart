@@ -52,9 +52,7 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
     String? latestVersionNo,
     bool? forceUpdate,
   ) {
-    if (currentVersionNo != null &&
-        latestVersionNo != null &&
-        forceUpdate != null) {
+    if (currentVersionNo != null && latestVersionNo != null && forceUpdate != null) {
       if (forceUpdate) {
         Version currentVersion = Version.parse(currentVersionNo);
         Version latestVersion = Version.parse(latestVersionNo);

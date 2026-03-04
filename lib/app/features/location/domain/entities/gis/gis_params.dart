@@ -2,7 +2,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 
-
 class GISParams extends Equatable {
   double x;
   double y;
@@ -14,7 +13,7 @@ class GISParams extends Equatable {
   List<Object?> get props => [x, y];
 
   LatLng getLatLng() {
-    return LatLng(latitude: y,longitude: x);
+    return LatLng(latitude: y, longitude: x);
   }
 
   double get lat => y;

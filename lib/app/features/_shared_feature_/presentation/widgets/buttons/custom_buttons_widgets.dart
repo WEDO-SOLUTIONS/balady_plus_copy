@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/enums/enums.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle, CommonFunctions;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle, CommonFunctions;
 import '../../../shared_feature_exports.dart'
-    show
-        ClickableWidget,
-        CustomHorizontalSpace,
-        CustomTextWidget,
-        DrawIconBasedTypeWidget;
+    show ClickableWidget, CustomHorizontalSpace, CustomTextWidget, DrawIconBasedTypeWidget;
 
 class CustomTextButtonWidget extends StatelessWidget {
   final String text;
@@ -63,8 +58,7 @@ class CustomTextButtonWidget extends StatelessWidget {
         //     : NoSplash.splashFactory,
         padding: EdgeInsets.zero,
         alignment: btnAlignment ?? Alignment.center,
-        minimumSize:
-            btnSize ?? (btnWidth != null ? Size(btnWidth!, btnHeight) : null),
+        minimumSize: btnSize ?? (btnWidth != null ? Size(btnWidth!, btnHeight) : null),
       ),
       child: CustomTextWidget(
         text,
@@ -72,8 +66,7 @@ class CustomTextButtonWidget extends StatelessWidget {
         fontColor: btnTextColor,
         fontWeight: btnTextWeight,
         fontSize: btnTextSize,
-        textDecoration:
-            haveUnderline ? TextDecoration.underline : TextDecoration.none,
+        textDecoration: haveUnderline ? TextDecoration.underline : TextDecoration.none,
         textDecorationColor: underlineColor,
       ),
     );
@@ -123,8 +116,7 @@ class CustomTextIconButtonWidget extends StatelessWidget {
         //     : NoSplash.splashFactory,
         padding: EdgeInsets.zero,
         // alignment: btnAlignment,
-        minimumSize:
-            btnSize ?? (btnWidth != null ? Size(btnWidth!, btnHeight) : null),
+        minimumSize: btnSize ?? (btnWidth != null ? Size(btnWidth!, btnHeight) : null),
       ),
       child: SizedBox(
         height: btnSize?.height ?? btnHeight,
@@ -160,8 +152,7 @@ class CustomTextIconButtonWidget extends StatelessWidget {
     );
   }
 
-  AlignmentGeometry get iconPosition =>
-      iconAlignment ?? AlignmentDirectional.centerStart;
+  AlignmentGeometry get iconPosition => iconAlignment ?? AlignmentDirectional.centerStart;
   bool get atStart => iconPosition == AlignmentDirectional.centerStart;
   bool get atEnd => iconPosition == AlignmentDirectional.centerEnd;
 }
@@ -308,8 +299,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
         height: btnHeight,
         width: btnWidth,
         alignment: btnAlignment,
-        margin: EdgeInsets.symmetric(
-            horizontal: horizontalMargin, vertical: verticalMargin),
+        margin: EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: verticalMargin),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(btnRadius)),
             border: Border.all(
@@ -321,26 +311,20 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon != null &&
-                buttonIconPosition == BUTTON_ICON_POSITION.right)
-              icon ?? Container(),
-            if (icon != null &&
-                buttonIconPosition == BUTTON_ICON_POSITION.right)
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right) icon ?? Container(),
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
               CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
             CustomTextWidget(
               btnText,
               fontColor: btnTextColor,
               fontWeight: btnTextWeight,
               fontSize: btnTextSize,
-              textDecoration: btnTextUnderline
-                  ? TextDecoration.underline
-                  : TextDecoration.none,
+              textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
               textDecorationColor: btnTextUnderlineColor,
             ),
             if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
               CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
-              icon ?? Container(),
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left) icon ?? Container(),
           ],
         ),
       ),
@@ -547,8 +531,7 @@ class CustomElevatedIconButtonWidget extends StatelessWidget {
 
   bool get isTextWidget => text != null && text is Widget;
   bool get isTextString => text != null && text is String;
-  AlignmentGeometry get iconPosition =>
-      iconAlignment ?? AlignmentDirectional.centerStart;
+  AlignmentGeometry get iconPosition => iconAlignment ?? AlignmentDirectional.centerStart;
   bool get atStart => iconPosition == AlignmentDirectional.centerStart;
   bool get atEnd => iconPosition == AlignmentDirectional.centerEnd;
 }
@@ -640,9 +623,7 @@ class CustomUnderlineTextdButtonWidget extends StatelessWidget {
           border: Border(
             bottom: BorderSide(
               width: underlineWidth,
-              color: underlineColor ??
-                  AppStyle.textButtonStyle.color ??
-                  Colors.black,
+              color: underlineColor ?? AppStyle.textButtonStyle.color ?? Colors.black,
             ),
           ),
         ),
@@ -710,19 +691,16 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
         mainAxisSize: mainAxisSize,
         children: [
           if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right)
-            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           CustomTextWidget(
             btnText,
             fontColor: btnTextColor,
             fontWeight: btnTextWeight,
             fontSize: btnTextSize,
-            textDecoration:
-                textUnderline ? TextDecoration.underline : TextDecoration.none,
+            textDecoration: textUnderline ? TextDecoration.underline : TextDecoration.none,
             textDecorationColor: textUnderlineColor,
           ),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left)
-            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
         ],
       ),
@@ -779,8 +757,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
         mainAxisAlignment: mainAxisAlignment,
         children: [
           if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right)
-            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           Flexible(
             child: CustomTextWidget(
               btnText,
@@ -789,14 +766,11 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
               fontColor: btnTextColor,
               fontWeight: btnTextWeight,
               fontSize: btnTextSize,
-              textDecoration: textUnderline
-                  ? TextDecoration.underline
-                  : TextDecoration.none,
+              textDecoration: textUnderline ? TextDecoration.underline : TextDecoration.none,
               textDecorationColor: textUnderlineColor,
             ),
           ),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left)
-            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
         ],
       ),
@@ -869,8 +843,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
-            icon ?? Container(),
+          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right) icon ?? Container(),
           if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
             CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           CustomTextWidget(
@@ -878,15 +851,12 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
             fontColor: btnTextColor,
             fontWeight: btnTextWeight,
             fontSize: btnTextSize,
-            textDecoration: btnTextUnderline
-                ? TextDecoration.underline
-                : TextDecoration.none,
+            textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
             textDecorationColor: btnTextUnderlineColor,
           ),
           if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
             CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
-          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
-            icon ?? Container(),
+          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left) icon ?? Container(),
         ],
       ),
     );
@@ -1057,20 +1027,16 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
         mainAxisAlignment: mainAxisAlignment,
         children: [
           if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
-          if (buttonIconPosition == BUTTON_ICON_POSITION.right)
-            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           CustomTextWidget(
             btnText,
             fontColor: btnTextColor,
             fontWeight: btnTextWeight,
             fontSize: btnTextSize,
-            textDecoration: btnTextUnderline
-                ? TextDecoration.underline
-                : TextDecoration.none,
+            textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
             textDecorationColor: btnTextUnderlineColor,
           ),
-          if (buttonIconPosition == BUTTON_ICON_POSITION.left)
-            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left) CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
           if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
         ],
       ),
@@ -1151,9 +1117,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
                 fontColor: btnTextColor,
                 fontWeight: btnTextWeight,
                 fontSize: btnTextSize,
-                textDecoration: btnTextUnderline
-                    ? TextDecoration.underline
-                    : TextDecoration.none,
+                textDecoration: btnTextUnderline ? TextDecoration.underline : TextDecoration.none,
                 textDecorationColor: btnTextUnderlineColor,
               ),
               if (buttonIconPosition == BUTTON_ICON_POSITION.left)
@@ -1335,10 +1299,10 @@ class LabelTextWithOptional extends StatelessWidget {
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),
             ),
-          if (showOptional == false) const TextSpan(text: " *", style: TextStyle(
-              color: Colors.red,
-              fontFamily: GeneralKey.appFontType,
-              fontWeight: FontWeight.bold)),
+          if (showOptional == false)
+            const TextSpan(
+                text: " *",
+                style: TextStyle(color: Colors.red, fontFamily: GeneralKey.appFontType, fontWeight: FontWeight.bold)),
         ],
       ),
     );

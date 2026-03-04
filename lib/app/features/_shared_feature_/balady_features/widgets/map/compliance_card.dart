@@ -15,12 +15,7 @@ class ComplainceMapCard extends StatelessWidget {
   final Function onClose;
 
   const ComplainceMapCard(
-      {super.key,
-      this.amana,
-      this.stageNo,
-      this.targetBuildingType,
-      this.streetName,
-      required this.onClose});
+      {super.key, this.amana, this.stageNo, this.targetBuildingType, this.streetName, required this.onClose});
 
   @override
   Widget build(BuildContext context) {

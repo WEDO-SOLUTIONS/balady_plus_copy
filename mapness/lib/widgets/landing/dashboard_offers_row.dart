@@ -46,8 +46,7 @@ class DashboardOffersRow extends ConsumerWidget {
                   return _DashboardOffersCard(
                       offersGroup: group,
                       onTap: () {
-                        context.router
-                            .push(OffersScreenViewRoute(offersGroup: group));
+                        context.router.push(OffersScreenViewRoute(offersGroup: group));
                       });
                 },
                 separatorBuilder: (context, index) => Spacing.$2x.widthBox,
@@ -81,9 +80,7 @@ class _DashboardOffersCard extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: offersGroup.color,
                   begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-                  end: context.isLTR
-                      ? Alignment.bottomRight
-                      : Alignment.bottomLeft,
+                  end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                 ),
               ),
               child: Stack(
@@ -96,9 +93,7 @@ class _DashboardOffersCard extends StatelessWidget {
                       height: 103,
                       child: Transform(
                         alignment: Alignment.center,
-                        transform: context.isLTR
-                            ? Matrix4.identity()
-                            : Matrix4.rotationY(pi),
+                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
                         child: Image.asset(
                           offersGroup.imagePath,
                           fit: BoxFit.contain,
@@ -118,8 +113,7 @@ class _DashboardOffersCard extends StatelessWidget {
                           children: [
                             Text(
                               offersGroup.title(context.l10n),
-                              style: context.textStyleV3.h3SemiBold.copyWith(
-                                  color: context.colorsV3.staticWhite),
+                              style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
                             ),
                             Padding(
                               padding: const EdgeInsetsDirectional.only(end: 2),
@@ -128,10 +122,8 @@ class _DashboardOffersCard extends StatelessWidget {
                                 height: Spacing.$6x,
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(Spacing.$1_5x),
-                                    color: context.colorsV3.staticWhite
-                                        .withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(Spacing.$1_5x),
+                                    color: context.colorsV3.staticWhite.withOpacity(0.2),
                                   ),
                                   child: Center(
                                     child: Icon(
@@ -149,8 +141,8 @@ class _DashboardOffersCard extends StatelessWidget {
                           width: 140,
                           child: Text(
                             offersGroup.description(context.l10n),
-                            style: context.textStyleV3.captionLargeRegular
-                                .copyWith(color: context.colorsV3.staticWhite),
+                            style:
+                                context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                           ),
                         ),
                       ],

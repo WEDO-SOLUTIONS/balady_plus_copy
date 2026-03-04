@@ -9,8 +9,7 @@ import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
 import '../../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
     as hijri_picker;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, DropDownWithTitle;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, DropDownWithTitle;
 
 class FilterDatePicker extends StatefulWidget {
   final String title;
@@ -59,8 +58,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
           initialDateForm: _dateForm,
           onChange: (dateForm) {
             setState(() => _dateForm = dateForm);
-            if (_selectedDate != null)
-              widget.onChange(_selectedDate!, _dateForm);
+            if (_selectedDate != null) widget.onChange(_selectedDate!, _dateForm);
           },
         ),
         DropDownWithTitle(
@@ -86,18 +84,16 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
           ? HijriCalendar.fromDate((DateTime(1937, 3, 14)))
           : HijriCalendar.fromDate(widget.startDate!);
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-    final maxValue =
-        widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
-    final date =
-        currentDate == null ? null : HijriCalendar.fromDate(currentDate);
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    final maxValue = widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
+    final date = currentDate == null ? null : HijriCalendar.fromDate(currentDate);
 
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
@@ -121,8 +117,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        final date =
-            (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+        final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
         setState(() {
           _selectedDate = date?.hijriToGregorian(

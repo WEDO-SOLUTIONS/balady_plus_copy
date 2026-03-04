@@ -21,12 +21,10 @@ enum MimeType {
   dms(mime: "application/octet-stream"),
   doc(mime: "application/msword"),
   docx(
-    mime:
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   ),
   dotx(
-    mime:
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+    mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
   ),
   docm(mime: "application/vnd.ms-word.document.macroEnabled.12"),
   dotm(mime: "application/vnd.ms-word.template.macroEnabled.12"),
@@ -86,16 +84,13 @@ enum MimeType {
   ppm(mime: "image/x-portable-pixmap"),
   ppt(mime: "application/vnd.ms-powerpoint"),
   pptx(
-    mime:
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   ),
   potx(
-    mime:
-        "application/vnd.openxmlformats-officedocument.presentationml.template",
+    mime: "application/vnd.openxmlformats-officedocument.presentationml.template",
   ),
   ppsx(
-    mime:
-        "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+    mime: "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
   ),
   ppam(mime: "application/vnd.ms-powerpoint.addin.macroEnabled.12"),
   pptm(mime: "application/vnd.ms-powerpoint.presentation.macroEnabled.12"),
@@ -163,8 +158,7 @@ enum MimeType {
     mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   ),
   xltx(
-    mime:
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+    mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
   ),
   xlsm(mime: "application/vnd.ms-excel.sheet.macroEnabled.12"),
   xltm(mime: "application/vnd.ms-excel.template.macroEnabled.12"),

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/services/services_exports.dart'
-    show NavigationService;
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion, UIHelper;
+import '../../../../../core/services/services_exports.dart' show NavigationService;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion, UIHelper;
 import '../../../../home_page/home_exports.dart' show CircleIcon;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, DrawLineWidget, GlowingScrollWidget;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, DrawLineWidget, GlowingScrollWidget;
 
 class DraggableSheetComponent extends StatelessWidget {
   final ScrollPhysics? physics;
@@ -74,8 +71,7 @@ class DraggableSheetComponent extends StatelessWidget {
                     physics: physics,
                     padding: EdgeInsets.zero,
                     controller: controller,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                     child: body,
                   ),
                 ),

@@ -10,6 +10,9 @@ Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {
   await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
   await ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
 
+  // Show Makkah place markers again when POI card is closed
+  ref.read(regularPoiActiveProvider.notifier).setActive(false);
+
   final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
   if (navState.isActive && context.mounted) {

@@ -7,7 +7,7 @@ class MapnessServicesPage extends StatelessWidget {
   const MapnessServicesPage({super.key});
 
   @override
-  Widget build(BuildContext context) =>  const Material(
+  Widget build(BuildContext context) => const Material(
         child: HomeMiniAppsListPages(),
       );
 }

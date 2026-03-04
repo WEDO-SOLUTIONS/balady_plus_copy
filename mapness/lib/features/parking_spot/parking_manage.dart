@@ -6,10 +6,12 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -70,15 +72,16 @@ class _ParkingManage extends _$ParkingManage {
     await hive.put(_keyCache, model.toJson());
     await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
     await _mapObjectManager.removeAllMarkers();
+    final activeCityEvent = ref.read(activeCityEventProvider);
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
         options: MarkerOptionsMessage(
           position: GeoPointWithElevationMessage(latitude: model.lat, longitude: model.lon, elevation: 1),
           icon: switch (theme) {
-            BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
-            BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
-            BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+            BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+            BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
+            BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
           },
         ),
         onTap: () {
@@ -125,13 +128,17 @@ class _ParkingManage extends _$ParkingManage {
     await _mapObjectManager.removeAllMarkers();
 
     final style = await _markerStyle(title);
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
     await selectedMarker.showMarker(
       Markers.pinMarker(
         GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
         text: title,
         textStyle: style,
-        icon: SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew,
+        activeCityEvent: ref.read(activeCityEventProvider),
         id: poiPinId,
+        isDark: isDark,
       ),
     );
   }
@@ -160,6 +167,8 @@ class _ParkingManage extends _$ParkingManage {
       return;
     }
 
+    final activeCityEvent = ref.read(activeCityEventProvider);
+
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
@@ -168,9 +177,9 @@ class _ParkingManage extends _$ParkingManage {
           icon: SaudiNationalDay.isNow()
               ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
               : switch (theme) {
-                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
-                  BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
-                  BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+                  BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
+                  BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
                 },
         ),
         onTap: () {

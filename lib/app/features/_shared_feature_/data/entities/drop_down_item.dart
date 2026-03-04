@@ -23,8 +23,7 @@ class DropDownItem extends Equatable {
     required this.id,
   });
 
-  factory DropDownItem.emptyState() =>
-      const DropDownItem(id: "", name: "", value: "", code: "");
+  factory DropDownItem.emptyState() => const DropDownItem(id: "", name: "", value: "", code: "");
 
   factory DropDownItem.byName({required String itemName}) => DropDownItem(
         id: "",
@@ -34,8 +33,7 @@ class DropDownItem extends Equatable {
         order: 0,
       );
 
-  bool get isEmpty =>
-      name.isEmpty && (value?.isEmpty ?? true) && (code?.isEmpty ?? true);
+  bool get isEmpty => name.isEmpty && (value?.isEmpty ?? true) && (code?.isEmpty ?? true);
 
   @override
   List<Object?> get props => [name, value, code, order, id];

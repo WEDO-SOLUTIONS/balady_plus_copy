@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle, WidgetConversion;
-import '../../../shared_feature_exports.dart'
-    show CustomAutoSizeTextWidget, CustomTextWidget, DrawIconBasedTypeWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle, WidgetConversion;
+import '../../../shared_feature_exports.dart' show CustomAutoSizeTextWidget, CustomTextWidget, DrawIconBasedTypeWidget;
 
 class TitleSubtitleIconComponent extends StatelessWidget {
   final double? componentHeight;
@@ -92,8 +90,7 @@ class TitleSubtitleIconComponent extends StatelessWidget {
         borderRadius: BorderRadius.circular(8.0),
       );
 
-  TextStyle get _titleStyle =>
-      AppStyle.mainTextThirdStyle.copyWith(fontSize: 13.0);
+  TextStyle get _titleStyle => AppStyle.mainTextThirdStyle.copyWith(fontSize: 13.0);
   TextStyle get _subtitleStyle => AppStyle.mainTextSecondaryStyle.copyWith(
         fontSize: 16.0,
         fontWeight: AppFontWeight.regular.fontWeight,

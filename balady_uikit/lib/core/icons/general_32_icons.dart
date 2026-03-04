@@ -1,0 +1,56 @@
+import 'package:balady_uikit/core/utils/constants.dart';
+import 'package:flutter/material.dart';
+
+class General32Icons {
+  General32Icons._();
+
+  static const String _fontFamily = 'general_32_icons';
+
+  static const IconData airport = IconData(0xe90a, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData animals = IconData(0xe90b, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData artAndDesign = IconData(0xe90c, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData athkarAction = IconData(0xe908, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData banks = IconData(0xe90d, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData barbershopFilled = IconData(0xe90e, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData beachFilled = IconData(0xe90f, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData beautyFilled = IconData(0xe910, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData briefcase = IconData(0xe911, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData buildingMaterials = IconData(0xe912, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData business = IconData(0xe913, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData carServicesFilled = IconData(0xe914, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData childrensGoods = IconData(0xe915, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData cityTransport = IconData(0xe916, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData clothingAndFootwear = IconData(0xe92e, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData connection = IconData(0xe917, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData construction = IconData(0xe918, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData eventsFilled = IconData(0xe919, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData gasstationFilled = IconData(0xe91a, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData gymFilled = IconData(0xe91b, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData hospitalFilled = IconData(0xe91c, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData hotelsFilled = IconData(0xe91d, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData info = IconData(0xe902, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData kiosk = IconData(0xe903, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData locationAction = IconData(0xe901, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData mallFilled = IconData(0xe91e, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData media = IconData(0xe91f, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData medicineFilled = IconData(0xe920, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData mosquesFilled = IconData(0xe921, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData municipalities = IconData(0xe922, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData parkFilled = IconData(0xe923, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData parkingAction = IconData(0xe900, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData parkingAdd = IconData(0xe924, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData placeholder = IconData(0xe905, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData police = IconData(0xe925, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData qiblaAction = IconData(0xe906, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData qiblaFilled = IconData(0xe926, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData quaranAction = IconData(0xe909, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData railwayTransport = IconData(0xe927, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData recreationFilled = IconData(0xe928, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData restaurantFilled = IconData(0xe929, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData roadEventAction = IconData(0xe92f, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData schoolFilled = IconData(0xe92a, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData snapAndSendAction = IconData(0xe907, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData toothFilled = IconData(0xe92b, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData waterTransport = IconData(0xe92c, fontFamily: _fontFamily, fontPackage: packageName);
+  static const IconData wcFilled = IconData(0xe92d, fontFamily: _fontFamily, fontPackage: packageName);
+}

@@ -15,7 +15,8 @@ import 'package:sheetify/sheetify.dart';
 class CitySelectionDialogViewWidget extends HookWidget {
   final CitySelectionDialogView citySelectionDialogView;
 
-  const CitySelectionDialogViewWidget(this.citySelectionDialogView, {super.key});
+  const CitySelectionDialogViewWidget(this.citySelectionDialogView,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +38,11 @@ class CitySelectionDialogViewWidget extends HookWidget {
     return SafeArea(
       bottom: false,
       child: ToggleSheet(
-        dragger: DraggerContainer(draggerColor: context.colors.backgroundSurface5),
+        dragger:
+            DraggerContainer(draggerColor: context.colors.backgroundSurface5),
         barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
-          function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
+          function: (controller) =>
+              AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
         backgroundColor: context.colors.backgroundSurface2,
         safeAreaColor: context.colors.backgroundSurface2,
@@ -51,9 +54,11 @@ class CitySelectionDialogViewWidget extends HookWidget {
             children: [
               Text(
                 context.l10n.saudiPassCitySelectionPageTitle,
-                style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
+                style: context.textStyles.h2SemiBold
+                    .copyWith(color: context.colors.foregroundDefault),
               ),
-              CustomCloseButton(onClose: context.router.pop, padding: EdgeInsets.zero),
+              CustomCloseButton(
+                  onClose: context.router.pop, padding: EdgeInsets.zero),
             ],
           ),
         ),
@@ -67,12 +72,15 @@ class CitySelectionDialogViewWidget extends HookWidget {
                     prefixConfig: BaladyInputAffixIcon(
                       icon: SystemIcons.search,
                       iconColor: context.colors.foregroundSoft,
-                      customPadding: const EdgeInsetsDirectional.all(Spacing.$2x).copyWith(end: Spacing.$1_5x),
+                      customPadding:
+                          const EdgeInsetsDirectional.all(Spacing.$2x)
+                              .copyWith(end: Spacing.$1_5x),
                     ),
                     config: BaladyInputConfig(
                       fillColor: context.colors.neutralContainerDefault,
                       autofocus: true,
-                      hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
+                      hintText:
+                          context.l10n.saudiPassCitySelectionPageSearchHint,
                       isDisposed: false,
                     ),
                     controller: textEditingController,
@@ -81,7 +89,8 @@ class CitySelectionDialogViewWidget extends HookWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$4x),
+                  padding: const EdgeInsetsDirectional.only(
+                      start: Spacing.$2x, end: Spacing.$4x),
                   child: ListenableBuilder(
                     listenable: citySelectionDialogView,
                     builder: (context, _) {
@@ -121,32 +130,36 @@ class SearchViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: AppSizes.l,
-    child: ContentRow(
-      onTap: () => view.onTap(context),
-      leading: Icon(
-        SystemIcons.search,
-        color: view.isMagnifierVisible ? context.colors.foregroundMuted : Colors.transparent,
-      ),
-      text: ContentRowTextOptions(
-        titleOptions: ContentRowTextOption(
-          builder: (context) {
-            final color = context.colors.foregroundDefault;
-            return Text.rich(
-              TextSpan(
-                children: getHighlightedTextSpans(
-                  source: view.title,
-                  search: citySelectionDialogView.search,
-                  highlightStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: color),
-                  baseStyle: context.textStyles.bodySmallRegular.copyWith(color: color),
-                ),
-              ),
-            );
-          },
+        height: AppSizes.l,
+        child: ContentRow(
+          onTap: () => view.onTap(context),
+          leading: Icon(
+            SystemIcons.search,
+            color: view.isMagnifierVisible
+                ? context.colors.foregroundMuted
+                : Colors.transparent,
+          ),
+          text: ContentRowTextOptions(
+            titleOptions: ContentRowTextOption(
+              builder: (context) {
+                final color = context.colors.foregroundDefault;
+                return Text.rich(
+                  TextSpan(
+                    children: getHighlightedTextSpans(
+                      source: view.title,
+                      search: citySelectionDialogView.search,
+                      highlightStyle: context.textStyles.bodyLargeSemiBold
+                          .copyWith(color: color),
+                      baseStyle: context.textStyles.bodySmallRegular
+                          .copyWith(color: color),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          isDividerEnabled: isDividerEnabled,
+          supportTitleRTL: true,
         ),
-      ),
-      isDividerEnabled: isDividerEnabled,
-      supportTitleRTL: true,
-    ),
-  );
+      );
 }

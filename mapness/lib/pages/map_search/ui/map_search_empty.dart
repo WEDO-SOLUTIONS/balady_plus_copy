@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -26,6 +27,8 @@ class MapSearchEmpty extends ConsumerWidget {
       final scope = context.read<SearchScope>();
       ref.read(searchProvider(scope.value).notifier).alternativeSearch();
     }
+
+    final activeEvent = ref.watch(activeCityEventProvider);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),

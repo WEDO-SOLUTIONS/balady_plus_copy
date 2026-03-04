@@ -39,8 +39,7 @@ class AuthDataModel extends AuthData {
 
   String toJson() => toMap().toJson();
 
-  factory AuthDataModel.fromJson(String source) =>
-      AuthDataModel.fromMap(source.fromJson());
+  factory AuthDataModel.fromJson(String source) => AuthDataModel.fromMap(source.fromJson());
 }
 
 extension AuthDataModelFromEntity on AuthData {

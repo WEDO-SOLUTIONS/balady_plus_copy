@@ -156,8 +156,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final dateTimeString =
-            data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+        final dateTimeString = data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
         return DateTime.parse(dateTimeString);
       } else {
         print('Failed to fetch time: ${response.statusCode}');
@@ -169,8 +168,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _onNewCameraSelectedHandler(
-      OnNewCameraSelected e, Emitter emitter) async {
+  Future<void> _onNewCameraSelectedHandler(OnNewCameraSelected e, Emitter emitter) async {
     emitter(
       state.copyWith(
         status: BlocStatus.loading,
@@ -214,8 +212,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     emitter(state.copyWith(zoom: e.zoom));
   }
 
-  Future<void> _onUpdateScaleLevelHandler(
-      UpdateScaleLevelEvent e, Emitter emitter) async {
+  Future<void> _onUpdateScaleLevelHandler(UpdateScaleLevelEvent e, Emitter emitter) async {
     double scale = state.zoom * e.scale;
     if (scale >= 1 && scale <= 7) {
       cameraController?.setZoomLevel(scale);
@@ -223,8 +220,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _onToggleCameraFlashHandler(
-      ToggleCameraFlashEvent e, Emitter emitter) async {
+  Future<void> _onToggleCameraFlashHandler(ToggleCameraFlashEvent e, Emitter emitter) async {
     try {
       if (state.isCameraInitialized == true) {
         if (state.isFlashOn) {
@@ -248,8 +244,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
-  Future<void> _onReTakePhotoHandler(
-      ReTakePhotoEvent e, Emitter emitter) async {
+  Future<void> _onReTakePhotoHandler(ReTakePhotoEvent e, Emitter emitter) async {
     emitter(
       state.copyWith(showCamera: true, isCameraInitialized: false),
     );

@@ -51,8 +51,7 @@ class ScalePage extends PageRouteBuilder {
             const begin = 0.0;
             const end = 1.0;
             final tween = Tween<double>(begin: begin, end: end);
-            final curvedAnimation =
-                CurvedAnimation(parent: fAnimation, curve: Curves.easeInBack);
+            final curvedAnimation = CurvedAnimation(parent: fAnimation, curve: Curves.easeInBack);
             return ScaleTransition(
               scale: tween.animate(curvedAnimation),
               child: child,
@@ -72,8 +71,7 @@ class RotatePage extends PageRouteBuilder {
             const begin = 0.0;
             const end = 1.0;
             final tween = Tween<double>(begin: begin, end: end);
-            final curvedAnimation =
-                CurvedAnimation(parent: fAnimation, curve: Curves.linear);
+            final curvedAnimation = CurvedAnimation(parent: fAnimation, curve: Curves.linear);
             return RotationTransition(
               turns: tween.animate(curvedAnimation),
               child: child,
@@ -120,8 +118,7 @@ class ScaleRotatePage extends PageRouteBuilder {
             const begin = 0.0;
             const end = 1.0;
             final tween = Tween<double>(begin: begin, end: end);
-            final curvedAnimation =
-                CurvedAnimation(parent: fAnimation, curve: Curves.linear);
+            final curvedAnimation = CurvedAnimation(parent: fAnimation, curve: Curves.linear);
             return ScaleTransition(
               scale: tween.animate(curvedAnimation),
               child: RotationTransition(

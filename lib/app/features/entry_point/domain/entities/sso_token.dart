@@ -6,12 +6,7 @@ class SSOToken extends Equatable {
   final String? refreshToken;
   final String? expirationTime;
   String? appCookie;
-  SSOToken(
-      {this.expirationTime,
-      this.refreshToken,
-      this.token,
-      this.idToken,
-      this.appCookie});
+  SSOToken({this.expirationTime, this.refreshToken, this.token, this.idToken, this.appCookie});
 
   DateTime? getExpirationTime() => DateTime.tryParse(expirationTime ?? "");
 

@@ -19,12 +19,7 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   final String? searchHint;
 
   MultiSelectionWithSearchDialog(
-      {Key? key,
-      required this.onSelect,
-      this.selectedItem,
-      required this.items,
-      this.title,
-      this.searchHint})
+      {Key? key, required this.onSelect, this.selectedItem, required this.items, this.title, this.searchHint})
       : super(key: key);
 
   @override
@@ -33,8 +28,7 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   }
 }
 
-class _MultiSelectionWithSearchDialog
-    extends State<MultiSelectionWithSearchDialog> {
+class _MultiSelectionWithSearchDialog extends State<MultiSelectionWithSearchDialog> {
   List<DropDownItem> items = [];
   List<DropDownItem> currentSelectedItems = [];
 
@@ -69,10 +63,7 @@ class _MultiSelectionWithSearchDialog
             onTextChanged: /* () {},*/
                 (value) {
               setState(() {
-                items = widget.items
-                    .where((element) =>
-                        element.name.contains(value) ?? element.name == value)
-                    .toList();
+                items = widget.items.where((element) => element.name.contains(value) ?? element.name == value).toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -110,8 +101,7 @@ class _MultiSelectionWithSearchDialog
           const CustomVerticalSpace(height: 5),
           // button
           EnhancedCustomElevatedButtonWidget(
-            btnColor:
-                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
+            btnColor: isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isButtonDisabled
                 ? null
@@ -148,6 +138,6 @@ class _MultiSelectionWithSearchDialog
     //     stackTrace: stackTrace.toString(),
     //   ),
     // );
-  // }
+    // }
   }
 }

@@ -1,10 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart' show AutoSizeText;
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, UIHelper;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, UIHelper;
 
 class WidgetLabel extends StatelessWidget {
   final String? label;
@@ -31,10 +29,8 @@ class WidgetLabel extends StatelessWidget {
                   TextSpan(
                     text: label!.isEmpty ? "notFound".tr() : label,
                     style: labelStyle ??
-                        AppStyle.mainTextSecondaryStyle.copyWith(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                            color: AppColor.blackModern700Light),
+                        AppStyle.mainTextSecondaryStyle
+                            .copyWith(fontSize: 16.0, fontWeight: FontWeight.bold, color: AppColor.blackModern700Light),
                   ),
                 ],
               ),
@@ -45,6 +41,5 @@ class WidgetLabel extends StatelessWidget {
         : const SizedBox();
   }
 
-  EdgeInsetsGeometry get labelPadding =>
-      padding ?? const EdgeInsets.only(bottom: UIHelper.littlePadding);
+  EdgeInsetsGeometry get labelPadding => padding ?? const EdgeInsets.only(bottom: UIHelper.littlePadding);
 }

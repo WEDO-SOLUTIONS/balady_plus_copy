@@ -1,5 +1,4 @@
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 class Translator {
   static final appName = "appName".tr();
@@ -78,8 +77,7 @@ class Translator {
   static final errorNotFoundScreenName = "errorNotFoundScreenName".tr();
   static final errorNotFoundScreenTitle = "errorNotFoundScreenTitle".tr();
   static final errorNotFoundScreenSubTitle = "errorNotFoundScreenSubTitle".tr();
-  static final errorNotFoundScreenSupportAccount =
-      "errorNotFoundScreenSupportAccount".tr();
+  static final errorNotFoundScreenSupportAccount = "errorNotFoundScreenSupportAccount".tr();
   static final errorConnectionTimeout = "errorConnectionTimeout".tr();
   static final errorBadRequest = "errorBadRequest".tr();
   static final errorUnAuthorizedUser = "errorUnAuthorizedUser".tr();
@@ -98,8 +96,7 @@ class Translator {
 
   //! popUpButtons
   static final popUpCloseBottomSheetButton = "popUpCloseBottomSheetButton".tr();
-  static final popUpCancelBottomSheetButton =
-      "popUpCancelBottomSheetButton".tr();
+  static final popUpCancelBottomSheetButton = "popUpCancelBottomSheetButton".tr();
   static final popUpCloseAppConfirmButton = "popUpCloseAppConfirmButton".tr();
   static final popUpCloseAppDeclineButton = "popUpCloseAppDeclineButton".tr();
   static final popUpConfirmButton = "popUpConfirmButton".tr();
@@ -115,6 +112,5 @@ class Translator {
   //! popUpMessages
   static final popUpNoMessage = "popUpNoMessage".tr();
   static final popUpCloseAppMessage = "popUpCloseAppMessage".tr();
-  static final popUpUploadFileLimitExceedsMessage =
-      "popUpUploadFileLimitExceedsMessage".tr();
+  static final popUpUploadFileLimitExceedsMessage = "popUpUploadFileLimitExceedsMessage".tr();
 }

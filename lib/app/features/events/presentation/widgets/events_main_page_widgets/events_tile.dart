@@ -41,8 +41,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
       context.read<EventsBloc>().add(GetMoreSearchEvent());
     }
   }
@@ -56,8 +55,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
             height: 189,
             itemCount: 10,
           );
-        if (state.status == BlocStatus.success && state.searchItems.isEmpty)
-          return EventsNotFoundPage();
+        if (state.status == BlocStatus.success && state.searchItems.isEmpty) return EventsNotFoundPage();
 
         if (state.status == BlocStatus.retry)
           return ReloadWidget(
@@ -87,9 +85,8 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
 
               return GestureDetector(
                 onTap: () {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.eventsDetailsPage,
-                      arguments: state.searchItems[index].id);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.eventsDetailsPage, arguments: state.searchItems[index].id);
                 },
                 child: OldEventHomeCard(
                   item: state.searchItems[index],
@@ -97,8 +94,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
               );
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, RouteName.eventsDetailsPage,
-                      arguments: state.searchItems[index].id);
+                  Navigator.pushNamed(context, RouteName.eventsDetailsPage, arguments: state.searchItems[index].id);
                 },
                 child: Column(
                   children: [
@@ -106,9 +102,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                       height: 180,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        image: (state.searchItems[index].logoImage
-                                    ?.endsWith(".svg") ??
-                                false)
+                        image: (state.searchItems[index].logoImage?.endsWith(".svg") ?? false)
                             ? DecorationImage(
                                 image: svgProvider.Svg(
                                   state.searchItems[index].logoImage ?? ""!,
@@ -117,8 +111,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                                 fit: BoxFit.fill,
                               )
                             : DecorationImage(
-                                image: NetworkImage(
-                                    state.searchItems[index].logoImage ?? ""),
+                                image: NetworkImage(state.searchItems[index].logoImage ?? ""),
                                 fit: BoxFit.fill,
                               ),
                       ),
@@ -130,8 +123,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 EventsActivitiesWidget(
-                                  category:
-                                      state.searchItems[index].category ?? '',
+                                  category: state.searchItems[index].category ?? '',
                                 ),
                                 //  state.searchItems[index].getStartMonth() ==
                                 //       state.searchItems[index].getEndMonth()
@@ -146,17 +138,10 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                                       )*/
                                 //:
                                 EventsEndDate(
-                                  month1:
-                                      state.searchItems[index].getStartMonth(),
-                                  month2:
-                                      state.searchItems[index].getEndMonth(),
-                                  year1: state
-                                          .searchItems[index].startDate?.year
-                                          .toString() ??
-                                      "",
-                                  year2: state.searchItems[index].endDate?.year
-                                          .toString() ??
-                                      "",
+                                  month1: state.searchItems[index].getStartMonth(),
+                                  month2: state.searchItems[index].getEndMonth(),
+                                  year1: state.searchItems[index].startDate?.year.toString() ?? "",
+                                  year2: state.searchItems[index].endDate?.year.toString() ?? "",
                                   day1: state.searchItems[index].getStartDay(),
                                   day2: state.searchItems[index].getEndDay(),
                                 ),

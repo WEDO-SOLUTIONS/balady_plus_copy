@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 
 class FeedbackBannerCardV2 extends StatelessWidget {
   final String title;
@@ -13,11 +14,13 @@ class FeedbackBannerCardV2 extends StatelessWidget {
   final String? subtitle;
   final List<Color> gradientColors;
   final VoidCallback? onTap;
+  final ImageSizeCalculator? imageSizeCalculator;
 
   const FeedbackBannerCardV2({
     required this.path,
     required this.gradientColors,
     required this.title,
+    this.imageSizeCalculator,
     this.subtitle,
     this.onTap,
     super.key,
@@ -28,24 +31,32 @@ class FeedbackBannerCardV2 extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     child: GestureDetector(
       onTap: onTap,
-      child: _FeedBackWidget(
-        asset: path,
-        title: title,
-        subTitle: subtitle,
-        gradientColors: gradientColors,
-        textDirection: Directionality.of(context),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-          child: SizedBox(
-            width: Spacing.$6x,
-            height: Spacing.$6x,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                color: context.colors.staticWhite.withOpacity(0.2),
-              ),
-              child: Center(
-                child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$4x),
+      child: SizedBox(
+        width: double.maxFinite,
+        child: _FeedBackWidget(
+          asset: path,
+          title: title,
+          subTitle: subtitle,
+          gradientColors: gradientColors,
+          textDirection: Directionality.of(context),
+          imageSizeCalculator: imageSizeCalculator,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+            child: SizedBox(
+              width: Spacing.$6x,
+              height: Spacing.$6x,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Spacing.$1_5x),
+                  color: context.colors.staticWhite.withOpacity(0.2),
+                ),
+                child: Center(
+                  child: Icon(
+                    SystemIcons.arrowRight,
+                    color: context.colors.staticWhite,
+                    size: Spacing.$4x,
+                  ),
+                ),
               ),
             ),
           ),
@@ -61,6 +72,7 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
   final String asset;
   final List<Color> gradientColors;
   final TextDirection textDirection;
+  final ImageSizeCalculator? imageSizeCalculator;
 
   const _FeedBackWidget({
     required this.title,
@@ -68,6 +80,7 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
     required this.asset,
     required this.gradientColors,
     required this.textDirection,
+    this.imageSizeCalculator,
     super.child,
   });
 
@@ -88,6 +101,7 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
     textGap: Spacing.$1x,
     imageShift: 9.0,
     designMinHeight: 96,
+    imageSizeCalculator: imageSizeCalculator,
   );
 
   @override
@@ -104,6 +118,7 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
       asset,
       gradientColors,
       textDirection,
+      imageSizeCalculator,
     );
   }
 }
@@ -118,6 +133,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
   InlineSpan title;
   InlineSpan subTitle;
   TextDirection textDirection;
+  ImageSizeCalculator? imageSizeCalculator;
 
   TextPainter titlePainter;
   TextPainter subtitlePainter;
@@ -140,6 +156,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     required this.textGap,
     required this.imageShift,
     required this.designMinHeight,
+    required this.imageSizeCalculator,
   }) : titlePainter = TextPainter(text: title, textDirection: textDirection),
        subtitlePainter = TextPainter(text: subTitle, textDirection: textDirection) {
     loadImage();
@@ -151,6 +168,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     String asset,
     List<Color> gradientColors,
     TextDirection textDirection,
+    ImageSizeCalculator? imageSizeCalculator,
   ) {
     final isTextDirectionChanged = this.textDirection != textDirection;
     if (this.title != title || isTextDirectionChanged) {
@@ -177,6 +195,11 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     if (this.gradientColors != gradientColors) {
       this.gradientColors = gradientColors;
       markNeedsPaint();
+    }
+
+    if (this.imageSizeCalculator != imageSizeCalculator) {
+      this.imageSizeCalculator = imageSizeCalculator;
+      markNeedsLayout();
     }
   }
 
@@ -254,7 +277,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
 
       /// Paint image if it exist.
       if (hasImage && image != null) {
-        const imageWidth = 97.0;
+        final imageWidth = imageSizeCalculator != null ? imageSizeCalculator!(imageSize.width) : imageSize.width;
         const imageHeight = 87.0;
 
         final imageTop = offset.dy + (size.height - imageHeight) / 2;

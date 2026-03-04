@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion, UIHelper;
-import '../../shared_feature_exports.dart'
-    show AbstractionWidget, CustomElevatedButtonWidget;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion, UIHelper;
+import '../../shared_feature_exports.dart' show AbstractionWidget, CustomElevatedButtonWidget;
 
 class _TwoElevatedFooterButtons extends StatelessWidget {
   final VoidCallback onFirstButton;

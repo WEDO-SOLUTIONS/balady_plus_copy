@@ -10,8 +10,7 @@ class EmptyStateWidget extends StatelessWidget {
   final String? title;
   final String? desc;
 
-  const EmptyStateWidget({Key? key, this.desc, this.img, this.title})
-      : super(key: key);
+  const EmptyStateWidget({Key? key, this.desc, this.img, this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

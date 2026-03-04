@@ -108,10 +108,7 @@ class PhotoPreviewWidgetNew extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.topStart,
               child: Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 16,
-                    left: 16,
-                    right: 16),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, left: 16, right: 16),
                 child: IconButton(
                   icon: const Icon(Icons.close),
                   iconSize: 36,

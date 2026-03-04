@@ -102,6 +102,9 @@ class AppLanguage extends _$AppLanguage {
     unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
 
     state = value;
+
+    // Invalidate weather provider after state update to avoid circular dependency
+    Future.microtask(() => ref.invalidate(forecastWeatherProvider));
   }
 
   Future<void> updateCachedMiniAppsLanguage(String value) async {

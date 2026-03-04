@@ -78,8 +78,7 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
               enabledBorder: InputBorder.none,
               errorBorder: InputBorder.none,
               disabledBorder: InputBorder.none,
-              contentPadding: const EdgeInsets.only(
-                  top: 10, right: 10, left: 10, bottom: 10),
+              contentPadding: const EdgeInsets.only(top: 10, right: 10, left: 10, bottom: 10),
               suffixIconConstraints: const BoxConstraints(
                 minHeight: 24,
                 minWidth: 24,

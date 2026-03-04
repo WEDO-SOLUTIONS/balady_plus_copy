@@ -7,7 +7,6 @@ class UserProfileModel implements BaseData {
   String nameAr;
   String token;
 
-
   UserProfileModel({
     required this.email,
     required this.name,

@@ -1,8 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../shared_feature_exports.dart' show CustomElevatedButtonWidget;
 
@@ -23,10 +22,8 @@ class ElevatedButtonWidget extends _ElevatedButton {
           btnMargin: const EdgeInsets.only(top: 12.0),
           text: ("signInButton").tr(),
           btnColor: AppColor.primary800Light,
-          textStyle: AppStyle.elevatedButtonStyle.copyWith(
-              color: AppColor.blackModern50Light,
-              fontSize: 16,
-              fontWeight: FontWeight.bold),
+          textStyle: AppStyle.elevatedButtonStyle
+              .copyWith(color: AppColor.blackModern50Light, fontSize: 16, fontWeight: FontWeight.bold),
           onPressed: onPressed,
         ));
 
@@ -228,8 +225,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.verify(
-      {required VoidCallback onPressed, final String? text})
+  ElevatedButtonWidget.verify({required VoidCallback onPressed, final String? text})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary900Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -314,15 +310,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.custom(
-      {required VoidCallback onPressed, required String text, bool? isDisabled})
+  ElevatedButtonWidget.custom({required VoidCallback onPressed, required String text, bool? isDisabled})
       : super(CustomElevatedButtonWidget(
-          btnColor: (isDisabled ?? false)
-              ? AppColor.black200
-              : AppColor.primary900Light,
-          btnBorderColor: (isDisabled ?? false)
-              ? AppColor.black200
-              : AppColor.primary900Light,
+          btnColor: (isDisabled ?? false) ? AppColor.black200 : AppColor.primary900Light,
+          btnBorderColor: (isDisabled ?? false) ? AppColor.black200 : AppColor.primary900Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: (isDisabled ?? false) ? AppColor.black400 : AppColor.white,
             fontWeight: FontWeight.w700,
@@ -338,10 +329,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
       required String text,
       double? height,
       int? maxLines,
-        Color? btnColor,
+      Color? btnColor,
       double? fontSize})
       : super(CustomElevatedButtonWidget(
-          btnColor: btnColor ??AppColor.primary800Light,
+          btnColor: btnColor ?? AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.blackModern50Light,
             fontWeight: FontWeight.w700,
@@ -363,7 +354,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
       Color? bgColor,
       double? width})
       : super(CustomElevatedButtonWidget(
-          btnColor:bgColor ?? Colors.white,
+          btnColor: bgColor ?? Colors.white,
           btnBorderColor: color ?? AppColor.primary800Light,
           btnWidth: width,
           maxLines: maxLines,
@@ -377,32 +368,30 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.primaryCustomBorderColor(
-      {required VoidCallback onPressed,
-        required String text,
-        double? height,
-        double? fontSize,
-        int? maxLines,
-        Color? color,
-        Color? borderColor,
-        Color?  bgColor,
-        double? width,
-
-      })
-      : super(CustomElevatedButtonWidget(
-    btnColor:bgColor??  Colors.white,
-    btnBorderColor: borderColor ?? AppColor.primary800Light,
-    btnWidth: width,
-    maxLines: maxLines,
-    textStyle: AppStyle.elevatedButtonStyle.copyWith(
-      color: color ?? AppColor.primary800Light,
-      fontWeight: FontWeight.w700,
-      fontSize: fontSize ?? 16,
-    ),
-    btnHeight: height ?? 56,
-    text: text,
-    onPressed: onPressed,
-  ));
+  ElevatedButtonWidget.primaryCustomBorderColor({
+    required VoidCallback onPressed,
+    required String text,
+    double? height,
+    double? fontSize,
+    int? maxLines,
+    Color? color,
+    Color? borderColor,
+    Color? bgColor,
+    double? width,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: bgColor ?? Colors.white,
+          btnBorderColor: borderColor ?? AppColor.primary800Light,
+          btnWidth: width,
+          maxLines: maxLines,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: color ?? AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: fontSize ?? 16,
+          ),
+          btnHeight: height ?? 56,
+          text: text,
+          onPressed: onPressed,
+        ));
 
   ElevatedButtonWidget.attachFile({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
@@ -424,10 +413,8 @@ class ElevatedButtonWidget extends _ElevatedButton {
           btnRadius: 6,
           btnHeight: 40,
           btnColor: AppColor.primary800Light,
-          textStyle: AppStyle.elevatedButtonStyle.copyWith(
-              color: AppColor.blackModern50Light,
-              fontSize: 14,
-              fontWeight: FontWeight.bold),
+          textStyle: AppStyle.elevatedButtonStyle
+              .copyWith(color: AppColor.blackModern50Light, fontSize: 14, fontWeight: FontWeight.bold),
           onPressed: onPressed,
         ));
 

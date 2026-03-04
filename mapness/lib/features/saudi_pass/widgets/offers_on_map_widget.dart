@@ -116,9 +116,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName.markerIcon(
             size: _kClusterIconSize,
           ),
-          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
+          BaladyAppThemes.light ||
           BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
             size: _kClusterIconSize,
           ),

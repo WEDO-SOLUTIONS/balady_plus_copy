@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
-import '../../shared_feature_exports.dart'
-    show CustomSheetDropDownWidget, DropDownItem;
+import '../../shared_feature_exports.dart' show CustomSheetDropDownWidget, DropDownItem;
 
 abstract class _SheetDropDown extends StatelessWidget {
   final Widget child;

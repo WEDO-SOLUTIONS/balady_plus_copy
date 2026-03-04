@@ -11,6 +11,12 @@ class CityEventDateRange extends Equatable {
 
   factory CityEventDateRange.wrcDefault() => CityEventDateRange(DateTime(2025, 11, 25), DateTime(2025, 11, 29));
 
+  factory CityEventDateRange.saudiNationalDayDefault() =>
+      CityEventDateRange(DateTime(DateTime.now().year, 9, 18), DateTime(DateTime.now().year, 9, 27, 23, 59, 59));
+
+  factory CityEventDateRange.foundingDayDefault() =>
+      CityEventDateRange(DateTime(DateTime.now().year, 2, 22), DateTime(DateTime.now().year, 2, 22));
+
   factory CityEventDateRange.fromJson(Map<String, dynamic>? json, CityEventDateRange defaults) {
     try {
       final fromValue = json?['from'] as String?;
@@ -21,10 +27,7 @@ class CityEventDateRange extends Equatable {
 
       DateTime? tryParse(String date) => DateFormat('dd-MM-yy').tryParse(date);
 
-      return CityEventDateRange(
-        tryParse(fromValue) ?? defaults.from,
-        tryParse(toValue) ?? defaults.to,
-      );
+      return CityEventDateRange(tryParse(fromValue) ?? defaults.from, tryParse(toValue) ?? defaults.to);
     } catch (e) {
       debugPrint('Failed to parse CityEventDateRange: $e');
       return defaults;

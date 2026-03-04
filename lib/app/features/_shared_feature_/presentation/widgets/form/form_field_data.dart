@@ -7,17 +7,14 @@ class FormFieldData extends StatelessWidget {
   final String? subTitle;
   final BorderRadius? radius;
 
-  const FormFieldData(
-      {super.key, this.subTitle, required this.title, this.radius});
+  const FormFieldData({super.key, this.subTitle, required this.title, this.radius});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(12),
       margin: EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-          color: Color(0x80E6EFEF),
-          borderRadius: radius ?? BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Color(0x80E6EFEF), borderRadius: radius ?? BorderRadius.circular(8)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

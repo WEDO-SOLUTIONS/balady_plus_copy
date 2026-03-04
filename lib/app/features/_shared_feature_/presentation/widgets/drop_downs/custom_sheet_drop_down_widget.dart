@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocBuilder, BlocListener, BlocProvider, ReadContext;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, BlocListener, BlocProvider, ReadContext;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppFontWeight,
-        AppStyle,
-        BorderConversion,
-        BorderType,
-        ContextConversion,
-        UIHelper,
-        WidgetConversion;
+    show AppColor, AppFontWeight, AppStyle, BorderConversion, BorderType, ContextConversion, UIHelper, WidgetConversion;
 import '../../../shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -115,10 +105,8 @@ class CustomSheetDropDownWidget extends StatelessWidget {
                         children: [
                           // Hint widget
                           BlocListener<SheetDropDownBloc, SheetDropDownState>(
-                            listenWhen: (previous, current) =>
-                                previous.selectedItem != current.selectedItem,
-                            listener: (_, state) =>
-                                onSelected(state.selectedItem),
+                            listenWhen: (previous, current) => previous.selectedItem != current.selectedItem,
+                            listener: (_, state) => onSelected(state.selectedItem),
                             child: SizedBox(
                               width: constraints.maxWidth * 0.90,
                               child: CustomTextWidget(
@@ -157,24 +145,19 @@ class CustomSheetDropDownWidget extends StatelessWidget {
         vertical: UIHelper.middlePadding + 1.0,
       );
   BorderType get _borderType => borderType ?? BorderType.outline;
-  Color get _fillColor =>
-      readOnly ? AppColor.gray : fillColor ?? AppColor.white;
-  BoxBorder? get _border =>
-      _borderType.boxBorder(color: borderColor ?? AppColor.gray);
-  BorderRadiusGeometry? get _borderRadius =>
-      _borderType.boxBorderRadius(radius: borderRadius);
+  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.white;
+  BoxBorder? get _border => _borderType.boxBorder(color: borderColor ?? AppColor.gray);
+  BorderRadiusGeometry? get _borderRadius => _borderType.boxBorderRadius(radius: borderRadius);
 
   TextStyle get _hintStyle => hintStyle ?? AppStyle.pickerStyle;
   String get initialHint => hintText ?? "selectFromHere".tr();
 
-  Future<void> showDropDown(BuildContext context) async =>
-      await BottomSheetDialog.showSheet(
+  Future<void> showDropDown(BuildContext context) async => await BottomSheetDialog.showSheet(
         context,
         isFullHeight: true,
         enableDrag: true,
         child: BlocProvider.value(
-          value: context.read<SheetDropDownBloc>()
-            ..add(const OnBackToDefault()),
+          value: context.read<SheetDropDownBloc>()..add(const OnBackToDefault()),
           child: _SheetBodyWidget(title: label),
         ),
       );
@@ -215,8 +198,7 @@ class _SheetBodyWidget extends StatelessWidget {
           _DialogHeader(title: title ?? ""),
           // Search Field
           SearchField(
-            onChanged: (term) =>
-                context.read<SheetDropDownBloc>().add(OnSearching(query: term)),
+            onChanged: (term) => context.read<SheetDropDownBloc>().add(OnSearching(query: term)),
           ),
           // Line
           DrawLineWidget(lineColor: AppColor.black.withOpacity(0.3)),
@@ -252,9 +234,7 @@ class _BodyItemsWidget extends StatelessWidget {
                   // close sheet
                   context.popDialog();
                   // close Bloc
-                  context
-                      .read<SheetDropDownBloc>()
-                      .add(OnUpdating(index: index));
+                  context.read<SheetDropDownBloc>().add(OnUpdating(index: index));
                 },
               ),
             ),

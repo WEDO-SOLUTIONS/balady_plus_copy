@@ -1,8 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 
-import '../../../shared_feature_exports.dart'
-    show CustomCupertinoDatePickerWidget, CustomMaterialDatePickerWidget;
+import '../../../shared_feature_exports.dart' show CustomCupertinoDatePickerWidget, CustomMaterialDatePickerWidget;
 
 class CustomPlatformDatePickerWidget extends StatelessWidget {
   final bool ignoreHolidays;

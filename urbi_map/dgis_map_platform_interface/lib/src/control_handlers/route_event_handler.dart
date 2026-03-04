@@ -5,23 +5,17 @@ import 'package:dgis_map_platform_interface/src/events/route_changed_events.dart
 class RoutesEventHandler {
   RoutesEventHandler();
 
-  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
-      _activeRouteChangedController.stream;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents => _activeRouteChangedController.stream;
 
-  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
-      _routesInfoChangedController.stream;
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents => _routesInfoChangedController.stream;
 
-  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
-      _betterRouteInfoController.stream;
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _betterRouteInfoController.stream;
 
-  final _activeRouteChangedController =
-      StreamController<ActiveRouteChangedEvent>.broadcast();
+  final _activeRouteChangedController = StreamController<ActiveRouteChangedEvent>.broadcast();
 
-  final _routesInfoChangedController =
-      StreamController<RoutesInfoChangedEvent>.broadcast();
+  final _routesInfoChangedController = StreamController<RoutesInfoChangedEvent>.broadcast();
 
-  final _betterRouteInfoController =
-      StreamController<BetterRouteInfoEvent>.broadcast();
+  final _betterRouteInfoController = StreamController<BetterRouteInfoEvent>.broadcast();
 
   RouteInfo mapRouteInfo(Map<dynamic, dynamic> map) {
     final altitudes = map["altitudes"] as List<Object?>;

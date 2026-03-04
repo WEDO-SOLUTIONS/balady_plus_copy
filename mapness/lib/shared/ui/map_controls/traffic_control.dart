@@ -2,11 +2,15 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:provider/provider.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 
-class TrafficControlWidget extends StatelessWidget {
+class TrafficControlWidget extends ConsumerWidget {
   final double opacity;
   final bool isEnabled;
   final BorderRadius? borderRadius;
@@ -19,19 +23,9 @@ class TrafficControlWidget extends StatelessWidget {
     this.onTap,
     super.key,
   });
-  String car(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.icons.svg.darkCar.keyName,
-    BaladyAppThemes.light => Assets.icons.svg.car.keyName,
-    BaladyAppThemes.saudiDay => Assets.icons.svg.car.keyName,
-  };
-  String carActive(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.icons.svg.darkCarActive.keyName,
-    BaladyAppThemes.light => Assets.icons.svg.carActive.keyName,
-    BaladyAppThemes.saudiDay => Assets.icons.svg.carActiveSaudi.keyName,
-  };
 
   @override
-  Widget build(BuildContext context) => AnimatedOpacity(
+  Widget build(BuildContext context, WidgetRef ref) => AnimatedOpacity(
     opacity: opacity,
     duration: const Duration(milliseconds: 250),
     child: MapButton(
@@ -40,13 +34,16 @@ class TrafficControlWidget extends StatelessWidget {
       child: SizedBox(
         width: 24,
         height: 24,
-        child: SvgPicture.asset(
-          isEnabled ? carActive(context) : car(context),
-          // package: packageName,
-          colorFilter: onTap == null
-              ? ColorFilter.mode(context.colors.foregroundDefault.withOpacity(0.36), BlendMode.srcIn)
-              : null,
-        ),
+        child:
+            ref
+                .read(activeCityEventProvider)
+                ?.trafficIcon(
+                  isDark: ref.watch(darkModeProvider).value?.isDark ?? false,
+                  isOn: isEnabled,
+                  // TODO(Argen_merge_prod): color needed?
+                  // inactiveColor: context.colors.foregroundDefault.withOpacity(0.36),
+                ) ??
+            Assets.icons.svg.car.svg(),
       ),
     ),
   );

@@ -7,14 +7,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http_certificate_pinning/http_certificate_pinning.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation, translator;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:sentry_dio/sentry_dio.dart';
-import '../../../core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
+import 'package:sentry_flutter/sentry_flutter.dart';
+import '../../../core/dependency_injection/dependency_injection_exports.dart' show sl;
 import '../../../events_logs/balady_logs.dart';
-import '../../../events_logs/models/request_api_model.dart';
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
     show
@@ -26,8 +24,7 @@ import '../../errors/errors_exports.dart'
         NoDataFoundException,
         NoInternetConnectionException,
         RequestNotFoundException;
-import '../../utils/utils_exports.dart'
-    show ApiHeader, CommonFunctions, CommonProperties, EnvType, Log;
+import '../../utils/utils_exports.dart' show ApiHeader, CommonFunctions, CommonProperties, EnvType, Log;
 import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
@@ -40,7 +37,7 @@ class WebService {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
-    dio.addSentry();
+    // dio.addSentry();
 
     if (!kReleaseMode) {
       dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
@@ -56,8 +53,7 @@ class WebService {
 
     dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(AppCertificatePinningInterceptor(
-        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,
-        callFollowingErrorInterceptor: true));
+        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints, callFollowingErrorInterceptor: true));
   }
 
   WebService.newDio({
@@ -89,8 +85,7 @@ class AppCertificatePinningInterceptor extends Interceptor {
         await secure;
       }
 
-      if (options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) ==
-          true) {
+      if (options.uri.toString().toLowerCase().contains(sl<EnvType>().domain) == true) {
         var baseUrl = options.baseUrl;
 
         if (options.path.contains('http') || options.baseUrl.isEmpty) {
@@ -138,10 +133,7 @@ class AppCertificatePinningInterceptor extends Interceptor {
       }
 
       handler.reject(
-        DioException(
-            requestOptions: options,
-            error: error2,
-            type: DioExceptionType.badCertificate),
+        DioException(requestOptions: options, error: error2, type: DioExceptionType.badCertificate),
         callFollowingErrorInterceptor,
       );
     }
@@ -171,23 +163,14 @@ class AppInterceptors extends Interceptor {
         options.uri.toString().toLowerCase().contains("license/permits") ||
         options.uri.toString().toLowerCase().contains("send-to-new-owner") ||
         options.uri.toString().toLowerCase().contains("selected/permits") ||
-        options.uri
-            .toString()
-            .toLowerCase()
-            .contains("selected-permits/by-new-owner") ||
+        options.uri.toString().toLowerCase().contains("selected-permits/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("transfer/shop-info") ||
-        options.uri
-            .toString()
-            .toLowerCase()
-            .contains("transfer/shop-ownership-info") ||
+        options.uri.toString().toLowerCase().contains("transfer/shop-ownership-info") ||
         options.uri.toString().toLowerCase().contains("transfer/attachments") ||
         options.uri.toString().toLowerCase().contains("submit/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("accept/by-new-owner") ||
         options.uri.toString().toLowerCase().contains("reject/by-new-owner") ||
-        options.uri
-            .toString()
-            .toLowerCase()
-            .contains("transfer/upload-attachment")) {
+        options.uri.toString().toLowerCase().contains("transfer/upload-attachment")) {
       // options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation, () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }
     if (await networkConnection.isConnected == false) {
@@ -212,10 +195,8 @@ class AppInterceptors extends Interceptor {
       options.headers.remove("Authorization");
     }
     if (options.data is! FormData) {
-      final verifyingKEY = CommonFunctions.hashRequest(
-          Uri.decodeQueryComponent(url), method,
-          body: (options.data != null &&
-                  !options.uri.toString().contains("bcg/upload-file"))
+      final verifyingKEY = CommonFunctions.hashRequest(Uri.decodeQueryComponent(url), method,
+          body: (options.data != null && !options.uri.toString().contains("bcg/upload-file"))
               ? json.encode(options.data)
               : null,
           authorization: !options.uri.toString().contains("bcg/upload-file")
@@ -223,8 +204,9 @@ class AppInterceptors extends Interceptor {
               : false,
           corelationId: xCorrelationId);
 
-      options.headers
-          .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
+      print(verifyingKEY);
+
+      options.headers.putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
 
@@ -238,13 +220,7 @@ class AppInterceptors extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
-    sendAPIEvents(
-      nameEvent: EventsName.requestAPIError,
-      responseData: err.response?.data?.toString() ?? "",
-      requestOptions: err.requestOptions,
-      statusCode: err.response?.statusCode,
-    );
-
+    _logDioError(err);
     switch (err.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
@@ -264,8 +240,7 @@ class AppInterceptors extends Interceptor {
             if (err.requestOptions.uri.path.contains(ApiUrl.weatherAlerts)) {
               break;
             }
-            final refreshToken =
-                sl<EntryPointCubit>().state.token?.refreshToken;
+            final refreshToken = sl<EntryPointCubit>().state.token?.refreshToken;
             if (refreshToken != null) {
               sl<EntryPointCubit>().refreshToken(refreshToken);
             }
@@ -309,11 +284,20 @@ class AppInterceptors extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (response.statusCode == 200 || response.statusCode == 201) {
-      sendAPIEvents(
-          nameEvent: EventsName.requestAPISuccessful,
-          requestOptions: response.requestOptions,
-          responseData: response.data?.toString() ?? "",
-          statusCode: response.statusCode);
+      Sentry.addBreadcrumb(
+        Breadcrumb(
+          message: 'Request Successful',
+          data: {
+            "url": response.requestOptions.baseUrl + response.requestOptions.path,
+            "queryParameters": response.requestOptions.queryParameters,
+            "requestBody": response.requestOptions.data,
+            "headers": response.requestOptions.headers,
+            "method": response.requestOptions.method,
+            "responseData": response.data,
+            "statusCode": response.statusCode,
+          },
+        ),
+      );
     }
     return handler.next(response);
   }
@@ -343,35 +327,59 @@ class ApiHeaders {
   static const xSubmitterRelation = "x-submitter-relation";
 }
 
-void sendAPIEvents({
-  required String nameEvent,
-  required String responseData,
-  required RequestOptions requestOptions,
-  int? statusCode,
-}) {
-  try {
-    String requestData = requestOptions.data?.toString() ?? "";
-    LogsViewModel().sendEventFromModel(
-      event: RequestApiModel(
-        nameEvent: nameEvent,
-        message: responseData.length > 1024
-            ? responseData.substring(0, 1024)
-            : responseData,
-        url: requestOptions.baseUrl + requestOptions.path,
-        body: requestData.length > 1024
-            ? requestData.substring(0, 1024)
-            : requestData,
-        verifyingKEY: requestOptions.headers["verifyingKEY"] ?? "",
-        statusCode: statusCode,
-      ),
-    );
-  } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+void _logDioError(DioException err) async {
+  Contexts contexts = Contexts()
+    ..['Request-Data'] = {
+      "url": err.requestOptions.baseUrl + err.requestOptions.path,
+      "queryParameters": err.requestOptions.queryParameters,
+      "requestBody": err.requestOptions.data,
+      "headers": err.requestOptions.headers,
+      "method": err.requestOptions.method,
+    };
+  contexts['Response'] = {
+    if (err.response != null) ...{
+      "responseData": err.response?.data,
+      "statusCode": err.response?.statusCode,
+    },
+  };
+  Sentry.captureEvent(
+    SentryEvent(
+      throwable: err,
+      contexts: contexts,
+    ),
+    stackTrace: err.stackTrace,
+  );
 }
+
+// void sendAPIEvents({
+//   required String nameEvent,
+//   required String responseData,
+//   required RequestOptions requestOptions,
+//   int? statusCode,
+// }) {
+//   try {
+//     String requestData = requestOptions.data?.toString() ?? "";
+//     LogsViewModel().sendEventFromModel(
+//       event: RequestApiModel(
+//         nameEvent: nameEvent,
+//         message: responseData.length > 1024
+//             ? responseData.substring(0, 1024)
+//             : responseData,
+//         url: requestOptions.baseUrl + requestOptions.path,
+//         body: requestData.length > 1024
+//             ? requestData.substring(0, 1024)
+//             : requestData,
+//         verifyingKEY: requestOptions.headers["verifyingKEY"] ?? "",
+//         statusCode: statusCode,
+//       ),
+//     );
+//   } catch (error, stackTrace) {
+//     LogsViewModel().sendEventFromModel(
+//       event: ErrorExceptionModel(
+//         nameEvent: EventsName.handledException,
+//         message: error.toString(),
+//         stackTrace: stackTrace.toString(),
+//       ),
+//     );
+//   }
+// }

@@ -29,10 +29,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: padding ?? const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          boxShadow: [],
-          borderRadius: BorderRadius.circular(16),
-          color: AppColor.white),
+      decoration: BoxDecoration(boxShadow: [], borderRadius: BorderRadius.circular(16), color: AppColor.white),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

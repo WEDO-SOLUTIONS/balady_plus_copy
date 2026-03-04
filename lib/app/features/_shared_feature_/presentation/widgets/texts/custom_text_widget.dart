@@ -2,8 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart' show AutoSizeText;
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle;
 
 class CustomTextWidget extends StatelessWidget {
   final String text;

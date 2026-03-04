@@ -33,6 +33,11 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.favourites() =>
       const MapObjectManagerSettings._(name: 'favourite-markers', layerId: MapObjectLayers.defaultLayerId);
 
+  factory MapObjectManagerSettings.makkahPlaces() => const MapObjectManagerSettings._(
+    name: 'makkah-places',
+    layerId: MapObjectLayers.defaultLayerId,
+  );
+
   factory MapObjectManagerSettings.esri() =>
       const MapObjectManagerSettings._(name: 'esri_markers', layerId: MapObjectLayers.defaultLayerId);
 
@@ -47,6 +52,11 @@ class MapObjectManagerSettings {
 
   factory MapObjectManagerSettings.myLocation() =>
       const MapObjectManagerSettings._(name: 'my_location', layerId: MapObjectLayers.priorityLayerId);
+
+  factory MapObjectManagerSettings.cityEvent() => const MapObjectManagerSettings._(
+    name: 'city_event',
+    layerId: MapObjectLayers.priorityLayerId,
+  );
 
   factory MapObjectManagerSettings.eta() =>
       const MapObjectManagerSettings._(name: 'eta', layerId: MapObjectLayers.priorityLayerId);
@@ -121,8 +131,10 @@ class MapObjectManager extends _$MapObjectManager {
         ?.setMapObjectManagerIsVisible(isVisible: isVisible, manager: await future);
   }
 
-  Future<void> setMarkerOptions(String markerId, ChangeMarkerOptionsMessage options) async =>
-      await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
+  Future<void> setMarkerOptions(
+    String markerId,
+    ChangeMarkerOptionsMessage options,
+  ) async => await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
 
   Future<void> removeMarkerById(String markerId) async {
     _markers.removeWhere((element) => element.id == markerId);

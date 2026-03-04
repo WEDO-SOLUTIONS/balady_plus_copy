@@ -38,8 +38,7 @@ class SplashRemoteDataSourceImpl extends SplashRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -85,8 +84,7 @@ class SplashRemoteDataSourceImpl extends SplashRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

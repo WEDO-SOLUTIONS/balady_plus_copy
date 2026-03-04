@@ -172,6 +172,7 @@ flutter:
   generate: true
   assets:
     - assets/
+    - assets/config.json
     - assets/icons/svg/
     - assets/icons/svg/profile/
     - assets/icons/lottie/
@@ -186,10 +187,16 @@ flutter:
     - assets/icons/svg/places_new/light/
     - assets/icons/svg/places_new/dark/
     - assets/icons/svg/places_new/old/
+    - assets/icons/svg/places_new_founding_day/
+    - assets/icons/svg/places_new_founding_day_big/
+    - assets/icons/svg/places_new_founding_day_dark/
+    - assets/icons/svg/places_new_founding_day_big_dark/
     - assets/icons/svg/places_big_new_saudi_day/
     - assets/icons/svg/places_new_saudi_day/
     - assets/icons/svg/intermediate_stop_numbers/
     - assets/images/
+    - assets/images/makkah_quick_actions/
+    - assets/images/ramadan_quick_actions/
     - assets/images/saudi_pass/
     - assets/images_svg/
     - assets/images_svg/saudi_pass/

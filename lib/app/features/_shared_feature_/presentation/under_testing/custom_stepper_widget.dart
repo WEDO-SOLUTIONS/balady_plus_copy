@@ -59,9 +59,7 @@ class CustomStepperWidget extends StatelessWidget {
                     firstCurve: firstCurve,
                     secondCurve: secondCurve,
                     sizeCurve: curve,
-                    crossFadeState: step + 1 == currentStep
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
+                    crossFadeState: step + 1 == currentStep ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                     duration: kThemeAnimationDuration,
                   ),
                 ),

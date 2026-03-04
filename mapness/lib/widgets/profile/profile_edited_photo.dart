@@ -24,6 +24,7 @@ class ProfileEditablePhoto extends StatelessWidget {
           child: ProfileImageWidget(
             abbreviatedName: abbreviatedName,
             style: AvatarEmptyStyle.accentSecondary,
+            isEditing: true,
           ),
         ),
         PositionedDirectional(

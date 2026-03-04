@@ -12,11 +12,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
@@ -165,7 +165,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       ).notifier,
     );
     ref.listen(searchProvider(_scope), (previous, next) {
-      _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
+      _drawSearchMarkers(next, previous, searchObjectManager);
     });
     final isCloseButton = ref.watch(
       searchProvider(
@@ -215,7 +215,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     SearchState searchState,
     SearchState? prevState,
     MapObjectManager mapObjectManager,
-    BaladyAppThemes theme,
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
@@ -223,12 +222,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
-        theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {

@@ -28,12 +28,10 @@ class CustomEnhancedExpansionPanelWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CustomEnhancedExpansionPanelWidget> createState() =>
-      _CustomEnhancedExpansionPanelWidgetState();
+  State<CustomEnhancedExpansionPanelWidget> createState() => _CustomEnhancedExpansionPanelWidgetState();
 }
 
-class _CustomEnhancedExpansionPanelWidgetState
-    extends State<CustomEnhancedExpansionPanelWidget> {
+class _CustomEnhancedExpansionPanelWidgetState extends State<CustomEnhancedExpansionPanelWidget> {
   // late double _collapsedHeight;
   late bool _expandedStatus;
 
@@ -83,8 +81,7 @@ class _CustomEnhancedExpansionPanelWidgetState
                     switchInCurve: Curves.easeInOut,
                     switchOutCurve: Curves.easeInOut,
                     child: value ? widget.child : const SizedBox(),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
+                    transitionBuilder: (Widget child, Animation<double> animation) {
                       return SizeTransition(
                         sizeFactor: animation,
                         child: Padding(
@@ -107,8 +104,7 @@ class _CustomEnhancedExpansionPanelWidgetState
     );
   }
 
-  void _expansionCallback() =>
-      _expandedPanelValueNotifier.value = !_expandedPanelValueNotifier.value;
+  void _expansionCallback() => _expandedPanelValueNotifier.value = !_expandedPanelValueNotifier.value;
 }
 
 class _ExpansionPanelHeaderWidget extends StatelessWidget {
@@ -149,9 +145,7 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
                   title!,
                   fontSize: 17.0,
                   fontColor: AppColor.black,
-                  fontWeight: leading != null
-                      ? AppFontWeight.medium
-                      : AppFontWeight.bold,
+                  fontWeight: leading != null ? AppFontWeight.medium : AppFontWeight.bold,
                   maxLines: 2,
                   textOverflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,
@@ -176,9 +170,7 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
     }
   }
 
-  double _getTitleWidth() => leading == null
-      ? width - (25.0 + 10.0)
-      : width - (25.0 + 10.0 + 10.0 + 25.0);
+  double _getTitleWidth() => leading == null ? width - (25.0 + 10.0) : width - (25.0 + 10.0 + 10.0 + 25.0);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {

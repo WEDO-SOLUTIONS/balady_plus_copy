@@ -36,12 +36,7 @@ class CustomShimmerWidget extends StatelessWidget {
   final double? childWidth;
   final EdgeInsets? padding;
 
-  const CustomShimmerWidget(
-      {Key? key,
-      this.childWidget,
-      this.childHeight,
-      this.childWidth,
-      this.padding})
+  const CustomShimmerWidget({Key? key, this.childWidget, this.childHeight, this.childWidth, this.padding})
       : super(key: key);
 
   @override
@@ -96,9 +91,7 @@ class CustomShimmerGridViewWidget extends StatelessWidget {
         );
       },
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          mainAxisSpacing: mainAxisSpacing,
-          mainAxisExtent: mainAxisExtent),
+          crossAxisCount: crossAxisCount, mainAxisSpacing: mainAxisSpacing, mainAxisExtent: mainAxisExtent),
     );
   }
 }

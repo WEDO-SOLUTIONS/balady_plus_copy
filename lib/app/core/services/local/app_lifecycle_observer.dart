@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart'
-    show AppLifecycleState, WidgetsBindingObserver;
+import 'package:flutter/material.dart' show AppLifecycleState, WidgetsBindingObserver;
 
 import '../../utils/utils_exports.dart' show Log, StringConversion;
 

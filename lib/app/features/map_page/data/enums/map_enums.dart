@@ -195,18 +195,8 @@ enum GISMapLayers {
       resultRecordCount: 30,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
-      outFieldsShort: [
-        "OBJECTID",
-        "BLOCK_ID",
-        "SUBDIVISIONPARCELNUMBER",
-        "SUBDIVISIONPLAN_ID"
-      ],
-      outFieldsLong: [
-        "OBJECTID",
-        "BLOCK_ID",
-        "SUBDIVISIONPARCELNUMBER",
-        "SUBDIVISIONPLAN_ID"
-      ]),
+      outFieldsShort: ["OBJECTID", "BLOCK_ID", "SUBDIVISIONPARCELNUMBER", "SUBDIVISIONPLAN_ID"],
+      outFieldsLong: ["OBJECTID", "BLOCK_ID", "SUBDIVISIONPARCELNUMBER", "SUBDIVISIONPLAN_ID"]),
 
   Events(
       layerId: 13,

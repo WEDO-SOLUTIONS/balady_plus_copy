@@ -6,12 +6,13 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -36,7 +37,14 @@ class ProfilePage extends HookConsumerWidget {
         Icon(icon, color: context.colors.accentDefault, size: 24);
     final userData = ref.watch(authProvider);
     final isAuth = userData.value != null;
-    final backgroundColor = isAuth ? context.colors.backgroundSurface1 : context.colorsV3.staticDarkblue;
+
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isFoundingDay = activeEvent == CityEventType.foundingDay;
+    final backgroundColor = isAuth
+        ? context.colors.backgroundSurface1
+        : isFoundingDay
+        ? const Color(0xFFDFC6A8)
+        : context.colorsV3.staticDarkblue;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.read<ThemeController>().systemOverlayStyle,
@@ -53,7 +61,12 @@ class ProfilePage extends HookConsumerWidget {
                   slivers: [
                     const SliverToBoxAdapter(child: SizedBox(height: 20)),
                     const SliverToBoxAdapter(
-                      child: SafeArea(bottom: false, right: false, left: false, child: ProfileHeader()),
+                      child: SafeArea(
+                        bottom: false,
+                        right: false,
+                        left: false,
+                        child: ProfileHeader(),
+                      ),
                     ),
                     DecoratedSliver(
                       decoration: BoxDecoration(
@@ -91,7 +104,6 @@ class ProfilePage extends HookConsumerWidget {
                                                   ContentRowV2(
                                                     isDividerEnabled: true,
                                                     onTap: () => CommonFunctions.openVolunteerProfileScreen(),
-
                                                     trailing: trailing,
                                                     leading: leadingIconBuilder(Icons.favorite),
                                                     text: ContentRowTextOptions(title: 'volunteer_info'.tr()),
@@ -120,7 +132,12 @@ class ProfilePage extends HookConsumerWidget {
                                         isDividerEnabled: true,
                                         onTap: () => context.router.push(const ProfilePreferencesRoute()),
                                         trailing: trailing,
-                                        leading: SvgPicture.asset(Assets.icons.svg.percent.keyName),
+                                        leading: Assets.icons.svg.percent.svg(
+                                          colorFilter: ColorFilter.mode(
+                                            context.colors.accentDefault,
+                                            BlendMode.srcATop,
+                                          ),
+                                        ),
                                         text: ContentRowTextOptions(title: context.l10n.preferences),
                                       ),
                                       ContentRowV2(

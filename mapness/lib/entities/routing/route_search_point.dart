@@ -16,7 +16,11 @@ class RouteSearchPoint {
   });
 
   @override
-  int get hashCode => dgisObjectId.objectId.hashCode;
+  int get hashCode => Object.hash(
+        dgisObjectId.objectId,
+        coordinates.latitude,
+        coordinates.longitude,
+      );
 
   @override
   bool operator ==(Object other) {
@@ -24,6 +28,9 @@ class RouteSearchPoint {
       return true;
     }
 
-    return other is RouteSearchPoint && other.dgisObjectId.objectId == dgisObjectId.objectId;
+    return other is RouteSearchPoint &&
+        other.dgisObjectId.objectId == dgisObjectId.objectId &&
+        other.coordinates.latitude == coordinates.latitude &&
+        other.coordinates.longitude == coordinates.longitude;
   }
 }

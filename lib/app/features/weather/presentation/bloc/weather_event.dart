@@ -8,11 +8,8 @@ abstract class WeatherEvent extends Equatable {
 }
 
 class GetWeatherForLocation extends WeatherEvent {
-  final WeatherParams params = WeatherParams(
-      languageCode: 'ar',
-      alert: 'yes',
-      numberOfDays: 7,
-      key: '7fb258f132b04a298ae154452233007');
+  final WeatherParams params =
+      WeatherParams(languageCode: 'ar', alert: 'yes', numberOfDays: 7, key: '7fb258f132b04a298ae154452233007');
 
   final bool? showLoading;
 
@@ -20,11 +17,8 @@ class GetWeatherForLocation extends WeatherEvent {
 }
 
 class RefreshWeatherForLocation extends WeatherEvent {
-  final WeatherParams params = WeatherParams(
-      languageCode: 'ar',
-      alert: 'yes',
-      numberOfDays: 7,
-      key: '7fb258f132b04a298ae154452233007');
+  final WeatherParams params =
+      WeatherParams(languageCode: 'ar', alert: 'yes', numberOfDays: 7, key: '7fb258f132b04a298ae154452233007');
 
   final bool? showLoading;
 

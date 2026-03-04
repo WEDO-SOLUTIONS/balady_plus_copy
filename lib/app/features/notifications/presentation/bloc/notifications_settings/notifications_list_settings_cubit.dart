@@ -6,27 +6,21 @@ import '../../../../../core/errors/exceptions.dart';
 import '../../../domain/repositories/notification_repository.dart';
 part 'notifications_list_settings_state.dart';
 
-class NotificationsListSettingsCubit
-    extends Cubit<NotificationsListSettingsState> {
+class NotificationsListSettingsCubit extends Cubit<NotificationsListSettingsState> {
   NotificationsSettingsListRepository notificationsSettingsListRepository;
   bool isChecked;
-  NotificationsListSettingsCubit(
-      {required this.notificationsSettingsListRepository,
-      required this.isChecked})
+  NotificationsListSettingsCubit({required this.notificationsSettingsListRepository, required this.isChecked})
       : super(InitialNotificationsSettingsState());
 
-  Future<void> setNotificationsProfileProducts(
-      SetNotificationsProfileProductsParams params) async {
+  Future<void> setNotificationsProfileProducts(SetNotificationsProfileProductsParams params) async {
     emit(LoadingEventsSettingsState());
-    final failureOrSuccess = await notificationsSettingsListRepository
-        .setNotificationsProfileProducts(params: params);
+    final failureOrSuccess = await notificationsSettingsListRepository.setNotificationsProfileProducts(params: params);
     failureOrSuccess.fold(
       (failure) {
         if (failure is NoDataFoundException) {
           emit(EmptyNotificationsSettingsState());
         } else if (failure is ServerFailure) {
-          emit(FailureNotificationsSettingsState(
-              errorMessage: failure.errorMessage));
+          emit(FailureNotificationsSettingsState(errorMessage: failure.errorMessage));
         } else {
           emit(FailureNotificationsSettingsState(errorMessage: "error"));
         }

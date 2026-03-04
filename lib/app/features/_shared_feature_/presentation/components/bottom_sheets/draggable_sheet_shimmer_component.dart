@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/services/services_exports.dart'
-    show NavigationService;
-import '../../../../../core/utils/utils_exports.dart'
-    show ContextConversion, UIHelper, WidgetConversion;
+import '../../../../../core/services/services_exports.dart' show NavigationService;
+import '../../../../../core/utils/utils_exports.dart' show ContextConversion, UIHelper, WidgetConversion;
 import '../../../shared_feature_exports.dart'
-    show
-        GlowingScrollWidget,
-        ShimmerEffectWidget,
-        TitleSubtitleShimmerComponent;
+    show GlowingScrollWidget, ShimmerEffectWidget, TitleSubtitleShimmerComponent;
 
 class DraggableSheetShimmerComponent extends StatelessWidget {
   final double? height;

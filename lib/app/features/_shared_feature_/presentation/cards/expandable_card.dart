@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
-import '../../shared_feature_exports.dart'
-    show CustomTextWidget, DrawIconBasedTypeWidget;
+import '../../shared_feature_exports.dart' show CustomTextWidget, DrawIconBasedTypeWidget;
 
 class ExpandableCard extends StatefulWidget {
   final String title;
@@ -76,8 +75,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
                           ? Chip(
                               label: Text(
                                 widget.badgeTitle!,
-                                style: AppStyle.requestParamterTitleTextStle
-                                    .copyWith(
+                                style: AppStyle.requestParamterTitleTextStle.copyWith(
                                   color: Colors.white,
                                 ),
                               ),
@@ -99,9 +97,7 @@ class _ExpandableCardState extends State<ExpandableCard> {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    _isExpanded
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
+                    _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                     color: AppColor.white,
                   ),
                 ),

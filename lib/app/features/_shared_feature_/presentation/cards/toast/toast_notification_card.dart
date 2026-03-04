@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, MessageType, UIHelper, WidgetConversion;
-import '../../../shared_feature_exports.dart'
-    show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, MessageType, UIHelper, WidgetConversion;
+import '../../../shared_feature_exports.dart' show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
 
 class ToastNotificationCard extends StatelessWidget {
   final MessageType msgType;
@@ -46,11 +44,8 @@ class ToastNotificationCard extends StatelessWidget {
     );
   }
 
-  EdgeInsetsGeometry get margin =>
-      const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding - 2.0);
-  BorderRadiusGeometry get borderRadius =>
-      const BorderRadius.all(Radius.circular(8.0));
+  EdgeInsetsGeometry get margin => const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding - 2.0);
+  BorderRadiusGeometry get borderRadius => const BorderRadius.all(Radius.circular(8.0));
 
-  TextStyle get msgStyle => AppStyle.mainTextSecondaryStyle
-      .copyWith(color: AppColor.white, height: 1.3);
+  TextStyle get msgStyle => AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.white, height: 1.3);
 }

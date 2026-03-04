@@ -36,8 +36,7 @@ class VerticalRadioGroup<T> extends StatelessWidget {
         Column(
           children: items
               .map((e) => Padding(
-                    padding: EdgeInsetsDirectional.only(
-                        end: items.last == e ? 0 : 16),
+                    padding: EdgeInsetsDirectional.only(end: items.last == e ? 0 : 16),
                     child: CustomRadioButtonEnd<T>(
                       title: e.radioText,
                       value: e.radioValue,

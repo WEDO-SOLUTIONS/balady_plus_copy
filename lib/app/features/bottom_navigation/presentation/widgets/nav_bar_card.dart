@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion, WidgetConversion;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion, WidgetConversion;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show ClickableWidget, CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
 
@@ -34,9 +32,7 @@ class BottomNavBarCardWidget extends StatelessWidget {
           DrawIconBasedTypeWidget(
             icon: icon,
             iconSize: iconSize,
-            iconColor: isSelected
-                ? AppColor.white
-                : AppColor.primary200Light.withOpacity(0.64),
+            iconColor: isSelected ? AppColor.white : AppColor.primary200Light.withOpacity(0.64),
           ),
           // Label widget
           CustomAutoSizeTextWidget(
@@ -45,9 +41,7 @@ class BottomNavBarCardWidget extends StatelessWidget {
             maxFontSize: labelSize,
             textStyle: AppStyle.mainTextStyle.copyWith(
               // fontSize: 10.0,
-              color: isSelected
-                  ? AppColor.white
-                  : AppColor.primary200Light.withOpacity(0.64),
+              color: isSelected ? AppColor.white : AppColor.primary200Light.withOpacity(0.64),
             ),
           ),
         ].addPadding(bottom: 10.0),

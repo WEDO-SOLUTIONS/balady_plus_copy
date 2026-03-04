@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, CommonFunctions;
+import '../../../../core/utils/utils_exports.dart' show AppColor, CommonFunctions;
 import '../../shared_feature_exports.dart' show CustomIconButtonWidget;
 
 abstract class _IconButton extends StatelessWidget {

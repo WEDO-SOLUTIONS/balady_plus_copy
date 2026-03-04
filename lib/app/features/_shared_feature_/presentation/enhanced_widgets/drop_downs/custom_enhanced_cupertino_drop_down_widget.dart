@@ -1,17 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocConsumer, BlocProvider, ReadContext;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocConsumer, BlocProvider, ReadContext;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
 
 import '../../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppStyle,
-        BorderConversion,
-        BorderType,
-        ContextConversion,
-        UIHelper;
+    show AppColor, AppStyle, BorderConversion, BorderType, ContextConversion, UIHelper;
 import '../../../shared_feature_exports.dart'
     show
         CustomCupertinoPickerWidget,
@@ -148,18 +140,14 @@ class CustomEnhancedCupertinoDropDownWidget extends StatelessWidget {
         vertical: UIHelper.middlePadding + 1.0,
       );
   BorderType get _borderType => borderType ?? BorderType.outline;
-  Color get _fillColor =>
-      readOnly ? AppColor.gray : fillColor ?? AppColor.white;
-  BoxBorder? get _border =>
-      _borderType.boxBorder(color: borderColor ?? AppColor.gray);
-  BorderRadiusGeometry? get _borderRadius =>
-      _borderType.boxBorderRadius(radius: borderRadius);
+  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.white;
+  BoxBorder? get _border => _borderType.boxBorder(color: borderColor ?? AppColor.gray);
+  BorderRadiusGeometry? get _borderRadius => _borderType.boxBorderRadius(radius: borderRadius);
 
   TextStyle get _hintStyle => hintStyle ?? AppStyle.pickerStyle;
   String get initialHint => hintText ?? "selectFromHere".tr();
 
-  Future<void> showDropDown(BuildContext context) async =>
-      await BottomSheetDialog.showCupertinoSheet(
+  Future<void> showDropDown(BuildContext context) async => await BottomSheetDialog.showCupertinoSheet(
         context,
         child: BlocProvider.value(
           value: context.read<DropDownCubit>(),
@@ -167,8 +155,7 @@ class CustomEnhancedCupertinoDropDownWidget extends StatelessWidget {
             children: [
               CustomCupertinoPickerWidget(
                 children: items.map((dropValue) => dropValue.name).toList(),
-                onSelectedItem: (index) =>
-                    context.read<DropDownCubit>().onChangeValue(items[index]),
+                onSelectedItem: (index) => context.read<DropDownCubit>().onChangeValue(items[index]),
               ),
               // Close Icon
               Align(
