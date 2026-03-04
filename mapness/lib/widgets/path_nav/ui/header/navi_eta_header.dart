@@ -198,6 +198,7 @@ class EtaHeader extends HookConsumerWidget {
   void openEndTripSheet(BuildContext context) => showModalBottomSheet(
     backgroundColor: Colors.transparent,
     barrierColor: Colors.transparent,
+    isScrollControlled: true,
     context: context,
     builder: (_) => EndTripModal(onEndTripPressed: onEndTripPressed),
   );
