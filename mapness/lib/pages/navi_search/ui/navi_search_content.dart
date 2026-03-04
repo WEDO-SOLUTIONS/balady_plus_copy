@@ -107,85 +107,80 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
       });
 
     if (!_hasConnection) {
-      return SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: MapLostInternet(
-              onTap: () async {
-                await ref.read(networkStatusProvider.notifier).update();
-                _updateInternetStatus(context, ref.read(networkStatusProvider));
-              },
-            ),
+      return SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: MapLostInternet(
+            onTap: () async {
+              await ref.read(networkStatusProvider.notifier).update();
+              _updateInternetStatus(context, ref.read(networkStatusProvider));
+            },
           ),
         ),
       );
     }
 
     return searchState.map(
-      empty: () =>
-          const SliverFillRemaining(hasScrollBody: false, child: SafeArea(top: false, child: MapSearchEmpty())),
-      history: () => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              NaviQuickFilter(onFilterSelected: (q) => ref.read(searchProvider(scope.value).notifier).searchByText(q)),
-              const SizedBox(height: Spacing.$4x),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: ContentWrapper(
-                  color: context.colors.backgroundSurface1,
-                  children: [
-                    ContentRow(
-                      isDividerEnabled: true,
-                      leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
-                      text: ContentRowTextOptions(title: context.l10n.selectOnTheMap),
-                      trailing: ContentRowTextTrailingOptions(
-                        icon: SystemIcons.arrowCornerRightSmall,
-                        iconColor: context.colors.foregroundMuted,
-                      ),
-                      onTap: () => _specifyOnTheMap(context),
+      empty: () => const SafeArea(top: false, child: MapSearchEmpty()),
+      history: () => SafeArea(
+        top: false,
+        child: Column(
+          children: [
+            NaviQuickFilter(onFilterSelected: (q) => ref.read(searchProvider(scope.value).notifier).searchByText(q)),
+            const SizedBox(height: Spacing.$4x),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              child: ContentWrapper(
+                color: context.colors.backgroundSurface1,
+                children: [
+                  ContentRow(
+                    isDividerEnabled: true,
+                    leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
+                    text: ContentRowTextOptions(title: context.l10n.selectOnTheMap),
+                    trailing: ContentRowTextTrailingOptions(
+                      icon: SystemIcons.arrowCornerRightSmall,
+                      iconColor: context.colors.foregroundMuted,
                     ),
-                    ContentRow(
-                      isDividerEnabled: true,
-                      leading: Icon(
-                        Directionality.of(context) == TextDirection.ltr
-                            ? TransportIcons.locationLTR
-                            : TransportIcons.locationRTL,
-                        color: context.colors.accentDefault,
-                        size: 22,
-                      ),
-                      text: ContentRowTextOptions(title: context.l10n.yourLocation),
-                      trailing: ContentRowTextTrailingOptions(
-                        icon: SystemIcons.arrowCornerRightSmall,
-                        iconColor: context.colors.foregroundMuted,
-                      ),
-                      onTap: () => _onYourLocationTap(context, ref),
+                    onTap: () => _specifyOnTheMap(context),
+                  ),
+                  ContentRow(
+                    isDividerEnabled: true,
+                    leading: Icon(
+                      Directionality.of(context) == TextDirection.ltr
+                          ? TransportIcons.locationLTR
+                          : TransportIcons.locationRTL,
+                      color: context.colors.accentDefault,
+                      size: 22,
                     ),
-                    ContentRow(
-                      leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
-                      text: ContentRowTextOptions(title: context.l10n.findInFav),
-                      trailing: ContentRowTextTrailingOptions(
-                        icon: SystemIcons.arrowCornerRightSmall,
-                        iconColor: context.colors.foregroundMuted,
-                      ),
-                      onTap: () => ref
-                          .read(authMethodsProvider.notifier)
-                          .authAndOpen(context, callback: () => context.router.push(const NaviFavoritesRoute())),
+                    text: ContentRowTextOptions(title: context.l10n.yourLocation),
+                    trailing: ContentRowTextTrailingOptions(
+                      icon: SystemIcons.arrowCornerRightSmall,
+                      iconColor: context.colors.foregroundMuted,
                     ),
-                  ],
-                ),
+                    onTap: () => _onYourLocationTap(context, ref),
+                  ),
+                  ContentRow(
+                    leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
+                    text: ContentRowTextOptions(title: context.l10n.findInFav),
+                    trailing: ContentRowTextTrailingOptions(
+                      icon: SystemIcons.arrowCornerRightSmall,
+                      iconColor: context.colors.foregroundMuted,
+                    ),
+                    onTap: () => ref
+                        .read(authMethodsProvider.notifier)
+                        .authAndOpen(context, callback: () => context.router.push(const NaviFavoritesRoute())),
+                  ),
+                ],
               ),
-              const SizedBox(height: Spacing.$3x),
-              const NaviSearchHistory(),
-            ],
-          ),
+            ),
+            const SizedBox(height: Spacing.$3x),
+            const NaviSearchHistory(),
+          ],
         ),
       ),
-      loading: () => SliverFillRemaining(
-        hasScrollBody: false,
+      loading: () => SizedBox(
+        height: MediaQuery.sizeOf(context).height * .8,
         child: SafeArea(
           top: false,
           child: Center(
@@ -193,26 +188,22 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
           ),
         ),
       ),
-      suggest: (suggest) => SliverToBoxAdapter(child: NaviSuggestList(suggest: suggest)),
-      results: (results) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.only(top: Spacing.$4x),
-            child: NaviSearchResults(
-              results: results,
-              bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
-            ),
+      suggest: (suggest) => NaviSuggestList(suggest: suggest),
+      results: (results) => SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.only(top: Spacing.$4x),
+          child: NaviSearchResults(
+            results: results,
+            bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
           ),
         ),
       ),
-      failure: (query, errorMessage) => SliverToBoxAdapter(
-        child: BaseErrorWidget(
-          errorLabel: errorMessage,
-          onRetry: () {
-            ref.read(searchProvider(scope.value).notifier).searchByText(query);
-          },
-        ),
+      failure: (query, errorMessage) => BaseErrorWidget(
+        errorLabel: errorMessage,
+        onRetry: () {
+          ref.read(searchProvider(scope.value).notifier).searchByText(query);
+        },
       ),
     );
   }

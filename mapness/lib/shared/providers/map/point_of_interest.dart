@@ -54,13 +54,20 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .getMarkerPath(rubrics, objectId.objectId, theme, closestPoint: closestPoint?.geoPoint);
   final bigIconPath = mapMarkerMapper.$2;
 
-  if (directoryObject.markerPosition == null) {
+  final markerPosition = directoryObject.markerPosition;
+  final fallbackPosition = closestPoint;
+  if (markerPosition == null && fallbackPosition == null) {
     return null;
   }
 
   final position = LatLng(
-    latitude: directoryObject.markerPosition!.latitude,
-    longitude: directoryObject.markerPosition!.longitude,
+    latitude: (fallbackPosition?.latitude ?? markerPosition?.latitude)!,
+    longitude: (fallbackPosition?.longitude ?? markerPosition?.longitude)!,
+  );
+  directoryObject.markerPosition ??= GeoPointWithElevationMessage(
+    latitude: position.latitude,
+    longitude: position.longitude,
+    elevation: 0,
   );
 
   final dark = await ref.watch(darkModeProvider.future);
@@ -80,8 +87,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   await selectedMarker.showMarker(
     Markers.pinMarker(
       GeoPointWithElevationMessage(
-        latitude: closestPoint?.latitude ?? position.latitude,
-        longitude: closestPoint?.longitude ?? position.longitude,
+        latitude: position.latitude,
+        longitude: position.longitude,
         elevation: 1,
       ),
       text: title,
