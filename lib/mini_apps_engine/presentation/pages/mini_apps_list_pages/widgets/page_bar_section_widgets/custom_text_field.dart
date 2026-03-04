@@ -151,6 +151,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
                   hintStyle: TextStyle(
                     color: hintColor,
                     fontSize: hintTextSize ?? 15,
+                    fontFamily: GeneralKey.appFontType,
                   ),
                   prefixIcon: icon,
                   suffixIcon: _buildSuffix(context),
