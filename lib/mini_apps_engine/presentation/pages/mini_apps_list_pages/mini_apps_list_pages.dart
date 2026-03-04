@@ -10,7 +10,6 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
@@ -31,7 +30,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:collection/collection.dart';
 
 final GlobalKey<NavigatorState> servicesNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,6 +43,9 @@ class HomeMiniAppsListPages extends StatefulWidget {
 }
 
 class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
+  bool _hasLoadedMiniAppsForBusinessStatus = false;
+  bool? _lastIsUserAccountBusiness;
+
   MiniApp? getMiniAppByServiceId(String serviceKey) {
     final miniAppsCubit = sl<NewMiniAppLogicCubit>();
     try {
@@ -94,67 +95,27 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
                   return BlocProvider<DelegatorsCubit>.value(
                     value: delegatorsCubit,
-                    child: BlocListener<DelegatorsCubit, DelegatorsState>(
-                      listenWhen: (previous, current) {
-                        // Listen when:
-                        // 1. Selection changes (including clearing selection)
-                        // 2. Delegators/agents finish loading (transition from loading to success/failure)
-                        final selectionChanged = (previous.selectedDelegate != null || previous.selectedAgent != null) !=
-                            (current.selectedDelegate != null || current.selectedAgent != null);
-                        
-                        final delegatorsJustLoaded = 
-                            (previous.status == BlocRequestStatus.submissionGetLoading || 
-                             previous.status == BlocRequestStatus.initial) &&
-                            (current.status == BlocRequestStatus.submissionGetSuccess ||
-                             current.status == BlocRequestStatus.submissionGetFailure);
-                        
-                        final agentsJustLoaded = 
-                            (previous.agentStatus == BlocRequestStatus.submissionGetLoading || 
-                             previous.agentStatus == BlocRequestStatus.initial) &&
-                            (current.agentStatus == BlocRequestStatus.submissionGetSuccess ||
-                             current.agentStatus == BlocRequestStatus.submissionGetFailure);
-                        
-                        final businessStatusChanged = 
-                            (previous.delegators.isNotEmpty || previous.agents.isNotEmpty) !=
-                            (current.delegators.isNotEmpty || current.agents.isNotEmpty);
-                        
-                        return selectionChanged || delegatorsJustLoaded || agentsJustLoaded || businessStatusChanged;
-                      },
-                      listener: (context, state) {
-                        // Reload mini apps when business account status changes or delegators/agents finish loading
-                        final isUserAccountBusiness = state.delegators.isNotEmpty || state.agents.isNotEmpty;
-                        sl<NewMiniAppLogicCubit>().loadMiniApps(
-                          isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
-                          isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-                          isUserAccountBusiness: isUserAccountBusiness,
-                        );
-                      },
-                      child: BlocBuilder<DelegatorsCubit, DelegatorsState>(
-                        builder: (context, delegatorsState) {
-                          // Compute business account status from actual state
-                          // Check if delegators/agents API calls have completed
-                          final delegatorsLoaded = delegatorsState.status == BlocRequestStatus.submissionGetSuccess ||
-                              delegatorsState.status == BlocRequestStatus.submissionGetFailure;
-                          final agentsLoaded = delegatorsState.agentStatus == BlocRequestStatus.submissionGetSuccess ||
-                              delegatorsState.agentStatus == BlocRequestStatus.submissionGetFailure;
-                          
-                          // Compute business account status:
-                          // - If delegators have data -> true
-                          // - Else if agents have data -> true  
-                          // - Else if both APIs finished with no data -> false
-                          // - Else -> false (still loading, will reload via BlocListener when done)
-                          final isUserAccountBusiness = delegatorsState.delegators.isNotEmpty || 
-                              delegatorsState.agents.isNotEmpty;
+                    child: BlocBuilder<DelegatorsCubit, DelegatorsState>(
+                      builder: (context, delegatorsState) {
+                        final isUserAccountBusiness =
+                            delegatorsState.delegators.isNotEmpty || delegatorsState.agents.isNotEmpty;
 
-                          return BlocProvider<NewMiniAppLogicCubit>.value(
-                            value: sl<NewMiniAppLogicCubit>()
-                              ..loadMiniApps(
-                                isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
-                                isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-                                isUserAccountBusiness: isUserAccountBusiness,
-                              ),
-                            child: Builder(
-                              builder: (context) {
+                        final miniAppsCubit = sl<NewMiniAppLogicCubit>();
+                        if (!_hasLoadedMiniAppsForBusinessStatus ||
+                            _lastIsUserAccountBusiness != isUserAccountBusiness) {
+                          _hasLoadedMiniAppsForBusinessStatus = true;
+                          _lastIsUserAccountBusiness = isUserAccountBusiness;
+                          miniAppsCubit.loadMiniApps(
+                            isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
+                            isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
+                            isUserAccountBusiness: isUserAccountBusiness,
+                          );
+                        }
+
+                        return BlocProvider<NewMiniAppLogicCubit>.value(
+                          value: miniAppsCubit,
+                          child: Builder(
+                            builder: (context) {
                                 if (widget.groupId != null && !_isInitialDeepLinkHandled) {
                                   _isInitialDeepLinkHandled = true;
                                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -269,63 +230,63 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                       ),
                                                                     ),
                                                                     Spacer(),
-                                                                    dashboard != null
-                                                                        ? InkWell(
-                                                                            onTap: () {
-                                                                              context
-                                                                                  .read<NewMiniAppLogicCubit>()
-                                                                                  .openMiniApp(dashboard);
-                                                                            },
-                                                                            child: Container(
-                                                                              // width: 117,
-                                                                              // height: 33,
-                                                                              padding: const EdgeInsets.symmetric(
-                                                                                horizontal: 3,
-                                                                                vertical: 4,
-                                                                              ),
-                                                                              decoration: BoxDecoration(
-                                                                                color: Theme.of(context).cardColor,
-                                                                                borderRadius: BorderRadius.circular(
-                                                                                  18.5,
-                                                                                ),
-                                                                              ),
-                                                                              child: Row(
-                                                                                children: [
-                                                                                  Container(
-                                                                                    padding: const EdgeInsets.symmetric(
-                                                                                      horizontal: 8,
-                                                                                      vertical: 4,
-                                                                                    ),
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: Theme.of(
-                                                                                        context,
-                                                                                      ).cardColor,
-                                                                                      borderRadius:
-                                                                                          BorderRadius.circular(13.5),
-                                                                                    ),
-                                                                                    child: CustomNetworkImageWidget(
-                                                                                      dashboard.iconPath,
-                                                                                      isVerifyingKey: true,
-                                                                                      imageWidth: context.w(24),
-                                                                                      imageHeight: context.h(24),
-                                                                                    ),
-                                                                                  ),
-                                                                                  SizedBox(width: context.w(8)),
-                                                                                  Text(
-                                                                                    "dashboard".tr(),
-                                                                                    textAlign: TextAlign.center,
-                                                                                    style: const TextStyle(
-                                                                                      fontFamily:
-                                                                                          GeneralKey.appFontType,
-                                                                                      fontWeight: FontWeight.w400,
-                                                                                    ),
-                                                                                  ),
-                                                                                  SizedBox(width: context.w(9)),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        : const SizedBox(),
+                                                                    // dashboard != null
+                                                                    //     ? InkWell(
+                                                                    //         onTap: () {
+                                                                    //           context
+                                                                    //               .read<NewMiniAppLogicCubit>()
+                                                                    //               .openMiniApp(dashboard);
+                                                                    //         },
+                                                                    //         child: Container(
+                                                                    //           // width: 117,
+                                                                    //           // height: 33,
+                                                                    //           padding: const EdgeInsets.symmetric(
+                                                                    //             horizontal: 3,
+                                                                    //             vertical: 4,
+                                                                    //           ),
+                                                                    //           decoration: BoxDecoration(
+                                                                    //             color: Theme.of(context).cardColor,
+                                                                    //             borderRadius: BorderRadius.circular(
+                                                                    //               18.5,
+                                                                    //             ),
+                                                                    //           ),
+                                                                    //           child: Row(
+                                                                    //             children: [
+                                                                    //               Container(
+                                                                    //                 padding: const EdgeInsets.symmetric(
+                                                                    //                   horizontal: 8,
+                                                                    //                   vertical: 4,
+                                                                    //                 ),
+                                                                    //                 decoration: BoxDecoration(
+                                                                    //                   color: Theme.of(
+                                                                    //                     context,
+                                                                    //                   ).cardColor,
+                                                                    //                   borderRadius:
+                                                                    //                       BorderRadius.circular(13.5),
+                                                                    //                 ),
+                                                                    //                 child: CustomNetworkImageWidget(
+                                                                    //                   dashboard.iconPath,
+                                                                    //                   isVerifyingKey: true,
+                                                                    //                   imageWidth: context.w(24),
+                                                                    //                   imageHeight: context.h(24),
+                                                                    //                 ),
+                                                                    //               ),
+                                                                    //               SizedBox(width: context.w(8)),
+                                                                    //               Text(
+                                                                    //                 "dashboard".tr(),
+                                                                    //                 textAlign: TextAlign.center,
+                                                                    //                 style: const TextStyle(
+                                                                    //                   fontFamily:
+                                                                    //                       GeneralKey.appFontType,
+                                                                    //                   fontWeight: FontWeight.w400,
+                                                                    //                 ),
+                                                                    //               ),
+                                                                    //               SizedBox(width: context.w(9)),
+                                                                    //             ],
+                                                                    //           ),
+                                                                    //         ),
+                                                                    //       )
+                                                                    //     : const SizedBox(),
                                                                   ],
                                                                 ),
                                                               ),
@@ -666,9 +627,6 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                 // Separate regular groups from "Other Services"
                                                                 final regularGroups = state.appGroups;
 
-                                                                CategoryGroup? otherServicesGroup =
-                                                                    state.appGroups.firstOrNull;
-
                                                                 return StaggeredAppear(
                                                                   children: [
                                                                     Column(
@@ -798,7 +756,6 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                           );
                         },
                       ),
-                    ),
                   );
                 },
               );

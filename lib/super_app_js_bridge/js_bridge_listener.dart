@@ -7,7 +7,6 @@ import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
