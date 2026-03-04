@@ -7,7 +7,7 @@ part 'ramadan_season.g.dart';
 /// Business requirement:
 ///   Ramadan theme should be switched on only Feb 17 – March 20 (2026).
 @riverpod
-bool ramadanSeason(RamadanSeasonRef ref) {
+bool ramadanSeason() {
   return false;
 
   // final now = DateTime.now();

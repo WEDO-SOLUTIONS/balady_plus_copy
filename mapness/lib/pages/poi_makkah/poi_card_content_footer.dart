@@ -149,14 +149,15 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
   }
 
   void _onParkingTap(BuildContext context, WidgetRef ref) {
-    final hasParking = ref.read(parkingManageProvider).value != null;
+    final hasParking =
+        ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;
     if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
           title: context.l10n.createNewParkingSpot,
           desc: context.l10n.currentParkingSpaceRemoved,
           onAcceptTab: () async {
-            context.router.popForced();
+            context.router.pop();
             await Future.delayed(Duration.zero);
             await context.router.push(
               ParkingSpotRoute(
@@ -171,7 +172,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
               ),
             );
           },
-          onCancelTab: () => context.router.popForced(),
+          onCancelTab: () => context.router.pop(),
         ),
       );
     } else {
@@ -215,7 +216,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     final website = makkahPlace?.website;
     final hasPhone = phone != null && phone.isNotEmpty;
     final hasWebsite = website != null && website.isNotEmpty;
-    final hasInstagram = hasWebsite && website!.contains('instagram.com');
+    final hasInstagram = hasWebsite && website.contains('instagram.com');
 
     final objectId = data.id?.objectId;
     final dgisId = makkahPlace?.dgisId;
@@ -224,7 +225,8 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
 
-    final hasParking = ref.watch(parkingManageProvider).value != null;
+    final hasParking =
+        ref.watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;
 
     final actionButtons = <Widget>[
       _MakkahFooterSquareButton(
@@ -251,12 +253,12 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
       if (hasPhone)
         _MakkahFooterSquareButton(
           svgAsset: MakkahPoiConstants.phoneIconPath,
-          onPressed: () => _onPhoneTap(phone!),
+          onPressed: () => _onPhoneTap(phone),
         ),
       if (hasWebsite && !hasInstagram)
         _MakkahFooterSquareButton(
           svgAsset: MakkahPoiConstants.webIconPath,
-          onPressed: () => _onWebsiteTap(website!),
+          onPressed: () => _onWebsiteTap(website),
         ),
     ];
 

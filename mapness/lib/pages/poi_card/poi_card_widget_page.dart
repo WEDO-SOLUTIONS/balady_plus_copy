@@ -61,6 +61,7 @@ import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';

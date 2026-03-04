@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart' as sdk;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -140,17 +141,19 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
         cameraConfig,
       ),
     );
-    await ref.read(appRouterProvider).replaceOrPush(
-      route: PoiCardWidgetRoute(
-        objectId: objectId,
-        closestPoint: sdk.LatLng(
-          latitude: const FoundingDayConfig().center.latitude,
-          longitude: const FoundingDayConfig().center.longitude,
-        ),
-        cameraConfig: cameraConfig,
-      ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
-    );
+    await ref
+        .read(appRouterProvider)
+        .replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: objectId,
+            closestPoint: sdk.LatLng(
+              latitude: const FoundingDayConfig().center.latitude,
+              longitude: const FoundingDayConfig().center.longitude,
+            ),
+            cameraConfig: cameraConfig,
+          ),
+          toCompareRoutes: [PoiCardWidgetRoute.page],
+        );
   }
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {

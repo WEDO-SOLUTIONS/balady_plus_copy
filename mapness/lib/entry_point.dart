@@ -315,7 +315,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _updateMapStyle(String mapStyle) async {
     final dgisController = ref.read(dgisControllerProvider);
-    final dgisControllerValue = dgisController.valueOrNull;
+    final dgisControllerValue = dgisController.value;
     dgisControllerValue?.loadStyles(mapStyle);
   }
 

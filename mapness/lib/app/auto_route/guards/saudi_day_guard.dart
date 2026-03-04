@@ -30,14 +30,14 @@ final class SaudiDaySplashGuard extends AutoRouteGuard {
       // This Screen not in the project
 
       // Show Saudi Day splash
-      resolver.redirectUntil(
-        SaudiDaySplashRoute(
-          onClose: () {
-            ref.read(saudiDaySplashProvider.notifier).setIsSaudiDayShown(isSaudiDayShown: true);
-            resolver.resolveNext(true, reevaluateNext: false);
-          },
-        ),
-      );
+      // resolver.redirectUntil(
+      //   SaudiDaySplashRoute(
+      //     onClose: () {
+      //       ref.read(saudiDaySplashProvider.notifier).setIsSaudiDayShown(isSaudiDayShown: true);
+      //       resolver.resolveNext(true, reevaluateNext: false);
+      //     },
+      //   ),
+      // );
     } else {
       // Both onboarding and Saudi Day have been shown, continue to home page
       resolver.next();

@@ -274,11 +274,6 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
-              path: 'saudi_pass_category_selection_dialog',
-              page: CategorySelectionDialogViewRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
-            ),
-            CustomRoute(
               path: 'saudi_pass_all_categories_selection_dialog',
               page: AllCategoriesSelectionDialogViewRoute.page,
               opaque: false,

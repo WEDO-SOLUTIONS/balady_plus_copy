@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
@@ -16,6 +15,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final Widget? child;
   final String? text;
+
   const CustomDashedAddMiniAppFav({
     super.key,
     this.width,
@@ -34,10 +34,8 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<NewMiniAppLogicCubit>(),
-                  child: const AddFavMiniApps(),
-                ),
+                builder: (_) =>
+                    BlocProvider.value(value: context.read<NewMiniAppLogicCubit>(), child: const AddFavMiniApps()),
               ),
             );
           },
@@ -45,18 +43,13 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
             width: width ?? context.w(53.95),
             height: height ?? context.h(53.95),
             child: DottedBorder(
-              radius: const Radius.circular(16),
-              borderType: BorderType.RRect,
-              color: const Color(0XFF809AA4),
-              strokeWidth: 2,
-              dashPattern: const [2.2084856033325195, 2.2084856033325195],
-              child: const Center(
-                child: Icon(
-                  Icons.add,
-                  color: Color(0XFF1B153D),
-                  size: 30,
-                ),
+              options: RoundedRectDottedBorderOptions(
+                radius: const Radius.circular(16),
+                color: const Color(0XFF809AA4),
+                strokeWidth: 2,
+                dashPattern: const [2.2084856033325195, 2.2084856033325195],
               ),
+              child: const Center(child: Icon(Icons.add, color: Color(0XFF1B153D), size: 30)),
             ),
           ),
         ),
