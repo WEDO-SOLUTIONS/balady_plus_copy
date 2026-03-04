@@ -49,7 +49,11 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     // Check if photos are available (will be updated in build if needed)
     final photos = ref.read(poiPhotoProvider(widget.objectId));
-    final hasPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+    final hasPoiPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+    final parkingStore = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
+    final hasParkingPhotos =
+        widget.objectId == parkingObjectId && parkingStore != null && parkingStore.imagesPaths.isNotEmpty;
+    final hasPhotos = hasPoiPhotos || hasParkingPhotos;
 
     final snappingModels = <SnappingModel>[
       FractionSnappingModel({0.0, 1.0}),
@@ -170,7 +174,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
-    final hasPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+    final hasPoiPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+    final parkingStore = ref.watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
+    final hasParkingPhotos = parkingPoi && parkingStore != null && parkingStore.imagesPaths.isNotEmpty;
+    final hasPhotos = hasPoiPhotos || hasParkingPhotos;
 
     final finishPoint = RouteSearchPoint(
       coordinates: widget.data.markerPosition!.toGeoPointMessage(),
