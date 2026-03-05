@@ -23,6 +23,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:provider/provider.dart';
@@ -43,24 +44,23 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final activeCityEvent = ref.watch(activeCityEventProvider);
 
     final showBlueCircles = activeCityEvent?.showBlueCircles ?? true;
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
     super.build(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: GestureDetector(
         onTap: () => tryOpenNavigationBackHome(context, ref),
-        child: Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(RadiusBorder.xl), boxShadow: Shadows.s),
+        child: SizedBox(
           width: double.infinity,
-          height: 114,
+          height: 123,
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: context.colors.backgroundSurface5,
+              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              boxShadow: Shadows.s,
               image: DecorationImage(
-                image: switch (context.read<ThemeController>().currentTheme) {
-                  BaladyAppThemes.dark => Assets.images.driveHomeBackgroundDark.provider(),
-                  _ => activeCityEvent?.driveHomeBackground ?? Assets.images.driveHomeBackground.provider(),
-                },
+                image: activeCityEvent.getDriveHomeBackground(isDark: isDark),
                 matchTextDirection: true,
                 fit: BoxFit.cover,
                 alignment: AlignmentDirectional.centerEnd,

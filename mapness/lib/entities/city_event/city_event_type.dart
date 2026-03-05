@@ -105,11 +105,16 @@ extension StyleX on CityEventType? {
 }
 
 extension DriveBackX on CityEventType? {
-  ImageProvider get driveHomeBackground => switch (this) {
-    CityEventType.saudiNationalDay => Assets.images.driveHomeBackgroundSaudiday.provider(),
-    CityEventType.foundingDay => Assets.images.driveHomeBackgroundFoundingDay.provider(),
-    _ => Assets.images.driveHomeBackground.provider(),
-  };
+  ImageProvider getDriveHomeBackground({bool isDark = false}) {
+    if (isDark) {
+      return Assets.images.driveHomeBackgroundDark.provider();
+    }
+    return switch (this) {
+      CityEventType.saudiNationalDay => Assets.images.driveHomeBackgroundSaudiday.provider(),
+      CityEventType.foundingDay => Assets.images.driveHomeBackgroundFoundingDay.provider(),
+      _ => Assets.images.driveHomeBackground.provider(),
+    };
+  }
 
   Widget get driveHomeArrow => switch (this) {
     CityEventType.saudiNationalDay => Assets.images.driveHomeArrowSaudiday.image(matchTextDirection: true),
