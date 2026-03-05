@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
@@ -17,9 +18,11 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiPhotoCardSliver extends ConsumerWidget {
   const PoiPhotoCardSliver({required this.objectId, super.key});
+
   final int objectId;
 
   List<QuiltedGridTile> get _pattern2 => const [QuiltedGridTile(6, 6), QuiltedGridTile(6, 6)];
+
   List<QuiltedGridTile> get _pattern3 => const [QuiltedGridTile(6, 6), QuiltedGridTile(3, 3), QuiltedGridTile(3, 3)];
 
   List<QuiltedGridTile> get _pattern5 => const [
@@ -29,6 +32,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
     QuiltedGridTile(2, 2),
     QuiltedGridTile(6, 6),
   ];
+
   List<QuiltedGridTile> get _pattern6 => const [
     QuiltedGridTile(6, 6),
     QuiltedGridTile(3, 3),
@@ -112,17 +116,19 @@ class PoiPhotoCardSliver extends ConsumerWidget {
       sliverContent = SliverGrid(
         delegate: SliverChildBuilderDelegate(
           childCount: photoItems.length,
-          (context, index) => LoadingShimmerImage(
-            imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
-            fit: BoxFit.cover,
-            onImageTap: (name, {isAsset}) => context.router.push(
-              PhotoViewerRoute(
-                photoPaths: photosUrls,
-                previewUrls: photoItems.map((e) => e.previewUrls?.mediumByWidth).nonNulls.toList(),
-                currentPhotoIndex: index,
+          (context, index) {
+            final imageUrl = photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index];
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(RadiusBorder.xs),
+              child: LoadingShimmerImage(
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                isAssetImg: imageUrl.startsWith('package'),
+                onImageTap: (name, {isAsset}) =>
+                    context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
               ),
-            ),
-          ),
+            );
+          },
         ),
         gridDelegate: SliverQuiltedGridDelegate(
           crossAxisCount: 6,
@@ -148,6 +154,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
                   padding: const EdgeInsets.only(top: Spacing.$4x),
                   child: PoiContentFeedbackCard(
                     data: PoiContentFeedbackType.addPhoto,
+                    activeCityEvent: ref.watch(activeCityEventProvider),
                     onTap: () => context.router.push(QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId))),
                   ),
                 ),

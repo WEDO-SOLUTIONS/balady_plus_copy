@@ -35,8 +35,7 @@ class IconPath {
   //! SVG Icons
 
   static const iosArrowDown = '${_svgIconPath}ios_arrow_down$_svg';
-  static const noAvailableAccounts =
-      '${_svgIconPath}no_available_accounts$_svg';
+  static const noAvailableAccounts = '${_svgIconPath}no_available_accounts$_svg';
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
   static const star = '${_svgIconPath}Star$_svg';
   static const dangerIcon = '${_svgIconPath}danger_red$_svg';
@@ -92,8 +91,7 @@ class IconPath {
   static const map = '${_svgIconPath}map$_svg';
   static const archiveBook = '${_svgIconPath}archive_book$_svg';
 
-  static const informationCircleIcon =
-      '${_svgIconPath}informationCircleIcon$_svg';
+  static const informationCircleIcon = '${_svgIconPath}informationCircleIcon$_svg';
 
   static const ksaFlag = '${_svgIconPath}ksaFlag$_svg';
   static const ksaWord = '${_svgIconPath}ksaWord$_svg';
@@ -180,16 +178,15 @@ class IconPath {
 
   static const logoSymbolIcon = '${_svgIconPath}logo_symbol$_svg';
   static const logoTextIcon = '${_svgIconPath}logo_text$_svg';
-  static const splashScreenBaladySecondLogoImg =
-      '${_pngIconPath}splash_screen_balady_second_logo$_png';
+  static const splashScreenBaladySecondLogoImg = '${_pngIconPath}splash_screen_balady_second_logo$_png';
   static const splashScreen2030LogoImg = '${_pngIconPath}2030Logo@3x$_png';
   static const splashScreenQualityLogoImg = '${_pngIconPath}qualityLogo$_png';
 
-//! Splash Screen
+  //! Splash Screen
 
   static const arrowLeft = '${_svgIconPath}arrow-left$_svg';
 
-//! VD
+  //! VD
   static const vdSearchIcon = '${_pngVDIconPath}vd_search$_png';
   static const vdCancelIcon = '${_pngVDIconPath}vd_cancel_icon$_png';
   static const vdSwipeIcon = '${_pngVDIconPath}swipe_vd$_png';
@@ -221,7 +218,7 @@ class IconPath {
   static const vdSummurySPL = '${_svgVDIconPath}vdSummurySPL$_svg';
   static const vdSummuryUserInfo = '${_svgVDIconPath}vdSummuryUserInfo$_svg';
 
-//! QR
+  //! QR
   static const qrScanImageIcon = '${_pngQRIconPath}scan_img@3x$_png';
   static const qrWhiteCloseIcon = '${_pngQRIconPath}white_close@3x$_png';
   static const qrWhiteExitIcon = '${_pngQRIconPath}white_exit@3x$_png';
@@ -250,11 +247,9 @@ class IconPath {
   static const qrOpenLinkIcon = '${_svgQRIconPath}open_link$_svg';
   static const qrRatingStarIcon = '${_svgQRIconPath}qr_rating_star$_svg';
 
-  static const qrParkingServiceIcon =
-      '${_svgQRIconPath}qr_parking_service$_svg';
+  static const qrParkingServiceIcon = '${_svgQRIconPath}qr_parking_service$_svg';
   static const qrParkingIcon = '${_svgQRIconPath}qr_parking$_svg';
-  static const qrDeliveryServiceIcon =
-      '${_svgQRIconPath}qr_delivery_service$_svg';
+  static const qrDeliveryServiceIcon = '${_svgQRIconPath}qr_delivery_service$_svg';
   static const qrDisableIcon = '${_svgQRIconPath}qr_disable$_svg';
 
   static const qrAIcon = '${_pngQRIconPath}tours_rating_icons/a$_png';
@@ -265,7 +260,7 @@ class IconPath {
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
 
-//! Appointment
+  //! Appointment
   static const calendarIcon = '${_svgIconPath}calendar_icon$_svg';
 
   //! Quran
@@ -279,7 +274,7 @@ class IconPath {
   static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
   static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
 
-//MSR
+  //MSR
   static const msrRoadsIcon = '${_msrPath}msrRoadsIcon$_svg';
   static const msrWasteIcon = '${_msrPath}msrWasteIcon$_svg';
   static const msrLightsIcon = '${_msrPath}msrLightsIcon$_svg';
@@ -302,9 +297,9 @@ class IconPath {
   static const tsr_9 = '${_tsrPath}9$_svg';
   static const tsr_10 = '${_tsrPath}10$_svg';
 
-// INQ
+  // INQ
 
-// Daem
+  // Daem
 
   // CR
   static const additionalActivity = '${_svgCRIconPath}additional_activity$_svg';
@@ -356,8 +351,7 @@ class IconPath {
   static const whiteArrow = '${_svgViolationPath}white_arrow$_svg';
   static const blackArrow = '${_svgViolationPath}black_arrow$_svg';
 
-  static const muslimNumberFrame =
-      '${_svgAthkarIconPath}muslim_number_frame$_svg';
+  static const muslimNumberFrame = '${_svgAthkarIconPath}muslim_number_frame$_svg';
 
   static const boardingSplashLogo = '${_boardingLogoPath}balady_logo$_svg';
   //etmam app
@@ -385,11 +379,9 @@ class IconPath {
   static const planetRingedHomeEvents = '${_eventsPath}planet_ringed$_svg';
   static const tagHomeEvents = '${_eventsPath}tag$_svg';
 
-// -------  Commercial License Cancel ---------
-  static const submitApplicationSuccessfullyCancel =
-      '${_svgIconPath}submit_application_successfully_cancel$_svg';
-  static const successfullySubmitRating =
-      '${_svgIconPath}successfully_submit_rating$_svg';
+  // -------  Commercial License Cancel ---------
+  static const submitApplicationSuccessfullyCancel = '${_svgIconPath}submit_application_successfully_cancel$_svg';
+  static const successfullySubmitRating = '${_svgIconPath}successfully_submit_rating$_svg';
   static const like = '${_pngIconPath}Like$_png';
   static const saveIcon = '${_svgIconPath}save_icon$_svg';
   static const element_3Icon = '${_svgIconPath}element_3$_svg';
@@ -397,8 +389,7 @@ class IconPath {
   static const cancelOrder = '${_svgIconPath}closeـsquare$_svg';
   static const editIcon = '${_svgIconPath}edit_icon$_svg';
   static const logoutIcon = '${_svgIconPath}logout$_svg';
-  static const notificationStatusIcon =
-      '${_svgIconPath}notification_status$_svg';
+  static const notificationStatusIcon = '${_svgIconPath}notification_status$_svg';
 
   static const menuIcon = '${_svgIconPath}menu_icon$_svg';
 
@@ -444,11 +435,8 @@ class IconPath {
   static const biometric = '${_authPath}biometric$_svg';
   static const quick_access = '${_authPath}quick_access$_svg';
 
-
-
   // Classification Certificate
   static const newOfficeIcon = '${_svgIconPath}new_office$_svg';
-
 
   static const chat_bot_like_icon = '${_svgIconPath}chat-bot-like$_svg';
   static const chat_bot_dislike_icon = '${_svgIconPath}chat-bot-dislike$_svg';
@@ -463,9 +451,10 @@ class IconPath {
   static const medalIcon = '${_svgIconPath}medal_06$_svg';
   static const elementsIcon = '${_svgIconPath}elements$_svg';
 
+  //! My icons
 
-
-
+  static const defaultMiniAppIcon = '${_svgIconPath}default_mini_app_logo$_svg';
+  static const searchSVG = '${_svgIconPath}search$_svg';
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

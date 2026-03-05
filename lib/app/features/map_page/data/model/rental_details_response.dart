@@ -14,12 +14,10 @@ class RentalDetailsResponse {
   List<StatusDetail>? statusDetails;
   Data? data;
 
-  factory RentalDetailsResponse.fromJson(Map<String, dynamic> json) =>
-      RentalDetailsResponse(
+  factory RentalDetailsResponse.fromJson(Map<String, dynamic> json) => RentalDetailsResponse(
         statusDetails: json["statusDetails"] == null
             ? null
-            : List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+            : List<StatusDetail>.from(json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 }
@@ -38,8 +36,7 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         responseCode: json["responseCode"],
         responseMessage: json["responseMessage"],
-        details:
-            json["result"] == null ? null : Details.fromJson(json["result"]),
+        details: json["result"] == null ? null : Details.fromJson(json["result"]),
       );
 }
 
@@ -56,9 +53,7 @@ class TempRentalData {
   TempRentalData.fromJson(Map<String, dynamic> json) {
     responseCode = json['responseCode'];
     responseMessage = json['responseMessage'];
-    details = json['result'] != null
-        ? TempRentalResult.fromJson(json['result'])
-        : null;
+    details = json['result'] != null ? TempRentalResult.fromJson(json['result']) : null;
   }
 }
 
@@ -67,28 +62,24 @@ class TempRentalResult {
   String? assignmentKey;
   String? message;
 
-  TempRentalResult(
-      {required this.caseID, required this.assignmentKey, this.message});
+  TempRentalResult({required this.caseID, required this.assignmentKey, this.message});
 
   factory TempRentalResult.fromJson(Map<String, dynamic> json) =>
-      TempRentalResult(
-          assignmentKey: json["Assignmentkey"],
-          caseID: json["ID"],
-          message: json["message"]);
+      TempRentalResult(assignmentKey: json["Assignmentkey"], caseID: json["ID"], message: json["message"]);
 
   String getID() {
     String id = caseID ?? "";
     try {
       id = id.split(" ").last;
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
 
     return id;
   }
@@ -105,9 +96,7 @@ class CreateTempRentalResponse {
 
   CreateTempRentalResponse.fromJson(Map<String, dynamic> json) {
     statusDetails = json['statusDetails'] != null
-        ? List.from(json['statusDetails'])
-            .map((e) => StatusDetails.fromJson(e))
-            .toList()
+        ? List.from(json['statusDetails']).map((e) => StatusDetails.fromJson(e)).toList()
         : null;
     data = json['data'] != null ? TempRentalData.fromJson(json['data']) : null;
   }
@@ -248,9 +237,7 @@ class Details {
 
   factory Details.fromJson(Map<String, dynamic> json) => Details(
       sourceCaseKey: json["SourceCaseKey"],
-      plotNumberList: json["PlotNumberList"] == null
-          ? null
-          : List<String>.from(json["PlotNumberList"].map((x) => x)),
+      plotNumberList: json["PlotNumberList"] == null ? null : List<String>.from(json["PlotNumberList"].map((x) => x)),
       siteArea: json["SiteArea"],
       message: json["message"],
       isAddInfoVisibleToInvestor: json["IsAddInfoVisibleToInvestor"],
@@ -258,16 +245,16 @@ class Details {
       totalContractTerm: json["TotalContractTerm"],
       attachmentShownToInvestors: json["AttachmentShownToInvestors"] == null
           ? null
-          : List<AttachmentShownToInvestor>.from(json["AttachmentShownToInvestors"]
-              .map((x) => AttachmentShownToInvestor.fromJson(x))),
+          : List<AttachmentShownToInvestor>.from(
+              json["AttachmentShownToInvestors"].map((x) => AttachmentShownToInvestor.fromJson(x))),
       technicalRequirementsNeeded: json["TechnicalRequirementsNeeded"] == null
           ? null
-          : List<TargetedTourismActivity>.from(json["TechnicalRequirementsNeeded"]
-              .map((x) => TargetedTourismActivity.fromJson(x))),
+          : List<TargetedTourismActivity>.from(
+              json["TechnicalRequirementsNeeded"].map((x) => TargetedTourismActivity.fromJson(x))),
       targetedTourismActivities: json["TargetedTourismActivities"] == null
           ? null
-          : List<TargetedTourismActivity>.from(json["TargetedTourismActivities"]
-              .map((x) => TargetedTourismActivity.fromJson(x))),
+          : List<TargetedTourismActivity>.from(
+              json["TargetedTourismActivities"].map((x) => TargetedTourismActivity.fromJson(x))),
       blockedPeriodList:
           json["BlockedPeriodList"] == null ? null : List.castFrom<dynamic, dynamic>(json['BlockedPeriodList']!),
       annualRentalValue: json["AnnualRentalValue"],
@@ -276,9 +263,15 @@ class Details {
       startDate: json["StartDate"],
       mainActivityId: json["MainActivityID"],
       numberOfDays: json["NumberOfDays"],
-      rentPeriodList1: json["RentPeriodList"] == null ? [] : List<RentalAndBlockedPeriod>.from(json["RentPeriodList"].map((x) => RentalAndBlockedPeriod.fromJson(x))),
-      blockedPeriodList1: json["BlockedPeriodList"] == null ? [] : List<RentalAndBlockedPeriod>.from(json["BlockedPeriodList"].map((x) => RentalAndBlockedPeriod.fromJson(x))),
-      rentPeriodList: json["RentPeriodList"] == null ? [] : List<RentPeriodList>.from(json["RentPeriodList"].map((x) => RentPeriodList.fromJson(x))),
+      rentPeriodList1: json["RentPeriodList"] == null
+          ? []
+          : List<RentalAndBlockedPeriod>.from(json["RentPeriodList"].map((x) => RentalAndBlockedPeriod.fromJson(x))),
+      blockedPeriodList1: json["BlockedPeriodList"] == null
+          ? []
+          : List<RentalAndBlockedPeriod>.from(json["BlockedPeriodList"].map((x) => RentalAndBlockedPeriod.fromJson(x))),
+      rentPeriodList: json["RentPeriodList"] == null
+          ? []
+          : List<RentPeriodList>.from(json["RentPeriodList"].map((x) => RentPeriodList.fromJson(x))),
       isFavourite: json["IsFavourite"],
       announcementDateTime: json["AnnouncementDateTime"],
       annualRentalWithVat: json["AnnualRentalWithVat"],
@@ -290,13 +283,18 @@ class Details {
       totalRentalValue: json["TotalRentalValue"],
       landNumber: json["LandNumber"],
       seasonalOpportunity: json["SeasonalOpportunity"],
-      selectedLocationTypeList: json["SelectedLocationTypeList"] == null ? [] : List<SelectedLocationTypeList>.from(json["SelectedLocationTypeList"].map((x) => SelectedLocationTypeList.fromJson(x))),
+      selectedLocationTypeList: json["SelectedLocationTypeList"] == null
+          ? []
+          : List<SelectedLocationTypeList>.from(
+              json["SelectedLocationTypeList"].map((x) => SelectedLocationTypeList.fromJson(x))),
       subMunicipalityId: json["SubMunicipalityID"],
       municipality: json["Municipality"],
       siteAddress: json["SiteAddress"],
       preparationPeriod: json["PreparationPeriod"],
       opportunityNumber: json["OpportunityNumber"],
-      attachmentNeededFromInvestor: json["AttachmentNeededFromInvestor"] == null ? null : List<AttachmentNeededFromInvestor>.from(json["AttachmentNeededFromInvestor"].map((x) => AttachmentNeededFromInvestor.fromJson(x))),
+      attachmentNeededFromInvestor: json["AttachmentNeededFromInvestor"] == null
+          ? null
+          : List<AttachmentNeededFromInvestor>.from(json["AttachmentNeededFromInvestor"].map((x) => AttachmentNeededFromInvestor.fromJson(x))),
       totalRentalWithVat: json["TotalRentalWithVat"],
       sketchNumber: json["SketchNumber"],
       sourceCaseId: json["SourceCaseID"],
@@ -317,7 +315,7 @@ class Details {
     double? xCoordinate = coOrdinatesList?[0].xCoordinate;
     double? yCoordinate = coOrdinatesList?[0].yCoordinate;
     if (xCoordinate != null && yCoordinate != null) {
-      return LatLng(latitude:yCoordinate, longitude:xCoordinate);
+      return LatLng(latitude: yCoordinate, longitude: xCoordinate);
     }
 
     return null;
@@ -338,7 +336,7 @@ class Details {
       double? xCoordinate = coOrdinatesList![i].xCoordinate;
       double? yCoordinate = coOrdinatesList![i].yCoordinate;
       if (xCoordinate != null && yCoordinate != null) {
-        locations.add(LatLng(latitude:yCoordinate, longitude:xCoordinate));
+        locations.add(LatLng(latitude: yCoordinate, longitude: xCoordinate));
       }
     }
 
@@ -350,9 +348,7 @@ class Details {
 
     if (rentPeriodList != null && rentPeriodList!.isNotEmpty) {
       if (rentPeriodList![0].dailyLeaseCost != null) {
-        double price =
-            double.tryParse(rentPeriodList![0].dailyLeaseCost.toString()) ??
-                0.0;
+        double price = double.tryParse(rentPeriodList![0].dailyLeaseCost.toString()) ?? 0.0;
         return price.toString();
       }
     }
@@ -362,15 +358,13 @@ class Details {
   }
 
   String? getActivityName() {
-    if (selectedLocationTypeList != null &&
-        selectedLocationTypeList!.isNotEmpty) {
+    if (selectedLocationTypeList != null && selectedLocationTypeList!.isNotEmpty) {
       return selectedLocationTypeList![0].getName();
     }
   }
 
   String? getActivityId() {
-    if (selectedLocationTypeList != null &&
-        selectedLocationTypeList!.isNotEmpty) {
+    if (selectedLocationTypeList != null && selectedLocationTypeList!.isNotEmpty) {
       return selectedLocationTypeList![0].id;
     }
   }
@@ -404,26 +398,20 @@ class Details {
   }
 
   List<String> getTargetedTourismActivities() {
-    return targetedTourismActivities?.map((e) => e.pyTempText ?? "").toList() ??
-        [];
+    return targetedTourismActivities?.map((e) => e.pyTempText ?? "").toList() ?? [];
   }
 
   List<String> getTechnicalRequirementsNeeded() {
-    return technicalRequirementsNeeded
-            ?.map((e) => e.pyTempText ?? "")
-            .toList() ??
-        [];
+    return technicalRequirementsNeeded?.map((e) => e.pyTempText ?? "").toList() ?? [];
   }
 
   String getStartPeriodDate() {
-    if (rentPeriodList?.first.rentalStartDate != null)
-      return getFormattedDate(rentPeriodList!.first.rentalStartDate);
+    if (rentPeriodList?.first.rentalStartDate != null) return getFormattedDate(rentPeriodList!.first.rentalStartDate);
     return "";
   }
 
   String getEndPeriodDate() {
-    if (rentPeriodList?.first.rentalEndDate != null)
-      return getFormattedDate(rentPeriodList!.first.rentalEndDate);
+    if (rentPeriodList?.first.rentalEndDate != null) return getFormattedDate(rentPeriodList!.first.rentalEndDate);
     return "";
   }
 
@@ -437,17 +425,16 @@ class Details {
 
       formmatedDateAndTime = date;
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
 
-    formmatedDateAndTime =
-        CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
+    formmatedDateAndTime = CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
     return formmatedDateAndTime;
   }
 
@@ -484,9 +471,7 @@ class Details {
   List<AttachmentShownToInvestor> getAttachmentShownToInvestor() {
     List<AttachmentShownToInvestor> list = [];
     if (attachmentShownToInvestors != null) {
-      list = attachmentShownToInvestors!
-          .where((element) => element.attachmentVisibleToInvestor == true)
-          .toList();
+      list = attachmentShownToInvestors!.where((element) => element.attachmentVisibleToInvestor == true).toList();
     }
     return list;
   }
@@ -524,9 +509,7 @@ class Details {
   }
 
   String getAdminMuncipalityOrCity() {
-    return getEntityOpportunity()
-        ? (getCitiesOrRegions().firstOrNull ?? "")
-        : (subMunicipality ?? "");
+    return getEntityOpportunity() ? (getCitiesOrRegions().firstOrNull ?? "") : (subMunicipality ?? "");
     //return cities?.split(",").first ?? ;
     //   return getEntityOpportunity() ? (city ?? "") : (municipality ?? "");
   }
@@ -543,8 +526,7 @@ class AttachmentNeededFromInvestor {
   String? pyCategoryName;
   String? attachmentName;
 
-  factory AttachmentNeededFromInvestor.fromJson(Map<String, dynamic> json) =>
-      AttachmentNeededFromInvestor(
+  factory AttachmentNeededFromInvestor.fromJson(Map<String, dynamic> json) => AttachmentNeededFromInvestor(
         isRequired: json["IsRequired"],
         pyCategoryName: json["pyCategoryName"],
         attachmentName: json["AttachmentName"],
@@ -566,11 +548,9 @@ class AttachmentShownToInvestor {
   String? pyFileName;
   String? pyLabel;
 
-  factory AttachmentShownToInvestor.fromJson(Map<String, dynamic> json) =>
-      AttachmentShownToInvestor(
+  factory AttachmentShownToInvestor.fromJson(Map<String, dynamic> json) => AttachmentShownToInvestor(
         fileKey: json["FileKey"],
-        attachmentVisibleToInvestor:
-            json["AttachmentVisibleToInvestor"] ?? false,
+        attachmentVisibleToInvestor: json["AttachmentVisibleToInvestor"] ?? false,
         pyCategoryName: json["pyCategoryName"],
         pyFileName: json["pyFileName"],
         pyLabel: json["pyLabel"],
@@ -588,8 +568,7 @@ class BlockedPeriodList {
   String? rentalEndDate;
   String? id;
 
-  factory BlockedPeriodList.fromJson(Map<String, dynamic> json) =>
-      BlockedPeriodList(
+  factory BlockedPeriodList.fromJson(Map<String, dynamic> json) => BlockedPeriodList(
         rentalStartDate: json["RentalStartDate"],
         rentalEndDate: json["RentalEndDate"],
         id: json["ID"],
@@ -607,8 +586,7 @@ class SelectedLocationTypeList {
   String? pyTempText;
   String? name;
 
-  factory SelectedLocationTypeList.fromJson(Map<String, dynamic> json) =>
-      SelectedLocationTypeList(
+  factory SelectedLocationTypeList.fromJson(Map<String, dynamic> json) => SelectedLocationTypeList(
         id: json["ID"],
         pyTempText: json["pyTempText"],
         name: json["Name"],
@@ -651,21 +629,19 @@ class RentalAndBlockedPeriod {
     this.dailyLeaseCost,
   });
 
-  factory RentalAndBlockedPeriod.fromJson(Map<String, dynamic> json) =>
-      RentalAndBlockedPeriod(
+  factory RentalAndBlockedPeriod.fromJson(Map<String, dynamic> json) => RentalAndBlockedPeriod(
         rentalStartDate: json["RentalStartDate"],
         rentalEndDate: json["RentalEndDate"],
         id: json["ID"] ?? "",
         dailyLeaseCost: json["DailyLeaseCost"] ?? 0.0,
       );
 
-  static List<RentalAndBlockedPeriod> getListOfPeriod(List<dynamic> list) =>
-      list.isNotEmpty
-          ? List.generate(
-              list.length,
-              (index) => RentalAndBlockedPeriod.fromJson(list[index]),
-            )
-          : [];
+  static List<RentalAndBlockedPeriod> getListOfPeriod(List<dynamic> list) => list.isNotEmpty
+      ? List.generate(
+          list.length,
+          (index) => RentalAndBlockedPeriod.fromJson(list[index]),
+        )
+      : [];
 }
 
 class TargetedTourismActivity {
@@ -681,13 +657,10 @@ class TargetedTourismActivity {
   String? pxAttachedBy;
   String? pyTempText;
 
-  factory TargetedTourismActivity.fromJson(Map<String, dynamic> json) =>
-      TargetedTourismActivity(
+  factory TargetedTourismActivity.fromJson(Map<String, dynamic> json) => TargetedTourismActivity(
         pyCategory: json["pyCategory"] == null ? null : json["pyCategory"],
-        pxCreateOperator:
-            json["pxCreateOperator"] == null ? null : json["pxCreateOperator"],
-        pxAttachedBy:
-            json["pxAttachedBy"] == null ? null : json["pxAttachedBy"],
+        pxCreateOperator: json["pxCreateOperator"] == null ? null : json["pxCreateOperator"],
+        pxAttachedBy: json["pxAttachedBy"] == null ? null : json["pxAttachedBy"],
         pyTempText: json["pyTempText"] == null ? null : json["pyTempText"],
       );
 
@@ -710,14 +683,10 @@ class CoOrdinatesList {
   String? pzInsKey;
   double? yCoordinate;
 
-  factory CoOrdinatesList.fromJson(Map<String, dynamic> json) =>
-      CoOrdinatesList(
-        xCoordinate:
-            json["XCoordinate"] != null ? json["XCoordinate"].toDouble() : null,
+  factory CoOrdinatesList.fromJson(Map<String, dynamic> json) => CoOrdinatesList(
+        xCoordinate: json["XCoordinate"] != null ? json["XCoordinate"].toDouble() : null,
         pzInsKey: json["pzInsKey"],
-        yCoordinate: json["YCoordinate"] != null
-            ? json["YCoordinate"].toDouble()
-            : json["YCoordinate"],
+        yCoordinate: json["YCoordinate"] != null ? json["YCoordinate"].toDouble() : json["YCoordinate"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -727,7 +696,7 @@ class CoOrdinatesList {
       };
   LatLng? getLocation() {
     if (xCoordinate != null && yCoordinate != null) {
-      return LatLng(latitude:yCoordinate!, longitude:xCoordinate!);
+      return LatLng(latitude: yCoordinate!, longitude: xCoordinate!);
     }
 
     return null;
@@ -746,12 +715,9 @@ class RentPeriodList {
   String? rentalEndDate;
 
   factory RentPeriodList.fromJson(Map<String, dynamic> json) => RentPeriodList(
-        dailyLeaseCost:
-            json["DailyLeaseCost"] == null ? null : json["DailyLeaseCost"],
-        rentalStartDate:
-            json["RentalStartDate"] == null ? null : json["RentalStartDate"],
-        rentalEndDate:
-            json["RentalEndDate"] == null ? null : json["RentalEndDate"],
+        dailyLeaseCost: json["DailyLeaseCost"] == null ? null : json["DailyLeaseCost"],
+        rentalStartDate: json["RentalStartDate"] == null ? null : json["RentalStartDate"],
+        rentalEndDate: json["RentalEndDate"] == null ? null : json["RentalEndDate"],
       );
 
   Map<String, dynamic> toJson() => {

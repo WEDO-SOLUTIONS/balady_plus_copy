@@ -13,22 +13,16 @@ class HiveManager {
   //   await openBox(boxName: LocalStorageKey.onboardingKey);
   // }
 
-  static Future<bool> checkExistsBox({required String boxName}) async =>
-      await Hive.boxExists(boxName);
+  static Future<bool> checkExistsBox({required String boxName}) async => await Hive.boxExists(boxName);
 
-  static Future<bool> checkExistsKeyBox({
-    required String boxName,
-    required String key,
-  }) async {
+  static Future<bool> checkExistsKeyBox({required String boxName, required String key}) async {
     Box box = await getOpenedBox(boxName: boxName);
     return Future.value(box.containsKey(key));
   }
 
-  static bool checkOpenedBox({required String boxName}) =>
-      Hive.isBoxOpen(boxName);
+  static bool checkOpenedBox({required String boxName}) => Hive.isBoxOpen(boxName);
 
-  static Future<Box> openBox({required String boxName}) async =>
-      await Hive.openBox(boxName);
+  static Future<Box> openBox({required String boxName}) async => await Hive.openBox(boxName);
 
   static Future<Box> getOpenedBox({required String boxName}) async {
     final checkIfOpened = Hive.isBoxOpen(boxName);
@@ -39,35 +33,22 @@ class HiveManager {
     }
   }
 
-  static Future<Map<dynamic, dynamic>> readEntriesBox({
-    required String boxName,
-  }) async {
+  static Future<Map<dynamic, dynamic>> readEntriesBox({required String boxName}) async {
     Box box = await getOpenedBox(boxName: boxName);
     return Future.value(box.toMap());
   }
 
-  static Future<dynamic> readValueBox({
-    required String boxName,
-    required String key,
-    dynamic defaultValue,
-  }) async {
+  static Future<dynamic> readValueBox({required String boxName, required String key, dynamic defaultValue}) async {
     Box box = await getOpenedBox(boxName: boxName);
     return Future.value(box.get(key, defaultValue: defaultValue));
   }
 
-  static Future<dynamic> readValueByIndexBox({
-    required String boxName,
-    required int index,
-  }) async {
+  static Future<dynamic> readValueByIndexBox({required String boxName, required int index}) async {
     Box box = await getOpenedBox(boxName: boxName);
     return Future.value(box.getAt(index));
   }
 
-  static Future<void> writeValueBox({
-    required String boxName,
-    required String key,
-    required dynamic value,
-  }) async {
+  static Future<void> writeValueBox({required String boxName, required String key, required dynamic value}) async {
     Box box = await getOpenedBox(boxName: boxName);
     await box.put(key, value);
   }
@@ -81,10 +62,7 @@ class HiveManager {
     await box.putAt(index, value);
   }
 
-  static Future<void> writeEntriesBox<E, T>({
-    required String boxName,
-    required Map<E, T> entries,
-  }) async {
+  static Future<void> writeEntriesBox<E, T>({required String boxName, required Map<E, T> entries}) async {
     Box box = await getOpenedBox(boxName: boxName);
     await box.putAll(entries);
   }
@@ -99,32 +77,22 @@ class HiveManager {
     await box.clear();
   }
 
-  static Future<void> deleteValueBox({
-    required String boxName,
-    required String key,
-  }) async {
+  static Future<void> deleteValueBox({required String boxName, required String key}) async {
     Box box = await getOpenedBox(boxName: boxName);
     await box.delete(key);
   }
 
-  static Future<void> deleteValueByIndexBox<T>({
-    required String boxName,
-    required int index,
-  }) async {
+  static Future<void> deleteValueByIndexBox<T>({required String boxName, required int index}) async {
     Box box = await getOpenedBox(boxName: boxName);
     await box.deleteAt(index);
   }
 
-  static Future<void> deleteAllSpecifiedKeysBox<T>({
-    required String boxName,
-    required List<T> keys,
-  }) async {
+  static Future<void> deleteAllSpecifiedKeysBox<T>({required String boxName, required List<T> keys}) async {
     Box box = await getOpenedBox(boxName: boxName);
     await box.deleteAll(keys);
   }
 
-  static Future<void> closeOpenedBox({required Box box}) async =>
-      await box.close();
+  static Future<void> closeOpenedBox({required Box box}) async => await box.close();
 
   static Future<void> closeOpenedBoxWithName({required String boxName}) async {
     Box box = await getOpenedBox(boxName: boxName);

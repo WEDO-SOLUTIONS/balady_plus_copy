@@ -12,12 +12,7 @@ class CustomCheckbox extends StatefulWidget {
   Function onSelect;
   Key? key;
 
-  CustomCheckbox(
-      {required this.title,
-      required this.onSelect,
-      required this.isSelected,
-      this.key})
-      : super(key: key);
+  CustomCheckbox({required this.title, required this.onSelect, required this.isSelected, this.key}) : super(key: key);
 
   @override
   _CustomCheckboxState createState() => _CustomCheckboxState();
@@ -62,26 +57,24 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
                   ),
                 ), //Text//SizedBox
                 Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(2)),
-                        image: selected
-                            ? DecorationImage(
-                                image: AssetImage(
-                                    Constants.imgPath + "checkbox@3x.png"),
-                                fit: BoxFit.fill, //MM
-                              )
-                            : null,
-                        border: selected
-                            ? null
-                            : Border.all(color: Color(0xffd1d1d1), width: 1))),
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(2)),
+                    image: selected
+                        ? DecorationImage(
+                            image: AssetImage(Constants.imgPath + "checkbox@3x.png"),
+                            fit: BoxFit.fill, //MM
+                          )
+                        : null,
+                    border: selected ? null : Border.all(color: Color(0xffd1d1d1), width: 1),
+                  ),
+                ),
               ],
             ),
           ),
         ),
-        VerticalDivider(color: AppColor.gray)
+        VerticalDivider(color: AppColor.gray),
       ],
     );
   }

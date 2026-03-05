@@ -4,8 +4,8 @@ import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
-
 import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/models/story_video_data.dart';
 
 /// Represents the base class for different types of story data.
 sealed class StoryTypedData {
@@ -31,6 +31,7 @@ sealed class StoryTypedData {
         StoryTypes.route => RouteStoryData(),
         StoryTypes.network => const NetworkStoryData(),
         StoryTypes.saudiDay => SaudiDayStoryData(),
+        StoryTypes.mekkahBase => MekkahBaseStoryData(),
       };
 }
 
@@ -123,6 +124,30 @@ class SaudiDayStoryData extends StoryTypedData {
                   isAssetImage: true,
                   action: const NextStoryAction(localeKey: 'saudiDayAction'),
                 ),
+              ],
+            ),
+          ],
+        );
+}
+
+/// Represents the story data for the [StoryTypes.mekkahBase] type.
+///
+/// Uses a fullscreen video splash screen for the Makkah theme onboarding.
+/// The video plays automatically and advances to the next story on completion.
+class MekkahBaseStoryData extends StoryTypedData {
+  /// Asset path for the Makkah splash video.
+  ///
+  /// Located in the root balady_plus assets folder.
+  static const _splashVideoAsset = 'assets/balady-splashscreen.mp4';
+
+  MekkahBaseStoryData()
+      : super(
+          type: StoryTypes.mekkahBase,
+          stories: const [
+            StoryData(
+              storyId: 'mekkahBaseId',
+              videos: [
+                StoryVideoData.asset(_splashVideoAsset),
               ],
             ),
           ],

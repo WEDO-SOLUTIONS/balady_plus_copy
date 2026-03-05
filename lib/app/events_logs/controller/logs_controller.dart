@@ -38,18 +38,15 @@ class LogsViewModel {
   }
 
   void sendEventFromModel({required EventModel event}) async {
-// UX Cam Events
-    FlutterUxcam.logEventWithProperties(
-      event.nameEvent,
-      event.toJson(),
-    );
-    Sentry.captureException(
-      SentryException(
-        type: event.nameEvent,
-        value: event.message,
-        unknown: event.toJson(),
-      ),
-    );
+    // UX Cam Events
+    try {
+      FlutterUxcam.logEventWithProperties(event.nameEvent, event.toJson());
+      Sentry.captureException(SentryException(type: event.nameEvent, value: event.message, unknown: event.toJson()));
+    } catch (e) {
+      print("Error From INSIDE FRAME_WORK");
+      print("--------------------------------");
+      print("Error :  $e");
+    }
   }
 
   void timeEventFromModel({required EventModel event}) async {

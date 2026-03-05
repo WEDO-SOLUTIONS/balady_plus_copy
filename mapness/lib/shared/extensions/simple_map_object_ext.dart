@@ -5,11 +5,8 @@ extension SimpleMapObjectListX on List<SimpleMapObjectModel> {
     void Function(String id)? onTap,
   }) =>
       map((obj) {
-        final centerLat =
-            (obj.bounds.southWest.latitude + obj.bounds.northEast.latitude) / 2;
-        final centerLng =
-            (obj.bounds.southWest.longitude + obj.bounds.northEast.longitude) /
-                2;
+        final centerLat = (obj.bounds.southWest.latitude + obj.bounds.northEast.latitude) / 2;
+        final centerLng = (obj.bounds.southWest.longitude + obj.bounds.northEast.longitude) / 2;
 
         return Marker(
           id: obj.id ?? '',

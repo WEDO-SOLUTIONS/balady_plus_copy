@@ -10,6 +10,5 @@ class GetRegions extends UseCase<List<VolunteerLookup>, NoParams> {
 
   GetRegions({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
-      repository.getRegions();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getRegions();
 }

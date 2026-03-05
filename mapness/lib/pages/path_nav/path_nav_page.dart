@@ -642,7 +642,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         icon: ToastIconAsset(switch (context.read<ThemeController>().currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
           BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          _ => Assets.icons.svg.placesBigNew.light.icParking.keyName,
         }),
       );
     }

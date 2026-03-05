@@ -3,16 +3,13 @@ import 'dart:io' show Platform;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart' show PlatformException;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizationDefaultType, translator;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizationDefaultType, translator;
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../dependency_injection/dependency_injection_exports.dart' as di
-    show initialize;
-import '../../../features/_shared_feature_/shared_feature_exports.dart'
-    show DeviceDetails, PackageDetails;
+import '../../dependency_injection/dependency_injection_exports.dart' as di show initialize;
+import '../../../features/_shared_feature_/shared_feature_exports.dart' show DeviceDetails, PackageDetails;
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../../utils/utils_exports.dart' show AppConfig, CommonFunctions;
 import '../../services/services_exports.dart' show HiveManager;
@@ -60,11 +57,7 @@ class Initializer {
       );
     }
 
-    final details = sl<DeviceDetails>().copyWith(
-      deviceName: deviceName,
-      deviceId: deviceId,
-      deviceOs: deviceOs,
-    );
+    final details = sl<DeviceDetails>().copyWith(deviceName: deviceName, deviceId: deviceId, deviceOs: deviceOs);
     await sl.unregister<DeviceDetails>();
     sl.registerLazySingleton(() => details);
   }

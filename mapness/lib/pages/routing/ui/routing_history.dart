@@ -27,7 +27,7 @@ class RoutingHistory extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value))
-      ..retainWhere((e) => e.id?.objectId != null);
+      ..where((e) => e.id?.objectId != null);
 
     if (history.isEmpty) {
       return const RoutingHistoryEmpty();

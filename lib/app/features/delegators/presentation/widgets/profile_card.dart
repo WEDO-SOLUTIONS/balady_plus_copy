@@ -35,15 +35,10 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = !isListItem || this.selected;
-    final name = (agent?.grantorName ?? delegator?.entityName) ??
-        userInfo?.getFirstAndLastName() ??
-        "hi".tr();
-    String type = (agent?.agencyNumber ?? delegator?.id) ??
-        userInfo?.idNo ??
-        "in_balady".tr();
+    final name = (agent?.grantorName ?? delegator?.entityName) ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
+    String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
 
-    String? agentType =
-        (agent?.agencyTypeName ?? delegator?.roleName) ?? "Indivisual".tr();
+    String? agentType = (agent?.agencyTypeName ?? delegator?.roleName) ?? "Indivisual".tr();
 
     Color? agentBgColor = Color(0xffEAF3EF);
     Color? agentTextColor = Color(0xff2A8663);
@@ -93,8 +88,7 @@ class ProfileCard extends StatelessWidget {
 
           Navigator.of(context).pop();
         } else {
-          CommonFunctions.sendUXCamEvent(
-              UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
+          CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
 
           context.read<DelegatorsCubit>().getDelegators();
           context.read<DelegatorsCubit>().getAgents();
@@ -109,9 +103,7 @@ class ProfileCard extends StatelessWidget {
         }
       },
       child: Container(
-        margin: isListItem
-            ? const EdgeInsets.symmetric(vertical: 8)
-            : const EdgeInsets.all(16),
+        margin: isListItem ? const EdgeInsets.symmetric(vertical: 8) : const EdgeInsets.all(16),
         padding: const EdgeInsets.all(16),
         // height: 80,
         decoration: BoxDecoration(
@@ -119,9 +111,7 @@ class ProfileCard extends StatelessWidget {
             borderRadius: const BorderRadius.all(
               Radius.circular(12),
             ),
-            border: selected && isListItem
-                ? Border.all(color: Color(0xff1191AC))
-                : null),
+            border: selected && isListItem ? Border.all(color: Color(0xff1191AC)) : null),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -143,8 +133,7 @@ class ProfileCard extends StatelessWidget {
                   SizedBox(
                     child: CustomTextWidget(
                       name,
-                      fontColor:
-                          selected ? Color(0xff18181B) : Color(0xff18181B),
+                      fontColor: selected ? Color(0xff18181B) : Color(0xff18181B),
                       maxLines: 2,
                       fontWeight: AppFontWeight.bold,
                       fontSize: 14,
@@ -159,9 +148,7 @@ class ProfileCard extends StatelessWidget {
                           type,
                           fontWeight: AppFontWeight.medium,
                           fontSize: 12,
-                          fontColor: selected
-                              ? const Color(0xff737373)
-                              : const Color(0xff737373),
+                          fontColor: selected ? const Color(0xff737373) : const Color(0xff737373),
                         ),
                         const SizedBox(width: 5),
                       ],
@@ -175,9 +162,7 @@ class ProfileCard extends StatelessWidget {
               child: Container(
                 height: 28,
                 padding: EdgeInsets.only(left: 2, right: 2, bottom: 6, top: 6),
-                decoration: BoxDecoration(
-                    color: agentBgColor,
-                    borderRadius: BorderRadius.circular(6)),
+                decoration: BoxDecoration(color: agentBgColor, borderRadius: BorderRadius.circular(6)),
                 alignment: Alignment.center,
                 child: CustomTextWidget(
                   agentType,

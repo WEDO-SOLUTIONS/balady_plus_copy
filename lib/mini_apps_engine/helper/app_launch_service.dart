@@ -11,9 +11,7 @@ class AppLaunchService {
     // String? deepLink,
   }) async {
     //_fallbackUrl the same value of deepLink paramter
-    String? _fallbackUrl = Platform.isAndroid
-        ? deepLinkInfo.deepLinkAndroid
-        : deepLinkInfo.deepLinkIos;
+    String? _fallbackUrl = Platform.isAndroid ? deepLinkInfo.deepLinkAndroid : deepLinkInfo.deepLinkIos;
 
     try {
       bool launched = await _tryLaunchApp(
@@ -81,8 +79,7 @@ class AppLaunchService {
         final androidIntents = [
           if (deepLink.startsWith('http'))
             'intent://${deepLink.replaceFirst(RegExp('^https?://'), '')}#Intent;package=$androidPackageName;scheme=https;end',
-          if (!deepLink.contains('://'))
-            'intent://$deepLink#Intent;package=$androidPackageName;end',
+          if (!deepLink.contains('://')) 'intent://$deepLink#Intent;package=$androidPackageName;end',
           deepLink, // try original again
         ];
 
@@ -94,8 +91,7 @@ class AppLaunchService {
       } else if (Platform.isIOS && iosUrlScheme != null) {
         // iOS-specific deep link formats
         final iosLinks = [
-          if (deepLink.startsWith('http'))
-            '$iosUrlScheme://${deepLink.replaceFirst(RegExp('^https?://'), '')}',
+          if (deepLink.startsWith('http')) '$iosUrlScheme://${deepLink.replaceFirst(RegExp('^https?://'), '')}',
           if (!deepLink.contains('://')) '$iosUrlScheme://$deepLink',
           deepLink, // try original again
         ];

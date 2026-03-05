@@ -19,8 +19,12 @@ import 'package:mapness/features/stories/ui/story_video_player.dart';
 class StoriesFullscreen extends ConsumerStatefulWidget {
   final String initialStoryId;
 
+  /// Whether to show the sound/mute icon in video player.
+  final bool showSoundIcon;
+
   const StoriesFullscreen({
     required this.initialStoryId,
+    this.showSoundIcon = true,
     super.key,
   });
 
@@ -156,26 +160,30 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
           }
           final stories = snapshot.data ?? const [];
 
-          return ValueListenableBuilder(
-            valueListenable: _currentPageNotifier,
-            builder: (_, page, __) => TransformerPageView(
-              onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
-              index: page,
-              controller: _indexController,
-              itemCount: stories.length,
-              itemBuilder: (context, index) => stories[index].videos.isNotEmpty
-                  ? StoryVideoPlayer(
-                      videoUrls: stories[index].videos.map((e) => e.url).toList(),
-                      onNextStory: _nextStory,
-                      onPreviousStory: _previousStory,
-                      storyId: stories[index].storyId,
-                    )
-                  : StoryFramesPlayer(
-                      controller: _storyFrameController,
-                      story: stories[index],
-                      onNextStory: _nextStory,
-                      onPreviousStory: _previousStory,
-                    ),
+          return Material(
+            color: context.color.surfaceBaseInversePrimary,
+            child: ValueListenableBuilder(
+              valueListenable: _currentPageNotifier,
+              builder: (_, page, __) => TransformerPageView(
+                onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
+                index: page,
+                controller: _indexController,
+                itemCount: stories.length,
+                itemBuilder: (context, index) => stories[index].videos.isNotEmpty
+                    ? StoryVideoPlayer(
+                        videos: stories[index].videos,
+                        onNextStory: _nextStory,
+                        onPreviousStory: _previousStory,
+                        storyId: stories[index].storyId,
+                        showSoundIcon: widget.showSoundIcon,
+                      )
+                    : StoryFramesPlayer(
+                        controller: _storyFrameController,
+                        story: stories[index],
+                        onNextStory: _nextStory,
+                        onPreviousStory: _previousStory,
+                      ),
+              ),
             ),
           );
         },

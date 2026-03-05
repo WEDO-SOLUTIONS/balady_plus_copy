@@ -18,6 +18,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
@@ -64,23 +65,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required GetAPIgeeToken getAPIgeeToken,
     required GetForceVersion forceVersion,
     // required GetGISData getGisData,
-  }) : _getToken = getToken,
-       _saveAuth = saveAuth,
-       _checkAuth = checkAuth,
-       _refreshToken = refreshToken,
-       _getProfile = getProfile,
-       _saveSSOProfile = saveSSOProfile,
-       _checkSSOProfile = checkSSOProfile,
-       _getCookie = getCookie,
-       _getAPIgeeToken = getAPIgeeToken,
-       _clearAuth = clearAuth,
-       _logout = logout,
-       _getPaymentUrl = GetPaymentUrl(repository: sl()),
-       _getForceVersion = forceVersion,
-       _getTestData = GetTestData(repository: sl()),
-       _getEkramPermission = GetEkramPermission(repository: sl()),
-       // _getGisData = getGisData,
-       super(const EntryPointState()) {
+  })  : _getToken = getToken,
+        _saveAuth = saveAuth,
+        _checkAuth = checkAuth,
+        _refreshToken = refreshToken,
+        _getProfile = getProfile,
+        _saveSSOProfile = saveSSOProfile,
+        _checkSSOProfile = checkSSOProfile,
+        _getCookie = getCookie,
+        _getAPIgeeToken = getAPIgeeToken,
+        _clearAuth = clearAuth,
+        _logout = logout,
+        _getPaymentUrl = GetPaymentUrl(repository: sl()),
+        _getForceVersion = forceVersion,
+        _getTestData = GetTestData(repository: sl()),
+        _getEkramPermission = GetEkramPermission(repository: sl()),
+        // _getGisData = getGisData,
+        super(const EntryPointState()) {
     sl<LocationCubit>().getLocationInit();
     refreshAPIGeeToken();
     Permission.notification.request();
@@ -252,6 +253,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           errorMessage: "",
         ),
       );
+      Sentry.configureScope((scope) {
+        scope.setUser(
+          SentryUser(
+            id: data.sub.toString(),
+            username: data.enName,
+            email: data.email,
+          ),
+        );
+      });
     }
 
     if (CommonProperties.fcmToken != null &&
@@ -268,43 +278,39 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     EasyLoading.show();
     emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccessForToken = await _getToken(NoParams());
-    await failureOrSuccessForToken.fold(
-      (failure) {
-        emit(
-          state.copyWith(
-            status: AuthStatus.failure,
-            errorMessage: (failure as ServerFailure).errorMessage,
+    await failureOrSuccessForToken.fold((failure) {
+      emit(
+        state.copyWith(
+          status: AuthStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ),
+      );
+      EasyLoading.dismiss();
+      return;
+    }, (success) async {
+      try {
+        EasyLoading.dismiss();
+        sl<AuthenticationBloc>().add(
+          LoginWithNafazAuthentication(
+            dataLogin: {
+              "access_token": success.accessToken,
+              "idToken": success.idToken,
+              "expires_in": success.accessTokenExpirationDateTime != null
+                  ? DateTime.now()
+                      .difference(success.accessTokenExpirationDateTime!)
+                      .inSeconds
+                  : 3500000,
+              "token_type": success.tokenType,
+              "refresh_token": success.refreshToken,
+              "scope": success.scopes ?? "",
+            },
           ),
         );
+      } catch (e) {
         EasyLoading.dismiss();
-        return;
-      },
-      (success) async {
-        try {
-          EasyLoading.dismiss();
-          sl<AuthenticationBloc>().add(
-            LoginWithNafazAuthentication(
-              dataLogin: {
-                "access_token": success.accessToken,
-                "idToken": success.idToken,
-                "expires_in":
-                    success.accessTokenExpirationDateTime != null
-                        ? DateTime.now()
-                            .difference(success.accessTokenExpirationDateTime!)
-                            .inSeconds
-                        : 3500000,
-                "token_type": success.tokenType,
-                "refresh_token": success.refreshToken,
-                "scope": success.scopes ?? "",
-              },
-            ),
-          );
-        } catch (e) {
-          EasyLoading.dismiss();
-          print("object");
-        }
-      },
-    );
+        print("object");
+      }
+    });
     return;
   }
 
@@ -353,9 +359,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    DateTime? expireTime = DateTime.tryParse(
-      state.apigeeToken?.expirationTime ?? "",
-    );
+    DateTime? expireTime =
+        DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
@@ -376,9 +381,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> checkifTokenExpired() async {
     if (state.status == AuthStatus.notAuthenticated) {
-      DateTime? expireTime = DateTime.tryParse(
-        state.token?.expirationTime ?? "",
-      );
+      DateTime? expireTime =
+          DateTime.tryParse(state.token?.expirationTime ?? "");
 
       if (expireTime != null) {
         if (!DateTime.now()
@@ -468,9 +472,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           sl<AuthenticationBloc>().state as AuthenticatedState;
       if (authState is AuthenticatedMunicipalityState) {
         final failureOrSuccessForProfile = await _getProfile(NoParams());
-        await failureOrSuccessForProfile.fold((failure) async {}, (
-          success,
-        ) async {
+        await failureOrSuccessForProfile.fold((failure) async {},
+            (success) async {
           final failureOrSuccess = await _saveSSOProfile(success);
           if (failureOrSuccess.isRight()) {
             emit(state.copyWith(userInfo: success));
@@ -601,13 +604,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           ),
         );
 
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(
-          token.token ?? "",
-        );
+        Map<String, dynamic> decodedToken =
+            JwtDecoder.decode(token.token ?? "");
         SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-        final failureOrSuccess = await _saveSSOProfile(
-          SsoUserInfoModel.fromJson(decodedToken),
-        );
+        final failureOrSuccess =
+            await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
         if (failureOrSuccess.isRight()) {
           emit(
             state.copyWith(
@@ -627,6 +628,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           );
           FlutterUxcam.setUserIdentity(user.idNo);
           FlutterUxcam.setUserProperty("name", user.arName ?? "");
+          Sentry.configureScope((scope) {
+            scope.setUser(
+              SentryUser(
+                id: user.idNo,
+                username: user.enName,
+                email: user.mail,
+              ),
+            );
+          });
         }
 
         final failureOrSuccessForCookie = await _getCookie(true);

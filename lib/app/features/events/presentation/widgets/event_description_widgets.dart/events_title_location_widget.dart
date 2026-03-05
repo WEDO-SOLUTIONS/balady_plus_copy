@@ -72,8 +72,7 @@ class EventsTitleLocationWidget extends StatelessWidget {
                     ),
                   );
 
-                  CommonFunctions.sendUXCamEvent(
-                      UXCamEvents.Events_List_Click_Item_AddToCalender_Event);
+                  CommonFunctions.sendUXCamEvent(UXCamEvents.Events_List_Click_Item_AddToCalender_Event);
                 },
                 child: Container(
                   width: 36,

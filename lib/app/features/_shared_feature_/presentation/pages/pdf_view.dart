@@ -19,7 +19,7 @@ class PDFViewer extends StatefulWidget {
 
 class _PDFViewerState extends State<PDFViewer> {
   late PdfController pdfController;
-//
+  //
   @override
   void initState() {
     super.initState();
@@ -33,10 +33,7 @@ class _PDFViewerState extends State<PDFViewer> {
       body: Stack(
         children: [
           Center(
-            child: PdfView(
-              scrollDirection: Axis.vertical,
-              controller: pdfController,
-            ),
+            child: PdfView(scrollDirection: Axis.vertical, controller: pdfController),
           ),
           GestureDetector(
             onTap: () {
@@ -45,14 +42,8 @@ class _PDFViewerState extends State<PDFViewer> {
             child: Align(
               alignment: Alignment.topRight,
               child: Container(
-                margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).padding.top + 10, right: 16),
-                child: Image.asset(
-                  IconPath.qrWhiteCloseIcon,
-                  height: 24.0,
-                  width: 24.0,
-                  color: Colors.black,
-                ),
+                margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, right: 16),
+                child: Image.asset(IconPath.qrWhiteCloseIcon, height: 24.0, width: 24.0, color: Colors.black),
               ),
             ),
           ),
@@ -70,11 +61,8 @@ class FullImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: ("lbl_attachments").tr(),
-      ),
-      body: Center(
-          child: Image.memory(base64Decode(imageBase64), fit: BoxFit.cover)),
+      appBar: DefaultAppBarWidget(title: ("lbl_attachments").tr()),
+      body: Center(child: Image.memory(base64Decode(imageBase64), fit: BoxFit.cover)),
     );
   }
 }
@@ -82,15 +70,12 @@ class FullImageView extends StatelessWidget {
 class FullImageViewBytes extends StatelessWidget {
   final Uint8List imageBase64;
 
-  const FullImageViewBytes({Key? key, required this.imageBase64})
-      : super(key: key);
+  const FullImageViewBytes({Key? key, required this.imageBase64}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: ("lbl_attachments").tr(),
-      ),
+      appBar: DefaultAppBarWidget(title: ("lbl_attachments").tr()),
       body: Center(child: Image.memory(imageBase64, fit: BoxFit.cover)),
     );
   }

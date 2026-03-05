@@ -1,6 +1,7 @@
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -51,7 +52,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final rubrics = Set<int>.from(cleanupRubrics);
   final mapMarkerMapper = await ref
       .watch(rubricMarkerMapperProvider.notifier)
-      .getMarkerPath(rubrics, objectId.objectId, theme, closestPoint: closestPoint?.geoPoint);
+      .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final bigIconPath = mapMarkerMapper.$2;
 
   final markerPosition = directoryObject.markerPosition;
@@ -83,6 +84,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
+  final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(
@@ -95,6 +97,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       id: poiPinId,
+      activeCityEvent: ref.read(activeCityEventProvider),
+      isDark: isDark,
     ),
     objectId: objectId.objectId,
   );

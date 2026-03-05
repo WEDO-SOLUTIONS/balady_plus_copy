@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-List<Layers> layersFromJson(List list) =>
-    List<Layers>.from(list.map((x) => Layers.fromJson(x)));
+List<Layers> layersFromJson(List list) => List<Layers>.from(list.map((x) => Layers.fromJson(x)));
 
 class Layers extends Equatable {
   int id;
@@ -42,8 +41,7 @@ class Layers extends Equatable {
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
-List<SubLayers> subLayersFromJson(List list) =>
-    List<SubLayers>.from(list.map((x) => SubLayers.fromJson(x)));
+List<SubLayers> subLayersFromJson(List list) => List<SubLayers>.from(list.map((x) => SubLayers.fromJson(x)));
 
 class SubLayers {
   String name;
@@ -73,8 +71,4 @@ class SubLayers {
       };
 }
 
-enum GeometryType {
-  esriGeometryPoint,
-  esriGeometryPolyline,
-  esriGeometryPolygon
-}
+enum GeometryType { esriGeometryPoint, esriGeometryPolyline, esriGeometryPolygon }

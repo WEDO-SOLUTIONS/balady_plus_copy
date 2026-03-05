@@ -9,23 +9,14 @@ class BridgeParams extends Equatable {
   final bool clearAuth;
 
   /// BridgeParams: System Bridge Parameters
-  const BridgeParams({
-    this.flow,
-    this.isAuthenticated = true,
-    this.clearAuth = false,
-  });
+  const BridgeParams({this.flow, this.isAuthenticated = true, this.clearAuth = false});
 
-  BridgeFlow get flowType =>
-      flow ?? (isAuthenticated ? BridgeFlow.home : BridgeFlow.signIn);
+  BridgeFlow get flowType => flow ?? (isAuthenticated ? BridgeFlow.home : BridgeFlow.signIn);
 
   @override
   List<Object?> get props => [flow, clearAuth];
 
-  BridgeParams copyWith({
-    BridgeFlow? flow,
-    bool? isAuthenticated,
-    bool? clearAuth,
-  }) {
+  BridgeParams copyWith({BridgeFlow? flow, bool? isAuthenticated, bool? clearAuth}) {
     return BridgeParams(
       flow: flow ?? this.flow,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
@@ -34,6 +25,5 @@ class BridgeParams extends Equatable {
   }
 
   @override
-  String toString() =>
-      'BridgeParams(flow: $flow, isAuthenticated: $isAuthenticated, clearAuth: $clearAuth)';
+  String toString() => 'BridgeParams(flow: $flow, isAuthenticated: $isAuthenticated, clearAuth: $clearAuth)';
 }

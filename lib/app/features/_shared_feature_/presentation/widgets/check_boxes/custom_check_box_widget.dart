@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, WidgetConversion;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, ErrorUnderWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, WidgetConversion;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, ErrorUnderWidget;
 
 class CustomCheckBoxWidget extends StatelessWidget {
   final TextDirection? directionality;
@@ -81,10 +79,8 @@ class CustomCheckBoxWidget extends StatelessWidget {
     );
   }
 
-  Color get _fillColor =>
-      selected ? fillColor ?? AppColor.primary900Light : Colors.transparent;
-  Color get _borderColor =>
-      selected ? borderColor ?? Colors.transparent : AppColor.gray;
+  Color get _fillColor => selected ? fillColor ?? AppColor.primary900Light : Colors.transparent;
+  Color get _borderColor => selected ? borderColor ?? Colors.transparent : AppColor.gray;
 }
 
 class _CheckWidget extends StatelessWidget {
@@ -106,9 +102,7 @@ class _CheckWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
-      ),
+      customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
       splashColor: AppColor.blue,
       highlightColor: Theme.of(context).scaffoldBackgroundColor,
       onTap: () => onChanged(!selected),
@@ -122,8 +116,7 @@ class _CheckWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: borderColor),
         ),
-        child:
-            selected ? Icon(Icons.check, size: 18.0, color: checkColor) : null,
+        child: selected ? Icon(Icons.check, size: 18.0, color: checkColor) : null,
       ),
     );
   }

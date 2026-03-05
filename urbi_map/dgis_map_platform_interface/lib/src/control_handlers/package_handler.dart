@@ -3,17 +3,13 @@ import 'dart:async';
 import 'package:dgis_map_platform_interface/library.dart';
 
 class PackageEventHandler {
-  Stream<PackageProgressEvent> get packageProgressEvents =>
-      _packageProgressController.stream;
+  Stream<PackageProgressEvent> get packageProgressEvents => _packageProgressController.stream;
 
-  final _packageProgressController =
-      StreamController<PackageProgressEvent>.broadcast();
+  final _packageProgressController = StreamController<PackageProgressEvent>.broadcast();
 
-  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents =>
-      _packageInfoChangedController.stream;
+  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents => _packageInfoChangedController.stream;
 
-  final _packageInfoChangedController =
-      StreamController<PackageInfoChangedEvent>.broadcast();
+  final _packageInfoChangedController = StreamController<PackageInfoChangedEvent>.broadcast();
 
   void packageProgressEvent(Map<dynamic, dynamic> map) {
     final event = PackageProgressEvent(

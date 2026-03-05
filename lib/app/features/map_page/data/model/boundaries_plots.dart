@@ -10,12 +10,7 @@ class BoundariesPlots extends PointLayersData {
   final int color;
 
   BoundariesPlots(
-      {required this.paths,
-      required id,
-      required name,
-      required type,
-      required description,
-      this.color = 0xFF828282})
+      {required this.paths, required id, required name, required type, required description, this.color = 0xFF828282})
       : super(
           id: id,
           name: name,
@@ -23,8 +18,7 @@ class BoundariesPlots extends PointLayersData {
           type: type,
         );
 
-  factory BoundariesPlots.fromJson(Map<String, dynamic> json) =>
-      BoundariesPlots(
+  factory BoundariesPlots.fromJson(Map<String, dynamic> json) => BoundariesPlots(
         id: json['attributes']["OBJECTID"].toString(),
         name: json['attributes']["SUBDIVISIONPLANNAME_AR"] ?? '',
         description: json['attributes']["SUBTYPEDESCRIPTION"] ?? '',

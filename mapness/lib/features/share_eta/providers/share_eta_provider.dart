@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -384,7 +385,7 @@ class ShareEta extends _$ShareEta {
         ? context.l10n.seeLiveLocationHrMin(inHour.toString(), inMinutes.toString())
         : context.l10n.seeLiveLocationMin(inMinutes.toString());
 
-    safeShareText('$duration\n$shareUrl', context: context);
+    balady_utils.safeShareText('$duration\n$shareUrl', context: context);
   }
 
   void shareCurrentStream(EtaStreamType type) {
@@ -433,8 +434,14 @@ class ShareEta extends _$ShareEta {
 
     final address = await _makeAddress(EtaStreamStorage().state.latitude!, EtaStreamStorage().state.longitude!);
 
-    await safeShareText(
-      context.l10n.iWillArriveAtTimeToDestinationLink(address ?? '', shareUrl, arrivalAt).multilines,
+    await balady_utils.safeShareText(
+      context.l10n
+          .iWillArriveAtTimeToDestinationLink(
+            address ?? '',
+            shareUrl,
+            arrivalAt,
+          )
+          .multilines,
       context: context,
     );
   }

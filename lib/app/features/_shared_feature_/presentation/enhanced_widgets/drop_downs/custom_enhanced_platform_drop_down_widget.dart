@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BorderType;
 import '../../../shared_feature_exports.dart'
-    show
-        CustomEnhancedCupertinoDropDownWidget,
-        CustomEnhancedMaterialDropDownWidget,
-        DropDownItem;
+    show CustomEnhancedCupertinoDropDownWidget, CustomEnhancedMaterialDropDownWidget, DropDownItem;
 
 class CustomEnhancedPlatformDropDownWidget extends StatelessWidget {
   final bool isRequired;
@@ -77,25 +74,25 @@ class CustomEnhancedPlatformDropDownWidget extends StatelessWidget {
             onDisabledTapped: onDisabledTapped,
           )
         : Platform.isIOS
-            ? CustomEnhancedCupertinoDropDownWidget(
-                isRequired: isRequired,
-                readOnly: readOnly,
-                initialValue: initialValue,
-                items: items,
-                label: label,
-                labelStyle: labelStyle,
-                hintText: hintText,
-                hintStyle: hintStyle,
-                fillColor: fillColor,
-                borderRadius: borderRadius,
-                borderColor: borderColor,
-                borderType: borderType,
-                padding: padding,
-                errorMsg: errorMsg,
-                onSelected: onSelected,
-                onTap: onTap,
-                onDisabledTapped: onDisabledTapped,
-              )
-            : const SizedBox();
+        ? CustomEnhancedCupertinoDropDownWidget(
+            isRequired: isRequired,
+            readOnly: readOnly,
+            initialValue: initialValue,
+            items: items,
+            label: label,
+            labelStyle: labelStyle,
+            hintText: hintText,
+            hintStyle: hintStyle,
+            fillColor: fillColor,
+            borderRadius: borderRadius,
+            borderColor: borderColor,
+            borderType: borderType,
+            padding: padding,
+            errorMsg: errorMsg,
+            onSelected: onSelected,
+            onTap: onTap,
+            onDisabledTapped: onDisabledTapped,
+          )
+        : const SizedBox();
   }
 }

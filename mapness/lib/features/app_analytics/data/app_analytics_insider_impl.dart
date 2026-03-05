@@ -156,9 +156,9 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   Future<void> deviceTypeDetected() async {
-    final isAndroid =Platform.isAndroid;
-    final androidInfo = isAndroid?await DeviceInfoPlugin().androidInfo:null;
-    final iOSInfo = isAndroid?null:await DeviceInfoPlugin().iosInfo;
+    final isAndroid = Platform.isAndroid;
+    final androidInfo = isAndroid ? await DeviceInfoPlugin().androidInfo : null;
+    final iOSInfo = isAndroid ? null : await DeviceInfoPlugin().iosInfo;
 
     final androidModel = androidInfo?.data['model'];
     final iosModel = iOSInfo?.data['machine'];

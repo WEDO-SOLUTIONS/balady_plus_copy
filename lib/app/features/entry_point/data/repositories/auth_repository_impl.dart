@@ -13,8 +13,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
   final EntryPointRemoteDataSource remoteDataSource;
   final EntryPointLocalDataSource localDataSource;
 //
-  EntryPointRepositoryImpl(
-      {required this.remoteDataSource, required this.localDataSource});
+  EntryPointRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, AuthorizationTokenResponse>> authorize() async {
@@ -29,8 +28,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -47,8 +45,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -83,14 +80,12 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.toString(),
-          statusCode: error.statusCode, errorCode: error.errorCode));
+      return Left(ServerFailure(error.toString(), statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 
   @override
-  Future<Either<Failure, TokenResponse>> refreshToken(
-      String refreshToken) async {
+  Future<Either<Failure, TokenResponse>> refreshToken(String refreshToken) async {
     try {
       final data = await remoteDataSource.refreshToken(refreshToken);
       return Right(data);
@@ -249,14 +244,12 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
   @override
-  Future<Either<Failure, ForceUpdateResponse>> getForceVersion(
-      ForceUpdateParams params) async {
+  Future<Either<Failure, ForceUpdateResponse>> getForceVersion(ForceUpdateParams params) async {
     try {
       final data = await remoteDataSource.getForceVersion(params: params);
       return Right(data);
@@ -268,8 +261,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -289,8 +281,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -307,8 +298,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -347,8 +337,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -365,8 +354,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -388,8 +376,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
   }
 
   @override
-  Future<Either<Failure, PermissionResponseModel>> getEkramRules(
-      GetPermissionParamsModel params) async {
+  Future<Either<Failure, PermissionResponseModel>> getEkramRules(GetPermissionParamsModel params) async {
     try {
       final data = await remoteDataSource.getEkramRules(params: params);
       return Right(data);
@@ -401,8 +388,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -419,8 +405,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 }

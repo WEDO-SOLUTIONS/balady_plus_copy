@@ -4,8 +4,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
 
 class AllWeatherInfoModel extends AllWeatherInfoEntity {
-  AllWeatherInfoModel(
-      {super.alerts, super.current, super.forecast, super.location});
+  AllWeatherInfoModel({super.alerts, super.current, super.forecast, super.location});
 
   //generate from json
   // factory AllWeatherInfoModel.fromMap(Map<String, dynamic> json) =>
@@ -20,8 +19,7 @@ class AllWeatherInfoModel extends AllWeatherInfoEntity {
 class AlertsModel extends Alerts {
   AlertsModel({super.alert});
 
-  factory AlertsModel.fromRawJson(String str) =>
-      AlertsModel.fromJson(json.decode(str));
+  factory AlertsModel.fromRawJson(String str) => AlertsModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
@@ -42,9 +40,7 @@ class AlertsModel extends Alerts {
     );
   }
   Map<String, dynamic> toJson() => {
-        "alert": alert == null
-            ? null
-            : List<dynamic>.from(alert!.map((x) => x.toJson())),
+        "alert": alert == null ? null : List<dynamic>.from(alert!.map((x) => x.toJson())),
       };
 }
 
@@ -65,8 +61,7 @@ class AlertModel extends Alert {
     super.instruction,
   });
 
-  factory AlertModel.fromRawJson(String str) =>
-      AlertModel.fromJson(json.decode(str));
+  factory AlertModel.fromRawJson(String str) => AlertModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
@@ -80,11 +75,8 @@ class AlertModel extends Alert {
         certainty: json["certainty"],
         event: json["event"],
         note: json["note"],
-        effective: json["effective"] == null
-            ? null
-            : DateTime.parse(json["effective"]),
-        expires:
-            json["expires"] == null ? null : DateTime.parse(json["expires"]),
+        effective: json["effective"] == null ? null : DateTime.parse(json["effective"]),
+        expires: json["expires"] == null ? null : DateTime.parse(json["expires"]),
         desc: json["desc"],
         instruction: json["instruction"],
       );
@@ -134,9 +126,7 @@ class CurrentModel extends Current {
   });
 
   //generate from json
-  factory CurrentModel.fromMap(
-          Map<String, dynamic> json, ConditionsModel condition) =>
-      CurrentModel(
+  factory CurrentModel.fromMap(Map<String, dynamic> json, ConditionsModel condition) => CurrentModel(
         cloud: json["cloud"],
         feelslikeC: json["feelslike_c"],
         feelslikeF: json["feelslike_f"],
@@ -192,8 +182,7 @@ class ForecastDayModel extends ForecastDay {
   });
 
   //generate from json
-  factory ForecastDayModel.fromMap(
-          Map<String, dynamic> json, Astro astro, Day day, List<Hour> hour) =>
+  factory ForecastDayModel.fromMap(Map<String, dynamic> json, Astro astro, Day day, List<Hour> hour) =>
       ForecastDayModel(
         date: json["date"],
         dateEpoch: json["date_epoch"],
@@ -254,9 +243,7 @@ class DayModel extends Day {
 
   //generate from json
 
-  factory DayModel.fromMap(
-          Map<String, dynamic> json, ConditionsModel condition) =>
-      DayModel(
+  factory DayModel.fromMap(Map<String, dynamic> json, ConditionsModel condition) => DayModel(
         maxtempC: json["maxtemp_c"],
         maxtempF: json["maxtemp_f"],
         mintempC: json["mintemp_c"],
@@ -318,9 +305,7 @@ class HourModel extends Hour {
   });
 
   //generate from json
-  factory HourModel.fromMap(
-          Map<String, dynamic> json, ConditionsModel condition) =>
-      HourModel(
+  factory HourModel.fromMap(Map<String, dynamic> json, ConditionsModel condition) => HourModel(
         timeEpoch: json["time_epoch"],
         time: json["time"],
         tempC: json["temp_c"],

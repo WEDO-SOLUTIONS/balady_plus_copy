@@ -31,13 +31,15 @@ class _FullscreenErrorContent extends StatelessWidget {
           ),
         ),
       const Spacer(),
-      const Padding(padding: EdgeInsets.zero, child: ErrorImageWidget()),
+      const ErrorImageWidget(),
       Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x),
         child: Text(
           errorTitle ?? context.l10n.somethingWentWrong,
           textAlign: TextAlign.center,
-          style: context.textStyleV3.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+          style: context.textStyleV3.h3SemiBold.copyWith(
+            color: context.colors.foregroundDefault,
+          ),
         ),
       ),
       Padding(
@@ -45,7 +47,9 @@ class _FullscreenErrorContent extends StatelessWidget {
         child: Text(
           errorLabel ?? context.l10n.somethingWentWrongPleaseTryAgainLater,
           textAlign: TextAlign.center,
-          style: context.textStyleV3.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
+          style: context.textStyleV3.bodyLargeRegular.copyWith(
+            color: context.colors.foregroundSoft,
+          ),
         ),
       ),
       const Spacer(),

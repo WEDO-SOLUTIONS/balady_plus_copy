@@ -6,12 +6,7 @@ class AppBottomNavigationBarItem extends StatelessWidget {
   final Widget Function(BuildContext, bool) iconBuilder;
   final String? label;
 
-  const AppBottomNavigationBarItem({
-    required this.selected,
-    required this.iconBuilder,
-    super.key,
-    this.label,
-  });
+  const AppBottomNavigationBarItem({required this.selected, required this.iconBuilder, super.key, this.label});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -20,10 +15,7 @@ class AppBottomNavigationBarItem extends StatelessWidget {
           children: [
             iconBuilder.call(context, selected),
             const SizedBox(height: 2),
-            DefaultLabel(
-              label: label!,
-              selected: selected,
-            ),
+            DefaultLabel(label: label!, selected: selected),
           ],
         ),
       );

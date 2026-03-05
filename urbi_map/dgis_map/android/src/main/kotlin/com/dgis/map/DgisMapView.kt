@@ -423,9 +423,9 @@ class DgisMapView(
     }
 
     override fun calcPositionForGeoPoints(
-        points: List<GeoPointMessage>,
-        options: CalcPositionOptionsMessage,
-        callback: (Result<CameraPositionMessage>) -> Unit
+            points: List<GeoPointMessage>,
+            options: CalcPositionOptionsMessage,
+            callback: (Result<CameraPositionMessage>) -> Unit
     ) {
         objectTapHandler?.calcPositionForGeoPoints(points, options, callback)
     }

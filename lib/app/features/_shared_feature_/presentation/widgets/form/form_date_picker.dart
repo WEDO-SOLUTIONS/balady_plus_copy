@@ -6,10 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
-import '../../enhanced_widgets/pickers/hijri_picker/hijri_picker.dart'
-    as hijri_picker;
-import '../../../shared_feature_exports.dart'
-    show CustomTextWidget, DropDownWithTitle;
+import '../../enhanced_widgets/pickers/hijri_picker/hijri_picker.dart' as hijri_picker;
+import '../../../shared_feature_exports.dart' show CustomTextWidget, DropDownWithTitle;
 
 class FormDatePicker extends StatefulWidget {
   final String title;
@@ -71,8 +69,7 @@ class _FormDatePickerState extends State<FormDatePicker> {
             initialDateForm: _dateForm,
             onChange: (dateForm) {
               setState(() => _dateForm = dateForm);
-              if (_selectedDate != null)
-                widget.onChange(_selectedDate!, _dateForm);
+              if (_selectedDate != null) widget.onChange(_selectedDate!, _dateForm);
             },
           ),
         ),
@@ -81,27 +78,18 @@ class _FormDatePickerState extends State<FormDatePicker> {
   }
 
   void showPickerHijriDate(DateTime? currentDate, BuildContext context) {
-    final minValue = widget.startDate == null
-        ? null
-        : HijriCalendar.fromDate(widget.startDate!);
-    final maxValue =
-        widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
-    final date =
-        currentDate == null ? null : HijriCalendar.fromDate(currentDate);
+    final minValue = widget.startDate == null ? null : HijriCalendar.fromDate(widget.startDate!);
+    final maxValue = widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
+    final date = currentDate == null ? null : HijriCalendar.fromDate(currentDate);
 
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headercolor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        widget.title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(widget.title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: hijri_picker.DateTimePickerAdapter(
         minValue: minValue,
@@ -111,15 +99,10 @@ class _FormDatePickerState extends State<FormDatePicker> {
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        final date =
-            (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+        final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
         setState(() {
-          _selectedDate = date?.hijriToGregorian(
-            date.hYear,
-            date.hMonth,
-            date.hDay,
-          );
+          _selectedDate = date?.hijriToGregorian(date.hYear, date.hMonth, date.hDay);
         });
         if (_selectedDate == null) return;
         widget.onChange(_selectedDate!, _dateForm);
@@ -129,17 +112,12 @@ class _FormDatePickerState extends State<FormDatePicker> {
 
   void showPickerDate(DateTime? currentDate, BuildContext context) {
     Picker(
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headerColor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        widget.title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(widget.title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: DateTimePickerAdapter(
         minValue: widget.startDate,

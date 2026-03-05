@@ -5,12 +5,10 @@ import 'package:dartz/dartz.dart';
 import '../../data/model/volunteer_lookup.dart';
 import '../repository/volunteer_profile_repository.dart';
 
-
 class GetBloodTypes extends UseCase<List<VolunteerLookup>, NoParams> {
   final VolunteerProfileRepository repository;
 
   GetBloodTypes({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
-      repository.getBloodTypes();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getBloodTypes();
 }

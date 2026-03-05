@@ -5,15 +5,12 @@ import 'package:dgis_map_platform_interface/library.dart';
 class VisibleRectEventHandler {
   VisibleRectEventHandler();
 
-  Stream<VisibleRectEvent> get visibleRectEvents =>
-      _visibleRectController.stream;
+  Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectController.stream;
 
-  Stream<CameraPositionMessage> get cameraPositionEvents =>
-      _cameraPositionController.stream;
+  Stream<CameraPositionMessage> get cameraPositionEvents => _cameraPositionController.stream;
 
   final _visibleRectController = StreamController<VisibleRectEvent>.broadcast();
-  final _cameraPositionController =
-      StreamController<CameraPositionMessage>.broadcast();
+  final _cameraPositionController = StreamController<CameraPositionMessage>.broadcast();
 
   void cameraPositionEvent(Map<dynamic, dynamic> map) {
     final event = CameraPositionMessage(

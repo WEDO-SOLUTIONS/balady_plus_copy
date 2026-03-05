@@ -27,17 +27,14 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     on<GetWeatherForLocation>(_getAllWeatherInfo);
     on<RefreshWeatherForLocation>(_refreshWeatherForLocation);
 
-    on<ChangeIndexEvent>(
-        (event, emit) => emit(state.copyWith(selectedTile: event.index)));
+    on<ChangeIndexEvent>((event, emit) => emit(state.copyWith(selectedTile: event.index)));
   }
 
-  Future<void> _getAllWeatherInfo(
-      GetWeatherForLocation e, Emitter emitter) async {
+  Future<void> _getAllWeatherInfo(GetWeatherForLocation e, Emitter emitter) async {
     //   if (state.allWeatherInfoStatus == BlocStatus.success &&
     //     state.showLocationError == false) return;
 
-    CommonFunctions.checkLocationSettings(
-        NavigationService.navigatorKey!.currentContext!);
+    CommonFunctions.checkLocationSettings(NavigationService.navigatorKey!.currentContext!);
     print("_getAllWeatherInfo");
 
     emitter(state.copyWith(
@@ -51,9 +48,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         accuracy: LocationAccuracy.low,
       );
 
-      location = GISParams(
-          x: latlng?.longitude ?? 46.72364215018372,
-          y: latlng?.latitude ?? 24.744615305066496);
+      location = GISParams(x: latlng?.longitude ?? 46.72364215018372, y: latlng?.latitude ?? 24.744615305066496);
 
       if (latlng == null)
         emitter(state.copyWith(showLocationError: true));
@@ -63,11 +58,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       emitter(state.copyWith(showLocationError: false));
     }
 
-    WeatherParams params =
-        e.params.copyWith(latitude: location.y, longitude: location.x);
+    WeatherParams params = e.params.copyWith(latitude: location.y, longitude: location.x);
 
-    final failureOrSuccess =
-        await _getGISData(GISParams(x: params.longitude!, y: params.latitude!));
+    final failureOrSuccess = await _getGISData(GISParams(x: params.longitude!, y: params.latitude!));
     await failureOrSuccess.fold((failure) async {
       emitter(state.copyWith(
         allWeatherInfoStatus: BlocStatus.failure,
@@ -95,8 +88,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 /*  ;*/
   }
 
-  Future<void> _refreshWeatherForLocation(
-      RefreshWeatherForLocation e, Emitter emitter) async {
+  Future<void> _refreshWeatherForLocation(RefreshWeatherForLocation e, Emitter emitter) async {
     GISParams? location = CommonProperties.userLocation;
 
     if (location == null) {
@@ -104,9 +96,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         accuracy: LocationAccuracy.low,
       );
 
-      location = GISParams(
-          x: latlng?.longitude ?? 46.72364215018372,
-          y: latlng?.latitude ?? 24.744615305066496);
+      location = GISParams(x: latlng?.longitude ?? 46.72364215018372, y: latlng?.latitude ?? 24.744615305066496);
 
       if (latlng == null)
         emitter(state.copyWith(showLocationError: true));
@@ -116,8 +106,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       emitter(state.copyWith(showLocationError: false));
     }
 
-    WeatherParams params =
-        e.params.copyWith(latitude: location.y, longitude: location.x);
+    WeatherParams params = e.params.copyWith(latitude: location.y, longitude: location.x);
 
     final failureOrSuccess = await _getWeatherInfo(params);
     failureOrSuccess.fold((failure) {

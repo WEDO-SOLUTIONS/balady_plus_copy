@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, StepStatus;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, StepStatus;
 import '../../shared_feature_exports.dart' show CustomTextWidget;
 
 class CustomStepWidget extends StatelessWidget {
@@ -63,8 +62,7 @@ class CustomStepWidget extends StatelessWidget {
           : CustomTextWidget(
               step?.toString() ?? "1",
               textAlign: TextAlign.center,
-              textStyle: stepStyle ??
-                  AppStyle.mainTextStyle.copyWith(color: stepColor),
+              textStyle: stepStyle ?? AppStyle.mainTextStyle.copyWith(color: stepColor),
             ),
     );
   }

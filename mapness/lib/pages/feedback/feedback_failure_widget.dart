@@ -12,6 +12,7 @@ class FeedbackFailureWidget extends StatelessWidget {
   final VoidCallback? onRetry;
   final bool isFullscreen;
   final String? screenTitle;
+
   const FeedbackFailureWidget({this.isFullscreen = true, this.onRetry, this.screenTitle, super.key});
 
   @override

@@ -12,11 +12,8 @@ class NotificationManager {
     required this.repository,
   });
 
-
-
   Future<void> updateNotificationSettings(NotificationRequest request) async {
-    final failureOrSuccess =
-        await repository.updateNotificationSettings(request);
+    final failureOrSuccess = await repository.updateNotificationSettings(request);
     failureOrSuccess.fold(
       (failure) {
         if (counter < 2) {

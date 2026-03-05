@@ -48,7 +48,9 @@ class EtaShareExpired extends StatelessWidget {
           ContentRow(
             options: ContentRowOptions(
               padding: EdgeInsets.zero,
-              titleStyle: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+              titleStyle: context.textStyles.h3SemiBold.copyWith(
+                color: context.colors.foregroundDefault,
+              ),
               customActionWidget: AppButton.close(
                 onTap: Navigator.of(context).pop,
                 padding: EdgeInsets.zero,
@@ -60,14 +62,23 @@ class EtaShareExpired extends StatelessWidget {
           ),
           const ErrorImageWidget(),
           const SizedBox(height: Spacing.$2x),
-          Text(title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault)),
+          Text(
+            title,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
+            ),
+          ),
           const SizedBox(height: Spacing.$3x),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.foregroundSoft,
+            ),
           ),
-          const SizedBox(height: Spacing.$8x),
+          const SizedBox(
+            height: Spacing.$8x,
+          ),
         ],
       ),
     ),

@@ -9,6 +9,5 @@ class GetInterests extends UseCase<List<VolunteerLookup>, NoParams> {
 
   GetInterests({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
-      repository.getInterests();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getInterests();
 }

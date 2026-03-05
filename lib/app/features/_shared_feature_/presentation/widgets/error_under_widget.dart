@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, UIHelper;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, UIHelper;
 import '../../shared_feature_exports.dart' show CustomTextWidget;
 
 class ErrorUnderWidget extends StatelessWidget {
@@ -19,10 +18,7 @@ class ErrorUnderWidget extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: CustomTextWidget(
                   errorText!,
-                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                    color: AppColor.error,
-                    fontSize: 14.0,
-                  ),
+                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.error, fontSize: 14.0),
                 ),
               ),
             )
@@ -32,6 +28,5 @@ class ErrorUnderWidget extends StatelessWidget {
 
   bool get showError => errorText != null && errorText!.isNotEmpty;
 
-  EdgeInsetsGeometry get padding =>
-      const EdgeInsets.only(bottom: UIHelper.middlePadding, top: 6.0);
+  EdgeInsetsGeometry get padding => const EdgeInsets.only(bottom: UIHelper.middlePadding, top: 6.0);
 }

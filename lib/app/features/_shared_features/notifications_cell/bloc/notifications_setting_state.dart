@@ -5,8 +5,7 @@ class NotificationsSettingState extends Equatable {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class InitialNotificationsSettingsState
-    implements NotificationsSettingState {
+final class InitialNotificationsSettingsState implements NotificationsSettingState {
   @override
   List<Object?> get props => throw UnimplementedError();
 
@@ -24,8 +23,7 @@ final class EmptyNotificationsSettingsState extends NotificationsSettingState {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class FailureNotificationsSettingsState
-    extends NotificationsSettingState {
+final class FailureNotificationsSettingsState extends NotificationsSettingState {
   final String errorMessage;
 
   FailureNotificationsSettingsState({required this.errorMessage});

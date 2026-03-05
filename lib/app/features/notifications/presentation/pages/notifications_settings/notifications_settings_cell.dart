@@ -15,8 +15,7 @@ class NotificationsSettingsCell extends StatefulWidget {
   const NotificationsSettingsCell({super.key, required this.category});
 
   @override
-  State<NotificationsSettingsCell> createState() =>
-      _NotificationsSettingsCellState();
+  State<NotificationsSettingsCell> createState() => _NotificationsSettingsCellState();
 }
 
 class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
@@ -35,31 +34,25 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
             widget.category.products!.length,
             (index) => BlocProvider(
                   create: (context) {
-                    NotificationRepositoryImplementation
-                        notificationRepositoryImplementation = sl();
+                    NotificationRepositoryImplementation notificationRepositoryImplementation = sl();
                     return NotificationsListSettingsCubit(
-                        notificationsSettingsListRepository:
-                            notificationRepositoryImplementation,
+                        notificationsSettingsListRepository: notificationRepositoryImplementation,
                         isChecked: widget.category.products![index].enabled!);
                   },
-                  child: BlocBuilder<NotificationsListSettingsCubit,
-                      NotificationsListSettingsState>(
+                  child: BlocBuilder<NotificationsListSettingsCubit, NotificationsListSettingsState>(
                     builder: (blocContext, state) {
-                      NotificationsListSettingsCubit cubit =
-                          blocContext.watch<NotificationsListSettingsCubit>();
+                      NotificationsListSettingsCubit cubit = blocContext.watch<NotificationsListSettingsCubit>();
                       if (state is LoadingEventsSettingsState) {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (state is FailureNotificationsSettingsState) {
                         return ReloadWidget(
                           onTab: () {
-                            cubit.setNotificationsProfileProducts(
-                                SetNotificationsProfileProductsParams(
-                                    enabled: !cubit.isChecked,
-                                    channelId: 'mobile',
-                                    productId:
-                                        widget.category.products![index].id,
-                                    applicationId: 'super-app'));
+                            cubit.setNotificationsProfileProducts(SetNotificationsProfileProductsParams(
+                                enabled: !cubit.isChecked,
+                                channelId: 'mobile',
+                                productId: widget.category.products![index].id,
+                                applicationId: 'super-app'));
                           },
                         );
                       }
@@ -71,35 +64,30 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                           color: const Color(0xFFF5F7FA),
                           child: InkWell(
                             onTap: () {
-                              cubit.setNotificationsProfileProducts(
-                                  SetNotificationsProfileProductsParams(
-                                      enabled: !cubit.isChecked,
-                                      channelId: 'mobile',
-                                      productId:
-                                          widget.category.products![index].id,
-                                      applicationId: 'super-app'));
+                              cubit.setNotificationsProfileProducts(SetNotificationsProfileProductsParams(
+                                  enabled: !cubit.isChecked,
+                                  channelId: 'mobile',
+                                  productId: widget.category.products![index].id,
+                                  applicationId: 'super-app'));
                             },
                             borderRadius: BorderRadius.circular(8),
                             child: SizedBox(
                               height: 48,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Row(
                                   children: [
                                     const SizedBox(
                                       width: 12,
                                     ),
                                     Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 2.0),
+                                      padding: const EdgeInsets.only(bottom: 2.0),
                                       child: Text(
                                         widget.category.products![index].name!,
                                         style: Theme.of(context)
                                             .extension<ThemeTextStyles>()!
                                             .text
-                                            .copyWith(
-                                                color: const Color(0xFF1E2A36)),
+                                            .copyWith(color: const Color(0xFF1E2A36)),
                                       ),
                                     ),
                                     const Spacer(),

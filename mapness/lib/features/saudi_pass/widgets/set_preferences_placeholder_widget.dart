@@ -2,44 +2,52 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
 
-class SetPreferencesPlaceholderWidget extends StatelessWidget {
+class SetPreferencesPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const SetPreferencesPlaceholderWidget({required this.action, super.key});
 
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-    assetWidget: _assetIllustrationPercent(context),
-    action: action,
-    title: context.l10n.saudiPassOffersSetPreferences,
-    hint: context.l10n.saudiPassOffersSetPreferencesHint,
-    actionTitle: context.l10n.saudiPassOffersGoToPreferences,
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
+    return _PlaceholderWidget(
+      assetWidget: SvgPicture.asset(ref.read(activeCityEventProvider).getIllustrationPercent(isDark: isDark)),
+      action: action,
+      title: context.l10n.saudiPassOffersSetPreferences,
+      hint: context.l10n.saudiPassOffersSetPreferencesHint,
+      actionTitle: context.l10n.saudiPassOffersGoToPreferences,
+    );
+  }
 }
 
-class LoginPreferencesPlaceholderWidget extends StatelessWidget {
+class LoginPreferencesPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const LoginPreferencesPlaceholderWidget({required this.action, super.key});
 
-  Widget asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.svg(),
-    BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.svg(),
-    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.svg(),
-  };
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-    assetWidget: _assetIllustrationPercent(context),
-    action: action,
-    title: context.l10n.saudiPassOffersSetPreferences,
-    hint: context.l10n.saudiPassOffersLoginHint,
-    actionTitle: context.l10n.connectToMomrah,
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
+    return _PlaceholderWidget(
+      assetWidget: SvgPicture.asset(ref.read(activeCityEventProvider).getIllustrationPercent(isDark: isDark)),
+      action: action,
+      title: context.l10n.saudiPassOffersSetPreferences,
+      hint: context.l10n.saudiPassOffersLoginHint,
+      actionTitle: context.l10n.connectToMomrah,
+    );
+  }
 }
 
 class WentWrongPlaceholderWidget extends StatelessWidget {
@@ -134,9 +142,3 @@ class _PlaceholderWidget extends StatelessWidget {
     );
   }
 }
-
-Widget _assetIllustrationPercent(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-  BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark,
-  BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent,
-  BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent,
-}.svg();

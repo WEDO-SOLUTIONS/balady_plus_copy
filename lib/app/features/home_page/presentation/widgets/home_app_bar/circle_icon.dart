@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor;
-import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show DrawIconBasedTypeWidget;
+import '../../../../_shared_feature_/shared_feature_exports.dart' show DrawIconBasedTypeWidget;
 
 class CircleIcon extends StatelessWidget {
   const CircleIcon(

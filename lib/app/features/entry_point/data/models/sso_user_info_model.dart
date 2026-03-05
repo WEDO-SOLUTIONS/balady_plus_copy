@@ -17,22 +17,21 @@ class SsoUserInfoModel extends SsoUserInfo {
       super.nationality,
       super.tnm});
 
-  factory SsoUserInfoModel.fromJson(Map<String, dynamic> json) =>
-      SsoUserInfoModel(
-          name: json["name"],
-          phone: json["phone"],
-          mail: json["mail"],
-          arName: json["ar_name"],
-          enName: json["en_name"],
-          idNo: json["id_no"],
-          nid: json["nid"],
-          idType: json["id_type"],
-          sex: json["sex"],
-          dob: json["dob"],
-          sname: json["sname"],
-          sub: json["sub"],
-          nationality: json["nationality"],
-          tnm: json["tnm"]);
+  factory SsoUserInfoModel.fromJson(Map<String, dynamic> json) => SsoUserInfoModel(
+      name: json["name"],
+      phone: json["phone"],
+      mail: json["mail"],
+      arName: json["ar_name"],
+      enName: json["en_name"],
+      idNo: json["id_no"],
+      nid: json["nid"],
+      idType: json["id_type"],
+      sex: json["sex"],
+      dob: json["dob"],
+      sname: json["sname"],
+      sub: json["sub"],
+      nationality: json["nationality"],
+      tnm: json["tnm"]);
 
   Map<String, dynamic> toJson() => {
         "name": name,

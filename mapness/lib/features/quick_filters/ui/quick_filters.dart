@@ -85,13 +85,13 @@ class QuickFilters extends ConsumerWidget {
       ...customItems,
       ...favourites,
       ...models.QuickFilterList().list.map(
-            (filter) => FilterItemConfig(
-              filterType: FilterType.quick,
-              title: filter.title(context.l10n),
-              icon: filter.icon,
-              onTap: () => onQuickFilterTap(filter),
-            ),
-          ),
+        (filter) => FilterItemConfig(
+          filterType: FilterType.quick,
+          title: filter.title(context.l10n),
+          icon: filter.icon,
+          onTap: () => onQuickFilterTap(filter),
+        ),
+      ),
     ];
 
     return widgets.QuickFilters(

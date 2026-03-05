@@ -15,8 +15,6 @@ class BaldayDeeplink {
   static const String serviceKey = 'serviceKey';
   static const String miniAppPath = 'pt';
   static const String miniAppItemId = 'dt_Id';
-  static const String cityEvent = 'cityEvent';
-
 
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 

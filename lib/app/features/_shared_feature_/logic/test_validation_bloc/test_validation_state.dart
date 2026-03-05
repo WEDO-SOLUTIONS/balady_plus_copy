@@ -30,74 +30,60 @@ class TestValidationState extends Equatable {
   });
 
   //! Validators
-  PhoneNumberValidation get phoneNumberValidator =>
-      PhoneNumberValidation.dirty(value: phoneNumber ?? '');
+  PhoneNumberValidation get phoneNumberValidator => PhoneNumberValidation.dirty(value: phoneNumber ?? '');
 
-  EmailValidation get emailValidator =>
-      EmailValidation.dirty(email: email ?? '');
+  EmailValidation get emailValidator => EmailValidation.dirty(email: email ?? '');
 
-  RequiredFieldValidation get startDateValidator =>
-      RequiredFieldValidation.dirty(value: startDate ?? '');
-  DateAfterValidation get endDateValidator => DateAfterValidation.dirty(
-        startDate: startDate ?? '',
-        endDate: endDate ?? '',
-      );
+  RequiredFieldValidation get startDateValidator => RequiredFieldValidation.dirty(value: startDate ?? '');
+  DateAfterValidation get endDateValidator =>
+      DateAfterValidation.dirty(startDate: startDate ?? '', endDate: endDate ?? '');
 
   OptionalFieldValidation get addressValidator =>
       OptionalFieldValidation.dirty(value: isAddress ? address ?? '' : null);
-  RequiredFieldValidation get descriptionValidator =>
-      RequiredFieldValidation.dirty(value: description ?? '');
+  RequiredFieldValidation get descriptionValidator => RequiredFieldValidation.dirty(value: description ?? '');
 
-  RequiredDropDownValidation get cityValidator =>
-      RequiredDropDownValidation.dirty(value: city ?? sl<DropDownItem>());
+  RequiredDropDownValidation get cityValidator => RequiredDropDownValidation.dirty(value: city ?? sl<DropDownItem>());
 
   //! Errors
-  String? get phoneNumberErrorText =>
-      phoneNumber != null ? phoneNumberValidator.error?.message : null;
+  String? get phoneNumberErrorText => phoneNumber != null ? phoneNumberValidator.error?.message : null;
 
-  String? get emailErrorText =>
-      email != null ? emailValidator.error?.message : null;
+  String? get emailErrorText => email != null ? emailValidator.error?.message : null;
 
-  String? get startDateErrorText =>
-      startDate != null ? startDateValidator.error?.message : null;
-  String? get endDateErrorText =>
-      endDate != null ? endDateValidator.error?.message : null;
+  String? get startDateErrorText => startDate != null ? startDateValidator.error?.message : null;
+  String? get endDateErrorText => endDate != null ? endDateValidator.error?.message : null;
 
-  String? get addressErrorText =>
-      address != null ? addressValidator.error?.message : null;
-  String? get descriptionErrorText =>
-      description != null ? descriptionValidator.error?.message : null;
+  String? get addressErrorText => address != null ? addressValidator.error?.message : null;
+  String? get descriptionErrorText => description != null ? descriptionValidator.error?.message : null;
 
-  String? get cityErrorText =>
-      city != null ? cityValidator.error?.message : null;
+  String? get cityErrorText => city != null ? cityValidator.error?.message : null;
 
   bool get isAddress => true;
 
   String get error => errorMessage ?? "";
 
   bool get isFormValid => Formz.validate([
-        phoneNumberValidator,
-        emailValidator,
-        startDateValidator,
-        endDateValidator,
-        addressValidator,
-        descriptionValidator,
-        cityValidator,
-      ]);
+    phoneNumberValidator,
+    emailValidator,
+    startDateValidator,
+    endDateValidator,
+    addressValidator,
+    descriptionValidator,
+    cityValidator,
+  ]);
 
   @override
   List<Object?> get props => [
-        phoneNumber,
-        email,
-        startDate,
-        endDate,
-        address,
-        description,
-        city,
-        //
-        status,
-        errorMessage,
-      ];
+    phoneNumber,
+    email,
+    startDate,
+    endDate,
+    address,
+    description,
+    city,
+    //
+    status,
+    errorMessage,
+  ];
 
   TestValidationState copyWith({
     String? phoneNumber,

@@ -21,7 +21,7 @@ class PoiPhotosHeader extends ConsumerWidget {
     final isPhotosLoading = photos.isLoading;
 
     return HeaderComponent(
-      photosEmpty: isPhotosEmpty,
+      photosCount: isPhotosEmpty ? 0 : photos.requireValue.items.length,
       photosAreLoading: isPhotosLoading,
       objectId: objectId,
       bottomSheetController: bottomSheetController,

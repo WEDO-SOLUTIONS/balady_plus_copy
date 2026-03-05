@@ -100,8 +100,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       icon: SvgMarkerIcon(
         svgPath: switch (context.read<ThemeController>().currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          _ => Assets.icons.svg.placesNew.light.icOffers.keyName,
         },
         width: _kMarkerWidth,
       ),
@@ -113,16 +112,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
         icon: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
-          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
-        },
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+          _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        }.markerIcon(size: _kClusterIconSize),
         text: objectCount.toString(),
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
@@ -149,8 +141,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           ),
           icon: switch (context.read<ThemeController>().currentTheme) {
             BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
-            BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
-            BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+            _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
           },
           id: offerPoiPinId,
         ),
@@ -187,8 +178,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         textStyle: options.textStyle,
         icon: switch (context.read<ThemeController>().currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
         },
         id: offerPoiPinId,
       ),

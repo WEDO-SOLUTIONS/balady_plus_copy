@@ -51,15 +51,8 @@ class UpdateSearchParamsEvent extends EventsEvent {
   final DateTime? toDate;
   final String? sortBy;
 
-  const UpdateSearchParamsEvent(
-      this.selectedCity,
-      this.selectedSeason,
-      this.selectedCategory,
-      this.selectedAudince,
-      this.fromDate,
-      this.toDate,
-      this.sortBy,
-      this.searchKeyword);
+  const UpdateSearchParamsEvent(this.selectedCity, this.selectedSeason, this.selectedCategory, this.selectedAudince,
+      this.fromDate, this.toDate, this.sortBy, this.searchKeyword);
 }
 
 class GetMoreSearchEvent extends EventsEvent {
