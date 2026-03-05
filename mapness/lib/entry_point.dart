@@ -459,11 +459,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 extensions: <ThemeExtension<dynamic>>[
                   if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
+                  AppColorsThemeExt.palette(isDark: false),
+                  AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(
                     themes: switch (specialThemeMode) {
                       SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
-                      // SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
-                      // SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
+                      SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
+                      SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
                       _ => BaladyAppThemes.light,
                     },
                   ),

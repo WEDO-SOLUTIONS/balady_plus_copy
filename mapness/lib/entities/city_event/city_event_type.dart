@@ -32,10 +32,15 @@ extension DefaultMarkerExt on CityEventType? {
     _ => Assets.icons.svg.placesBigNew.light.icPinNew.keyName,
   };
 
-  MarkerIconMessage get icParking => switch (this) {
-    CityEventType.saudiNationalDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-    _ => Assets.icons.svg.placesBigNew.light.icParking.keyName.markerIcon(),
-  };
+  MarkerIconMessage getIcParking({bool isDark = false}) {
+    if (isDark) {
+      Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon();
+    }
+    return switch (this) {
+      CityEventType.saudiNationalDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+      _ => Assets.icons.svg.placesBigNew.light.icParking.keyName.markerIcon(),
+    };
+  }
 }
 
 extension FullAddressLogo on CityEventType {

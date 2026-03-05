@@ -36,12 +36,6 @@ class LoginPreferencesPlaceholderWidget extends ConsumerWidget {
 
   const LoginPreferencesPlaceholderWidget({required this.action, super.key});
 
-  Widget asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.svg(),
-    BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.svg(),
-    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.svg(),
-  };
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;

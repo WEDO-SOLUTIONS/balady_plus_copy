@@ -80,8 +80,8 @@ class _ParkingManage extends _$ParkingManage {
           position: GeoPointWithElevationMessage(latitude: model.lat, longitude: model.lon, elevation: 1),
           icon: switch (theme) {
             BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
-            BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
             BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
+            _ => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
           },
         ),
         onTap: () {
@@ -178,8 +178,8 @@ class _ParkingManage extends _$ParkingManage {
               ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
               : switch (theme) {
                   BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
-                  BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
                   BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
+                  _ => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
                 },
         ),
         onTap: () {

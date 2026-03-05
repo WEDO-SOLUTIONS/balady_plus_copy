@@ -22,6 +22,7 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
@@ -108,6 +109,9 @@ class ParkingSpotPage extends HookConsumerWidget {
         checkDirty();
       });
     final canSave = isDirty.value && isValid.value;
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    final icParkingIcon = activeCityEvent.getIcParking(isDark: isDark);
 
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
@@ -138,7 +142,6 @@ class ParkingSpotPage extends HookConsumerWidget {
                     borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                     child: UrbiMap(
                       onMapCreated: (controller) async {
-                        final activeCityEvent = ref.read(activeCityEventProvider);
                         final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
                         await dgisMapController.onMapCreated(controller);
                         if (latLng.value != null) {
@@ -158,16 +161,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                                   longitude: latLng.value!.longitude,
                                   elevation: 0,
                                 ),
-                                icon:
-                                    activeCityEvent?.icParking ??
-                                    switch (context.read<ThemeController>().currentTheme) {
-                                      BaladyAppThemes.dark =>
-                                        Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
-                                      BaladyAppThemes.light =>
-                                        Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
-                                      BaladyAppThemes.saudiDay =>
-                                        Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-                                    },
+                                icon: icParkingIcon,
                               ),
                             ),
                           );
@@ -193,7 +187,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                     size: ButtonSize.large,
                     primaryIcon: GeneralIcons.location,
                     primaryLabel: context.l10n.changeLocation,
-                    onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
+                    onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier, icParkingIcon),
                   ),
                 ),
                 Spacing.$4x.heightBox,
@@ -248,6 +242,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     WidgetRef ref,
     ValueNotifier<LatLng?> latLng,
     ValueNotifier<String> addressNotifier,
+    MarkerIconMessage? icParkingIcon,
   ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
     if (result is RoutePoint) {
@@ -274,11 +269,7 @@ class ParkingSpotPage extends HookConsumerWidget {
               longitude: latLng.value!.longitude,
               elevation: 0,
             ),
-            icon: switch (context.read<ThemeController>().currentTheme) {
-              BaladyAppThemes.dark => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
-              BaladyAppThemes.light => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
-              BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
-            },
+            icon: icParkingIcon,
           ),
         ),
       );
