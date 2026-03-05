@@ -28,19 +28,11 @@ class CircleIcon extends StatelessWidget {
         shape: BoxShape.circle,
         color: backgroundColor ?? AppColor.blackModern50Light,
         boxShadow: [
-          BoxShadow(
-            color: AppColor.blackModern900Light.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
+          BoxShadow(color: AppColor.blackModern900Light.withOpacity(0.1), blurRadius: 8, offset: const Offset(0, 4)),
         ],
       ),
       child: Center(
-        child: DrawIconBasedTypeWidget(
-          icon: icon,
-          iconColor: iconColor,
-          iconSize: iconSize,
-        ),
+        child: DrawIconBasedTypeWidget(icon: icon, iconColor: iconColor, iconSize: iconSize),
       ),
     );
   }

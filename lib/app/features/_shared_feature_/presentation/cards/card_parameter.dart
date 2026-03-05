@@ -16,23 +16,13 @@ class CardParameter extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        color: bgColor ?? AppColor.primary50Light50,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: bgColor ?? AppColor.primary50Light50),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(
-            title,
-            textStyle: AppStyle.personalInfoParameterTitleTextStyle,
-          ),
+          CustomTextWidget(title, textStyle: AppStyle.personalInfoParameterTitleTextStyle),
           const SizedBox(height: 8),
-          CustomTextWidget(
-            value,
-            maxLines: lines,
-            textStyle: AppStyle.personalInfoParameterValueTextStyle,
-          ),
+          CustomTextWidget(value, maxLines: lines, textStyle: AppStyle.personalInfoParameterValueTextStyle),
         ],
       ),
     );

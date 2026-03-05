@@ -37,13 +37,7 @@ class DropDownItemModel extends DropDownItem {
     );
   }
 
-  Map<String, dynamic> toMap() => {
-        _name: name,
-        _value: value,
-        _code: code,
-        _order: order,
-        if (id != null) _id: id,
-      };
+  Map<String, dynamic> toMap() => {_name: name, _value: value, _code: code, _order: order, if (id != null) _id: id};
 
   String toJson() => toMap().toJson();
 
@@ -53,17 +47,10 @@ class DropDownItemModel extends DropDownItem {
 class DropDownItemsModel extends DropDownItems {
   const DropDownItemsModel({required List<DropDownItemModel> items}) : super(items: items);
 
-  factory DropDownItemsModel.itemsFromMap(List<dynamic> list) => DropDownItemsModel(
-        items: list.map((item) => DropDownItemModel.fromMap(item)).toList(),
-      );
+  factory DropDownItemsModel.itemsFromMap(List<dynamic> list) =>
+      DropDownItemsModel(items: list.map((item) => DropDownItemModel.fromMap(item)).toList());
 }
 
 extension DropDownEntityModelConversion on DropDownItem {
-  DropDownItemModel get toModel => DropDownItemModel(
-        name: name,
-        value: value,
-        code: code,
-        order: order,
-        id: id,
-      );
+  DropDownItemModel get toModel => DropDownItemModel(name: name, value: value, code: code, order: order, id: id);
 }

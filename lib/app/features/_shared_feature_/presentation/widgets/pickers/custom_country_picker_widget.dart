@@ -67,10 +67,10 @@ class CustomCountryPickerWidget extends StatelessWidget {
   Color get btnBorderColor => borderColor ?? AppColor.gray;
 
   void onShowPicker(BuildContext context) => showCountryPicker(
-        context: context,
-        // optional. Shows phone code before the country name.
-        showPhoneCode: true,
-        favorite: <String>['SA'],
-        onSelect: (Country country) => onSelected(country),
-      );
+    context: context,
+    // optional. Shows phone code before the country name.
+    showPhoneCode: true,
+    favorite: <String>['SA'],
+    onSelect: (Country country) => onSelected(country),
+  );
 }

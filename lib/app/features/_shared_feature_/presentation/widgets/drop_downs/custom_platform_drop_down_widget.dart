@@ -74,25 +74,25 @@ class CustomPlatformDropDownWidget extends StatelessWidget {
             onDisabledTapped: onDisabledTapped,
           )
         : Platform.isIOS
-            ? CustomCupertinoDropDownWidget(
-                isRequired: isRequired,
-                readOnly: readOnly,
-                initialValue: initialValue,
-                items: items,
-                label: label,
-                labelStyle: labelStyle,
-                hintText: hintText,
-                hintStyle: hintStyle,
-                fillColor: fillColor,
-                borderRadius: borderRadius,
-                borderColor: borderColor,
-                borderType: borderType,
-                padding: padding,
-                errorMsg: errorMsg,
-                onSelected: onSelected,
-                onTap: onTap,
-                onDisabledTapped: onDisabledTapped,
-              )
-            : const SizedBox();
+        ? CustomCupertinoDropDownWidget(
+            isRequired: isRequired,
+            readOnly: readOnly,
+            initialValue: initialValue,
+            items: items,
+            label: label,
+            labelStyle: labelStyle,
+            hintText: hintText,
+            hintStyle: hintStyle,
+            fillColor: fillColor,
+            borderRadius: borderRadius,
+            borderColor: borderColor,
+            borderType: borderType,
+            padding: padding,
+            errorMsg: errorMsg,
+            onSelected: onSelected,
+            onTap: onTap,
+            onDisabledTapped: onDisabledTapped,
+          )
+        : const SizedBox();
   }
 }

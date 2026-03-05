@@ -59,11 +59,7 @@ class CustomEnhancedMaterialDropDownWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Label widget
-          WidgetLabel(
-            isRequired: isRequired,
-            label: label,
-            labelStyle: labelStyle,
-          ),
+          WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
           //! Drow-Down widget
           Builder(
             builder: (context) {
@@ -72,31 +68,23 @@ class CustomEnhancedMaterialDropDownWidget extends StatelessWidget {
                 builder: (_, value) {
                   return Container(
                     padding: _padding,
-                    decoration: BoxDecoration(
-                      color: _fillColor,
-                      border: _border,
-                      borderRadius: _borderRadius,
-                    ),
+                    decoration: BoxDecoration(color: _fillColor, border: _border, borderRadius: _borderRadius),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<DropDownItem>(
                         isExpanded: true,
                         isDense: true,
                         icon: _ArrowIconWidget(readOnly: readOnly),
                         value: value,
-                        hint: CustomTextWidget(
-                          value?.name ?? initialHint,
-                          textStyle: _hintStyle,
-                        ),
+                        hint: CustomTextWidget(value?.name ?? initialHint, textStyle: _hintStyle),
                         onTap: onTap,
                         menuMaxHeight: 400.0,
                         items: items
-                            .map((item) => DropdownMenuItem<DropDownItem>(
-                                  value: item,
-                                  child: CustomTextWidget(
-                                    item.name,
-                                    textStyle: _hintStyle,
-                                  ),
-                                ))
+                            .map(
+                              (item) => DropdownMenuItem<DropDownItem>(
+                                value: item,
+                                child: CustomTextWidget(item.name, textStyle: _hintStyle),
+                              ),
+                            )
                             .toList(),
                         onChanged: readOnly
                             ? (_) => onDisabledTapped != null ? onDisabledTapped!() : null
@@ -133,11 +121,7 @@ class _ArrowIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return RotatedBox(
       quarterTurns: 3,
-      child: Icon(
-        Icons.arrow_back_ios_new,
-        size: 14.0,
-        color: readOnly ? AppColor.black : AppColor.gray,
-      ),
+      child: Icon(Icons.arrow_back_ios_new, size: 14.0, color: readOnly ? AppColor.black : AppColor.gray),
     );
   }
 }

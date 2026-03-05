@@ -55,47 +55,43 @@ class _TwoElevatedFooterButtons extends StatelessWidget {
 }
 
 class TwoFooterButtons extends AbstractionWidget {
-  TwoFooterButtons.addCancel({
-    super.key,
-    required VoidCallback onAdd,
-    required VoidCallback onCancel,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.addCancel({super.key, required VoidCallback onAdd, required VoidCallback onCancel})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onCancel,
           firstButtonText: "cancelButton".tr(),
           onSecondButton: onAdd,
           secondButtonText: "addButton".tr(),
-        ));
+        ),
+      );
 
-  TwoFooterButtons.submitBack({
-    super.key,
-    required VoidCallback onSubmit,
-    required VoidCallback onBack,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.submitBack({super.key, required VoidCallback onSubmit, required VoidCallback onBack})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onBack,
           firstButtonText: "backButton".tr(),
           onSecondButton: onSubmit,
           secondButtonText: "submitButton".tr(),
-        ));
+        ),
+      );
 
-  TwoFooterButtons.submitCancel({
-    super.key,
-    required VoidCallback onSubmit,
-    required VoidCallback onCancel,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.submitCancel({super.key, required VoidCallback onSubmit, required VoidCallback onCancel})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onCancel,
           firstButtonText: "cancelButton".tr(),
           onSecondButton: onSubmit,
           secondButtonText: "submitButton".tr(),
-        ));
+        ),
+      );
 
-  TwoFooterButtons.saveCancel({
-    super.key,
-    required VoidCallback onSave,
-    required VoidCallback onCancel,
-  }) : super(_TwoElevatedFooterButtons(
+  TwoFooterButtons.saveCancel({super.key, required VoidCallback onSave, required VoidCallback onCancel})
+    : super(
+        _TwoElevatedFooterButtons(
           onFirstButton: onCancel,
           firstButtonText: "cancelButton".tr(),
           onSecondButton: onSave,
           secondButtonText: "saveButton".tr(),
-        ));
+        ),
+      );
 }

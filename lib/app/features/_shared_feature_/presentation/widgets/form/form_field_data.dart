@@ -44,7 +44,7 @@ class FormFieldData extends StatelessWidget {
                 ),
               ],
             ),
-          ]
+          ],
         ],
       ),
     );

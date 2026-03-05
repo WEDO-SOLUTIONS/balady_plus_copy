@@ -102,9 +102,7 @@ class _CheckWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
-      ),
+      customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
       splashColor: AppColor.blue,
       highlightColor: Theme.of(context).scaffoldBackgroundColor,
       onTap: () => onChanged(!selected),

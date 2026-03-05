@@ -56,9 +56,7 @@ class _CustomEnhancedExpansionPanelListWidgetState extends State<CustomEnhancedE
       _controllers.add(ExpandableController(initialExpanded: panel.isExpanded));
     }
 
-    _panelCubit = ExpansionPanelListCubit(
-      initialIndex: _children.indexWhere((panel) => panel.isExpanded),
-    );
+    _panelCubit = ExpansionPanelListCubit(initialIndex: _children.indexWhere((panel) => panel.isExpanded));
   }
 
   @override
@@ -167,7 +165,8 @@ class _PanelCard extends StatelessWidget {
         controller: controller,
         header: ClickableWidget(
           onPressed: onUpdated,
-          child: panelInfo.header ??
+          child:
+              panelInfo.header ??
               Container(
                 // UI of header only
                 padding: panelInfo.headerPadding ?? headerPadding,
@@ -199,18 +198,9 @@ class _PanelCard extends StatelessWidget {
       ? const Border(bottom: BorderSide(color: AppColor.brightGray, width: 1.0))
       : null;
 
-  EdgeInsetsGeometry get headerPadding => const EdgeInsetsDirectional.only(
-        top: 16.0,
-        bottom: 16.0,
-        start: 16.0,
-        end: 12.0,
-      );
-  EdgeInsets get bodyPadding => const EdgeInsets.fromLTRB(
-        16.0,
-        16.0,
-        16.0,
-        UIHelper.middlePadding,
-      );
+  EdgeInsetsGeometry get headerPadding =>
+      const EdgeInsetsDirectional.only(top: 16.0, bottom: 16.0, start: 16.0, end: 12.0);
+  EdgeInsets get bodyPadding => const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, UIHelper.middlePadding);
 }
 
 class _HeaderWidget extends StatelessWidget {
@@ -239,21 +229,13 @@ class _HeaderWidget extends StatelessWidget {
             Row(
               children: [
                 // Leading
-                if (leading != null)
-                  _ExpansionLeadingWidget(
-                    expanded: expansionState,
-                    leading: leading,
-                  ),
+                if (leading != null) _ExpansionLeadingWidget(expanded: expansionState, leading: leading),
                 //* Space
                 if (leading != null) const CustomHorizontalSpace(width: 8.0),
                 // Title
                 SizedBox(
                   width: titleWidth,
-                  child: _ExpansionTitleWidget(
-                    expanded: expansionState,
-                    title: title,
-                    maxLines: titleMaxLines,
-                  ),
+                  child: _ExpansionTitleWidget(expanded: expansionState, title: title, maxLines: titleMaxLines),
                 ),
               ],
             ),
@@ -271,11 +253,7 @@ class _HeaderWidget extends StatelessWidget {
 class _ExpansionLeadingWidget extends StatelessWidget {
   final bool expanded;
   final dynamic leading;
-  const _ExpansionLeadingWidget({
-    Key? key,
-    required this.expanded,
-    required this.leading,
-  }) : super(key: key);
+  const _ExpansionLeadingWidget({Key? key, required this.expanded, required this.leading}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -284,17 +262,10 @@ class _ExpansionLeadingWidget extends StatelessWidget {
             width: 25.0,
             height: 25.0,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: leadingBGColor,
-              borderRadius: BorderRadius.circular(8.0),
-            ),
+            decoration: BoxDecoration(color: leadingBGColor, borderRadius: BorderRadius.circular(8.0)),
             child: leading is Widget
                 ? leading
-                : DrawIconBasedTypeWidget(
-                    icon: leading,
-                    iconSize: 16.0,
-                    iconColor: leadingColor,
-                  ),
+                : DrawIconBasedTypeWidget(icon: leading, iconSize: 16.0, iconColor: leadingColor),
           )
         : const SizedBox();
   }
@@ -308,12 +279,8 @@ class _ExpansionTitleWidget extends StatelessWidget {
   final int maxLines;
   final bool expanded;
 
-  const _ExpansionTitleWidget({
-    Key? key,
-    required this.title,
-    required this.maxLines,
-    required this.expanded,
-  }) : super(key: key);
+  const _ExpansionTitleWidget({Key? key, required this.title, required this.maxLines, required this.expanded})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -327,11 +294,8 @@ class _ExpansionTitleWidget extends StatelessWidget {
     );
   }
 
-  TextStyle get textStyle => AppStyle.s14.copyWith(
-        color: AppColor.indigo,
-        height: 1.4,
-        fontWeight: AppFontWeight.bold.fontWeight,
-      );
+  TextStyle get textStyle =>
+      AppStyle.s14.copyWith(color: AppColor.indigo, height: 1.4, fontWeight: AppFontWeight.bold.fontWeight);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {

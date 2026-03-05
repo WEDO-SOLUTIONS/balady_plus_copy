@@ -74,11 +74,7 @@ class CustomSheetDropDownWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Label widget
-          WidgetLabel(
-            isRequired: isRequired,
-            label: label,
-            labelStyle: labelStyle,
-          ),
+          WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
           //! Drow-Down widget
           Builder(
             builder: (context) {
@@ -93,11 +89,7 @@ class CustomSheetDropDownWidget extends StatelessWidget {
                       },
                 child: Container(
                   padding: _padding,
-                  decoration: BoxDecoration(
-                    color: _fillColor,
-                    border: _border,
-                    borderRadius: _borderRadius,
-                  ),
+                  decoration: BoxDecoration(color: _fillColor, border: _border, borderRadius: _borderRadius),
                   child: LayoutBuilder(
                     builder: (_, constraints) {
                       return Row(
@@ -109,10 +101,7 @@ class CustomSheetDropDownWidget extends StatelessWidget {
                             listener: (_, state) => onSelected(state.selectedItem),
                             child: SizedBox(
                               width: constraints.maxWidth * 0.90,
-                              child: CustomTextWidget(
-                                initialValue?.name ?? initialHint,
-                                textStyle: _hintStyle,
-                              ),
+                              child: CustomTextWidget(initialValue?.name ?? initialHint, textStyle: _hintStyle),
                             ),
                           ),
                           // Arrow widget
@@ -140,10 +129,7 @@ class CustomSheetDropDownWidget extends StatelessWidget {
 
   EdgeInsetsGeometry get _padding =>
       padding ??
-      const EdgeInsets.symmetric(
-        horizontal: UIHelper.middlePadding - 2.0,
-        vertical: UIHelper.middlePadding + 1.0,
-      );
+      const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding - 2.0, vertical: UIHelper.middlePadding + 1.0);
   BorderType get _borderType => borderType ?? BorderType.outline;
   Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.white;
   BoxBorder? get _border => _borderType.boxBorder(color: borderColor ?? AppColor.gray);
@@ -153,14 +139,14 @@ class CustomSheetDropDownWidget extends StatelessWidget {
   String get initialHint => hintText ?? "selectFromHere".tr();
 
   Future<void> showDropDown(BuildContext context) async => await BottomSheetDialog.showSheet(
-        context,
-        isFullHeight: true,
-        enableDrag: true,
-        child: BlocProvider.value(
-          value: context.read<SheetDropDownBloc>()..add(const OnBackToDefault()),
-          child: _SheetBodyWidget(title: label),
-        ),
-      );
+    context,
+    isFullHeight: true,
+    enableDrag: true,
+    child: BlocProvider.value(
+      value: context.read<SheetDropDownBloc>()..add(const OnBackToDefault()),
+      child: _SheetBodyWidget(title: label),
+    ),
+  );
 }
 
 class _ArrowIconWidget extends StatelessWidget {
@@ -171,11 +157,7 @@ class _ArrowIconWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return RotatedBox(
       quarterTurns: 3,
-      child: Icon(
-        Icons.arrow_back_ios_new,
-        size: 14.0,
-        color: readOnly ? AppColor.black : AppColor.gray,
-      ),
+      child: Icon(Icons.arrow_back_ios_new, size: 14.0, color: readOnly ? AppColor.black : AppColor.gray),
     );
   }
 }
@@ -187,19 +169,14 @@ class _SheetBodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: UIHelper.smallPadding,
-        vertical: UIHelper.middlePadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: UIHelper.smallPadding, vertical: UIHelper.middlePadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //
           _DialogHeader(title: title ?? ""),
           // Search Field
-          SearchField(
-            onChanged: (term) => context.read<SheetDropDownBloc>().add(OnSearching(query: term)),
-          ),
+          SearchField(onChanged: (term) => context.read<SheetDropDownBloc>().add(OnSearching(query: term))),
           // Line
           DrawLineWidget(lineColor: AppColor.black.withOpacity(0.3)),
           // Items
@@ -271,7 +248,7 @@ class _DialogHeader extends StatelessWidget {
                 ),
               ),
               // Same size of close button
-              const SizedBox(width: 28.0)
+              const SizedBox(width: 28.0),
             ],
           ),
         ),

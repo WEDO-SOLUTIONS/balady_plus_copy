@@ -93,7 +93,7 @@ class ApiUrl {
   static licenseSubTypes(int id) => '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
 
-//! Objections
+  //! Objections
 
   static const objectionsRequests = '/v1/balady-dashboard/objection-requests';
   static const applicationsLookUp = '/v1/objection-generic-services/applications';
@@ -124,7 +124,7 @@ class ApiUrl {
 
   static String createEnquiryDetails = '/v1/objection-services/feedbacks';
 
-//! VD
+  //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
   static const vdSpecialClassifications = '/v1/crm/bcg/special-classifications';
@@ -142,9 +142,9 @@ class ApiUrl {
 
   static const vdCrExists = '/v1/crm/cr-exists/';
 
-//! DC
+  //! DC
 
-//! Damaged Cars
+  //! Damaged Cars
   static const dcCarTypes = 'v1/damaged-vehicle-mobile/car-companies';
 
   static const dcCarModel = 'v1/damaged-vehicle-mobile/car-models';
@@ -154,10 +154,10 @@ class ApiUrl {
   static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
   static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
 
-//Weather
+  //Weather
   static const weatherForcastAPI = '/v1/weather-services/forecast';
 
-// Pega Incdients
+  // Pega Incdients
 
   static const String IncidentRetrieveData = '/prweb/PRRestService/FrontUserBalady/V1/RetrieveData';
 
@@ -165,19 +165,19 @@ class ApiUrl {
 
   ///! Daem
 
-//! CRM
+  //! CRM
 
   static const String IncidentEvaluate = "/prweb/PRRestService/FrontUserBalady/V1/SubmitPetitionerEvaluation";
 
   static const requestDetails = 'v1/damaged-vehicle-mobile/incident-request-details';
 
-//! Violations
+  //! Violations
   static const String violationsStatus = "/v1/balady-dashboard/violations/statuses";
   static const String invoiceStatus = "/v1/balady-dashboard/violations/invoice-statuses";
   static const String violations = "/v1/balady-dashboard/violations/my-violations";
   static const String violationDetails = "/v1/balady-dashboard/violations/by-id";
 
-// ! Investment Fura
+  // ! Investment Fura
   static const String DOWNLOAD_FILE_URL = '/v1/ims/download-file';
 
   // ! Create Compliance
@@ -236,7 +236,7 @@ class ApiUrl {
 
   static const String complainceAppointments = 'v1/compliance-certificate-mobile-services/visit-appointments';
 
-// ! Events
+  // ! Events
 
   static const eventsSearch = '/v1/balady-events-services/events/search';
   static const eventsDetails = '/v1/balady-events-services/events';
@@ -245,7 +245,7 @@ class ApiUrl {
   static const calendarSearch = '/v1/saudi-calendar-services/entries/search';
   static const calendarDetails = '/v1/saudi-calendar-services/entries';
 
-// ! Events
+  // ! Events
   static const regulationClauses = '/v1/momtathel-mobile-services/regulation-clauses';
 
   static const establishmentSizes = '/v1/momtathel-mobile-services/establishment/sizes';
@@ -256,9 +256,9 @@ class ApiUrl {
 
   static const regulationClauseDetails = '/v1/momtathel-mobile-services/regulation-clause/details';
 
-//! Posters Service
+  //! Posters Service
 
-/////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////
   static String getServicesCards(int servicesId) => '/v1/portal-services/cards/$servicesId';
 
   // Ekram
@@ -384,7 +384,7 @@ class ApiUrl {
   static const setProductsNotificationsSettings = 'v1/notifications-hub-services/fe/profile/products';
   static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
 
-//! Appointments New APIs
+  //! Appointments New APIs
   static getAppointmentById(String id) => '/v1/appointments-mobile-services/appointments/$id';
 
   static const saveAppointment = "v1/appointments-mobile-services/appointments";
@@ -403,24 +403,24 @@ class ApiUrl {
 
   static const quranUrlDownload = 'BaladyCDN/Mobile/quran/quran.zip';
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-////// This related to commercial but using out commercial model need Split
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ////// This related to commercial but using out commercial model need Split
   //! Delegators
   static const delegators = '/v1/delegation-services/delegated-commercial-records';
 
   static const String submitRating = '/v1/balady-commercial-services/rating/submit';
   static const commercialOffices = '/v1/balady-consultation-services/commercial-offices';
   static const validActivitiesAreasUrl = '/v1/balady-commercial-services/business-rules/valid-activities-areas';
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
 
-//CRM APIgee
+  //CRM APIgee
 
   static const String crmRequestsList = '/v1/crm-services/mobile/incidents';
   // '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
@@ -429,10 +429,10 @@ class ApiUrl {
   //'/prweb/PRRestService/FrontUserBalady/V1/FetchIncidentRequest';
 
   static const String FetchMuncipalServiceRequest = '/v1/crm-services/mobile/fetch-municipalities';
-// '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
+  // '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
 
   static const String FetchInquiryRequest = '/v1/crm-services/mobile/fetch-inquiry';
-// '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
+  // '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
 
   static const String DaemRetrieveData = '/v1/crm-services/mobile/retrieve-tsr-data';
   // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
@@ -481,7 +481,7 @@ class ApiUrl {
   static const promptQuestions = '/v1/chatbot-services/prompt-questions';
   static const promptQuestionsFollowUp = '/v1/chatbot-services/prompt-questions/follow-up';
 
-//splash
+  //splash
   static const String splash = '/v1/portal-services/splash/images';
 
   static String getObserverStatus(String identityNumber) =>

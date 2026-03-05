@@ -16,7 +16,8 @@ abstract class _IconButton extends StatelessWidget {
 class IconButtonWidget extends _IconButton {
   ///
   IconButtonWidget.edit({required VoidCallback onPressed})
-      : super(RotatedBox(
+    : super(
+        RotatedBox(
           quarterTurns: CommonFunctions.isAppAR ? 0 : 3,
           child: CustomIconButtonWidget(
             borderRadius: 8.0,
@@ -25,16 +26,19 @@ class IconButtonWidget extends _IconButton {
             iconColor: AppColor.white,
             onPressed: onPressed,
           ),
-        ));
+        ),
+      );
 
   ///
   IconButtonWidget.close({required VoidCallback onPressed})
-      : super(CustomIconButtonWidget(
+    : super(
+        CustomIconButtonWidget(
           btnWidth: 40.0,
           btnHeight: 40.0,
           onPressed: onPressed,
           icon: Icons.close,
           iconSize: 24.0,
           iconColor: AppColor.white,
-        ));
+        ),
+      );
 }

@@ -45,9 +45,7 @@ class CustomAlertDialogWidget extends StatelessWidget {
     this.radius = 10.0,
     this.borderSide,
     this.borderSideColor = Colors.transparent,
-    this.insetPadding = const EdgeInsets.symmetric(
-      horizontal: UIHelper.mediumPadding,
-    ),
+    this.insetPadding = const EdgeInsets.symmetric(horizontal: UIHelper.mediumPadding),
     this.buttonPadding = EdgeInsets.zero,
     this.actionsPadding = EdgeInsets.zero,
     this.contentPadding = const EdgeInsets.symmetric(
@@ -55,9 +53,7 @@ class CustomAlertDialogWidget extends StatelessWidget {
       horizontal: UIHelper.mediumPadding,
     ),
     this.title,
-    this.titlePadding = const EdgeInsets.symmetric(
-      vertical: UIHelper.smallPadding,
-    ),
+    this.titlePadding = const EdgeInsets.symmetric(vertical: UIHelper.smallPadding),
     this.titleBorder,
     this.titleBorderColor = AppColor.gray,
     this.titleBorderWidth = 1.0,
@@ -89,16 +85,15 @@ class CustomAlertDialogWidget extends StatelessWidget {
       buttonPadding: buttonPadding,
       actionsPadding: actionsPadding,
       contentPadding: contentPadding,
-      title: title ??
+      title:
+          title ??
           Container(
             padding: titlePadding,
             decoration: BoxDecoration(
-              border: titleBorder ??
+              border:
+                  titleBorder ??
                   Border(
-                    bottom: BorderSide(
-                      color: titleBorderColor,
-                      width: titleBorderWidth,
-                    ),
+                    bottom: BorderSide(color: titleBorderColor, width: titleBorderWidth),
                   ),
             ),
             child: Row(
@@ -120,7 +115,7 @@ class CustomAlertDialogWidget extends StatelessWidget {
                       fontSize: titleTextSize,
                       fontWeight: titleTextWeight.fontWeight,
                     ),
-                  )
+                  ),
                 ],
                 // if (titleMessageType != MessageType.none)
                 //   UIHelper.horizontalSmallSpace,
@@ -132,27 +127,23 @@ class CustomAlertDialogWidget extends StatelessWidget {
               ],
             ),
           ),
-      content: content ??
+      content:
+          content ??
           CustomTextWidget(
             contentText ?? "popUpNoMessage".tr(),
             maxLines: 10,
             textAlign: TextAlign.center,
-            textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-              color: contentTextColor,
-              height: 1.5,
-            ),
+            textStyle: AppStyle.mainTextSecondaryStyle.copyWith(color: contentTextColor, height: 1.5),
           ),
-      actions: actions ??
+      actions:
+          actions ??
           [
             CustomTextButtonWidget(
               onPressed: primaryBtnPressed ?? () => Navigator.of(context).pop(true),
               text: primaryBtnText ?? "popUpConfirmButton".tr(),
             ),
             if (secondaryBtnPressed != null && secondaryBtnText != null)
-              CustomTextButtonWidget(
-                onPressed: secondaryBtnPressed!,
-                text: secondaryBtnText!,
-              ),
+              CustomTextButtonWidget(onPressed: secondaryBtnPressed!, text: secondaryBtnText!),
           ],
     );
   }
@@ -187,43 +178,40 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
   final VoidCallback? secondaryBtnPressed;
   final String? secondaryBtnText;
   final bool? isHtml;
-  const CustomHTMLAlertDialogWidget(
-      {super.key,
-      this.backgroundColor,
-      this.borderRadius,
-      this.radius = 10.0,
-      this.borderSide,
-      this.borderSideColor = Colors.transparent,
-      this.insetPadding = const EdgeInsets.symmetric(
-        horizontal: UIHelper.mediumPadding,
-      ),
-      this.buttonPadding = EdgeInsets.zero,
-      this.actionsPadding = EdgeInsets.zero,
-      this.contentPadding = const EdgeInsets.symmetric(
-        vertical: UIHelper.middlePadding,
-        horizontal: UIHelper.mediumPadding,
-      ),
-      this.title,
-      this.titlePadding = const EdgeInsets.symmetric(
-        vertical: UIHelper.smallPadding,
-      ),
-      this.titleBorder,
-      this.titleBorderColor = AppColor.gray,
-      this.titleBorderWidth = 1.0,
-      this.titleMessageType = MessageType.none,
-      this.titleText,
-      this.titleTextColor = AppColor.black,
-      this.titleTextSize = 18.0,
-      this.titleTextWeight = AppFontWeight.bold,
-      this.content,
-      this.contentText,
-      this.contentTextColor = AppColor.black,
-      this.actions,
-      this.primaryBtnPressed,
-      this.primaryBtnText,
-      this.secondaryBtnPressed,
-      this.secondaryBtnText,
-      this.isHtml});
+  const CustomHTMLAlertDialogWidget({
+    super.key,
+    this.backgroundColor,
+    this.borderRadius,
+    this.radius = 10.0,
+    this.borderSide,
+    this.borderSideColor = Colors.transparent,
+    this.insetPadding = const EdgeInsets.symmetric(horizontal: UIHelper.mediumPadding),
+    this.buttonPadding = EdgeInsets.zero,
+    this.actionsPadding = EdgeInsets.zero,
+    this.contentPadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.middlePadding,
+      horizontal: UIHelper.mediumPadding,
+    ),
+    this.title,
+    this.titlePadding = const EdgeInsets.symmetric(vertical: UIHelper.smallPadding),
+    this.titleBorder,
+    this.titleBorderColor = AppColor.gray,
+    this.titleBorderWidth = 1.0,
+    this.titleMessageType = MessageType.none,
+    this.titleText,
+    this.titleTextColor = AppColor.black,
+    this.titleTextSize = 18.0,
+    this.titleTextWeight = AppFontWeight.bold,
+    this.content,
+    this.contentText,
+    this.contentTextColor = AppColor.black,
+    this.actions,
+    this.primaryBtnPressed,
+    this.primaryBtnText,
+    this.secondaryBtnPressed,
+    this.secondaryBtnText,
+    this.isHtml,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -251,35 +239,41 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
             ),
             if (isHtml == false)
               Flexible(
-                  child: content ??
-                      Linkify(
-                          onOpen: (link) => CommonFunctions.openBaladyWebView(link.url),
-                          text: contentText ?? "",
-                          softWrap: true,
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w600,
-                            height: 1.4,
-                            color: contentTextColor,
-                            fontFamily: Constants.appFontType,
-                          ))),
+                child:
+                    content ??
+                    Linkify(
+                      onOpen: (link) => CommonFunctions.openBaladyWebView(link.url),
+                      text: contentText ?? "",
+                      softWrap: true,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        height: 1.4,
+                        color: contentTextColor,
+                        fontFamily: Constants.appFontType,
+                      ),
+                    ),
+              ),
             if (isHtml == true)
               Flexible(
-                  child: content ??
-                      Html(
-                        onLinkTap: (url, attributes, element) => CommonFunctions.openBaladyWebView(url),
-                        data: contentText ?? "",
-                        style: {
-                          "body": Style(
-                              fontSize: FontSize(14.0),
-                              fontWeight: FontWeight.w600,
-                              lineHeight: const LineHeight(1.4),
-                              textAlign: TextAlign.start,
-                              color: AppColor.primary500Light,
-                              fontFamily: Constants.appFontType),
-                        },
-                      )),
+                child:
+                    content ??
+                    Html(
+                      onLinkTap: (url, attributes, element) => CommonFunctions.openBaladyWebView(url),
+                      data: contentText ?? "",
+                      style: {
+                        "body": Style(
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.w600,
+                          lineHeight: const LineHeight(1.4),
+                          textAlign: TextAlign.start,
+                          color: AppColor.primary500Light,
+                          fontFamily: Constants.appFontType,
+                        ),
+                      },
+                    ),
+              ),
           ],
         ),
       ),

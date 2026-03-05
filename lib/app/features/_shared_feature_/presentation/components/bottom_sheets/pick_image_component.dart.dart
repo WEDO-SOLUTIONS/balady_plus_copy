@@ -39,19 +39,12 @@ class PickImageComponent extends StatelessWidget {
               const CustomVerticalSpace(height: 12.0),
               //
               for (int index = 0; index < length; index++)
-                DropDownComponent(
-                  dropDownText: texts[index].tr(),
-                  onPressed: callbacks[index],
-                ),
+                DropDownComponent(dropDownText: texts[index].tr(), onPressed: callbacks[index]),
             ],
           ),
         ),
         //
-        PositionedDirectional(
-          end: 12.0,
-          top: 4.0,
-          child: IconButtonWidget.close(onPressed: context.popDialog),
-        ),
+        PositionedDirectional(end: 12.0, top: 4.0, child: IconButtonWidget.close(onPressed: context.popDialog)),
       ],
     );
   }
@@ -60,10 +53,7 @@ class PickImageComponent extends StatelessWidget {
 
   int get length => texts.length;
   List<String> get texts => ["camera", "gallery"];
-  List<VoidCallback> get callbacks => [
-        () async => onPick(ImageSource.camera),
-        () async => onPick(ImageSource.gallery),
-      ];
+  List<VoidCallback> get callbacks => [() async => onPick(ImageSource.camera), () async => onPick(ImageSource.gallery)];
 
   Future<void> onPick(ImageSource source, [bool mounted = true]) async {
     final ImagePicker picker = ImagePicker();

@@ -45,16 +45,9 @@ class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const DrawLineWidget(
-              lineWidth: 53,
-              lineHeight: 5,
-              lineColor: AppColor.white5,
-              radius: 46.0,
-            ),
+            const DrawLineWidget(lineWidth: 53, lineHeight: 5, lineColor: AppColor.white5, radius: 46.0),
             const SizedBox(height: 32),
-            DialogHeader(
-              title: "buildingRequirements".tr(),
-            ),
+            DialogHeader(title: "buildingRequirements".tr()),
             const SizedBox(height: 12),
             Flexible(
               child: CustomTextWidget(
@@ -81,10 +74,7 @@ class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog>
                     itemCount: data2.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return BuildingReqCard(
-                        title: data2[index].desc,
-                        imgPath: data2[index].photo,
-                      );
+                      return BuildingReqCard(title: data2[index].desc, imgPath: data2[index].photo);
                     },
                   ),
                   const SizedBox(height: 32),
@@ -102,7 +92,7 @@ class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog>
                       maxLines: 5,
                       fontWeight: AppFontWeight.bold,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -121,8 +111,9 @@ class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog>
 
     var r = json.decode(qa);
     {
-      List<ConditionsModel>? model =
-          r != null ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x))) : null;
+      List<ConditionsModel>? model = r != null
+          ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x)))
+          : null;
       data2 = model ?? [];
       setState(() {});
     }
@@ -130,11 +121,7 @@ class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog>
 }
 
 class BuildingReqCard extends StatelessWidget {
-  const BuildingReqCard({
-    super.key,
-    required this.title,
-    this.imgPath,
-  });
+  const BuildingReqCard({super.key, required this.title, this.imgPath});
 
   final String title;
   final String? imgPath;
@@ -152,10 +139,7 @@ class BuildingReqCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const CustomSvgIconWidget(
-                "assets/icons/svg/flag.svg",
-                iconSize: 14,
-              ),
+              const CustomSvgIconWidget("assets/icons/svg/flag.svg", iconSize: 14),
               const SizedBox(width: 4),
               Flexible(
                 child: CustomTextWidget(
@@ -189,13 +173,8 @@ class BuildingReqCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                placeholder: (context, url) => const Center(
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+                placeholder: (context, url) =>
+                    const Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator())),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

@@ -182,11 +182,11 @@ class IconPath {
   static const splashScreen2030LogoImg = '${_pngIconPath}2030Logo@3x$_png';
   static const splashScreenQualityLogoImg = '${_pngIconPath}qualityLogo$_png';
 
-//! Splash Screen
+  //! Splash Screen
 
   static const arrowLeft = '${_svgIconPath}arrow-left$_svg';
 
-//! VD
+  //! VD
   static const vdSearchIcon = '${_pngVDIconPath}vd_search$_png';
   static const vdCancelIcon = '${_pngVDIconPath}vd_cancel_icon$_png';
   static const vdSwipeIcon = '${_pngVDIconPath}swipe_vd$_png';
@@ -218,7 +218,7 @@ class IconPath {
   static const vdSummurySPL = '${_svgVDIconPath}vdSummurySPL$_svg';
   static const vdSummuryUserInfo = '${_svgVDIconPath}vdSummuryUserInfo$_svg';
 
-//! QR
+  //! QR
   static const qrScanImageIcon = '${_pngQRIconPath}scan_img@3x$_png';
   static const qrWhiteCloseIcon = '${_pngQRIconPath}white_close@3x$_png';
   static const qrWhiteExitIcon = '${_pngQRIconPath}white_exit@3x$_png';
@@ -260,7 +260,7 @@ class IconPath {
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
 
-//! Appointment
+  //! Appointment
   static const calendarIcon = '${_svgIconPath}calendar_icon$_svg';
 
   //! Quran
@@ -274,7 +274,7 @@ class IconPath {
   static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
   static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
 
-//MSR
+  //MSR
   static const msrRoadsIcon = '${_msrPath}msrRoadsIcon$_svg';
   static const msrWasteIcon = '${_msrPath}msrWasteIcon$_svg';
   static const msrLightsIcon = '${_msrPath}msrLightsIcon$_svg';
@@ -297,9 +297,9 @@ class IconPath {
   static const tsr_9 = '${_tsrPath}9$_svg';
   static const tsr_10 = '${_tsrPath}10$_svg';
 
-// INQ
+  // INQ
 
-// Daem
+  // Daem
 
   // CR
   static const additionalActivity = '${_svgCRIconPath}additional_activity$_svg';
@@ -379,7 +379,7 @@ class IconPath {
   static const planetRingedHomeEvents = '${_eventsPath}planet_ringed$_svg';
   static const tagHomeEvents = '${_eventsPath}tag$_svg';
 
-// -------  Commercial License Cancel ---------
+  // -------  Commercial License Cancel ---------
   static const submitApplicationSuccessfullyCancel = '${_svgIconPath}submit_application_successfully_cancel$_svg';
   static const successfullySubmitRating = '${_svgIconPath}successfully_submit_rating$_svg';
   static const like = '${_pngIconPath}Like$_png';

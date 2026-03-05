@@ -42,9 +42,7 @@ class DefaultFirebaseOptions {
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions are not supported for this platform.',
-        );
+        throw UnsupportedError('DefaultFirebaseOptions are not supported for this platform.');
     }
   }
 
@@ -67,4 +65,5 @@ class DefaultFirebaseOptions {
     iosBundleId: '',
   );
 }
+
 // TODO Implement this library.

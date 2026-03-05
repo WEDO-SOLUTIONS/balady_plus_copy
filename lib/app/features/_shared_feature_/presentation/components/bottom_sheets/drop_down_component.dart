@@ -37,20 +37,16 @@ class DropDownComponent extends StatelessWidget {
             //
             if (dropDownIcon != null) ...[
               DrawIconBasedTypeWidget(icon: dropDownIcon ?? ""),
-              const CustomHorizontalSpace(width: 10.0)
+              const CustomHorizontalSpace(width: 10.0),
             ],
             //
             Expanded(
               child: CustomTextWidget(
                 dropDownText,
                 textAlign: TextAlign.start,
-                textStyle: AppStyle.mainTextThirdStyle.copyWith(
-                  color: AppColor.gray,
-                  fontSize: 14.0,
-                  height: 1.5,
-                ),
+                textStyle: AppStyle.mainTextThirdStyle.copyWith(color: AppColor.gray, fontSize: 14.0, height: 1.5),
               ),
-            )
+            ),
           ],
         ),
       ),

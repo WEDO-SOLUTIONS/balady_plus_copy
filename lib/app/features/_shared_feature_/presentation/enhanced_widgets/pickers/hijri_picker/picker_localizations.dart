@@ -85,8 +85,8 @@ class PickerLocalizations extends PickerLocalizationsBase {
         'Eylül',
         'Ekim',
         'Kasım',
-        'Aralık'
-      ]
+        'Aralık',
+      ],
     },
   };
 }

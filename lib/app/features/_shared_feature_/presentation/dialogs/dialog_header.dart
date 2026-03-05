@@ -29,8 +29,11 @@ class DialogHeader extends StatelessWidget {
                   title,
                   textAlign: TextAlign.start,
                   maxLines: 3,
-                  textStyle: AppStyle.mainTextSecondaryStyle
-                      .copyWith(fontSize: 20.0, color: AppColor.black, fontWeight: FontWeight.bold),
+                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                    fontSize: 20.0,
+                    color: AppColor.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               InkWell(
@@ -45,7 +48,7 @@ class DialogHeader extends StatelessWidget {
             ],
           ),
         ),
-        withDivider ? const DrawLineWidget() : const CustomVerticalSpace(height: 12)
+        withDivider ? const DrawLineWidget() : const CustomVerticalSpace(height: 12),
       ],
     );
   }

@@ -34,7 +34,7 @@ class Routes {
     //! Etmam Start
     // Success Page
 
-//! Etmam End
+    //! Etmam End
   };
   static Map<String, Widget Function(BuildContext)> routesApp = {
     RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
@@ -46,21 +46,20 @@ class Routes {
     RouteName.inappWebview: (context) => const InAppWebViewPage(),
 
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
+
     // RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
     //? General Services
-
     RouteName.prayerTimes: (context) => const PrayerTimesPage(),
 
     RouteName.qiblahCompass: (context) => const QiblahWebViewPage(),
 
     //? personalInformation page
-
     RouteName.successRoute: (context) => const SuccessScreen(),
+
     // ------ Commercial License -----
 
     // ------ Wallet -----
-
     RouteName.weatherMainPage: (context) => const WeatherMainPage(),
 
     RouteName.eventsMainPage: (context) => const EventsMainPage(),
@@ -71,12 +70,10 @@ class Routes {
     RouteName.notificationsDetailsScreen: (context) => const NotificationsDetailsScreen(),
     RouteName.miniAppsMainScreen: (context) => const MiniAppsMainScreen(),
 
-    RouteName.VolunteerProfile: (context) => VolunteerProfileScreen(
-          volunteerProfileBloc: slVolunteer<VolunteerProfileBloc>(),
-        ),
-    RouteName.VolunteerEditProfile: (context) => VolunteerProfileEditingScreen(
-          volunteerProfileBloc: slVolunteer<VolunteerProfileBloc>(),
-        ),
+    RouteName.VolunteerProfile: (context) =>
+        VolunteerProfileScreen(volunteerProfileBloc: slVolunteer<VolunteerProfileBloc>()),
+    RouteName.VolunteerEditProfile: (context) =>
+        VolunteerProfileEditingScreen(volunteerProfileBloc: slVolunteer<VolunteerProfileBloc>()),
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {
@@ -101,12 +98,8 @@ class AppRouter1 {
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
-            appBar: AppBar(
-              title: const CustomTextWidget("Error"),
-            ),
-            body: const Center(
-              child: CustomTextWidget("Page not found"),
-            ),
+            appBar: AppBar(title: const CustomTextWidget("Error")),
+            body: const Center(child: CustomTextWidget("Page not found")),
           ),
         );
     }

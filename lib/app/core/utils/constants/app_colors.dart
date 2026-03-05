@@ -165,7 +165,7 @@ class AppColor {
   static const golden = Color(0xffDFB300);
   static const litgrey = Color(0xff868686);
 
-// Primary Light Colors
+  // Primary Light Colors
 
   static const Color primary50Light = Color(0xffF4F9F8);
 
@@ -192,7 +192,7 @@ class AppColor {
 
   // Secondary Light Colors
 
-// Secondary Light Colors
+  // Secondary Light Colors
 
   static const Color secondary50Light = Color(0xfff3f8ed);
 

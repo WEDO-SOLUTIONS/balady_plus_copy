@@ -51,8 +51,8 @@ class RemoteConfig {
 
   static List<String> get MSRAllowedMuncipalites => _RemoteConfig.MSRAllowedMuncipalites[env]!;
 
-//////////////////////////////////////////////////////
-//   static String get apigeeURL => "__APIGEE-URL__";
+  //////////////////////////////////////////////////////
+  //   static String get apigeeURL => "__APIGEE-URL__";
   static String get apigeeURL {
     String apigeeURL = '__APIGEE_URL__';
     // String apigeeURL = const String.fromEnvironment(
@@ -346,225 +346,75 @@ class _RemoteConfig {
       "017",
       "018",
       "003",
-      "005"
+      "005",
     ],
   );
 
   static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
     devVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "survey_report_inquery": {
-        "id": 11428,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "classification_certificate": {
-        "id": 11340,
-        "Key_name": "classification_certificate",
-      },
-      "create_complianceLocation": {
-        "id": 11429,
-        "Key_name": "create_complianceLocation",
-      },
+      "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "classification_certificate": {"id": 11340, "Key_name": "classification_certificate"},
+      "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
     stgVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11946,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11946, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "survey_report_inquery": {
-        "id": 11428,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "classification_certificate": {
-        "id": 11340,
-        "Key_name": "classification_certificate",
-      },
-      "create_complianceLocation": {
-        "id": 11429,
-        "Key_name": "create_complianceLocation",
-      },
+      "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "classification_certificate": {"id": 11340, "Key_name": "classification_certificate"},
+      "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
     preVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "classification_certificate": {
-        "id": 11380,
-        "Key_name": "classification_certificate",
-      },
-      "survey_report_inquery": {
-        "id": 11632,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "create_complianceLocation": {
-        "id": 13701,
-        "Key_name": "create_complianceLocation",
-      },
+      "classification_certificate": {"id": 11380, "Key_name": "classification_certificate"},
+      "survey_report_inquery": {"id": 11632, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "create_complianceLocation": {"id": 13701, "Key_name": "create_complianceLocation"},
     },
     prodVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "classification_certificate": {
-        "id": 11380,
-        "Key_name": "classification_certificate",
-      },
-      "survey_report_inquery": {
-        "id": 11632,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "create_complianceLocation": {
-        "id": 13701,
-        "Key_name": "create_complianceLocation",
-      },
+      "classification_certificate": {"id": 11380, "Key_name": "classification_certificate"},
+      "survey_report_inquery": {"id": 11632, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "create_complianceLocation": {"id": 13701, "Key_name": "create_complianceLocation"},
     },
     urbiPreVal: {
-      "CommercialLicenseRenew": {
-        "id": 10485,
-        "Key_name": "CommercialLicenseRenew",
-      },
-      "CommercialLicenseTransfer": {
-        "id": 10502,
-        "Key_name": "CommercialLicenseTransfer",
-      },
-      "CommercialLicenseCancel": {
-        "id": 10492,
-        "Key_name": "CommercialLicenseCancel",
-      },
-      "PostersLicenseService": {
-        "id": 11820,
-        "Key_name": "PostersLicenseService",
-      },
-      "PermitsLicenseService24H": {
-        "id": 10528,
-        "Key_name": "PermitsLicenseService24H",
-      },
-      "PermitsTobaccoLicense": {
-        "id": 10526,
-        "Key_name": "PermitsTobaccoLicense",
-      },
+      "CommercialLicenseRenew": {"id": 10485, "Key_name": "CommercialLicenseRenew"},
+      "CommercialLicenseTransfer": {"id": 10502, "Key_name": "CommercialLicenseTransfer"},
+      "CommercialLicenseCancel": {"id": 10492, "Key_name": "CommercialLicenseCancel"},
+      "PostersLicenseService": {"id": 11820, "Key_name": "PostersLicenseService"},
+      "PermitsLicenseService24H": {"id": 10528, "Key_name": "PermitsLicenseService24H"},
+      "PermitsTobaccoLicense": {"id": 10526, "Key_name": "PermitsTobaccoLicense"},
       /////////  Not Used   //////////
-      "survey_report_inquery": {
-        "id": 11428,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "inquiry_construction_license": {
-        "id": 11124,
-        "Key_name": "license_query",
-      },
-      "create_complianceLocation": {
-        "id": 11429,
-        "Key_name": "create_complianceLocation",
-      },
+      "survey_report_inquery": {"id": 11428, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "inquiry_construction_license": {"id": 11124, "Key_name": "license_query"},
+      "create_complianceLocation": {"id": 11429, "Key_name": "create_complianceLocation"},
     },
   );
 
@@ -614,12 +464,11 @@ class _RemoteConfig {
     dynamic preVal,
     dynamic prodVal,
     dynamic urbiPreVal,
-  }) =>
-      {
-        EnvType.dev: devVal,
-        EnvType.stg: stgVal,
-        EnvType.pre: preVal,
-        EnvType.prod: prodVal,
-        EnvType.urbiPre: urbiPreVal,
-      };
+  }) => {
+    EnvType.dev: devVal,
+    EnvType.stg: stgVal,
+    EnvType.pre: preVal,
+    EnvType.prod: prodVal,
+    EnvType.urbiPre: urbiPreVal,
+  };
 }

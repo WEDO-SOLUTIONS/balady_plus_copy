@@ -65,14 +65,9 @@ class CustomRadioButtonWidget extends StatelessWidget {
                 radioValue: radioValue,
                 onSelected: onSelected,
               ),
-              SizedBox(
-                width: 6,
-              ),
+              SizedBox(width: 6),
               // Label
-              CustomTextWidget(
-                label,
-                textStyle: labelStyle ?? AppStyle.radioButtonStyle,
-              ),
+              CustomTextWidget(label, textStyle: labelStyle ?? AppStyle.radioButtonStyle),
             ].addPadding(end: radioLabelSpace),
           ),
           // Error
@@ -108,9 +103,7 @@ class _RadioWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       // To cut effect color based radio radius
-      customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
-      ),
+      customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
       splashColor: AppColor.blue,
       highlightColor: Theme.of(context).scaffoldBackgroundColor,
       onTap: () => onSelected(radioValue),

@@ -54,11 +54,7 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Label widget
-          WidgetLabel(
-            isRequired: isRequired,
-            label: label,
-            labelStyle: labelStyle,
-          ),
+          WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
           // Date Picker
           Builder(
             builder: (context) {
@@ -78,10 +74,7 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
                     iconAlignment: AlignmentDirectional.centerEnd,
                     onPressed: readOnly
                         ? onDisabledTapped
-                        : () async => await onSelectedDate(
-                              context,
-                              selectedDate: state.selectedDate,
-                            ),
+                        : () async => await onSelectedDate(context, selectedDate: state.selectedDate),
                   );
                 },
               );
@@ -102,11 +95,7 @@ class CustomEnhancedMaterialDatePickerWidget extends StatelessWidget {
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
   DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
-  Future<void> onSelectedDate(
-    BuildContext context, {
-    required DateTime selectedDate,
-    bool mounted = true,
-  }) async {
+  Future<void> onSelectedDate(BuildContext context, {required DateTime selectedDate, bool mounted = true}) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,

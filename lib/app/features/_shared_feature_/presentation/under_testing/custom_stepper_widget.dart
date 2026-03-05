@@ -34,15 +34,13 @@ class CustomStepperWidget extends StatelessWidget {
       padding: padding,
       margin: margin,
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
+      decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(borderRadius)),
       child: LayoutBuilder(
         builder: (_, constraints) {
           final width = constraints.maxWidth;
           return Row(
-            children: steps ??
+            children:
+                steps ??
                 List.generate(
                   numberOfSteps,
                   (step) => AnimatedCrossFade(

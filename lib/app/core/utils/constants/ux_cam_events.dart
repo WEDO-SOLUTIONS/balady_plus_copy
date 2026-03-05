@@ -1,15 +1,15 @@
 class UXCamEvents {
-// Quran
+  // Quran
   static String startServiceQuran = "Start_Service_Quran"; //Done
 
-// Prayer times
+  // Prayer times
   static String startServicePrayerTimes = "Start_Service_PrayerTimes"; //Done
 
-// Donate
+  // Donate
   static String startServiceDonate = "Start_Service_Donate"; //Done
   static String openWebDonateScreen = "Open_Web_Donate_Screen"; //Done
 
-// Tobacco Disclosure
+  // Tobacco Disclosure
   static String openFacilityListScreen = "Open_Facility_List_Screen"; //Done
   static String openFacilityDetailsScreen = "Open_Facility_Details_Screen"; //Done
   static String startServiceTobaccoDisclosed = "Start_Service_Tobacco_Disclosed"; //Done
@@ -18,26 +18,26 @@ class UXCamEvents {
   static String openConfirmTobaccoDisclosedScreen = "Open_Confirm_Tobacco_Disclosed_Screen"; //Done
   static String openTobaccoDisclosedSuccessfullyScreen = "Open_Tobacco_Disclosed_Successfully_Screen";
 
-// Kingdom calendar
+  // Kingdom calendar
   static String startServiceKingdomCalendar = "Start_Service_KingdomCalendar"; //Done
 
-// Athkar
+  // Athkar
   static String startServiceAthkar = "Start_Service_Athkar"; //Done
 
-// ChatBot
+  // ChatBot
   static String openChatBotScreen = "Open_Chat_Bot_Screen"; //Done
   static String sendMessageChatBotScreen = "Send_Message_Chat_Bot_Screen"; //Done
   static String responseMessageChatBotScreen = "Response_Message_Chat_Bot_Screen"; //Done
   static String closeChatBotScreen = "Close_Chat_Bot_Screen"; //Done
 
-// Events
+  // Events
   static String startServiceEvents = "Start_Service_Events"; //Done
 
-// Zamzam Outlets
+  // Zamzam Outlets
 
   static String startServiceZamzamOutlets = "Start_Service_ZamzamOutlets"; //Done
 
-// Snap And Send
+  // Snap And Send
   static String typeServiceSnapAndSend = "Types_Service_Snap&Send"; //Done
 
   static String startServiceSnapAndSend = "Start_Service_Snap&Send"; //Done
@@ -48,40 +48,40 @@ class UXCamEvents {
 
   static String finishServiceSnapAndSend = "Finish_Service_Snap&Send"; //Done
 
-// Appeal Request
+  // Appeal Request
   static String startServiceAppealRequest = "Start_Service_AppealRequest"; //Done
   static String finishServiceAppealRequest = "Finish_Service_AppealRequest"; //Done
 
-// Municipal service request
+  // Municipal service request
   static String typeServiceMunicipalServiceRequest = "Type_Service_MunicipalServiceRequest"; //Done
   static String startServiceMunicipalServiceRequest = "Start_Service_MunicipalServiceRequest"; //Done
   static String finishServiceMunicipalServiceRequest = "Finish_Service_MunicipalServiceRequest"; //Done
 
-// AppointmentBooking
+  // AppointmentBooking
   static String startServiceAppointmentBooking = "Start_Service_AppointmentBooking"; //Done
   static String finishServiceAppointmentBooking = "Finish_Service_AppointmentBooking"; //Done
 
-// ServicesProviders
+  // ServicesProviders
   static String startServiceServicesProviders = //Done
       "Start_Service_ServicesProviders";
   static String finishServiceServicesProviders = "Finish_Service_ServicesProviders";
 
   static String finishServiceServicesProvidersDelegation = "Finish_Service_ServicesProviders_Delegation";
 
-// Compliance Certificate
+  // Compliance Certificate
   static String startCardServiceComplianceCertificate = "Start_Card_Service_ComplianceCertificate"; //Done
   static String startServiceComplianceCertificate = "Start_Service_ComplianceCertificate"; //Done
   static String finishServiceComplianceCertificate = "Finish_Service_ComplianceCertificate"; //Done
 
   static String detailsServiceComplianceCertificate = "Details_Service_ComplianceCertificate"; //Done
 
-// Premises Assessment
+  // Premises Assessment
   static String mainServicePremisesAssessment = "Main_Service_PremisesAssessment"; //Done
 
   static String startServicePremisesAssessment = "Start_Service_PremisesAssessment"; //Done
   static String finishServicePremisesAssessment = "Finish_Service_PremisesAssessment"; //Done
 
-// Report Write Off Vehicle
+  // Report Write Off Vehicle
   static String startServiceReportWriteOffVehicle = "Start_Service_ReportWriteOffVehicle"; //Done
   static String finishServiceReportWriteOffVehicle = "Finish_Service_ReportWriteOffVehicle"; //Done
 
@@ -130,7 +130,7 @@ class UXCamEvents {
   // Ewa’a Platform
   static String startServiceEwaaPlatform = "Start_Service_EwaaPlatform"; //Done
 
-// Commercial services
+  // Commercial services
   static String startServiceCommercialServices = "Start_Service_CommercialServices"; //Done
 
   // Smart assistant
@@ -189,7 +189,7 @@ class UXCamEvents {
   static String startServiceSelectAndReserveACemetery = "Start_Service_SelectAndReserveACemetery"; //Done
   static String finishServiceSelectAndReserveACemetery = "Finish_Service_SelectAndReserveACemetery"; //Done
 
-// Print Burial Certificate
+  // Print Burial Certificate
 
   static String startPrintBurialCertificate = "start_PrintBurialCertificate"; //Done
   static String otpPrintBurialCertificate = "otp_PrintBurialCertificate"; //Done
@@ -309,7 +309,7 @@ class UXCamEvents {
   static String Events_List_Click_Item_Share_Event = "Events_List_Click_Item_Share_Event"; //Done
   static String Events_List_Click_Item_Move_To_Details_Event = "Events_List_Click_Item_Move_To_Details_Event"; //Done
 
-// KingdomCalendar
+  // KingdomCalendar
   static String KingdomCalendar_List_Click_Filter_Event = "KingdomCalendar_List_Click_Filter_Event";
   static String KingdomCalendar_List_Click_Apply_Filter_Event = "KingdomCalendar_List_Click_Apply_Filter_Event";
   static String KingdomCalendar_List_AddToCalender_Event = "KingdomCalendar_List_AddToCalender_Event";
@@ -346,7 +346,7 @@ class UXCamEvents {
   static String YourFeedback_Submit_Rating_Event = "YourFeedback_Submit_Rating_Event";
   static String YourFeedback_Success_Rating_Event = "YourFeedback_Success_Rating_Event"; //Done
 
-// Commercial License
+  // Commercial License
 
   static String CommercialLicense_Open_Service_Card_Event = "CommercialLicense_Open_Service_Card_Event"; //Done
   static String CommercialLicense_Open_Create_Details_Event = "CommercialLicense_Open_Create_Details_Event"; //Done
@@ -390,7 +390,7 @@ class UXCamEvents {
   static String RenewCommercialLicense_Open_Success_Page_Event =
       "RenewCommercialLicense_Open_Success_Page_Event"; //Done
 
-// 24 Permit
+  // 24 Permit
   static String Permit_24_Open_Service_Card_Event = "Permit_24_Open_Service_Card_Event"; //Done
   static String Permit_24_Open_Create_Details_Event = "Permit_24_Open_Create_Details_Event"; //Done
   static String Permit_24_Open_Review_Step_Event = "Permit_24_Open_Review_Step_Event";
@@ -472,7 +472,7 @@ class UXCamEvents {
   static String PremisesAssessment_Details_Page_Event = "PremisesAssessment_Details_Page_Event";
   static String PremisesAssessment_Check_Result_Event = "PremisesAssessment_Check_Result_Event";
 
-// Health Certificate Issue
+  // Health Certificate Issue
   static String HealthCertificate_Issue_Create_Details_Page_Event =
       "HealthCertificate_Issue_Create_Details_Page_Event"; //Done
   static String HealthCertificate_Issue_Open_Details_Step_Event =
@@ -481,7 +481,7 @@ class UXCamEvents {
   static String HealthCertificate_Issue_Submit_Event = "HealthCertificate_Issue_Submit_Event"; //Done
   static String HealthCertificate_Issue_Success_Event = "HealthCertificate_Issue_Success_Event"; //Done
 
-// Health Certificate Renew
+  // Health Certificate Renew
 
   static String HealthCertificate_renew_Create_Details_Page_Event =
       "HealthCertificate_renew_Create_Details_Page_Event"; //Done
@@ -547,7 +547,7 @@ class UXCamEvents {
   static String SelectAndReserveCemetery_Open_Success_Page_Event =
       "SelectAndReserveCemetery_Open_Success_Page_Event"; //Done
 
-//RequestsTransportingAndPreparingDeceased
+  //RequestsTransportingAndPreparingDeceased
 
   static String RequestsTransportingAndPreparingDeceased_List_Enter_Page_Event =
       "RequestsTransportingAndPreparingDeceased_List_Enter_Page_Event";
@@ -568,7 +568,7 @@ class UXCamEvents {
   static String RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event =
       "RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event"; //Done
 
-//
+  //
 
   static String CancelCommercialLicense_Open_Service_Card_Event =
       "CancelCommercialLicense_Open_Service_Card_Event"; //Done
@@ -591,7 +591,7 @@ class UXCamEvents {
   static String Objectable_Transaction_Open_Success_Page_Event =
       "Objectable_Transaction_Open_Success_Page_Event"; //Done
 
-// DadhBoard
+  // DadhBoard
 
   static String DashBoard_Click_View_All_Event = "DashBoard_Click_View_All_Event";
   static String DashBoard_Click_Switch_Account_From_Services_Event =

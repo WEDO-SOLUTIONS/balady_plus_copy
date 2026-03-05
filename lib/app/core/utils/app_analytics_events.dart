@@ -8,7 +8,7 @@ class AppEvents {
   static const String Athkar = "Super_App_Open_Athkar";
   static const String zmzm = "Super_App_Open_ZmZm";
 
-// Important Services
+  // Important Services
   static const String municipalRequest = "Super_App_Municipal_Request";
   static const String makeAppointment = "Super_App_Make_Appointment";
 

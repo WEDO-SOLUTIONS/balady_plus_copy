@@ -52,11 +52,7 @@ class TitleSubtitleIconComponent extends StatelessWidget {
             height: iconSize,
             padding: const EdgeInsets.all(4.0),
             decoration: decoration,
-            child: DrawIconBasedTypeWidget(
-              icon: icon,
-              iconSize: iconSize,
-              iconColor: iconColor,
-            ),
+            child: DrawIconBasedTypeWidget(icon: icon, iconSize: iconSize, iconColor: iconColor),
           ),
           //? Title & Subtitle widgets
           Expanded(
@@ -64,10 +60,7 @@ class TitleSubtitleIconComponent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Title widget
-                CustomTextWidget(
-                  title,
-                  textStyle: titleStyle ?? _titleStyle,
-                ),
+                CustomTextWidget(title, textStyle: titleStyle ?? _titleStyle),
                 // Subtitle widget
                 CustomAutoSizeTextWidget(
                   subtitle,
@@ -85,15 +78,12 @@ class TitleSubtitleIconComponent extends StatelessWidget {
     );
   }
 
-  Decoration get decoration => BoxDecoration(
-        color: iconBackgroundColor,
-        borderRadius: BorderRadius.circular(8.0),
-      );
+  Decoration get decoration => BoxDecoration(color: iconBackgroundColor, borderRadius: BorderRadius.circular(8.0));
 
   TextStyle get _titleStyle => AppStyle.mainTextThirdStyle.copyWith(fontSize: 13.0);
   TextStyle get _subtitleStyle => AppStyle.mainTextSecondaryStyle.copyWith(
-        fontSize: 16.0,
-        fontWeight: AppFontWeight.regular.fontWeight,
-        height: 1.1,
-      );
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.regular.fontWeight,
+    height: 1.1,
+  );
 }

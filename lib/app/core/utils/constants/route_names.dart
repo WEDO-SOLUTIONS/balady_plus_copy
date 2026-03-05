@@ -186,7 +186,7 @@ class RouteName {
 
   static const calendarDetailsPage = 'kingdomCalendar_Details_Page';
 
-// -------  Commercial License Cancel ---------
+  // -------  Commercial License Cancel ---------
   static const commercialLicenseApplyCancel = 'CancelCommercialLicense_Service_Card_Page';
   static const commercialLicenseCancel = 'CancelCommercialLicense_Create_Details_Page';
   static const submitApplicationSuccessfullyCancel = 'CancelCommercialLicense_Success_Page';
@@ -194,14 +194,14 @@ class RouteName {
 
   static const commercialLicenseDetails = 'My_Licenses_Commercial_Details_Page';
 
-// -------  Commercial License Issue ---------
+  // -------  Commercial License Issue ---------
   static const crMapScreen = 'CommercialLicense_Create_Details_Map_Locator_Page';
 
   static const CommercialOtpScreen = 'CommercialLicense_Create_Details_OTP_Page';
 
   static const requestCommercialLicenseDetails = 'My_Requests_Commercial_Details_Page';
 
-// -------  Commercial License Renew ---------
+  // -------  Commercial License Renew ---------
   static const renewCommercialLicenseStartService = 'RenewCommercialLicense_Service_Card_Page';
 
   static const renewCommercialLicenseSubmitForm = 'RenewCommercialLicense_Create_Details_Page';
@@ -231,14 +231,14 @@ class RouteName {
   static const tobaccoDisclosed = '/tobaccoDisclosed';
   static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
 
-// Permits 24
+  // Permits 24
   static const permitsLicenseStartService = 'Permit_24_Service_Card_Page';
   static const permitsDetailsPage = 'Permit_24_Create_Details_Page';
   static const permitsRequestDetailsPage = 'My_Requests_24_Permit_Details_Page';
 
   static const submitApplicationSuccessfullyPermits = 'Permit_24_Success_Page';
 
-// Permit Tobacco
+  // Permit Tobacco
 
   static const permitsTobaccoLicenseStartService = '/permitsTobaccoLicenseStartService';
   static const permitsTobaccoDetailsPage = '/permitsTobaccoDetailsPage';
@@ -379,7 +379,7 @@ class EtmamRoutesNames {
   // orders details page
   static const orderDetailsRoute = '/orderDetailsRoute';
 
-// requests details page
+  // requests details page
   static const requestDetailsRoute = '/requestDetailsRoute';
 
   // evaluate order

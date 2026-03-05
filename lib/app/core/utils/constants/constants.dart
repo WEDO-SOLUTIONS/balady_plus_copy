@@ -41,24 +41,14 @@ class Constants {
     color: Colors.white,
   );
 
-// box shadow for cards
+  // box shadow for cards
   static const List<BoxShadow> boxShadow = [
-    BoxShadow(
-      color: Color(0x1a000000),
-      offset: Offset(0, 2),
-      blurRadius: 10,
-      spreadRadius: 0,
-    )
+    BoxShadow(color: Color(0x1a000000), offset: Offset(0, 2), blurRadius: 10, spreadRadius: 0),
   ];
 
-// box shadow for appBar
+  // box shadow for appBar
   static const List<BoxShadow> appBarBoxShadow = [
-    BoxShadow(
-      color: Color(0x14000000),
-      offset: Offset(0, 2),
-      blurRadius: 15,
-      spreadRadius: 0,
-    )
+    BoxShadow(color: Color(0x14000000), offset: Offset(0, 2), blurRadius: 15, spreadRadius: 0),
   ];
 
   /// keys
@@ -451,7 +441,7 @@ class Constants {
   static const String Numbersfield = 'Numbersfield';
   static const String MultiSelectDropdown = 'MultiSelect Dropdown';
 
-// Map Icons
+  // Map Icons
   static const String mapMarkerLocation = 'assets/images/location@3x.png';
 
   static const String userMarkerLocation = 'assets/images/useLocation@3x.png';

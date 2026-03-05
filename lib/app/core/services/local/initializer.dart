@@ -57,11 +57,7 @@ class Initializer {
       );
     }
 
-    final details = sl<DeviceDetails>().copyWith(
-      deviceName: deviceName,
-      deviceId: deviceId,
-      deviceOs: deviceOs,
-    );
+    final details = sl<DeviceDetails>().copyWith(deviceName: deviceName, deviceId: deviceId, deviceOs: deviceOs);
     await sl.unregister<DeviceDetails>();
     sl.registerLazySingleton(() => details);
   }

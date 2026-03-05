@@ -20,13 +20,15 @@ class MaterialDropDownWidget extends _MaterialDropDown {
     DropDownItem? initialValue,
     String? errorMsg,
     required void Function(DropDownItem?) onSelected,
-  }) : super(CustomMaterialDropDownWidget(
-          items: items,
-          initialValue: initialValue,
-          label: "city".tr(),
-          errorMsg: errorMsg,
-          onSelected: onSelected,
-        ));
+  }) : super(
+         CustomMaterialDropDownWidget(
+           items: items,
+           initialValue: initialValue,
+           label: "city".tr(),
+           errorMsg: errorMsg,
+           onSelected: onSelected,
+         ),
+       );
 
   ///
   MaterialDropDownWidget.district({
@@ -34,11 +36,13 @@ class MaterialDropDownWidget extends _MaterialDropDown {
     DropDownItem? initialValue,
     String? errorMsg,
     required void Function(DropDownItem?) onSelected,
-  }) : super(CustomMaterialDropDownWidget(
-          items: items,
-          initialValue: initialValue,
-          label: "district".tr(),
-          errorMsg: errorMsg,
-          onSelected: onSelected,
-        ));
+  }) : super(
+         CustomMaterialDropDownWidget(
+           items: items,
+           initialValue: initialValue,
+           label: "district".tr(),
+           errorMsg: errorMsg,
+           onSelected: onSelected,
+         ),
+       );
 }

@@ -60,17 +60,25 @@ class HawaiiNotificationService {
 
   static NotificationDetails _notificationDetails() {
     return const NotificationDetails(
-      android: AndroidNotificationDetails("channel id", "channel name",
-          priority: Priority.high,
-          ticker: 'ticker',
-          // sound: RawResourceAndroidNotificationSound("azan"),
-          channelDescription: "Channel description"),
+      android: AndroidNotificationDetails(
+        "channel id",
+        "channel name",
+        priority: Priority.high,
+        ticker: 'ticker',
+        // sound: RawResourceAndroidNotificationSound("azan"),
+        channelDescription: "Channel description",
+      ),
       iOS: DarwinNotificationDetails(sound: ""),
     );
   }
 
-  static Future<void> showScheduledNotification(
-      {int id = 0, String? title, String? body, String? payload, required DateTime scheduledDate}) async {
+  static Future<void> showScheduledNotification({
+    int id = 0,
+    String? title,
+    String? body,
+    String? payload,
+    required DateTime scheduledDate,
+  }) async {
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,
@@ -117,24 +125,14 @@ class HawaiiNotificationService {
     try {
       await Push.setAutoInitEnabled(true);
 
-      Push.getTokenStream.listen(
-        _onTokenEvent,
-        onError: _onTokenError,
-      );
-      Push.onNotificationOpenedApp.listen(
-        _onNotificationOpenedApp,
-      );
+      Push.getTokenStream.listen(_onTokenEvent, onError: _onTokenError);
+      Push.onNotificationOpenedApp.listen(_onNotificationOpenedApp);
 
       final dynamic initialNotification = await Push.getInitialNotification();
       _onNotificationOpenedApp(initialNotification);
 
-      Push.onMessageReceivedStream.listen(
-        _onMessageReceived,
-        onError: _onMessageReceiveError,
-      );
-      bool backgroundMessageHandler = await Push.registerBackgroundMessageHandler(
-        backgroundMessageCallback,
-      );
+      Push.onMessageReceivedStream.listen(_onMessageReceived, onError: _onMessageReceiveError);
+      bool backgroundMessageHandler = await Push.registerBackgroundMessageHandler(backgroundMessageCallback);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -172,22 +170,23 @@ class HawaiiNotificationService {
 
     if (data != null && data.isNotEmpty) {
       _notifications.show(
-          remoteMessage.hashCode,
-          data["title"],
-          data['body'],
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              CommonFunctions.generateUUID(),
-              "Notification",
-              channelDescription: "Notification",
+        remoteMessage.hashCode,
+        data["title"],
+        data['body'],
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            CommonFunctions.generateUUID(),
+            "Notification",
+            channelDescription: "Notification",
 
-              playSound: true,
+            playSound: true,
 
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
-              icon: 'mipmap/ic_launcher',
-            ),
-          ));
+            // TODO add a proper drawable resource to android, for now using
+            //      one that already exists in example app.
+            icon: 'mipmap/ic_launcher',
+          ),
+        ),
+      );
 
       // Push.localNotification(
       //   <String, String>{
@@ -218,22 +217,23 @@ class HawaiiNotificationService {
 
     if (data != null && data.isNotEmpty) {
       _notifications.show(
-          remoteMessage.hashCode,
-          data["title"],
-          data['body'],
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              CommonFunctions.generateUUID(),
-              "Notification",
-              channelDescription: "Notification",
+        remoteMessage.hashCode,
+        data["title"],
+        data['body'],
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            CommonFunctions.generateUUID(),
+            "Notification",
+            channelDescription: "Notification",
 
-              playSound: true,
+            playSound: true,
 
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
-              icon: 'mipmap/ic_launcher',
-            ),
-          ));
+            // TODO add a proper drawable resource to android, for now using
+            //      one that already exists in example app.
+            icon: 'mipmap/ic_launcher',
+          ),
+        ),
+      );
     }
   }
 

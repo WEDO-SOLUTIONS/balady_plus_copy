@@ -18,10 +18,7 @@ class ErrorUnderWidget extends StatelessWidget {
                 alignment: AlignmentDirectional.centerStart,
                 child: CustomTextWidget(
                   errorText!,
-                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                    color: AppColor.error,
-                    fontSize: 14.0,
-                  ),
+                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.error, fontSize: 14.0),
                 ),
               ),
             )

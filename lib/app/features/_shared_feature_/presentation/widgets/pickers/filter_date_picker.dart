@@ -50,10 +50,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
-        CustomTextWidget(
-          "date_form".tr(),
-          textStyle: AppStyle.dropDownTitleTextStyle,
-        ),
+        CustomTextWidget("date_form".tr(), textStyle: AppStyle.dropDownTitleTextStyle),
         DateFromSelector(
           initialDateForm: _dateForm,
           onChange: (dateForm) {
@@ -97,17 +94,12 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
 
     hijri_picker.Picker(
       isAr: CommonFunctions.isAppAR,
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headercolor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        widget.title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(widget.title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: hijri_picker.DateTimePickerAdapter(
         minValue: minValue,
@@ -120,11 +112,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
         final date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
         setState(() {
-          _selectedDate = date?.hijriToGregorian(
-            date.hYear,
-            date.hMonth,
-            date.hDay,
-          );
+          _selectedDate = date?.hijriToGregorian(date.hYear, date.hMonth, date.hDay);
         });
         if (_selectedDate == null) return;
         widget.onChange(_selectedDate!, _dateForm);
@@ -134,17 +122,12 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
 
   void showPickerDate(DateTime? currentDate, BuildContext context) {
     Picker(
-      confirmTextStyle: AppStyle.textButtonStyle.copyWith(
-        color: AppColor.primary900Light,
-      ),
+      confirmTextStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.primary900Light),
       headerColor: AppColor.paleGrey,
       cancel: Container(),
       height: 270,
       confirmText: 'choose'.tr(),
-      title: CustomTextWidget(
-        widget.title,
-        textStyle: AppStyle.dropDownTitleTextStyle,
-      ),
+      title: CustomTextWidget(widget.title, textStyle: AppStyle.dropDownTitleTextStyle),
       hideHeader: false,
       adapter: DateTimePickerAdapter(
         minValue: widget.startDate,

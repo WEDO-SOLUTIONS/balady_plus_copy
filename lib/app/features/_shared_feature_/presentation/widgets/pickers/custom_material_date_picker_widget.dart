@@ -50,11 +50,7 @@ class CustomMaterialDatePickerWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label widget
-        WidgetLabel(
-          isRequired: isRequired,
-          label: label,
-          labelStyle: labelStyle,
-        ),
+        WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
         // Date Picker
         CustomElevatedIconButtonWidget(
           btnHeight: 55.0,
@@ -69,10 +65,7 @@ class CustomMaterialDatePickerWidget extends StatelessWidget {
           iconAlignment: AlignmentDirectional.centerEnd,
           onPressed: readOnly
               ? onDisabledTapped
-              : () async => await onSelectedDate(
-                    context,
-                    selectedDate: validateDate ?? DateTime.now(),
-                  ),
+              : () async => await onSelectedDate(context, selectedDate: validateDate ?? DateTime.now()),
         ),
         // Error widget
         ErrorUnderWidget(errorText: errorMsg),
@@ -91,16 +84,13 @@ class CustomMaterialDatePickerWidget extends StatelessWidget {
   DateTime? get validateDate => initialDate?.weekday == 5
       ? initialDate!.add(const Duration(days: 2))
       : initialDate?.weekday == 6
-          ? initialDate!.add(const Duration(days: 1))
-          : initialDate;
+      ? initialDate!.add(const Duration(days: 1))
+      : initialDate;
 
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
   DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
-  Future<void> onSelectedDate(
-    BuildContext context, {
-    required DateTime selectedDate,
-  }) async {
+  Future<void> onSelectedDate(BuildContext context, {required DateTime selectedDate}) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,

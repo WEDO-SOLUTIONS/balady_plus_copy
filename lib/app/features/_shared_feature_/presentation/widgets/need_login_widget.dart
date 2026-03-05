@@ -43,12 +43,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               /// Content
-              Image.asset(
-                "assets/icons/png/lockv.png",
-                width: 73,
-                height: 88,
-                fit: BoxFit.cover,
-              ),
+              Image.asset("assets/icons/png/lockv.png", width: 73, height: 88, fit: BoxFit.cover),
               // const CustomSvgIconWidget(
               //   IconPath.lock,
               //   iconSize: 82,
@@ -97,7 +92,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                   btnHeight: 56,
                   btnRadius: 8,
                 ),
-              ]
+              ],
             ],
           ),
         ),

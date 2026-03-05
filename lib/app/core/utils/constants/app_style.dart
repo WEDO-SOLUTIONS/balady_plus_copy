@@ -365,7 +365,11 @@ class AppStyle {
   );
   // Athkar Styles
   static final resetAthkarTextStyle = TextStyle(
-      fontSize: 16, fontWeight: AppFontWeight.semiBold.fontWeight, fontFamily: fontFamily, color: AppColor.grey1000);
+    fontSize: 16,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+    color: AppColor.grey1000,
+  );
 
   static final countAthkarStyle = TextStyle(
     fontSize: 22.05,
@@ -392,7 +396,11 @@ class AppStyle {
     fontFamily: fontFamily,
   );
   static final boardingAppBarTitleStyle = TextStyle(
-      fontFamily: fontFamily, fontSize: 16, fontWeight: AppFontWeight.medium.fontWeight, color: AppColor.white);
+    fontFamily: fontFamily,
+    fontSize: 16,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    color: AppColor.white,
+  );
   static final desscriptionAthkarStyle = TextStyle(
     fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,

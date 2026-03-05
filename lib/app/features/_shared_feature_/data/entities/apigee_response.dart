@@ -8,10 +8,7 @@ class ApigeeResponse<T> {
 }
 
 class StatusDetails {
-  StatusDetails({
-    this.code,
-    this.message,
-  });
+  StatusDetails({this.code, this.message});
 
   int? code;
   String? message;

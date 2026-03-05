@@ -9,12 +9,7 @@ class DateFormCell extends StatelessWidget {
   final DateForm groupValue;
   final Function(DateForm?) onChanged;
 
-  const DateFormCell({
-    super.key,
-    required this.value,
-    required this.groupValue,
-    required this.onChanged,
-  });
+  const DateFormCell({super.key, required this.value, required this.groupValue, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +18,7 @@ class DateFormCell extends StatelessWidget {
         onTap: () => onChanged(value),
         child: Container(
           height: 48,
-          decoration: BoxDecoration(
-            color: AppColor.primary50Light50,
-            borderRadius: BorderRadius.circular(8),
-          ),
+          decoration: BoxDecoration(color: AppColor.primary50Light50, borderRadius: BorderRadius.circular(8)),
           child: Row(
             children: [
               Radio<DateForm>(

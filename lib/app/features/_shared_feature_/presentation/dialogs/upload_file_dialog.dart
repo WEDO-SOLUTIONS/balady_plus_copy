@@ -18,8 +18,13 @@ class UploadFileDialog extends StatelessWidget {
   final bool imagesOnly;
   final bool filesOnly;
 
-  const UploadFileDialog(
-      {super.key, required this.onConfirm, this.onCancel, this.imagesOnly = false, this.filesOnly = false});
+  const UploadFileDialog({
+    super.key,
+    required this.onConfirm,
+    this.onCancel,
+    this.imagesOnly = false,
+    this.filesOnly = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +65,13 @@ class UploadFileDialog extends StatelessWidget {
                         String fileName = path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
                         final fileBytes = await File(path).readAsBytes();
                         String base64File = base64Encode(fileBytes);
-                        FileDataItem file =
-                            FileDataItem(fileBase64: base64File, fileName: fileName, filePath: path, bytes: fileBytes
-                                // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
-                                );
+                        FileDataItem file = FileDataItem(
+                          fileBase64: base64File,
+                          fileName: fileName,
+                          filePath: path,
+                          bytes: fileBytes,
+                          // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
+                        );
                         onConfirm(file);
                       }
                     }
@@ -83,11 +91,11 @@ class UploadFileDialog extends StatelessWidget {
                     openFilePicker(FileType.image, context);
                   },
                 ),
+
               // if (Platform.isIOS)
               //  const DrawLineWidget(
               //      verticalMargin: 10,
               //   ),
-
               CustomTextButtonWidget(
                 text: ("files").tr(),
                 btnTextColor: AppColor.black,
@@ -112,8 +120,8 @@ class UploadFileDialog extends StatelessWidget {
       allowedExtensions: allowedExtensions != null
           ? allowedExtensions
           : fileType == FileType.custom
-              ? ['jpg', 'pdf', 'jpeg', 'png']
-              : null,
+          ? ['jpg', 'pdf', 'jpeg', 'png']
+          : null,
     );
     try {
       if (file != null && file.files.isNotEmpty) {

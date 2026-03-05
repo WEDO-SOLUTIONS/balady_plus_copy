@@ -32,14 +32,14 @@ class CloseRequestBottomSheetComponent extends StatelessWidget {
   List<String> get texts => ["closeButton", "cancelButton"];
   List<Color?> get colors => [AppColor.error, null];
   List<VoidCallback> get callbacks => [
-        () {
-          // Close dialog
-          context.popDialog();
-          // Close page
-          context.popRoute();
-        },
-        () => context.popDialog(),
-      ];
+    () {
+      // Close dialog
+      context.popDialog();
+      // Close page
+      context.popRoute();
+    },
+    () => context.popDialog(),
+  ];
 
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }

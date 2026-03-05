@@ -56,9 +56,7 @@ class _CustomEnhancedExpansionPanelWidgetState extends State<CustomEnhancedExpan
     final screenWidth = MediaQuery.of(context).size.width;
     return Container(
       width: widget.expansionWidth ?? screenWidth,
-      padding: const EdgeInsets.symmetric(
-        horizontal: GeneralKey.semiMediumPadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: GeneralKey.semiMediumPadding),
       child: LayoutBuilder(
         builder: (context, constraints) {
           return ValueListenableBuilder<bool>(
@@ -130,9 +128,7 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: GeneralKey.mediumPadding,
-        ),
+        padding: const EdgeInsets.only(top: GeneralKey.mediumPadding),
         child: Row(
           mainAxisAlignment: _getMainAxisAlignment(),
           children: [
@@ -176,24 +172,15 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
 
-  const _ExpansionPanelArrowWidget({
-    Key? key,
-    required this.expanded,
-  }) : super(key: key);
+  const _ExpansionPanelArrowWidget({Key? key, required this.expanded}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 25.0,
       height: 25.0,
-      decoration: const BoxDecoration(
-        color: AppColor.white6,
-        shape: BoxShape.circle,
-      ),
-      child: RotatedBox(
-        quarterTurns: expanded ? 1 : 3,
-        child: const Icon(Icons.arrow_back_ios_new, size: 13.0),
-      ),
+      decoration: const BoxDecoration(color: AppColor.white6, shape: BoxShape.circle),
+      child: RotatedBox(quarterTurns: expanded ? 1 : 3, child: const Icon(Icons.arrow_back_ios_new, size: 13.0)),
     );
   }
 }

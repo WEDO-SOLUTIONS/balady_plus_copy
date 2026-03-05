@@ -43,22 +43,18 @@ class WebService {
       dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
     }
 
-    dio.interceptors.add(
-      PrettyDioLogger(
-        requestHeader: false,
-        requestBody: false,
-        responseBody: false,
-      ),
-    );
+    dio.interceptors.add(PrettyDioLogger(requestHeader: false, requestBody: false, responseBody: false));
 
     dio.interceptors.add(AppInterceptors());
-    dio.interceptors.add(AppCertificatePinningInterceptor(
-        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints, callFollowingErrorInterceptor: true));
+    dio.interceptors.add(
+      AppCertificatePinningInterceptor(
+        allowedSHAFingerprints: CommonProperties.allowedSHAFingerprints,
+        callFollowingErrorInterceptor: true,
+      ),
+    );
   }
 
-  WebService.newDio({
-    required this.dio,
-  });
+  WebService.newDio({required this.dio});
 }
 
 class AppCertificatePinningInterceptor extends Interceptor {
@@ -71,14 +67,11 @@ class AppCertificatePinningInterceptor extends Interceptor {
     List<String>? allowedSHAFingerprints,
     int timeout = 0,
     this.callFollowingErrorInterceptor = false,
-  })  : _allowedSHAFingerprints = allowedSHAFingerprints ?? <String>[],
-        _timeout = timeout;
+  }) : _allowedSHAFingerprints = allowedSHAFingerprints ?? <String>[],
+       _timeout = timeout;
 
   @override
-  Future onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+  Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     try {
       // iOS bug: Alamofire is failing to return parallel requests for certificate validation
       if (Platform.isIOS && secure != null) {
@@ -107,9 +100,10 @@ class AppCertificatePinningInterceptor extends Interceptor {
         } else {
           handler.reject(
             DioException(
-                requestOptions: options,
-                error: const CertificateNotVerifiedException(),
-                type: DioExceptionType.badCertificate),
+              requestOptions: options,
+              error: const CertificateNotVerifiedException(),
+              type: DioExceptionType.badCertificate,
+            ),
             callFollowingErrorInterceptor,
           );
         }
@@ -148,10 +142,7 @@ class AppInterceptors extends Interceptor {
   }
 
   @override
-  void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     "On-Sending-Request ${options.uri}".actionLog();
 
     options.headers[ApiHeader.language.eName] = languageCode;
@@ -195,14 +186,17 @@ class AppInterceptors extends Interceptor {
       options.headers.remove("Authorization");
     }
     if (options.data is! FormData) {
-      final verifyingKEY = CommonFunctions.hashRequest(Uri.decodeQueryComponent(url), method,
-          body: (options.data != null && !options.uri.toString().contains("bcg/upload-file"))
-              ? json.encode(options.data)
-              : null,
-          authorization: !options.uri.toString().contains("bcg/upload-file")
-              ? options.headers.containsKey("Authorization")
-              : false,
-          corelationId: xCorrelationId);
+      final verifyingKEY = CommonFunctions.hashRequest(
+        Uri.decodeQueryComponent(url),
+        method,
+        body: (options.data != null && !options.uri.toString().contains("bcg/upload-file"))
+            ? json.encode(options.data)
+            : null,
+        authorization: !options.uri.toString().contains("bcg/upload-file")
+            ? options.headers.containsKey("Authorization")
+            : false,
+        corelationId: xCorrelationId,
+      );
 
       print(verifyingKEY);
 
@@ -252,10 +246,7 @@ class AppInterceptors extends Interceptor {
           case 409:
             throw ConflictException(err.requestOptions, err.response);
           case 500:
-            throw InternalServerErrorException(
-              err.requestOptions,
-              err.response,
-            );
+            throw InternalServerErrorException(err.requestOptions, err.response);
           default:
             throw BadRequestException(err.requestOptions, err.response);
         }
@@ -337,16 +328,10 @@ void _logDioError(DioException err) async {
       "method": err.requestOptions.method,
     };
   contexts['Response'] = {
-    if (err.response != null) ...{
-      "responseData": err.response?.data,
-      "statusCode": err.response?.statusCode,
-    },
+    if (err.response != null) ...{"responseData": err.response?.data, "statusCode": err.response?.statusCode},
   };
   Sentry.captureEvent(
-    SentryEvent(
-      throwable: err,
-      contexts: contexts,
-    ),
+    SentryEvent(throwable: err, contexts: contexts),
     stackTrace: err.stackTrace,
   );
 }

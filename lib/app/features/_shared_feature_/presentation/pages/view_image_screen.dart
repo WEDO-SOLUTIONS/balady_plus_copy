@@ -18,10 +18,13 @@ class _ViewAPIGEEImageScreenState extends State<ViewAPIGEEImageScreen> {
     return Stack(
       children: [
         PhotoView(
-          imageProvider: NetworkImage(url, headers: {
-            "verifyingKEY": CommonFunctions.hashRequest(url, "GET"),
-            "Authorization": "Bearer ${CommonProperties.token}"
-          }),
+          imageProvider: NetworkImage(
+            url,
+            headers: {
+              "verifyingKEY": CommonFunctions.hashRequest(url, "GET"),
+              "Authorization": "Bearer ${CommonProperties.token}",
+            },
+          ),
         ),
         Align(
           alignment: AlignmentDirectional.topStart,
@@ -31,11 +34,7 @@ class _ViewAPIGEEImageScreenState extends State<ViewAPIGEEImageScreen> {
             },
             child: Container(
               margin: EdgeInsetsDirectional.only(top: MediaQuery.of(context).padding.top + 5, start: 12),
-              child: Image.asset(
-                Constants.imgPath + 'exit@3x.png',
-                height: 38,
-                width: 38,
-              ),
+              child: Image.asset(Constants.imgPath + 'exit@3x.png', height: 38, width: 38),
             ),
           ),
         ),

@@ -94,11 +94,7 @@ class CustomFilePickerWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label word
-        WidgetLabel(
-          isRequired: isRequired,
-          label: label,
-          labelStyle: labelStyle,
-        ),
+        WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
         // Button
         LayoutBuilder(
           builder: (_, constraints) {
@@ -115,10 +111,7 @@ class CustomFilePickerWidget extends StatelessWidget {
                   btnBorderColor: btnBorderColor,
                   btnBorderWidth: borderWidth,
                   btnRadius: borderRadius,
-                  text: _FileNameWidget(
-                    status: fileStatus,
-                    fileName: fileName ?? noChosenFile,
-                  ),
+                  text: _FileNameWidget(status: fileStatus, fileName: fileName ?? noChosenFile),
                   textStyle: btnTextStyle,
                   icon: const Icon(Icons.upload_rounded, size: 22.0),
                   iconAlignment: AlignmentDirectional.centerEnd,
@@ -132,11 +125,7 @@ class CustomFilePickerWidget extends StatelessWidget {
                     onPressed: onRemoveAttachment!,
                   ),
                 if (uploaded && onDownloadAttachment != null)
-                  _FileIconButton(
-                    startPadding: 12.0,
-                    icon: Icons.download_rounded,
-                    onPressed: onDownloadAttachment!,
-                  ),
+                  _FileIconButton(startPadding: 12.0, icon: Icons.download_rounded, onPressed: onDownloadAttachment!),
                 if (uploaded && onDeleteAttachment != null)
                   _FileIconButton(
                     startPadding: 8.0,
@@ -170,8 +159,8 @@ class CustomFilePickerWidget extends StatelessWidget {
       // 8.0 * 1: space between icon and other icon
       ? 12.0 + (22.0 * 2) + (8.0 * 1)
       : !uploaded && onRemoveAttachment != null
-          ? 12.0 + 22.0
-          : 0.0;
+      ? 12.0 + 22.0
+      : 0.0;
 
   Future<void> _onPickFile(BuildContext context) async {
     final type = (fileType == FileType.custom && allowedExtensions.isEmpty) ? FileType.any : fileType;
@@ -185,21 +174,12 @@ class CustomFilePickerWidget extends StatelessWidget {
         ),
       );
     } else {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: type,
-        allowedExtensions: allowedExtensions,
-      );
-      await _checkResult(
-        result,
-        onSelectedAttachment: onUploadAttachment,
-      );
+      FilePickerResult? result = await FilePicker.platform.pickFiles(type: type, allowedExtensions: allowedExtensions);
+      await _checkResult(result, onSelectedAttachment: onUploadAttachment);
     }
   }
 
-  Future<void> _checkResult(
-    FilePickerResult? result, {
-    required void Function(FileInfo) onSelectedAttachment,
-  }) async {
+  Future<void> _checkResult(FilePickerResult? result, {required void Function(FileInfo) onSelectedAttachment}) async {
     try {
       if (result != null && result.files.isNotEmpty) {
         PlatformFile file = result.files.first;
@@ -239,10 +219,7 @@ class CustomFilePickerWidget extends StatelessWidget {
 class _FileNameWidget extends StatelessWidget {
   final FileSelectorStatus status;
   final String fileName;
-  const _FileNameWidget({
-    required this.status,
-    required this.fileName,
-  });
+  const _FileNameWidget({required this.status, required this.fileName});
 
   @override
   Widget build(BuildContext context) {
@@ -250,10 +227,7 @@ class _FileNameWidget extends StatelessWidget {
       case FileSelectorStatus.unselected:
         return CustomTextWidget(
           fileName,
-          textStyle: AppStyle.mainTextThirdStyle.copyWith(
-            fontSize: 14.0,
-            color: AppColor.black,
-          ),
+          textStyle: AppStyle.mainTextThirdStyle.copyWith(fontSize: 14.0, color: AppColor.black),
         );
       case FileSelectorStatus.selected:
         return Container(
@@ -266,10 +240,7 @@ class _FileNameWidget extends StatelessWidget {
           ),
           child: CustomTextWidget(
             fileName,
-            textStyle: AppStyle.mainTextThirdStyle.copyWith(
-              fontSize: 11.0,
-              color: AppColor.black,
-            ),
+            textStyle: AppStyle.mainTextThirdStyle.copyWith(fontSize: 11.0, color: AppColor.black),
             maxLines: 1,
             textOverflow: TextOverflow.ellipsis,
           ),
@@ -282,11 +253,7 @@ class _FileIconButton extends StatelessWidget {
   final double startPadding;
   final IconData icon;
   final VoidCallback onPressed;
-  const _FileIconButton({
-    required this.startPadding,
-    required this.icon,
-    required this.onPressed,
-  });
+  const _FileIconButton({required this.startPadding, required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

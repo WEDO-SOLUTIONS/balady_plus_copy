@@ -6,53 +6,27 @@ import '../../shared_feature_exports.dart' show CustomAlertDialogWidget, ToastNo
 
 class MessageDialog {
   //! --------- BotToast -----------
-  static void showSuccessNotification({required String msg}) => BotToast.showCustomNotification(
-        toastBuilder: (_) => ToastNotification.success(msg),
-      );
-  static void showErrorNotification({required String msg}) => BotToast.showCustomNotification(
-        toastBuilder: (_) => ToastNotification.error(msg),
-      );
+  static void showSuccessNotification({required String msg}) =>
+      BotToast.showCustomNotification(toastBuilder: (_) => ToastNotification.success(msg));
+  static void showErrorNotification({required String msg}) =>
+      BotToast.showCustomNotification(toastBuilder: (_) => ToastNotification.error(msg));
 
-  static Future<bool> showSuccess(
-    BuildContext context,
-    String msg,
-  ) async =>
-      await _showDialog(
-        context,
-        child: CustomAlertDialogWidget(
-          titleMessageType: MessageType.success,
-          contentText: msg,
-        ),
-      );
+  static Future<bool> showSuccess(BuildContext context, String msg) async => await _showDialog(
+    context,
+    child: CustomAlertDialogWidget(titleMessageType: MessageType.success, contentText: msg),
+  );
 
-  static Future<bool> showWarning(
-    BuildContext context,
-    String warningText,
-  ) async =>
-      await _showDialog(
-        context,
-        child: CustomAlertDialogWidget(
-          titleMessageType: MessageType.warning,
-          contentText: warningText,
-        ),
-      );
+  static Future<bool> showWarning(BuildContext context, String warningText) async => await _showDialog(
+    context,
+    child: CustomAlertDialogWidget(titleMessageType: MessageType.warning, contentText: warningText),
+  );
 
-  static Future<bool> showError(
-    BuildContext context,
-    String errorText,
-  ) async =>
-      await _showDialog(
-        context,
-        child: CustomAlertDialogWidget(
-          titleMessageType: MessageType.error,
-          contentText: errorText,
-        ),
-      );
+  static Future<bool> showError(BuildContext context, String errorText) async => await _showDialog(
+    context,
+    child: CustomAlertDialogWidget(titleMessageType: MessageType.error, contentText: errorText),
+  );
 
-  static Future<bool> _showDialog(
-    BuildContext context, {
-    required Widget child,
-  }) async =>
+  static Future<bool> _showDialog(BuildContext context, {required Widget child}) async =>
       (await showGeneralDialog<bool>(
         barrierColor: Colors.black.withOpacity(0.6),
         transitionBuilder: (_, a1, a2, widget) {

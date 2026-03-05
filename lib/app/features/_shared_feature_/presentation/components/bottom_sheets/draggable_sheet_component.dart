@@ -85,10 +85,10 @@ class DraggableSheetComponent extends StatelessWidget {
   }
 
   EdgeInsetsGeometry get padding => EdgeInsets.only(
-        right: UIHelper.mediumPadding,
-        left: UIHelper.mediumPadding,
-        top: UIHelper.smallPadding,
-        bottom: context.bottomPadding,
-      );
+    right: UIHelper.mediumPadding,
+    left: UIHelper.mediumPadding,
+    top: UIHelper.smallPadding,
+    bottom: context.bottomPadding,
+  );
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }

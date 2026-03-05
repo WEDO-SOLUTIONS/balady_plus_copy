@@ -6,13 +6,7 @@ class ClickableWidget extends StatelessWidget {
   final Widget child;
   // It can be null to disable clicking
   final VoidCallback? onPressed;
-  const ClickableWidget({
-    super.key,
-    this.effectColor,
-    this.radius,
-    required this.child,
-    required this.onPressed,
-  });
+  const ClickableWidget({super.key, this.effectColor, this.radius, required this.child, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

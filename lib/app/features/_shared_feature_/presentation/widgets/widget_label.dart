@@ -9,13 +9,7 @@ class WidgetLabel extends StatelessWidget {
   final TextStyle? labelStyle;
   final bool isRequired;
   final EdgeInsetsGeometry? padding;
-  const WidgetLabel({
-    super.key,
-    required this.label,
-    this.labelStyle,
-    this.isRequired = false,
-    this.padding,
-  });
+  const WidgetLabel({super.key, required this.label, this.labelStyle, this.isRequired = false, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +22,13 @@ class WidgetLabel extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: label!.isEmpty ? "notFound".tr() : label,
-                    style: labelStyle ??
-                        AppStyle.mainTextSecondaryStyle
-                            .copyWith(fontSize: 16.0, fontWeight: FontWeight.bold, color: AppColor.blackModern700Light),
+                    style:
+                        labelStyle ??
+                        AppStyle.mainTextSecondaryStyle.copyWith(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.blackModern700Light,
+                        ),
                   ),
                 ],
               ),

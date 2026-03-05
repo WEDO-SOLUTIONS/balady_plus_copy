@@ -17,11 +17,13 @@ class PegaWebService {
   static String baseURL = RemoteConfig.apigeeURL;
   // static String pegaBaseURL = RemoteConfig.pegaURL;
 
-  Future<Map<String, dynamic>> getNewApigeeRequest(String url,
-      {String? relativePath,
-      Map<String, dynamic>? queryParams,
-      Map<String, String>? extraHeadersParams,
-      bool autoLogout = true}) async {
+  Future<Map<String, dynamic>> getNewApigeeRequest(
+    String url, {
+    String? relativePath,
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? extraHeadersParams,
+    bool autoLogout = true,
+  }) async {
     String queryString = "";
     if (relativePath != null) {
       queryString = relativePath;
@@ -43,10 +45,7 @@ class PegaWebService {
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
-      var response = await http.get(
-        Uri.parse(requestUrl),
-        headers: headers,
-      );
+      var response = await http.get(Uri.parse(requestUrl), headers: headers);
       print("url response: ${utf8.decode(response.bodyBytes)}");
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
@@ -62,10 +61,11 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: utf8.decode(response.bodyBytes).toString(),
-              statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: utf8.decode(response.bodyBytes).toString(),
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -83,7 +83,11 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url, qeuryParms: queryString, data: response.body, statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: response.body,
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -240,12 +244,14 @@ class PegaWebService {
   //   return result;
   // }
 
-  Future<Map<String, dynamic>> getApigeeRequest(String url,
-      {String? relativePath,
-      Map<String, dynamic>? queryParams,
-      Map<String, String>? extraHeadersParams,
-      int? timeLimit,
-      bool autoLogout = true}) async {
+  Future<Map<String, dynamic>> getApigeeRequest(
+    String url, {
+    String? relativePath,
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? extraHeadersParams,
+    int? timeLimit,
+    bool autoLogout = true,
+  }) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
     String queryString = "";
     if (relativePath != null) {
@@ -264,8 +270,12 @@ class PegaWebService {
         String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
         String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-        String verifyingKEY =
-            hashRequest(requestUrl, "GET", loginIdentityId: loginIdentityId, loginIdentityType: loginIdentityType);
+        String verifyingKEY = hashRequest(
+          requestUrl,
+          "GET",
+          loginIdentityId: loginIdentityId,
+          loginIdentityType: loginIdentityType,
+        );
 
         var headers = {
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
@@ -284,10 +294,7 @@ class PegaWebService {
         if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
         var response = await http
-            .get(
-              Uri.parse(requestUrl),
-              headers: headers,
-            )
+            .get(Uri.parse(requestUrl), headers: headers)
             .timeout(Duration(seconds: timeLimit ?? 5));
         print("url response: ${utf8.decode(response.bodyBytes)}");
         if (response.statusCode == HttpStatus.ok) {
@@ -304,10 +311,11 @@ class PegaWebService {
 
           try {
             Helpers.sendLog(
-                url: baseURL + url,
-                qeuryParms: queryString,
-                data: utf8.decode(response.bodyBytes).toString(),
-                statusCode: response.statusCode);
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: utf8.decode(response.bodyBytes).toString(),
+              statusCode: response.statusCode,
+            );
           } catch (error, stackTrace) {
             LogsViewModel().sendEventFromModel(
               event: ErrorExceptionModel(
@@ -325,7 +333,11 @@ class PegaWebService {
 
           try {
             Helpers.sendLog(
-                url: baseURL + url, qeuryParms: queryString, data: response.body, statusCode: response.statusCode);
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: response.body,
+              statusCode: response.statusCode,
+            );
           } catch (error, stackTrace) {
             LogsViewModel().sendEventFromModel(
               event: ErrorExceptionModel(
@@ -384,11 +396,13 @@ class PegaWebService {
     }
   }
 
-  Future<Map<String, dynamic>> postApigeeRequest(String url,
-      {String? relativePath,
-      Map<String, dynamic>? queryParams,
-      Map<String, String>? extraHeadersParams,
-      dynamic body}) async {
+  Future<Map<String, dynamic>> postApigeeRequest(
+    String url, {
+    String? relativePath,
+    Map<String, dynamic>? queryParams,
+    Map<String, String>? extraHeadersParams,
+    dynamic body,
+  }) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -407,8 +421,13 @@ class PegaWebService {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
       String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-      String verifyingKEY = hashRequest(requestUrl, "POST",
-          body: data, loginIdentityId: loginIdentityId, loginIdentityType: loginIdentityType);
+      String verifyingKEY = hashRequest(
+        requestUrl,
+        "POST",
+        body: data,
+        loginIdentityId: loginIdentityId,
+        loginIdentityType: loginIdentityType,
+      );
 
       var headers = {
         'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
@@ -436,10 +455,11 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: utf8.decode(response.bodyBytes).toString(),
-              statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: utf8.decode(response.bodyBytes).toString(),
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -458,11 +478,12 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: utf8.decode(response.bodyBytes).toString(),
-              body: data,
-              statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: utf8.decode(response.bodyBytes).toString(),
+            body: data,
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -526,13 +547,15 @@ class PegaWebService {
     return base64;
   }
 
-  Future<Map<String, dynamic>> uploadApigeeFile(String url,
-      {String? relativePath,
-      Map<String, dynamic>? queryParams,
-      Uint8List? base64,
-      String? fileName,
-      String? mimeType,
-      dynamic body}) async {
+  Future<Map<String, dynamic>> uploadApigeeFile(
+    String url, {
+    String? relativePath,
+    Map<String, dynamic>? queryParams,
+    Uint8List? base64,
+    String? fileName,
+    String? mimeType,
+    dynamic body,
+  }) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -548,16 +571,18 @@ class PegaWebService {
 
     Map<String, dynamic> result = {};
     try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(requestUrl),
-      );
+      var request = http.MultipartRequest('POST', Uri.parse(requestUrl));
 
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
       String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-      String verifyingKEY = hashRequest(requestUrl, "POST",
-          body: data, loginIdentityId: loginIdentityId, loginIdentityType: loginIdentityType);
+      String verifyingKEY = hashRequest(
+        requestUrl,
+        "POST",
+        body: data,
+        loginIdentityId: loginIdentityId,
+        loginIdentityType: loginIdentityType,
+      );
 
       request.headers['fileContentType'] = mimeType ?? "";
       request.headers['authorization'] = 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
@@ -583,7 +608,12 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url, qeuryParms: queryString, data: respStr, body: data, statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: respStr,
+            body: data,
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -625,8 +655,11 @@ class PegaWebService {
     return result;
   }
 
-  Future<Map<String, dynamic>> getApigeeRequestWithoutUTF(String url,
-      {String? relativePath, Map<String, dynamic>? queryParams}) async {
+  Future<Map<String, dynamic>> getApigeeRequestWithoutUTF(
+    String url, {
+    String? relativePath,
+    Map<String, dynamic>? queryParams,
+  }) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -644,8 +677,12 @@ class PegaWebService {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
       String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-      String verifyingKEY =
-          hashRequest(requestUrl, "GET", loginIdentityId: loginIdentityId, loginIdentityType: loginIdentityType);
+      String verifyingKEY = hashRequest(
+        requestUrl,
+        "GET",
+        loginIdentityId: loginIdentityId,
+        loginIdentityType: loginIdentityType,
+      );
 
       var response = await http.get(
         Uri.parse(requestUrl),
@@ -674,10 +711,11 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: response.body.toString(),
-              statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: response.body.toString(),
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -745,10 +783,7 @@ class PegaWebService {
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
-      var response = await http.get(
-        Uri.parse(requestUrl),
-        headers: headers,
-      );
+      var response = await http.get(Uri.parse(requestUrl), headers: headers);
       //print("response: " + response.body);
       //print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
@@ -762,10 +797,11 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: response.body.toString(),
-              statusCode: response.statusCode);
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: response.body.toString(),
+            statusCode: response.statusCode,
+          );
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(

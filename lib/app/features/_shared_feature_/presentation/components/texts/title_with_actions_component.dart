@@ -66,7 +66,7 @@ class TitleWithActionsComponent extends StatelessWidget {
                         context.popDialog();
                         // Perform function
                         func();
-                      }
+                      },
                   ],
                 ),
               ),
@@ -80,9 +80,6 @@ class TitleWithActionsComponent extends StatelessWidget {
       action == null && btnIcons.isEmpty && btnTexts.isEmpty && btnTextsColors.isEmpty && btnOnActions.isEmpty;
 
   EdgeInsetsGeometry get _padding => const EdgeInsets.symmetric(horizontal: UIHelper.smallPadding);
-  TextStyle get textStyle => AppStyle.mainTextStyle.copyWith(
-        fontWeight: AppFontWeight.medium.fontWeight,
-        letterSpacing: 0.5,
-        fontSize: 18.0,
-      );
+  TextStyle get textStyle =>
+      AppStyle.mainTextStyle.copyWith(fontWeight: AppFontWeight.medium.fontWeight, letterSpacing: 0.5, fontSize: 18.0);
 }

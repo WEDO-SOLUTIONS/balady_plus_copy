@@ -8,18 +8,12 @@ import '../../shared_feature_exports.dart' show CustomElevatedButtonWidget, Cust
 class ErrorLoadingComponent extends StatelessWidget {
   final VoidCallback onTryAgain;
   final String? message;
-  const ErrorLoadingComponent({
-    super.key,
-    required this.onTryAgain,
-    this.message,
-  });
+  const ErrorLoadingComponent({super.key, required this.onTryAgain, this.message});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: UIHelper.middlePadding,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

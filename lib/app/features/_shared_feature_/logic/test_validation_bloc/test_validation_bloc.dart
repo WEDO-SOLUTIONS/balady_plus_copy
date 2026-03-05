@@ -21,16 +21,18 @@ class TestValidationBloc extends Bloc<TestValidationEvent, TestValidationState> 
   TestValidationBloc() : super(const TestValidationState()) {
     ///
     on<TestValidationOnChangeInfo>((event, emit) {
-      emit(state.copyWith(
-        phoneNumber: event.phoneNumber,
-        email: event.email,
-        startDate: event.startDate,
-        endDate: event.endDate,
-        address: event.address,
-        description: event.description,
-        city: event.city,
-        status: BlocRequestStatus.requestChanged,
-      ));
+      emit(
+        state.copyWith(
+          phoneNumber: event.phoneNumber,
+          email: event.email,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          address: event.address,
+          description: event.description,
+          city: event.city,
+          status: BlocRequestStatus.requestChanged,
+        ),
+      );
     });
 
     ///

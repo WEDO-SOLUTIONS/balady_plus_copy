@@ -15,15 +15,16 @@ class LabelIconSubtitleComponent extends StatelessWidget {
   final Function? onPress;
   EdgeInsetsDirectional? padding;
 
-  LabelIconSubtitleComponent(
-      {required this.text,
-      this.subtitle,
-      this.subWidget,
-      this.icon,
-      this.onPress,
-      this.iconSize,
-      this.padding,
-      super.key});
+  LabelIconSubtitleComponent({
+    required this.text,
+    this.subtitle,
+    this.subWidget,
+    this.icon,
+    this.onPress,
+    this.iconSize,
+    this.padding,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +41,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
               if (icon != null)
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 6.0),
-                  child: CustomSvgIconWidget(
-                    icon!,
-                    iconSize: iconSize,
-                  ),
+                  child: CustomSvgIconWidget(icon!, iconSize: iconSize),
                 ),
               Expanded(
                 child: Column(
@@ -81,7 +79,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
               ),
             ],
           ),
-          if (subWidget != null) subWidget!
+          if (subWidget != null) subWidget!,
         ],
       ),
     );

@@ -17,9 +17,10 @@ class CustomTooltipWidget extends StatelessWidget {
       preferBelow: true,
       showDuration: const Duration(seconds: 3),
       decoration: BoxDecoration(
-          border: Border.all(color: AppColor.black100, width: 1),
-          boxShadow: const [BoxShadow(color: Color(0x1c000000), offset: Offset(0, 2), blurRadius: 4, spreadRadius: 0)],
-          color: const Color(0xfffdfcfc)),
+        border: Border.all(color: AppColor.black100, width: 1),
+        boxShadow: const [BoxShadow(color: Color(0x1c000000), offset: Offset(0, 2), blurRadius: 4, spreadRadius: 0)],
+        color: const Color(0xfffdfcfc),
+      ),
       textStyle: const TextStyle(color: Color(0xff8a8a89), fontFamily: Constants.appFontType),
       triggerMode: TooltipTriggerMode.tap,
       message: message,

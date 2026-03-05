@@ -8,13 +8,7 @@ class ReadOnlyTextComponent extends StatelessWidget {
   final String value;
   final Widget? prefix;
   final Widget? suffix;
-  const ReadOnlyTextComponent({
-    super.key,
-    required this.label,
-    required this.value,
-    this.prefix,
-    this.suffix,
-  });
+  const ReadOnlyTextComponent({super.key, required this.label, required this.value, this.prefix, this.suffix});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +21,7 @@ class ReadOnlyTextComponent extends StatelessWidget {
         AnimatedContainer(
           duration: UIHelper.duration,
           padding: padding,
-          decoration: const BoxDecoration(
-            color: AppColor.gray,
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          ),
+          decoration: const BoxDecoration(color: AppColor.gray, borderRadius: BorderRadius.all(Radius.circular(8.0))),
           child: LayoutBuilder(
             builder: (_, constraints) {
               final width = constraints.maxWidth;
@@ -45,10 +36,7 @@ class ReadOnlyTextComponent extends StatelessWidget {
                     width: width - subtractedWidth,
                     child: CustomTextWidget(
                       value,
-                      textStyle: AppStyle.mainTextThirdStyle.copyWith(
-                        fontSize: 13.0,
-                        color: AppColor.black,
-                      ),
+                      textStyle: AppStyle.mainTextThirdStyle.copyWith(fontSize: 13.0, color: AppColor.black),
                     ),
                   ),
 
@@ -59,7 +47,7 @@ class ReadOnlyTextComponent extends StatelessWidget {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }
@@ -69,6 +57,6 @@ class ReadOnlyTextComponent extends StatelessWidget {
   double get subtractedWidth => prefix != null && suffix != null
       ? (18.0 * 2) + (16.0 * 2)
       : prefix == null && suffix == null
-          ? 0.0
-          : 18.0 + 16.0;
+      ? 0.0
+      : 18.0 + 16.0;
 }

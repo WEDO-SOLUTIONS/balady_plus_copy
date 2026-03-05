@@ -72,9 +72,7 @@ class ActionButtonsComponent extends StatelessWidget {
         children: [
           // Action-Button Widget
           if (isActionsEqualsTexts)
-            throw Exception(
-              "Buttons must have same length of texts and actions",
-            )
+            throw Exception("Buttons must have same length of texts and actions")
           else if (isIconsNotNullAndEqualsLength)
             throw Exception("Buttons icons must have same length")
           else if (isTextsColorsNotNullAndEqualsLength)
@@ -97,10 +95,7 @@ class ActionButtonsComponent extends StatelessWidget {
                 icon: btnIcons?[index] != null
                     ? Padding(
                         padding: iconPadding,
-                        child: DrawIconBasedTypeWidget(
-                          icon: btnIcons![index]!,
-                          iconSize: iconSize,
-                        ),
+                        child: DrawIconBasedTypeWidget(icon: btnIcons![index]!, iconSize: iconSize),
                       )
                     : const SizedBox(),
                 iconAlignment: AlignmentDirectional.centerStart,

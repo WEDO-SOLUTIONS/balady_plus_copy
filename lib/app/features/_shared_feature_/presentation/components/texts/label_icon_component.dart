@@ -18,10 +18,7 @@ class LabelIconComponent extends StatelessWidget {
         if (icon != null)
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 6.0),
-            child: CustomSvgIconWidget(
-              icon!,
-              iconSize: iconSize,
-            ),
+            child: CustomSvgIconWidget(icon!, iconSize: iconSize),
           ),
         CustomTextWidget(
           text,

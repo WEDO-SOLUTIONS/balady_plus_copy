@@ -8,11 +8,7 @@ import '../../../shared_feature_exports.dart'
 class DraggableSheetShimmerComponent extends StatelessWidget {
   final double? height;
   final int numOfBodyFields;
-  const DraggableSheetShimmerComponent({
-    super.key,
-    this.height,
-    this.numOfBodyFields = 6,
-  });
+  const DraggableSheetShimmerComponent({super.key, this.height, this.numOfBodyFields = 6});
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +25,7 @@ class DraggableSheetShimmerComponent extends StatelessWidget {
             // Line widget
             const ShimmerEffectWidget(height: 17.0, width: 100.0),
             // Title
-            const ShimmerEffectWidget(
-              height: 45.0,
-              width: 200.0,
-              borderRadius: 8.0,
-            ),
+            const ShimmerEffectWidget(height: 45.0, width: 200.0, borderRadius: 8.0),
             // Body
             Expanded(
               child: GlowingScrollWidget(
@@ -56,10 +48,10 @@ class DraggableSheetShimmerComponent extends StatelessWidget {
   }
 
   EdgeInsetsGeometry get padding => EdgeInsets.only(
-        right: UIHelper.mediumPadding,
-        left: UIHelper.mediumPadding,
-        top: UIHelper.smallPadding,
-        bottom: context.bottomPadding,
-      );
+    right: UIHelper.mediumPadding,
+    left: UIHelper.mediumPadding,
+    top: UIHelper.smallPadding,
+    bottom: context.bottomPadding,
+  );
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }

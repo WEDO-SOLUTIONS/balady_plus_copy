@@ -19,15 +19,15 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   String? searchHint;
   final bool? isButtonDisabled;
 
-  IncidentTypeWithSearchDialog(
-      {Key? key,
-      required this.onSelect,
-      this.selectedItem,
-      required this.items,
-      this.title,
-      this.searchHint,
-      this.isButtonDisabled})
-      : super(key: key);
+  IncidentTypeWithSearchDialog({
+    Key? key,
+    required this.onSelect,
+    this.selectedItem,
+    required this.items,
+    this.title,
+    this.searchHint,
+    this.isButtonDisabled,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -62,19 +62,17 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
       child: Column(
         children: [
           // header
-          DialogHeader(
-            title: widget.title ?? ('choose_incident_type').tr(),
-          ),
+          DialogHeader(title: widget.title ?? ('choose_incident_type').tr()),
           const CustomVerticalSpace(height: 20),
           // search
           SearchTextFieldWidget(
             containerHeight: 52,
             hintText: widget.searchHint ?? ('searchFor').tr(),
-            onTextChanged: /* () {},*/
-                (value) {
+            onTextChanged: /* () {},*/ (value) {
               setState(() {
-                items =
-                    widget.items.where((element) => element.name?.contains(value) ?? element.name == value).toList();
+                items = widget.items
+                    .where((element) => element.name?.contains(value) ?? element.name == value)
+                    .toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -83,20 +81,21 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
           // incident type list
           Expanded(
             child: ListView.builder(
-                //   itemCount: items != null ? items.length : 0,
-                itemCount: items.length,
-                shrinkWrap: true,
-                controller: _scrollController,
-                itemBuilder: (ctx, index) {
-                  return CustomRadioButtonEnd<DropDownItem>(
-                    // title: items[index].name,
-                    // value: items[index].id,
-                    title: items[index].name ?? "",
-                    value: items[index],
-                    currentSelected: currentSelected,
-                    onChange: onItemChanged,
-                  );
-                }),
+              //   itemCount: items != null ? items.length : 0,
+              itemCount: items.length,
+              shrinkWrap: true,
+              controller: _scrollController,
+              itemBuilder: (ctx, index) {
+                return CustomRadioButtonEnd<DropDownItem>(
+                  // title: items[index].name,
+                  // value: items[index].id,
+                  title: items[index].name ?? "",
+                  value: items[index],
+                  currentSelected: currentSelected,
+                  onChange: onItemChanged,
+                );
+              },
+            ),
           ),
           const CustomVerticalSpace(height: 5),
           // button
@@ -119,7 +118,7 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
             btnTextWeight: AppFontWeight.regular,
             btnHeight: 56,
             btnRadius: 8,
-          )
+          ),
         ],
       ),
     );

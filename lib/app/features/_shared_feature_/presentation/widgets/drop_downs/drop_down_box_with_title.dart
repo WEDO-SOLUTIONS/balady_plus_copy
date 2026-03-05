@@ -49,16 +49,11 @@ class DropDownWithTitle extends StatelessWidget {
             if (title.isNotEmpty)
               Row(
                 children: [
-                  CustomTextWidget(
-                    title,
-                    textStyle: AppStyle.dropDownTitleTextStyle,
-                  ),
+                  CustomTextWidget(title, textStyle: AppStyle.dropDownTitleTextStyle),
                   isRequired
                       ? CustomTextWidget(
                           '*'.tr(),
-                          textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
-                            color: Colors.red.shade700,
-                          ),
+                          textStyle: AppStyle.dropDownTitleTextStyle.copyWith(color: Colors.red.shade700),
                         )
                       : const SizedBox(),
                 ],
@@ -67,19 +62,13 @@ class DropDownWithTitle extends StatelessWidget {
             if (retry)
               RetryWidget(onRetry: onRetry)
             else if (loading)
-              const ShimmerEffectWidget(
-                height: 48,
-                borderRadius: 8,
-              )
+              const ShimmerEffectWidget(height: 48, borderRadius: 8)
             else
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 height: height ?? 48,
                 decoration: BoxDecoration(
-                  border: Border.all(
-                    color: AppColor.blackModern300Light,
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: AppColor.blackModern300Light, width: 1.5),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(

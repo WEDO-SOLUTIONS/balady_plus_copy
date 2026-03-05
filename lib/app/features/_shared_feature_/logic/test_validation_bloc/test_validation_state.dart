@@ -35,10 +35,8 @@ class TestValidationState extends Equatable {
   EmailValidation get emailValidator => EmailValidation.dirty(email: email ?? '');
 
   RequiredFieldValidation get startDateValidator => RequiredFieldValidation.dirty(value: startDate ?? '');
-  DateAfterValidation get endDateValidator => DateAfterValidation.dirty(
-        startDate: startDate ?? '',
-        endDate: endDate ?? '',
-      );
+  DateAfterValidation get endDateValidator =>
+      DateAfterValidation.dirty(startDate: startDate ?? '', endDate: endDate ?? '');
 
   OptionalFieldValidation get addressValidator =>
       OptionalFieldValidation.dirty(value: isAddress ? address ?? '' : null);
@@ -64,28 +62,28 @@ class TestValidationState extends Equatable {
   String get error => errorMessage ?? "";
 
   bool get isFormValid => Formz.validate([
-        phoneNumberValidator,
-        emailValidator,
-        startDateValidator,
-        endDateValidator,
-        addressValidator,
-        descriptionValidator,
-        cityValidator,
-      ]);
+    phoneNumberValidator,
+    emailValidator,
+    startDateValidator,
+    endDateValidator,
+    addressValidator,
+    descriptionValidator,
+    cityValidator,
+  ]);
 
   @override
   List<Object?> get props => [
-        phoneNumber,
-        email,
-        startDate,
-        endDate,
-        address,
-        description,
-        city,
-        //
-        status,
-        errorMessage,
-      ];
+    phoneNumber,
+    email,
+    startDate,
+    endDate,
+    address,
+    description,
+    city,
+    //
+    status,
+    errorMessage,
+  ];
 
   TestValidationState copyWith({
     String? phoneNumber,

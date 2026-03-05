@@ -25,14 +25,14 @@ class FileInfo extends Equatable {
   List<Object?> get props => [id, isUploaded, filePath, fileName, sizeInMB, extension];
 
   FileInfo initialState() => sl<FileInfo>().copyWith(
-        fileBase64: "",
-        fileName: "",
-        filePath: "",
-        isUploaded: false,
-        id: null,
-        sizeInMB: 0,
-        extension: "",
-      );
+    fileBase64: "",
+    fileName: "",
+    filePath: "",
+    isUploaded: false,
+    id: null,
+    sizeInMB: 0,
+    extension: "",
+  );
 
   FileInfo copyWith({
     String? fileName,

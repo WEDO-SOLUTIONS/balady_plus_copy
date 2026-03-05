@@ -111,13 +111,7 @@ class SharedPrefs {
   List<String> getPrayerSettings() =>
       _sharedPreferences?.getStringList('prayer_settings') ??
       // "0" to set all prayer times setting to false
-      [
-        "0",
-        "0",
-        "0",
-        "0",
-        "0",
-      ];
+      ["0", "0", "0", "0", "0"];
 
   /////////////////////////////////////////////////////////////
 

@@ -12,8 +12,8 @@ class DatePickerState extends Equatable {
     return date.weekday == 5
         ? date.add(const Duration(days: 2))
         : date.weekday == 6
-            ? date.add(const Duration(days: 1))
-            : date;
+        ? date.add(const Duration(days: 1))
+        : date;
   }
 
   @override

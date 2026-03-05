@@ -25,11 +25,7 @@ class CircularContainerForIcons extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(color: color ?? const Color(0x1FCDE0E0), shape: BoxShape.circle),
-        child: Center(
-          child: SvgPicture.asset(
-            iconPath,
-          ),
-        ),
+        child: Center(child: SvgPicture.asset(iconPath)),
       ),
     );
   }

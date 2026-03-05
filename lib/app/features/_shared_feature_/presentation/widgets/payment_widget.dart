@@ -16,14 +16,16 @@ class PaymentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButtonWidget.primaryCustom(
-        onPressed: () async {
-          EasyLoading.show();
-          final String? url = await sl<EntryPointCubit>()
-              .getPaymentURL(PaymentRequest(accountNumber: billNumber, requestId: requestKey));
-          EasyLoading.dismiss();
+      onPressed: () async {
+        EasyLoading.show();
+        final String? url = await sl<EntryPointCubit>().getPaymentURL(
+          PaymentRequest(accountNumber: billNumber, requestId: requestKey),
+        );
+        EasyLoading.dismiss();
 
-          if (url != null) CommonFunctions.openBaladyWebView(url, isObjections: false);
-        },
-        text: "pay_bill".tr());
+        if (url != null) CommonFunctions.openBaladyWebView(url, isObjections: false);
+      },
+      text: "pay_bill".tr(),
+    );
   }
 }

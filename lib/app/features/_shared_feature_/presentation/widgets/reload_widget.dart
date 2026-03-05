@@ -12,12 +12,7 @@ class ReloadWidget extends StatelessWidget {
   final String? errorMessage;
   final VoidCallback onTab;
 
-  const ReloadWidget({
-    Key? key,
-    this.widgetHeight = 150,
-    this.errorMessage,
-    required this.onTab,
-  }) : super(key: key);
+  const ReloadWidget({Key? key, this.widgetHeight = 150, this.errorMessage, required this.onTab}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +40,7 @@ class ReloadWidget extends StatelessWidget {
             ),
           ),
           const CustomVerticalSpace(height: 16),
-          CustomTextButtonWidget(
-            onPressed: onTab,
-            text: ('reload').tr(),
-          )
+          CustomTextButtonWidget(onPressed: onTab, text: ('reload').tr()),
         ],
       ),
     );

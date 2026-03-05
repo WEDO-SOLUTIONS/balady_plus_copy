@@ -16,14 +16,15 @@ class FilterTextField extends StatelessWidget {
   final void Function(String)? onSubmitted;
   final TextEditingController? textEditingController;
 
-  FilterTextField(
-      {super.key,
-      this.initialValue,
-      this.hintText,
-      this.onChanged,
-      this.onSubmitted,
-      this.textInputType,
-      this.textEditingController});
+  FilterTextField({
+    super.key,
+    this.initialValue,
+    this.hintText,
+    this.onChanged,
+    this.onSubmitted,
+    this.textInputType,
+    this.textEditingController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +33,17 @@ class FilterTextField extends StatelessWidget {
       child: CustomTextFieldWidget(
         hintText: hintText ?? 'search'.tr(),
         controller: textEditingController,
-        suffixIcon: const DrawIconBasedTypeWidget(
-          icon: IconPath.search,
-          iconColor: AppColor.blackModern600Light,
-        ),
+        suffixIcon: const DrawIconBasedTypeWidget(icon: IconPath.search, iconColor: AppColor.blackModern600Light),
         initialValue: initialValue,
         borderRadius: 8,
         keyboardType: textInputType ?? TextInputType.number,
         inputFormatters: [
-          NumberTextInputFormatter(onError: (bool isValid) {
-            //  if (!isValid)
-            //    CommonFunctions.showError("only_english_numbers".tr());
-          }),
+          NumberTextInputFormatter(
+            onError: (bool isValid) {
+              //  if (!isValid)
+              //    CommonFunctions.showError("only_english_numbers".tr());
+            },
+          ),
         ],
         borderColor: AppColor.blackModern300Light,
         fillColor: AppColor.scaffoldBackground,

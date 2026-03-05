@@ -14,11 +14,7 @@ class DelegatorsInjection {
     sl.registerLazySingleton(() => GetAgents(sl()));
 
     //! Repository
-    sl.registerLazySingleton<DelegatorsRepository>(
-      () => DelegatorsRepositoryImplementation(
-        remoteDataSource: sl(),
-      ),
-    );
+    sl.registerLazySingleton<DelegatorsRepository>(() => DelegatorsRepositoryImplementation(remoteDataSource: sl()));
 
     //! Data Sources
     sl.registerLazySingleton<DelegatorsRemoteDataSource>(
@@ -26,8 +22,6 @@ class DelegatorsInjection {
     );
 
     //! Cubit
-    sl.registerLazySingleton(
-      () => DelegatorsCubit(sl(), sl()),
-    );
+    sl.registerLazySingleton(() => DelegatorsCubit(sl(), sl()));
   }
 }

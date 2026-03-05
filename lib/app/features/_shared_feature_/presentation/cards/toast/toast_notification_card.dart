@@ -6,11 +6,7 @@ import '../../../shared_feature_exports.dart' show CustomAutoSizeTextWidget, Dra
 class ToastNotificationCard extends StatelessWidget {
   final MessageType msgType;
   final String msg;
-  const ToastNotificationCard({
-    super.key,
-    required this.msgType,
-    required this.msg,
-  });
+  const ToastNotificationCard({super.key, required this.msgType, required this.msg});
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +20,7 @@ class ToastNotificationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Check Icon
-            DrawIconBasedTypeWidget(
-              icon: msgType.icon ?? '',
-              iconSize: 20.0,
-              iconColor: AppColor.white,
-            ),
+            DrawIconBasedTypeWidget(icon: msgType.icon ?? '', iconSize: 20.0, iconColor: AppColor.white),
             // Label
             Expanded(
               child: CustomAutoSizeTextWidget(

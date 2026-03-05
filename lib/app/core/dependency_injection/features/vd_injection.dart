@@ -15,16 +15,10 @@ class VDInjection {
     //! Entities
 
     //! Repository
-    sl.registerLazySingleton<VDRepository>(
-      () => VDRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()),
-    );
+    sl.registerLazySingleton<VDRepository>(() => VDRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()));
 
     //! Data Sources
-    sl.registerLazySingleton<VDLocalDataSource>(
-      () => VDLocalDataSourceImpl(),
-    );
-    sl.registerLazySingleton<VDRemoteDataSource>(
-      () => VDRemoteDataSourceImpl(webService: sl()),
-    );
+    sl.registerLazySingleton<VDLocalDataSource>(() => VDLocalDataSourceImpl());
+    sl.registerLazySingleton<VDRemoteDataSource>(() => VDRemoteDataSourceImpl(webService: sl()));
   }
 }

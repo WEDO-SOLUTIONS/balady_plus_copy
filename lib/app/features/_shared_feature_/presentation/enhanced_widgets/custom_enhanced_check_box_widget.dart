@@ -75,12 +75,7 @@ class CustomEnhancedCheckBoxWidget extends StatelessWidget {
                   },
                 ),
                 // Label
-                Expanded(
-                  child: CustomTextWidget(
-                    label,
-                    textStyle: labelStyle ?? AppStyle.checkBoxStyle,
-                  ),
-                ),
+                Expanded(child: CustomTextWidget(label, textStyle: labelStyle ?? AppStyle.checkBoxStyle)),
               ].addPadding(end: checkBoxLabelSpace),
             ),
             // Error
@@ -111,9 +106,7 @@ class _CheckWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(radius),
-      ),
+      customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
       splashColor: AppColor.blue,
       highlightColor: Theme.of(context).scaffoldBackgroundColor,
       onTap: () => onChanged(selected),

@@ -36,9 +36,7 @@ class _BaseViewState<T extends BaseViewModel> extends State<BaseView<T>> {
         onTap: () => hideKeyboard(),
         child: ChangeNotifierProvider<T>.value(
           value: model,
-          child: Consumer<T>(
-            builder: widget.builder,
-          ),
+          child: Consumer<T>(builder: widget.builder),
         ),
       ),
     );

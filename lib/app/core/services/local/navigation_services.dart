@@ -10,8 +10,10 @@ class NavigationService {
   }
 
   static Future<dynamic> pushAndReplaceForceUpdate() {
-    return navigatorKey.currentState
-            ?.pushNamedAndRemoveUntil(RouteName.forceUpdateRoute, (Route<dynamic> route) => true) ??
+    return navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          RouteName.forceUpdateRoute,
+          (Route<dynamic> route) => true,
+        ) ??
         Future.value(true);
   }
 

@@ -14,16 +14,17 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
   final bool showBack;
   Widget? titleWidget;
 
-  DefaultAppBarWidget(
-      {super.key,
-      this.title,
-      this.bottom,
-      this.actions,
-      this.showBack = true,
-      this.x = false,
-      this.onBack,
-      this.flexibleSpace,
-      this.titleWidget});
+  DefaultAppBarWidget({
+    super.key,
+    this.title,
+    this.bottom,
+    this.actions,
+    this.showBack = true,
+    this.x = false,
+    this.onBack,
+    this.flexibleSpace,
+    this.titleWidget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,8 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
           : null,
       titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
-      title: titleWidget ??
+      title:
+          titleWidget ??
           CustomTextWidget(
             title ?? "",
             fontSize: 20,
@@ -55,11 +57,7 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
           ),
       bottom: bottom,
       actions: actions,
-      flexibleSpace: flexibleSpace ??
-          Image.asset(
-            ImagePath.appbarBg,
-            fit: BoxFit.fill,
-          ),
+      flexibleSpace: flexibleSpace ?? Image.asset(ImagePath.appbarBg, fit: BoxFit.fill),
     );
   }
 

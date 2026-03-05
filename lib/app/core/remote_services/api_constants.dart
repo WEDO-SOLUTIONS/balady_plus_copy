@@ -8,7 +8,7 @@ class ApiConstants {
   static const String QrLicenseUserLatesetRatingItemsUrl = '$QrURL/lates-user-rating/';
   static const String QrPostRating = '$QrURL/add-license-rating/';
 
-// Pega Incdients
+  // Pega Incdients
   static const String IncidentsUrl = '/prweb/PRRestService/FrontUserBalady/V1';
   static const String GuestIncidentsUrl = '/prweb/PRRestService/CRMBasicAuth/V1';
 
@@ -44,7 +44,7 @@ class ApiConstants {
 
   static const String FetchInquiryRequest = '$IncidentsUrl/FetchInquiryRequest';
 
-// Daem
+  // Daem
 
   static const String DaemRetrieveData = '$IncidentsUrl/RetrieveTSRData';
   static const String DaemCreateTikcet = '$IncidentsUrl/CreateDaemTicket';
@@ -61,7 +61,7 @@ class ApiConstants {
   static const String visitdownloadFile = '/v1/rased/download-file';
   static const String visitUserAuthorization = '/v1/rased/user-validation';
 
-// GIS
+  // GIS
 
   static const String GisGetLocation = '/v1/gis-tawakkalna-services/address';
 
@@ -111,18 +111,18 @@ class ApiConstants {
   static String healthTerms = '/v2/mobile-health-certificates/terms';
   static String locationInfo = '/v2/mobile-health-certificates/location-info';
 
-// Cr Info Service
+  // Cr Info Service
   static const String CrInfoService = '$HelathCertificatesURL/cr-info/';
 
-// License Info Service
+  // License Info Service
 
   static String LicenseInfoService(String type, String licenseNo) =>
       '/v2/mobile-health-certificates/certificate-info/$type/$licenseNo';
 
-// Service Rating Info URL
+  // Service Rating Info URL
   static const String RatingInfo = '$HelathCertificatesURL/ratings/';
 
-// Appointment
+  // Appointment
   static const String AppointmentURL = '/v1/mobile-appointment';
   static const String NewAppointmentURL = '/v1/appointments-mobile-services';
 

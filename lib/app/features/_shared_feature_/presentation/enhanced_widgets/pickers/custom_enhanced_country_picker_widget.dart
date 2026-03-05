@@ -78,10 +78,10 @@ class CustomEnhancedCountryPickerWidget extends StatelessWidget {
   Color get btnBorderColor => borderColor ?? AppColor.gray;
 
   void onShowPicker(BuildContext context) => showCountryPicker(
-        context: context,
-        // optional. Shows phone code before the country name.
-        showPhoneCode: true,
-        favorite: <String>['SA'],
-        onSelect: context.read<CountryPickerCubit>().onChangeValue,
-      );
+    context: context,
+    // optional. Shows phone code before the country name.
+    showPhoneCode: true,
+    favorite: <String>['SA'],
+    onSelect: context.read<CountryPickerCubit>().onChangeValue,
+  );
 }

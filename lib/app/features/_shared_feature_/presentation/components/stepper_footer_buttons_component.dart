@@ -65,11 +65,7 @@ class StepperFooterButtonsComponent extends StatelessWidget {
     );
   }
 
-  EdgeInsetsGeometry get padding => EdgeInsets.fromLTRB(
-        UIHelper.mediumPadding,
-        UIHelper.smallPadding,
-        UIHelper.mediumPadding,
-        context.bottomPadding,
-      );
+  EdgeInsetsGeometry get padding =>
+      EdgeInsets.fromLTRB(UIHelper.mediumPadding, UIHelper.smallPadding, UIHelper.mediumPadding, context.bottomPadding);
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }

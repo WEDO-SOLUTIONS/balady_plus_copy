@@ -61,11 +61,7 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Label widget
-          WidgetLabel(
-            isRequired: isRequired,
-            label: label,
-            labelStyle: labelStyle,
-          ),
+          WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
           // Date Picker
           Builder(
             builder: (context) {
@@ -85,10 +81,7 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
                     iconAlignment: AlignmentDirectional.centerEnd,
                     onPressed: readOnly
                         ? onDisabledTapped
-                        : () async => await onSelectedDate(
-                              context,
-                              selectedDate: state.selectedDate,
-                            ),
+                        : () async => await onSelectedDate(context, selectedDate: state.selectedDate),
                   );
                 },
               );
@@ -109,10 +102,7 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
   DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
-  Future<void> onSelectedDate(
-    BuildContext context, {
-    required DateTime selectedDate,
-  }) async =>
+  Future<void> onSelectedDate(BuildContext context, {required DateTime selectedDate}) async =>
       await showCupertinoModalPopup(
         context: context,
         barrierDismissible: true,
@@ -136,7 +126,7 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
                         else if (date.weekday == 6)
                           {assignDate(context, date.add(const Duration(days: 1)))}
                         else
-                          {assignDate(context, date)}
+                          {assignDate(context, date)},
                       }
                     : assignDate(context, date),
               ),

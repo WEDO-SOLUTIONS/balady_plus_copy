@@ -20,13 +20,15 @@ class SheetDropDownWidget extends _SheetDropDown {
     DropDownItem? initialValue,
     String? errorMsg,
     required void Function(DropDownItem?) onSelected,
-  }) : super(CustomSheetDropDownWidget(
-          items: items,
-          initialValue: initialValue,
-          label: "city".tr(),
-          errorMsg: errorMsg,
-          onSelected: onSelected,
-        ));
+  }) : super(
+         CustomSheetDropDownWidget(
+           items: items,
+           initialValue: initialValue,
+           label: "city".tr(),
+           errorMsg: errorMsg,
+           onSelected: onSelected,
+         ),
+       );
 
   ///
   SheetDropDownWidget.district({
@@ -34,11 +36,13 @@ class SheetDropDownWidget extends _SheetDropDown {
     DropDownItem? initialValue,
     String? errorMsg,
     required void Function(DropDownItem?) onSelected,
-  }) : super(CustomSheetDropDownWidget(
-          items: items,
-          initialValue: initialValue,
-          label: "district".tr(),
-          errorMsg: errorMsg,
-          onSelected: onSelected,
-        ));
+  }) : super(
+         CustomSheetDropDownWidget(
+           items: items,
+           initialValue: initialValue,
+           label: "district".tr(),
+           errorMsg: errorMsg,
+           onSelected: onSelected,
+         ),
+       );
 }

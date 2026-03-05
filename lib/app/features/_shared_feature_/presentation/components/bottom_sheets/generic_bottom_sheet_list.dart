@@ -64,59 +64,50 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
                 shrinkWrap: true,
                 slivers: <Widget>[
                   SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final item = items[index];
-                        return InkWell(
-                          onTap: () => selectItem(item),
-                          child: Container(
-                            height: 56,
-                            padding: const EdgeInsetsDirectional.only(start: 12),
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: AppColor.primary50Light50,
-                            ),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width - 125,
-                                  child: CustomTextWidget(
-                                    item.text,
-                                    textStyle: AppStyle.listTitleTextStyle,
-                                    maxLines: 2,
-                                  ),
-                                ),
-                                const Spacer(),
-                                if (widget.onTap != null && !multipleSelection)
-                                  Radio(
-                                    value: item,
-                                    groupValue: selectedValue,
-                                    activeColor: AppColor.primary700Light,
-                                    onChanged: (_) => selectItem(item),
-                                  )
-                                else if (widget.onTap != null)
-                                  Checkbox(
-                                    value: selectedValues!.contains(item),
-                                    activeColor: AppColor.primary700Light,
-                                    onChanged: (_) => selectItem(item),
-                                  ),
-                              ],
-                            ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = items[index];
+                      return InkWell(
+                        onTap: () => selectItem(item),
+                        child: Container(
+                          height: 56,
+                          padding: const EdgeInsetsDirectional.only(start: 12),
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: AppColor.primary50Light50,
                           ),
-                        );
-                      },
-                      childCount: items.length,
-                    ),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width - 125,
+                                child: CustomTextWidget(item.text, textStyle: AppStyle.listTitleTextStyle, maxLines: 2),
+                              ),
+                              const Spacer(),
+                              if (widget.onTap != null && !multipleSelection)
+                                Radio(
+                                  value: item,
+                                  groupValue: selectedValue,
+                                  activeColor: AppColor.primary700Light,
+                                  onChanged: (_) => selectItem(item),
+                                )
+                              else if (widget.onTap != null)
+                                Checkbox(
+                                  value: selectedValues!.contains(item),
+                                  activeColor: AppColor.primary700Light,
+                                  onChanged: (_) => selectItem(item),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }, childCount: items.length),
                   ),
                 ],
               ),
             )
           : Column(
               children: [
-                const SizedBox(
-                  height: 32,
-                ),
+                const SizedBox(height: 32),
                 CustomTextWidget(
                   widget.noDataMsg ?? "",
                   fontWeight: AppFontWeight.bold,

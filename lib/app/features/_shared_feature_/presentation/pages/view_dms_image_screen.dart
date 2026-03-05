@@ -18,12 +18,15 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
     return Stack(
       children: [
         PhotoView(
-          imageProvider: NetworkImage(url, headers: {
-            "verifyingKEY": CommonFunctions.hashRequest(url, "GET")
+          imageProvider: NetworkImage(
+            url,
+            headers: {
+              "verifyingKEY": CommonFunctions.hashRequest(url, "GET"),
 
-            //  "Authorization":
-            //      "Bearer ${locator<AuthService>().accessToken}"
-          }),
+              //  "Authorization":
+              //      "Bearer ${locator<AuthService>().accessToken}"
+            },
+          ),
         ),
         Align(
           alignment: AlignmentDirectional.topStart,
@@ -33,11 +36,7 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
             },
             child: Container(
               margin: EdgeInsetsDirectional.only(top: MediaQuery.of(context).padding.top + 5, start: 12),
-              child: Image.asset(
-                Constants.imgPath + 'exit@3x.png',
-                height: 38,
-                width: 38,
-              ),
+              child: Image.asset(Constants.imgPath + 'exit@3x.png', height: 38, width: 38),
             ),
           ),
         ),
