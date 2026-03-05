@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -30,7 +28,6 @@ class ParkingDialogPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = useToggleSheetController();
 
-    final bottomPadding = math.max(MediaQuery.of(context).viewPadding.bottom, Spacing.px);
     return ToggleSheet(
       scrollController: controller,
       backgroundColor: context.colors.backgroundSurface4,
@@ -88,7 +85,6 @@ class ParkingDialogPage extends HookConsumerWidget {
             onTap: onCancelTab,
           ),
         ),
-        bottomPadding.heightBox,
       ],
     );
   }
