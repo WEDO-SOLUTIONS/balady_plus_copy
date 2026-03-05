@@ -43,11 +43,12 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               /// Content
-              const CustomSvgIconWidget(
-                IconPath.lock,
-                iconSize: 82,
-                iconColor: AppColor.primary900Light,
-              ),
+              Image.asset("assets/icons/png/lockv.png", width: 73, height: 88, fit: BoxFit.cover),
+              // const CustomSvgIconWidget(
+              //   IconPath.lock,
+              //   iconSize: 82,
+              //   iconColor: AppColor.primary900Light,
+              // ),
               const SizedBox(height: 16),
               CustomTextWidget(
                 widget.title ?? ("not_registered").tr(),
@@ -91,7 +92,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                   btnHeight: 56,
                   btnRadius: 8,
                 ),
-              ]
+              ],
             ],
           ),
         ),

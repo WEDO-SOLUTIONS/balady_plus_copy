@@ -76,10 +76,7 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
             text: "force_update_app".tr(),
             onPressed: () {
               if (Platform.isAndroid) {
-                StoreRedirect.redirect(
-                  androidAppId: "momra.balady.android",
-                  iOSAppId: "1522185123",
-                );
+                StoreRedirect.redirect(androidAppId: "momra.balady.android", iOSAppId: "1522185123");
               } else {
                 _openAppStore();
               }

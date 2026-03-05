@@ -1,15 +1,9 @@
-import 'package:flutter/material.dart'
-    show AppLifecycleState, WidgetsBindingObserver;
+import 'package:flutter/material.dart' show AppLifecycleState, WidgetsBindingObserver;
 
 import '../../utils/utils_exports.dart' show Log, StringConversion;
 
 class LifecycleEventHandler extends WidgetsBindingObserver {
-  LifecycleEventHandler({
-    this.inactiveCallBack,
-    this.pausedCallBack,
-    this.detachedCallBack,
-    this.resumeCallBack,
-  });
+  LifecycleEventHandler({this.inactiveCallBack, this.pausedCallBack, this.detachedCallBack, this.resumeCallBack});
 
   final Function? inactiveCallBack;
   final Function? pausedCallBack;

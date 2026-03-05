@@ -127,7 +127,7 @@ class OfferViewWidget extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: Spacing.$1x),
-                      Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
+                      Icon(PlacesIcons.markets, size: 16, color: colors.neutralDefault),
                     ],
                   ),
                   Text(

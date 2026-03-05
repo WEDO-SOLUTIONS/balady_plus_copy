@@ -9,11 +9,7 @@ import '../../../../core/utils/utils_exports.dart'
     show AppFontWeight, BlocRequestStatus, CommonFunctions, CommonProperties;
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetWithActions,
-        CustomTextWidget,
-        CustomVerticalSpace,
-        ShimmerEffectWidget;
+    show BottomSheetWithActions, CustomTextWidget, CustomVerticalSpace, ShimmerEffectWidget;
 import '../../delegators_exports.dart' show DelegatorsCubit, DelegatorsState;
 import 'no_accounts_widget.dart';
 
@@ -50,15 +46,12 @@ class _DelegatorListState extends State<DelegatorList> {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (widget.fromService &&
-                      state.delegators.isEmpty &&
-                      state.agents.isEmpty) ...[
+                  if (widget.fromService && state.delegators.isEmpty && state.agents.isEmpty) ...[
                     const NoAccountsWidget()
                   ] else ...[
                     ProfileCard(
                       userInfo: CommonProperties.userInfo,
-                      selected: state.selectedDelegate == null &&
-                          state.selectedAgent == null,
+                      selected: state.selectedDelegate == null && state.selectedAgent == null,
                     ),
                     const ProfileHeader(),
                     const CustomVerticalSpace(
@@ -68,8 +61,7 @@ class _DelegatorListState extends State<DelegatorList> {
                       DelegatorsBody(
                         delegatorsCubit: widget._delegatorsCubit,
                       ),
-                    if (state.tab == 1)
-                      AgentsBody(delegatorsCubit: widget._delegatorsCubit)
+                    if (state.tab == 1) AgentsBody(delegatorsCubit: widget._delegatorsCubit)
                   ]
                 ],
               );
@@ -221,11 +213,8 @@ class TabWidget extends StatelessWidget {
             child: Container(
               margin: const EdgeInsets.all(8),
               decoration: ShapeDecoration(
-                color: state.tab == index
-                    ? AppColor.primary900Light
-                    : AppColor.warmGrey3,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
+                color: state.tab == index ? AppColor.primary900Light : AppColor.warmGrey3,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 shadows: const [
                   BoxShadow(
                     color: Color(0x3F9EA5B7),

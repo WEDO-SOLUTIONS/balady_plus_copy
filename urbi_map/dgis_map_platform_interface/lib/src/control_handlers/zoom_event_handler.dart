@@ -14,13 +14,9 @@ class ZoomEventHandler {
   Future<void> onZoomAction(ZoomControlType btn, {required bool isPressed}) async {
     switch (btn) {
       case ZoomControlType.zoomIn:
-        return isPressed
-            ? _api.zoomDown(ZoomControlMessage.zoomIn)
-            : _api.zoomUp(ZoomControlMessage.zoomIn);
+        return isPressed ? _api.zoomDown(ZoomControlMessage.zoomIn) : _api.zoomUp(ZoomControlMessage.zoomIn);
       case ZoomControlType.zoomOut:
-        return isPressed
-            ? _api.zoomDown(ZoomControlMessage.zoomOut)
-            : _api.zoomUp(ZoomControlMessage.zoomOut);
+        return isPressed ? _api.zoomDown(ZoomControlMessage.zoomOut) : _api.zoomUp(ZoomControlMessage.zoomOut);
     }
   }
 

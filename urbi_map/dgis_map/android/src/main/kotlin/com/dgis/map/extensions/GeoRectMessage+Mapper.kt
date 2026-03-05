@@ -1,6 +1,6 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.*
+import com.dgis.map.map_api.GeoRectMessage
 import ru.dgis.sdk.coordinates.GeoRect
 
 fun GeoRectMessage.toGeoRect() = GeoRect(

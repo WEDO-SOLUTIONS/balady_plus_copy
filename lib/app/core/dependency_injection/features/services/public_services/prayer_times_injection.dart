@@ -16,23 +16,14 @@ class PrayerTimesInjection {
     sl.registerLazySingleton(() => GetPrayerTimesRange(sl()));
 
     //! Repository
-    sl.registerLazySingleton<PrayerTimesRepository>(
-      () => PrayerTimesRepositoryImplementation(
-        remoteDataSource: sl(),
-      ),
-    );
+    sl.registerLazySingleton<PrayerTimesRepository>(() => PrayerTimesRepositoryImplementation(remoteDataSource: sl()));
 
     //! Data Sources
     sl.registerLazySingleton<PrayerTimesRemoteDataSource>(
-      () => PrayerTimesRemoteDataSourceImplementation(
-        webService: sl(),
-      ),
+      () => PrayerTimesRemoteDataSourceImplementation(webService: sl()),
     );
 
     //! Bloc
-    sl.registerFactory(
-      () => PrayerTimesCubit(
-          getPrayerTimes: sl(), getGISData: sl(), getPrayerTimesRange: sl()),
-    );
+    sl.registerFactory(() => PrayerTimesCubit(getPrayerTimes: sl(), getGISData: sl(), getPrayerTimesRange: sl()));
   }
 }

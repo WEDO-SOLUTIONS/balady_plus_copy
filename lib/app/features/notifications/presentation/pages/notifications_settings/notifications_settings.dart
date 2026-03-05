@@ -39,8 +39,7 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
           itemCount: widget.notificationsList.length,
           itemBuilder: ((context, index) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5),
-                child: NotificationsSettingsCell(
-                    category: widget.notificationsList[index]),
+                child: NotificationsSettingsCell(category: widget.notificationsList[index]),
               ))),
     );
   }

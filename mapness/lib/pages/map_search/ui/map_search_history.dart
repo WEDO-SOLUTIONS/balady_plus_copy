@@ -30,13 +30,14 @@ class MapSearchHistory extends ConsumerWidget {
     return ui.SearchHistory(
       iconColor: context.colors.foregroundMuted,
       onTap: (item, index, historyList) async {
-        if (item.objectId != null) {
+        if (item.id?.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
           try {
+            // todo remove as it is no-op
             await dgisController.searchByObjectId(
               DgisObjectIdMessage(
-                objectId: int.tryParse(item.objectId ?? '') ?? 0,
-                entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+                objectId: item.id?.objectId ?? 0,
+                entranceId: item.id?.entranceId ?? 0,
               ),
             );
 
@@ -44,17 +45,19 @@ class MapSearchHistory extends ConsumerWidget {
               MetricsConstants.poiKeys.object,
               group: MetricsConstants.poiTag,
               action: MetricAction.tap.toString(),
-              props: {'objectId': item.objectId},
+              props: {'objectId': item.id?.objectId},
             );
 
-            if (item.objectId == null) {
+            // todo rewrite
+            if (item.id?.objectId == null) {
               return;
             }
 
             await context.router.replaceOrPush(
               route: PoiCardWidgetRoute(
                 objectId: DgisObjectIdMessage(
-                  objectId: int.parse(item.objectId!),
+                  objectId: item.id!.objectId,
+                  // todo pass entranceId
                   entranceId: 0,
                 ),
                 cameraConfig: const PoiCameraConfig(zoom: 18),
@@ -70,7 +73,7 @@ class MapSearchHistory extends ConsumerWidget {
                 onBarrierTap: () => context.router.pop(true),
               ),
             );
-            await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);
+            await ref.read(searchHistoryProvider(scope.value).notifier).delete(index);
 
             if (result != null && result as bool) {
               await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
@@ -79,7 +82,7 @@ class MapSearchHistory extends ConsumerWidget {
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
-        final bssHistoryHandlingType = item.objectId != null
+        final bssHistoryHandlingType = item.id?.objectId != null
             ? BssHistoryHandlingType.openRecord
             : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(

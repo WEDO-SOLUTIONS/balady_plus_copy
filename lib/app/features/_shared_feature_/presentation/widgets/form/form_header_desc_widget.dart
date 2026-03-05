@@ -10,9 +10,7 @@ class FormHeaderDesc extends StatelessWidget {
   final String? desc;
   final double verticalSpace;
 
-  const FormHeaderDesc(
-      {Key? key, required this.header, this.desc, this.verticalSpace = 24})
-      : super(key: key);
+  const FormHeaderDesc({Key? key, required this.header, this.desc, this.verticalSpace = 24}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

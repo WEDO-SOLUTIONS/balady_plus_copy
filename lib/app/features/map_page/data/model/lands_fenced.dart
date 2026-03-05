@@ -2,20 +2,14 @@ import 'package:dgis_map/library.dart';
 
 import '../data_sources/point_layers_data.dart';
 
-List<LandsFenced> landsFencedFromJson(List list) =>
-    List<LandsFenced>.from(list.map((x) => LandsFenced.fromJson(x)));
+List<LandsFenced> landsFencedFromJson(List list) => List<LandsFenced>.from(list.map((x) => LandsFenced.fromJson(x)));
 
 class LandsFenced extends PointLayersData {
   final List<GeoPointMessage> paths;
   final int color;
 
   LandsFenced(
-      {required this.paths,
-      required id,
-      required name,
-      required type,
-      required description,
-      this.color = 0xFF828282
+      {required this.paths, required id, required name, required type, required description, this.color = 0xFF828282
       //  required latLng,
       })
       : super(
@@ -31,8 +25,7 @@ class LandsFenced extends PointLayersData {
         name: json['attributes']["AREANAME"] ?? '',
         description: json['attributes']["AREANAME_SPLIT"] ?? '',
         type: json['attributes']["DESCRIPTION"] ?? '',
-        color: int.parse(
-            "0xFF${json['attributes']["COLOR"].toString().replaceAll("#", "")}"),
+        color: int.parse("0xFF${json['attributes']["COLOR"].toString().replaceAll("#", "")}"),
 
         // not Have Center Point
         /*latLng: GeoPointMessage(

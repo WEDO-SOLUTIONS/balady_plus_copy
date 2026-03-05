@@ -36,9 +36,7 @@ class DelegatorsState extends Equatable {
         status: status ?? this.status,
         agentStatus: agentStatus ?? this.agentStatus,
         delegators: delegators ?? this.delegators,
-        selectedDelegate: selectedDelegator == null
-            ? selectedDelegate
-            : selectedDelegator.value,
+        selectedDelegate: selectedDelegator == null ? selectedDelegate : selectedDelegator.value,
         agents: agents ?? this.agents,
         selectedAgent: sAgent == null ? selectedAgent : sAgent.value,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -46,14 +44,6 @@ class DelegatorsState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        agentStatus,
-        delegators,
-        selectedDelegate,
-        agents,
-        selectedAgent,
-        errorMessage,
-        tab
-      ];
+  List<Object?> get props =>
+      [status, agentStatus, delegators, selectedDelegate, agents, selectedAgent, errorMessage, tab];
 }

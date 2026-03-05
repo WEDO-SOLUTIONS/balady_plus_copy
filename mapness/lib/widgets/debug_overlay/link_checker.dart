@@ -35,6 +35,7 @@ class LinkChecker extends HookConsumerWidget {
               final text = linkController.text;
 
               if (pages.contains(text)) {
+                // Do not have thi method in autorouter
                 context.router.navigatePath(text);
               } else {
                 context.router.pushPath(text);

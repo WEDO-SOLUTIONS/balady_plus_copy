@@ -19,8 +19,7 @@ class SplashScreenAnimator extends StatefulWidget {
   State<SplashScreenAnimator> createState() => _SplashScreenAnimatorState();
 }
 
-class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenAnimatorState extends State<SplashScreenAnimator> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ForceUpdateCubit, ForceUpdateState>(
@@ -61,19 +60,14 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
                   autostart: Autostart.once,
                   onFetchCompleted: () async {
                     // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                    Future.delayed(Duration(seconds: state.splashDuration))
-                        .then(
+                    Future.delayed(Duration(seconds: state.splashDuration)).then(
                       (e) {
-                        if (context.read<ForceUpdateCubit>().state
-                            is NotHaveForceUpdateState) {
+                        if (context.read<ForceUpdateCubit>().state is NotHaveForceUpdateState) {
                           takeActionChickLogin();
-                        } else if (context.read<ForceUpdateCubit>().state
-                            is HaveForceUpdateState) {
+                        } else if (context.read<ForceUpdateCubit>().state is HaveForceUpdateState) {
                           NavigationService.pushAndReplaceForceUpdate();
                         } else {
-                          context
-                              .read<SplashCubit>()
-                              .emitCompletedSplashState();
+                          context.read<SplashCubit>().emitCompletedSplashState();
                         }
                       },
                     );
@@ -81,22 +75,17 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
                 );
               }
               if (state is OfflineSplashState) {
-                Future.delayed(const Duration(milliseconds: 0))
-                    .then((e) {
-                  if (context.read<ForceUpdateCubit>().state
-                  is NotHaveForceUpdateState) {
+                Future.delayed(const Duration(milliseconds: 0)).then((e) {
+                  if (context.read<ForceUpdateCubit>().state is NotHaveForceUpdateState) {
                     takeActionChickLogin();
-                  } else if (context.read<ForceUpdateCubit>().state
-                  is HaveForceUpdateState) {
+                  } else if (context.read<ForceUpdateCubit>().state is HaveForceUpdateState) {
                     NavigationService.pushAndReplaceForceUpdate();
                   } else {
                     context.read<SplashCubit>().emitCompletedSplashState();
                   }
                 });
 
-
                 return const SizedBox.shrink();
-
 
                 // return Gif(
                 //   image: const AssetImage('assets/images/splash-screen.gif'),

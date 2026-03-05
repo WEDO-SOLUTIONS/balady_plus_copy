@@ -1,17 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:provider/provider.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:sheetify/sheetify.dart';
 
 import '../../shared/providers/map/selected_marker.dart';
@@ -30,15 +29,10 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
 
   const PoiLoadingOrErrorSheet({required this.data, required this.sheetHeight, required this.contentHeight, super.key});
 
-  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
-    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
-    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
-  };
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onClose = () {
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
       if (data is PoiError && (data as PoiError).onClose != null) {
         (data as PoiError).onClose!.call();
       } else {
@@ -52,6 +46,9 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
       },
       heightModel: ToggleSheetHeightModel.fraction(0.42),
     );
+
+    final activeEvent = ref.watch(activeCityEventProvider);
+
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface2,
@@ -89,7 +86,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SvgPicture.asset(asset(context)),
+                        const ErrorImageWidget(),
                         const SizedBox(height: Spacing.$4x),
                         Text(
                           error.errorTitle,

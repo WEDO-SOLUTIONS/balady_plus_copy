@@ -38,36 +38,34 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final bool? showOptional;
   final double? marginBottom;
 
-  const CustomHeaderAndDescOnTapWidget(
-      {Key? key,
-      required this.label,
-      this.labelColor = AppColor.blackModern700Light,
-      this.labelSize = 16.0,
-      this.labelTextAlign = TextAlign.start,
-      this.hintText = '',
-      this.marginBottom,
-      this.filled = false,
-      this.fillColor = Colors.transparent,
-      this.borderRadius = 8.0,
-      this.borderColor = AppColor.blackModern300Light,
-      this.borderWidth = 1.5,
-      this.borderType = BORDER_TYPE.outline,
-      this.readOnly = false,
-      required this.onTap,
-      this.errorMsg,
-      this.textValue,
-      this.materialIconDirection = MATERIAL_ICON_DIRECTION.down,
-      this.icon,
-      this.showOptional = false})
-      : super(key: key);
+  const CustomHeaderAndDescOnTapWidget({
+    Key? key,
+    required this.label,
+    this.labelColor = AppColor.blackModern700Light,
+    this.labelSize = 16.0,
+    this.labelTextAlign = TextAlign.start,
+    this.hintText = '',
+    this.marginBottom,
+    this.filled = false,
+    this.fillColor = Colors.transparent,
+    this.borderRadius = 8.0,
+    this.borderColor = AppColor.blackModern300Light,
+    this.borderWidth = 1.5,
+    this.borderType = BORDER_TYPE.outline,
+    this.readOnly = false,
+    required this.onTap,
+    this.errorMsg,
+    this.textValue,
+    this.materialIconDirection = MATERIAL_ICON_DIRECTION.down,
+    this.icon,
+    this.showOptional = false,
+  }) : super(key: key);
 
   @override
-  State<CustomHeaderAndDescOnTapWidget> createState() =>
-      _CustomHeaderAndDescOnTapWidget();
+  State<CustomHeaderAndDescOnTapWidget> createState() => _CustomHeaderAndDescOnTapWidget();
 }
 
-class _CustomHeaderAndDescOnTapWidget
-    extends State<CustomHeaderAndDescOnTapWidget> {
+class _CustomHeaderAndDescOnTapWidget extends State<CustomHeaderAndDescOnTapWidget> {
   @override
   void initState() {
     super.initState();
@@ -98,8 +96,9 @@ class _CustomHeaderAndDescOnTapWidget
               const CustomVerticalSpace(height: 10),
               Container(
                 padding: const EdgeInsets.symmetric(
-                    vertical: GeneralKey.smallPadding,
-                    horizontal: GeneralKey.smallPadding),
+                  vertical: GeneralKey.smallPadding,
+                  horizontal: GeneralKey.smallPadding,
+                ),
                 decoration: BoxDecoration(
                   color: widget.readOnly ? AppColor.black400 : widget.fillColor,
                   border: _getBorder(),
@@ -112,8 +111,7 @@ class _CustomHeaderAndDescOnTapWidget
                     Expanded(
                       child: CustomTextWidget(
                         widget.textValue ?? widget.hintText,
-                        fontColor: (widget.textValue == widget.hintText ||
-                                widget.textValue == null)
+                        fontColor: (widget.textValue == widget.hintText || widget.textValue == null)
                             ? AppColor.black300
                             : AppColor.black,
                         // fontWeight: (widget.textValue == widget.hintText ||
@@ -164,10 +162,7 @@ class _CustomHeaderAndDescOnTapWidget
         return Border.all(width: widget.borderWidth, color: widget.borderColor);
       case BORDER_TYPE.underline:
         return Border(
-          bottom: BorderSide(
-            width: widget.borderWidth,
-            color: widget.borderColor,
-          ),
+          bottom: BorderSide(width: widget.borderWidth, color: widget.borderColor),
         );
       default:
         return null;
@@ -203,30 +198,28 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final bool? isButtonDisabled;
   final bool? readOnly;
 
-  CustomTapWidgetForLongDialog(
-      {Key? key,
-      required this.onChangeType,
-      this.value,
-      this.marginBottom,
-      required this.items,
-      this.hint,
-      required this.label,
-      this.searchHint,
-      this.errorText,
-      this.isLoading = false,
-      this.showOptional = false,
-      this.showHintAsTitle = false,
-      this.isButtonDisabled,
-      this.readOnly})
-      : super(key: key);
+  CustomTapWidgetForLongDialog({
+    Key? key,
+    required this.onChangeType,
+    this.value,
+    this.marginBottom,
+    required this.items,
+    this.hint,
+    required this.label,
+    this.searchHint,
+    this.errorText,
+    this.isLoading = false,
+    this.showOptional = false,
+    this.showHintAsTitle = false,
+    this.isButtonDisabled,
+    this.readOnly,
+  }) : super(key: key);
 
   @override
-  State<CustomTapWidgetForLongDialog> createState() =>
-      _CustomTapWidgetForLongDialog();
+  State<CustomTapWidgetForLongDialog> createState() => _CustomTapWidgetForLongDialog();
 }
 
-class _CustomTapWidgetForLongDialog
-    extends State<CustomTapWidgetForLongDialog> {
+class _CustomTapWidgetForLongDialog extends State<CustomTapWidgetForLongDialog> {
   @override
   Widget build(BuildContext context) {
     return !widget.isLoading
@@ -240,32 +233,27 @@ class _CustomTapWidgetForLongDialog
             marginBottom: widget.marginBottom,
             onTap: widget.items.isNotEmpty
                 ? () async {
-
-              if(widget.readOnly!= true) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                await CustomPopUpsWidgets.showBottomSheet(
-                  NavigationService.navigatorKey.currentContext!,
-                  child: IncidentTypeWithSearchDialog(
-                    onSelect: (DropDownItem item) =>
-                        widget.onChangeType(item),
-                    items: widget.items,
-                    selectedItem: widget.value,
-                    isButtonDisabled: widget.isButtonDisabled,
-                    title:
-                    widget.showHintAsTitle ? widget.hint : widget.label,
-                    searchHint: widget.searchHint ?? ("searchFor").tr(),
-                  ),
-                );
-              }
+                    if (widget.readOnly != true) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      await CustomPopUpsWidgets.showBottomSheet(
+                        NavigationService.navigatorKey.currentContext!,
+                        child: IncidentTypeWithSearchDialog(
+                          onSelect: (DropDownItem item) => widget.onChangeType(item),
+                          items: widget.items,
+                          selectedItem: widget.value,
+                          isButtonDisabled: widget.isButtonDisabled,
+                          title: widget.showHintAsTitle ? widget.hint : widget.label,
+                          searchHint: widget.searchHint ?? ("searchFor").tr(),
+                        ),
+                      );
+                    }
                   }
                 : () {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    CommonFunctions.showError(
-                        widget.errorText ?? ('empty_list_error').tr());
+                    CommonFunctions.showError(widget.errorText ?? ('empty_list_error').tr());
                   },
           )
-        : const CustomShimmerWidget(
-            childHeight: 48, padding: EdgeInsets.only(bottom: 30));
+        : const CustomShimmerWidget(childHeight: 48, padding: EdgeInsets.only(bottom: 30));
   }
 }
 
@@ -359,26 +347,24 @@ class CustomTapWidgetForMultiLongDialog extends StatefulWidget {
   String? errorText;
   final bool? showOptional;
   final bool showHintAsTitle;
-  CustomTapWidgetForMultiLongDialog(
-      {Key? key,
-      required this.onChangeType,
-      this.values,
-      required this.items,
-      this.hint,
-      required this.label,
-      this.searchHint,
-      this.errorText,
-      this.showOptional = false,
-      this.showHintAsTitle = true})
-      : super(key: key);
+  CustomTapWidgetForMultiLongDialog({
+    Key? key,
+    required this.onChangeType,
+    this.values,
+    required this.items,
+    this.hint,
+    required this.label,
+    this.searchHint,
+    this.errorText,
+    this.showOptional = false,
+    this.showHintAsTitle = true,
+  }) : super(key: key);
 
   @override
-  State<CustomTapWidgetForMultiLongDialog> createState() =>
-      _CustomTapWidgetForMultiLongDialog();
+  State<CustomTapWidgetForMultiLongDialog> createState() => _CustomTapWidgetForMultiLongDialog();
 }
 
-class _CustomTapWidgetForMultiLongDialog
-    extends State<CustomTapWidgetForMultiLongDialog> {
+class _CustomTapWidgetForMultiLongDialog extends State<CustomTapWidgetForMultiLongDialog> {
   @override
   Widget build(BuildContext context) {
     return CustomHeaderAndDescOnTapWidget(
@@ -394,8 +380,7 @@ class _CustomTapWidgetForMultiLongDialog
               await CustomPopUpsWidgets.showBottomSheet(
                 NavigationService.navigatorKey.currentContext!,
                 child: MultiSelectionWithSearchDialog(
-                  onSelect: (List<DropDownItem> items) =>
-                      widget.onChangeType(items),
+                  onSelect: (List<DropDownItem> items) => widget.onChangeType(items),
                   items: widget.items,
                   selectedItem: widget.values,
                   title: widget.showHintAsTitle ? widget.hint : widget.label,
@@ -405,8 +390,7 @@ class _CustomTapWidgetForMultiLongDialog
             }
           : () {
               FocusManager.instance.primaryFocus?.unfocus();
-              CommonFunctions.showError(
-                  widget.errorText ?? ('empty_list_error').tr());
+              CommonFunctions.showError(widget.errorText ?? ('empty_list_error').tr());
             },
     );
   }

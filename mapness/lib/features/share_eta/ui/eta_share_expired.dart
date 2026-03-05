@@ -1,13 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
-import 'package:provider/provider.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 
 class EtaShareExpired extends StatelessWidget {
   final String title;
@@ -28,11 +25,6 @@ class EtaShareExpired extends StatelessWidget {
     subtitle: context.l10n.broadcastHasExpired.multilines,
   );
 
-  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
-    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
-    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
-  };
   @override
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
@@ -56,7 +48,9 @@ class EtaShareExpired extends StatelessWidget {
           ContentRow(
             options: ContentRowOptions(
               padding: EdgeInsets.zero,
-              titleStyle: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+              titleStyle: context.textStyles.h3SemiBold.copyWith(
+                color: context.colors.foregroundDefault,
+              ),
               customActionWidget: AppButton.close(
                 onTap: Navigator.of(context).pop,
                 padding: EdgeInsets.zero,
@@ -66,16 +60,25 @@ class EtaShareExpired extends StatelessWidget {
               ),
             ),
           ),
-          SvgPicture.asset(asset(context)),
+          const ErrorImageWidget(),
           const SizedBox(height: Spacing.$2x),
-          Text(title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault)),
+          Text(
+            title,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
+            ),
+          ),
           const SizedBox(height: Spacing.$3x),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.foregroundSoft,
+            ),
           ),
-          const SizedBox(height: Spacing.$8x),
+          const SizedBox(
+            height: Spacing.$8x,
+          ),
         ],
       ),
     ),

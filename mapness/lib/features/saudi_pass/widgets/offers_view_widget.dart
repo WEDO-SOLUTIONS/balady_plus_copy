@@ -27,17 +27,17 @@ class OffersViewWidget extends StatelessWidget {
 
       if (offersFiltersView != null) {
         final filters = OffersFiltersViewWidget(offersFiltersView);
-
         final list = ListenableBuilder(
           listenable: offersFiltersView,
-          builder: (context, _) => OffersListWidget(offersFiltersView.asyncIterableOffers),
+          builder: (context, _) =>
+              OffersListWidget(offersFiltersView.asyncIterableOffers, onResetFilters: offersFiltersView.reset),
         );
 
         return Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-              child: SizedBox(height: AppSizes.m, child: filters),
+              child: SizedBox(height: AppSizes.l, child: filters),
             ),
             Expanded(
               child: Padding(

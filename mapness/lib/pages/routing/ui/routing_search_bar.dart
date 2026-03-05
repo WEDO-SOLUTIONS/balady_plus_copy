@@ -108,12 +108,16 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             );
             if (query.trim().isNotEmpty) {
               ref.read(searchProvider(scope.value).notifier).searchByText(query);
-              ref.read(urbiAnalyticsProvider).track(
+              ref
+                  .read(urbiAnalyticsProvider)
+                  .track(
                     '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
                   );
 
-              ref.read(searchHistoryProvider(scope.value).notifier).put(
-                    SearchHistoryItem.fromQuery(query: query),
+              ref
+                  .read(searchHistoryProvider(scope.value).notifier)
+                  .put(
+                    SearchHistoryItem.fromQuery(query: query).toMessage(),
                   );
             }
           },

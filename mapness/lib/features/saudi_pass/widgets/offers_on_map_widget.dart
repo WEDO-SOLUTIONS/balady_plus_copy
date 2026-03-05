@@ -69,6 +69,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   Future<void> init() async {
     final controller = await ref.read(dgisControllerProvider.future);
     _setupVisibleRectListener(controller);
+
+    final offers = ref.read(showMapOffersProvider);
+
+    await _showOffers(offers, ref.read(cameraPositionProvider.notifier));
   }
 
   MarkerTextStyleMessage _buildTextStyle({required bool isArabic, required bool isDark}) => MarkerTextStyleMessage(
@@ -96,8 +100,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       icon: SvgMarkerIcon(
         svgPath: switch (context.read<ThemeController>().currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          _ => Assets.icons.svg.placesNew.light.icOffers.keyName,
         },
         width: _kMarkerWidth,
       ),
@@ -109,16 +112,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
         icon: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
-          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
-            size: _kClusterIconSize,
-          ),
-        },
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+          _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        }.markerIcon(size: _kClusterIconSize),
         text: objectCount.toString(),
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
@@ -145,8 +141,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           ),
           icon: switch (context.read<ThemeController>().currentTheme) {
             BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
-            BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
-            BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+            _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
           },
           id: offerPoiPinId,
         ),
@@ -183,8 +178,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         textStyle: options.textStyle,
         icon: switch (context.read<ThemeController>().currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
-          BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
         },
         id: offerPoiPinId,
       ),
@@ -220,6 +214,41 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   bool _isFirstLoad = true;
 
+  Future<void> _showOffers(List<Offer> offers, CameraPosition cameraPosition) async {
+    final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: _settings.name,
+        layerId: _settings.layerId,
+        clustering: ClusteringMapObjectManager(
+          options: ClusteringMapObjectManagerOptionsMessage(
+            logicalPixel: _kClusterLogicalPixel,
+            maxZoom: _kClusterMaxZoom,
+          ),
+          onTap: (cluster) => _onClusterTap(cluster, cameraPosition),
+          renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
+        ),
+      ).notifier,
+    );
+
+    final markers = offers.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
+
+    await mapObjectManager.removeAllMarkers();
+    await mapObjectManager.addMarkers(markers);
+
+    // Only for the first load, animate to the first marker
+    if (_isFirstLoad && markers.isNotEmpty) {
+      _isFirstLoad = false;
+      final first = markers.first.options.position;
+      final gp = GeoPointMessage(latitude: first.latitude, longitude: first.longitude);
+      final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
+      await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
+    }
+
+    await ref.read(showMapOffersProvider.notifier).initObjectManager(mapObjectManager);
+  }
+
   @override
   Widget build(BuildContext context) {
     final showMapOffers = ref.watch(showMapOffersProvider.notifier);
@@ -234,48 +263,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         category: widget.categories.isEmpty ? null : widget.categories,
         promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
       );
-
-      return () {
-        // on exit
-        showMapOffers.switchOffersVisibility(enabled: false, isAll: widget.isAll, cityId: widget.city.id);
-      };
+      return null;
     }, []);
 
-    ref.listen(showMapOffersProvider, (prev, next) async {
-      final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
-      final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
-
-      final mapObjectManager = ref.watch(
-        mapObjectManagerProvider(
-          named: _settings.name,
-          layerId: _settings.layerId,
-          clustering: ClusteringMapObjectManager(
-            options: ClusteringMapObjectManagerOptionsMessage(
-              logicalPixel: _kClusterLogicalPixel,
-              maxZoom: _kClusterMaxZoom,
-            ),
-            onTap: (cluster) => _onClusterTap(cluster, cameraPosition),
-            renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
-          ),
-        ).notifier,
-      );
-
-      final markers = next.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
-
-      await mapObjectManager.removeAllMarkers();
-      await mapObjectManager.addMarkers(markers);
-
-      // Only for the first load, animate to the first marker
-      if (_isFirstLoad && markers.isNotEmpty) {
-        _isFirstLoad = false;
-        final first = markers.first.options.position;
-        final gp = GeoPointMessage(latitude: first.latitude, longitude: first.longitude);
-        final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
-        await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
-      }
-
-      await showMapOffers.initObjectManager(mapObjectManager);
-    });
+    ref.listen(showMapOffersProvider, (prev, next) => _showOffers(next, cameraPosition));
 
     final typesStringBar = widget.recommendedTypes.isNotEmpty
         ? ', ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero}'
@@ -308,7 +299,6 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             leading: ActionModel(
               onPressed: () {
                 context.router.pop();
-                showMapOffers.removeMarker(offerPoiPinId);
               },
               icon: SystemIcons.arrowCornerLeftLarge,
             ),

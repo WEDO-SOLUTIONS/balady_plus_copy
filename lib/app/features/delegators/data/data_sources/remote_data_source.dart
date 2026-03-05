@@ -9,14 +9,12 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../delegators_exports.dart' show DelegatorModel, AgentModel;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-
 abstract class DelegatorsRemoteDataSource {
   Future<List<DelegatorModel>> getDelegators();
   Future<List<AgentModel>> getAgents();
 }
 
-class DelegatorsRemoteDataSourceImplementation
-    implements DelegatorsRemoteDataSource {
+class DelegatorsRemoteDataSourceImplementation implements DelegatorsRemoteDataSource {
   final WebService webService;
 
   DelegatorsRemoteDataSourceImplementation({required this.webService});
@@ -32,10 +30,7 @@ class DelegatorsRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return result
-          .map<DelegatorModel>(
-              (e) => DelegatorModel.fromMap(e as Map<String, dynamic>))
-          .toList();
+      return result.map<DelegatorModel>((e) => DelegatorModel.fromMap(e as Map<String, dynamic>)).toList();
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -55,14 +50,14 @@ class DelegatorsRemoteDataSourceImplementation
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),
@@ -102,9 +97,7 @@ class DelegatorsRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return result
-          .map<AgentModel>((e) => AgentModel.fromMap(e as Map<String, dynamic>))
-          .toList();
+      return result.map<AgentModel>((e) => AgentModel.fromMap(e as Map<String, dynamic>)).toList();
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -122,14 +115,14 @@ class DelegatorsRemoteDataSourceImplementation
         );
         errorCode = decodedResponse.data?.responseCode;
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
 
       throw ServerException(
         error.toString(),

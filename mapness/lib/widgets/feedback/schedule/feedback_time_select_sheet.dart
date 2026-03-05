@@ -196,11 +196,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
   Widget _timeItemBuilder(BuildContext context, int minutes) {
     final time = _timeOfDayFromMinutes(minutes);
     final themeController = Provider.of<ThemeController>(context, listen: false);
-    final colors = switch (themeController.currentTheme) {
-      BaladyAppThemes.light => AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
-      BaladyAppThemes.dark => AppColorsThemeV3.palette(themes: BaladyAppThemes.dark),
-      BaladyAppThemes.saudiDay => AppColorsThemeV3.palette(themes: BaladyAppThemes.saudiDay),
-    };
+    final colors = AppColorsThemeV3.palette(themes: BaladyAppThemes.light);
     return Center(
       child: Text(
         time.format(context),

@@ -28,8 +28,7 @@ class SaudiPassChipsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasText = (title?.trim().isNotEmpty ?? false) ||
-        (label?.trim().isNotEmpty ?? false);
+    final bool hasText = (title?.trim().isNotEmpty ?? false) || (label?.trim().isNotEmpty ?? false);
     final labelColor = isSelected ? context.colors.accentSecondaryMuted : null;
     return Chips(
       onPressed: onTap,
@@ -43,8 +42,8 @@ class SaudiPassChipsWidget extends StatelessWidget {
               trailingIcon: trailingIcon,
             )
           : (leadingIcon != null || trailingIcon != null)
-              ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
-              : null,
+          ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
+          : null,
     );
   }
 }

@@ -28,8 +28,8 @@ class NotificationRepositoryImplementation
   });
 
   @override
-  Future<Either<Failure, ResponseBodyModel<NotificationResponse>>>
-      updateNotificationSettings(NotificationRequest request) async {
+  Future<Either<Failure, ResponseBodyModel<NotificationResponse>>> updateNotificationSettings(
+      NotificationRequest request) async {
     try {
       final data = await remoteDataSource.updateNotificationSettings(request);
       return Right(data);
@@ -49,9 +49,8 @@ class NotificationRepositoryImplementation
 
   //For NotificationsListRepository
   @override
-  Future<Either<Failure, NotificationsListResponse>>
-      getNotificationsMessagesList(
-          {required SearchNotificationsParams request}) async {
+  Future<Either<Failure, NotificationsListResponse>> getNotificationsMessagesList(
+      {required SearchNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.getNotificationsMessagesList(request);
       return Right(data);
@@ -70,11 +69,9 @@ class NotificationRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, bool>> markReadNotificationsMessages(
-      {required MarkReadNotificationsParams request}) async {
+  Future<Either<Failure, bool>> markReadNotificationsMessages({required MarkReadNotificationsParams request}) async {
     try {
-      final data =
-          await remoteDataSource.markReadNotificationsMessages(request);
+      final data = await remoteDataSource.markReadNotificationsMessages(request);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -91,8 +88,7 @@ class NotificationRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, bool>> deletedNotificationsMessages(
-      {required DeletedNotificationsParams request}) async {
+  Future<Either<Failure, bool>> deletedNotificationsMessages({required DeletedNotificationsParams request}) async {
     try {
       final data = await remoteDataSource.deletedNotificationsMessages(request);
       return Right(data);
@@ -112,8 +108,7 @@ class NotificationRepositoryImplementation
 
   // For Filter Widgets
   @override
-  Future<Either<Failure, List<NotificationType>>>
-      getNotificationsProducts() async {
+  Future<Either<Failure, List<NotificationType>>> getNotificationsProducts() async {
     try {
       final data = await remoteDataSource.getNotificationsProducts();
       return Right(data);
@@ -132,11 +127,9 @@ class NotificationRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, List<NotificationType>>>
-      getNotificationsServicesProducts({required String productId}) async {
+  Future<Either<Failure, List<NotificationType>>> getNotificationsServicesProducts({required String productId}) async {
     try {
-      final data = await remoteDataSource.getNotificationsServicesProducts(
-          productId: productId);
+      final data = await remoteDataSource.getNotificationsServicesProducts(productId: productId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -154,12 +147,10 @@ class NotificationRepositoryImplementation
 
   //For NotificationsListRepository
   @override
-  Future<Either<Failure, NotificationsSettingsList>>
-      getNotificationsSettingsList(
-          {required String notificationChannelId}) async {
+  Future<Either<Failure, NotificationsSettingsList>> getNotificationsSettingsList(
+      {required String notificationChannelId}) async {
     try {
-      final data = await remoteDataSource.getNotificationsSettingsList(
-          notificationChannelId: notificationChannelId);
+      final data = await remoteDataSource.getNotificationsSettingsList(notificationChannelId: notificationChannelId);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -177,11 +168,9 @@ class NotificationRepositoryImplementation
 
   //For NotificationsListRepository
   @override
-  Future<Either<Failure, bool>> setNotificationsProfile(
-      {required SetNotificationsProfileParams params}) async {
+  Future<Either<Failure, bool>> setNotificationsProfile({required SetNotificationsProfileParams params}) async {
     try {
-      final data =
-          await remoteDataSource.setNotificationsProfile(params: params);
+      final data = await remoteDataSource.setNotificationsProfile(params: params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -202,8 +191,7 @@ class NotificationRepositoryImplementation
   Future<Either<Failure, bool>> setNotificationsProfileProducts(
       {required SetNotificationsProfileProductsParams params}) async {
     try {
-      final data = await remoteDataSource.setNotificationsProfileProducts(
-          params: params);
+      final data = await remoteDataSource.setNotificationsProfileProducts(params: params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

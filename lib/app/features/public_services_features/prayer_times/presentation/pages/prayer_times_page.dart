@@ -11,14 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppStyle,
-        BlocRequestStatus,
-        CommonFunctions,
-        ContextConversion,
-        IconPath,
-        ImagePath;
+    show AppColor, AppStyle, BlocRequestStatus, CommonFunctions, ContextConversion, IconPath, ImagePath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget, ShimmerEffectWidget;
 import '../../../../home_page/home_exports.dart' show CircleIcon;
@@ -92,14 +85,11 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                           BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                             builder: (context, state) {
                               return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
                                 child: Visibility(
                                   visible: state.status.isSubmissionGetSuccess,
                                   child: GestureDetector(
-                                    onTap: () => context
-                                        .read<PrayerTimesCubit>()
-                                        .prayerSettingsOnOff(),
+                                    onTap: () => context.read<PrayerTimesCubit>().prayerSettingsOnOff(),
                                     // onTap: () => NotificationService
                                     //     .showScheduledNotification(
                                     //     id: 1,
@@ -115,8 +105,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                           ? AppColor.blackModern50Light
                                           : AppColor.secondary500Light,
                                       iconSize: 30,
-                                      backgroundColor:
-                                          AppColor.primary100Light12,
+                                      backgroundColor: AppColor.primary100Light12,
                                       circleSize: 48,
                                     ),
                                   ),
@@ -128,8 +117,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                       ),
                       BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                         builder: (context, state) {
-                          String? cityName = state.gisResponse?.cityName ??
-                              state.gisResponse?.adminMunicipalityName;
+                          String? cityName = state.gisResponse?.cityName ?? state.gisResponse?.adminMunicipalityName;
                           if (cityName != null)
                             return CustomTextWidget(
                               "${"prayerTimesIn".tr()} ${cityName}",
@@ -140,8 +128,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                       ),
                       const SizedBox(height: 8),
                       CustomTextWidget(
-                        CommonFunctions.replaceArabicNumberWithEnglish(
-                            HijriCalendar.now().toFormat("dd MMMM، yyyy")),
+                        CommonFunctions.replaceArabicNumberWithEnglish(HijriCalendar.now().toFormat("dd MMMM، yyyy")),
                         textStyle: AppStyle.prayerTimeCityTextStyle.copyWith(
                           color: AppColor.blackModern50Light,
                         ),
@@ -149,8 +136,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                       const SizedBox(height: 16),
                       BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                         builder: (context, state) {
-                          if (state.status ==
-                              BlocRequestStatus.submissionGetLoading) {
+                          if (state.status == BlocRequestStatus.submissionGetLoading) {
                             return Container();
                           }
                           if (state.userLocationUnkown == true) {
@@ -176,8 +162,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
               child: SingleChildScrollView(
                 child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                   builder: (context, state) {
-                    if (state.status ==
-                        BlocRequestStatus.submissionGetFailure) {
+                    if (state.status == BlocRequestStatus.submissionGetFailure) {
                       return ReloadWidget(onTab: () {
                         cubit.getPrayerTime();
                         cubit.getPrayerTimeRange();
@@ -187,8 +172,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                       children: List.generate(
                         Prayers.values.length,
                         (index) {
-                          if (state.status ==
-                              BlocRequestStatus.submissionGetLoading) {
+                          if (state.status == BlocRequestStatus.submissionGetLoading) {
                             return Container(
                               height: 64,
                               margin: const EdgeInsets.symmetric(
@@ -224,8 +208,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                 const SizedBox(width: 8),
                                 CustomTextWidget(
                                   Prayers.values[index].name.tr(),
-                                  textStyle:
-                                      AppStyle.prayerTimeCityTextStyle.copyWith(
+                                  textStyle: AppStyle.prayerTimeCityTextStyle.copyWith(
                                     color: AppColor.blackModern700Light,
                                   ),
                                 ),
@@ -233,29 +216,22 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                 Row(
                                   children: [
                                     CustomTextWidget(
-                                      state.prayerTimesResponse
-                                              ?.fotmattedTimeFor(
+                                      state.prayerTimesResponse?.fotmattedTimeFor(
                                             Prayers.values[index],
                                           ) ??
                                           "00:00",
-                                      textStyle: AppStyle
-                                          .prayerTimeCityTextStyle
-                                          .copyWith(
+                                      textStyle: AppStyle.prayerTimeCityTextStyle.copyWith(
                                         color: AppColor.blackModern700Light,
                                       ),
                                     ),
                                     const SizedBox(width: 20),
                                     GestureDetector(
-                                      onTap: () => context
-                                          .read<PrayerTimesCubit>()
-                                          .onChangePrayerSettings(index),
+                                      onTap: () => context.read<PrayerTimesCubit>().onChangePrayerSettings(index),
                                       child: CustomSvgIconWidget(
                                         IconPath.notificationIc,
-                                        iconColor:
-                                            state.prayerTimeSettings[index] ==
-                                                    "0"
-                                                ? AppColor.blackModern500Light
-                                                : AppColor.primary700Light,
+                                        iconColor: state.prayerTimeSettings[index] == "0"
+                                            ? AppColor.blackModern500Light
+                                            : AppColor.primary700Light,
                                       ),
                                     ),
                                   ],

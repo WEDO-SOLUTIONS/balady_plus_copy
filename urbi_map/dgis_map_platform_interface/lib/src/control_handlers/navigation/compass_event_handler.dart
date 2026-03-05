@@ -5,11 +5,9 @@ import 'package:dgis_map_platform_interface/src/events/compass_bearing_events.da
 class CompassEventHandler {
   CompassEventHandler();
 
-  Stream<CompassBearingEvent> get compassBearingEvents =>
-      _compassBearingController.stream;
+  Stream<CompassBearingEvent> get compassBearingEvents => _compassBearingController.stream;
 
-  final _compassBearingController =
-      StreamController<CompassBearingEvent>.broadcast();
+  final _compassBearingController = StreamController<CompassBearingEvent>.broadcast();
 
   void compassBearingChangedEvent(Map<dynamic, dynamic> map) {
     final value = map["value"];

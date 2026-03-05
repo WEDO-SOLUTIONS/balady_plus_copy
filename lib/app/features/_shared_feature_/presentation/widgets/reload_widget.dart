@@ -12,12 +12,7 @@ class ReloadWidget extends StatelessWidget {
   final String? errorMessage;
   final VoidCallback onTab;
 
-  const ReloadWidget({
-    Key? key,
-    this.widgetHeight = 150,
-    this.errorMessage,
-    required this.onTab,
-  }) : super(key: key);
+  const ReloadWidget({Key? key, this.widgetHeight = 150, this.errorMessage, required this.onTab}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +23,7 @@ class ReloadWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: AppColor.white,
-        boxShadow: const [
-          BoxShadow(
-              color: Color(0x14d1d5db),
-              offset: Offset(-2, 4),
-              blurRadius: 8,
-              spreadRadius: 0)
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x14d1d5db), offset: Offset(-2, 4), blurRadius: 8, spreadRadius: 0)],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -51,10 +40,7 @@ class ReloadWidget extends StatelessWidget {
             ),
           ),
           const CustomVerticalSpace(height: 16),
-          CustomTextButtonWidget(
-            onPressed: onTab,
-            text: ('reload').tr(),
-          )
+          CustomTextButtonWidget(onPressed: onTab, text: ('reload').tr()),
         ],
       ),
     );

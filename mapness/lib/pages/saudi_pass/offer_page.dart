@@ -536,12 +536,14 @@ class _OfferPreviewByBusiness extends StatelessWidget {
             ),
           ),
           Spacing.$3x.widthBox,
-          SizedBox(
-            height: 48,
-            width: 48,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-              child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
+          Expanded(
+            child: SizedBox(
+              height: 103,
+              width: 118,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
+              ),
             ),
           ),
         ],
@@ -563,18 +565,25 @@ class _OfferCode extends StatelessWidget {
         color: context.colorsV3.neutralContainerDefault,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
       ),
-      height: 69,
+      height: 70,
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(code, style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer)),
-          Spacing.$0_5x.heightBox,
-          Text(
-            context.l10n.codeWasUsed,
-            style: context.textStyleV3.captionSmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              code.characters.take(15).string,
+              maxLines: 1,
+              style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer),
+            ),
+            Spacing.$0_5x.heightBox,
+            Text(
+              context.l10n.codeWasUsed,
+              style: context.textStyleV3.captionSmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+            ),
+          ],
+        ),
       ),
     ),
   );

@@ -1,6 +1,5 @@
 import '../../../../../core/utils/utils_exports.dart' show Prayers;
-import '../../prayer_times_exports.dart'
-    show PrayerTimeModel, PrayerTimesResponse;
+import '../../prayer_times_exports.dart' show PrayerTimeModel, PrayerTimesResponse;
 
 class PrayerTimesResponseModel extends PrayerTimesResponse {
   const PrayerTimesResponseModel({

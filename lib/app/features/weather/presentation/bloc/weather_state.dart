@@ -18,13 +18,7 @@ class WeatherState extends Equatable {
       this.selectedTile});
 
   @override
-  List<Object?> get props => [
-        allWeatherInfoStatus,
-        gisResponse,
-        allWeatherInfo,
-        showLocationError,
-        selectedTile
-      ];
+  List<Object?> get props => [allWeatherInfoStatus, gisResponse, allWeatherInfo, showLocationError, selectedTile];
 
   WeatherState copyWith(
       {BlocStatus? allWeatherInfoStatus,

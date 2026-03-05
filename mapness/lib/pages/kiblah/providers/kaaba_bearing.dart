@@ -17,7 +17,8 @@ class KaabaBearing extends _$KaabaBearing {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 15), (timer) {
       if (state == null) {
-        ref.invalidate(locationProvider);
+        // Use refreshLocation instead of invalidate to avoid resetting theme state
+        ref.read(locationProvider.notifier).refreshLocation();
       } else {
         timer.cancel();
       }
@@ -29,7 +30,6 @@ class KaabaBearing extends _$KaabaBearing {
     final dgisController = ref.watch(dgisControllerProvider);
 
     ref
-      ..invalidate(locationProvider)
       ..listen(
         locationProvider,
         (_, next) async {
@@ -45,7 +45,17 @@ class KaabaBearing extends _$KaabaBearing {
         _timer?.cancel();
       });
 
-    _updateKaabState();
+    // Check current location and request refresh if needed
+    final currentLocation = ref.read(locationProvider);
+    if (currentLocation != null) {
+      dgisController.value
+          ?.pointBearing(
+              GeoPointMessage(latitude: currentLocation.latitude, longitude: currentLocation.longitude), kaabaLocation)
+          .then((bearing) => state = bearing);
+    } else {
+      _updateKaabState();
+    }
+
     return null;
   }
 }

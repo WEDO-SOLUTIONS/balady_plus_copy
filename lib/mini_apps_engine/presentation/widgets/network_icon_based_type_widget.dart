@@ -28,18 +28,14 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
     if (!icon.contains("http")) {
       // Local asset icons
       if ((icon).isSvgIcon) {
-
         return SvgPicture.asset(
           icon,
           height: iconSize,
           width: iconSize,
-          colorFilter: iconColor != null
-              ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-              : null,
+          colorFilter: iconColor != null ? ColorFilter.mode(iconColor!, BlendMode.srcIn) : null,
           fit: fit,
         );
       } else if ((icon).isImgIcon) {
-
         return Image.asset(
           icon,
           height: iconSize,
@@ -52,7 +48,6 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
     } else {
       // Remote icons
       if ((icon).isSvgIcon || type == "svg") {
-
         return CachedNetworkSVGImage(
           icon,
           placeholder: const SizedBox(
@@ -72,12 +67,9 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
           width: iconSize,
           height: iconSize,
           fadeDuration: const Duration(milliseconds: 500),
-          colorFilter: iconColor != null
-              ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-              : null,
+          colorFilter: iconColor != null ? ColorFilter.mode(iconColor!, BlendMode.srcIn) : null,
         );
       } else {
-
         return CachedNetworkImage(
           imageUrl: icon,
           httpHeaders: {
@@ -87,8 +79,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
             return SizedBox(
               width: 40,
               height: 40,
-              child:
-              CircularProgressIndicator(value: downloadProgress.progress),
+              child: CircularProgressIndicator(value: downloadProgress.progress),
             );
           },
           errorWidget: (context, url, error) {

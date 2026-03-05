@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
 import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/balady_uikit/core/icons/transport_icons.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -116,9 +116,14 @@ class PoiCardFooter extends HookConsumerWidget {
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final parkingPoi = objectId == parkingObjectId;
+    final isFoundingDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
+
+    final colorScheme = isFoundingDay ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent;
 
     return ThrottledCallbackWidget(
-      callback: share,
+      callback: () {
+        share();
+      },
       resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
         duration: duration,
@@ -131,9 +136,16 @@ class PoiCardFooter extends HookConsumerWidget {
             buttonType: ButtonType.primary,
             label: context.l10n.poiCardDirections,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-            colorScheme: _buttonColorScheme,
             onPressed: onTapCar,
+            colorScheme: colorScheme,
           ),
+          if (!parkingPoi && isFavourite)
+            ItemActionBar(
+              icon: iconData,
+              buttonType: ButtonType.primary,
+              colorScheme: _buttonColorScheme,
+              onPressed: () => onTapFavorite(favouriteItem),
+            ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
               ItemActionBar(
@@ -155,7 +167,7 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: context.isLTR ? GeneralIcons.phoneLTR : GeneralIcons.phoneRTL,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
             ),
@@ -173,29 +185,27 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: GeneralIcons.doorEntrance,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: onEntranceTap,
             ),
-          if (!parkingPoi)
+          if (!parkingPoi && !isFavourite)
             ItemActionBar(
               icon: iconData,
-              bgColor: isFavourite ? context.colors.extra01ContainerDefault : null,
-              iconColor: isFavourite ? context.colors.extra01Default : null,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: ButtonType.secondary,
-            colorScheme: _buttonColorScheme,
+            colorScheme: colorScheme,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
 
@@ -203,14 +213,14 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

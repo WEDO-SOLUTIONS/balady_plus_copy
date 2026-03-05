@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +9,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
@@ -28,7 +29,6 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
-import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -49,6 +49,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   final _settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
   final _scope = SearchScopeEnum.navi.value;
+  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
@@ -80,18 +81,25 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
           ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
-      stateMapper: const ThreeStateMapper(),
+      stateMapper: const LandingStateMapper(),
       initialState: ThreeStateSheet.expanded,
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
+    _multiStateSheetController.addListener(_onSheetChanged);
+  }
 
-    _multiStateSheetController.addListener(() {
-      if (_multiStateSheetController.state == ThreeStateSheet.hidden) {
-        _unfocusSearchField();
-      }
-    });
+  void _onSheetChanged() {
+    final newState = _multiStateSheetController.state;
+    if (newState == ThreeStateSheet.hidden) {
+      _unfocusSearchField();
+    }
+    if (newState != _sheetState) {
+      setState(() {
+        _sheetState = newState;
+      });
+    }
   }
 
   @override
@@ -125,7 +133,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       ]);
     }
 
-    _multiStateSheetController.dispose();
+    _multiStateSheetController
+      ..removeListener(_onSheetChanged)
+      ..dispose();
     _keyboardVisible.cancel();
 
     _streamSubscription?.cancel();
@@ -140,7 +150,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
     ref.listen(searchProvider(_scope), (previous, next) {
-      _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
+      _drawSearchMarkers(next, previous, searchObjectManager);
     });
 
     return SearchScope(
@@ -158,13 +168,14 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
-              animateOpening: false,
               keepContentBehindFooter: true,
               scrollController: _multiStateSheetController,
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
               outside: NaviSearchSheetControls(_multiStateSheetController),
-              safeAreaColor: context.colors.backgroundSurface2,
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden
+                  ? context.colors.backgroundSurface1
+                  : context.colors.backgroundSurface4,
               dragger: null,
               backgroundColor: context.colors.backgroundSurface4,
               key: const ValueKey('NAVI SEARCH SHEET'),
@@ -173,7 +184,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
                 requestFocus: true,
                 onClose: () => context.router.pop(),
               ),
-              sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              sliver: SliverToBoxAdapter(
+                child: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              ),
             ),
           ),
         ],
@@ -185,7 +198,6 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     SearchState searchState,
     SearchState? prevState,
     MapObjectManager mapObjectManager,
-    BaladyAppThemes theme,
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
@@ -193,11 +205,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
-        theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
       );

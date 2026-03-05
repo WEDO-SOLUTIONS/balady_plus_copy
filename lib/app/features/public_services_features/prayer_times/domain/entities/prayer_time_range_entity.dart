@@ -117,8 +117,7 @@ class PrayerTimeRangeEntity extends Equatable {
     );
   }
 
-  factory PrayerTimeRangeEntity.fromJson(Map<String, dynamic> json) =>
-      PrayerTimeRangeEntity(
+  factory PrayerTimeRangeEntity.fromJson(Map<String, dynamic> json) => PrayerTimeRangeEntity(
         asr: json["Asr"],
         day: json["Day"],
         fajr: json["Fajr"],

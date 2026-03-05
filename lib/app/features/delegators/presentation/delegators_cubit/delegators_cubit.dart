@@ -3,10 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../core/services/services_exports.dart' show NoParams;
-import '../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, Nullable;
-import '../../delegators_exports.dart'
-    show AgentEntity, DelegatorEntity, GetDelegators, GetAgents;
+import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus, Nullable;
+import '../../delegators_exports.dart' show AgentEntity, DelegatorEntity, GetDelegators, GetAgents;
 
 part 'delegators_state.dart';
 
@@ -14,8 +12,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   final GetDelegators _getDelegators;
   final GetAgents _getAgents;
 
-  DelegatorsCubit(this._getDelegators, this._getAgents)
-      : super(const DelegatorsState(tab: 0));
+  DelegatorsCubit(this._getDelegators, this._getAgents) : super(const DelegatorsState(tab: 0));
 
   void getDelegators() async {
     if (state.delegators.isEmpty)
@@ -46,13 +43,11 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   }
 
   void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(delegator), sAgent: Nullable(null)));
+    emit(state.copyWith(selectedDelegator: Nullable(delegator), sAgent: Nullable(null)));
   }
 
   void selectAgent(AgentEntity? agent) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(null), sAgent: Nullable(agent)));
+    emit(state.copyWith(selectedDelegator: Nullable(null), sAgent: Nullable(agent)));
   }
 
   void changeTab(int index) {
@@ -63,8 +58,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
     if (state.agents.isEmpty)
       emit(state.copyWith(agentStatus: BlocRequestStatus.submissionGetLoading));
     else
-      emit(
-          state.copyWith(agentStatus: BlocRequestStatus.submissionPostLoading));
+      emit(state.copyWith(agentStatus: BlocRequestStatus.submissionPostLoading));
 
     final failureOrSuccess = await _getAgents(NoParams());
 
@@ -91,8 +85,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
 
   void clearDelegators() {
     emit(state.copyWith(
-        status: BlocRequestStatus.submissionGetLoading,
-        agentStatus: BlocRequestStatus.submissionGetLoading));
+        status: BlocRequestStatus.submissionGetLoading, agentStatus: BlocRequestStatus.submissionGetLoading));
 
     emit(state.copyWith(
         status: BlocRequestStatus.submissionGetSuccess,

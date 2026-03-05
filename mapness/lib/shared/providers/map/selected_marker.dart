@@ -16,12 +16,8 @@ class SelectedMarker extends _$SelectedMarker {
   @override
   Marker? build() => null;
 
-  MapObjectManager get mapObjectManager => ref.read(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-        ).notifier,
-      );
+  MapObjectManager get mapObjectManager =>
+      ref.read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier);
 
   Future<void> showMarker(Marker marker, {MapObjectManagerSettings? settings, int? objectId}) async {
     final searchObjectManager = ref.read(
@@ -33,10 +29,7 @@ class SelectedMarker extends _$SelectedMarker {
 
     _showHiddenMarkerIfPresent();
 
-    final position = LatLng(
-      latitude: marker.options.position.latitude,
-      longitude: marker.options.position.longitude,
-    );
+    final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
     final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
       _hideMarker(currentSearchMarker);

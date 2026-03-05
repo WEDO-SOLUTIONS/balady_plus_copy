@@ -38,14 +38,14 @@ class MiniAppsEngineLoadedState extends MiniAppsEngineState {
   final String servicePath;
   final String path;
 
-  const MiniAppsEngineLoadedState({required this.servicePath,required this.path});
+  const MiniAppsEngineLoadedState({required this.servicePath, required this.path});
 
   @override
-  List<Object> get props => [servicePath,path];
+  List<Object> get props => [servicePath, path];
 
   @override
   MiniAppsEngineState copyWith() {
-    return MiniAppsEngineLoadedState(servicePath: servicePath,path: path);
+    return MiniAppsEngineLoadedState(servicePath: servicePath, path: path);
   }
 }
 
@@ -63,9 +63,7 @@ class MiniAppsEngineErrorState extends MiniAppsEngineState {
   }
 }
 
-
 class FailedDownloadState extends MiniAppsEngineState {
-
   const FailedDownloadState();
 
   @override

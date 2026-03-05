@@ -18,20 +18,20 @@ class UploadFileDialog extends StatelessWidget {
   final bool imagesOnly;
   final bool filesOnly;
 
-  const UploadFileDialog(
-      {super.key,
-      required this.onConfirm,
-      this.onCancel,
-      this.imagesOnly = false,
-      this.filesOnly = false});
+  const UploadFileDialog({
+    super.key,
+    required this.onConfirm,
+    this.onCancel,
+    this.imagesOnly = false,
+    this.filesOnly = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: const BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
         color: Colors.white,
       ),
       child: SafeArea(
@@ -54,8 +54,7 @@ class UploadFileDialog extends StatelessWidget {
                   btnAlignment: Alignment.center,
                   onPressed: () async {
                     final ImagePicker picker = ImagePicker();
-                    final XFile? image =
-                        await picker.pickImage(source: ImageSource.camera);
+                    final XFile? image = await picker.pickImage(source: ImageSource.camera);
 
                     if (image != null) {
                       int imageSize = await image.length();
@@ -63,18 +62,16 @@ class UploadFileDialog extends StatelessWidget {
                         CommonFunctions.showError(('file_size_error').tr());
                       } else {
                         String path = image.path;
-                        String fileName = path.isNotEmpty
-                            ? path.split('/').last
-                            : ('attachment_name').tr();
+                        String fileName = path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
                         final fileBytes = await File(path).readAsBytes();
                         String base64File = base64Encode(fileBytes);
                         FileDataItem file = FileDataItem(
-                            fileBase64: base64File,
-                            fileName: fileName,
-                            filePath: path,
-                            bytes: fileBytes
-                            // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
-                            );
+                          fileBase64: base64File,
+                          fileName: fileName,
+                          filePath: path,
+                          bytes: fileBytes,
+                          // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
+                        );
                         onConfirm(file);
                       }
                     }
@@ -94,11 +91,11 @@ class UploadFileDialog extends StatelessWidget {
                     openFilePicker(FileType.image, context);
                   },
                 ),
+
               // if (Platform.isIOS)
               //  const DrawLineWidget(
               //      verticalMargin: 10,
               //   ),
-
               CustomTextButtonWidget(
                 text: ("files").tr(),
                 btnTextColor: AppColor.black,
@@ -106,8 +103,7 @@ class UploadFileDialog extends StatelessWidget {
                 btnTextWeight: AppFontWeight.medium,
                 btnAlignment: Alignment.center,
                 onPressed: () {
-                  openFilePicker(FileType.custom, context,
-                      allowedExtensions: filesOnly ? ["pdf"] : null);
+                  openFilePicker(FileType.custom, context, allowedExtensions: filesOnly ? ["pdf"] : null);
                 },
               ),
             ],
@@ -117,16 +113,15 @@ class UploadFileDialog extends StatelessWidget {
     );
   }
 
-  void openFilePicker(FileType fileType, BuildContext c,
-      {List<String>? allowedExtensions}) async {
+  void openFilePicker(FileType fileType, BuildContext c, {List<String>? allowedExtensions}) async {
     var file = await FilePicker.platform.pickFiles(
       type: fileType,
       allowMultiple: false,
       allowedExtensions: allowedExtensions != null
           ? allowedExtensions
           : fileType == FileType.custom
-              ? ['jpg', 'pdf', 'jpeg', 'png']
-              : null,
+          ? ['jpg', 'pdf', 'jpeg', 'png']
+          : null,
     );
     try {
       if (file != null && file.files.isNotEmpty) {
@@ -136,9 +131,7 @@ class UploadFileDialog extends StatelessWidget {
           if (platformFile.size > 25000000) {
             CommonFunctions.showError(('file_size_error').tr());
           } else {
-            String fileName = path.isNotEmpty
-                ? path.split('/').last
-                : ('attachment_name').tr();
+            String fileName = path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
             final fileBytes = await File(path).readAsBytes();
             String base64File = base64Encode(fileBytes);
             FileDataItem file = FileDataItem(

@@ -12,9 +12,10 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/saudi_pass/widgets/favorite_delete_menu.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -172,7 +173,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           final entity = home?.entity;
                           final homeTitle = ctx.l10n.home;
                           final coordinates = home?.coordinates;
-                          final id = entity?.id ?? '';
+                          final objectId = parseObjectIdFromFavouriteEntityId(entity?.id);
                           return Expanded(
                             child: PinnedPlaceCard(
                               key: Key('home${home?.id}'),
@@ -186,13 +187,16 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 ctx.router.push(
                                   RoutingRoutesRoute(
                                     points: [
-                                      RouteParamsPointWithLabel(value: null, label: context.l10n.myLocation),
+                                      RouteParamsPointWithLabel(
+                                        value: null,
+                                        label: context.l10n.myLocation,
+                                      ),
                                       RouteParamsPointWithLabel(
                                         value: coordinates?.latitude != null && coordinates?.longitude != null
                                             ? RouteParamsPoint(
                                                 latitude: coordinates!.latitude,
                                                 longitude: coordinates.longitude,
-                                                objectId: int.tryParse(id),
+                                                objectId: objectId,
                                               )
                                             : null,
                                         label: homeTitle,
@@ -201,17 +205,23 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   ),
                                 );
                               },
-                              onTapShare: () => ShareUtil.share(entity?.id, context: context),
+                              onTapShare: () => ShareUtil.share(objectId?.toString(), context: context),
                               onTapChange: () {
-                                context.router.push(FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home));
+                                context.router.push(
+                                  FavouritesSearchRoute(
+                                    markerType: FavouriteItemMarkerType.home,
+                                  ),
+                                );
                               },
                               onTap: home == null
                                   ? () => context.router.push(
-                                      FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home),
+                                      FavouritesSearchRoute(
+                                        markerType: FavouriteItemMarkerType.home,
+                                      ),
                                     )
                                   : () => ctx.router.replaceOrPush(
                                       route: PoiCardWidgetRoute(
-                                        objectId: DgisObjectIdMessage(objectId: int.parse(id), entranceId: 0),
+                                        objectId: DgisObjectIdMessage(objectId: objectId!, entranceId: 0),
                                       ),
                                       toCompareRoutes: [PoiCardWidgetRoute.page],
                                     ),
@@ -226,7 +236,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           final workTitle = ctx.l10n.work;
                           final entity = work?.entity;
                           final coordinates = work?.coordinates;
-                          final id = entity?.id ?? '';
+                          final objectId = parseObjectIdFromFavouriteEntityId(entity?.id);
                           return Expanded(
                             child: PinnedPlaceCard(
                               key: Key('work${work?.id}'),
@@ -246,7 +256,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                             ? RouteParamsPoint(
                                                 latitude: coordinates!.latitude,
                                                 longitude: coordinates.longitude,
-                                                objectId: int.tryParse(entity!.id),
+                                                objectId: objectId,
                                               )
                                             : null,
                                         label: workTitle,
@@ -255,7 +265,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   ),
                                 );
                               },
-                              onTapShare: () => ShareUtil.share(entity?.id, context: context),
+                              onTapShare: () => ShareUtil.share(objectId?.toString(), context: context),
                               onTapChange: () {
                                 context.router.push(FavouritesSearchRoute(markerType: FavouriteItemMarkerType.work));
                               },
@@ -265,7 +275,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                     )
                                   : () => ctx.router.replaceOrPush(
                                       route: PoiCardWidgetRoute(
-                                        objectId: DgisObjectIdMessage(objectId: int.parse(id), entranceId: 0),
+                                        objectId: DgisObjectIdMessage(objectId: objectId!, entranceId: 0),
                                       ),
                                       toCompareRoutes: [PoiCardWidgetRoute.page],
                                     ),
@@ -343,7 +353,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             }
                           });
                         },
-                        onShareTap: () => ShareUtil.share(item.entity?.id, context: context),
+                        onShareTap: () => ShareUtil.share(
+                          parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
+                          context: context,
+                        ),
                         onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
                           context.router.push(
@@ -354,7 +367,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   value: RouteParamsPoint(
                                     latitude: item.coordinates.latitude,
                                     longitude: item.coordinates.longitude,
-                                    objectId: int.tryParse(item.entity!.id),
+                                    objectId: parseObjectIdFromFavouriteEntityId(item.entity?.id),
                                   ),
                                   label: item.title,
                                 ),
@@ -364,7 +377,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         },
                         onTap: () => ctx.router.replaceOrPush(
                           route: PoiCardWidgetRoute(
-                            objectId: DgisObjectIdMessage(objectId: int.parse(item.entity!.id), entranceId: 0),
+                            objectId: DgisObjectIdMessage(
+                              objectId: parseObjectIdFromFavouriteEntityId(item.entity?.id)!,
+                              entranceId: 0,
+                            ),
                           ),
                           toCompareRoutes: [PoiCardWidgetRoute.page],
                         ),

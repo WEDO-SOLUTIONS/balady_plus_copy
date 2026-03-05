@@ -23,12 +23,13 @@ class EndTripModal extends HookWidget {
     final bottomsheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
 
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     final leftPadding = MediaQuery.viewPaddingOf(context).left + (isLandscape ? Spacing.$4x : 0.0);
 
     return Align(
       alignment: Alignment.bottomLeft,
       child: Padding(
-        padding: EdgeInsets.only(left: leftPadding),
+        padding: EdgeInsets.only(left: leftPadding, bottom: bottomInset + Spacing.$2x),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: isLandscape ? NaviSheetPanel.landscapeWidth - Spacing.$4x * 2 : double.infinity,

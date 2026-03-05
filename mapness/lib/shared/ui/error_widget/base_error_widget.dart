@@ -1,14 +1,17 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:provider/provider.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 
 /// A base error widget that displays an error message and a retry button.
-class BaseErrorWidget extends StatelessWidget {
+class BaseErrorWidget extends ConsumerWidget {
   /// The action to be taken when the retry button is pressed.
   final VoidCallback onRetry;
 
@@ -48,19 +51,14 @@ class BaseErrorWidget extends StatelessWidget {
     super.key,
   });
 
-  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
-    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
-    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
-  };
-
   /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
   factory BaseErrorWidget.noRetry({String? errorLabel, Key? key}) =>
       BaseErrorWidget(key: key, onRetry: () {}, withRetryButton: false, errorLabel: errorLabel);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
+    final activeEvent = ref.watch(activeCityEventProvider);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
@@ -82,7 +80,10 @@ class BaseErrorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            Padding(padding: paddingForImage, child: SvgPicture.asset(asset(context))),
+            Padding(
+              padding: paddingForImage,
+              child: const ErrorImageWidget(),
+            ),
             if (errorTitle != null)
               Padding(
                 padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x),
@@ -120,6 +121,23 @@ class BaseErrorWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ErrorImageWidget extends ConsumerWidget {
+  const ErrorImageWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final activeEvent = ref.watch(activeCityEventProvider);
+    if (activeEvent?.isFoundingDay ?? false) {
+      return SvgPicture.asset(activeEvent.illustrationError);
+    }
+
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    return SvgPicture.asset(
+      isDark ? Assets.imagesSvg.illustrationErrorDark.keyName : Assets.imagesSvg.illustrationError.keyName,
     );
   }
 }

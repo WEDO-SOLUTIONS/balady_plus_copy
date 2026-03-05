@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppFontWeight, AppStyle, ContextConversion, UIHelper;
+import '../../../../../core/utils/utils_exports.dart' show AppFontWeight, AppStyle, ContextConversion, UIHelper;
 import '../../../shared_feature_exports.dart'
     show
         ActionButtonsComponent,
@@ -67,7 +66,7 @@ class TitleWithActionsComponent extends StatelessWidget {
                         context.popDialog();
                         // Perform function
                         func();
-                      }
+                      },
                   ],
                 ),
               ),
@@ -78,17 +77,9 @@ class TitleWithActionsComponent extends StatelessWidget {
   }
 
   bool get disappearActions =>
-      action == null &&
-      btnIcons.isEmpty &&
-      btnTexts.isEmpty &&
-      btnTextsColors.isEmpty &&
-      btnOnActions.isEmpty;
+      action == null && btnIcons.isEmpty && btnTexts.isEmpty && btnTextsColors.isEmpty && btnOnActions.isEmpty;
 
-  EdgeInsetsGeometry get _padding =>
-      const EdgeInsets.symmetric(horizontal: UIHelper.smallPadding);
-  TextStyle get textStyle => AppStyle.mainTextStyle.copyWith(
-        fontWeight: AppFontWeight.medium.fontWeight,
-        letterSpacing: 0.5,
-        fontSize: 18.0,
-      );
+  EdgeInsetsGeometry get _padding => const EdgeInsets.symmetric(horizontal: UIHelper.smallPadding);
+  TextStyle get textStyle =>
+      AppStyle.mainTextStyle.copyWith(fontWeight: AppFontWeight.medium.fontWeight, letterSpacing: 0.5, fontSize: 18.0);
 }

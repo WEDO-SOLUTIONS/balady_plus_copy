@@ -18,16 +18,16 @@ class HijriCalendarDateWidget extends StatelessWidget {
   final HijriCalendar? minValue;
   final HijriCalendar? maxValue;
 
-  HijriCalendarDateWidget(
-      {Key? key,
-      this.fieldLength,
-      required this.fieldName,
-      required this.isMandatory,
-      this.currentVlaue,
-      required this.onChanged,
-      this.minValue,
-      this.maxValue})
-      : super(key: key);
+  HijriCalendarDateWidget({
+    Key? key,
+    this.fieldLength,
+    required this.fieldName,
+    required this.isMandatory,
+    this.currentVlaue,
+    required this.onChanged,
+    this.minValue,
+    this.maxValue,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +35,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label widget
-        WidgetLabel(
-          isRequired: isMandatory,
-          label: fieldName,
-        ),
+        WidgetLabel(isRequired: isMandatory, label: fieldName),
         CustomElevatedIconButtonWidget(
           btnHeight: 55.0,
           btnAlignment: MainAxisAlignment.spaceBetween,
@@ -55,43 +52,44 @@ class HijriCalendarDateWidget extends StatelessWidget {
 
   showPickerDate(String? currentDate, BuildContext context) {
     hijri_picker.Picker(
-        isAr: CommonFunctions.isAppAR,
-        confirmTextStyle: const TextStyle(
-          //fontFamily: Constants.appFontType,
-          fontSize: 15,
+      isAr: CommonFunctions.isAppAR,
+      confirmTextStyle: const TextStyle(
+        //fontFamily: Constants.appFontType,
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        fontStyle: FontStyle.normal,
+        color: AppColor.primary900Light,
+      ),
+      headercolor: const Color(0xfffafaf8),
+      cancel: Container(),
+      height: 270,
+      confirmText: ('done').tr(),
+      title: Text(
+        ('choose_date').tr(),
+        style: const TextStyle(
+          color: AppColor.black,
           fontWeight: FontWeight.w700,
           fontStyle: FontStyle.normal,
-          color: AppColor.primary900Light,
+          fontSize: 15.0,
         ),
-        headercolor: const Color(0xfffafaf8),
-        cancel: Container(),
-        height: 270,
-        confirmText: ('done').tr(),
-        title: Text(
-          ('choose_date').tr(),
-          style: const TextStyle(
-            color: AppColor.black,
-            fontWeight: FontWeight.w700,
-            fontStyle: FontStyle.normal,
-            fontSize: 15.0,
-          ),
-          textAlign: TextAlign.right,
-        ),
-        hideHeader: false,
-        adapter: hijri_picker.DateTimePickerAdapter(
-            minValue: minValue,
-            maxValue: maxValue,
-            customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
-            value: selectedDate(currentDate)),
-        selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
-        onConfirm: (hijri_picker.Picker picker, List value) {
-          var date =
-              (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
+        textAlign: TextAlign.right,
+      ),
+      hideHeader: false,
+      adapter: hijri_picker.DateTimePickerAdapter(
+        minValue: minValue,
+        maxValue: maxValue,
+        customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
+        value: selectedDate(currentDate),
+      ),
+      selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
+      onConfirm: (hijri_picker.Picker picker, List value) {
+        var date = (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
-          currentDate = date!.toFormat("yyyy/mm/dd");
+        currentDate = date!.toFormat("yyyy/mm/dd");
 
-          onChanged(currentDate);
-        }).showModal(context);
+        onChanged(currentDate);
+      },
+    ).showModal(context);
   }
 
   HijriCalendar selectedDate(String? currentDate) {

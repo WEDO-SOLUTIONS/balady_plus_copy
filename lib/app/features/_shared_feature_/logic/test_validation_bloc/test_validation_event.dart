@@ -31,8 +31,7 @@ class TestValidationOnChangeInfo extends TestValidationEvent {
   });
 
   @override
-  List<Object?> get props =>
-      [phoneNumber, email, startDate, endDate, address, description, city];
+  List<Object?> get props => [phoneNumber, email, startDate, endDate, address, description, city];
 }
 
 class TestValidationOnSubmit extends TestValidationEvent {

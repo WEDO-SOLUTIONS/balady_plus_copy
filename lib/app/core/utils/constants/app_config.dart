@@ -1,5 +1,4 @@
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show translator;
+import 'package:localize_and_translate/localize_and_translate.dart' show translator;
 
 import '../utils_exports.dart' show AppLanguage;
 
@@ -16,11 +15,5 @@ class AppConfig {
 
   static const String defaultCountryCode = '+966';
 
-  static const List<String> fileExtensions = [
-    "pdf",
-    "png",
-    "jpg",
-    "tiff",
-    "gif"
-  ];
+  static const List<String> fileExtensions = ["pdf", "png", "jpg", "tiff", "gif"];
 }

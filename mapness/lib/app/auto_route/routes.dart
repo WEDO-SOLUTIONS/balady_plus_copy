@@ -4,45 +4,36 @@ import 'package:mapness/app/auto_route/others/route_builder.dart';
 
 class Routes {
   static AutoRoute get bottomMenuRoute => AppRoute(
-        path: '',
-        page: BottomMenuRoute.page,
-        initial: true,
-        barrierDismissible: false,
+    path: '',
+    page: BottomMenuRoute.page,
+    initial: true,
+    barrierDismissible: false,
+    children: [
+      CustomRoute(path: 'landing', initial: true, page: LandingRoute.page),
+      CustomRoute(path: 'routing', page: RoutingPointsRoute.page),
+      CustomRoute(path: 'services', page: MapnessServicesRoute.page),
+      AutoRoute(
+        path: 'profile',
+        page: const EmptyShellRoute('').page,
         children: [
+          CustomRoute(path: '', page: ProfileRoute.page, transitionsBuilder: TransitionsBuilders.noTransition),
           CustomRoute(
-            path: 'landing',
-            initial: true,
-            page: LandingRoute.page,
+            path: 'change_profile_photo_sheet',
+            page: ChangeProfilePhotoRoute.page,
+            customRouteBuilder: RouteBuilders.modalSheetBuilder,
           ),
           CustomRoute(
-            path: 'routing',
-            page: RoutingPointsRoute.page,
+            path: 'help_center',
+            page: HelpCenterRoute.page,
+            customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
           ),
           CustomRoute(
-            path: 'services',
-            page: MapnessServicesRoute.page,
-          ),
-          AutoRoute(
-            path: 'profile',
-            page: const EmptyShellRoute('').page,
-            children: [
-              CustomRoute(
-                path: '',
-                page: ProfileRoute.page,
-                transitionsBuilder: TransitionsBuilders.noTransition,
-              ),
-              CustomRoute(
-                path: 'change_profile_photo_sheet',
-                page: ChangeProfilePhotoRoute.page,
-                customRouteBuilder: RouteBuilders.modalSheetBuilder,
-              ),
-              CustomRoute(
-                path: 'help_center',
-                page: HelpCenterRoute.page,
-                customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
-              ),
-            ],
+            path: 'about_balady',
+            page: AboutBaladyRoute.page,
+            customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
           ),
         ],
-      );
+      ),
+    ],
+  );
 }

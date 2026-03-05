@@ -10,6 +10,9 @@ Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {
   await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
   await ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
 
+  // Show Makkah place markers again when POI card is closed
+  ref.read(regularPoiActiveProvider.notifier).setActive(false);
+
   final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
   if (navState.isActive && context.mounted) {
@@ -66,13 +69,7 @@ void toggleFavoriteDirectoryObject({
 
   FavouriteItem? favItem = favouriteItem;
   if (favItem == null && data.markerPosition != null && data.id != null) {
-    favItem = FavouriteItem(
-      coordinates: Coordinates(latitude: data.markerPosition!.latitude, longitude: data.markerPosition!.longitude),
-      id: 'overriden',
-      subtitle: data.subtitle,
-      title: data.title,
-      entity: FavouriteItemEntity(sourceType: EntitySourceType.urbi, id: data.id!.objectId.toString()),
-    );
+    favItem = data.mapToFavourite();
   }
 
   if (favItem == null) {

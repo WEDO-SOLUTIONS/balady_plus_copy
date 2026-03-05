@@ -137,7 +137,10 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
     final hasIntermediateRoutePoints = (currentRoute?.points.length ?? 0) > 2;
 
     return Padding(
-      padding: EdgeInsetsDirectional.only(start: MediaQuery.paddingOf(context).left),
+      padding: EdgeInsetsDirectional.only(
+        start: MediaQuery.paddingOf(context).left,
+        bottom: widget.isLandscape ? MediaQuery.paddingOf(context).bottom : 0.0,
+      ),
       child: SizedBox(
         width: widget.isLandscape ? NaviSheetPanel.landscapeWidth : null,
         child: ToggleSheet(

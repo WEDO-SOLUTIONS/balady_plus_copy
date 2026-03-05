@@ -22,6 +22,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
         self.searchHistory = searchHistory
         self.searchHandler = SearchHandler(
             searchManager: searchManager,
+            searchHistory: searchHistory,
             map: map,
             sdkContext: sdk
         )

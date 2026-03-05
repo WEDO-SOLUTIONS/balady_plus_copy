@@ -13,8 +13,7 @@ import 'package:permission_handler/permission_handler.dart' as Perm;
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/services/services_exports.dart'
-    show  sharedPrefs;
+import '../../../../core/services/services_exports.dart' show sharedPrefs;
 
 part 'location_event.dart';
 part 'location_state.dart';
@@ -27,49 +26,40 @@ class LocationCubit extends Cubit<LocationState> {
         super(const LocationState()) {}
 
   Future<void> getLocationPermission() async {
-    Perm.ServiceStatus? serviceStatus =
-        await Perm.Permission.location.serviceStatus;
+    Perm.ServiceStatus? serviceStatus = await Perm.Permission.location.serviceStatus;
     if (serviceStatus != Perm.ServiceStatus.disabled) {
-      emit(state.copyWith(
-          locationServiceStatus: BlocStatus.locationServiceSuceess));
+      emit(state.copyWith(locationServiceStatus: BlocStatus.locationServiceSuceess));
 
       var status = await Perm.Permission.location.request();
       if (status == Perm.PermissionStatus.permanentlyDenied) {
-        emit(state.copyWith(
-            locationPermissionStatus: BlocStatus.locationPermissionFailed));
+        emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionFailed));
       } else if (status != Perm.PermissionStatus.granted) {
         PermissionStatus status = await Perm.Permission.location.request();
 
         if (status == Perm.PermissionStatus.granted) {
-          emit(state.copyWith(
-              locationPermissionStatus: BlocStatus.locationPermissionSuceess));
+          emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionSuceess));
         } else {
-          emit(state.copyWith(
-              locationPermissionStatus: BlocStatus.locationPermissionFailed));
+          emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionFailed));
         }
       } else {
-        emit(state.copyWith(
-            locationPermissionStatus: BlocStatus.locationPermissionSuceess));
+        emit(state.copyWith(locationPermissionStatus: BlocStatus.locationPermissionSuceess));
       }
     } else {
-      emit(state.copyWith(
-          locationServiceStatus: BlocStatus.locationServiceFailed));
+      emit(state.copyWith(locationServiceStatus: BlocStatus.locationServiceFailed));
     }
   }
 
   Future<void> getLocationData() async {
-    if (state.locationPermissionStatus != BlocStatus.locationPermissionSuceess)
-      return;
+    if (state.locationPermissionStatus != BlocStatus.locationPermissionSuceess) return;
 
     emit(state.copyWith(locationStatus: BlocStatus.loading));
 
-    LatLng? location = await Helpers.getCurrentLocation(
-        accuracy: LocationAccuracy.medium, duration: Duration(seconds: 1));
+    LatLng? location =
+        await Helpers.getCurrentLocation(accuracy: LocationAccuracy.medium, duration: Duration(seconds: 1));
 
     if (location != null) {
       emit(state.copyWith(
-          locationStatus: BlocStatus.success,
-          gisParams: GISParams(x: location.longitude, y: location.latitude)));
+          locationStatus: BlocStatus.success, gisParams: GISParams(x: location.longitude, y: location.latitude)));
     } else {
       emit(state.copyWith(locationStatus: BlocStatus.failure));
     }
@@ -86,8 +76,7 @@ class LocationCubit extends Cubit<LocationState> {
       }, (r) {
         sharedPrefs.setUserGISLoaction(r.toModel);
         sharedPrefs.setUserLocation(state.gisParams);
-        emit(
-            state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
+        emit(state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
       });
     }
   }
@@ -100,8 +89,7 @@ class LocationCubit extends Cubit<LocationState> {
 
     if (cachedLocation != null &&
         cachedGIS != null &&
-        (state.locationPermissionStatus ==
-                BlocStatus.locationPermissionSuceess &&
+        (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
             state.locationServiceStatus == BlocStatus.locationServiceSuceess)) {
       emit(state.copyWith(
           loadAppStatus: BlocStatus.success,
@@ -116,18 +104,15 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getLocationInit() async {
-    if (state.locationStatus != BlocStatus.loading &&
-        state.requestsStatus != BlocStatus.loading) {
+    if (state.locationStatus != BlocStatus.loading && state.requestsStatus != BlocStatus.loading) {
       GISParams? cachedLocation = await sharedPrefs.getUserLocation();
       GISResponse? cachedGIS = await sharedPrefs.getUserGISData();
       await getLocationPermission();
 
       if (cachedLocation != null &&
           cachedGIS != null &&
-          (state.locationPermissionStatus ==
-                  BlocStatus.locationPermissionSuceess &&
-              state.locationServiceStatus ==
-                  BlocStatus.locationServiceSuceess)) {
+          (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
+              state.locationServiceStatus == BlocStatus.locationServiceSuceess)) {
         emit(state.copyWith(
             loadAppStatus: BlocStatus.success,
             requestsStatus: BlocStatus.success,

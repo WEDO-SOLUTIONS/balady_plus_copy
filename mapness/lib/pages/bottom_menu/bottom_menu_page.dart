@@ -10,6 +10,7 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
@@ -81,27 +82,32 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
       }
 
-      if (tab.activeIndex == 2 && tab.previousIndex != 2) {
-        ref.read(appAnalyticsProvider).serviceSectionVisited();
-      }
-    },
-    builder: (_, tabsRouter, route) {
-      final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
-      return Column(
-        children: [
-          Expanded(
-            child: LazyIndexedStack(index: route.activeIndex, children: tabsRouter),
-          ),
-          if (controller == null)
-            const SizedBox.shrink()
-          else
-            ListenableBuilder(
-              listenable: controller,
-              builder: (_, _) {
-                final isHidden = controller.closestState == ThreeStateSheet.hidden;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
+          if (tab.activeIndex == 2 && tab.previousIndex != 2) {
+            ref.read(appAnalyticsProvider).serviceSectionVisited();
+          }
+        },
+        builder: (_, tabsRouter, route) {
+          final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
+          final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+          final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
+          return Column(
+            children: [
+              Expanded(
+                child: LazyIndexedStack(
+                  index: route.activeIndex,
+                  children: tabsRouter,
+                ),
+              ),
+              if (controller == null)
+                const SizedBox.shrink()
+              else
+                ListenableBuilder(
+                  listenable: controller,
+                  builder: (context, child) {
+                    final isHidden = controller.closestState == ThreeStateSheet.hidden;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
                   decoration: BoxDecoration(
                     color: isHidden ? context.colors.backgroundSurface2 : context.colors.backgroundSurface1,
                     boxShadow: [
@@ -116,13 +122,25 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                     backgroundColor: Colors.transparent,
                     elevation: 0,
                     type: BottomNavigationBarType.fixed,
-                    selectedLabelStyle: TextStyle(color: context.colors.accentOnContainer, fontSize: 0, height: 0),
-                    unselectedLabelStyle: TextStyle(color: context.colors.foregroundDefault, fontSize: 0, height: 0),
+                    selectedLabelStyle: TextStyle(
+                      color: context.colors.accentOnContainer,
+                      fontSize: 0,
+                      height: 0,
+                    ),
+                    unselectedLabelStyle: TextStyle(
+                      color: context.colors.foregroundDefault,
+                      fontSize: 0,
+                      height: 0,
+                    ),
                     items: [
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 0,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(icon: GeneralIcons.pin, selected: isSelected),
+                          iconBuilder: (ctx, isSelected) => DefaultIcon(
+                            icon: GeneralIcons.pin,
+                            selected: isSelected,
+                            color: isSelected ? accentColor : context.colors.foregroundSoft,
+                          ),
                           label: context.l10n.nav_general,
                         ),
                         label: '',
@@ -130,8 +148,11 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 1,
-                          iconBuilder: (ctx, isSelected) =>
-                              DefaultIcon(icon: GeneralIcons.routeStroke, selected: isSelected),
+                          iconBuilder: (ctx, isSelected) => DefaultIcon(
+                            icon: GeneralIcons.routeStroke,
+                            selected: isSelected,
+                            color: isSelected ? accentColor : context.colors.foregroundSoft,
+                          ),
                           label: context.l10n.nav_route,
                         ),
                         label: '',
@@ -139,8 +160,11 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 2,
-                          iconBuilder: (ctx, isSelected) =>
-                              DefaultIcon(icon: GeneralIcons.dashboard, selected: isSelected),
+                          iconBuilder: (ctx, isSelected) => DefaultIcon(
+                            icon: GeneralIcons.dashboard,
+                            selected: isSelected,
+                            color: isSelected ? accentColor : context.colors.foregroundSoft,
+                          ),
                           label: context.l10n.nav_landing,
                         ),
                         label: '',
@@ -148,8 +172,10 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       BottomNavigationBarItem(
                         icon: AppBottomNavigationBarItem(
                           selected: route.activeIndex == 3,
-                          iconBuilder: (context, isSelected) =>
-                              ProfileImageWidget(dimension: AvatarSize.$24, isSelected: isSelected),
+                          iconBuilder: (context, isSelected) => ProfileImageWidget(
+                            dimension: AvatarSize.$24,
+                            isSelected: isSelected,
+                          ),
                           label: context.l10n.nav_profile,
                         ),
                         label: '',
@@ -159,10 +185,10 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                     onTap: route.setActiveIndex,
                   ),
                 );
-              },
-            ),
-        ],
+                  },
+              ),
+            ],
+          );
+        },
       );
-    },
-  );
 }

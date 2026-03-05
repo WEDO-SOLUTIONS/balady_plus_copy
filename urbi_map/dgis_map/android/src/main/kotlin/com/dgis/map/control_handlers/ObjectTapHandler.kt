@@ -428,7 +428,7 @@ class ObjectTapHandler(
         val manager =
                 MapObjectManager.withGeneralization(
                         map = this.map,
-                        logicalPixel = LogicalPixel(value = 70f),
+                        logicalPixel = LogicalPixel(value = 100f),
                         maxZoom = Zoom(value = 18f),
                         layerId = layerId,
                 )
@@ -865,34 +865,23 @@ class ObjectTapHandler(
             callback: (Result<CameraPositionMessage>) -> Unit
     ) {
         if (points.isEmpty()) {
-            callback(
-                Result.success(
-                    CameraPositionMessage(
-                        point = map.camera.position.point.toMessage(),
-                        zoom = map.camera.position.zoom.value.toDouble(),
-                        tilt = map.camera.position.tilt.value.toDouble(),
-                        bearing = map.camera.position.bearing.value,
-                    )
-                )
-            )
+            val pos = map.camera.position
+            callback(Result.success(CameraPositionMessage(
+                point = GeoPointMessage(pos.point.latitude.value, pos.point.longitude.value),
+                zoom = pos.zoom.value.toDouble(),
+                tilt = pos.tilt.value.toDouble(),
+                bearing = pos.bearing.value
+            )))
             return
         }
 
-        val polylineOptions =
-            PolylineOptions(
-                points = points.map { it.toGeoPoint() },
-            )
+        val objects: List<SimpleMapObject> = if (points.size > 1) {
+            listOf(Polyline(PolylineOptions(points = points.map { it.toGeoPoint() })))
+        } else {
+            listOf(Circle(CircleOptions(position = points.first().toGeoPoint(), radius = Meter(500f))))
+        }
 
-        val circleOptions = CircleOptions(points.first().toGeoPoint(), Meter(500.0f))
-
-        // if there is only one point creating a polyline throws so we treat it as a circle
-        val objects = listOf(if (points.size > 1) Polyline(polylineOptions) else Circle(circleOptions))
-
-        calcPositionForObjects(
-                objects = objects,
-                options = options,
-                callback = callback
-        )
+        calcPositionForObjects(objects = objects, options = options, callback = callback)
     }
 
     fun calcPositionForPoints(
