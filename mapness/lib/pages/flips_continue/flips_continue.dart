@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class FlipsContinuePage extends StatefulWidget {
@@ -37,21 +39,29 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
   }
 
   @override
-  Widget build(BuildContext context) => Material(
-        child: ColoredBox(
-          color: context.colors.backgroundSurface4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(Assets.images.icFlipsContinue.keyName),
-              Spacing.$4x.heightBox,
-              Text(
-                context.l10n.theScreenFlipsContinue,
-                style: context.textStyles.h3SemiBold,
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
+  Widget build(BuildContext context) {
+    final isLight = context.read<ThemeController>().currentTheme == BaladyAppThemes.light;
+
+    return Material(
+      child: ColoredBox(
+        color: context.colors.backgroundSurface4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: isLight
+                  ? Assets.images.illustrationFlipContinueLight.image()
+                  : Assets.images.illustrationFlipContinueDark.image(),
+            ),
+            Spacing.$4x.heightBox,
+            Text(
+              context.l10n.theScreenFlipsContinue,
+              style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 }
