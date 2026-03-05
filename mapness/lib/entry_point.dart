@@ -353,15 +353,28 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _themeChanged({bool isDark = false}) async {
+    final themeController = context.read<ThemeController>();
+    if (isDark == true) {
+      await themeController.setTheme(BaladyAppThemes.dark);
+    } else {
+      final specialThemeMode = ref.read(specialThemeModeProvider);
+
+      final theme = switch (specialThemeMode) {
+        SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
+        SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
+        SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
+        _ => BaladyAppThemes.light,
+      };
+
+      await themeController.setTheme(theme);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ref.listen(darkModeProvider, (prev, next) async {
-      final themeController = context.read<ThemeController>();
-      if (next.value?.isDark == true) {
-        await themeController.setTheme(BaladyAppThemes.dark);
-      } else {
-        await themeController.setTheme(BaladyAppThemes.light);
-      }
+      _themeChanged(isDark: next.value?.isDark == true);
     });
 
     final language = ref.watch(appLanguageProvider);
@@ -394,6 +407,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             props: {'theme': next.name},
           );
         }
+        final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+        _themeChanged(isDark: isDark);
       })
       ..listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
         if (next == null || prev?.zoom == next.zoom) {
