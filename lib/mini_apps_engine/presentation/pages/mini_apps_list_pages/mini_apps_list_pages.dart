@@ -370,9 +370,9 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       .where((group) => group.id != 'other_services_group')
                                       .toList();
 
-                                  final otherServicesGroup = state.appGroups.firstWhere(
-                                    (group) => group.id == 'other_services_group',
-                                  );
+                                  final otherServicesGroup = state.appGroups
+                                      .where((group) => group.id == 'other_services_group')
+                                      .firstOrNull;
 
                                   return StaggeredAppear(
                                     children: [
@@ -415,7 +415,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           ),
 
                                           // Show dashed line and "Other Services" only if it exists
-                                          if (otherServicesGroup.apps.isNotEmpty) ...[
+                                          if (otherServicesGroup != null) ...[
                                             SizedBox(height: context.screenHeight * 0.02),
                                             const CustomDashedLineWidget(),
                                             SizedBox(height: context.screenHeight * 0.02),
