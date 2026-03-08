@@ -15,19 +15,24 @@ import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
 
-import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
-import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
-import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
-import './app/core/dependency_injection/dependency_injection_exports.dart' as di
+import './app/core/dependency_injection/dependency_injection_exports.dart'
+    as di
     show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import './app/core/utils/utils_exports.dart' show AppConfig, CommonFunctions, EnvType;
+import './app/core/services/services_exports.dart'
+    show HiveManager, NotificationService;
+import './app/core/dependency_injection/dependency_injection_exports.dart'
+    as di
+    show initialize;
+import './app/core/dependency_injection/dependency_injection_exports.dart'
+    show sl;
+import './app/core/utils/utils_exports.dart'
+    show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 import 'app/core/services/local/notification_hawaii.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
@@ -39,7 +44,7 @@ abstract class AppEnv {
     WidgetsFlutterBinding.ensureInitialized();
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config = AdjustConfig(
-      await CommonFunctions.isHuaweiDevice()?'je5w29fx8y68':'tung4x27vt34',
+      await CommonFunctions.isHuaweiDevice() ? 'je5w29fx8y68' : 'tung4x27vt34',
       (type == EnvType.prod)
           ? AdjustEnvironment.production
           : AdjustEnvironment.sandbox,
@@ -68,7 +73,7 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
-   //MapUtils.loadMarkers();
+    //MapUtils.loadMarkers();
 
     sharedPrefs.init();
     // di: dependency injection
@@ -106,15 +111,16 @@ abstract class AppEnv {
     await Initializer.init();
     NotificationService.init(initScheduled: true);
 
-
-    FlutterHmsGmsAvailability.isGmsAvailable.then((t) async{
-      await NotificationService.configure();
+    FlutterHmsGmsAvailability.isGmsAvailable.then((isAvailable) async {
+      if (isAvailable) {
+        await NotificationService.configure();
+      }
     });
-    FlutterHmsGmsAvailability.isHmsAvailable.then((t) async{
-
-      await HawaiiNotificationService().configure();
+    FlutterHmsGmsAvailability.isHmsAvailable.then((isAvailable) async {
+      if (isAvailable) {
+        await HawaiiNotificationService().configure();
+      }
     });
-
   }
 
   static void configLoading() {
@@ -131,5 +137,4 @@ abstract class AppEnv {
       ..userInteractions = false
       ..dismissOnTap = false;
   }
-
 }
