@@ -88,16 +88,21 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
 
+          //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
           appBar: AppBar(
-            title: Text(data.name ?? " "),
+            title: Text(
+              data.name ?? " ",
+              maxLines: 3,
+              textAlign: TextAlign.center,
+            ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
-                  if (shouldExit && context.mounted) Navigator.of(context).pop();
+                  if (shouldExit && context.mounted)
+                    Navigator.of(context).pop();
                 },
               ),
             ],
@@ -137,7 +142,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                                         value:
                                             (double.parse(state.progress) /
                                             100),
-                                        backgroundColor: Theme.of(context).disabledColor,
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).disabledColor,
                                         valueColor:
                                             const AlwaysStoppedAnimation<Color>(
                                               AppColor.primary900Light,
