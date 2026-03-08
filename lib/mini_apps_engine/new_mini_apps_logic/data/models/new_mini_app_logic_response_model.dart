@@ -509,8 +509,8 @@ class LatestVersion {
   final String versionDescription;
   final String versionNumber;
   final String? serviceUrl;
-  final bool nafathLogin;
-  final bool otpLogin;
+  // final bool nafathLogin;
+  // final bool otpLogin;
   final bool forceUpdate;
   final int status;
   final PackageMetaDataDto? packageMetaDataDto;
@@ -529,8 +529,8 @@ class LatestVersion {
     required this.versionDescription,
     required this.versionNumber,
     required this.serviceUrl,
-    required this.nafathLogin,
-    required this.otpLogin,
+    // required this.nafathLogin,
+    // required this.otpLogin,
     required this.forceUpdate,
     required this.status,
     required this.packageMetaDataDto,
@@ -548,8 +548,8 @@ class LatestVersion {
       versionDescription: json['versionDescription'] as String,
       versionNumber: json['versionNumber'] as String,
       serviceUrl: json['serviceUrl'] as String?,
-      nafathLogin: json['nafathLogin'] as bool,
-      otpLogin: json['otpLogin'] as bool,
+      // nafathLogin: json['nafathLogin'] as bool,
+      // otpLogin: json['otpLogin'] as bool,
       forceUpdate: json['forceUpdate'] as bool,
       status: json['status'] as int,
       packageMetaDataDto: json['packageMetaDataDto'] == null
@@ -578,8 +578,8 @@ class LatestVersion {
       'versionDescription': versionDescription,
       'versionNumber': versionNumber,
       'serviceUrl': serviceUrl,
-      'nafathLogin': nafathLogin,
-      'otpLogin': otpLogin,
+      // 'nafathLogin': nafathLogin,
+      // 'otpLogin': otpLogin,
       'forceUpdate': forceUpdate,
       'status': status,
       'packageMetaDataDto': packageMetaDataDto?.toJson(),
