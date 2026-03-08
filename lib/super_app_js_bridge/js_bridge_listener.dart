@@ -191,7 +191,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         content: needDialog.content(withoutActions: Platform.isIOS),
         actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
       );
-    } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true &&
+    } else if (miniAppsEngineBloc.miniApp.otpLogin == true &&
         !CommonProperties.isLoggedIn) {
       CommonFunctions.onLogin(mainPage: RouteName.miniAppsMainScreen);
       response = BaseResponse(

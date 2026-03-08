@@ -372,7 +372,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     /// continue flow
 
-    if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
+    if (miniApp.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.latestVersion?.deepLinkDto != null) {
