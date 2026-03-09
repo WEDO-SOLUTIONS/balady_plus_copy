@@ -46,16 +46,6 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   bool _hasLoadedMiniAppsForBusinessStatus = false;
   bool? _lastIsUserAccountBusiness;
 
-  MiniApp? getMiniAppByServiceId(String serviceKey) {
-    final miniAppsCubit = sl<NewMiniAppLogicCubit>();
-    try {
-      return miniAppsCubit.state.allMiniApps.firstWhere((miniApp) => miniApp.serviceKey == serviceKey);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  bool _isInitialDeepLinkHandled = false;
 
   @override
   void initState() {
@@ -64,7 +54,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
   @override
   Widget build(BuildContext context) {
-    MiniApp? dashboard = getMiniAppByServiceId("Dashboard");
+    final miniAppsCubit = sl<NewMiniAppLogicCubit>();
+    MiniApp? dashboard = miniAppsCubit.getMiniAppByServiceId("Dashboard");
     return Theme(
       data: Theme.of(NavigationService.navigatorKey.currentState!.context),
       child: Navigator(
@@ -116,18 +107,18 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                           value: miniAppsCubit,
                           child: Builder(
                             builder: (context) {
-                                if (widget.groupId != null && !_isInitialDeepLinkHandled) {
-                                  _isInitialDeepLinkHandled = true;
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    servicesNavigatorKey.currentState?.pushNamed(
-                                      '/group',
-                                      arguments: {
-                                        'groupId': widget.groupId,
-                                        'dashboard': getMiniAppByServiceId("Dashboard"),
-                                      },
-                                    );
-                                  });
-                                }
+                                // if (widget.groupId != null && !_isInitialDeepLinkHandled) {
+                                //   _isInitialDeepLinkHandled = true;
+                                //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                                //     servicesNavigatorKey.currentState?.pushNamed(
+                                //       '/group',
+                                //       arguments: {
+                                //         'groupId': widget.groupId,
+                                //         'dashboard': getMiniAppByServiceId("Dashboard"),
+                                //       },
+                                //     );
+                                //   });
+                                // }
                                 return Scaffold(
                                   body: Stack(
                                     children: [
@@ -457,7 +448,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                           ),
                                                                           child: GestureDetector(
                                                                             onTap: () {
-                                                                              MiniApp? miniApp = getMiniAppByServiceId(
+                                                                              final miniAppsCubit = sl<NewMiniAppLogicCubit>();
+                                                                              MiniApp? miniApp = miniAppsCubit.getMiniAppByServiceId(
                                                                                 "BaladyUrbiImtithal",
                                                                               );
                                                                               if (miniApp != null) {
@@ -669,7 +661,6 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                                       );
                                                                                       return AppsGroupPage(
                                                                                         groupId: appGroup.id,
-                                                                                        dashboard: dashboard,
                                                                                       );
                                                                                     },
                                                                                   ),
@@ -767,7 +758,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                 opaque: false,
                 barrierColor: Colors.transparent,
                 pageBuilder: (_, __, ___) =>
-                    AppsGroupPage(groupId: args['groupId'] as String, dashboard: args['dashboard']),
+                    AppsGroupPage(groupId: args['groupId'] as String),
               );
             default:
               return MaterialPageRoute(builder: (_) => const HomeMiniAppsListPages());

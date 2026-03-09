@@ -639,4 +639,13 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         .whereType<EntryPoints>()
         .toList();
   }
+
+
+  MiniApp? getMiniAppByServiceId(String serviceKey) {
+    try {
+      return state.allMiniApps.firstWhere((miniApp) => miniApp.serviceKey == serviceKey);
+    } catch (e) {
+      return null;
+    }
+  }
 }
