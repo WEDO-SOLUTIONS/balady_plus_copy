@@ -668,7 +668,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         duration: const Duration(seconds: 8),
       );
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+    } else if (serviceKey.isNotEmpty &&
+        serviceKey != '/poi-map' &&
+        serviceKey.startsWith('/app')) {
       String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
@@ -708,14 +710,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/snapSend') {
         await _openSnapSend();
       } else if (url.path == '/miniApps') {
-        if(params['groupId'] != null) {
-          CommonFunctions.openMiniAppGroupId(groupId: params['groupId'].toString());
-        } else if ( params['key'] != null) {
-          CommonFunctions.openMiniApp(serviceKey: params['Key'].toString());
-        } else {
-          await router.push(MapnessServicesRoute());
+        await router.push(MapnessServicesRoute());
+        if (params['groupId'] != null) {
+          CommonFunctions.openMiniAppGroupId(
+            groupId: params['groupId'].toString(),
+          );
+        } else if (params['key'] != null) {
+          CommonFunctions.openMiniApp(serviceKey: params['key'].toString());
         }
-
       } else if (url.path == '/parking') {
         _openParking();
       } else {
