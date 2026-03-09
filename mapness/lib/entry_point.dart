@@ -710,7 +710,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/snapSend') {
         await _openSnapSend();
       } else if (url.path == '/miniApps') {
-        await router.push(MapnessServicesRoute());
         if (params['groupId'] != null) {
           CommonFunctions.openMiniAppGroupId(
             groupId: params['groupId'].toString(),
@@ -718,6 +717,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         } else if (params['key'] != null) {
           CommonFunctions.openMiniApp(serviceKey: params['key'].toString());
         }
+        await router.push(MapnessServicesRoute());
       } else if (url.path == '/parking') {
         _openParking();
       } else {
