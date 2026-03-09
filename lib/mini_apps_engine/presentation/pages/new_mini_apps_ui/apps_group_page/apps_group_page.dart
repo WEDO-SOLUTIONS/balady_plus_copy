@@ -330,11 +330,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                       ],
                                     );
                                   }, childCount: totalCount),
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16,
-                                    childAspectRatio: 0.8,
+                                    mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                    childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                   ),
                                 ),
                                 // Add bottom spacing so the gradient overlay doesn't hide last items
@@ -384,11 +384,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
                                   );
                                 }, childCount: sortedResults.length),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 0.8,
+                                  mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                  childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                 ),
                               ),
                               SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),

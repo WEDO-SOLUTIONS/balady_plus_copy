@@ -171,11 +171,11 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                            SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 3,
                                               crossAxisSpacing: 16,
-                                              mainAxisSpacing: 16,
-                                              childAspectRatio: 0.8,
+                                              mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                              childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                             ),
                                         itemCount: state.searchResults.length,
                                         itemBuilder: (context, index) {

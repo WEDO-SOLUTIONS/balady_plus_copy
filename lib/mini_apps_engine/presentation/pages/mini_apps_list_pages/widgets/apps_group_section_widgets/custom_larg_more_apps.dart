@@ -148,23 +148,31 @@ class CustomLargMoreApps extends StatelessWidget {
             ),
           ),
           SizedBox(height: context.screenHeight * 0.01),
-          SizedBox(
-            width: textWidth ?? context.screenWidth * 0.40,
-            height: textHeight ?? context.screenHeight * 0.03,
-            child: Center(
-              child: AutoSizeText(
-                text ?? "example",
-                maxLines: 2,
-                maxFontSize: 30,
-                minFontSize: 8,
-                overflow: TextOverflow.ellipsis,
-                textAlign: isArabic ? TextAlign.right : TextAlign.left,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontFamily: GeneralKey.appFontType,
+          Builder(
+            builder: (context) {
+              final textScale =
+                  MediaQuery.textScalerOf(context).scale(1.0);
+              final minFont = (8 * textScale).round().clamp(1, 30);
+              final maxFont = (30 * textScale).round().clamp(minFont, 100);
+              return SizedBox(
+                width: textWidth ?? context.screenWidth * 0.40,
+                height: (textHeight ?? context.screenHeight * 0.03) * textScale,
+                child: Center(
+                  child: AutoSizeText(
+                    text ?? "example",
+                    maxLines: 3,
+                    maxFontSize: maxFont.toDouble(),
+                    minFontSize: minFont.toDouble(),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: isArabic ? TextAlign.right : TextAlign.left,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontFamily: GeneralKey.appFontType,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),

@@ -134,9 +134,9 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
 
         SizedBox(height: context.screenHeight * 0.01),
 
-        // Horizontal list shimmer wrapper
+        // Horizontal list shimmer wrapper - height fits full card (icon + spacing + text) so bottom text is not clipped
         SizedBox(
-          height: context.screenHeight * 0.20,
+          height: cardHeight + context.h(4) + titlesHeight + context.h(8),
           width: context.screenWidth,
           child: ListView.separated(
             separatorBuilder: (context, index) =>
