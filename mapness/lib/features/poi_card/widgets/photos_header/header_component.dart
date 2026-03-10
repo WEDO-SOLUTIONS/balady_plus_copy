@@ -53,10 +53,17 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
           child: Builder(
             builder: (context) {
               if (showPhotos) {
-                return SizedBox(
-                  height: photosSizeTransform > 0 ? photosSizeTransform : photosMinHeight,
-                  width: fitWidth ? screenWidth : null,
-                  child: PoiPhotosRow(objectId: objectId, state: state, interpolation: interpolation),
+                return ClipRRect(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(
+                      state == PoiCardBottomSheetState.expanded ? PoiHeader.poiHeaderBorderRadius : 0,
+                    ),
+                  ),
+                  child: SizedBox(
+                    height: photosSizeTransform > 0 ? photosSizeTransform : photosMinHeight,
+                    width: fitWidth ? screenWidth : null,
+                    child: PoiPhotosRow(objectId: objectId, state: state, interpolation: interpolation),
+                  ),
                 );
               }
               return Row(
