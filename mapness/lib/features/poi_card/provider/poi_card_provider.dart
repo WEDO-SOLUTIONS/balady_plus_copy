@@ -5,7 +5,6 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
@@ -108,13 +107,7 @@ class PoiCardProvider extends _$PoiCardProvider {
 
     final result = await ref
         .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
-        .timeout(
-          const Duration(minutes: 10),
-          onTimeout: () {
-            ref.read(appRouterProvider).maybePop();
-            return null;
-          },
-        );
+        .timeout(const Duration(minutes: 10));
 
     await ref.watch(poiPhotoProvider(objectId).future);
 

@@ -10,6 +10,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
@@ -124,6 +125,19 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
       context.read<ThemeController>().currentTheme,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
+    );
+
+    ref.listen(
+      viewModelProvider,
+      (prev, next) {
+        next.whenOrNull(
+          error: (error, stack) {
+            if (error is TimeoutException) {
+              ref.read(appRouterProvider).pop();
+            }
+          },
+        );
+      },
     );
 
     final organizationsData = await ref

@@ -94,6 +94,18 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProv
     );
     final state = ref.watch(viewModelProvider);
     ref
+      ..listen(
+        viewModelProvider,
+        (prev, next) {
+          next.whenOrNull(
+            error: (error, stack) {
+              if (error is TimeoutException) {
+                ref.read(appRouterProvider).pop();
+              }
+            },
+          );
+        },
+      )
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
