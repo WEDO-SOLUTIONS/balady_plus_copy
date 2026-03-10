@@ -270,7 +270,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final controller = await ref.read(dgisControllerProvider.future);
     final navStateMessage = await controller.getCurrentNavigationState();
 
-    if (navStateMessage.state == NavigationState.navigation) {
+    if (navStateMessage.state == NavigationState.navigation && navStateMessage.routeSearchOptions != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
