@@ -1749,14 +1749,14 @@ abstract class MapApi {
   );
 
   @async
-  CameraPositionMessage calcPositionForPolylines(
-    List<String> polylines,
+  CameraPositionMessage calcPositionForGeoPoints(
+    List<GeoPointMessage> points,
     CalcPositionOptionsMessage options,
   );
 
   @async
-  CameraPositionMessage calcPositionForGeoPoints(
-    List<GeoPointMessage> points,
+  CameraPositionMessage calcPositionForPolylines(
+    List<String> polylines,
     CalcPositionOptionsMessage options,
   );
 

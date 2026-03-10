@@ -8,7 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -43,12 +47,13 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   late final confettiController = AnimationController(vsync: this, duration: confettiConfig.animationDuration);
 
   MediaQueryData? _mediaQuery;
+  // Only first time when sheet is open
+  bool _sheetExpanded = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
@@ -110,7 +115,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(thermalMonitorProvider)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier)
-      ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier);
+      ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier)
+      ..watch(activeCityEventProvider);
 
     return HajjWrapperListeners(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -144,7 +150,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   ),
                 ),
                 RepaintBoundary(
-                  child: ConfettiAnimation(animationController: confettiController, config: confettiConfig),
+                  child: ConfettiAnimation(
+                    key: ValueKey(confettiConfig.hashCode),
+                    animationController: confettiController,
+                    config: confettiConfig,
+                  ),
                 ),
               ],
             ),

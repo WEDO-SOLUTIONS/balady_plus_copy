@@ -6,6 +6,7 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart' show parkingManageProvider;
 import 'package:mapness/features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
@@ -19,7 +20,9 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart' show selectedMarkerProvider;
 import 'package:mapness/shared/providers/padding_config.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -46,13 +49,13 @@ class PoiCardState {
   });
 
   Map<String, dynamic> toJson() => {
-    'gisObjectIdMessage': gisObjectIdMessage?.toJson(),
-    'organizations': organizations?.toJson(),
-    'tradeLicense': tradeLicense?.toJson(),
-    'showEntrances': showEntrances,
-    'isLoading': isLoading,
-    'timestamp': DateTime.now().millisecondsSinceEpoch,
-  };
+        'gisObjectIdMessage': gisObjectIdMessage?.toJson(),
+        'organizations': organizations?.toJson(),
+        'tradeLicense': tradeLicense?.toJson(),
+        'showEntrances': showEntrances,
+        'isLoading': isLoading,
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      };
 
   factory PoiCardState.fromJson(Map<String, dynamic> json) {
     final organizatonsJson = json['organizations'];
@@ -61,12 +64,11 @@ class PoiCardState {
     final timestampJson = json.containsKey('timestamp') ? json['timestamp'] as int? : null;
 
     return PoiCardState(
-      showEntrances: entrancesJson,
-      isLoading: false,
-      timestamp: timestampJson,
-      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
-      organizations: OrganizationsMessage.fromJson(organizatonsJson),
-    );
+        showEntrances: entrancesJson,
+        isLoading: false,
+        timestamp: timestampJson,
+        gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
+        organizations: OrganizationsMessage.fromJson(organizatonsJson));
   }
 
   PoiCardState copyWith({
@@ -76,14 +78,15 @@ class PoiCardState {
     TradeLicenseMessage? tradeLicense,
     QrLicenseMessage? qrTradeLicense,
     OrganizationsMessage? organizations,
-  }) => PoiCardState(
-    organizations: organizations ?? this.organizations,
-    tradeLicense: tradeLicense ?? this.tradeLicense,
-    showEntrances: showEntrances ?? this.showEntrances,
-    isLoading: isLoading ?? this.isLoading,
-    gisObjectIdMessage: gisObjectIdMessage ?? this.gisObjectIdMessage,
-    qrTradeLicense: qrTradeLicense,
-  );
+  }) =>
+      PoiCardState(
+        organizations: organizations ?? this.organizations,
+        tradeLicense: tradeLicense ?? this.tradeLicense,
+        showEntrances: showEntrances ?? this.showEntrances,
+        isLoading: isLoading ?? this.isLoading,
+        gisObjectIdMessage: gisObjectIdMessage ?? this.gisObjectIdMessage,
+        qrTradeLicense: qrTradeLicense,
+      );
 }
 
 @riverpod
@@ -98,22 +101,44 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    final parkingManager = ref.read(parkingManageProvider(theme: theme).notifier);
+
+    ref.onDispose(() {
+      // ignore: avoid_print
+      print('[MakkahPinDebug] PoiCardProvider: onDispose called');
+      selectedMarker.removeMarker(poiPinId);
+      parkingManager.restoreMarker();
+      // Show Makkah place markers again when POI card is closed
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
+    });
+
     state = const AsyncValue.loading();
 
     final result = await ref
-        .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
+        .watch(
+      pointOfInterestProvider(
+        DgisObjectId(objectId: objectId, entranceId: 0),
+        closestPoint,
+        theme
+      ).future,
+    )
         .timeout(
-          const Duration(minutes: 1),
-          onTimeout: () {
-            ref.read(appRouterProvider).pop();
-            return null;
-          },
-        );
+      const Duration(minutes: 10),
+      onTimeout: () {
+        ref.read(appRouterProvider).maybePop();
+        return null;
+      },
+    );
 
     await ref.watch(poiPhotoProvider(objectId).future);
 
     if (result != null) {
-      ref.read(paddingConfigProvider(result, closestPoint, cameraConfig));
+      ref.read(paddingConfigProvider(
+        result.markerPosition,
+        closestPoint,
+        cameraConfig,
+      ));
     }
     // We need to use [appLang] to cache different data for different locales
     // We don't want to show arabic text to english users and vise versa
@@ -194,7 +219,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     final organizationsLicenses = organizations?.items.map((e) => e.tradeLicense?.license).nonNulls;
     final allLicenses = {
       if (tradeLicense != null) tradeLicense.license,
-      if (organizationsLicenses != null) ...organizationsLicenses,
+      if (organizationsLicenses != null) ...organizationsLicenses
     };
     await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
   }
@@ -213,9 +238,8 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
 
       final dateNow = DateTime.now();
-      final timeDifferentInMinutes = dateNow
-          .difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!))
-          .inMinutes;
+      final timeDifferentInMinutes =
+          dateNow.difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes;
 
       // Check if the cache is expired
       if (timeDifferentInMinutes > poiCacheTimeoutMinutes) {

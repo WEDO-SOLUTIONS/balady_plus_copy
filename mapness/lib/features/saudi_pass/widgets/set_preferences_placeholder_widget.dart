@@ -16,6 +16,8 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationPercent.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationPercent.keyName,
   };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
@@ -36,6 +38,8 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationPercent.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationPercent.keyName,
   };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
@@ -56,6 +60,8 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationError.keyName,
   };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(

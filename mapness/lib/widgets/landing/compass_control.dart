@@ -17,6 +17,8 @@ class CompassControl extends HookConsumerWidget {
     BaladyAppThemes.dark => Assets.icons.svg.icDarkCompass.keyName,
     BaladyAppThemes.light => Assets.icons.svg.icControlCompass.keyName,
     BaladyAppThemes.saudiDay => Assets.icons.svg.icControlCompass.keyName,
+    BaladyAppThemes.foundationDay => Assets.icons.svg.icControlCompass.keyName,
+    BaladyAppThemes.mekkah => Assets.icons.svg.icControlCompass.keyName,
   };
 
   @override

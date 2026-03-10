@@ -44,42 +44,53 @@ class FeedbackImageSelectorSheet extends HookWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
-          child: ContentWrapper(
-            color: context.colors.backgroundSurface1,
+          child: ContentWrapper(color: context.colors.backgroundSurface1,
             children: [
-              ContentRow(
-                isDividerEnabled: true,
-                onTap: () => onSelect != null
-                    ? onSelect?.call(FeedbackImageSelectorType.camera)
-                    : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
-                leading: AppIcons(iconData: GeneralIcons.photo, color: context.colors.foregroundSoft),
-                text: ContentRowTextOptions(title: context.l10n.takePhoto),
-                trailing: ContentRowCustomTrailingOptions(
-                  builder: (context) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: context.colors.foregroundMuted),
+            ContentRow(
+              isDividerEnabled: true,
+              onTap: () => onSelect != null
+                  ? onSelect?.call(FeedbackImageSelectorType.camera)
+                  : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
+              leading: AppIcons(
+                iconData: GeneralIcons.photo,
+                color: context.colors.accentDefault,
+              ),
+              text: ContentRowTextOptions(
+                title: context.l10n.takePhoto,
+              ),
+              trailing: ContentRowCustomTrailingOptions(
+                builder: (context) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: AppIcons(
+                    iconData: SystemIcons.arrowCornerRightSmall,
+                    color: context.colors.foregroundMuted,
                   ),
                 ),
               ),
-              ContentRow(
-                onTap: () => onSelect != null
-                    ? onSelect?.call(FeedbackImageSelectorType.gallery)
-                    : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
-                leading: AppIcons(iconData: SystemIcons.images, color: context.colors.foregroundSoft),
-                text: ContentRowTextOptions(title: context.l10n.chooseFromGallery),
-                trailing: ContentRowCustomTrailingOptions(
-                  builder: (context) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: context.colors.foregroundMuted),
+            ),
+            ContentRow(
+              onTap: () => onSelect != null
+                  ? onSelect?.call(FeedbackImageSelectorType.gallery)
+                  : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
+              leading: AppIcons(
+                iconData: SystemIcons.images,
+                color: context.colors.foregroundSoft,
+              ),
+              text: ContentRowTextOptions(
+                title: context.l10n.chooseFromGallery,
+              ),
+              trailing: ContentRowCustomTrailingOptions(
+                builder: (context) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: AppIcons(
+                    iconData: SystemIcons.arrowCornerRightSmall,
+                    color: context.colors.foregroundMuted,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ]),
         ),
-
-        /// TODO: remove then https://github.com/urbi-ae/baladi/pull/2292 merged
-        const SizedBox(height: Spacing.$5x),
       ],
     );
   }

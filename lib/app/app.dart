@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-// import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
-import 'package:bot_toast/bot_toast.dart' show BotToastInit, BotToastNavigatorObserver;
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:bot_toast/bot_toast.dart'
+    show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
@@ -16,13 +16,13 @@ import 'package:localize_and_translate/localize_and_translate.dart' show Transla
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart' show AppColor, AppConfig, RouteName, BaladyRouteObserver;
 import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
+
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
@@ -53,7 +53,10 @@ class App extends StatelessWidget {
         // BlocProvider.value(value: sl<ForceUpdateCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        BlocProvider.value(value: sl<HomeMiniAppsListCubit>()),
+        // BlocProvider.value(value: sl<HomeMiniAppsListCubit>()),
+        BlocProvider<NewMiniAppLogicCubit>.value(
+          value: sl<NewMiniAppLogicCubit>(),
+        )
         // BlocProvider<DashboardBloc>(
         //   create: (_) => sl<DashboardBloc>()..add(DashboardEventInitial()),
         // ),

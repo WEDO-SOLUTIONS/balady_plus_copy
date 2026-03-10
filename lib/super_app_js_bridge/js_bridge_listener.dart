@@ -14,7 +14,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
@@ -32,6 +32,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:path_provider/path_provider.dart';
@@ -76,6 +77,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openMiniApps);
     registerFunction(openPdfFile);
     registerFunction(openAppSetting);
+    registerFunction(closeCurrentMiniApp);
+  }
+
+  @pragma('vm:entry-point')
+  void closeCurrentMiniApp(dynamic msg, CompletionHandler handler) async {
+    if (NavigationService.navigatorKey.currentContext!.mounted)
+      Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
   }
 
   @pragma('vm:entry-point')
@@ -142,11 +150,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
-            await sl<HomeMiniAppsListCubit>()
-                .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+            await sl<NewMiniAppLogicCubit>()
+                .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
                 .then((result) {
-                  response = result!;
-                });
+              response = result!;
+            });
           } else {
             response = BaseResponse(
               code: 401,
@@ -174,11 +182,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: null,
       );
     } else {
-      await sl<HomeMiniAppsListCubit>()
-          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+      await sl<NewMiniAppLogicCubit>()
+          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
           .then((result) {
-            response = result!;
-          });
+        response = result!;
+      });
     }
     handler.complete(response.jsonEncodeModel());
   }
@@ -341,9 +349,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-          serviceKey,
-          RequirementEnum.navigateToSuperAppScreen.name,
-        ) ==
+            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
@@ -385,14 +391,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
 
     if (checkAppRequirement(
-          serviceKey,
-          RequirementEnum.navigateToSuperAppScreen.name,
-        ) ==
+            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String) {
         Map data = jsonDecode(msg);
-        sl<HomeMiniAppsListCubit>().openMiniApp(
+        sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
           serviceKey: data["miniAppKey"],
           path: data['path'],
         );
@@ -554,11 +558,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           final fileBytes = await File(path).readAsBytes();
           String base64File = base64Encode(fileBytes);
           JsFilesModel file = JsFilesModel(
-            fileBase64: base64File,
-            fileName: fileName,
-            // fileBytes:fileBytes,
-            filePath: path,
-          );
+              fileBase64: base64File,
+              fileName: fileName,
+              // fileBytes:fileBytes,
+              filePath: path);
           response = BaseResponse(
             code: 200,
             eventName: "openImagePicker",
@@ -592,8 +595,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
       late BaseResponse response;
-      var fileData = await NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.vdCameraPage);
+      var fileData =
+          await NavigationService.navigatorKey.currentState!.pushNamed(
+        RouteName.vdCameraPage,
+      );
       if (fileData != null) {
         response = BaseResponse(
           code: 200,
@@ -646,12 +651,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     final String serviceKey =
         data["serviceKey"]?.toString() ?? "municipalservice";
     final String? attachmentSource = data["attachmentSource"]?.toString();
-    final List<String> attachmentExtension =
-        data["attachmentExtension"] != null
-            ? (data["attachmentExtension"] as List<dynamic>)
-                .map((e) => e.toString())
-                .toList()
-            : [];
+    final List<String> attachmentExtension = data["attachmentExtension"] != null
+        ? (data["attachmentExtension"] as List<dynamic>)
+            .map((e) => e.toString())
+            .toList()
+        : [];
 
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
@@ -672,10 +676,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName =
-                  path.isNotEmpty
-                      ? path.split('/').last
-                      : ('attachment_name').tr();
+              String fileName = path.isNotEmpty
+                  ? path.split('/').last
+                  : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
 
@@ -875,39 +878,47 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       message: "Invalid event data",
       data: null,
     );
+    if (kDebugMode) print("Errors :  $msg");
     if (msg != null && msg is String && msg.isNotEmpty) {
       try {
-        Map<String, dynamic>? data = jsonDecode(msg);
+        Map<String, dynamic> data = jsonDecode(msg);
         response = BaseResponse(
           code: 200,
           eventName: "trackLogs",
           message: "Event tracked successfully",
           data: null,
         );
-        CommonFunctions.sendUXCamEvent(data!['event_name']);
-        data['MiniAppKey'] = miniAppsEngineBloc.miniApp.serviceKey;
-        data['MiniAppVersion'] =
-            miniAppsEngineBloc.miniApp.latestVersion?.versionNumber;
-        if (data['type'] == "exception") {
-          Sentry.captureException(
-            SentryException(
-              type: data['event_name'],
-              value: data['errors_model'],
-              module: miniAppsEngineBloc.miniApp.serviceKey,
-              unknown: data,
+        Map<String, dynamic> miniAppData = {
+          'MiniAppKey': miniAppsEngineBloc.miniApp.serviceKey,
+          'MiniAppVersion':
+              miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
+        };
+        if (data['type'] == "marketing") {
+          FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
+          Sentry.addBreadcrumb(
+            Breadcrumb(
+              message: data['event_name'],
+              data: miniAppData,
             ),
           );
-        } else {
+        } else if (data['type'] == "exception") {
+          data.addAll(miniAppData);
+          FlutterUxcam.logEventWithProperties(data['event_name'], data);
           Sentry.captureEvent(
             SentryEvent(
               message: SentryMessage(data['event_name']),
-              contexts: Contexts()..['event_data'] = data,
-              tags: {"MiniAppKey": miniAppsEngineBloc.miniApp.serviceKey ?? ""},
-              // serverName: miniAppsEngineBloc.miniApp.serviceKey,
+              transaction: data['errors_model']?['error']?.toString() ?? "",
+              // value: data['errors_model']?['error']?.toString() ?? "",
+              // module: miniAppsEngineBloc.miniApp.serviceKey,
+              serverName: miniAppsEngineBloc.miniApp.serviceKey,
+              contexts: Contexts()..['MiniAppDataErrors'] = data,
             ),
+            stackTrace: data['errors_model']?['stackTrace'],
           );
-        }
-      } catch (_) {}
+        } else {}
+      } catch (e) {
+        print(e);
+      }
     }
     handler.complete(response.jsonEncodeModel());
   }
@@ -1235,10 +1246,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   unarchiveAndSave(
-    String? extractPath,
-    var zippedFile,
-    CompletionHandler handler,
-  ) async {
+      String? extractPath, var zippedFile, CompletionHandler handler) async {
     try {
       extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
@@ -1248,8 +1256,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       for (var file in archive) {
         if (file.isFile && !file.name.contains("__MACOSX")) {
           var outFile = File(
-            '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}',
-          );
+              '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
           outFile = await outFile.create(recursive: true);
           if (counter == 0) {
             filesPath = outFile.path;
@@ -1261,9 +1268,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
       if (filesPath != null) {
         filesPath = filesPath.replaceAll(
-          "${CommonProperties.currentLocalServerDirectory}/assets/",
-          "",
-        );
+            "${CommonProperties.currentLocalServerDirectory}/assets/", "");
         final lastIndex = filesPath.lastIndexOf('/');
         if (lastIndex != -1) {
           filesPath = filesPath.substring(0, lastIndex);

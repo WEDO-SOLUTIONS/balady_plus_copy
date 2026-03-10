@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
-import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
+import 'package:mapness/app/auto_route/guards/theme_splash_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/stories_transition.dart';
+import 'package:mapness/pages/poi_makkah/poi_makkah_widget_page.dart';
 
 import 'app_routes.gr.dart';
 
@@ -15,10 +16,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter(
-    this.ref,
-    GlobalKey<NavigatorState> navigatorKey,
-  ) : super(navigatorKey: navigatorKey);
+  AppRouter(this.ref, GlobalKey<NavigatorState> navigatorKey) : super(navigatorKey: navigatorKey);
 
   final Ref ref;
 
@@ -32,10 +30,10 @@ class AppRouter extends RootStackRouter {
       path: '/',
       initial: true,
       transitionsBuilder: TransitionsBuilders.zoomIn,
-      guards: [
-        OnboardRouteGuard(ref),
-        SaudiDaySplashGuard(ref),
-      ],
+      // Note: ThemeSplashGuard uses MaterialPageRoute directly because auto_route
+      // can't generate code for routes with enum parameters (SpecialThemeMode).
+      // The guard dynamically shows splash screens based on the current theme.
+      guards: [OnboardRouteGuard(ref), ThemeSplashGuard(ref)],
       children: [
         Routes.bottomMenuRoute,
         CustomRoute(
@@ -378,6 +376,11 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'gaussian_splatting',
+          page: GaussianSplattingRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'addPhoto',
           page: AddPhotoRoute.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -398,18 +401,24 @@ class AppRouter extends RootStackRouter {
     CustomRoute(
       page: OnboardRoute.page,
       opaque: false,
-      transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-        type: StoryTypes.onboarding,
-        child: child,
-      ),
+      transitionsBuilder: (_, __, ___, child) => StoriesTransition(type: StoryTypes.onboarding, child: child),
     ),
-    CustomRoute(
-      page: SaudiDaySplashRoute.page,
-      opaque: false,
-      transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-        type: StoryTypes.saudiDay,
-        child: child,
-      ),
-    ),
+    // NOTE: SaudiDaySplashRoute deprecated - replaced by ThemeSplashPage
+    // The guard now uses MaterialPageRoute directly instead of auto_route
+    // CustomRoute(
+    //   page: SaudiDaySplashRoute.page,
+    //   opaque: false,
+    //   transitionsBuilder:
+    //       (_, __, ___, child) =>
+    //           StoriesTransition(type: StoryTypes.saudiDay, child: child),
+    // ),
+    // NOTE: ThemeSplashRoute is used programmatically only (not in routes list)
+    // Auto_route has issues generating code when routes have enum parameters.
+    // Use context.router.push(MaterialPageRoute(...)) instead in guards/debug panel.
+    // CustomRoute(
+    //   page: ThemeSplashRoute.page,
+    //   opaque: false,
+    //   transitionsBuilder: TransitionsBuilders.fadeIn,
+    // ),
   ];
 }

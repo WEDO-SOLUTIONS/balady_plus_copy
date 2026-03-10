@@ -32,6 +32,8 @@ class EtaShareExpired extends StatelessWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationError.keyName,
   };
   @override
   Widget build(BuildContext context) => Container(
@@ -67,6 +69,11 @@ class EtaShareExpired extends StatelessWidget {
             ),
           ),
           SvgPicture.asset(asset(context)),
+          /*
+          SvgPicture.asset(
+                ref.watch(activeCityEventProvider)?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName,
+              ),
+           */
           const SizedBox(height: Spacing.$2x),
           Text(title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault)),
           const SizedBox(height: Spacing.$3x),

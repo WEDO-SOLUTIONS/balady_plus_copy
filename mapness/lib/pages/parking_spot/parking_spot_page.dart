@@ -160,8 +160,9 @@ class ParkingSpotPage extends HookConsumerWidget {
                                   BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
                                   BaladyAppThemes.light =>
                                     Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                                  BaladyAppThemes.saudiDay =>
-                                    Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.mekkah => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
                                 },
                               ),
                             ),
@@ -275,6 +276,8 @@ class ParkingSpotPage extends HookConsumerWidget {
                     BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
                     BaladyAppThemes.light => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
                     BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.mekkah => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
                   },
           ),
         ),

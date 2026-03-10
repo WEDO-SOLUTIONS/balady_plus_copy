@@ -643,6 +643,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
           BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
           BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.light.icParking.keyName,
         }),
       );
     }

@@ -29,7 +29,8 @@ class EnvironmentConfig {
   final String bssApi;
   final String saudiPassApi;
   final CityEventDateRange cityscapeDateTimeRange;
-  final CityEventDateRange wrcEventDateRange;
+  final CityEventDateRange saudiNationalDayDateRange;
+  final CityEventDateRange foundingDayDateRange;
 
   EnvironmentConfig({
     required this.url,
@@ -47,7 +48,8 @@ class EnvironmentConfig {
     required this.bssApi,
     required this.saudiPassApi,
     required this.cityscapeDateTimeRange,
-    required this.wrcEventDateRange,
+    required this.saudiNationalDayDateRange,
+    required this.foundingDayDateRange,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -74,13 +76,11 @@ class EnvironmentConfig {
         bssApi: json['bssApi'] as String,
         saudiPassApi: json['saudiPassApi'] as String,
         cityscapeDateTimeRange: CityEventDateRange.fromJson(
-          json['cityscapeDateTimeRange'] as Map<String, dynamic>,
-          CityEventDateRange.cityscapeDefault(),
-        ),
-        wrcEventDateRange: CityEventDateRange.fromJson(
-          json['wrcEventDateRange'] as Map<String, dynamic>,
-          CityEventDateRange.wrcDefault(),
-        ),
+            json['cityscapeDateTimeRange'] as Map<String, dynamic>, CityEventDateRange.cityscapeDefault()),
+        foundingDayDateRange: CityEventDateRange.fromJson(
+            json['foundingDayDateRange'] as Map<String, dynamic>, CityEventDateRange.foundingDayDefault()),
+        saudiNationalDayDateRange: CityEventDateRange.fromJson(
+            json['saudiNationalDayDateRange'] as Map<String, dynamic>, CityEventDateRange.saudiNationalDayDefault()),
       );
 
   Map<String, dynamic> toJson() => {
@@ -117,7 +117,8 @@ class EnvironmentConfig {
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
         saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
         cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
-        wrcEventDateRange: CityEventDateRange.wrcDefault(),
+        saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
+        foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -136,7 +137,8 @@ class EnvironmentConfig {
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
         saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
         cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
-        wrcEventDateRange: CityEventDateRange.wrcDefault(),
+        saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
+        foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -155,7 +157,8 @@ class EnvironmentConfig {
         baladyBusinessUrl: 'https://business.balady.gov.sa',
         saudiPassApi: 'https://apiservices.balady.gov.sa/',
         cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
-        wrcEventDateRange: CityEventDateRange.wrcDefault(),
+        saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
+        foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -176,6 +179,7 @@ class EnvironmentConfig {
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
         saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
         cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
-        wrcEventDateRange: CityEventDateRange.wrcDefault(),
+        saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
+        foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
       );
 }

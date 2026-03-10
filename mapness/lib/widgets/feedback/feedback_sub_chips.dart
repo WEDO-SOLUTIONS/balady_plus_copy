@@ -158,7 +158,6 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                       for (final item in entry.value)
                         ContentRow(
                           onTap: () => Navigator.pop(context, item),
-                          leadingPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
                           leading: SvgPicture.network(
                             entry.key.icon,
                             width: 24,

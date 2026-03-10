@@ -48,7 +48,7 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
 
     return ListenableBuilder(
       listenable: widget.bottomSheetController,
-      builder: (_, _) => Stack(
+      builder: (_, __) => Stack(
         children: [
           MultiStateSheet(
             useSafeArea: false,

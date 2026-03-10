@@ -139,6 +139,7 @@ class _PoiPhotoRowBuilderState extends ConsumerState<PoiPhotoRowBuilder> {
         },
         imageUrl: widget.previewUrls[index],
         file: widget.photoFiles?[index],
+        isAssetImg: widget.previewUrls[index].startsWith('package'),
         fit: BoxFit.cover,
       );
 }

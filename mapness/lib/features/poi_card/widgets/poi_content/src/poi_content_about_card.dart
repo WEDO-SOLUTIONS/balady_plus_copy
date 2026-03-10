@@ -25,12 +25,10 @@ class PoiContentAboutCard extends StatefulWidget {
 
 class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTickerProviderStateMixin {
   static const _heightOfGradient = 36.0;
-
   // This manages height and label "Show more"/"Show less"
   bool isFullVisible = false;
   bool truncateText = false;
   double _maxWidth = 100;
-
   // ignore: prefer_const_constructors
   _AboutTextModel _textHeight = _AboutTextModel(height: 0, heightTruncated: 0, linesCount: 0);
 
@@ -43,10 +41,12 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: widget.animationDuration);
-    _animation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _animationController, curve: widget.animationCurve));
+    _animation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: widget.animationCurve,
+      ),
+    );
 
     _animationController.addListener(() {
       if (truncateText != (_animationController.value == 0)) {
@@ -122,10 +122,10 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                   alignment: AlignmentDirectional.bottomStart,
                   children: [
                     SizedBox(
-                      height: widget.isExpandable
-                          ? _textHeight.heightTruncated +
-                                (_textHeight.height - _textHeight.heightTruncated) * _animation.value
-                          : null,
+                          height: widget.isExpandable
+                              ? _textHeight.heightTruncated +
+                                  (_textHeight.height - _textHeight.heightTruncated) * _animation.value
+                              : null,
                       width: _maxWidth,
                       child: Text(
                         widget.data.text,

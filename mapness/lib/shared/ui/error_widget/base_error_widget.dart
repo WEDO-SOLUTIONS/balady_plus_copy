@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -52,6 +53,8 @@ class BaseErrorWidget extends StatelessWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationError.keyName,
   };
 
   /// A factory constructor for creating a [BaseErrorWidget] without a retry button.

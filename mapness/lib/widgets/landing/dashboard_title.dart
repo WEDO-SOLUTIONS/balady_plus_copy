@@ -8,15 +8,21 @@ class DashboardTitle extends StatelessWidget {
   const DashboardTitle(this.title, {super.key});
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-    child: Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: Text(
-        title,
-        textAlign: TextAlign.start,
-        style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final isMekkahTheme = colors.accentSecondaryDefault.value == 0xFFC56846;
+    final baseStyle = context.textStyles.h3SemiBold;
+    final textStyle =
+        isMekkahTheme
+            ? baseStyle.copyWith(color: const Color(0xFF4A3016))
+            : baseStyle;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Text(title, textAlign: TextAlign.start, style: textStyle),
       ),
-    ),
-  );
+    );
+  }
 }

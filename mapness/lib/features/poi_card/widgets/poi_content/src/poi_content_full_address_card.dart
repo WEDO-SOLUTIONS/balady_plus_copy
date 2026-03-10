@@ -14,8 +14,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final showButtonsRow = data.floors != null || (data.entrances != null && data.entrances!.count > 0);
     final type = data.types?.firstOrNull?.type;
-    final hasMetro =
-        type == ObjectTypeMessage.stationMetro ||
+    final hasMetro = type == ObjectTypeMessage.stationMetro ||
         type == ObjectTypeMessage.station ||
         type == ObjectTypeMessage.stationPlatform ||
         type == ObjectTypeMessage.stationEntrance;

@@ -33,6 +33,12 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.favourites() =>
       const MapObjectManagerSettings._(name: 'favourite-markers', layerId: MapObjectLayers.defaultLayerId);
 
+  factory MapObjectManagerSettings.makkahPlaces() =>
+      const MapObjectManagerSettings._(
+        name: 'makkah-places',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+
   factory MapObjectManagerSettings.esri() =>
       const MapObjectManagerSettings._(name: 'esri_markers', layerId: MapObjectLayers.defaultLayerId);
 
@@ -47,6 +53,10 @@ class MapObjectManagerSettings {
 
   factory MapObjectManagerSettings.myLocation() =>
       const MapObjectManagerSettings._(name: 'my_location', layerId: MapObjectLayers.priorityLayerId);
+  factory MapObjectManagerSettings.cityEvent() => const MapObjectManagerSettings._(
+        name: 'city_event',
+        layerId: MapObjectLayers.priorityLayerId,
+      );
 
   factory MapObjectManagerSettings.eta() =>
       const MapObjectManagerSettings._(name: 'eta', layerId: MapObjectLayers.priorityLayerId);

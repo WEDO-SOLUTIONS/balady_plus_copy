@@ -13,6 +13,8 @@ class _FullscreenErrorContent extends StatelessWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationError.keyName,
   };
 
   @override

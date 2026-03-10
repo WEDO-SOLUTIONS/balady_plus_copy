@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
@@ -22,6 +23,7 @@ class RoutingSearchHistory extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLTR = Directionality.of(context) == TextDirection.ltr;
+    final isFoundingDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
     return Column(
       children: [
         Spacing.$4x.heightBox,
@@ -52,9 +54,19 @@ class RoutingSearchHistory extends ConsumerWidget {
                   isDividerEnabled: true,
                   leading: Icon(
                     isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
-                    color: context.colors.accentDefault,
+                    color: isFoundingDay ? context.colors.accentDefault : context.colors.accentActive,
                     size: 22,
                   ),
+                  text: ContentRowTextOptions(
+                    title: context.l10n.myLocation,
+                  ),
+                  onTap: () => context.router.pop(RoutePointMyLocation()),
+                ),
+              ContentRow(
+                leading: Icon(
+                  GeneralIcons.location,
+                  color: context.colors.accentDefault,
+                ),
                   text: ContentRowTextOptions(title: context.l10n.yourLocation),
                   trailing: ContentRowTextTrailingOptions(
                     icon: SystemIcons.arrowCornerRightSmall,

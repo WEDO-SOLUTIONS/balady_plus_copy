@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -109,14 +110,16 @@ class ShareEta extends _$ShareEta {
                 EtaInfoModel<EtaInfoPayload>(
                   type: EtaType.geolocation,
                   payload: EtaInfoPayload(
-                    period: sendLocationIntervalSeconds * 1000,
-                    // in ms
+                    period: sendLocationIntervalSeconds * 1000, // in ms
                     direction: heading,
                     speed: location.speed,
                     lat: location.latitude,
                     lon: location.longitude,
                     eta: _streamType == EtaStreamType.eta
-                        ? Eta(arrivalAt: arrivalAt.toIso8601String(), distance: distance.toInt())
+                        ? Eta(
+                            arrivalAt: arrivalAt.toIso8601String(),
+                            distance: distance.toInt(),
+                          )
                         : null,
                   ),
                 ),
@@ -169,9 +172,7 @@ class ShareEta extends _$ShareEta {
           }
 
           if (location != null) {
-            ref
-                .read(etaRouteInfoProvider.notifier)
-                .setRoute(
+            ref.read(etaRouteInfoProvider.notifier).setRoute(
                   route.copyWith(
                     routeIndex: 0,
                     startPoint: EtaRoutePoint(lat: location.latitude, lon: location.longitude),
@@ -266,7 +267,10 @@ class ShareEta extends _$ShareEta {
       final etaService = ref.read(etaServiceProvider.notifier);
       state = _streamType = EtaStreamType.geo;
 
-      final payload = EtaStreamPayload(type: EtaStreamType.geo.name, durationMinutes: durationInMinutes);
+      final payload = EtaStreamPayload(
+        type: EtaStreamType.geo.name,
+        durationMinutes: durationInMinutes,
+      );
 
       //store the duration in the storage
       EtaStreamStorage().setDurationInMinutes(durationInMinutes);
@@ -308,11 +312,7 @@ class ShareEta extends _$ShareEta {
     if (tokenId != null && xStreamData != null) {
       await ref
           .read(etaServiceProvider.notifier)
-          .updateEtaStream(
-            EtaRouteMetadataPayload(route: route),
-            xStreamData: xStreamData,
-            tokenId: tokenId,
-          );
+          .updateEtaStream(EtaRouteMetadataPayload(route: route), xStreamData: xStreamData, tokenId: tokenId);
     }
   }
 

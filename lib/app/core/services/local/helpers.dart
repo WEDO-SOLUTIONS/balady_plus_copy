@@ -567,10 +567,8 @@ class Helpers {
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;
-        File filetemp = File(
-          "$dir/"
-          "${DateTime.now().millisecondsSinceEpoch.toString()}$extension",
-        );
+        File filetemp = File("$dir/" +
+            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
         //print(filetemp.path);
         OpenFilex.open(filetemp.path);

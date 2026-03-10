@@ -200,6 +200,8 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       BaladyAppThemes.light => AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
       BaladyAppThemes.dark => AppColorsThemeV3.palette(themes: BaladyAppThemes.dark),
       BaladyAppThemes.saudiDay => AppColorsThemeV3.palette(themes: BaladyAppThemes.saudiDay),
+      BaladyAppThemes.foundationDay => AppColorsThemeV3.palette(themes: BaladyAppThemes.foundationDay),
+      BaladyAppThemes.mekkah => AppColorsThemeV3.palette(themes: BaladyAppThemes.mekkah),
     };
     return Center(
       child: Text(

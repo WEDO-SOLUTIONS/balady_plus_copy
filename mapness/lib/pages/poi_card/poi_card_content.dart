@@ -45,6 +45,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   void initState() {
     super.initState();
 
+    _tabController = TabController(length: 3, vsync: this);
     _stateNotifier = ValueNotifier<PoiCardBottomSheetState>(PoiCardBottomSheetState.halfOpen);
 
     // Check if photos are available (will be updated in build if needed)
@@ -71,25 +72,25 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       initialState: PoiCardBottomSheetState.halfOpen,
     );
 
-    _tabController = TabController(length: 3, vsync: this);
-
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
-        switch (_tabController.index) {
-          case 0:
-            _tabType.value = PoiTabsType.info;
-          case 1:
-            _tabType.value = PoiTabsType.photos;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
-          case 2:
-            _tabType.value = PoiTabsType.organizations;
-            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+    _tabController.addListener(
+      () {
+        if (_tabController.indexIsChanging) {
+          _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
+          switch (_tabController.index) {
+            case 0:
+              _tabType.value = PoiTabsType.info;
+            case 1:
+              _tabType.value = PoiTabsType.photos;
+              _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+            case 2:
+              _tabType.value = PoiTabsType.organizations;
+              _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+          }
         }
-      }
-    });
+      },
+    );
 
     // Initialize BssService event
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -114,6 +115,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         switch (state) {
           case PoiCardBottomSheetState.hidden:
             uiElementName = BssUIElementNames.placeCardHidden;
+            // Show Makkah place markers again when POI card is hidden
+            // ignore: avoid_print
+            print('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
+            ref.read(regularPoiActiveProvider.notifier).setActive(false);
           case PoiCardBottomSheetState.open:
             uiElementName = BssUIElementNames.placeCardTwoThird;
           case PoiCardBottomSheetState.expanded:
@@ -177,6 +182,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       dgisObjectId: widget.data.id!,
     );
 
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car));
     // Get user's current location to use as startPoint for route calculation
     final userLocation = ref.watch(locationProvider);
     RouteSearchPoint? startPoint;
@@ -204,10 +211,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         );
       }
     });
-
-    final briefInfo = ref.watch(
-      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
-    );
 
     final brief = briefInfo?.firstOrNull;
 
@@ -374,7 +377,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                         ),
                       ),
                     ],
-                  ],
+            ],
                   parkingInfo: widget.data.parkingInfo,
                   poiCardState: poiCardState,
                   tabController: _tabController,

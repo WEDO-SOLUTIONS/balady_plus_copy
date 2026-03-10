@@ -52,11 +52,14 @@ class PoiCardActions extends _$PoiCardActions {
     return balady_utils.safeShareText(BaldayDeeplink.urlWithQuery(baseUri, query), context: context);
   }
 
-  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
-    BaldayDeeplink.latitudeKey: location.latitude.toString(),
-    BaldayDeeplink.longitudeKey: location.longitude.toString(),
-    BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
-  });
+  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(
+        BaldayDeeplink.basePoiUri,
+        {
+          BaldayDeeplink.latitudeKey: location.latitude.toString(),
+          BaldayDeeplink.longitudeKey: location.longitude.toString(),
+          BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
+        },
+      );
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
@@ -72,12 +75,20 @@ class PoiCardActions extends _$PoiCardActions {
 
   Future<void> copyToClipboard(LatLng? location) async {
     if (location != null) {
-      await Clipboard.setData(ClipboardData(text: _myLocationDeeplink(location)));
+      await Clipboard.setData(
+        ClipboardData(text: _myLocationDeeplink(location)),
+      );
     }
   }
 
   Future<void> sendEmail(String value) async {
-    await launchUrl(Uri(scheme: 'mailto', path: value, queryParameters: {'subject': ''}));
+    await launchUrl(
+      Uri(
+        scheme: 'mailto',
+        path: value,
+        queryParameters: {'subject': ''},
+      ),
+    );
   }
 
   Future<void> launch(String value) async {
@@ -92,16 +103,19 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   void resetMapControlsState() {
-    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+    ref.read(mapControlsProvider.notifier).update(
+          MapControlsStateIdle(),
+        );
   }
 
   Future<void> toggleEntrances(DirectoryObjectMessage data, VoidCallback callBack, LatLng? closestPoint) async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.poiKeys.entrances,
-      group: MetricsConstants.poiTag,
-      action: MetricAction.tap.toString(),
-      props: {'poi_id': data.id?.objectId, 'show_entrances': true},
-    );
+    Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'poi_id': data.id?.objectId,
+          'show_entrances': true,
+        });
 
     final highlightController = ref.watch(highlightProvider.notifier);
 

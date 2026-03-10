@@ -1,21 +1,14 @@
-import 'package:add_2_calendar/add_2_calendar.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
-import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
-import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/event_image_swiper.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/event_map_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_category_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_description_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_details_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_title_location_widget.dart';
-import 'package:balady_plus/app/features/events/presentation/widgets/events_main_page_widgets/events_start_day_month.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,7 +49,7 @@ class _SingleEventDescriptionPageState
           builder: (context, state) {
             if (img.isEmpty) img = state.eventDetails.logoUrl ?? "";
             if (state.status == BlocStatus.loading)
-              return Center(child: CustomCircularLoadingWidget());
+              return const Center(child: CustomCircularLoadingWidget());
 
             if (state.status == BlocStatus.failure)
               return Center(
@@ -79,7 +72,7 @@ class _SingleEventDescriptionPageState
                     Stack(
                       children: [
                         ConstrainedBox(
-                          constraints: BoxConstraints(
+                          constraints: const BoxConstraints(
                             minHeight: 0.0,
                             maxHeight: 350.0,
                           ),
@@ -114,9 +107,8 @@ class _SingleEventDescriptionPageState
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(
-                                  top: MediaQuery.of(context).padding.top,
-                                  left: 16,
-                                ),
+                                    top: MediaQuery.of(context).padding.top,
+                                    left: 16),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -127,8 +119,8 @@ class _SingleEventDescriptionPageState
                                         iconSize: 24,
                                         circleSize: 36,
                                         icon: Icons.close,
-                                        backgroundColor: Colors.white
-                                            .withOpacity(0.7),
+                                        backgroundColor:
+                                            Colors.white.withOpacity(0.7),
                                       ),
                                       onTap: () {
                                         Navigator.of(context).pop();
@@ -163,7 +155,7 @@ class _SingleEventDescriptionPageState
                                         child: Container(
                                           width: 36,
                                           height: 36,
-                                          padding: EdgeInsets.all(5),
+                                          padding: const EdgeInsets.all(5),
                                           decoration: ShapeDecoration(
                                             color: AppColor.primary100Light,
                                             shape: RoundedRectangleBorder(

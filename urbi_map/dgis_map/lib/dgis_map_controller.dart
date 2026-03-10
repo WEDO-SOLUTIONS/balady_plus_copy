@@ -238,7 +238,7 @@ class DgisMapController {
           List<String> polylines, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForPolylines(polylines, options);
 
-  /// Calculates camera position for given list of polylines to be visible
+  /// Calculates camera position for given list of geo points to be visible
   Future<CameraPositionMessage> calcPositionForGeoPoints(
           List<GeoPointMessage> points, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForGeoPoints(points, options);

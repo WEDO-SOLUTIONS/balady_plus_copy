@@ -17,7 +17,6 @@ import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/entities/routing/route_search_point_mapper.dart';
-import 'package:mapness/entities/wrc/wrc_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -50,7 +49,6 @@ import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
-import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
@@ -83,12 +81,33 @@ import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+import 'package:balady_uikit/balady_uikit.dart'
+    show
+        ConfettiAnimation,
+        ConfettiGeneratorConfig,
+        General16Icons,
+        GeneralIcons,
+        ShiningShape,
+        SliverFillAfter,
+        Spacing;
+import 'package:balady_uikit/core/colorsV2/themes.dart' show ThemeController;
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/entities/routing/route_search_point_mapper.dart' show DirectoryObjectMessageMapper;
+import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/routing/lib/active_navigation_helper.dart' show ActiveNavigationHelper;
+import 'package:mapness/features/routing/providers/current_route.dart' show currentRouteProvider;
+import 'package:mapness/pages/path_nav/path_nav_page.dart' show PathNavPageInitAction;
+import 'package:mapness/shared/providers/regular_poi_active.dart';
+
+
+
 part 'cityscape_card_content.dart';
 part 'poi_card_content.dart';
 part 'poi_card_no_info.dart';
 part 'poi_card_wrapper.dart';
 part 'poi_functions.dart';
-part 'wrc_card_content.dart';
+part 'founding_day_card_content.dart';
 
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {
@@ -108,11 +127,17 @@ class PoiCardWidgetPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PoiCardWrapper(
-    objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
-    cameraConfig: cameraConfig,
-    poiCardDataFromGoogle: poiCardDataFromGoogle,
-    closestPoint: closestPoint,
-    key: key,
-  );
+  Widget build(BuildContext context) => PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          final container = ProviderScope.containerOf(context, listen: false);
+          container.read(regularPoiActiveProvider.notifier).setActive(false);
+        },
+        child: _PoiCardWrapper(
+          objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
+          cameraConfig: cameraConfig,
+          poiCardDataFromGoogle: poiCardDataFromGoogle,
+          closestPoint: closestPoint,
+          key: key,
+        ),
+      );
 }

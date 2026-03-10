@@ -23,11 +23,15 @@ class TrafficControlWidget extends StatelessWidget {
     BaladyAppThemes.dark => Assets.icons.svg.darkCar.keyName,
     BaladyAppThemes.light => Assets.icons.svg.car.keyName,
     BaladyAppThemes.saudiDay => Assets.icons.svg.car.keyName,
+    BaladyAppThemes.foundationDay => Assets.icons.svg.car.keyName,
+    BaladyAppThemes.mekkah => Assets.icons.svg.car.keyName,
   };
   String carActive(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
     BaladyAppThemes.dark => Assets.icons.svg.darkCarActive.keyName,
     BaladyAppThemes.light => Assets.icons.svg.carActive.keyName,
     BaladyAppThemes.saudiDay => Assets.icons.svg.carActiveSaudi.keyName,
+    BaladyAppThemes.foundationDay => Assets.icons.svg.carActiveSaudi.keyName,
+    BaladyAppThemes.mekkah => Assets.icons.svg.carActiveSaudi.keyName,
   };
 
   @override
@@ -40,6 +44,12 @@ class TrafficControlWidget extends StatelessWidget {
       child: SizedBox(
         width: 24,
         height: 24,
+        /*
+          child: ref.read(activeCityEventProvider)?.trafficIcon(
+                      isOn: isEnabled,
+                      inactiveColor: context.colors.foregroundMuted.withOpacity(0.36),
+                    ) ??
+         */
         child: SvgPicture.asset(
           isEnabled ? carActive(context) : car(context),
           // package: packageName,

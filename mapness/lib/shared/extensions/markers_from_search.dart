@@ -2,18 +2,21 @@ import 'dart:async';
 
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
+import 'package:mapness/shared/extensions/marker_icons_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+
+import '../../_generated/assets/assets.gen.dart';
 
 /// We use this method to throw away the part of the organization description that contains
 /// additional information that is not necessary on the map next to the marker
@@ -78,6 +81,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required AppRouter router,
     required Future<MapMarkersType?> Function(Set<int>) iconResolver,
     required bool isDark,
+    required CityEventType? activeCityEvent,
     required BaladyAppThemes theme,
     AdvancedIconResolver? advancedIconResolver,
     bool withLabel = true,
@@ -117,6 +121,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
           closestPoint: markerInfo.geoPoint.geoPoint,
         )).$1?.markerIcon(size: 32);
       } else {
+        //icon = (await iconResolver(rubrics))?.pathBuilder(activeCityEvent, isDark: isDark).markerIcon(size: 32);
         icon = (await iconResolver(rubrics))?.iconPath(theme).markerIcon(size: 32);
       }
 
@@ -164,7 +169,11 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                   BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName,
                   BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icNewPin.keyName,
                   BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName,
+                  BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewFoundingDay.icDefault.keyName,
+                  _ => Assets.icons.svg.placesNew.old.icMarkerMNew.keyName,
                 }.markerIcon(size: 16).copyWith(iconOpacity: 1),
+            //icon: icon?.copyWith(iconOpacity: 1) ??
+            //                 activeCityEvent.defaultMarker.markerIcon(size: 16).copyWith(iconOpacity: 1),
           ),
         ),
       );
@@ -185,6 +194,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icShops.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icShops.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icMarkets.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icMarkets.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icMarkets.keyName,
             },
     MapMarkersType.beach =>
       isSaudiDay
@@ -193,6 +204,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icBeach.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icBeach.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icBeach.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icBeach.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icBeach.keyName,
             },
     MapMarkersType.gym =>
       isSaudiDay
@@ -201,6 +214,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icGym.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icGym.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icGym.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icGym.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icGym.keyName,
             },
     MapMarkersType.gasStation =>
       isSaudiDay
@@ -209,6 +224,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icFuel.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icFuel.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icGasstationLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icGasstationLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icGasstationLtr.keyName,
             },
     MapMarkersType.events =>
       isSaudiDay
@@ -217,6 +234,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icEvents.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icEvents.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icEventsLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icEventsLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icEventsLtr.keyName,
             },
     MapMarkersType.carServices =>
       isSaudiDay
@@ -225,6 +244,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icCarService.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icCarService.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icCarServices.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icCarServices.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icCarServices.keyName,
             },
     MapMarkersType.hospitals =>
       isSaudiDay
@@ -233,6 +254,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icHospital.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icHospital.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icHospitalPlace.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icHospitalPlace.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icHospitalPlace.keyName,
             },
     MapMarkersType.hotels =>
       isSaudiDay
@@ -241,6 +264,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icHotels.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icHotels.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icHotels.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icHotels.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icHotels.keyName,
             },
     MapMarkersType.pharmacies =>
       isSaudiDay
@@ -249,6 +274,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icMedicine.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icMedicine.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icMedicineLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icMedicineLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icMedicineLtr.keyName,
             },
     MapMarkersType.mosques =>
       isSaudiDay
@@ -257,6 +284,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icMosques.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icMosques.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icMosques.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icMosques.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icMosques.keyName,
             },
     MapMarkersType.parks =>
       isSaudiDay
@@ -265,6 +294,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNature.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icNature.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icPark.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icPark.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icPark.keyName,
             },
     MapMarkersType.qibla =>
       isSaudiDay
@@ -273,6 +304,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icQibla.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icQibla.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icQibla.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icQibla.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icQibla.keyName,
             },
     MapMarkersType.restaurants =>
       isSaudiDay
@@ -281,6 +314,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icRestaurant.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icRestaurant.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icRestaurant.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icRestaurant.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icRestaurant.keyName,
             },
     MapMarkersType.wc =>
       isSaudiDay
@@ -289,6 +324,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icWc.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icWc.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icWc.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icWc.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icWc.keyName,
             },
     MapMarkersType.dentalCenters =>
       isSaudiDay
@@ -297,6 +334,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icDentist.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icDentist.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icTooth.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icTooth.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icTooth.keyName,
             },
     MapMarkersType.schools =>
       isSaudiDay
@@ -305,6 +344,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icEducation.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icEducation.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icSchoolLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icSchoolLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icSchoolLtr.keyName,
             },
     MapMarkersType.shopping =>
       isSaudiDay
@@ -313,6 +354,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icMalls.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icMalls.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icShopping.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icShopping.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icShopping.keyName,
             },
     MapMarkersType.beauty =>
       isSaudiDay
@@ -321,6 +364,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icBeauty.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icBeauty.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icBeauty.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icBeauty.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icBeauty.keyName,
             },
     MapMarkersType.barbershops =>
       isSaudiDay
@@ -329,6 +374,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icBarbershop.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icBarbershop.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icBarbershop.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icBarbershop.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icBarbershop.keyName,
             },
     MapMarkersType.recreationCenters =>
       isSaudiDay
@@ -337,6 +384,8 @@ extension IconPathFromMapMarkersType on MapMarkersType {
               BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icRecreation.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icRecreation.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icRecreation.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.old.icRecreation.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.old.icRecreation.keyName,
             },
     MapMarkersType.waterPlaces =>
       isSaudiDay
@@ -397,6 +446,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icShops.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icShops.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icMarkets.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.light.icShops.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.light.icShops.keyName,
             },
       'ic_beach.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icBeach.keyName
@@ -404,6 +455,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icBeach.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icBeach.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icBeach.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.old.icBeach.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.old.icBeach.keyName,
             },
       'ic_gym.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icGym.keyName
@@ -411,6 +464,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icGym.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icGym.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icGym.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.old.icGym.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.old.icGym.keyName,
             },
       'ic_gasstation_ltr.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icGasstationLtr.keyName
@@ -418,6 +473,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icFuel.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icFuel.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icGasstationLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNew.old.icGasstationLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNew.old.icGasstationLtr.keyName,
             },
       'ic_events.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icEvents.keyName
@@ -425,6 +482,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icEvents.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icEvents.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icEvents.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icEvents.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icEvents.keyName,
             },
       'ic_car_services.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icCarServices.keyName
@@ -432,6 +491,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icCarService.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icCarService.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icCarServices.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icCarServices.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icCarServices.keyName,
             },
       'ic_hospital_place.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icHospitalPlace.keyName
@@ -439,6 +500,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icHospital.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icHospital.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icHospitalPlace.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icHospitalPlace.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icHospitalPlace.keyName,
             },
       'ic_hotels.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icHotels.keyName
@@ -446,6 +509,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icHotels.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icHotels.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icHotels.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icHotels.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icHotels.keyName,
             },
       'ic_medicine_ltr.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icMedicineLtr.keyName
@@ -453,6 +518,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icMedicine.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icMedicine.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icMedicineLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icMedicineLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icMedicineLtr.keyName,
             },
       'ic_mosques.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icMosques.keyName
@@ -460,6 +527,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icMosques.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icMosques.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icMosques.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icMosques.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icMosques.keyName,
             },
       'ic_park.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icPark.keyName
@@ -467,6 +536,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icNature.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icNature.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icPark.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icPark.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icPark.keyName,
             },
       'ic_qibla.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icQibla.keyName
@@ -474,6 +545,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icQibla.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icQibla.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icQibla.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icQibla.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icQibla.keyName,
             },
       'ic_restaurant.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icRestaurant.keyName
@@ -481,6 +554,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icRestaurant.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icRestaurant.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icRestaurant.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icRestaurant.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icRestaurant.keyName,
             },
       'ic_wc.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icWc.keyName
@@ -488,6 +563,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icWc.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icWc.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icWc.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icWc.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icWc.keyName,
             },
       'ic_tooth.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icTooth.keyName
@@ -495,6 +572,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icDentist.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icDentist.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icTooth.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icTooth.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icTooth.keyName,
             },
       'ic_school_ltr.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icSchoolLtr.keyName
@@ -502,6 +581,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icEducation.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icEducation.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icSchoolLtr.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icSchoolLtr.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icSchoolLtr.keyName,
             },
       'ic_shopping.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName
@@ -509,6 +590,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icMalls.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icMalls.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName,
             },
       'ic_barbershop.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icBarbershop.keyName
@@ -516,6 +599,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icBarbershop.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icBarbershop.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icBarbershop.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icBarbershop.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icBarbershop.keyName,
             },
       'ic_beauty.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icBeauty.keyName
@@ -523,6 +608,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icBeauty.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icBeauty.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icBeauty.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icBeauty.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icBeauty.keyName,
             },
       'ic_recreation.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icRecreation.keyName
@@ -530,6 +617,8 @@ extension BigIconPath on String {
               BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icRecreation.keyName,
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icRecreation.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icRecreation.keyName,
+              BaladyAppThemes.foundationDay => Assets.icons.svg.placesBigNewSaudiDay.icRecreation.keyName,
+              BaladyAppThemes.mekkah => Assets.icons.svg.placesBigNewSaudiDay.icRecreation.keyName,
             },
       'ic_water_places.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icWaterPlaces.keyName
@@ -568,21 +657,29 @@ extension BigIconPath on String {
         BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
         BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
         BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.light.icOffers.keyName,
       },
       'ic_offers_clustering_marker.svg': switch (theme) {
         BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
         BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
         BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
       },
       'ic_offers_clustering_marker_dark.svg': switch (theme) {
         BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
         BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
         BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
       },
       'ic_offer_marker_dark.svg': switch (theme) {
         BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
         BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
         BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        BaladyAppThemes.foundationDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        BaladyAppThemes.mekkah => Assets.icons.svg.placesNew.light.icOffers.keyName,
       },
     };
 

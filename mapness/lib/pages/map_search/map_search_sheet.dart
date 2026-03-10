@@ -12,8 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -223,12 +225,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
         theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
@@ -264,6 +268,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
       BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),
       BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
+      BaladyAppThemes.foundationDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
+      BaladyAppThemes.mekkah => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
     },
     text: '$objectCount',
     textStyle: MarkerTextStyleMessage(

@@ -111,7 +111,7 @@ class Data extends ConsumerWidget {
 
     return ListenableBuilder(
       listenable: bottomSheetController,
-      builder: (_, _) => Container(
+      builder: (_, __) => Container(
         decoration: BoxDecoration(
           color: context.colors.backgroundSurface4,
           borderRadius: const BorderRadius.only(

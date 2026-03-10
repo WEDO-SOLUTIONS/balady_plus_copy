@@ -8,15 +8,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
@@ -71,6 +74,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
       return () => scrollController.removeListener(updateCameraPadding);
     }, [scrollController]);
 
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface4,
@@ -81,8 +86,10 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           const RoutingMapControls(),
           Center(
             child: Padding(
-              padding: EdgeInsets.only(bottom: additionPadding),
-              child: SvgPicture.asset(SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew),
+              padding: EdgeInsets.only(
+                bottom: additionPadding,
+              ),
+              child: SvgPicture.asset(activeEvent?.defaultPin(isDark: isDark) ?? Markers.defaultPinNew),
             ),
           ),
         ],
@@ -103,7 +110,9 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                   Spacing.$1x.heightBox,
                   Text(
                     context.l10n.moveMap,
-                    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: context.colors.foregroundSoft,
+                    ),
                   ),
                 ],
               ),
@@ -113,9 +122,16 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
         ),
       ),
       content: [
-        _NearestObject(nearestObject: nearestObject),
+        _NearestObject(
+          nearestObject: nearestObject,
+        ),
         Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x, bottom: Spacing.$3x),
+          padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+            top: Spacing.$3x,
+            bottom: Spacing.$3x,
+          ),
           child: AnimatedSwitcher(
             duration: Durations.medium1,
             child: nearestObject.when(
@@ -226,7 +242,11 @@ class _NearestObject extends StatelessWidget {
             key: ValueKey(title),
             width: double.infinity,
             child: Padding(
-              padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x),
+              padding: const EdgeInsets.only(
+                left: Spacing.$4x,
+                right: Spacing.$4x,
+                top: Spacing.$3x,
+              ),
               child: ContentRow(
                 options: ContentRowOptions(
                   wrapperEnabled: true,
@@ -244,13 +264,11 @@ class _NearestObject extends StatelessWidget {
   }
 
   String _buildTitle(NearestObject object) => switch (object) {
-    DGisNearestObject() => object.object.title,
-    CooridnatesNearestObject() =>
-      '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}',
-  };
+        DGisNearestObject() => object.object.title,
+        CooridnatesNearestObject() =>
+          '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}'
+      };
 
-  String? _buildSubtitle(NearestObject object) => switch (object) {
-    DGisNearestObject() => object.object.subtitle,
-    CooridnatesNearestObject() => null,
-  };
+  String? _buildSubtitle(NearestObject object) =>
+      switch (object) { DGisNearestObject() => object.object.subtitle, CooridnatesNearestObject() => null };
 }

@@ -50,6 +50,8 @@ class FeedbackSheetWidget extends HookWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationNotificationsDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationNotifications.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationNotifications.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationNotifications.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationNotifications.keyName,
   };
 
   @override

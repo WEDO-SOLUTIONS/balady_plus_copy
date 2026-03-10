@@ -20,16 +20,14 @@ void main() async {
       await AppEnv.setupEnv(EnvType.pre);
       await setupMapness(EnvType.pre);
       await SentryFlutter.init(
-            (options) {
-          options.dsn =
-          'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
+        (options) {
+          options.dsn = 'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.tracesSampleRate = 1.0;
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.profilesSampleRate = 1.0;
-          // options.attachScreenshot = true;
           options.enableUserInteractionTracing = true;
           options.reportSilentFlutterErrors = true;
           options.enableAppHangTracking = true;
@@ -37,15 +35,10 @@ void main() async {
           options.enableAutoNativeBreadcrumbs = true;
           options.enableNativeCrashHandling = true;
           options.enableTimeToFullDisplayTracing = true;
-          options.enableAppHangTracking = true;
           options.enableAppLifecycleBreadcrumbs = true;
           options.enableFramesTracking = true;
           // options.captureFailedRequests = true;
           options.environment = EnvType.pre.name;
-          // Auto Performance Instrumentation
-          options.enableAutoPerformanceTracing = true;
-          options.enableUserInteractionTracing = true;
-          options.enableAppHangTracking = true;
 
           // Session Tracking
           options.enableAutoSessionTracking = true;
@@ -54,14 +47,11 @@ void main() async {
 
           // Screenshots and Attachments
           options.attachScreenshot = true;
-          options.screenshotQuality = SentryScreenshotQuality.high;
+          options.screenshotQuality = SentryScreenshotQuality.medium;
           options.attachViewHierarchy = true;
 
           // Debug Options
           options.diagnosticLevel = SentryLevel.debug;
-
-          // Additional Performance Settings
-          options.enableTimeToFullDisplayTracing = true;
         },
         appRunner: () => runApp(MapnessProviderScope(child: LocalizedApp(child: App()))),
       );

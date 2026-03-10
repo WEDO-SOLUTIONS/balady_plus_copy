@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
@@ -75,6 +76,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
           child: PoiContentFeedbackCard(
             data: PoiContentFeedbackType.addPlace,
             onTap: () => context.router.push(QuickFeedbackRoute()),
+                activeCityEvent: ref.watch(activeCityEventProvider),
           ),
         ),
       ),

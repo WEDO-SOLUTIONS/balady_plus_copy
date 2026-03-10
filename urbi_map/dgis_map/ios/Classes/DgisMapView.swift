@@ -400,7 +400,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func calcPositionForPolylines(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
     }
-    
+
     func calcPositionForGeoPoints(points: [GeoPointMessage], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(points: points, options: options, completion: completion)
     }

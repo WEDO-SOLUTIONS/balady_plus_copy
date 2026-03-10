@@ -8,10 +8,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:provider/provider.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:sheetify/sheetify.dart';
 
 import '../../shared/providers/map/selected_marker.dart';
@@ -34,11 +37,14 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
     BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.illustrationError.keyName,
   };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onClose = () {
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
       if (data is PoiError && (data as PoiError).onClose != null) {
         (data as PoiError).onClose!.call();
       } else {
@@ -52,6 +58,9 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
       },
       heightModel: ToggleSheetHeightModel.fraction(0.42),
     );
+
+    // final activeEvent = ref.watch(activeCityEventProvider);
+
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface2,
@@ -90,6 +99,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         SvgPicture.asset(asset(context)),
+                        //SvgPicture.asset(activeEvent?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName),
                         const SizedBox(height: Spacing.$4x),
                         Text(
                           error.errorTitle,

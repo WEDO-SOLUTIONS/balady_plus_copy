@@ -65,6 +65,8 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
     BaladyAppThemes.dark => Assets.imagesSvg.lostLocationDark.keyName,
     BaladyAppThemes.light => Assets.imagesSvg.lostLocation.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.lostLocation.keyName,
+    BaladyAppThemes.foundationDay => Assets.imagesSvg.lostLocation.keyName,
+    BaladyAppThemes.mekkah => Assets.imagesSvg.lostLocation.keyName,
   };
 
   @override

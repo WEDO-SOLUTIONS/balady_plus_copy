@@ -14,6 +14,8 @@ class AppFeedbackSuccess extends StatelessWidget {
     BaladyAppThemes.dark => Assets.images.successAppFeedbackDark.keyName,
     BaladyAppThemes.light => Assets.images.successAppFeedback.keyName,
     BaladyAppThemes.saudiDay => Assets.images.successAppFeedback.keyName,
+    BaladyAppThemes.mekkah => Assets.images.successAppFeedback.keyName,
+    BaladyAppThemes.foundationDay => Assets.images.successAppFeedback.keyName,
   };
 
   @override
@@ -22,7 +24,7 @@ class AppFeedbackSuccess extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: Spacing.$6x),
-        Image.asset(asset(context), matchTextDirection: true, width: 132),
+            Image.asset(asset(context), matchTextDirection: true, width: 132),
         const SizedBox(height: AppSizes.xxs),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs),
@@ -49,7 +51,7 @@ class AppFeedbackSuccess extends StatelessWidget {
             buttonColorScheme: ButtonColorScheme.accentSecondary,
             size: ButtonSize.large,
             primaryLabel: context.l10n.done,
-            onTap: context.router.pop,
+                onTap: context.router.pop,
           ),
         ),
       ],

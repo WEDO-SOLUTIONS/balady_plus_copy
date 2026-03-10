@@ -10,12 +10,11 @@ class _PoiCardNoInfo extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useToggleSheetController(
-      onClose: (_) {
-        ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-        closePoiCard(context, ref);
-      },
-    );
+    final scrollController = useToggleSheetController(onClose: (_) {
+      ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
+      context.router.pop();
+    });
     final l10n = context.l10n;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
@@ -38,22 +37,24 @@ class _PoiCardNoInfo extends HookConsumerWidget {
         PoiContentFeedbackCard(
           data: PoiContentFeedbackType.cityExpert,
           onTap: () {
-            context.router.push(
-              QuickFeedbackRoute(type: QuickFeedbackType.editCompany, params: FeedbackObjectIdParams(objectId)),
-            );
+            context.router.push(QuickFeedbackRoute(
+              type: QuickFeedbackType.editCompany,
+              params: FeedbackObjectIdParams(objectId),
+            ));
           },
         ),
       ],
       footer: PoiCardFooter(
         share: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.share,
-            group: MetricsConstants.poiTag,
-            action: MetricAction.tap.toString(),
-            props: {'object_id': objectId, 'closest_point': '${closestPoint?.latitude},${closestPoint?.longitude}'},
-          );
+          Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {'object_id': objectId, 'closest_point': '${closestPoint?.latitude},${closestPoint?.longitude}'});
 
-          return poiActions.share(objectId: objectId, markerCoords: closestPoint);
+          return poiActions.share(
+            objectId: objectId,
+            markerCoords: closestPoint,
+          );
         },
         onTapCar: () {
           final closestPoint = this.closestPoint;
