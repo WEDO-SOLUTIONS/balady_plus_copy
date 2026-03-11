@@ -7,9 +7,6 @@ Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {
     action: MetricAction.tap.toString(),
   );
 
-  await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-  await ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
-
   // Show Makkah place markers again when POI card is closed
   ref.read(regularPoiActiveProvider.notifier).setActive(false);
 

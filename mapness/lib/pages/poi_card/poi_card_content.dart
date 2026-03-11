@@ -151,7 +151,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
   @override
   void dispose() {
-    _bottomSheetController.dispose();
     _tabController.dispose();
     _tabType.dispose();
     _stateNotifier.dispose();

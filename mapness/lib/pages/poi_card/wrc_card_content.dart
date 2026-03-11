@@ -164,14 +164,7 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
           parkingInfo: wrcDirectoryObject.parkingInfo,
           poiCardState: poiCardState,
           data: wrcDirectoryObject,
-          onTapClose: () {
-            ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-            ref
-                .read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier)
-                .restoreMarker();
-            ref.read(highlightProvider.notifier).removeHighlight(wrcDirectoryObject.id!);
-            context.router.pop();
-          },
+          onTapClose: () => closePoiCard(context, ref),
           subTitleExtraInlineSpans: [
             if (poiHeaderSubTitle != null) ...[
               const TextSpan(text: ' • '),

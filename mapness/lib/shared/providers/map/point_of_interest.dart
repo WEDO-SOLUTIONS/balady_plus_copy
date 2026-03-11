@@ -13,8 +13,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../features/parking_spot/parking_manage.dart';
-
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
@@ -29,12 +27,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   BaladyAppThemes theme,
 ) async {
   final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
-  final parkingManager = ref.watch(parkingManageProvider(theme: theme).notifier);
-
-  ref.onDispose(() {
-    selectedMarker.removeMarker(poiPinId);
-    parkingManager.restoreMarker();
-  });
 
   final dgisController = await ref.read(dgisControllerProvider.future);
   final directoryObject = await dgisController.searchByObjectId(objectId.toMessage());
@@ -110,10 +102,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   for (final entrance in directoryObject.entrances) {
     await highlightController.addHighlight(entrance.id);
   }
-
-  ref.onDispose(() async {
-    await highlightController.removeAll();
-  });
 
   return directoryObject;
 }

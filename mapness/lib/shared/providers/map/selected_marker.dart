@@ -16,8 +16,12 @@ class SelectedMarker extends _$SelectedMarker {
   @override
   Marker? build() => null;
 
-  MapObjectManager get mapObjectManager =>
-      ref.read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier);
+  MapObjectManager get mapObjectManager => ref.read(
+    mapObjectManagerProvider(
+      named: settings.name,
+      layerId: settings.layerId,
+    ).notifier,
+  );
 
   Future<void> showMarker(Marker marker, {MapObjectManagerSettings? settings, int? objectId}) async {
     final searchObjectManager = ref.read(
@@ -70,5 +74,11 @@ class SelectedMarker extends _$SelectedMarker {
       marker.id,
       ChangeMarkerOptionsMessage(isVisible: marker.options.isVisible = isVisible),
     );
+  }
+
+  Future<void> clear() async {
+    await mapObjectManager.removeAllMarkers();
+    _showHiddenMarkerIfPresent();
+    state = null;
   }
 }

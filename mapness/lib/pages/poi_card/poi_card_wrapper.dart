@@ -19,7 +19,8 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   ConsumerState<_PoiCardWrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProviderStateMixin {
+class _WrapperState extends ConsumerState<_PoiCardWrapper> with RouteAware, SingleTickerProviderStateMixin {
+  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
   bool prevRouteNavi = false;
 
   @override
@@ -75,6 +76,8 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProv
         DeviceOrientation.portraitDown,
       ]);
     }
+    routeObserver.unsubscribe(this);
+
     super.dispose();
   }
 
@@ -82,6 +85,18 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProv
   void didChangeDependencies() {
     super.didChangeDependencies();
     FocusScope.of(context).unfocus();
+
+    final route = ModalRoute.of(context);
+    if (route is PageRoute) {
+      routeObserver.subscribe(this, route);
+    }
+  }
+
+  @override
+  void didPop() {
+    ref.read(selectedMarkerProvider.notifier).clear();
+    ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+    ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
   }
 
   @override
