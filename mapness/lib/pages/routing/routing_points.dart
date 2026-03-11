@@ -129,7 +129,12 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$4x),
-            child: ABRoute(items: aBRouteModels.toList(), onTap: (i) => _onTap(i, context, ref), onReorder: _onReorder),
+            child: ABRoute(
+              stopByTitle: context.l10n.stopBy,
+              items: aBRouteModels.toList(),
+              onTap: (i) => _onTap(i, context, ref),
+              onReorder: _onReorder,
+            ),
           ),
         ),
         content: [

@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide ABRoute, ABRouteModel, StopNumbersIcons, BaladyInputAffixIcon;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/balady_uikit/components/ab_route/ab_route.dart';
-import 'package:mapness/balady_uikit/components/text_input/models/src/affix.dart';
-import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -104,6 +101,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
             padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
             child: SingleChildScrollView(
               child: ABRoute(
+                stopByTitle: context.l10n.stopBy,
                 items: pointsModels,
                 startPointSubtitle: context.l10n.startPosition,
                 arrivalPointSubtitle: context.l10n.placeOfArrival,
