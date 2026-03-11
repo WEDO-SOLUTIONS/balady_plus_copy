@@ -18,6 +18,9 @@ class DgisMap extends StatelessWidget {
 
   final Function(DgisMapController controller) onMapCreated;
   final bool androidUseExpensive;
+  late final _gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>{
+    Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,7 @@ class DgisMap extends StatelessWidget {
               final controller = DgisMapController(viewId);
               onMapCreated(controller);
             },
-            gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+            gestureRecognizers: _gestureRecognizers,
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
             layoutDirection: TextDirection.ltr,
           )
@@ -37,6 +40,7 @@ class DgisMap extends StatelessWidget {
             key: key,
             viewType: _viewType,
             layoutDirection: TextDirection.ltr,
+            gestureRecognizers: _gestureRecognizers,
             onPlatformViewCreated: (viewId) {
               final controller = DgisMapController(viewId);
               onMapCreated(controller);

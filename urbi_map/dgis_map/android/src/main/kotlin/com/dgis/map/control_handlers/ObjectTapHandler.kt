@@ -95,6 +95,16 @@ class ObjectTapHandler(
                 onMarkerTap(tappedObject)
                 return
             }
+            else ->
+                    eventSink.error(
+                            "ClassCastException",
+                            "No suitable handler for tapped object: " + tappedObject.javaClass,
+                            null,
+                    )
+        }
+    }
+    fun objectLongTapListener(roi: RenderedObjectInfo) {
+        when (val tappedObject = roi.item.item) {
             is Polygon -> {
                 val userData = tappedObject.userData
 
