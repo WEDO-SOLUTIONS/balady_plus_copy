@@ -14,7 +14,11 @@ class NeedLoginDialog extends StatelessWidget {
 
   List<Widget> textActions(BuildContext context) => [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+
+          },
           child: Text("notNow".tr()),
         ),
         TextButton(
