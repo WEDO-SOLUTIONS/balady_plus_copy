@@ -218,12 +218,12 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     autoFocus: false,
                                     autofocus: false,
                                     controller: controller,
-                                    onTap: () {},
+                                    onTap: null,
                                     keyboardType: TextInputType.text,
                                     isReadOnly: false,
                                     suffixString: value.text.isEmpty
                                         ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
-                                        : const SizedBox(),
+                                        : null,
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(
                                       Theme.of(context).brightness == Brightness.dark

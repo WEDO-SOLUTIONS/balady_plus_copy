@@ -83,83 +83,72 @@ class MiniAppsCustomTextField extends StatelessWidget {
       height: height,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding ?? 8),
-        child: GestureDetector(
-          onTap: onTap,
-          child: AbsorbPointer(
-            absorbing: !isEnabled,
-            child: SizedBox.expand(
-              child: TextFormField(
-                textAlign: CommonFunctions.isAppAR
-                    ? TextAlign.right
-                    : TextAlign.left,
-                textDirection: CommonFunctions.isAppAR
-                    ? TextDirection.rtl
-                    : TextDirection.ltr,
-                textAlignVertical: TextAlignVertical.center,
-                readOnly: isReadOnly,
-                enabled: isEnabled,
-                maxLines: 1,
-                textInputAction: textInputAction,
-                onFieldSubmitted: onFieldSubmitted,
-                inputFormatters:
-                    inputFormatters ??
-                    [
-                      if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
-                      if (allowedInputPattern != null)
-                        FilteringTextInputFormatter.allow(allowedInputPattern!),
-                      if (deniedInputPattern != null)
-                        FilteringTextInputFormatter.deny(deniedInputPattern!),
-                    ],
-                onChanged: onChanged,
-                focusNode: focusNode,
-                autofocus: autofocus ?? false,
-                cursorColor: const Color(0XFF2AB3A9),
-                style: TextStyle(color: textColor),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: 16,
-                  ),
-                  filled: true,
-                  fillColor:
-                      backgroundColor ?? Theme.of(context).colorScheme.surface,
-                  errorStyle: const TextStyle(color: Colors.red),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(50),
-                    borderSide: BorderSide(color: const Color(0xFFCED8DC)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: const Color(0xFFCED8DC)),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-
-                  disabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).disabledColor,
-                    ),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-
-                  hintText: hintText,
-                  hintStyle: TextStyle(
-                    color: hintColor,
-                    fontSize: hintTextSize ?? 15,
-                  ),
-                  prefixIcon: icon,
-                  suffixIcon: _buildSuffix(context),
-                ),
-                obscureText: obscureText ?? false,
-                keyboardType: keyboardType,
-                controller: controller,
+        child: AbsorbPointer(
+          absorbing: !isEnabled,
+          child: TextFormField(
+            textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
+            textDirection:
+                CommonFunctions.isAppAR ? TextDirection.rtl : TextDirection.ltr,
+            textAlignVertical: TextAlignVertical.center,
+            readOnly: isReadOnly,
+            enabled: isEnabled,
+            maxLines: 1,
+            textInputAction: textInputAction,
+            onFieldSubmitted: onFieldSubmitted,
+            onTap: onTap,
+            inputFormatters: inputFormatters ??
+                [
+                  if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
+                  if (allowedInputPattern != null)
+                    FilteringTextInputFormatter.allow(allowedInputPattern!),
+                  if (deniedInputPattern != null)
+                    FilteringTextInputFormatter.deny(deniedInputPattern!),
+                ],
+            onChanged: onChanged,
+            focusNode: focusNode,
+            autofocus: autofocus ?? false,
+            cursorColor: const Color(0XFF2AB3A9),
+            style: TextStyle(color: textColor),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 0,
+                horizontal: 16,
               ),
+              filled: true,
+              fillColor: backgroundColor ?? Theme.of(context).colorScheme.surface,
+              errorStyle: const TextStyle(color: Colors.red),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(50),
+                borderSide: const BorderSide(color: Color(0xFFCED8DC)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: Color(0xFFCED8DC)),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Theme.of(context).disabledColor,
+                ),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              hintText: hintText,
+              hintStyle: TextStyle(
+                color: hintColor,
+                fontSize: hintTextSize ?? 15,
+              ),
+              prefixIcon: icon,
+              suffixIcon: _buildSuffix(context),
             ),
+            obscureText: obscureText ?? false,
+            keyboardType: keyboardType,
+            controller: controller,
           ),
         ),
       ),
@@ -185,8 +174,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
               child: suffixString!,
             ),
           if (suffixString != null && suffixIcon != null)
-            // const SizedBox(width: 20),
-            const Spacer(),
+            const SizedBox(width: 12),
           if (suffixIcon != null)
             ColorFiltered(
               colorFilter: ColorFilter.mode(
