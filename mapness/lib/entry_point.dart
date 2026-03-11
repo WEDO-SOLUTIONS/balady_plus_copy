@@ -54,7 +54,6 @@ import 'package:mapness/features/search/providers/search_region.dart' show initi
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
-import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -73,6 +72,7 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -269,8 +269,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> checkNavigationState() async {
     final controller = await ref.read(dgisControllerProvider.future);
     final navStateMessage = await controller.getCurrentNavigationState();
+    final isCarConnected = await ref.read(carConnectionProvider.future);
 
-    if (navStateMessage.state == NavigationState.navigation && navStateMessage.routeSearchOptions != null) {
+    if (navStateMessage.state == NavigationState.navigation &&
+        navStateMessage.routeSearchOptions != null &&
+        isCarConnected) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
