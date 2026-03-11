@@ -3,7 +3,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
 import 'package:sheetify/sheetify.dart';
@@ -78,7 +80,26 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
             barrierColorDelegate: barrierColorDelegate,
             sliver: LayersSheetContent(
               tapOnParkingLotsMenu: () => _showParkingLotsPanel(),
-              onClose: () => context.router.pop(),
+              onClose: () {
+                final tabsRouter = context.innerRouterOf<TabsRouter>(BottomMenuRoute.name);
+                final isRoutingOpen = tabsRouter?.current.name == RoutingPointsRoute.name;
+
+                // This trick we use to open the sheet after closing it
+                // in order to avoid overlapping of the two sheets
+                if (isRoutingOpen) {
+                  final controller = ref.read(bottomSheetControllerProvider).controller;
+                  final isBottomSheetOpen = controller?.state == ThreeStateSheet.open;
+                  if (isBottomSheetOpen) {
+                    controller?.setState(ThreeStateSheet.hidden, duration: Duration.zero);
+
+                    Future.delayed(
+                      const Duration(milliseconds: 200),
+                      () => controller?.setState(ThreeStateSheet.open),
+                    );
+                  }
+                }
+                context.router.pop();
+              },
             ),
           ),
           ToggleSheet(
