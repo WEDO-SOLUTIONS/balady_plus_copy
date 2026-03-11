@@ -201,7 +201,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
                 child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
               ),
-              outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
+              outside: MapSearchSheetControls(
+                currentSize: currentSize,
+                collapsedSize: collapsedHeight,
+                sheetState: _sheetState,
+              ),
               sliver: SliverToBoxAdapter(
                 child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
               ),

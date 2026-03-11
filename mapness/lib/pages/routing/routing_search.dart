@@ -130,7 +130,11 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
               safeAreaColor: context.colors.backgroundSurface4,
               dragger: const SheetDragger(),
               outsideOpacityDelegate: outsideOpacityDelegate,
-              outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
+              outside: MapSearchSheetControls(
+                currentSize: currentSize,
+                collapsedSize: collapsedHeight,
+                sheetState: _multiStateSheetController.state,
+              ),
               key: const ValueKey('ROUTING SEARCH SHEET'),
               header: Column(
                 children: [

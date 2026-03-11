@@ -15,16 +15,23 @@ import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
+import 'package:sheetify/sheetify.dart';
 
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
   final double? currentSize;
   final double collapsedSize;
+  final ThreeStateSheet? sheetState;
 
   // Calculate the topbar and bottom padding
   static const screenPadding = 80 + 70;
 
-  const MapSearchSheetControls({required this.collapsedSize, this.currentSize, super.key});
+  const MapSearchSheetControls({
+    required this.collapsedSize,
+    this.sheetState,
+    this.currentSize,
+    super.key,
+  });
 
   @override
   MapSearchSheetControlsState createState() => MapSearchSheetControlsState();
@@ -47,7 +54,8 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
   @override
   Widget build(BuildContext context) {
     final scope = _scope;
-    final isButtonVisible = ref.watch(searchInRectProvider(scope).select((s) => s.isButtonVisible));
+    final isMinimized = widget.sheetState == ThreeStateSheet.hidden;
+    final isButtonVisible = ref.watch(searchInRectProvider(scope).select((s) => s.isButtonVisible)) && isMinimized;
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;

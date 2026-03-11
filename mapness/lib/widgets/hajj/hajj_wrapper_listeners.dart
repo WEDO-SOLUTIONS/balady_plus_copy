@@ -129,7 +129,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
     final strokeColorMarker = isDark ? 0xFF1B1B1B : 0xFFFFFFFF;
 
     return MarkerTextStyleMessage(
-      color: isPin ? colorPin : context.colors.accentDefault.value,
+      color: isPin ? colorPin : context.themeRead.colors.accentDefault.value,
       strokeColor: isPin ? strokeColorPin : strokeColorMarker,
       fontSize: isPin ? _fontSizePin : _fontSizeMarker,
       fontName: isArabic ? poiMapFontAr : poiMapFontEn,
