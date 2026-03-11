@@ -170,12 +170,12 @@ extension TrafficControlX on CityEventType? {
     Color? inactiveColor,
     bool isOn = false,
   }) {
-    final defaultOn = isDark ? Assets.icons.svg.darkCar : Assets.icons.svg.car;
-    final defaultOff = isDark ? Assets.icons.svg.darkCarActive : Assets.icons.svg.carActive;
+    final defaultOff = isDark ? Assets.icons.svg.darkCar : Assets.icons.svg.car;
+    final defaultOn = isDark ? Assets.icons.svg.darkCarActive : Assets.icons.svg.carActive;
 
     final asset = switch (this) {
-      CityEventType.saudiNationalDay => isOn ? Assets.icons.svg.carActiveSaudi : Assets.icons.svg.car,
-      CityEventType.foundingDay => isOn ? Assets.icons.svg.carActiveFoundingDay : Assets.icons.svg.car,
+      CityEventType.saudiNationalDay when isOn => Assets.icons.svg.carActiveSaudi,
+      CityEventType.foundingDay when isOn => Assets.icons.svg.carActiveFoundingDay,
       _ => isOn ? defaultOn : defaultOff,
     };
 

@@ -34,16 +34,12 @@ class TrafficControlWidget extends ConsumerWidget {
       child: SizedBox(
         width: 24,
         height: 24,
-        child:
-            ref
-                .read(activeCityEventProvider)
-                ?.trafficIcon(
-                  isDark: ref.watch(darkModeProvider).value?.isDark ?? false,
-                  isOn: isEnabled,
-                  // TODO(Argen_merge_prod): color needed?
-                  // inactiveColor: context.colors.foregroundDefault.withOpacity(0.36),
-                ) ??
-            Assets.icons.svg.car.svg(),
+        child: ref
+            .read(activeCityEventProvider)
+            .trafficIcon(
+              isDark: ref.watch(darkModeProvider).value?.isDark ?? false,
+              isOn: isEnabled,
+            ),
       ),
     ),
   );
