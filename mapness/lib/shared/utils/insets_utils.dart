@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/shared/utils/logger/logger.dart';
 
 class InsetsUtils {
   InsetsUtils._();
@@ -31,11 +30,11 @@ class InsetsUtils {
     return [p.bottom, p.left, p.right].reduce(max);
   }
 
-  static bool _isAndroid15Plus() {
-    final isAndroid15Plus = androidSdkInt >= 35;
-    logger.log('Android API: $androidSdkInt, isAndroid15Plus: $isAndroid15Plus');
-    return isAndroid15Plus;
-  }
+  // static bool _isAndroid15Plus() {
+  //   final isAndroid15Plus = androidSdkInt >= 35;
+  //   logger.log('Android API: $androidSdkInt, isAndroid15Plus: $isAndroid15Plus');
+  //   return isAndroid15Plus;
+  // }
 
   static set androidSdkInt(int sdkInt) {
     _androidSdkInt = sdkInt;
