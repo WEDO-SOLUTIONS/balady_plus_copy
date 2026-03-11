@@ -211,7 +211,9 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
           Padding(
             padding: makkahInnerPadding ?? EdgeInsets.zero,
             child: ContentRow(
-              leading: _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor),
+              leading: isMakkahMode
+                  ? _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor)
+                  : GeneralIcons.timeQuarter.icon(color: context.colors.accentDefault),
               text: ContentRowTextOptions(
                 titleOptions: ContentRowTextOption(
                   builder: (context) => Text(
