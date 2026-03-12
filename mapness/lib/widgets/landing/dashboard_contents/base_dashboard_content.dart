@@ -1,22 +1,13 @@
-import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sheetify/sheetify.dart';
-
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
-
-import 'package:mapness/entities/city_event/city_event.dart';
-import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/widgets/founding_day/dashboard_bg.dart';
-import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
-import 'package:mapness/widgets/landing/dashboard/city_event_logo.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 import 'package:mapness/widgets/landing/dashboard_offers_row.dart';
@@ -25,7 +16,7 @@ import 'package:mapness/widgets/landing/drive_back_home_card.dart';
 import 'package:mapness/widgets/landing/place_preview.dart';
 import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
-import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
+import 'package:sheetify/sheetify.dart';
 
 import '../../../features/city_event/active_city_event.dart';
 

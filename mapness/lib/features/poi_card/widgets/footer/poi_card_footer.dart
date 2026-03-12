@@ -173,7 +173,7 @@ class PoiCardFooter extends HookConsumerWidget {
           if (website != null && data != null)
             ItemActionBar(
               icon: GeneralIcons.web,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               buttonType: ButtonType.secondary,
               onPressed: () {
                 BssService.instance.trackLinkTap(data!, BssContactType.website, website);

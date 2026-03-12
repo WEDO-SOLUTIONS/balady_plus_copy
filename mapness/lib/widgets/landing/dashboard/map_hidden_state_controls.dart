@@ -7,21 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/cityscape/cityscape.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
-import 'package:mapness/features/wrc/wrc.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/landing/dashboard/cityscape_background.dart';
-import 'package:mapness/widgets/landing/dashboard/cityscape_logo.dart';
-import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
-import 'package:mapness/widgets/landing/dashboard/wrc_background.dart';
+import 'package:mapness/widgets/landing/dashboard/city_event_display.dart';
+import 'package:mapness/widgets/landing/dashboard/special_theme_header.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sheetify/sheetify.dart';
+
+import '../../../features/cityscape/cityscape.dart';
 
 class MapHiddenStateControls extends ConsumerStatefulWidget {
   final MultiStateSheetController<ThreeStateSheet> controller;
@@ -79,9 +78,14 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
   @override
   Widget build(BuildContext context) {
     final uiDirection = ref.watch(uiDirectionProvider);
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
+    final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final bool showSpecialBanner =
+        specialThemeMode == SpecialThemeMode.nationalDay ||
+        specialThemeMode == SpecialThemeMode.mekkahBase ||
+        specialThemeMode == SpecialThemeMode.ramadan;
     final isCityscapeDay = ref.watch(cityscapeProvider);
-    final isWRCActive = ref.watch(wRCProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
       if (widget.controller.state == ThreeStateSheet.expanded) {
@@ -102,10 +106,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       children: [
         Stack(
           alignment: Alignment.bottomCenter,
-          clipBehavior: Clip.none,
           children: [
             Padding(
-              padding: EdgeInsets.only(bottom: isNationalDay ? Spacing.$4x : 0.0),
+              padding: EdgeInsets.only(bottom: showSpecialBanner ? Spacing.$4x : 0.0),
               child: AnimatedCrossFade(
                 crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                 firstChild: const FreeRoamBar(),
@@ -117,71 +120,17 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 duration: const Duration(milliseconds: 300),
               ),
             ),
-            if (isNationalDay)
-              MultiStateSheetBuilder(
-                defaultState: ThreeStateSheet.hidden,
-                builder: (context, state, interpolation, child) => Padding(
-                  padding: EdgeInsets.only(
-                    top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0,
-                  ),
-                  child: GestureDetector(
-                    onTap: () => widget.controller.setState(ThreeStateSheet.open),
-                    child: SizedBox(
-                      height:
-                          Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
-                      width: double.infinity,
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-                          color: Color(0xFF00343A),
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
-                            child: Text(
-                              context.l10n.happy95thYears,
-                              style: context.textStyles.bodySmallSemiBold.copyWith(
-                                color: context.colors.successOnSuccess,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            if (isNationalDay)
-              NationalFlag(
-                onTap: () => widget.fireworksController
-                  ..value = 0
-                  ..animateTo(
-                    widget.fireworksController.upperBound,
-                    curve: Curves.easeOutQuint,
-                    duration: widget.fireworksController.duration,
-                  ),
-              ),
-            if (isCityscapeDay)
-              CityscapeBackground(
+            if (specialThemeMode == SpecialThemeMode.foundationDay)
+              CityEventDisplay(
+                activeEvent: activeEvent,
                 controller: widget.controller,
-                onTap: () {
-                  ref.read(cityscapeProvider.notifier).openThePlace();
-                },
+                fireworksController: widget.fireworksController,
               ),
-            if (isCityscapeDay)
-              CityscapeLogo(
-                onTap: () {
-                  ref.read(cityscapeProvider.notifier).openThePlace();
-                },
-              ),
-            if (isWRCActive)
-              WRCBackground(
+            if (specialThemeMode != SpecialThemeMode.base)
+              SpecialThemeHeader(
+                mode: specialThemeMode,
                 controller: widget.controller,
-                onTap: () {
-                  ref.read(wRCProvider.notifier).moveCameraToEventArea();
-                },
+                fireworksController: widget.fireworksController,
               ),
           ],
         ),
@@ -321,7 +270,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: Shadows.s,
-        color: colors.backgroundSurface1,
+        color: colors.backgroundSurface2,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),

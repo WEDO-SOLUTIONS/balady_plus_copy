@@ -29,7 +29,8 @@ class HajjPoiCardFooter extends HookConsumerWidget {
     if (bottomSheetController != null) {
       useEffect(() {
         void updateShadow() {
-          final isHidden = bottomSheetController.state == PoiCardBottomSheetState.hidden &&
+          final isHidden =
+              bottomSheetController.state == PoiCardBottomSheetState.hidden &&
               bottomSheetController.interpolation == 0.0;
           if (!isHidden != displayShadow.value) {
             displayShadow.value = !isHidden;
@@ -49,12 +50,14 @@ class HajjPoiCardFooter extends HookConsumerWidget {
           icon: TransportIcons.locationDirectionNavigator,
           buttonType: ButtonType.primary,
           label: context.l10n.poiCardDirections,
+          innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
           onPressed: onTapCar,
         ),
         if (poiMarkerRcmc.contactInfo != null && callPhone != null)
           ItemActionBar(
             icon: GeneralIcons.phoneLTR,
             buttonType: ButtonType.secondary,
+            innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
             onPressed: callPhone!,
           ),
       ],

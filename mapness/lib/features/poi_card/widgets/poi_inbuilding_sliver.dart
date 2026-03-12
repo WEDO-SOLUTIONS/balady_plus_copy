@@ -69,65 +69,14 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
   }
 
   @override
-  Widget build(BuildContext context) => MultiSliver(
-    children: [
-      SliverToBoxAdapter(
-        child: Padding(
-          padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
-          child: PoiContentFeedbackCard(
-            data: PoiContentFeedbackType.addPlace,
-            onTap: () => context.router.push(QuickFeedbackRoute()),
-            activeCityEvent: ref.watch(activeCityEventProvider),
-          ),
-        ),
-      ),
-      SliverPadding(
-        padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x, top: Spacing.$0_5x),
-        sliver: PagingListener(
-          controller: pagingController,
-          builder: (context, state, fetchNextPage) => PagedSliverList<int, OrganizationItem>.separated(
-            fetchNextPage: fetchNextPage,
-            state: state,
-            shrinkWrapFirstPageIndicators: true,
-            builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
-              newPageProgressIndicatorBuilder: (context) => Center(child: Loading.medium()),
-              itemBuilder: (context, item, index) => OrganizationWidget(
-                item: item,
-                onTap: (id) {
-                  final id = item.id;
-                  if (id == null) {
-                    return;
-                  }
-                  context.router.replace(
-                    PoiCardWidgetRoute(
-                      objectId: DgisObjectIdMessage(objectId: int.parse(id), entranceId: 0),
-                      closestPoint: widget.closestPoint,
-                      cameraConfig: PoiCameraConfig(
-                        zoom: widget.cameraConfig?.zoom,
-                        bearing: widget.cameraConfig?.bearing,
-                        tilt: widget.cameraConfig?.tilt,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            separatorBuilder: (context, index) => (Spacing.$3x - Spacing.$0_5x).heightBox,
-          ),
-        ),
-      ),
-    ],
-  );
-
-  Future<List<OrganizationItem>> _fetchPage(int pageKey) async {
+  Widget build(BuildContext context) {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
       context.read<ThemeController>().currentTheme,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );
-
-    ref.listen(
+    final viewModel = ref.listen(
       viewModelProvider,
       (prev, next) {
         next.whenOrNull(
@@ -139,7 +88,69 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
         );
       },
     );
+    return MultiSliver(
+      children: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
+            child: PoiContentFeedbackCard(
+              data: PoiContentFeedbackType.addPlace,
+              onTap: () => context.router.push(QuickFeedbackRoute()),
+              activeCityEvent: ref.watch(activeCityEventProvider),
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+            bottom: Spacing.$4x,
+            top: Spacing.$0_5x,
+          ),
+          sliver: PagingListener(
+            controller: pagingController,
+            builder: (context, state, fetchNextPage) => PagedSliverList<int, OrganizationItem>.separated(
+              fetchNextPage: fetchNextPage,
+              state: state,
+              shrinkWrapFirstPageIndicators: true,
+              builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+                newPageProgressIndicatorBuilder: (context) => Center(child: Loading.medium()),
+                itemBuilder: (context, item, index) => OrganizationWidget(
+                  item: item,
+                  onTap: (id) {
+                    final id = item.id;
+                    if (id == null) {
+                      return;
+                    }
+                    context.router.replace(
+                      PoiCardWidgetRoute(
+                        objectId: DgisObjectIdMessage(objectId: int.parse(id), entranceId: 0),
+                        closestPoint: widget.closestPoint,
+                        cameraConfig: PoiCameraConfig(
+                          zoom: widget.cameraConfig?.zoom,
+                          bearing: widget.cameraConfig?.bearing,
+                          tilt: widget.cameraConfig?.tilt,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              separatorBuilder: (context, index) => (Spacing.$3x - Spacing.$0_5x).heightBox,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
+  Future<List<OrganizationItem>> _fetchPage(int pageKey) async {
+    final viewModelProvider = poiCardProviderProvider(
+      widget.objectId.objectId,
+      context.read<ThemeController>().currentTheme,
+      cameraConfig: widget.cameraConfig,
+      closestPoint: widget.closestPoint,
+    );
     final organizationsData = await ref
         .read(viewModelProvider.notifier)
         .fetchOrganizationsData(objectId: widget.objectId.objectId, page: pageKey);
