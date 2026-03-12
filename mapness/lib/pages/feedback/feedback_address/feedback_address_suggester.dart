@@ -37,7 +37,7 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
   void initState() {
     super.initState();
     _dgisSheetController = ToggleSheetController(
-      heightModel: ToggleSheetHeightModel.offset(Spacing.$6x),
+      heightModel: ToggleSheetHeightModel.offset(0),
       onClose: (_) {
         ref.read(appRouterProvider).back();
       },

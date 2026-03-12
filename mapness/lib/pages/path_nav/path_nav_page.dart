@@ -54,6 +54,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
@@ -272,6 +273,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+    final stableBottomInset = InsetsUtils.platformAwareBottomInset(context, isLandscape: !isPortrait);
 
     sheetController = useToggleSheetController(onClose: (_) {}, clipByHeader: true, resetContentScrollOnClosed: true)
       ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(uikit.Spacing.$3x));
@@ -286,6 +288,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           _bottomHeightNotifier.value = sheetHeight;
           _setPaddingToCamera(_bottomHeightNotifier.value);
         }
+        return;
+      }
+
+      final padding = stableBottomInset;
+      final height = padding + uikit.Spacing.$3x;
+      if (_bottomHeightNotifier.value != height) {
+        _bottomHeightNotifier.value = height;
+        _setPaddingToCamera(height);
       }
     }
 
@@ -302,8 +312,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     useEffect(() {
       sheetController.addListener(onSheetHeightChanged);
-      final padding = MediaQuery.paddingOf(context).bottom;
-      _bottomHeightNotifier.value = sheetController.sheetHeight + uikit.Spacing.$3x + padding + uikit.Spacing.$4x;
+      final bottomPadding = stableBottomInset;
+
+      double bottomHeight;
+
+      if (isPortrait) {
+        bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + bottomPadding + uikit.Spacing.$4x;
+      } else {
+        bottomHeight = bottomPadding + uikit.Spacing.$3x;
+      }
+      _bottomHeightNotifier.value = bottomHeight;
       return () => sheetController.removeListener(onSheetHeightChanged);
     }, []);
 

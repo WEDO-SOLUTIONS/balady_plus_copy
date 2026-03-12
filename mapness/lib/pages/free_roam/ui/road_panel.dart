@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/free_roam/free_roam_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 
 class RoadPanel extends ConsumerWidget {
   final bool isLoading;
@@ -19,26 +20,66 @@ class RoadPanel extends ConsumerWidget {
     super.key,
   });
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
-    padding: const EdgeInsets.all(Spacing.$4x),
-    child: SizedBox(
-      height: 56,
-      width: MediaQuery.orientationOf(context) == Orientation.portrait ? double.infinity : FreeRoamPage.landscapeWidth,
-      child: Material(
-        color: Colors.transparent,
-        child: isLoading
-            ? DecoratedBox(
-                decoration: BoxDecoration(
-                  color: context.colors.backgroundSurface1,
-                  borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                ),
-                child: Center(child: Loading.small()),
-              )
-            : Row(
-                children: [
-                  if (onSearch != null)
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final bottomInset = InsetsUtils.platformAwareBottomInset(context, isLandscape: isLandscape);
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        Spacing.$4x,
+        Spacing.$4x,
+        Spacing.$4x,
+        Spacing.$3x + bottomInset,
+      ),
+      child: SizedBox(
+        height: 56,
+        width: isLandscape ? FreeRoamPage.landscapeWidth : double.infinity,
+        child: Material(
+          color: Colors.transparent,
+          child: isLoading
+              ? DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: context.colors.backgroundSurface1,
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                  ),
+                  child: Center(child: Loading.small()),
+                )
+              : Row(
+                  children: [
+                    if (onSearch != null)
+                      GestureDetector(
+                        onTap: onSearch,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: context.colors.onMapSurfaceOnMap,
+                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(Spacing.$4x),
+                            child: Icon(SystemIcons.search, color: context.colors.foregroundDefault),
+                          ),
+                        ),
+                      ),
+                    if (onSearch != null) const SizedBox(width: Spacing.$2x),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: onEndTrip,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: context.colors.onMapSurfaceOnMap,
+                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                          ),
+                          child: Center(
+                            child: Text(
+                              context.l10n.endTrip,
+                              style: context.textStyles.h4Medium.copyWith(color: context.colors.foregroundDefault),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: Spacing.$2x),
                     GestureDetector(
-                      onTap: onSearch,
+                      onTap: onOpenSheet,
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           color: context.colors.onMapSurfaceOnMap,
@@ -46,45 +87,14 @@ class RoadPanel extends ConsumerWidget {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(Spacing.$4x),
-                          child: Icon(SystemIcons.search, color: context.colors.foregroundDefault),
+                          child: Icon(SystemIcons.menu, color: context.colors.foregroundDefault),
                         ),
                       ),
                     ),
-                  if (onSearch != null) const SizedBox(width: Spacing.$2x),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: onEndTrip,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: context.colors.onMapSurfaceOnMap,
-                          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                        ),
-                        child: Center(
-                          child: Text(
-                            context.l10n.endTrip,
-                            style: context.textStyles.h4Medium.copyWith(color: context.colors.foregroundDefault),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  GestureDetector(
-                    onTap: onOpenSheet,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: context.colors.onMapSurfaceOnMap,
-                        borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(Spacing.$4x),
-                        child: Icon(SystemIcons.menu, color: context.colors.foregroundDefault),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

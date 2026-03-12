@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -23,13 +24,12 @@ class EndTripModal extends HookWidget {
     final bottomsheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
 
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
     final leftPadding = MediaQuery.viewPaddingOf(context).left + (isLandscape ? Spacing.$4x : 0.0);
 
     return Align(
       alignment: Alignment.bottomLeft,
       child: Padding(
-        padding: EdgeInsets.only(left: leftPadding, bottom: bottomInset + Spacing.$2x),
+        padding: EdgeInsets.only(left: leftPadding),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: isLandscape ? NaviSheetPanel.landscapeWidth - Spacing.$4x * 2 : double.infinity,
@@ -86,7 +86,7 @@ class EndTripModal extends HookWidget {
                   onTap: Navigator.of(context).pop,
                 ),
               ),
-              const SizedBox(height: Spacing.$3x),
+              SizedBox(height: Spacing.$3x + InsetsUtils.platformAwareBottomInset(context, isLandscape: isLandscape)),
             ],
           ),
         ),

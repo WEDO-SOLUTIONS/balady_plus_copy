@@ -20,6 +20,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
@@ -74,8 +75,6 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
 }
 
 class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
-  final sheetKey = GlobalKey();
-
   late final shapeDelegate = ToggleSheetDelegateFunction<ShapeBorder?>(
     function: (controller) => SmoothRectangleBorder(
       borderRadius: BorderRadius.vertical(
@@ -86,9 +85,9 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   );
   late final paddingDelegate = ToggleSheetDelegateFunction<EdgeInsets?>(
     function: (controller) {
-      final padding = MediaQuery.viewPaddingOf(context);
+      final padding = InsetsUtils.platformAwareBottomInset(context, isLandscape: widget.isLandscape);
       return EdgeInsets.only(
-        bottom: ((widget.isLandscape ? 0.0 : Spacing.$3x) + padding.bottom) * (controller.interpolation),
+        bottom: ((widget.isLandscape ? 0.0 : Spacing.$3x) + padding) * (controller.interpolation),
         left: Spacing.$4x * controller.interpolation,
         right: Spacing.$4x * controller.interpolation,
       );
@@ -138,13 +137,14 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
 
     return Padding(
       padding: EdgeInsetsDirectional.only(
-        start: MediaQuery.paddingOf(context).left,
-        bottom: widget.isLandscape ? MediaQuery.paddingOf(context).bottom : 0.0,
+        start: MediaQuery.viewPaddingOf(context).left,
       ),
-      child: SizedBox(
-        width: widget.isLandscape ? NaviSheetPanel.landscapeWidth : null,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: widget.isLandscape ? NaviSheetPanel.landscapeWidth : double.infinity,
+        ),
         child: ToggleSheet(
-          key: sheetKey,
+          key: ValueKey(widget.isLandscape),
           dragger: null,
           useSafeArea: !widget.isLandscape,
           shouldPop: (controller) {

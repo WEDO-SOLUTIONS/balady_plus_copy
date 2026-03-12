@@ -1,6 +1,8 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 
 class PathNavWrapper extends ConsumerWidget {
   final Widget child;
@@ -27,7 +29,13 @@ class PathNavWrapper extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            child,
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: InsetsUtils.platformAwareBottomInset(context, isLandscape: true) + Spacing.$3x,
+              ),
+              child: child,
+            ),
+
             if (indoorControl != null) indoorControl!,
           ],
         ),
