@@ -304,15 +304,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           poiCardState: poiCardState,
           tabController: _tabController,
           data: widget.data,
-          onTapClose: () async {
-            await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-            await ref
-                .read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier)
-                .restoreMarker();
-            await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
-
-            context.router.pop();
-          },
+          onTapClose: () => closePoiCard(context, ref),
         ),
         sliver: ValueListenableBuilder(
           valueListenable: _tabType,

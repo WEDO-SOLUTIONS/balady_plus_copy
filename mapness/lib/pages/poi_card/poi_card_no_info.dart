@@ -12,7 +12,6 @@ class _PoiCardNoInfo extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useToggleSheetController(
       onClose: (_) {
-        ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
         closePoiCard(context, ref);
       },
     );

@@ -19,8 +19,8 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   ConsumerState<_PoiCardWrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends ConsumerState<_PoiCardWrapper> with RouteAware, SingleTickerProviderStateMixin {
-  final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+class _WrapperState extends ConsumerState<_PoiCardWrapper>
+    with SingleTickerProviderStateMixin, AutoRouteAwareStateMixin<_PoiCardWrapper> {
   bool prevRouteNavi = false;
 
   @override
@@ -76,7 +76,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with RouteAware, Sing
         DeviceOrientation.portraitDown,
       ]);
     }
-    routeObserver.unsubscribe(this);
 
     super.dispose();
   }
@@ -85,18 +84,36 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with RouteAware, Sing
   void didChangeDependencies() {
     super.didChangeDependencies();
     FocusScope.of(context).unfocus();
-
-    final route = ModalRoute.of(context);
-    if (route is PageRoute) {
-      routeObserver.subscribe(this, route);
-    }
   }
 
   @override
   void didPop() {
-    ref.read(selectedMarkerProvider.notifier).clear();
+    _clearPoiSelectionState();
+  }
+
+  @override
+  void didPush() {
+    _scheduleProviderUpdate(() {
+      ref.read(regularPoiActiveProvider.notifier).setActive(true);
+    });
+  }
+
+  void _clearPoiSelectionState() {
+    ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
     ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
     ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
+
+    // Show Makkah place markers again when POI card is closed
+    ref.read(regularPoiActiveProvider.notifier).setActive(false);
+  }
+
+  void _scheduleProviderUpdate(VoidCallback action) {
+    Future<void>(() {
+      if (!mounted) {
+        return;
+      }
+      action();
+    });
   }
 
   @override
@@ -124,7 +141,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with RouteAware, Sing
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
-          ref.read(regularPoiActiveProvider.notifier).setActive(false);
+          _clearPoiSelectionState();
           context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
         }
       });

@@ -100,11 +100,6 @@ class PoiCardProvider extends _$PoiCardProvider {
   }) async {
     state = const AsyncValue.loading();
 
-    ref.onDispose(() {
-      // Show Makkah place markers again when POI card is closed
-      ref.read(regularPoiActiveProvider.notifier).setActive(false);
-    });
-
     final result = await ref
         .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
         .timeout(const Duration(minutes: 10));
