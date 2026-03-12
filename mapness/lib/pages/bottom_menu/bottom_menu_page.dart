@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
-import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
@@ -73,7 +73,7 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
 
   @override
   Widget build(BuildContext context) => AutoTabsRouter.builder(
-    routes: const [LandingRoute(), RoutingPointsRoute(), MapnessServicesRoute(), ProfileRoute()],
+    routes: [const LandingRoute(), const RoutingPointsRoute(), MapnessServicesRoute(), const ProfileRoute()],
     onNavigate: (tab) {
       _onTabChanged(tab.activeIndex);
 
@@ -82,32 +82,32 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
       }
 
-          if (tab.activeIndex == 2 && tab.previousIndex != 2) {
-            ref.read(appAnalyticsProvider).serviceSectionVisited();
-          }
-        },
-        builder: (_, tabsRouter, route) {
-          final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
-          final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
-          final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
-          return Column(
-            children: [
-              Expanded(
-                child: LazyIndexedStack(
-                  index: route.activeIndex,
-                  children: tabsRouter,
-                ),
-              ),
-              if (controller == null)
-                const SizedBox.shrink()
-              else
-                ListenableBuilder(
-                  listenable: controller,
-                  builder: (context, child) {
-                    final isHidden = controller.closestState == ThreeStateSheet.hidden;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      curve: Curves.easeInOut,
+      if (tab.activeIndex == 2 && tab.previousIndex != 2) {
+        ref.read(appAnalyticsProvider).serviceSectionVisited();
+      }
+    },
+    builder: (_, tabsRouter, route) {
+      final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
+      final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+      final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
+      return Column(
+        children: [
+          Expanded(
+            child: LazyIndexedStack(
+              index: route.activeIndex,
+              children: tabsRouter,
+            ),
+          ),
+          if (controller == null)
+            const SizedBox.shrink()
+          else
+            ListenableBuilder(
+              listenable: controller,
+              builder: (context, child) {
+                final isHidden = controller.closestState == ThreeStateSheet.hidden;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
                   decoration: BoxDecoration(
                     color: isHidden ? context.colors.backgroundSurface2 : context.colors.backgroundSurface1,
                     boxShadow: [
@@ -185,10 +185,10 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                     onTap: route.setActiveIndex,
                   ),
                 );
-                  },
-              ),
-            ],
-          );
-        },
+              },
+            ),
+        ],
       );
+    },
+  );
 }

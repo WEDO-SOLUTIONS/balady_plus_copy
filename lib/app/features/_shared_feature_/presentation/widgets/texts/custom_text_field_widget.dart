@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FilteringTextInputFormatter, TextInputFormatter;
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, BorderConversion, BorderType;
@@ -345,7 +344,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final bool? showOptional;
 
   const CustomTextFieldWidgetWithOptinal({
-    Key? key,
+    super.key,
     required this.label,
     this.labelColor = AppColor.baladyDarkGreen2,
     this.labelSize = 13.0,
@@ -389,7 +388,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
     this.onTap,
     this.inputFormatter,
     this.showOptional,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

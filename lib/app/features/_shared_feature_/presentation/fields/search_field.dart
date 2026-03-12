@@ -6,7 +6,7 @@ import '../../shared_feature_exports.dart' show CustomTextFieldWidget;
 
 class SearchField extends StatelessWidget {
   final void Function(String)? onChanged;
-  const SearchField({Key? key, this.onChanged}) : super(key: key);
+  const SearchField({super.key, this.onChanged});
 
   @override
   Widget build(BuildContext context) {

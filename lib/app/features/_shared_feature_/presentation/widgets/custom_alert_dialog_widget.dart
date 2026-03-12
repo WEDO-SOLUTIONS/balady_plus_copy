@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, AppStyle, CommonFunctions, MessageType, UIHelper;
-import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../shared_feature_exports.dart' show CustomTextButtonWidget, CustomTextWidget;
 
 class CustomAlertDialogWidget extends StatelessWidget {

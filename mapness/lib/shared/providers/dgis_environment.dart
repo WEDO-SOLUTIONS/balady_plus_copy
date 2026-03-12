@@ -35,7 +35,7 @@ class DgisEnvironment extends _$DgisEnvironment {
     try {
       // ignore: avoid_dynamic_calls
       return EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
-    } catch (_, _) {
+    } catch (_, __) {
       logger.log('Error parsing environment config', logLevel: MapnessLogLevel.critical);
       return EnvironmentConfig.fromEnvType(envTypeJsonKey ?? envType ?? 'momrahProd');
     }

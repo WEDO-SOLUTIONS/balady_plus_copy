@@ -21,7 +21,7 @@ class IndoorState {
     return IndoorState(
       hasLevels: hasLevels ?? this.hasLevels,
       levelNames: levelNames ?? this.levelNames,
-      activeIndex: activeLevel ?? this.activeIndex,
+      activeIndex: activeLevel ?? activeIndex,
     );
   }
 }

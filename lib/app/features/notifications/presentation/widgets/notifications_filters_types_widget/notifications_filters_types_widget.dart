@@ -12,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NotificationsFiltersTypesWidget extends StatelessWidget {
-  const NotificationsFiltersTypesWidget({key});
+  const NotificationsFiltersTypesWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

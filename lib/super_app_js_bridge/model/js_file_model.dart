@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 

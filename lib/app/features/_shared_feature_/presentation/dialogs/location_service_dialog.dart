@@ -11,7 +11,7 @@ import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class LocationServiceDialog extends StatelessWidget {
-  const LocationServiceDialog({Key? key}) : super(key: key);
+  const LocationServiceDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

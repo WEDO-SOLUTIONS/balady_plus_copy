@@ -8,10 +8,10 @@ class BottomNavBarStructure extends StatelessWidget {
   final List<Widget> children;
 
   const BottomNavBarStructure({
-    Key? key,
+    super.key,
     this.height = 100.0,
     required this.children,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class BottomNavBarStructure extends StatelessWidget {
                     alignment: Alignment.center,
                     child: child,
                   ))
-              .toList()
+              
         ],
       ),
     );

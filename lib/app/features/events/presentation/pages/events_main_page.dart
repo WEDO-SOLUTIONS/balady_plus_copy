@@ -40,8 +40,9 @@ class _EventsMainPageState extends State<EventsMainPage> {
       create: (context) => EventsBloc()..add(const GetSearchEvent()),
       child: BlocListener<EventsBloc, EventsState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure || state.status == BlocStatus.retry)
+          if (state.status == BlocStatus.failure || state.status == BlocStatus.retry) {
             CommonFunctions.showError(state.errorMessage ?? "");
+          }
         },
         child: Scaffold(
           appBar: DefaultAppBarWidget(

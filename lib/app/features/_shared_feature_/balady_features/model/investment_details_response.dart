@@ -1,10 +1,9 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:dgis_map/library.dart';
-
-import 'package:intl/intl.dart';
-import 'package:collection/collection.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
+import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class InvestmentDetailsResponse {
   InvestmentDetailsResponse({this.statusDetails, this.data});
@@ -217,7 +216,7 @@ class Result {
           ? null
           : List<ContractTemplate>.from(json["TermsSpecDocument"].map((x) => ContractTemplate.fromJson(x))),
       opportunityNumber: json["OpportunityNumber"],
-      documentValue: json["DocumentValue"] != null ? json["DocumentValue"].toDouble() : null,
+      documentValue: json["DocumentValue"]?.toDouble(),
       contractTemplate: json["ContractTemplate"] == null
           ? null
           : List<ContractTemplate>.from(json["ContractTemplate"].map((x) => ContractTemplate.fromJson(x))),
@@ -228,9 +227,7 @@ class Result {
               json["RequiredAttachmentCategoryList"].map((x) => RequiredAttachmentCategoryList.fromJson(x)),
             ),
       paymentType: json["PaymentType"],
-      preparationPeriodPercentage: json["PreparationPeriodPercentage"] != null
-          ? json["PreparationPeriodPercentage"].toDouble()
-          : null,
+      preparationPeriodPercentage: json["PreparationPeriodPercentage"]?.toDouble(),
       sadadStatus: json["SadadStatus"],
       purchaseDocumentStatus: json["PurchaseDocumentStatus"],
       caseStatusEN: json["CaseStatusEN"],
@@ -244,15 +241,13 @@ class Result {
       isEntityOpportunity: json["IsEntityOpportunity"],
       regions: json["Regions"],
       applyAnnualRaise: json["ApplyAnnualRaise"],
-      yearsForAnnualRaise: json["YearsForAnnualRaise"] != null ? json["YearsForAnnualRaise"] : null,
-      annualRaisePercentage: json["AnnualRaisePercentage"] != null ? json["AnnualRaisePercentage"].toDouble() : null,
+      yearsForAnnualRaise: json["YearsForAnnualRaise"],
+      annualRaisePercentage: json["AnnualRaisePercentage"]?.toDouble(),
       isBillingApplicableForEntityOpportunity: json["IsBillingApplicableForEntityOpportunity"],
       bankWarrantyType: json["BankWarrantyType"],
       deductInitialyWarrantyFirstYear: json["DeductInitialyWarrantyFirstYear"],
       isBiddingNotAllowed: json["IsBiddingNotAllowed"],
-      initialWarrantyPercentage: json["InitialWarrantyPercentage"] != null
-          ? json["InitialWarrantyPercentage"].toDouble()
-          : null,
+      initialWarrantyPercentage: json["InitialWarrantyPercentage"]?.toDouble(),
       rfpHasPrice: json["RFPHasPrice"],
       bidEndDateTime: json["BidEndDateTime"],
       queryEndDateTime: json["QueryEndDateTime"],
@@ -260,7 +255,7 @@ class Result {
       envelopOpeningDateTime: json["EnvelopOpeningDateTime"],
       annualContractValue: json["AnnualContractValue"],
       opportunityAvailability: json["OpportunityAvailability"],
-      totalContractValue: json["TotalContractValue"] != null ? json["TotalContractValue"].toDouble() : null,
+      totalContractValue: json["TotalContractValue"]?.toDouble(),
     );
     r.allLocations = getAllLocations(r.opportunityList ?? []);
 
@@ -355,7 +350,9 @@ class Result {
   }
 
   DateTime? getEnvelopOpeningDate() {
-    if (envelopOpeningDate != null) return DateTime.tryParse(envelopOpeningDate!);
+    if (envelopOpeningDate != null) {
+      return DateTime.tryParse(envelopOpeningDate!);
+    }
     return null;
   }
 
@@ -374,7 +371,9 @@ class Result {
         ),
       );
     }
-    if (CommonFunctions.isAppAR) date = CommonFunctions.replaceArabicNumberWithEnglish(date);
+    if (CommonFunctions.isAppAR) {
+      date = CommonFunctions.replaceArabicNumberWithEnglish(date);
+    }
 
     return date;
   }
@@ -391,12 +390,7 @@ class Result {
         int? yearsForAnnualRaise = this.yearsForAnnualRaise;
 
         if (applyAnnualRaise == "Yes") {
-          return (paymentType ?? "") +
-              ", " +
-              ("var_payment_agreement")
-                  .tr()
-                  .replaceAll("-", annualRaisePercentage.toString())
-                  .replaceAll("ـ", yearsForAnnualRaise.toString());
+          return "${paymentType ?? ""}, ${("var_payment_agreement").tr().replaceAll("-", annualRaisePercentage.toString()).replaceAll("ـ", yearsForAnnualRaise.toString())}";
         }
       }
     } catch (error, stackTrace) {
@@ -483,10 +477,11 @@ class Result {
         : [];
     for (int i = 0; i < list1.length; i++) {
       ContractTemplate item = list1[i];
-      if (i == 0)
+      if (i == 0) {
         item.pyMemo = ("contract_template").tr();
-      else
-        item.pyMemo = ("contract_template").tr() + "(${i.toString()})";
+      } else {
+        item.pyMemo = "${("contract_template").tr()}(${i.toString()})";
+      }
       contractTemplateAndTerms.add(item);
     }
 
@@ -498,10 +493,11 @@ class Result {
 
     for (int i = 0; i < list2.length; i++) {
       ContractTemplate item = list2[i];
-      if (i == 0)
+      if (i == 0) {
         item.pyMemo = ("terms_template").tr();
-      else
-        item.pyMemo = ("terms_template").tr() + "(${i.toString()})";
+      } else {
+        item.pyMemo = "${("terms_template").tr()}(${i.toString()})";
+      }
       contractTemplateAndTerms.add(item);
     }
 
@@ -513,7 +509,7 @@ class Result {
   }
 
   String getMuncipalityAndSubMuncipality() {
-    return (municipality ?? "") + " - " + (subMunicipality ?? "");
+    return "${municipality ?? ""} - ${subMunicipality ?? ""}";
   }
 
   List<String> getCitiesOrRegions() {
@@ -547,7 +543,10 @@ class Result {
   }
 
   String getEntityImage() {
-    return getEntityOpportunity() ? getEntityImagePath(entityID) : ("" + "momra.png"); //MM
+    return getEntityOpportunity()
+        ? getEntityImagePath(entityID)
+        : (""
+              "momra.png"); //MM
   }
 
   String? getOfferType() {
@@ -641,7 +640,7 @@ class OpportunityList {
     sourceCaseKey: json["SourceCaseKey"],
     sourceCaseId: json["SourceCaseID"],
     siteAddress: json["SiteAddress"],
-    siteArea: json["SiteArea"] != null ? json["SiteArea"] : "0",
+    siteArea: json["SiteArea"] ?? "0",
     street: json["Street"],
     siteNumber: json["SiteNumber"],
     coOrdinatesList: json["CoOrdinatesList"] == null
@@ -681,7 +680,7 @@ class CoOrdinatesList {
   double? yCoordinate;
 
   factory CoOrdinatesList.fromJson(Map<String, dynamic> json) => CoOrdinatesList(
-    xCoordinate: json["XCoordinate"] != null ? json["XCoordinate"].toDouble() : null,
+    xCoordinate: json["XCoordinate"]?.toDouble(),
     pzInsKey: json["pzInsKey"],
     yCoordinate: json["YCoordinate"] != null ? json["YCoordinate"].toDouble() : json["YCoordinate"],
   );
@@ -697,7 +696,7 @@ class CoOrdinatesList {
 }
 
 String getEntityImagePath(String? entityID) {
-  return "https://furas.momra.gov.sa/images/entities/${entityID}.png";
+  return "https://furas.momra.gov.sa/images/entities/$entityID.png";
 }
 
 String getFormattedDateAndTimeV2(String dateStr) {
@@ -706,8 +705,8 @@ String getFormattedDateAndTimeV2(String dateStr) {
   try {
     DateTime? dateAndTime;
 
-    if (dateStr != null && dateStr.isNotEmpty) {
-      String dateWithT = dateStr.substring(0, 15) + "z";
+    if (dateStr.isNotEmpty) {
+      String dateWithT = "${dateStr.substring(0, 15)}z";
       dateAndTime = DateTime.parse(dateWithT).toLocal();
     }
 
@@ -717,7 +716,7 @@ String getFormattedDateAndTimeV2(String dateStr) {
     if (CommonFunctions.isAppAR) {
       time = time.replaceAll("ص", ("am_full").tr()).replaceAll("م", ("pm_full").tr());
     }
-    formmatedDateAndTime = date + "  |  " + time;
+    formmatedDateAndTime = "$date  |  $time";
   } catch (error, stackTrace) {
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(
@@ -727,7 +726,8 @@ String getFormattedDateAndTimeV2(String dateStr) {
       ),
     );
   }
-  if (CommonFunctions.isAppAR)
+  if (CommonFunctions.isAppAR) {
     formmatedDateAndTime = CommonFunctions.replaceArabicNumberWithEnglish(formmatedDateAndTime);
+  }
   return formmatedDateAndTime;
 }

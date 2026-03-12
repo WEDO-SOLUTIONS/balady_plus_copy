@@ -11,12 +11,10 @@ import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 import 'package:mapness/widgets/debug_overlay/makkah_places_debug_panel.dart';
-import 'package:mapness/widgets/debug_overlay/founding_day_debug_switcher.dart';
-import 'package:mapness/widgets/debug_overlay/link_checker.dart';
 import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
 import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
-import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
 import 'package:mapness/widgets/debug_overlay/special_theme_debug_panel.dart';
+import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
@@ -45,134 +43,130 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      minChildSize: 0,
-      maxChildSize: 0.9,
-      initialChildSize: 0,
-      snapSizes: const [0, 0.9],
-      controller: widget._draggableController,
-      builder: (context, scrollController) => Container(
-        decoration: const BoxDecoration(
-          color: DebugTheme.background,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
-          ),
-        ),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Column(
-            children: [
-              _buildHeader(context),
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  physics: const ClampingScrollPhysics(),
-                  controller: scrollController,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _AppInfoCard(packageInfo: _packageInfo),
-                      const SpecialThemeDebugPanel(),
-                      const MakkahPlacesDebugPanel(),
-                      _QuickActionsCard(
-                        draggableController: widget._draggableController,
-                      ),
-                      const DebugServerUrl(),
-                      const SsoCredentialView(),
-                      const CityscapeDebugSwitcher(),
-                      const BetterRouteSettingsWidget(),
-                      const SliderSpeed(),
-                      const DebugNavigationControll(),
-                      const ShowOnboardingButton(),
-                      const ShowSaudiDayButton(),
-                      SizedBox(
-                        height: MediaQuery.of(context).viewInsets.bottom + 24,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+  Widget build(BuildContext context) => DraggableScrollableSheet(
+    minChildSize: 0,
+    maxChildSize: 0.9,
+    initialChildSize: 0,
+    snapSizes: const [0, 0.9],
+    controller: widget._draggableController,
+    builder: (context, scrollController) => Container(
       decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: DebugTheme.border),
+        color: DebugTheme.background,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
         ),
       ),
-      child: Column(
-        children: [
-          // Handle bar
-          Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: DebugTheme.surfaceLight,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: DebugTheme.gradientPurple,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: DebugTheme.accent.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.bug_report_rounded,
-                  color: Colors.white,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                physics: const ClampingScrollPhysics(),
+                controller: scrollController,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Developer Tools',
-                      style: context.textStyles.h3SemiBold.copyWith(
-                        color: DebugTheme.textPrimary,
-                        letterSpacing: -0.3,
-                      ),
+                    _AppInfoCard(packageInfo: _packageInfo),
+                    const SpecialThemeDebugPanel(),
+                    const MakkahPlacesDebugPanel(),
+                    _QuickActionsCard(
+                      draggableController: widget._draggableController,
                     ),
-                    Text(
-                      'Debug & Configuration Panel',
-                      style: context.textStyles.captionSmallRegular.copyWith(
-                        color: DebugTheme.textMuted,
-                      ),
+                    const DebugServerUrl(),
+                    const SsoCredentialView(),
+                    const CityscapeDebugSwitcher(),
+                    const BetterRouteSettingsWidget(),
+                    const SliderSpeed(),
+                    const DebugNavigationControll(),
+                    const ShowOnboardingButton(),
+                    const ShowSaudiDayButton(),
+                    SizedBox(
+                      height: MediaQuery.of(context).viewInsets.bottom + 24,
                     ),
                   ],
                 ),
               ),
-              DebugBadge(
-                label: 'DEV',
-                color: DebugTheme.warning,
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+
+  Widget _buildHeader(BuildContext context) => Container(
+    padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+    decoration: const BoxDecoration(
+      border: Border(
+        bottom: BorderSide(color: DebugTheme.border),
+      ),
+    ),
+    child: Column(
+      children: [
+        // Handle bar
+        Container(
+          width: 40,
+          height: 4,
+          decoration: BoxDecoration(
+            color: DebugTheme.surfaceLight,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: DebugTheme.gradientPurple,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: DebugTheme.accent.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.bug_report_rounded,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Developer Tools',
+                    style: context.textStyles.h3SemiBold.copyWith(
+                      color: DebugTheme.textPrimary,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  Text(
+                    'Debug & Configuration Panel',
+                    style: context.textStyles.captionSmallRegular.copyWith(
+                      color: DebugTheme.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const DebugBadge(
+              label: 'DEV',
+              color: DebugTheme.warning,
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 class _AppInfoCard extends ConsumerWidget {
@@ -188,7 +182,7 @@ class _AppInfoCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.info_outline_rounded,
             title: 'App Information',
             gradient: DebugTheme.gradientBlue,
@@ -202,7 +196,7 @@ class _AppInfoCard extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                _InfoItem(
+                const _InfoItem(
                   label: 'Urbi Release',
                   value: PackageConfig.releaseVersion,
                 ),
@@ -210,12 +204,12 @@ class _AppInfoCard extends ConsumerWidget {
                   label: 'App Version',
                   value: '${packageInfo?.version ?? '-'}(${packageInfo?.buildNumber ?? '-'})',
                 ),
-                _InfoItem(
+                const _InfoItem(
                   label: 'CI Build',
                   value: PackageConfig.buildName,
                   isSmall: true,
                 ),
-                _InfoItem(
+                const _InfoItem(
                   label: 'Android Auto',
                   value: 'Enabled',
                   valueColor: DebugTheme.success,
@@ -304,34 +298,32 @@ class _InfoItem extends StatelessWidget {
   final bool isSmall;
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: context.textStyles.captionSmallRegular.copyWith(
-              color: DebugTheme.textMuted,
-            ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 3),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: context.textStyles.captionSmallRegular.copyWith(
+            color: DebugTheme.textMuted,
           ),
-          const SizedBox(width: 12),
-          Flexible(
-            child: Text(
-              value,
-              style: context.textStyles.captionSmallMedium.copyWith(
-                color: valueColor ?? DebugTheme.textPrimary,
-                fontSize: isSmall ? 10 : null,
-              ),
-              textAlign: TextAlign.end,
+        ),
+        const SizedBox(width: 12),
+        Flexible(
+          child: Text(
+            value,
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: valueColor ?? DebugTheme.textPrimary,
+              fontSize: isSmall ? 10 : null,
             ),
+            textAlign: TextAlign.end,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 class _QuickActionsCard extends StatelessWidget {
@@ -340,38 +332,36 @@ class _QuickActionsCard extends StatelessWidget {
   final DraggableScrollableController draggableController;
 
   @override
-  Widget build(BuildContext context) {
-    return DebugCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DebugSectionHeader(
-            icon: Icons.flash_on_rounded,
-            title: 'Quick Actions',
-            gradient: DebugTheme.gradientAmber,
-          ),
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: DebugButton(
-                  label: 'View Logs',
-                  icon: Icons.article_outlined,
-                  gradient: DebugTheme.gradientTeal,
-                  onPressed: () {
-                    draggableController.animateTo(
-                      0.0,
-                      duration: const Duration(milliseconds: 150),
-                      curve: Curves.linear,
-                    );
-                    logger.share();
-                  },
-                ),
+  Widget build(BuildContext context) => DebugCard(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const DebugSectionHeader(
+          icon: Icons.flash_on_rounded,
+          title: 'Quick Actions',
+          gradient: DebugTheme.gradientAmber,
+        ),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            Expanded(
+              child: DebugButton(
+                label: 'View Logs',
+                icon: Icons.article_outlined,
+                gradient: DebugTheme.gradientTeal,
+                onPressed: () {
+                  draggableController.animateTo(
+                    0.0,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.linear,
+                  );
+                  logger.share();
+                },
               ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

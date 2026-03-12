@@ -23,7 +23,9 @@ class PaymentWidget extends StatelessWidget {
         );
         EasyLoading.dismiss();
 
-        if (url != null) CommonFunctions.openBaladyWebView(url, isObjections: false);
+        if (url != null) {
+          CommonFunctions.openBaladyWebView(url, isObjections: false);
+        }
       },
       text: "pay_bill".tr(),
     );

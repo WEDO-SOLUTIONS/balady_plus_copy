@@ -9,7 +9,6 @@ import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../widgets/search_text_field_widget.dart';
 import 'dialog_header.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class IncidentTypeWithSearchDialog extends StatefulWidget {
   final Function(DropDownItem item) onSelect;
@@ -20,14 +19,14 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   final bool? isButtonDisabled;
 
   IncidentTypeWithSearchDialog({
-    Key? key,
+    super.key,
     required this.onSelect,
     this.selectedItem,
     required this.items,
     this.title,
     this.searchHint,
     this.isButtonDisabled,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -70,9 +69,7 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
             hintText: widget.searchHint ?? ('searchFor').tr(),
             onTextChanged: /* () {},*/ (value) {
               setState(() {
-                items = widget.items
-                    .where((element) => element.name?.contains(value) ?? element.name == value)
-                    .toList();
+                items = widget.items.where((element) => element.name.contains(value) ?? element.name == value).toList();
               });
             },
             onSubmitSearch: (String val) {},

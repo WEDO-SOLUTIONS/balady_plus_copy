@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/extensions/int_extension.dart';
-
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle, IconPath;
-import '../../../shared_feature_exports.dart'
-    show BottomSheetWithActions, CustomTextFieldWidget, CustomTextWidget, DrawIconBasedTypeWidget, ElevatedButtonWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle;
+import '../../../shared_feature_exports.dart' show BottomSheetWithActions, CustomTextWidget, ElevatedButtonWidget;
 
 class GenericBottomSheetList<T> extends StatefulWidget {
   final String title;
@@ -48,7 +44,7 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
 
   @override
   Widget build(BuildContext context) {
-    bool showNoDataMsg = (widget.items != null && widget.items.isEmpty && widget.noDataMsg != null);
+    bool showNoDataMsg = (widget.items.isEmpty && widget.noDataMsg != null);
     return BottomSheetWithActions(
       title: widget.title,
       isList: true,

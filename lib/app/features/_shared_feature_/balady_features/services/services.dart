@@ -12,8 +12,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/services/global/web_service.dart';
-import '../../../../core/utils/constants/apis/env_types.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 

@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:adjust_sdk/adjust.dart';
-import 'package:adjust_sdk/adjust_attribution.dart';
 import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show BoxShadow, Color, Colors, WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -17,15 +17,9 @@ import 'package:localize_and_translate/localize_and_translate.dart' show Localiz
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
-import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
-import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
-import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
-import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
 import './app/core/utils/utils_exports.dart' show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 import 'app/core/services/local/notification_hawaii.dart';
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
@@ -59,10 +53,7 @@ abstract class AppEnv {
     });
 
     /// force app to be only portrait
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     //MapUtils.loadMarkers();
 

@@ -1,10 +1,8 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 
 class NeedLoginBottomSheet extends StatelessWidget {
   final String? title;
@@ -12,7 +10,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
   final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginBottomSheet({Key? key, this.desc, this.title, this.mainPage, this.onSuccessLogin}) : super(key: key);
+  const NeedLoginBottomSheet({super.key, this.desc, this.title, this.mainPage, this.onSuccessLogin});
 
   List<Widget> textActions(BuildContext context) => [
     const SizedBox(height: 10),
@@ -47,7 +45,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
                 ),
                 width: 40,
                 height: 40,
-                child: CloseButton(),
+                child: CloseButton(color: Theme.of(context).colorScheme.onPrimary),
               ),
             ],
           ),
@@ -85,7 +83,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
                   btnTextWeight: AppFontWeight.bold,
                   btnTextColor: Color(0xFF606060),
                   btnHeight: 56,
-                  btnColor: Color(0x1F898989),
+                  btnColor: Color(0x1F898989).withOpacity(0.1),
                   btnRadius: 8,
                 ),
                 const SizedBox(height: 12),

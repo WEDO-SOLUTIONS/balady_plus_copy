@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_features/auth_quick_access_biometric_widget/widgets/auth_quick_access_biometric_widget.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
+import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_settings_page.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -27,8 +28,6 @@ class SettingsPage extends ConsumerStatefulWidget {
 }
 
 class _SettingsPageState extends ConsumerState<SettingsPage> {
-  // According to task BALADY-416 to hide flags we temporary hide it with boolean flag
-  // We don't delete it because this goes against the design of this feature
   static const showFlags = false;
 
   @override
@@ -116,6 +115,34 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       );
                     },
                   ),
+                  Spacing.$2x.heightBox,
+                  ContentWrapper(
+                    color: context.colors.backgroundSurface1,
+                    children: [
+                      ContentRow(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const AccessibilitySettingsPage(),
+                          ),
+                        ),
+                        options: ContentRowOptions(
+                          leadingIcon: AppIcons(
+                            iconData: GeneralIcons.accessibilityWheels,
+                            color: context.colors.accentDefault,
+                            size: 24,
+                          ),
+                          title: context.l10n.accessibility,
+                          actionWidget: ContentRowActionOptions(
+                            actionIcon: AppIcons(
+                              iconData: SystemIcons.arrowCornerRightLarge,
+                              color: context.colors.foregroundSoft,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacing.$2x.heightBox,
                 ],
               ),
             ),
@@ -135,7 +162,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
         )
       : SvgPicture.asset(
-          colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+            context.colors.accentDefault,
+            BlendMode.srcIn,
+          ),
           Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,

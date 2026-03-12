@@ -91,11 +91,17 @@ class AppLanguage extends _$AppLanguage {
   }
 
   Future<void> update(Language value) async {
-    // Main language change. We use information from this classes in other places
-    // so we need to update the prefs and translator first
+    // optional guard
+    if (state == value) return;
+
+    // ✅ 1) Update state FIRST (breaks many cycles immediately)
+    state = value;
+
+    // ✅ 2) Persist + external translator change
     await ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
     CommonFunctions.changeLanguage(lang: value.baladyCompat);
 
+    // ✅ 3) Keep your updates (still inside update)
     ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
     // Update the SSO profile to get the information in the new language
     unawaited(ref.read(authProvider.notifier).forceUpdate());
@@ -107,6 +113,18 @@ class AppLanguage extends _$AppLanguage {
     // Invalidate weather provider after state update to avoid circular dependency
     Future.microtask(() => ref.invalidate(forecastWeatherProvider));
   }
+
+  /*
+    1) persist
+    await ref.read(sharedPrefsProvider).setString(_prefsKey, value.name);
+
+    2) update state first (important)
+    state = value;
+
+    3) external change (no providers)
+    CommonFunctions.changeLanguage(lang: value.baladyCompat);
+
+  */
 
   Future<void> updateCachedMiniAppsLanguage(String value) async {
     await ref.read(sharedPrefsProvider).setString(_cachedMiniAppsLangKey, value);

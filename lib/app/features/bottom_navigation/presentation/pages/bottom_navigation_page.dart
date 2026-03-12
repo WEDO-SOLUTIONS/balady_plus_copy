@@ -2,6 +2,8 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/bottom_nav_bar.dart';
 import 'package:balady_plus/app/features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocRequestStatus;
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_wrapper.dart';
@@ -22,6 +24,24 @@ class BottomNavigationPage extends StatelessWidget {
         ),
         BlocProvider<ForceUpdateCubit>(
           create: (_) => ForceUpdateCubit(),
+        ),
+        BlocProvider<DelegatorsCubit>(
+          create: (_) {
+            final cubit = sl<DelegatorsCubit>();
+            // Initialize: Fetch delegators/agents and restore selection on app startup
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              // Only fetch if not already loaded
+              if (cubit.state.delegators.isEmpty && 
+                  cubit.state.status != BlocRequestStatus.submissionGetLoading) {
+                cubit.getDelegators();
+              }
+              if (cubit.state.agents.isEmpty && 
+                  cubit.state.agentStatus != BlocRequestStatus.submissionGetLoading) {
+                cubit.getAgents();
+              }
+            });
+            return cubit;
+          },
         ),
       ],
       child: SplashWrapper(

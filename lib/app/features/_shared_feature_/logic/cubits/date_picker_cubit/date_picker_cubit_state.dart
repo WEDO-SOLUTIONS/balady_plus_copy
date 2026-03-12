@@ -5,7 +5,7 @@ class DatePickerState extends Equatable {
   const DatePickerState({required DateTime? initialDate}) : _initialDate = initialDate;
 
   DateString get selectedDateString =>
-      _initialDate != null ? "${_initialDate!.year}/${_initialDate!.month}/${_initialDate!.day}" : "yyyy/mm/dd";
+      _initialDate != null ? "${_initialDate.year}/${_initialDate.month}/${_initialDate.day}" : "yyyy/mm/dd";
   DateTime get selectedDate {
     final date = _initialDate ?? DateTime.now();
     // to check if current-date equals for Friday or Saturday to disable them

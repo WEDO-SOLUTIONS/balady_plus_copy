@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/bridge.dart';
-import '../wisgets/location_retrive_location.dart';
 import '../wisgets/location_retrive_data.dart';
+import '../wisgets/location_retrive_location.dart';
 
 class AcquireLocationPage extends StatefulWidget {
   const AcquireLocationPage({super.key});
@@ -45,7 +45,7 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
     return BlocConsumer<LocationCubit, LocationState>(
       listener: (context, state) {
         if (state.requestsStatus == BlocStatus.success) {
-          if (mounted)
+          if (mounted) {
             Timer(Duration(seconds: 1), () {
               final params = sl<BridgeParams>().copyWith(isAuthenticated: true);
               final entryPointBridge = sl<EntryPointBridge>();
@@ -53,35 +53,44 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
 
               context.read<LocationCubit>().emit(state.copyWith(requestsStatus: BlocStatus.initial));
             });
+          }
         }
       },
       builder: (context, state) {
         return Scaffold(
           body: Container(
             decoration: const BoxDecoration(
-                image: DecorationImage(image: AssetImage(ImagePath.successPageBackground), fit: BoxFit.cover)),
-            child: Builder(builder: (context) {
-              if (state.locationStatus == BlocStatus.success) return LocationRetriveData();
-              //  return Container(
-              //     child: Center(child: Text("Getting Location Success")));
-              if (state.locationStatus == BlocStatus.loading) return LocationRetriveData();
-              if (state.locationStatus == BlocStatus.failure)
-                return Container(child: Center(child: Text("Getting Location")));
+              image: DecorationImage(image: AssetImage(ImagePath.successPageBackground), fit: BoxFit.cover),
+            ),
+            child: Builder(
+              builder: (context) {
+                if (state.locationStatus == BlocStatus.success) {
+                  return LocationRetriveData();
+                }
+                //  return Container(
+                //     child: Center(child: Text("Getting Location Success")));
+                if (state.locationStatus == BlocStatus.loading) {
+                  return LocationRetriveData();
+                }
+                if (state.locationStatus == BlocStatus.failure) {
+                  return Container(child: Center(child: Text("Getting Location")));
+                }
 
-              if (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
-                  state.locationServiceStatus == BlocStatus.locationServiceSuceess) return LocationRetriveData();
+                if (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
+                    state.locationServiceStatus == BlocStatus.locationServiceSuceess) {
+                  return LocationRetriveData();
+                }
 
-              if (state.locationServiceStatus == BlocStatus.locationServiceFailed)
-                return LocationRetriveLocation(
-                  permission: false,
-                );
-              if (state.locationPermissionStatus == BlocStatus.locationPermissionFailed)
-                return LocationRetriveLocation(
-                  permission: true,
-                );
+                if (state.locationServiceStatus == BlocStatus.locationServiceFailed) {
+                  return LocationRetriveLocation(permission: false);
+                }
+                if (state.locationPermissionStatus == BlocStatus.locationPermissionFailed) {
+                  return LocationRetriveLocation(permission: true);
+                }
 
-              return Container(child: Center(child: Text("")));
-            }),
+                return Container(child: Center(child: Text("")));
+              },
+            ),
           ),
         );
       },

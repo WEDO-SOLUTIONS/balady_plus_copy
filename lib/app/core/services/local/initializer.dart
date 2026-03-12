@@ -8,11 +8,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../dependency_injection/dependency_injection_exports.dart' as di show initialize;
-import '../../../features/_shared_feature_/shared_feature_exports.dart' show DeviceDetails, PackageDetails;
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../../utils/utils_exports.dart' show AppConfig, CommonFunctions;
-import '../../services/services_exports.dart' show HiveManager;
+import '../../utils/utils_exports.dart' show AppConfig;
 
 class Initializer {
   static Future<void> init() async {

@@ -19,7 +19,7 @@ class WhiteLands extends PointLayersData {
   final String? PARCELAREA;
   final String? CITYNAME;
   final String? PARCELNO;
-  final dynamic? PARCELLENGTH;
+  final dynamic PARCELLENGTH;
   final String? PHASE;
 
   WhiteLands({

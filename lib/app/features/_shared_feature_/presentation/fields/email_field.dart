@@ -14,7 +14,7 @@ class EmailField extends StatelessWidget {
   final String? errorText;
   final void Function(String)? onChanged;
   const EmailField({
-    Key? key,
+    super.key,
     this.readOnly = false,
     this.isRequired = true,
     this.initialValue,
@@ -24,7 +24,7 @@ class EmailField extends StatelessWidget {
     this.prefixIcon,
     this.errorText,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

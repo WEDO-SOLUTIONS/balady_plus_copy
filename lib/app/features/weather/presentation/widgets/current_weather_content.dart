@@ -3,7 +3,6 @@ import 'package:balady_plus/app/features/weather/presentation/widgets/wind_and_v
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';

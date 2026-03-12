@@ -30,7 +30,7 @@ class NotificationsListResponse extends Equatable {
         'totalItemsCount': totalItemsCount,
         // 'pageSize': pageSize,
         'totalPages': totalPageCount,
-        'calendarEvents': listMessages?.map((e) => e.toJson()).toList(),
+        'calendarEvents': listMessages.map((e) => e.toJson()).toList(),
       };
 
   @override

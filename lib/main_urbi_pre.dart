@@ -1,4 +1,3 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
@@ -9,7 +8,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
-import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   await runMapnessApp(EnvType.urbiPre, () async {

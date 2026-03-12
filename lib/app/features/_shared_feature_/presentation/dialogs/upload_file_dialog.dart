@@ -2,15 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+
 import '../../data/entities/file_data_item.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
-import '../widgets/draw_line_widget.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class UploadFileDialog extends StatelessWidget {
   final Function(FileDataItem file) onConfirm;
@@ -117,11 +117,7 @@ class UploadFileDialog extends StatelessWidget {
     var file = await FilePicker.platform.pickFiles(
       type: fileType,
       allowMultiple: false,
-      allowedExtensions: allowedExtensions != null
-          ? allowedExtensions
-          : fileType == FileType.custom
-          ? ['jpg', 'pdf', 'jpeg', 'png']
-          : null,
+      allowedExtensions: allowedExtensions ?? (fileType == FileType.custom ? ['jpg', 'pdf', 'jpeg', 'png'] : null),
     );
     try {
       if (file != null && file.files.isNotEmpty) {

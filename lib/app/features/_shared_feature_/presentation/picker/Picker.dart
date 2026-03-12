@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as Dialog;
-import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -647,7 +648,7 @@ abstract class PickerAdapter<T> {
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: AutoSizeText(
                 text!,
-                minFontSize: 11.0,
+                minFontSize: 14.0,
                 textScaleFactor: 1,
                 style: (isSel! ? picker!.selectedTextStyle : null),
               ),

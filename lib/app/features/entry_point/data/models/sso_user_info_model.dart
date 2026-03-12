@@ -1,7 +1,7 @@
 import '../../entry_point_exports.dart';
 
 class SsoUserInfoModel extends SsoUserInfo {
-  SsoUserInfoModel(
+  const SsoUserInfoModel(
       {super.name,
       super.phone,
       super.mail,
@@ -33,6 +33,7 @@ class SsoUserInfoModel extends SsoUserInfo {
       nationality: json["nationality"],
       tnm: json["tnm"]);
 
+  @override
   Map<String, dynamic> toJson() => {
         "name": name,
         "phone": phone,

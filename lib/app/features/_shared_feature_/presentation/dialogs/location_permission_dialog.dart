@@ -11,7 +11,7 @@ import '../widgets/custom_svg_icon_widget.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class LocationPermissionDialog extends StatelessWidget {
-  const LocationPermissionDialog({Key? key}) : super(key: key);
+  const LocationPermissionDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

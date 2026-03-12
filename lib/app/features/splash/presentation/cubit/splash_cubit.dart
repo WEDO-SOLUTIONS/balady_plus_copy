@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
-import 'package:balady_plus/app/features/splash/data/model/splash_model.dart';
 import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -19,28 +18,9 @@ class SplashCubit extends Cubit<SplashState> {
 
   void fetchSplashData() async {
     try {
-      Map<String, dynamic>? dataOffline = null; //sharedPrefs.getDataOfSplash();
-      if (dataOffline == null) {
-        emit(const OfflineSplashState());
-        // getNewOnlineSplashAndDownload();
-      } else {
-        SplashModel splashData = SplashModel.fromJson(dataOffline);
-        final currentDate = DateTime.now();
-        final startDate = splashData.startDate;
-        final endDate = splashData.endDate;
-        if (currentDate.isAfter(startDate) && currentDate.isBefore(endDate) && splashData.splashImage != '') {
-          checkSaveFile(
-            splashData.splashImage,
-            splashData.seasonalSplashDuration,
-          );
-        } else if (splashData.defaultImage.isNotEmpty) {
-          checkSaveFile(
-            splashData.defaultImage,
-            splashData.defaultSplashDuration,
-          );
-        }
-        getNewOnlineSplashAndDownload();
-      }
+      Map<String, dynamic>? dataOffline; //sharedPrefs.getDataOfSplash();
+      emit(const OfflineSplashState());
+      // getNewOnlineSplashAndDownload();
     } catch (e) {
       emit(const OfflineSplashState());
     }
@@ -74,12 +54,7 @@ class SplashCubit extends Cubit<SplashState> {
     String pathImage = directory.path + splashImage.split('/').last;
     File file = File(pathImage);
     if (file.existsSync()) {
-      emit(
-        OnlineSplashState(
-          splashFile: file,
-          splashDuration: defaultSplashDuration,
-        ),
-      );
+      emit(OnlineSplashState(splashFile: file, splashDuration: defaultSplashDuration));
     } else {
       emit(const OfflineSplashState());
       downloadNewSplashImage(splashImage);

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -9,10 +8,7 @@ import '../widgets/volunteer_presentation_mode.dart';
 class VolunteerProfileEditingScreen extends StatefulWidget {
   final VolunteerProfileBloc volunteerProfileBloc;
 
-  const VolunteerProfileEditingScreen({
-    required this.volunteerProfileBloc,
-    super.key,
-  });
+  const VolunteerProfileEditingScreen({required this.volunteerProfileBloc, super.key});
 
   @override
   State<VolunteerProfileEditingScreen> createState() => _VolunteerProfileEditingScreenState();
@@ -71,12 +67,12 @@ class _VolunteerProfileEditingScreenState extends State<VolunteerProfileEditingS
         return true; // Allow pop
       },
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.grey),
+            icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).colorScheme.onSurface),
             onPressed: () {
               VolunteerPresentationMode.cancelEditMode(context, widget.volunteerProfileBloc, originalValues!);
               Navigator.of(context).pop();
@@ -84,11 +80,7 @@ class _VolunteerProfileEditingScreenState extends State<VolunteerProfileEditingS
           ),
           title: Text(
             'volunteer_edit_info_title'.tr(),
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
           ),
           centerTitle: true,
         ),

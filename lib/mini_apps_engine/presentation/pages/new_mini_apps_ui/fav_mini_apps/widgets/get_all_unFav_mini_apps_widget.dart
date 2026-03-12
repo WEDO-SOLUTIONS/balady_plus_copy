@@ -44,10 +44,12 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
               height: context.h(64),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: const Color(0XFFFFFFFF),
+                  //    color: const Color(0XFFFFFFFF),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: const Color(0XFFEFEEEE),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withAlpha(15),
                   ),
                 ),
                 child: Padding(
@@ -68,14 +70,12 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                             iconPath: miniApp.iconPath,
                             radius: 12.7,
                           ),
-                          SizedBox(
-                            width: context.screenWidth * 0.02,
-                          ),
+                          SizedBox(width: context.screenWidth * 0.02),
                           CustomSubHeadingText(
                             width: context.w(192),
                             height: context.h(30),
                             text: miniApp.name,
-                            fontColor: const Color(0XFF1E2A36),
+                            //  fontColor: const Color(0XFF1E2A36),
                             fontWeight: FontWeight.w500,
                             fontSize: 15,
                           ),

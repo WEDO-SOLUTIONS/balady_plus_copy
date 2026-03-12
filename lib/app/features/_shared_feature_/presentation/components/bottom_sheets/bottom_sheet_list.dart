@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, IconPath;
 import '../../../shared_feature_exports.dart'

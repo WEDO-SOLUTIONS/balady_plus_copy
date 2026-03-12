@@ -10,7 +10,7 @@ import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class PhotoPermissionDialog extends StatelessWidget {
-  const PhotoPermissionDialog({Key? key}) : super(key: key);
+  const PhotoPermissionDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

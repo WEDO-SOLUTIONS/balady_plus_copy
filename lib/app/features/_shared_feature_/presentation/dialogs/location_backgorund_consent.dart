@@ -10,7 +10,7 @@ import '../widgets/custom_svg_icon_widget.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class LocationBackgroundConsentDialog extends StatelessWidget {
-  const LocationBackgroundConsentDialog({Key? key}) : super(key: key);
+  const LocationBackgroundConsentDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

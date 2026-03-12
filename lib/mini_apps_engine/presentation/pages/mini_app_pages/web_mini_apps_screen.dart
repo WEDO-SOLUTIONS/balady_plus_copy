@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:balady_plus/super_app_js_bridge/js_bridge_listener.dart';
@@ -8,13 +9,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
-  const WebMiniAppsScreen({Key? key}) : super(key: key);
+  const WebMiniAppsScreen({super.key});
 
   @override
   ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
@@ -53,13 +53,14 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     controller.setBackgroundColor(Colors.transparent);
 
     controller.setJavaScriptMode(JavaScriptMode.unrestricted);
-    controller.setNavigationDelegate(NavigationDelegate(
-      onPageStarted: (url) {
-        _isLoading.value = true;
-      },
-      onPageFinished: (url) async {
-        try {
-          await controller.runJavaScriptReturningResult("""
+    controller.setNavigationDelegate(
+      NavigationDelegate(
+        onPageStarted: (url) {
+          _isLoading.value = true;
+        },
+        onPageFinished: (url) async {
+          try {
+            await controller.runJavaScriptReturningResult("""
             new Promise(resolve => {
               if (document.readyState === 'complete') {
                 resolve(true);
@@ -68,13 +69,14 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
               }
             });
           """);
-        } catch (_) {}
-        _isLoading.value = false;
-      },
-      onWebResourceError: (_) {
-        _isLoading.value = false;
-      },
-    ));
+          } catch (_) {}
+          _isLoading.value = false;
+        },
+        onWebResourceError: (_) {
+          _isLoading.value = false;
+        },
+      ),
+    );
 
     if (clearCache) {
       controller.clearCache();
@@ -101,13 +103,8 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (!_initialized) {
       _controller
-        ..loadRequest(Uri.parse(state.servicePath + "#" + state.path))
-        ..addJavaScriptObject(
-          JsBridgeListener(
-            miniAppsEngineBloc: miniAppsEngineBloc,
-            isLoading: _isLoading,
-          ),
-        );
+        ..loadRequest(Uri.parse("${state.servicePath}#${state.path}"))
+        ..addJavaScriptObject(JsBridgeListener(miniAppsEngineBloc: miniAppsEngineBloc, isLoading: _isLoading));
       _initialized = true;
     }
 
@@ -120,7 +117,15 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
         }
         return true;
       },
-      child: DWebViewWidget(controller: _controller),
+      child: ValueListenableBuilder<bool>(
+        valueListenable: _isLoading,
+        builder: (context, isLoading, child) {
+          return Visibility(
+            visible: !isLoading,
+            child: DWebViewWidget(controller: _controller),
+          );
+        },
+      ),
     );
   }
 

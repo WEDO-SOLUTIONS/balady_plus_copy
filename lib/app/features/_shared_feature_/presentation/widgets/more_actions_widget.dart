@@ -5,7 +5,7 @@ import '../../shared_feature_exports.dart' show BottomSheetDialog, CustomIconBut
 
 class MoreActionsWidget extends StatelessWidget {
   final Widget action;
-  const MoreActionsWidget({Key? key, required this.action}) : super(key: key);
+  const MoreActionsWidget({super.key, required this.action});
 
   @override
   Widget build(BuildContext context) {

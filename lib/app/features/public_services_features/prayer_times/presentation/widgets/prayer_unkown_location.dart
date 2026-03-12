@@ -25,7 +25,7 @@ class UnKownPrayerLocation extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             height: 37,
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -58,7 +58,7 @@ class UnKownPrayerLocation extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () => onTap(),
-            child: Container(
+            child: SizedBox(
               height: 36,
               child: Row(
                 mainAxisSize: MainAxisSize.min,

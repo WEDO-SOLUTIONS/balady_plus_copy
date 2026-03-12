@@ -1,5 +1,7 @@
 //! presentation
 /// presentation -> cubits
+library;
+
 export 'presentation/cubits/bottom_nav_bar_cubit.dart';
 
 /// presentation -> pages

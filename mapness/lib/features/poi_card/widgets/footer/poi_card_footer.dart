@@ -135,8 +135,8 @@ class PoiCardFooter extends HookConsumerWidget {
             buttonType: ButtonType.primary,
             label: context.l10n.poiCardDirections,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-            onPressed: onTapCar,
             colorScheme: colorScheme,
+            onPressed: onTapCar,
           ),
           if (!parkingPoi && isFavourite)
             ItemActionBar(

@@ -65,7 +65,8 @@ class ApiUrl {
   //! Dashboard
   static const dashboardCards = '/v1/balady-dashboard/balady-life-style/main-cards';
 
-  static dashboardCardProducts(int cardId) => '/v1/balady-dashboard/balady-life-style/main-cards/$cardId/products';
+  static String dashboardCardProducts(int cardId) =>
+      '/v1/balady-dashboard/balady-life-style/main-cards/$cardId/products';
   static const dashboardCardStatistics = '/v1/balady-dashboard/balady-life-style/statistics';
 
   //!Requests
@@ -73,16 +74,16 @@ class ApiUrl {
   static const requestStatuses = '/v1/balady-dashboard/requests/statuses';
   static const municipalities = '/v1/balady-dashboard/requests/municipalities';
 
-  static subMunicipalities(String id) => '/v1/balady-dashboard/requests/sub-municipalities/$id';
+  static String subMunicipalities(String id) => '/v1/balady-dashboard/requests/sub-municipalities/$id';
   static const requestTypes = '/v1/balady-dashboard/requests/main-types';
 
-  static requestSubTypes(int id) => '/v1/balady-dashboard/requests/sub-main-types/$id';
+  static String requestSubTypes(int id) => '/v1/balady-dashboard/requests/sub-main-types/$id';
 
   //! Invoices
   static const invoices = '/v1/balady-dashboard/invoices/my-invoices';
   static const invoiceTypes = '/v1/balady-dashboard/invoices/main-types';
 
-  static invoiceSubTypes(int id) => '/v1/balady-dashboard/invoices/sub-main-types/$id';
+  static String invoiceSubTypes(int id) => '/v1/balady-dashboard/invoices/sub-main-types/$id';
   static const invoiceStatuses = '/v1/balady-dashboard/invoices/statuses';
   static const invoiceDetails = '/v1/balady-dashboard/invoices/my-invoices-by-id';
 
@@ -90,7 +91,7 @@ class ApiUrl {
   static const licenses = '/v1/balady-dashboard/license/my-licenses';
   static const licenseTypes = '/v1/balady-dashboard/license/main-types';
 
-  static licenseSubTypes(int id) => '/v1/balady-dashboard/license/sub-main-types/$id';
+  static String licenseSubTypes(int id) => '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
 
   //! Objections
@@ -335,8 +336,9 @@ class ApiUrl {
       "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
   static String cemetries(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/transport-request-cemeteries";
-  static ekramMosques(int requestId) => 'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/MOSQUE';
-  static ekramLaundries(int requestId) => 'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/GHUSL_PLACE';
+  static String ekramMosques(int requestId) => 'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/MOSQUE';
+  static String ekramLaundries(int requestId) =>
+      'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/GHUSL_PLACE';
 
   static String joodEskanGenerateDonation = "v1/joodeskan-services/generate-donation-url";
   static String joodEskanRegions = "v1/joodeskan-services/regions";
@@ -385,13 +387,13 @@ class ApiUrl {
   static const setProfileNotificationsSettings = 'v1/notifications-hub-services/fe/profiles';
 
   //! Appointments New APIs
-  static getAppointmentById(String id) => '/v1/appointments-mobile-services/appointments/$id';
+  static String getAppointmentById(String id) => '/v1/appointments-mobile-services/appointments/$id';
 
   static const saveAppointment = "v1/appointments-mobile-services/appointments";
 
-  static validateRealEstate(String id) => 'v1/appointments-mobile-services/validate-real-estate/$id';
+  static String validateRealEstate(String id) => 'v1/appointments-mobile-services/validate-real-estate/$id';
 
-  static deleteAppointment(String udid) => "v1/mobile-appointment/appointmentsapi/attachments/$udid";
+  static String deleteAppointment(String udid) => "v1/mobile-appointment/appointmentsapi/attachments/$udid";
 
   //! POST
 
@@ -491,10 +493,11 @@ class ApiUrl {
       'v1/cis-certified-observers-services/municipalities/$id/verifications';
 
   ///new EKRAM
-  static getIdenticalDeseasedList(String id) => '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
-  static initializeTripsRquest(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/initialize';
-  static GetTripstations(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/trip-stations';
-  static EditTrip(int requestId, int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/edit-trip';
+  static String getIdenticalDeseasedList(String id) =>
+      '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
+  static String initializeTripsRquest(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/initialize';
+  static String GetTripstations(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/trip-stations';
+  static String EditTrip(int requestId, int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/edit-trip';
 
   static String getMuncipalityCites(String municipalityId) =>
       'v1/cis-certified-observers-services/cities/$municipalityId';
@@ -506,20 +509,21 @@ class ApiUrl {
   static String freelancerCertificateStatus = 'v1/freelancer-services/certificate-status';
   static String updateFreelancerCertificate = 'v1/freelancer-services/update-certificate';
   static String getFreelancerCertificate = 'v1/freelancer-services/user-certificates';
-  static addNewPath(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/add-trip';
-  static ekramGetTrips(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/trips';
+  static String addNewPath(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/add-trip';
+  static String ekramGetTrips(int requestId) => 'v1/superapp-ekram-services/trips/$requestId/trips';
 
-  static deleteTrip(int requestId, int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
-  static ghuslEmployees(int requestId) => 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
-  static getDeceasedAttachment(int requestId) =>
+  static String deleteTrip(int requestId, int tripId) =>
+      'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
+  static String ghuslEmployees(int requestId) => 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
+  static String getDeceasedAttachment(int requestId) =>
       'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
-  static uploadAttachment(int id) => 'v1/superapp-ekram-services/attachments/$id/upload-file';
-  static editAdditionalData(int id) => 'v1/superapp-ekram-services/transport/$id/edit-additional-data';
-  static completeTrip(int id) => 'v1/superapp-ekram-services/trips/$id/finalize';
-  static updateLocation(int id) => 'v1/superapp-ekram-services/transport/add-transport-track/$id';
-  static currentTrackLocation(int id) => 'v1/superapp-ekram-services/transport/current-track-location/$id';
+  static String uploadAttachment(int id) => 'v1/superapp-ekram-services/attachments/$id/upload-file';
+  static String editAdditionalData(int id) => 'v1/superapp-ekram-services/transport/$id/edit-additional-data';
+  static String completeTrip(int id) => 'v1/superapp-ekram-services/trips/$id/finalize';
+  static String updateLocation(int id) => 'v1/superapp-ekram-services/transport/add-transport-track/$id';
+  static String currentTrackLocation(int id) => 'v1/superapp-ekram-services/transport/current-track-location/$id';
 
-  static deleteAttachment(int requestId, int attachmentId) =>
+  static String deleteAttachment(int requestId, int attachmentId) =>
       'v1/superapp-ekram-services/attachments/$attachmentId/delete';
   static String deceasedRequestDetails(String requestId) =>
       "v1/superapp-ekram-services/request/$requestId/request-details";
@@ -542,8 +546,9 @@ class ApiUrl {
   static const getVolunteeringFields = 'v1/volunteer-platform-services/lookups/volunteering/fields';
   static const uploadVolunteerCV = 'v1/volunteer-platform-services/upload/cv-files';
 
-  static submitVolunteerProfile(String profileId) => 'v1/volunteer-platform-services/profiles/$profileId';
+  static String submitVolunteerProfile(String profileId) => 'v1/volunteer-platform-services/profiles/$profileId';
 
   static const getRegions = 'v1/volunteer-platform-services/lookups/region';
   static const getcities = 'v1/volunteer-platform-services/lookups/city';
+  static const volunteerCardStatistics = '/v1/volunteer-platform-services/statistics';
 }

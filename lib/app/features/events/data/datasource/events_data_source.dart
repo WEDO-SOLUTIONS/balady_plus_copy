@@ -41,7 +41,7 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return SearchEventResponseModel.fromMap(result);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -92,7 +92,7 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return EventsDetailsItemModel.fromJson(result);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -137,7 +137,7 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
       var data = response.data;
 
       return EventsCategoryResponseModel.fromMap(data["data"]);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

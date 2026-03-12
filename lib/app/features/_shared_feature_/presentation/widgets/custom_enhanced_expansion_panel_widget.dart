@@ -17,7 +17,7 @@ class CustomEnhancedExpansionPanelWidget extends StatefulWidget {
   final bool underline;
 
   const CustomEnhancedExpansionPanelWidget({
-    Key? key,
+    super.key,
     this.leading,
     this.title,
     required this.child,
@@ -25,7 +25,7 @@ class CustomEnhancedExpansionPanelWidget extends StatefulWidget {
     this.expandedHeight = 300.0,
     this.expanded = false,
     this.underline = true,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomEnhancedExpansionPanelWidget> createState() => _CustomEnhancedExpansionPanelWidgetState();
@@ -113,13 +113,13 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
   final VoidCallback expansionCallback;
 
   const _ExpansionPanelHeaderWidget({
-    Key? key,
+    super.key,
     required this.leading,
     required this.title,
     required this.width,
     required this.expanded,
     required this.expansionCallback,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +172,7 @@ class _ExpansionPanelHeaderWidget extends StatelessWidget {
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
 
-  const _ExpansionPanelArrowWidget({Key? key, required this.expanded}) : super(key: key);
+  const _ExpansionPanelArrowWidget({super.key, required this.expanded});
 
   @override
   Widget build(BuildContext context) {

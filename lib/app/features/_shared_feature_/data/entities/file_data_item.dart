@@ -10,7 +10,7 @@ class FileDataItem extends Equatable {
   final Uint8List? bytes;
   final String? id;
   final int sizeInMB;
-  final dynamic? fileKey;
+  final dynamic fileKey;
 
   const FileDataItem({
     required this.fileBase64,

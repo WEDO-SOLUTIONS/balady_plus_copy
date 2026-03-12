@@ -1,4 +1,5 @@
-/** This Document is to provide the exports that Urbi will used inside Balady App */
+/// This Document is to provide the exports that Urbi will used inside Balady App
+library;
 
 // Event Model
 

@@ -17,9 +17,11 @@ class CustomMiniAppSwitch extends StatelessWidget {
       value: isActive,
       onChanged: onChanged,
       // iOS green (systemGreen)
-      activeColor: const Color(0xFF2AB3A9),
+      activeTrackColor: const Color(0xFF2AB3A9),
       // iOS inactive track color
-      trackColor: const Color(0xFFE5E5EA),
+      inactiveTrackColor: Theme.of(context).brightness == Brightness.dark
+          ? Theme.of(context).colorScheme.onSurface.withAlpha(90)
+          : Theme.of(context).hoverColor,
     );
   }
 }

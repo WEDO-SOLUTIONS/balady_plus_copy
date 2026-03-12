@@ -231,7 +231,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                       initialDate: dateFrom,
                       onChange: (DateTime date, DateForm dateForm) {
                         setState(() {
-                          this.dateFrom = date;
+                          dateFrom = date;
                         });
                       },
                     ),
@@ -245,7 +245,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                       initialDate: dateTo,
                       onChange: (DateTime date, DateForm dateForm) {
                         setState(() {
-                          this.dateTo = date;
+                          dateTo = date;
                         });
                       },
                     ),

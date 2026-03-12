@@ -10,7 +10,7 @@ class ReadOnlyField extends StatelessWidget {
   final double? hieght;
   final BoxDecoration? decoration;
 
-  ReadOnlyField({
+  const ReadOnlyField({
     super.key,
     this.subTitle,
     required this.title,

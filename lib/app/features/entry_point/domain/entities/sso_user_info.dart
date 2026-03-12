@@ -9,23 +9,24 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 enum SsoLoginType { nationalId, otp }
 
 class SsoUserInfo extends Equatable {
-  const SsoUserInfo(
-      {this.name,
-      this.phone,
-      this.mail,
-      this.arName,
-      this.enName,
-      this.idNo,
-      this.nid,
-      this.idType,
-      this.sex,
-      this.dob,
-      this.sname,
-      this.sub,
-      this.nationality,
-      // Default to national ID login type
-      this.loginType = SsoLoginType.nationalId,
-      this.tnm});
+  const SsoUserInfo({
+    this.name,
+    this.phone,
+    this.mail,
+    this.arName,
+    this.enName,
+    this.idNo,
+    this.nid,
+    this.idType,
+    this.sex,
+    this.dob,
+    this.sname,
+    this.sub,
+    this.nationality,
+    // Default to national ID login type
+    this.loginType = SsoLoginType.nationalId,
+    this.tnm,
+  });
 
   final String? name;
   final String? phone;
@@ -143,10 +144,10 @@ class SsoUserInfo extends Equatable {
         return "3";
       }
 
-// هوية وطنيه ١
-// هوية خليجيه ٤
-// رقم حدود ٩
-// هوية مقيم ٣
+      // هوية وطنيه ١
+      // هوية خليجيه ٤
+      // رقم حدود ٩
+      // هوية مقيم ٣
     }
     return "";
   }
@@ -159,10 +160,10 @@ class SsoUserInfo extends Equatable {
         return "Iqama_ID".tr();
       }
 
-// هوية وطنيه ١
-// هوية خليجيه ٤
-// رقم حدود ٩
-// هوية مقيم ٣
+      // هوية وطنيه ١
+      // هوية خليجيه ٤
+      // رقم حدود ٩
+      // هوية مقيم ٣
     }
     return "";
   }
@@ -183,21 +184,17 @@ class SsoUserInfo extends Equatable {
 
       String year = hijriCalendar.hYear.toString();
       String month = hijriCalendar.hMonth.toString().length == 1
-          ? "0" + hijriCalendar.hMonth.toString()
+          ? "0${hijriCalendar.hMonth}"
           : hijriCalendar.hMonth.toString();
-      String day = hijriCalendar.hDay.toString().length == 1
-          ? "0" + hijriCalendar.hDay.toString()
-          : hijriCalendar.hDay.toString();
+      String day = hijriCalendar.hDay.toString().length == 1 ? "0${hijriCalendar.hDay}" : hijriCalendar.hDay.toString();
 
       if (dateDivided[2] > 1800) {
-        return year + "/" + month + "/" + day;
+        return "$year/$month/$day";
       } else {
         String year = dateDivided[2].toString();
-        String month =
-            dateDivided[1].toString().length == 1 ? "0" + dateDivided[1].toString() : dateDivided[1].toString();
-        String day =
-            dateDivided[0].toString().length == 1 ? "0" + dateDivided[0].toString() : dateDivided[0].toString();
-        return year + "/" + month + "/" + day;
+        String month = dateDivided[1].toString().length == 1 ? "0${dateDivided[1]}" : dateDivided[1].toString();
+        String day = dateDivided[0].toString().length == 1 ? "0${dateDivided[0]}" : dateDivided[0].toString();
+        return "$year/$month/$day";
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -217,7 +214,7 @@ class SsoUserInfo extends Equatable {
   }
 
   String getPhone() {
-    return phone != null ? (!phone!.startsWith("0") ? "0" + phone! : phone!) : "";
+    return phone != null ? (!phone!.startsWith("0") ? "0${phone!}" : phone!) : "";
   }
 
   String getGender() {

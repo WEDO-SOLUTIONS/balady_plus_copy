@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show SystemChrome, SystemUiMode, SystemUi
 import '../../../../core/utils/app_analytics_events.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  const SplashPage({super.key});
 
   @override
   _SplashPageState createState() => _SplashPageState();
@@ -17,14 +17,14 @@ class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateM
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.OpenApp);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
   }
 
   @override
   void dispose() {
     try {
       SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.manual,
+        SystemUiMode.immersiveSticky,
         overlays: SystemUiOverlay.values,
       );
     } catch (_) {}

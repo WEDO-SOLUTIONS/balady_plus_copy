@@ -1,4 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:math' as math;
+
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
@@ -56,6 +57,28 @@ class CustomMiniAppsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final textScale = mediaQuery.textScaler.scale(1.0);
+    final screenWidth = mediaQuery.size.width;
+    // Same as apps group card: title area responsive to font size
+    final defaultTitleWidth =
+        (screenWidth * 0.25 * (0.92 + 0.16 * textScale.clamp(1.0, 1.5))).clamp(
+          screenWidth * 0.24,
+          screenWidth / 3 - 12,
+        );
+    final lines = maxLines ?? 3;
+    // Height for title area scales with text size so bigger font gets more space; cap grows with scale
+    final maxTitleHeightForScale = (56.0 * textScale + 20).clamp(70.0, 115.0);
+    final minHeightForLines = (13.0 * 1.4 * lines * textScale + 10).clamp(
+      36.0,
+      maxTitleHeightForScale,
+    );
+    final defaultTitleHeight = (context.h(45) * textScale).clamp(
+      minHeightForLines,
+      maxTitleHeightForScale,
+    );
+    final gap = (4.0 * textScale).clamp(0.0, 10.0);
+
     final List<BoxShadow> defaultShadow = withCardEffect
         ? [
             BoxShadow(
@@ -72,46 +95,83 @@ class CustomMiniAppsCard extends StatelessWidget {
           ]
         : [];
 
+    final iconHeight = height ?? context.h(54.95);
+    final gapHeight = (context.screenHeight * 0.01) + gap;
+    final defaultTitleH = titlesHeight ?? defaultTitleHeight;
+
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: width ?? context.w(54.95),
-            height: height ?? context.h(54.95),
-            decoration: BoxDecoration(
-              borderRadius: borderRadius ?? BorderRadius.circular(16),
-              boxShadow: boxShadow ?? defaultShadow,
-            ),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: backgroundColor ?? Colors.white,
-                borderRadius: borderRadius ?? BorderRadius.circular(16),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxH = constraints.maxHeight;
+          final hasBoundedHeight = maxH.isFinite && maxH > 0;
+          final availableForTitle = (maxH - iconHeight - gapHeight).clamp(
+            0.0,
+            double.infinity,
+          );
+          // For 3 lines, reserve at least minHeightForLines when there is room
+          final minTitleH = lines >= 3 ? minHeightForLines : 20.0;
+          final actualTitleHeight =
+              (hasBoundedHeight
+                      ? availableForTitle.clamp(
+                          math.min(minTitleH, availableForTitle),
+                          defaultTitleH.clamp(0.0, availableForTitle),
+                        )
+                      : defaultTitleH)
+                  .toDouble();
+
+          final column = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: width ?? context.w(54.95),
+                height: iconHeight,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius ?? BorderRadius.circular(16),
+                  boxShadow: defaultShadow,
+                ),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Color(0xFF01222E)
+                        : Colors.white,
+                    borderRadius: borderRadius ?? BorderRadius.circular(16),
+                  ),
+                  child: child,
+                ),
               ),
-              child: child,
-            ),
-          ),
-          SizedBox(height: context.screenHeight * 0.01),
-          SizedBox(
-            width: titlesWidth ?? context.w(60),
-            height: titlesHeight ?? context.h(33),
-            child: Text(
-              text ?? "example",
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 13,
-                height: 1.4,
-                fontWeight: FontWeight.w400,
-                fontFamily: GeneralKey.appFontType,
-                color: const Color(0xFF1E2A36),
-                leadingDistribution: TextLeadingDistribution.even,
+              SizedBox(height: gapHeight),
+              SizedBox(
+                width: titlesWidth ?? defaultTitleWidth,
+                height: actualTitleHeight,
+                child: ClipRect(
+                  child: Text(
+                    text ?? "example",
+                    textAlign: TextAlign.center,
+                    maxLines: lines,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      height: 1.4,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: GeneralKey.appFontType,
+                      leadingDistribution: TextLeadingDistribution.even,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+
+          if (hasBoundedHeight) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: maxH),
+              child: ClipRect(child: column),
+            );
+          }
+          return column;
+        },
       ),
     );
   }

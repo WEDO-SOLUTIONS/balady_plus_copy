@@ -1,14 +1,10 @@
-import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
-import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../data/entities/drop_down_item.dart';
 import '../dialogs/incident_type_with_search_dialog.dart';
@@ -39,7 +35,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final double? marginBottom;
 
   const CustomHeaderAndDescOnTapWidget({
-    Key? key,
+    super.key,
     required this.label,
     this.labelColor = AppColor.blackModern700Light,
     this.labelSize = 16.0,
@@ -59,7 +55,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
     this.materialIconDirection = MATERIAL_ICON_DIRECTION.down,
     this.icon,
     this.showOptional = false,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomHeaderAndDescOnTapWidget> createState() => _CustomHeaderAndDescOnTapWidget();
@@ -199,7 +195,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final bool? readOnly;
 
   CustomTapWidgetForLongDialog({
-    Key? key,
+    super.key,
     required this.onChangeType,
     this.value,
     this.marginBottom,
@@ -213,7 +209,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
     this.showHintAsTitle = false,
     this.isButtonDisabled,
     this.readOnly,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTapWidgetForLongDialog> createState() => _CustomTapWidgetForLongDialog();
@@ -348,7 +344,7 @@ class CustomTapWidgetForMultiLongDialog extends StatefulWidget {
   final bool? showOptional;
   final bool showHintAsTitle;
   CustomTapWidgetForMultiLongDialog({
-    Key? key,
+    super.key,
     required this.onChangeType,
     this.values,
     required this.items,
@@ -358,7 +354,7 @@ class CustomTapWidgetForMultiLongDialog extends StatefulWidget {
     this.errorText,
     this.showOptional = false,
     this.showHintAsTitle = true,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomTapWidgetForMultiLongDialog> createState() => _CustomTapWidgetForMultiLongDialog();

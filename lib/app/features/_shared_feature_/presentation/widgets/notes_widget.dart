@@ -3,7 +3,6 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart';
-import '../../shared_feature_exports.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NotesWidget extends StatelessWidget {

@@ -55,9 +55,9 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
         e.params != null ? e.params!.copyWith(page: 1, size: 10) : SearchEventsParams(page: 1, size: 10));
 
     failureOrSuccess.fold((l) {
-      if (l == NoDataFoundFailure())
+      if (l == NoDataFoundFailure()) {
         emitter(state.copyWith(status: BlocStatus.success, searchItems: []));
-      else {
+      } else {
         emitter(
           state.copyWith(status: BlocStatus.retry, errorMessage: (l as ServerFailure).errorMessage),
         );
@@ -79,11 +79,11 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     final failureOrSuccess = await _getSearchEvents(state.searchedParams);
 
     failureOrSuccess.fold((l) {
-      if (l == NoDataFoundFailure())
+      if (l == NoDataFoundFailure()) {
         emitter(
           state.copyWith(status: BlocStatus.failure, errorMessage: ""),
         );
-      else {
+      } else {
         emitter(
           state.copyWith(status: BlocStatus.failure, errorMessage: (l as ServerFailure).errorMessage),
         );

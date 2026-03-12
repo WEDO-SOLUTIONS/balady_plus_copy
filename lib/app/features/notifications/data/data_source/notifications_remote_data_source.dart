@@ -70,7 +70,7 @@ class NotificationRemoteDataSourceImplementation implements NotificationsRemoteD
       // final result = ResponseBodyModel.fromMap(data).data?.result;
       // CommercialLicenseDataModel commercialLicencedata = CommercialLicenseDataModel.fromJson(result!);
       // return  commercialLicencedata;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

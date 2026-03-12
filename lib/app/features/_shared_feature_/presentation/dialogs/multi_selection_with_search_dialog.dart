@@ -9,7 +9,6 @@ import '../widgets/check_boxes/custom_checkbox.dart';
 import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/search_text_field_widget.dart';
 import 'dialog_header.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MultiSelectionWithSearchDialog extends StatefulWidget {
   final Function(List<DropDownItem> items) onSelect;
@@ -18,14 +17,14 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   final String? title;
   final String? searchHint;
 
-  MultiSelectionWithSearchDialog({
-    Key? key,
+  const MultiSelectionWithSearchDialog({
+    super.key,
     required this.onSelect,
     this.selectedItem,
     required this.items,
     this.title,
     this.searchHint,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {

@@ -8,7 +8,6 @@ import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-
 import 'package:permission_handler/permission_handler.dart' as Perm;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -21,9 +20,7 @@ part 'location_state.dart';
 class LocationCubit extends Cubit<LocationState> {
   final GetGISData _getGISData;
 
-  LocationCubit()
-      : _getGISData = GetGISData(repository: sl()),
-        super(const LocationState()) {}
+  LocationCubit() : _getGISData = GetGISData(repository: sl()), super(const LocationState());
 
   Future<void> getLocationPermission() async {
     Perm.ServiceStatus? serviceStatus = await Perm.Permission.location.serviceStatus;
@@ -50,16 +47,24 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getLocationData() async {
-    if (state.locationPermissionStatus != BlocStatus.locationPermissionSuceess) return;
+    if (state.locationPermissionStatus != BlocStatus.locationPermissionSuceess) {
+      return;
+    }
 
     emit(state.copyWith(locationStatus: BlocStatus.loading));
 
-    LatLng? location =
-        await Helpers.getCurrentLocation(accuracy: LocationAccuracy.medium, duration: Duration(seconds: 1));
+    LatLng? location = await Helpers.getCurrentLocation(
+      accuracy: LocationAccuracy.medium,
+      duration: Duration(seconds: 1),
+    );
 
     if (location != null) {
-      emit(state.copyWith(
-          locationStatus: BlocStatus.success, gisParams: GISParams(x: location.longitude, y: location.latitude)));
+      emit(
+        state.copyWith(
+          locationStatus: BlocStatus.success,
+          gisParams: GISParams(x: location.longitude, y: location.latitude),
+        ),
+      );
     } else {
       emit(state.copyWith(locationStatus: BlocStatus.failure));
     }
@@ -71,13 +76,16 @@ class LocationCubit extends Cubit<LocationState> {
 
       final failureOrSuccess = await _getGISData(state.gisParams!);
 
-      failureOrSuccess.fold((l) {
-        emit(state.copyWith(requestsStatus: BlocStatus.failure));
-      }, (r) {
-        sharedPrefs.setUserGISLoaction(r.toModel);
-        sharedPrefs.setUserLocation(state.gisParams);
-        emit(state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
-      });
+      failureOrSuccess.fold(
+        (l) {
+          emit(state.copyWith(requestsStatus: BlocStatus.failure));
+        },
+        (r) {
+          sharedPrefs.setUserGISLoaction(r.toModel);
+          sharedPrefs.setUserLocation(state.gisParams);
+          emit(state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
+        },
+      );
     }
   }
 
@@ -91,11 +99,14 @@ class LocationCubit extends Cubit<LocationState> {
         cachedGIS != null &&
         (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
             state.locationServiceStatus == BlocStatus.locationServiceSuceess)) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           loadAppStatus: BlocStatus.success,
           requestsStatus: BlocStatus.success,
           gisResponse: cachedGIS,
-          gisParams: cachedLocation));
+          gisParams: cachedLocation,
+        ),
+      );
 
       return true;
     } else {
@@ -113,11 +124,14 @@ class LocationCubit extends Cubit<LocationState> {
           cachedGIS != null &&
           (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
               state.locationServiceStatus == BlocStatus.locationServiceSuceess)) {
-        emit(state.copyWith(
+        emit(
+          state.copyWith(
             loadAppStatus: BlocStatus.success,
             requestsStatus: BlocStatus.success,
             gisResponse: cachedGIS,
-            gisParams: cachedLocation));
+            gisParams: cachedLocation,
+          ),
+        );
       }
 
       await getLocationData();

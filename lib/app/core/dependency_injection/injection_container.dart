@@ -41,7 +41,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
 import '../services/services_exports.dart'
     show EntryPointBridge, NetworkConnection, NetworkConnectionImplementation, WebService;
 import '../utils/enums/bottom_nav_bar.dart';
-import 'features/events_injection.dart';
+import 'features/profile/dashboard_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -69,7 +69,7 @@ void initialize() {
   //? Delegators
   DelegatorsInjection.init();
   //? Dashboard
-  EventsInjection.init();
+  DashboardInjection.init();
 
   sl.registerLazySingleton<NetworkConnection>(() => NetworkConnectionImplementation(sl()));
 

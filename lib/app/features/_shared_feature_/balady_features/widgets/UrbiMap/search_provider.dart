@@ -14,7 +14,7 @@ import '../../../data/models/response_body_model.dart';
 class UrbiSearchProvider extends ChangeNotifier {
   ValueNotifier<UrbiLocationModel>? lstSuggestedLocation;
 
-  UrbiSearchProvider() {}
+  UrbiSearchProvider();
 
   Future<List<UrbiLocationModel>> search(String query, LatLng location) async {
     Response? response;
@@ -41,9 +41,9 @@ class UrbiSearchProvider extends ChangeNotifier {
 
       parsedResult = parsedResult.where((item) => (item.fullName != null && item.fullName!.isNotEmpty)).toList();
       return parsedResult;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error) {
       return [];
-    } catch (error, stackTrace) {
+    } catch (error) {
       return [];
     }
   }

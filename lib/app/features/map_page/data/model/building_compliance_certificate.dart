@@ -78,7 +78,7 @@ class BuildingComplianceCertificate extends PointLayersData {
       // not tested yat
       );
   String getMunAndDis() {
-    return (MUNICIPALITYNAME ?? "") + "," + (DISTRICTNAME ?? "");
+    return "${MUNICIPALITYNAME ?? ""},${DISTRICTNAME ?? ""}";
   }
 
   String getStreetName() {

@@ -11,7 +11,7 @@ import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class CameraPermissionDialog extends StatelessWidget {
-  const CameraPermissionDialog({Key? key}) : super(key: key);
+  const CameraPermissionDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

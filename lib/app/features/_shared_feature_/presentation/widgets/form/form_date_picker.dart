@@ -6,8 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
-import '../../enhanced_widgets/pickers/hijri_picker/hijri_picker.dart' as hijri_picker;
 import '../../../shared_feature_exports.dart' show CustomTextWidget, DropDownWithTitle;
+import '../../enhanced_widgets/pickers/hijri_picker/hijri_picker.dart' as hijri_picker;
 
 class FormDatePicker extends StatefulWidget {
   final String title;
@@ -69,7 +69,9 @@ class _FormDatePickerState extends State<FormDatePicker> {
             initialDateForm: _dateForm,
             onChange: (dateForm) {
               setState(() => _dateForm = dateForm);
-              if (_selectedDate != null) widget.onChange(_selectedDate!, _dateForm);
+              if (_selectedDate != null) {
+                widget.onChange(_selectedDate!, _dateForm);
+              }
             },
           ),
         ),

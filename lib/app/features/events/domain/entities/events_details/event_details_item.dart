@@ -2,7 +2,6 @@ import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_location.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_picture.dart';
 import 'package:dgis_map/library.dart';
-
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EventDetailsResponse {
@@ -24,24 +23,25 @@ class EventDetailsResponse {
   final List<Picture>? pictures;
   final double? fees;
 
-  EventDetailsResponse(
-      {this.id,
-      this.name,
-      this.description,
-      this.category,
-      this.city,
-      this.startDate,
-      this.endDate,
-      this.startTime,
-      this.endTime,
-      this.logoUrl,
-      this.feesType,
-      this.season,
-      this.audience,
-      this.location,
-      this.ticketUrl,
-      this.pictures,
-      this.fees});
+  EventDetailsResponse({
+    this.id,
+    this.name,
+    this.description,
+    this.category,
+    this.city,
+    this.startDate,
+    this.endDate,
+    this.startTime,
+    this.endTime,
+    this.logoUrl,
+    this.feesType,
+    this.season,
+    this.audience,
+    this.location,
+    this.ticketUrl,
+    this.pictures,
+    this.fees,
+  });
 
   String getStartDay() {
     if (startDate != null) {
@@ -95,11 +95,19 @@ class EventDetailsResponse {
   }
 
   DateTime? getStartDateFull() {
-    if (startDate != null && startTime != null) return (setTimeInDateTime(startDate!, startTime!));
+    if (startDate != null && startTime != null) {
+      return (setTimeInDateTime(startDate!, startTime!));
+      return null;
+    }
+    return null;
   }
 
   DateTime? getEndDateFull() {
-    if (endDate != null && endTime != null) return (setTimeInDateTime(endDate!, endTime!));
+    if (endDate != null && endTime != null) {
+      return (setTimeInDateTime(endDate!, endTime!));
+      return null;
+    }
+    return null;
   }
 
   String getFess() {

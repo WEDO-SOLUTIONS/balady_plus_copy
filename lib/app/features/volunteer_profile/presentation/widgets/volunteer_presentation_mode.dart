@@ -14,10 +14,7 @@ import '../bloc/volunteer_profile_state.dart';
 class VolunteerPresentationMode extends StatefulWidget {
   final bool isEditMode;
 
-  const VolunteerPresentationMode({
-    Key? key,
-    this.isEditMode = false,
-  }) : super(key: key);
+  const VolunteerPresentationMode({super.key, this.isEditMode = false});
 
   @override
   State<VolunteerPresentationMode> createState() => _VolunteerPresentationModeState();
@@ -28,51 +25,61 @@ class VolunteerPresentationMode extends StatefulWidget {
 
     // Restore original values
     bloc
-      ..add(UpdatePersonalInfo(
-        email: originalValues['email'],
-        phoneNumber: originalValues['phoneNumber'],
-        nationalId: bloc.state.nationalId,
-        gender: bloc.state.gender,
-        maritalStatus: bloc.state.maritalStatus,
-        nearbyPhoneNumber: originalValues['nearbyPhoneNumber'],
-        region: originalValues['region'],
-        regionId: originalValues['regionId'],
-        city: originalValues['city'],
-        cityId: originalValues['cityId'],
-      ))
-      ..add(UpdateScientificInfo(
-        educationalQualification: originalValues['educationalQualification'],
-        educationalQualificationId: originalValues['educationalQualificationId'],
-        specialization: originalValues['specialization'],
-        specializationId: originalValues['specializationId'],
-        profession: originalValues['profession'],
-        workExperience: originalValues['workExperience'],
-        language: originalValues['language'],
-        languageId: originalValues['languageId'],
-        scientificExperienceSummary: originalValues['scientificExperienceSummary'],
-      ))
-      ..add(UpdateVolunteeringInterests(
-        skills: originalValues['skills'] != null ? [originalValues['skills']] : [],
-        skillsIds: originalValues['skillsIds'] != null ? [originalValues['skillsIds']] : [],
-        volunteeringLevel: originalValues['volunteeringLevel'],
-        volunteeringLevelId: originalValues['volunteeringLevelId'],
-        volunteeringWorkField: originalValues['volunteeringWorkField'],
-        volunteeringWorkFieldId: originalValues['volunteeringWorkFieldId'],
-        isIndividualSelected: originalValues['isIndividualSelected'],
-        isGroupSelected: originalValues['isGroupSelected'],
-      ))
-      ..add(UpdateMedicalInfo(
-        bloodType: originalValues['bloodType'],
-        bloodTypeId: originalValues['bloodTypeId'],
-        disease: originalValues['disease'],
-        diseaseId: originalValues['diseaseId'],
-      ))
-      ..add(UpdateSocialMediaInfo(
-        xAccount: originalValues['xAccount'],
-        instagramAccount: originalValues['instagramAccount'],
-        linkedinAccount: originalValues['linkedinAccount'],
-        facebookAccount: originalValues['facebookAccount'],
-      ));
+      ..add(
+        UpdatePersonalInfo(
+          email: originalValues['email'],
+          phoneNumber: originalValues['phoneNumber'],
+          nationalId: bloc.state.nationalId,
+          gender: bloc.state.gender,
+          maritalStatus: bloc.state.maritalStatus,
+          nearbyPhoneNumber: originalValues['nearbyPhoneNumber'],
+          region: originalValues['region'],
+          regionId: originalValues['regionId'],
+          city: originalValues['city'],
+          cityId: originalValues['cityId'],
+        ),
+      )
+      ..add(
+        UpdateScientificInfo(
+          educationalQualification: originalValues['educationalQualification'],
+          educationalQualificationId: originalValues['educationalQualificationId'],
+          specialization: originalValues['specialization'],
+          specializationId: originalValues['specializationId'],
+          profession: originalValues['profession'],
+          workExperience: originalValues['workExperience'],
+          language: originalValues['language'],
+          languageId: originalValues['languageId'],
+          scientificExperienceSummary: originalValues['scientificExperienceSummary'],
+        ),
+      )
+      ..add(
+        UpdateVolunteeringInterests(
+          skills: originalValues['skills'] != null ? [originalValues['skills']] : [],
+          skillsIds: originalValues['skillsIds'] != null ? [originalValues['skillsIds']] : [],
+          volunteeringLevel: originalValues['volunteeringLevel'],
+          volunteeringLevelId: originalValues['volunteeringLevelId'],
+          volunteeringWorkField: originalValues['volunteeringWorkField'],
+          volunteeringWorkFieldId: originalValues['volunteeringWorkFieldId'],
+          isIndividualSelected: originalValues['isIndividualSelected'],
+          isGroupSelected: originalValues['isGroupSelected'],
+        ),
+      )
+      ..add(
+        UpdateMedicalInfo(
+          bloodType: originalValues['bloodType'],
+          bloodTypeId: originalValues['bloodTypeId'],
+          disease: originalValues['disease'],
+          diseaseId: originalValues['diseaseId'],
+        ),
+      )
+      ..add(
+        UpdateSocialMediaInfo(
+          xAccount: originalValues['xAccount'],
+          instagramAccount: originalValues['instagramAccount'],
+          linkedinAccount: originalValues['linkedinAccount'],
+          facebookAccount: originalValues['facebookAccount'],
+        ),
+      );
   }
 }
 
@@ -167,44 +174,47 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
     // Update only unified step fields
     bloc
-      ..add(UpdatePersonalInfo(
-        email: _emailController.text,
-        phoneNumber: _phoneController.text,
-        nationalId: currentState.nationalId,
-        gender: currentState.gender,
-        maritalStatus: currentState.maritalStatus,
-        nearbyPhoneNumber: currentState.nearbyPhoneNumber,
-        region: currentState.region,
-        regionId: currentState.regionId,
-        city: currentState.city,
-        cityId: currentState.cityId,
-      ))
-
+      ..add(
+        UpdatePersonalInfo(
+          email: _emailController.text,
+          phoneNumber: _phoneController.text,
+          nationalId: currentState.nationalId,
+          gender: currentState.gender,
+          maritalStatus: currentState.maritalStatus,
+          nearbyPhoneNumber: currentState.nearbyPhoneNumber,
+          region: currentState.region,
+          regionId: currentState.regionId,
+          city: currentState.city,
+          cityId: currentState.cityId,
+        ),
+      )
       // Update educational qualification
-      ..add(UpdateScientificInfo(
-        educationalQualification: currentState.educationalQualification,
-        educationalQualificationId: currentState.educationalQualificationId,
-        specialization: currentState.specialization,
-        specializationId: currentState.specializationId,
-        profession: currentState.profession,
-        workExperience: currentState.workExperience,
-        language: currentState.language,
-        languageId: currentState.languageId,
-        scientificExperienceSummary: currentState.scientificExperienceSummary,
-      ))
-
+      ..add(
+        UpdateScientificInfo(
+          educationalQualification: currentState.educationalQualification,
+          educationalQualificationId: currentState.educationalQualificationId,
+          specialization: currentState.specialization,
+          specializationId: currentState.specializationId,
+          profession: currentState.profession,
+          workExperience: currentState.workExperience,
+          language: currentState.language,
+          languageId: currentState.languageId,
+          scientificExperienceSummary: currentState.scientificExperienceSummary,
+        ),
+      )
       // Update volunteering work field
-      ..add(UpdateVolunteeringInterests(
-        skills: currentState.skills,
-        skillsIds: currentState.skillsIds,
-        volunteeringLevel: currentState.volunteeringLevel,
-        volunteeringLevelId: currentState.volunteeringLevelId,
-        volunteeringWorkField: currentState.volunteeringWorkField,
-        volunteeringWorkFieldId: currentState.volunteeringWorkFieldId,
-        isIndividualSelected: currentState.isIndividualSelected,
-        isGroupSelected: currentState.isGroupSelected,
-      ))
-
+      ..add(
+        UpdateVolunteeringInterests(
+          skills: currentState.skills,
+          skillsIds: currentState.skillsIds,
+          volunteeringLevel: currentState.volunteeringLevel,
+          volunteeringLevelId: currentState.volunteeringLevelId,
+          volunteeringWorkField: currentState.volunteeringWorkField,
+          volunteeringWorkFieldId: currentState.volunteeringWorkFieldId,
+          isIndividualSelected: currentState.isIndividualSelected,
+          isGroupSelected: currentState.isGroupSelected,
+        ),
+      )
       // Update the profile on the server without triggering success dialog
       ..add(const UpdateVolunteerProfile());
 
@@ -214,10 +224,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('volunteer_profile_submit_success'.tr()),
-        backgroundColor: const Color(0xFF00796B),
-      ),
+      SnackBar(content: Text('volunteer_profile_submit_success'.tr()), backgroundColor: const Color(0xFF00796B)),
     );
 
     // Exit the entire volunteer profile flow after saving
@@ -238,43 +245,47 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
     // Update personal info with original values
     bloc
-      ..add(UpdatePersonalInfo(
-        email: _originalEmail,
-        phoneNumber: _originalPhoneNumber,
-        nationalId: bloc.state.nationalId,
-        gender: bloc.state.gender,
-        maritalStatus: bloc.state.maritalStatus,
-        nearbyPhoneNumber: bloc.state.nearbyPhoneNumber,
-        region: _originalRegion,
-        regionId: _originalRegionId,
-        city: _originalCity,
-        cityId: _originalCityId,
-      ))
-
+      ..add(
+        UpdatePersonalInfo(
+          email: _originalEmail,
+          phoneNumber: _originalPhoneNumber,
+          nationalId: bloc.state.nationalId,
+          gender: bloc.state.gender,
+          maritalStatus: bloc.state.maritalStatus,
+          nearbyPhoneNumber: bloc.state.nearbyPhoneNumber,
+          region: _originalRegion,
+          regionId: _originalRegionId,
+          city: _originalCity,
+          cityId: _originalCityId,
+        ),
+      )
       // Update educational qualification
-      ..add(UpdateScientificInfo(
-        educationalQualification: _originalEducationalQualification,
-        educationalQualificationId: _originalEducationalQualificationId,
-        specialization: bloc.state.specialization,
-        specializationId: bloc.state.specializationId,
-        profession: bloc.state.profession,
-        workExperience: bloc.state.workExperience,
-        language: bloc.state.language,
-        languageId: bloc.state.languageId,
-        scientificExperienceSummary: bloc.state.scientificExperienceSummary,
-      ))
-
+      ..add(
+        UpdateScientificInfo(
+          educationalQualification: _originalEducationalQualification,
+          educationalQualificationId: _originalEducationalQualificationId,
+          specialization: bloc.state.specialization,
+          specializationId: bloc.state.specializationId,
+          profession: bloc.state.profession,
+          workExperience: bloc.state.workExperience,
+          language: bloc.state.language,
+          languageId: bloc.state.languageId,
+          scientificExperienceSummary: bloc.state.scientificExperienceSummary,
+        ),
+      )
       // Update volunteering work field
-      ..add(UpdateVolunteeringInterests(
-        skills: bloc.state.skills,
-        skillsIds: bloc.state.skillsIds,
-        volunteeringLevel: bloc.state.volunteeringLevel,
-        volunteeringLevelId: bloc.state.volunteeringLevelId,
-        volunteeringWorkField: _originalVolunteeringWorkField,
-        volunteeringWorkFieldId: _originalVolunteeringWorkFieldId,
-        isIndividualSelected: bloc.state.isIndividualSelected,
-        isGroupSelected: bloc.state.isGroupSelected,
-      ));
+      ..add(
+        UpdateVolunteeringInterests(
+          skills: bloc.state.skills,
+          skillsIds: bloc.state.skillsIds,
+          volunteeringLevel: bloc.state.volunteeringLevel,
+          volunteeringLevelId: bloc.state.volunteeringLevelId,
+          volunteeringWorkField: _originalVolunteeringWorkField,
+          volunteeringWorkFieldId: _originalVolunteeringWorkFieldId,
+          isIndividualSelected: bloc.state.isIndividualSelected,
+          isGroupSelected: bloc.state.isGroupSelected,
+        ),
+      );
   }
 
   Future<void> _pickAndUploadFile(BuildContext context) async {
@@ -289,31 +300,20 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         if (file.path != null) {
           // Check file size (limit to 10MB)
           if (file.size > 10 * 1024 * 1024) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('file_size_too_large'.tr()),
-                backgroundColor: Colors.red,
-              ),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('file_size_too_large'.tr()), backgroundColor: Colors.red));
             return;
           }
 
           // Trigger upload
-          context.read<VolunteerProfileBloc>().add(
-                UploadCVFile(
-                  filePath: file.path!,
-                  fileName: file.name,
-                ),
-              );
+          context.read<VolunteerProfileBloc>().add(UploadCVFile(filePath: file.path!, fileName: file.name));
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('${'failed_to_select_file'.tr()}: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${'failed_to_select_file'.tr()}: $e'), backgroundColor: Colors.red));
     }
   }
 
@@ -332,7 +332,8 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         state.volunteeringWorkFieldId != null && state.volunteeringWorkFieldId!.isNotEmpty;
 
     // All required unified step fields must be valid
-    final valid = isEmailValid &&
+    final valid =
+        isEmailValid &&
         isPhoneValid &&
         isRegionValid &&
         isCityValid &&
@@ -348,47 +349,47 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   @override
   Widget build(BuildContext context) => BlocListener<VolunteerProfileBloc, VolunteerProfileState>(
-        listener: (context, state) {
-          // Update controllers when state changes (for state restoration)
-          if (_isEditMode) {
-            _emailController.text = state.email ?? '';
-            _phoneController.text = state.phoneNumber ?? '';
-            // Validate form on any Bloc state change (for dropdowns/checkboxes)
-            // _validateForm();
+    listener: (context, state) {
+      // Update controllers when state changes (for state restoration)
+      if (_isEditMode) {
+        _emailController.text = state.email ?? '';
+        _phoneController.text = state.phoneNumber ?? '';
+        // Validate form on any Bloc state change (for dropdowns/checkboxes)
+        // _validateForm();
+      }
+    },
+    child: BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+      builder: (context, state) => PopScope(
+        canPop: !_isEditMode, // Prevent pop only in edit mode
+        onPopInvokedWithResult: (didPop, result) {
+          print('PopScope triggered - didPop: $didPop, isEditMode: $_isEditMode, canPop: ${!_isEditMode}');
+          if (!didPop && _isEditMode) {
+            print('Canceling edit mode...');
+            // Exit edit mode when back button is pressed
+            _cancelEdit();
+            Navigator.of(context).pop();
+          } else {
+            print('Not canceling - didPop: $didPop, isEditMode: $_isEditMode');
           }
         },
-        child: BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
-          builder: (context, state) => PopScope(
-            canPop: !_isEditMode, // Prevent pop only in edit mode
-            onPopInvokedWithResult: (didPop, result) {
-              print('PopScope triggered - didPop: $didPop, isEditMode: $_isEditMode, canPop: ${!_isEditMode}');
-              if (!didPop && _isEditMode) {
-                print('Canceling edit mode...');
-                // Exit edit mode when back button is pressed
-                _cancelEdit();
-                Navigator.of(context).pop();
-              } else {
-                print('Not canceling - didPop: $didPop, isEditMode: $_isEditMode');
-              }
-            },
-            child: Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Personal Information Section - Only Unified Step Fields
-                        _buildExpandableSection(
-                          title: 'lbl_personal_info'.tr(),
-                          isExpanded: _isPersonalInfoExpanded,
-                          onToggle: () => setState(() => _isPersonalInfoExpanded = !_isPersonalInfoExpanded),
-                          children: _buildUnifiedStepRows(state),
-                        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Personal Information Section - Only Unified Step Fields
+                    _buildExpandableSection(
+                      title: 'lbl_personal_info'.tr(),
+                      isExpanded: _isPersonalInfoExpanded,
+                      onToggle: () => setState(() => _isPersonalInfoExpanded = !_isPersonalInfoExpanded),
+                      children: _buildUnifiedStepRows(state),
+                    ),
 
-                        // Commented out other sections - keeping for reference
-                        /*
+                    // Commented out other sections - keeping for reference
+                    /*
                         const SizedBox(height: 16),
 
                         // Scientific Information Section
@@ -436,469 +437,293 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                           children: _buildSocialMediaRows(state),
                         ),
                         */
-
-                        const SizedBox(height: 24), // Bottom spacing
-                      ],
-                    ),
-                  ),
+                    const SizedBox(height: 24), // Bottom spacing
+                  ],
                 ),
-                if (_isEditMode) _buildSaveButton(),
-              ],
+              ),
             ),
-          ),
+            if (_isEditMode) _buildSaveButton(),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 
   // New method to build unified step rows with only required fields
   List<Widget> _buildUnifiedStepRows(VolunteerProfileState state) => [
-        // Read-only fields (locked)
-        _buildInfoRow('full_name'.tr(), state.fullName ?? '', isReadOnly: true),
-        _buildInfoRow('national_id'.tr(), state.nationalId ?? '', isReadOnly: true),
+    // Read-only fields (locked)
+    _buildInfoRow('full_name'.tr(), state.fullName ?? '', isReadOnly: true),
+    _buildInfoRow('national_id'.tr(), state.nationalId ?? '', isReadOnly: true),
 
-        // Editable fields
-        _buildEditableInfoRow('email'.tr(), _emailController, keyboardType: TextInputType.emailAddress),
-        _buildEditableInfoRow('personal_mobile'.tr(), _phoneController, keyboardType: TextInputType.phone),
+    // Editable fields
+    _buildEditableInfoRow('email'.tr(), _emailController, keyboardType: TextInputType.emailAddress),
+    _buildEditableInfoRow('personal_mobile'.tr(), _phoneController, keyboardType: TextInputType.phone),
 
-        // Location fields - editable in edit mode via dropdowns
-        _buildLocationRow('region'.tr(), state.region ?? '', isRegion: true, state: state),
-        _buildLocationRow('city'.tr(), state.city ?? '', isRegion: false, state: state),
+    // Location fields - editable in edit mode via dropdowns
+    _buildLocationRow('region'.tr(), state.region ?? '', isRegion: true, state: state),
+    _buildLocationRow('city'.tr(), state.city ?? '', isRegion: false, state: state),
 
-        // Educational Qualification - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'educational_qualification_required'.tr(),
-          state.educationalQualification ?? 'not_selected'.tr(),
-          _isEditMode ? state.qualificationsList : null,
-          state.educationalQualificationId,
-          (value) {
-            if (value != null) {
-              final selectedQualification = state.qualificationsList.firstWhere(
-                (qualification) => qualification.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateScientificInfo(
-                      educationalQualification: selectedQualification.name,
-                      educationalQualificationId: value,
-                      specialization: state.specialization,
-                      specializationId: state.specializationId,
-                      profession: state.profession,
-                      workExperience: state.workExperience,
-                      language: state.language,
-                      languageId: state.languageId,
-                      scientificExperienceSummary: state.scientificExperienceSummary,
-                    ),
-                  );
-            }
-          },
-        ),
+    // Educational Qualification - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'educational_qualification_required'.tr(),
+      state.educationalQualification ?? 'not_selected'.tr(),
+      _isEditMode ? state.qualificationsList : null,
+      state.educationalQualificationId,
+      (value) {
+        if (value != null) {
+          final selectedQualification = state.qualificationsList.firstWhere(
+            (qualification) => qualification.tid.toString() == value,
+          );
+          context.read<VolunteerProfileBloc>().add(
+            UpdateScientificInfo(
+              educationalQualification: selectedQualification.name,
+              educationalQualificationId: value,
+              specialization: state.specialization,
+              specializationId: state.specializationId,
+              profession: state.profession,
+              workExperience: state.workExperience,
+              language: state.language,
+              languageId: state.languageId,
+              scientificExperienceSummary: state.scientificExperienceSummary,
+            ),
+          );
+        }
+      },
+    ),
 
-        // Volunteering Work Field - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'volunteering_work_field_required'.tr(),
-          state.volunteeringWorkField ?? 'not_selected'.tr(),
-          _isEditMode ? state.volunteeringFieldsList : null,
-          state.volunteeringWorkFieldId,
-          (value) {
-            if (value != null) {
-              final selectedField = state.volunteeringFieldsList.firstWhere(
-                (field) => field.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateVolunteeringInterests(
-                      skills: state.skills,
-                      skillsIds: state.skillsIds,
-                      volunteeringLevel: state.volunteeringLevel,
-                      volunteeringLevelId: state.volunteeringLevelId,
-                      volunteeringWorkField: selectedField.name,
-                      volunteeringWorkFieldId: value,
-                      isIndividualSelected: state.isIndividualSelected,
-                      isGroupSelected: state.isGroupSelected,
-                    ),
-                  );
-            }
-          },
-          isLast: true,
-        ),
-      ];
-
-  // Commented out old personal info rows - replaced with unified step
-  /*
-  List<Widget> _buildPersonalInfoRows(VolunteerProfileState state) => [
-        // Read-only fields (locked)
-        _buildInfoRow('national_id'.tr(), state.nationalId ?? '',
-            isReadOnly: true),
-        _buildInfoRow('full_name'.tr(), state.fullName ?? '', isReadOnly: true),
-        _buildInfoRow('lbl_first_name_hint1'.tr(), state.firstName ?? '',
-            isReadOnly: true),
-        _buildInfoRow('ekram_second_name'.tr(), state.middleName ?? '',
-            isReadOnly: true),
-        _buildInfoRow('last_name'.tr(), state.lastName ?? '', isReadOnly: true),
-        _buildInfoRow('lbl_birth_date'.tr(), state.dateOfBirth ?? '',
-            isReadOnly: true),
-        _buildInfoRow('personal_gender'.tr(), state.gender ?? '',
-            isReadOnly: true),
-        _buildInfoRow('nationality'.tr(), state.nationality ?? '',
-            isReadOnly: true),
-        _buildInfoRow('marital_status'.tr(), state.maritalStatus ?? '',
-            isReadOnly: true),
-
-        // Editable fields
-        _buildEditableInfoRow('email'.tr(), _emailController,
-            keyboardType: TextInputType.emailAddress),
-        _buildEditableInfoRow('personal_mobile'.tr(), _phoneController,
-            keyboardType: TextInputType.phone),
-
-        // Location fields - editable in edit mode via dropdowns
-        _buildLocationRow('region'.tr(), state.region ?? '',
-            isRegion: true, state: state),
-        _buildLocationRow('city'.tr(), state.city ?? '',
-            isRegion: false, state: state, isLast: true),
-      ];
-  */
-
-  // Commented out old scientific info rows - replaced with unified step
-  /*
-  List<Widget> _buildScientificInfoRows(VolunteerProfileState state) => [
-        // Educational Qualification - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'educational_qualification_required'.tr(),
-          state.educationalQualification ?? 'not_selected'.tr(),
-          _isEditMode ? state.qualificationsList : null,
-          state.educationalQualificationId,
-          (value) {
-            if (value != null) {
-              final selectedQualification = state.qualificationsList.firstWhere(
-                (qualification) => qualification.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateScientificInfo(
-                      educationalQualification: selectedQualification.name,
-                      educationalQualificationId: value,
-                      specialization: state.specialization,
-                      specializationId: state.specializationId,
-                      profession: state.profession,
-                      workExperience: state.workExperience,
-                      language: state.language,
-                      languageId: state.languageId,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
-                    ),
-                  );
-            }
-          },
-        ),
-
-        // Specialization - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'specialization_required'.tr(),
-          state.specialization ?? 'not_selected'.tr(),
-          _isEditMode ? state.specializationsList : null,
-          state.specializationId,
-          (value) {
-            if (value != null) {
-              final selectedSpecialization =
-                  state.specializationsList.firstWhere(
-                (specialization) => specialization.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateScientificInfo(
-                      educationalQualification: state.educationalQualification,
-                      educationalQualificationId:
-                          state.educationalQualificationId,
-                      specialization: selectedSpecialization.name,
-                      specializationId: value,
-                      profession: state.profession,
-                      workExperience: state.workExperience,
-                      language: state.language,
-                      languageId: state.languageId,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
-                    ),
-                  );
-            }
-          },
-        ),
-
-        // Profession - editable text field
-        _buildEditableInfoRow('profession'.tr(), _professionController),
-
-        // Work Experience - dropdown in edit mode
-        _buildWorkExperienceRow(state),
-
-        // Language - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'language_required'.tr(),
-          state.language ?? 'not_selected'.tr(),
-          _isEditMode ? state.languagesList : null,
-          state.languageId,
-          (value) {
-            if (value != null) {
-              final selectedLanguage = state.languagesList.firstWhere(
-                (language) => language.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateScientificInfo(
-                      educationalQualification: state.educationalQualification,
-                      educationalQualificationId:
-                          state.educationalQualificationId,
-                      specialization: state.specialization,
-                      specializationId: state.specializationId,
-                      profession: state.profession,
-                      workExperience: state.workExperience,
-                      language: selectedLanguage.name,
-                      languageId: value,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
-                    ),
-                  );
-            }
-          },
-        ),
-
-        // Scientific Experience Summary - editable text field
-        _buildEditableInfoRow('scientific_experience_summary_required'.tr(),
-            _scientificExperienceController,
-            maxLines: 3),
-
-        // CV file status
-        _buildCVUploadRow(state),
-      ];
-  */
+    // Volunteering Work Field - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'volunteering_work_field_required'.tr(),
+      state.volunteeringWorkField ?? 'not_selected'.tr(),
+      _isEditMode ? state.volunteeringFieldsList : null,
+      state.volunteeringWorkFieldId,
+      (value) {
+        if (value != null) {
+          final selectedField = state.volunteeringFieldsList.firstWhere((field) => field.tid.toString() == value);
+          context.read<VolunteerProfileBloc>().add(
+            UpdateVolunteeringInterests(
+              skills: state.skills,
+              skillsIds: state.skillsIds,
+              volunteeringLevel: state.volunteeringLevel,
+              volunteeringLevelId: state.volunteeringLevelId,
+              volunteeringWorkField: selectedField.name,
+              volunteeringWorkFieldId: value,
+              isIndividualSelected: state.isIndividualSelected,
+              isGroupSelected: state.isGroupSelected,
+            ),
+          );
+        }
+      },
+      isLast: true,
+    ),
+  ];
 
   List<Widget> _buildVolunteeringInterestsRows(VolunteerProfileState state) => [
-        // Skills - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'skills_required'.tr(),
-          state.skills.isNotEmpty ? state.skills.join(', ') : 'not_selected'.tr(),
-          _isEditMode ? state.skillsList : null,
-          state.skillsIds.isNotEmpty ? state.skillsIds.first : null,
-          (value) {
-            if (value != null) {
-              final selectedSkill = state.skillsList.firstWhere(
-                (skill) => skill.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateVolunteeringInterests(
-                      skills: [selectedSkill.name],
-                      skillsIds: [value],
-                      volunteeringLevel: state.volunteeringLevel,
-                      volunteeringLevelId: state.volunteeringLevelId,
-                      volunteeringWorkField: state.volunteeringWorkField,
-                      volunteeringWorkFieldId: state.volunteeringWorkFieldId,
-                      isIndividualSelected: state.isIndividualSelected,
-                      isGroupSelected: state.isGroupSelected,
-                    ),
-                  );
-            }
-          },
-        ),
+    // Skills - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'skills_required'.tr(),
+      state.skills.isNotEmpty ? state.skills.join(', ') : 'not_selected'.tr(),
+      _isEditMode ? state.skillsList : null,
+      state.skillsIds.isNotEmpty ? state.skillsIds.first : null,
+      (value) {
+        if (value != null) {
+          final selectedSkill = state.skillsList.firstWhere((skill) => skill.tid.toString() == value);
+          context.read<VolunteerProfileBloc>().add(
+            UpdateVolunteeringInterests(
+              skills: [selectedSkill.name],
+              skillsIds: [value],
+              volunteeringLevel: state.volunteeringLevel,
+              volunteeringLevelId: state.volunteeringLevelId,
+              volunteeringWorkField: state.volunteeringWorkField,
+              volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+              isIndividualSelected: state.isIndividualSelected,
+              isGroupSelected: state.isGroupSelected,
+            ),
+          );
+        }
+      },
+    ),
 
-        // Volunteering Level - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'volunteering_level_required'.tr(),
-          state.volunteeringLevel ?? 'not_selected'.tr(),
-          _isEditMode ? state.lvlsList : null,
-          state.volunteeringLevelId,
-          (value) {
-            if (value != null) {
-              final selectedLevel = state.lvlsList.firstWhere(
-                (level) => level.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateVolunteeringInterests(
-                      skills: state.skills,
-                      skillsIds: state.skillsIds,
-                      volunteeringLevel: selectedLevel.name,
-                      volunteeringLevelId: value,
-                      volunteeringWorkField: state.volunteeringWorkField,
-                      volunteeringWorkFieldId: state.volunteeringWorkFieldId,
-                      isIndividualSelected: state.isIndividualSelected,
-                      isGroupSelected: state.isGroupSelected,
-                    ),
-                  );
-            }
-          },
-        ),
+    // Volunteering Level - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'volunteering_level_required'.tr(),
+      state.volunteeringLevel ?? 'not_selected'.tr(),
+      _isEditMode ? state.lvlsList : null,
+      state.volunteeringLevelId,
+      (value) {
+        if (value != null) {
+          final selectedLevel = state.lvlsList.firstWhere((level) => level.tid.toString() == value);
+          context.read<VolunteerProfileBloc>().add(
+            UpdateVolunteeringInterests(
+              skills: state.skills,
+              skillsIds: state.skillsIds,
+              volunteeringLevel: selectedLevel.name,
+              volunteeringLevelId: value,
+              volunteeringWorkField: state.volunteeringWorkField,
+              volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+              isIndividualSelected: state.isIndividualSelected,
+              isGroupSelected: state.isGroupSelected,
+            ),
+          );
+        }
+      },
+    ),
 
-        // Interests - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'interests'.tr(),
-          state.interests.isNotEmpty ? state.interests.join(', ') : 'not_selected'.tr(),
-          _isEditMode ? state.interestsList : null,
-          state.interests.isNotEmpty ? _getInterestIdFromName(state.interests.first, state.interestsList) : null,
-          (value) {
-            context.read<VolunteerProfileBloc>().add(
-                  UpdateVolunteeringInterests(
-                    interests: value != null ? [value] : [],
-                  ),
-                );
-          },
-        ),
+    // Interests - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'interests'.tr(),
+      state.interests.isNotEmpty ? state.interests.join(', ') : 'not_selected'.tr(),
+      _isEditMode ? state.interestsList : null,
+      state.interests.isNotEmpty ? _getInterestIdFromName(state.interests.first, state.interestsList) : null,
+      (value) {
+        context.read<VolunteerProfileBloc>().add(UpdateVolunteeringInterests(interests: value != null ? [value] : []));
+      },
+    ),
 
-        // Volunteering Work Field - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'volunteering_work_field_required'.tr(),
-          state.volunteeringWorkField ?? 'not_selected'.tr(),
-          _isEditMode ? state.volunteeringFieldsList : null,
-          state.volunteeringWorkFieldId,
-          (value) {
-            if (value != null) {
-              final selectedField = state.volunteeringFieldsList.firstWhere(
-                (field) => field.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateVolunteeringInterests(
-                      skills: state.skills,
-                      skillsIds: state.skillsIds,
-                      volunteeringLevel: state.volunteeringLevel,
-                      volunteeringLevelId: state.volunteeringLevelId,
-                      volunteeringWorkField: selectedField.name,
-                      volunteeringWorkFieldId: value,
-                      isIndividualSelected: state.isIndividualSelected,
-                      isGroupSelected: state.isGroupSelected,
-                    ),
-                  );
-            }
-          },
-        ),
+    // Volunteering Work Field - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'volunteering_work_field_required'.tr(),
+      state.volunteeringWorkField ?? 'not_selected'.tr(),
+      _isEditMode ? state.volunteeringFieldsList : null,
+      state.volunteeringWorkFieldId,
+      (value) {
+        if (value != null) {
+          final selectedField = state.volunteeringFieldsList.firstWhere((field) => field.tid.toString() == value);
+          context.read<VolunteerProfileBloc>().add(
+            UpdateVolunteeringInterests(
+              skills: state.skills,
+              skillsIds: state.skillsIds,
+              volunteeringLevel: state.volunteeringLevel,
+              volunteeringLevelId: state.volunteeringLevelId,
+              volunteeringWorkField: selectedField.name,
+              volunteeringWorkFieldId: value,
+              isIndividualSelected: state.isIndividualSelected,
+              isGroupSelected: state.isGroupSelected,
+            ),
+          );
+        }
+      },
+    ),
 
-        // Volunteering Type Preference - checkboxes in edit mode
-        _buildVolunteeringTypeRow(state),
-      ];
+    // Volunteering Type Preference - checkboxes in edit mode
+    _buildVolunteeringTypeRow(state),
+  ];
 
   List<Widget> _buildMedicalInfoRows(VolunteerProfileState state) => [
-        // Blood Type - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'blood_type'.tr(),
-          state.bloodType ?? 'not_selected'.tr(),
-          _isEditMode ? state.bloodTypesList : null,
-          state.bloodTypeId,
-          (value) {
-            if (value != null) {
-              final selectedBloodType = state.bloodTypesList.firstWhere(
-                (bloodType) => bloodType.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateMedicalInfo(
-                      bloodType: selectedBloodType.name,
-                      bloodTypeId: value,
-                      disease: state.disease,
-                      diseaseId: state.diseaseId,
-                    ),
-                  );
-            }
-          },
-        ),
+    // Blood Type - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'blood_type'.tr(),
+      state.bloodType ?? 'not_selected'.tr(),
+      _isEditMode ? state.bloodTypesList : null,
+      state.bloodTypeId,
+      (value) {
+        if (value != null) {
+          final selectedBloodType = state.bloodTypesList.firstWhere((bloodType) => bloodType.tid.toString() == value);
+          context.read<VolunteerProfileBloc>().add(
+            UpdateMedicalInfo(
+              bloodType: selectedBloodType.name,
+              bloodTypeId: value,
+              disease: state.disease,
+              diseaseId: state.diseaseId,
+            ),
+          );
+        }
+      },
+    ),
 
-        // Diseases - dropdown in edit mode
-        _buildDropdownOrInfoRow(
-          'diseases'.tr(),
-          state.disease ?? 'not_selected'.tr(),
-          _isEditMode ? state.diseasesList : null,
-          state.diseaseId,
-          (value) {
-            if (value != null) {
-              final selectedDisease = state.diseasesList.firstWhere(
-                (disease) => disease.tid.toString() == value,
-              );
-              context.read<VolunteerProfileBloc>().add(
-                    UpdateMedicalInfo(
-                      bloodType: state.bloodType,
-                      bloodTypeId: state.bloodTypeId,
-                      disease: selectedDisease.name,
-                      diseaseId: value,
-                    ),
-                  );
-            }
-          },
-          isLast: true,
-        ),
-      ];
+    // Diseases - dropdown in edit mode
+    _buildDropdownOrInfoRow(
+      'diseases'.tr(),
+      state.disease ?? 'not_selected'.tr(),
+      _isEditMode ? state.diseasesList : null,
+      state.diseaseId,
+      (value) {
+        if (value != null) {
+          final selectedDisease = state.diseasesList.firstWhere((disease) => disease.tid.toString() == value);
+          context.read<VolunteerProfileBloc>().add(
+            UpdateMedicalInfo(
+              bloodType: state.bloodType,
+              bloodTypeId: state.bloodTypeId,
+              disease: selectedDisease.name,
+              diseaseId: value,
+            ),
+          );
+        }
+      },
+      isLast: true,
+    ),
+  ];
 
   Widget _buildExpandableSection({
     required String title,
     required bool isExpanded,
     required VoidCallback onToggle,
     required List<Widget> children,
-  }) =>
-      Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
+  }) => Container(
+    decoration: BoxDecoration(
+      color: Theme.of(context).cardColor,
+      borderRadius: BorderRadius.circular(12),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(100).withOpacity(0.1),
+          spreadRadius: 1,
+          blurRadius: 4,
+          offset: const Offset(0, 2),
         ),
-        child: Column(
-          children: [
-            // Section Header (Clickable)
-            InkWell(
-              onTap: onToggle,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF00796B).withOpacity(0.05),
-                  borderRadius: BorderRadius.vertical(
-                    top: const Radius.circular(12),
-                    bottom: isExpanded ? Radius.zero : const Radius.circular(12),
+      ],
+    ),
+    child: Column(
+      children: [
+        // Section Header (Clickable)
+        InkWell(
+          onTap: onToggle,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00796B).withOpacity(0.05),
+              borderRadius: BorderRadius.vertical(
+                top: const Radius.circular(12),
+                bottom: isExpanded ? Radius.zero : const Radius.circular(12),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF00796B).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(_getSectionIcon(title), color: const Color(0xFF00796B), size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF00796B)),
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF00796B).withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        _getSectionIcon(title),
-                        color: const Color(0xFF00796B),
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF00796B),
-                        ),
-                      ),
-                    ),
-                    // Expand/Collapse Icon
-                    AnimatedRotation(
-                      duration: const Duration(milliseconds: 200),
-                      turns: isExpanded ? 0.5 : 0,
-                      child: const Icon(
-                        Icons.keyboard_arrow_down,
-                        color: Color(0xFF00796B),
-                        size: 24,
-                      ),
-                    ),
-                  ],
+                // Expand/Collapse Icon
+                AnimatedRotation(
+                  duration: const Duration(milliseconds: 200),
+                  turns: isExpanded ? 0.5 : 0,
+                  child: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF00796B), size: 24),
                 ),
-              ),
+              ],
             ),
-            // Section Content (Expandable)
-            AnimatedCrossFade(
-              duration: const Duration(milliseconds: 300),
-              crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-              firstChild: const SizedBox.shrink(),
-              secondChild: Column(
-                children: children,
-              ),
-            ),
-          ],
+          ),
         ),
-      );
+        // Section Content (Expandable)
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 300),
+          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(children: children),
+        ),
+      ],
+    ),
+  );
 
   IconData _getSectionIcon(String title) {
     if (title.contains('personal') || title.contains('شخصية')) {
@@ -916,249 +741,226 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }
 
   Widget _buildInfoRow(String label, String value, {bool isLast = false, bool isReadOnly = false}) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          border: isLast
-              ? null
-              : const Border(
-                  bottom: BorderSide(
-                    color: Color(0xFFF0F0F0),
-                  ),
-                ),
-          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
+      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Fixed width for label to ensure alignment
+        SizedBox(
+          width: 120, // Fixed width for consistent alignment
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+          ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Fixed width for label to ensure alignment
-            SizedBox(
-              width: 120, // Fixed width for consistent alignment
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16), // Consistent spacing
-            Expanded(
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
+        const SizedBox(width: 16), // Consistent spacing
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w500),
+          ),
         ),
-      );
+      ],
+    ),
+  );
 
-  Widget _buildEditableInfoRow(String label, TextEditingController controller,
-          {TextInputType keyboardType = TextInputType.text, int maxLines = 1, bool isLast = false}) =>
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          border: isLast
-              ? null
-              : const Border(
-                  bottom: BorderSide(
-                    color: Color(0xFFF0F0F0),
+  Widget _buildEditableInfoRow(
+    String label,
+    TextEditingController controller, {
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+    bool isLast = false,
+  }) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
+      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Fixed width for label to ensure alignment
+        SizedBox(
+          width: 120, // Fixed width for consistent alignment
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+          ),
+        ),
+        const SizedBox(width: 16), // Consistent spacing
+        Expanded(
+          child: _isEditMode
+              ? TextField(
+                  controller: controller,
+                  keyboardType: keyboardType,
+                  maxLines: maxLines,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )
+              : Text(
+                  controller.text,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Fixed width for label to ensure alignment
-            SizedBox(
-              width: 120, // Fixed width for consistent alignment
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16), // Consistent spacing
-            Expanded(
-              child: _isEditMode
-                  ? TextField(
-                      controller: controller,
-                      keyboardType: keyboardType,
-                      maxLines: maxLines,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    )
-                  : Text(
-                      controller.text,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 
-  Widget _buildLocationRow(String label, String value,
-          {required bool isRegion, required VolunteerProfileState state, bool isLast = false}) =>
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          border: isLast
-              ? null
-              : const Border(
-                  bottom: BorderSide(
-                    color: Color(0xFFF0F0F0),
+  Widget _buildLocationRow(
+    String label,
+    String value, {
+    required bool isRegion,
+    required VolunteerProfileState state,
+    bool isLast = false,
+  }) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
+      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Fixed width for label to ensure alignment
+        SizedBox(
+          width: 120, // Fixed width for consistent alignment
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+          ),
+        ),
+        const SizedBox(width: 16), // Consistent spacing
+        Expanded(
+          child: _isEditMode
+              ? _buildLocationDropdown(isRegion: isRegion, state: state)
+              : Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Fixed width for label to ensure alignment
-            SizedBox(
-              width: 120, // Fixed width for consistent alignment
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16), // Consistent spacing
-            Expanded(
-              child: _isEditMode
-                  ? _buildLocationDropdown(isRegion: isRegion, state: state)
-                  : Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 
   Widget _buildLocationDropdown({required bool isRegion, required VolunteerProfileState state}) {
     if (isRegion) {
       // Region dropdown
       if (state.isLoadingRegions) {
-        return const SizedBox(
-          height: 45,
-          child: Center(child: CircularProgressIndicator()),
-        );
+        return const SizedBox(height: 45, child: Center(child: CircularProgressIndicator()));
       }
       return DropdownButtonFormField<String>(
-        value: state.regionId?.isEmpty == true ? null : state.regionId,
+        dropdownColor: Theme.of(context).cardColor,
+        initialValue: state.regionId?.isEmpty == true ? null : state.regionId,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
         ),
         items: state.regionsList
-            .map((region) => DropdownMenuItem<String>(
-                  value: region.tid.toString(),
-                  child: Center(
-                      child: Text(region.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ))),
-                ))
+            .map(
+              (region) => DropdownMenuItem<String>(
+                value: region.tid.toString(),
+                child: Center(
+                  child: Text(
+                    region.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            )
             .toList(),
         onChanged: (value) {
           if (value != null) {
-            final selectedRegion = state.regionsList.firstWhere(
-              (region) => region.tid.toString() == value,
+            final selectedRegion = state.regionsList.firstWhere((region) => region.tid.toString() == value);
+            context.read<VolunteerProfileBloc>().add(
+              UpdatePersonalInfo(
+                email: state.email,
+                phoneNumber: state.phoneNumber,
+                nationalId: state.nationalId,
+                gender: state.gender,
+                maritalStatus: state.maritalStatus,
+                nearbyPhoneNumber: state.nearbyPhoneNumber,
+                region: selectedRegion.name,
+                regionId: value,
+                city: '',
+                cityId: '',
+              ),
             );
-            context.read<VolunteerProfileBloc>().add(
-                  UpdatePersonalInfo(
-                    email: state.email,
-                    phoneNumber: state.phoneNumber,
-                    nationalId: state.nationalId,
-                    gender: state.gender,
-                    maritalStatus: state.maritalStatus,
-                    nearbyPhoneNumber: state.nearbyPhoneNumber,
-                    region: selectedRegion.name,
-                    regionId: value,
-                    city: '',
-                    cityId: '',
-                  ),
-                );
-            context.read<VolunteerProfileBloc>().add(
-                  FetchCities(value),
-                );
+            context.read<VolunteerProfileBloc>().add(FetchCities(value));
           }
         },
       );
     } else {
       // City dropdown
       if (state.isLoadingCities) {
-        return const SizedBox(
-          height: 40,
-          child: Center(child: CircularProgressIndicator()),
-        );
+        return const SizedBox(height: 40, child: Center(child: CircularProgressIndicator()));
       }
 
       return DropdownButtonFormField<String>(
-        value: state.cityId?.isEmpty == true ? null : state.cityId,
+        dropdownColor: Theme.of(context).cardColor,
+        initialValue: state.cityId?.isEmpty == true ? null : state.cityId,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
         ),
         items: state.citiesList
-            .map((city) => DropdownMenuItem<String>(
-                  value: city.tid.toString(),
-                  child: Center(
-                      child: Text(city.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ))),
-                ))
+            .map(
+              (city) => DropdownMenuItem<String>(
+                value: city.tid.toString(),
+                child: Center(
+                  child: Text(
+                    city.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            )
             .toList(),
         onChanged: state.regionId?.isEmpty ?? true
             ? null // Disable if no region selected
             : (value) {
                 if (value != null) {
-                  final selectedCity = state.citiesList.firstWhere(
-                    (city) => city.tid.toString() == value,
-                  );
+                  final selectedCity = state.citiesList.firstWhere((city) => city.tid.toString() == value);
                   context.read<VolunteerProfileBloc>().add(
-                        UpdatePersonalInfo(
-                          email: state.email,
-                          phoneNumber: state.phoneNumber,
-                          nationalId: state.nationalId,
-                          gender: state.gender,
-                          maritalStatus: state.maritalStatus,
-                          nearbyPhoneNumber: state.nearbyPhoneNumber,
-                          region: state.region,
-                          regionId: state.regionId,
-                          city: selectedCity.name,
-                          cityId: value,
-                        ),
-                      );
+                    UpdatePersonalInfo(
+                      email: state.email,
+                      phoneNumber: state.phoneNumber,
+                      nationalId: state.nationalId,
+                      gender: state.gender,
+                      maritalStatus: state.maritalStatus,
+                      nearbyPhoneNumber: state.nearbyPhoneNumber,
+                      region: state.region,
+                      regionId: state.regionId,
+                      city: selectedCity.name,
+                      cityId: value,
+                    ),
+                  );
                 }
               },
       );
@@ -1191,10 +993,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   String? _getInterestIdFromName(String interestName, List<dynamic> interestsList) {
     try {
-      final interest = interestsList.firstWhere(
-        (interest) => interest.name == interestName,
-        orElse: () => null,
-      );
+      final interest = interestsList.firstWhere((interest) => interest.name == interestName, orElse: () => null);
       return interest?.tid?.toString();
     } catch (e) {
       return null;
@@ -1203,221 +1002,210 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   // Helper method to build dropdown or info row based on edit mode
   Widget _buildDropdownOrInfoRow(
-          String label, String value, List<dynamic>? items, String? selectedValue, Function(String?)? onChanged,
-          {bool isLast = false}) =>
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          border: isLast
-              ? null
-              : const Border(
-                  bottom: BorderSide(
-                    color: Color(0xFFF0F0F0),
+    String label,
+    String value,
+    List<dynamic>? items,
+    String? selectedValue,
+    Function(String?)? onChanged, {
+    bool isLast = false,
+  }) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
+      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: _isEditMode && items != null
+              ? DropdownButtonFormField<String>(
+                  dropdownColor: Theme.of(context).cardColor,
+                  initialValue: selectedValue?.isEmpty == true ? null : selectedValue,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: items
+                      .map((item) => DropdownMenuItem<String>(value: item.tid.toString(), child: Text(item.name)))
+                      .toList(),
+                  onChanged: onChanged,
+                )
+              : Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-          borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _isEditMode && items != null
-                  ? DropdownButtonFormField<String>(
-                      value: selectedValue?.isEmpty == true ? null : selectedValue,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                      items: items
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item.tid.toString(),
-                                child: Text(item.name),
-                              ))
-                          .toList(),
-                      onChanged: onChanged,
-                    )
-                  : Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 
   // Helper method for work experience row (special case with years)
   Widget _buildWorkExperienceRow(VolunteerProfileState state) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Color(0xFFF0F0F0),
-            ),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: BoxDecoration(
+      border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            'work_experience'.tr(),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
           ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                'work_experience'.tr(),
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
+        const SizedBox(width: 16),
+        Expanded(
+          child: _isEditMode
+              ? DropdownButtonFormField<String>(
+                  dropdownColor: Theme.of(context).cardColor,
+                  initialValue: state.workExperience?.isEmpty == true || state.workExperience == 'null'
+                      ? null
+                      : state.workExperience,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                  items: List.generate(51, (index) => index)
+                      .map(
+                        (year) => DropdownMenuItem<String>(
+                          value: year.toString(),
+                          child: Text(
+                            '$year ${year == 0
+                                ? 'no_experience'.tr()
+                                : year == 1
+                                ? 'one_year'.tr()
+                                : 'years'.tr()}',
+                          ),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    context.read<VolunteerProfileBloc>().add(
+                      UpdateScientificInfo(
+                        educationalQualification: state.educationalQualification,
+                        educationalQualificationId: state.educationalQualificationId,
+                        specialization: state.specialization,
+                        specializationId: state.specializationId,
+                        profession: state.profession,
+                        workExperience: value,
+                        language: state.language,
+                        languageId: state.languageId,
+                        scientificExperienceSummary: state.scientificExperienceSummary,
+                      ),
+                    );
+                  },
+                )
+              : Text(
+                  _getWorkExperienceText(state.workExperience),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _isEditMode
-                  ? DropdownButtonFormField<String>(
-                      value: state.workExperience?.isEmpty == true || state.workExperience == 'null'
-                          ? null
-                          : state.workExperience,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                      items: List.generate(51, (index) => index)
-                          .map((year) => DropdownMenuItem<String>(
-                                value: year.toString(),
-                                child: Text(
-                                    '$year ${year == 0 ? 'no_experience'.tr() : year == 1 ? 'one_year'.tr() : 'years'.tr()}'),
-                              ))
-                          .toList(),
-                      onChanged: (value) {
-                        context.read<VolunteerProfileBloc>().add(
-                              UpdateScientificInfo(
-                                educationalQualification: state.educationalQualification,
-                                educationalQualificationId: state.educationalQualificationId,
-                                specialization: state.specialization,
-                                specializationId: state.specializationId,
-                                profession: state.profession,
-                                workExperience: value,
-                                language: state.language,
-                                languageId: state.languageId,
-                                scientificExperienceSummary: state.scientificExperienceSummary,
-                              ),
-                            );
-                      },
-                    )
-                  : Text(
-                      _getWorkExperienceText(state.workExperience),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-            ),
-          ],
         ),
-      );
+      ],
+    ),
+  );
 
   // Helper method for volunteering type preference (checkboxes)
   Widget _buildVolunteeringTypeRow(VolunteerProfileState state) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: const BoxDecoration(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            'volunteering_type_preference'.tr(),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+          ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                'volunteering_type_preference'.tr(),
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _isEditMode
-                  ? Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                value: state.isIndividualSelected,
-                                onChanged: (value) {
-                                  context.read<VolunteerProfileBloc>().add(
-                                        UpdateVolunteeringInterests(
-                                          skills: state.skills,
-                                          skillsIds: state.skillsIds,
-                                          volunteeringLevel: state.volunteeringLevel,
-                                          volunteeringLevelId: state.volunteeringLevelId,
-                                          volunteeringWorkField: state.volunteeringWorkField,
-                                          volunteeringWorkFieldId: state.volunteeringWorkFieldId,
-                                          isIndividualSelected: value ?? false,
-                                          isGroupSelected: state.isGroupSelected,
-                                        ),
-                                      );
-                                },
-                                activeColor: const Color(0xFF00A693),
-                              ),
-                              Text('individual'.tr()),
-                            ],
+        const SizedBox(width: 16),
+        Expanded(
+          child: _isEditMode
+              ? Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: state.isIndividualSelected,
+                            onChanged: (value) {
+                              context.read<VolunteerProfileBloc>().add(
+                                UpdateVolunteeringInterests(
+                                  skills: state.skills,
+                                  skillsIds: state.skillsIds,
+                                  volunteeringLevel: state.volunteeringLevel,
+                                  volunteeringLevelId: state.volunteeringLevelId,
+                                  volunteeringWorkField: state.volunteeringWorkField,
+                                  volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+                                  isIndividualSelected: value ?? false,
+                                  isGroupSelected: state.isGroupSelected,
+                                ),
+                              );
+                            },
+                            activeColor: const Color(0xFF00A693),
                           ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                value: state.isGroupSelected,
-                                onChanged: (value) {
-                                  context.read<VolunteerProfileBloc>().add(
-                                        UpdateVolunteeringInterests(
-                                          skills: state.skills,
-                                          skillsIds: state.skillsIds,
-                                          volunteeringLevel: state.volunteeringLevel,
-                                          volunteeringLevelId: state.volunteeringLevelId,
-                                          volunteeringWorkField: state.volunteeringWorkField,
-                                          volunteeringWorkFieldId: state.volunteeringWorkFieldId,
-                                          isIndividualSelected: state.isIndividualSelected,
-                                          isGroupSelected: value ?? false,
-                                        ),
-                                      );
-                                },
-                                activeColor: const Color(0xFF00A693),
-                              ),
-                              Text('group'.tr()),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Text(
-                      _getVolunteeringTypeText(state),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
+                          Text('individual'.tr()),
+                        ],
                       ),
                     ),
-            ),
-          ],
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: state.isGroupSelected,
+                            onChanged: (value) {
+                              context.read<VolunteerProfileBloc>().add(
+                                UpdateVolunteeringInterests(
+                                  skills: state.skills,
+                                  skillsIds: state.skillsIds,
+                                  volunteeringLevel: state.volunteeringLevel,
+                                  volunteeringLevelId: state.volunteeringLevelId,
+                                  volunteeringWorkField: state.volunteeringWorkField,
+                                  volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+                                  isIndividualSelected: state.isIndividualSelected,
+                                  isGroupSelected: value ?? false,
+                                ),
+                              );
+                            },
+                            activeColor: const Color(0xFF00A693),
+                          ),
+                          Text('group'.tr()),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Text(
+                  _getVolunteeringTypeText(state),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
         ),
-      );
+      ],
+    ),
+  );
 
   // Commented out old social media rows - replaced with unified step
   /*
@@ -1456,144 +1244,116 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   // Helper method to build CV upload row
   Widget _buildCVUploadRow(VolunteerProfileState state) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                'resume_cv'.tr(),
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _isEditMode
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Current CV status
-                        if (state.cvFileName != null)
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.green.withOpacity(0.3)),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.file_present,
-                                  color: Colors.green,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    state.cvFileName!,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        const SizedBox(height: 8),
-                        // Upload button
-                        ElevatedButton(
-                          onPressed: () => _pickAndUploadFile(context),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            backgroundColor: const Color(0xFF00796B),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.upload_file, color: Colors.white, size: 16),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                                child: Text(
-                                  state.cvFileName != null ? 'change_cv'.tr() : 'attach_cv'.tr(),
-                                  style: const TextStyle(fontSize: 14, color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Upload status
-                        if (state.isUploadingCV)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Row(
-                              children: [
-                                const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'uploading_cv'.tr(),
-                                  style: const TextStyle(color: Colors.orange),
-                                ),
-                              ],
-                            ),
-                          ),
-                      ],
-                    )
-                  : Text(
-                      state.cvFileName ?? 'not_attached'.tr(),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildSaveButton() => Container(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          width: double.infinity,
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: ElevatedButton(
-              onPressed: _isFormValid ? _saveChanges : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00796B),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Text(
-                'save'.tr(),
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    decoration: const BoxDecoration(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text(
+            'resume_cv'.tr(),
+            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
           ),
         ),
-      );
+        const SizedBox(width: 16),
+        Expanded(
+          child: _isEditMode
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Current CV status
+                    if (state.cvFileName != null)
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.green.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.green.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.file_present, color: Colors.green, size: 16),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                state.cvFileName!,
+                                style: const TextStyle(fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    const SizedBox(height: 8),
+                    // Upload button
+                    ElevatedButton(
+                      onPressed: () => _pickAndUploadFile(context),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        backgroundColor: const Color(0xFF00796B),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.upload_file, color: Theme.of(context).colorScheme.surface, size: 16),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0, right: 8),
+                            child: Text(
+                              state.cvFileName != null ? 'change_cv'.tr() : 'attach_cv'.tr(),
+                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.surface),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Upload status
+                    if (state.isUploadingCV)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                            const SizedBox(width: 8),
+                            Text('uploading_cv'.tr(), style: const TextStyle(color: Colors.orange)),
+                          ],
+                        ),
+                      ),
+                  ],
+                )
+              : Text(
+                  state.cvFileName ?? 'not_attached'.tr(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+        ),
+      ],
+    ),
+  );
+
+  Widget _buildSaveButton() => Container(
+    padding: const EdgeInsets.all(16),
+    child: SizedBox(
+      width: double.infinity,
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        child: ElevatedButton(
+          onPressed: _isFormValid ? _saveChanges : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF00796B),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          child: Text(
+            'save'.tr(),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.surface),
+          ),
+        ),
+      ),
+    ),
+  );
 }

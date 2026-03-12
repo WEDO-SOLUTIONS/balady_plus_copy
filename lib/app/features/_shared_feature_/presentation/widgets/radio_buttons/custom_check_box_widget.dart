@@ -30,7 +30,7 @@ class CustomCheckBoxWidget extends StatefulWidget {
   final AlignmentDirectional checkBoxAlignment;
 
   const CustomCheckBoxWidget({
-    Key? key,
+    super.key,
     this.height = 60.0,
     this.width = double.infinity,
     this.borderColor = Colors.transparent,
@@ -54,7 +54,7 @@ class CustomCheckBoxWidget extends StatefulWidget {
     this.titleFontWeight = AppFontWeight.medium,
     this.titleHeight = 25.0,
     this.checkBoxAlignment = AlignmentDirectional.centerStart,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomCheckBoxWidget> createState() => _CustomCheckBoxWidgetState();
@@ -155,7 +155,7 @@ class CustomCheckBoxTopStartWidget extends StatefulWidget {
   final AlignmentDirectional checkBoxAlignment;
 
   const CustomCheckBoxTopStartWidget({
-    Key? key,
+    super.key,
     this.height = 60.0,
     this.width = double.infinity,
     this.borderColor = Colors.transparent,
@@ -179,7 +179,7 @@ class CustomCheckBoxTopStartWidget extends StatefulWidget {
     this.titleFontWeight = AppFontWeight.medium,
     this.titleHeight = 25.0,
     this.checkBoxAlignment = AlignmentDirectional.centerStart,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomCheckBoxTopStartWidget> createState() => _CustomCheckBoxTopStartWidget();

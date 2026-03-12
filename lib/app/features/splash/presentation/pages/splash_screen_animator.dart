@@ -13,7 +13,7 @@ import 'package:balady_authorization/src/authentication/bloc/authentication_bloc
 import 'package:balady_authorization/src/utils/injection/injection_container.dart';
 
 class SplashScreenAnimator extends StatefulWidget {
-  const SplashScreenAnimator({Key? key}) : super(key: key);
+  const SplashScreenAnimator({super.key});
 
   @override
   State<SplashScreenAnimator> createState() => _SplashScreenAnimatorState();

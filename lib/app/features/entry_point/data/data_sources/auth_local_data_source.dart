@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../../core/errors/exceptions.dart';
-import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../entry_point_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';

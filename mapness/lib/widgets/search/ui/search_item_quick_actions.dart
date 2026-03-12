@@ -21,6 +21,8 @@ import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
+const _buttonColorScheme = ButtonColorScheme.accentSecondary;
+
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
 
@@ -181,12 +183,14 @@ class SearchItemQuickActions extends HookConsumerWidget {
     required DirectoryObjectMessage data,
     required FavouriteItem? favouriteItem,
   }) async {
-    await ref.read(authMethodsProvider.notifier).authOrOpen(
-      context,
-      callback: () {
-        BssService.instance.trackFavoriteTap(data);
-        toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
-      },
-    );
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authOrOpen(
+          context,
+          callback: () {
+            BssService.instance.trackFavoriteTap(data);
+            toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+          },
+        );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../shared_feature_exports.dart';
 import 'custom_radio_button_widget copy.dart';
@@ -11,13 +12,13 @@ class HorizontalRadioGroup<T> extends StatelessWidget {
   final Function(T?) onChanged;
 
   const HorizontalRadioGroup({
-    Key? key,
+    super.key,
     this.currentItem,
     this.isMandatory,
     required this.groupName,
     required this.items,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   build(BuildContext context) {

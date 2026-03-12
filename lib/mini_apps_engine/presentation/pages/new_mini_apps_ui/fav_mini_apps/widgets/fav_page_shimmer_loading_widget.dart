@@ -9,8 +9,12 @@ class FavPageShimmerLoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor:  Theme.of(context).brightness ==
+        Brightness.dark
+        ? Colors.grey[900]!:Colors.grey[300]!,
+      highlightColor:  Theme.of(context).brightness ==
+          Brightness.dark
+          ?Colors.grey[700]!:Colors.grey[100]!,
       child: ListView.separated(
         separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.02),
         scrollDirection: Axis.vertical,
@@ -20,7 +24,7 @@ class FavPageShimmerLoadingWidget extends StatelessWidget {
             width: context.screenWidth,
             height: context.h(64),
             decoration: BoxDecoration(
-              color: Colors.white,
+           //   color: Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
           );

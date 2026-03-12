@@ -1,5 +1,7 @@
 //! data
 /// data -> entities
+library;
+
 export 'data/entities/auth_data.dart';
 export 'data/entities/bridge_params.dart';
 export 'data/entities/custom_expansion_panel.dart';

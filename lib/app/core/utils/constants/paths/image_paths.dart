@@ -112,4 +112,5 @@ class ImagePath {
   static const backgroundServiceCard = '${_imagePath}background_service_card$_png';
 
   static const featureServiceImage = '${_imagePath}constructions$_png';
+  static const sortDescending = '${_imagePath}sort-descending$_png';
 }

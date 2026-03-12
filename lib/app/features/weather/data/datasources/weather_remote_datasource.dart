@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -18,7 +19,6 @@ import '../../weather_exports.dart'
         HourModel,
         LocationModel,
         WeatherParams;
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class WeatherRemoteDataSource {
   Future<AllWeatherInfoModel> getAllWeatherInfoForLocation({required WeatherParams params});
@@ -30,7 +30,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
   WeatherRemoteDataSourceImpl({required this.webService});
   @override
   Future<AllWeatherInfoModel> getAllWeatherInfoForLocation({required WeatherParams params}) async {
-    var response;
+    Response<dynamic>? response;
 
     String weatherAPI = ApiUrl.weatherForcastAPI;
     try {
@@ -39,22 +39,23 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      response = await webService.dio.get(weatherAPI,
-          queryParameters: params.toMap(),
-          options: Options(headers: {
+      response = await webService.dio.get(
+        weatherAPI,
+        queryParameters: params.toMap(),
+        options: Options(
+          headers: {
             "Accept-Language": "ar",
             ApiHeader.requiresToken.eName: false,
-            ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(
-              q,
-              "GET",
-            )
-          }));
+            ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(q, "GET"),
+          },
+        ),
+      );
       var locationData = response.data['data']['result']['location'];
       var currentData = response.data['data']['result']['current'];
       var forecastData = response.data['data']['result']['forecast'];
       var alertsData = response.data['data']['result']['alerts'];
 
-      var decodedCurrentResponse;
+      CurrentModel? decodedCurrentResponse;
       final decodedAlertsResponse = AlertsModel.fromJson(alertsData);
 
       final List forecastDayData = forecastData['forecastday'];
@@ -62,8 +63,9 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       final decodedLocationResponse = LocationModel.fromMap(locationData);
       final currentCondition = currentData['condition'];
 
-      if (currentCondition != null)
+      if (currentCondition != null) {
         decodedCurrentResponse = CurrentModel.fromMap(currentData, ConditionsModel.fromMap(currentCondition));
+      }
 
       final List<ForecastDayModel> decodedForecastDayResponse = forecastDayData.map((forecastDay) {
         final List hourData = forecastDay['hour'];
@@ -77,7 +79,9 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         var dayConditionData;
         ConditionsModel? decodedDayConditionResponse;
         dayConditionData = dayData['condition'];
-        if (dayConditionData != null) decodedDayConditionResponse = ConditionsModel.fromMap(dayConditionData);
+        if (dayConditionData != null) {
+          decodedDayConditionResponse = ConditionsModel.fromMap(dayConditionData);
+        }
 
         return decodedDayConditionResponse != null
             ? ForecastDayModel.fromMap(
@@ -93,13 +97,11 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         alerts: decodedAlertsResponse,
         location: decodedLocationResponse,
         current: decodedCurrentResponse,
-        forecast: ForecastModel(
-          forecastday: decodedForecastDayResponse,
-        ),
+        forecast: ForecastModel(forecastday: decodedForecastDayResponse),
       );
 
       return allWeatherData;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -107,11 +109,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -120,9 +118,9 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      if (error is ServerException)
-        throw error;
-      else {
+      if (error is ServerException) {
+        rethrow;
+      } else {
         try {} catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -132,11 +130,11 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
             ),
           );
         }
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: error.toString(),
-            ),
-            response: response);
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(errorMessage: error.toString()),
+          response: response,
+        );
       }
     }
   }

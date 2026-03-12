@@ -6,7 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 class CheckCommercialLicenseField extends StatefulWidget {
   final CheckCommercialLicenseDataSource dataSource;
 
-  const CheckCommercialLicenseField({Key? key, required this.dataSource}) : super(key: key);
+  const CheckCommercialLicenseField({super.key, required this.dataSource});
 
   @override
   _CheckCommercialLicenseFieldState createState() => _CheckCommercialLicenseFieldState();
@@ -32,10 +32,7 @@ class _CheckCommercialLicenseFieldState extends State<CheckCommercialLicenseFiel
         TextField(
           controller: _controller,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "enter_license_id".tr(),
-            border: const OutlineInputBorder(),
-          ),
+          decoration: InputDecoration(labelText: "enter_license_id".tr(), border: const OutlineInputBorder()),
           onSubmitted: (id) async {
             await _checkCommercialLicense(id);
           },

@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.3+479
-version: 3.12.25+435
+version: 3.30.3+484
+# version: 3.12.23+433
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -194,13 +194,27 @@ dependencies:
 
   ############################################################
   balady_authorization:
+    # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.0.0
+    version: ^1.0.3
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
   #      ref: master
   #      path: packages/firebase_messaging/firebase_messaging
+
+
+  ############################################################
+  balady_design_system:
+#    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
+     hosted: https://baladyapp-unpub.urbi.ae/
+     version: 0.0.3
+  #      git:
+  #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
+  #        ref: main
+  #    path: /Users/abdelrahmanismail/StudioProjects/balady_design_system
+
+
   ############################################################
 
   huawei_location: ^6.16.0+300
@@ -240,7 +254,6 @@ flutter:
   shaders:
     - shaders/radar.frag
   assets:
-    - assets/mock/mini_apps_response.json
     - assets/
     - assets/icons/svg/
     - assets/icons/makkah/

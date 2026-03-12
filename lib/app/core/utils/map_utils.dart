@@ -1,12 +1,8 @@
-import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'dart:ui' as ui;
 
-import 'constants/constants.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MapUtils {
   // static BitmapDescriptor? locationMarker;

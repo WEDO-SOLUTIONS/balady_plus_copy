@@ -1,7 +1,4 @@
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -9,8 +6,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
-import '../../../../core/services/local/navigation_services.dart';
-import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
@@ -24,7 +19,7 @@ import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class SuccessScreen extends StatefulWidget {
-  const SuccessScreen({Key? key}) : super(key: key);
+  const SuccessScreen({super.key});
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -195,7 +190,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
 class SuccessBody extends StatelessWidget {
   final SuccessScreenArgs? successScreenArgs;
 
-  const SuccessBody({Key? key, this.successScreenArgs}) : super(key: key);
+  const SuccessBody({super.key, this.successScreenArgs});
 
   @override
   Widget build(BuildContext context) {
@@ -218,15 +213,19 @@ class SuccessBody extends StatelessWidget {
                 maxLines: 10,
               ),
               const CustomVerticalSpace(height: 20),
-              CustomTextWidget(
-                getDesc(),
-                fontSize: 16,
-                fontWeight: AppFontWeight.medium,
-                fontColor: AppColor.black500,
-                height: 1.6,
-                maxLines: 20,
-                textAlign: TextAlign.start,
+              SizedBox(
+                width: double.infinity,
+                child: CustomTextWidget(
+                  getDesc(),
+                  fontSize: 16,
+                  fontWeight: AppFontWeight.medium,
+                  fontColor: AppColor.black500,
+                  height: 1.6,
+                  maxLines: 20,
+                  textAlign: TextAlign.center,
+                ),
               ),
+
               const CustomVerticalSpace(height: 20),
               //MM
               if (successScreenArgs?.msg != null && successScreenArgs!.msg!.isNotEmpty)
@@ -383,8 +382,7 @@ class SuccessButtons extends StatelessWidget {
   bool isFawry;
   String? requestId;
 
-  SuccessButtons({Key? key, required this.pageType, this.isFawry = false, this.fromHomePage = false, this.requestId})
-    : super(key: key);
+  SuccessButtons({super.key, required this.pageType, this.isFawry = false, this.fromHomePage = false, this.requestId});
 
   @override
   Widget build(BuildContext context) {
@@ -641,7 +639,7 @@ class SuccessButtons extends StatelessWidget {
 class CustomHtmlTextWidget extends StatelessWidget {
   final String data;
 
-  const CustomHtmlTextWidget(this.data, {Key? key}) : super(key: key);
+  const CustomHtmlTextWidget(this.data, {super.key});
 
   @override
   Widget build(BuildContext context) {

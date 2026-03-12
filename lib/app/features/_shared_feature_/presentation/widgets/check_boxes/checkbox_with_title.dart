@@ -12,7 +12,7 @@ class CheckboxCubit extends Cubit<bool> {
 
 class CheckBoxWithTitle extends StatelessWidget {
   const CheckBoxWithTitle({
-    Key? key,
+    super.key,
     required this.title,
     this.maxlines,
     this.height,
@@ -22,7 +22,7 @@ class CheckBoxWithTitle extends StatelessWidget {
     this.initialValue,
     this.textStyle,
     this.fontSize,
-  }) : super(key: key);
+  });
 
   final String title;
   final int? maxlines;

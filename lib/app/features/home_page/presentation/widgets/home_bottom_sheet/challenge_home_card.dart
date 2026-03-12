@@ -5,7 +5,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_exports.dart';
 
 class ChallengeHomeCard extends StatelessWidget {
-  const ChallengeHomeCard({Key? key}) : super(key: key);
+  const ChallengeHomeCard({super.key});
 
   @override
   Widget build(BuildContext context) {

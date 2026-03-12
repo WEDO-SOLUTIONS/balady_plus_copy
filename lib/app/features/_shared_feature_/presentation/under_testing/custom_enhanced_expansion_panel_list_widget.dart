@@ -23,7 +23,7 @@ class CustomEnhancedExpansionPanelListWidget extends StatefulWidget {
   final List<ExpansionPanelInfo> children;
   final void Function(int, bool)? expansionCallback;
   const CustomEnhancedExpansionPanelListWidget({
-    Key? key,
+    super.key,
     this.bgColor,
     this.borderColor,
     this.borderWidth = 1,
@@ -31,7 +31,7 @@ class CustomEnhancedExpansionPanelListWidget extends StatefulWidget {
     //
     required this.children,
     this.expansionCallback,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomEnhancedExpansionPanelListWidget> createState() => _CustomEnhancedExpansionPanelListWidgetState();
@@ -253,7 +253,7 @@ class _HeaderWidget extends StatelessWidget {
 class _ExpansionLeadingWidget extends StatelessWidget {
   final bool expanded;
   final dynamic leading;
-  const _ExpansionLeadingWidget({Key? key, required this.expanded, required this.leading}) : super(key: key);
+  const _ExpansionLeadingWidget({super.key, required this.expanded, required this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -279,8 +279,7 @@ class _ExpansionTitleWidget extends StatelessWidget {
   final int maxLines;
   final bool expanded;
 
-  const _ExpansionTitleWidget({Key? key, required this.title, required this.maxLines, required this.expanded})
-    : super(key: key);
+  const _ExpansionTitleWidget({super.key, required this.title, required this.maxLines, required this.expanded});
 
   @override
   Widget build(BuildContext context) {

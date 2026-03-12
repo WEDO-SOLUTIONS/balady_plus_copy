@@ -2,6 +2,7 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,8 +13,6 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../services/services.dart';
 import '../shared/circle_icon.dart';
-
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class OpportunityMapCard extends StatelessWidget {
   final String type;
@@ -106,7 +105,7 @@ class OpportunityMapCard extends StatelessWidget {
                               child: Text(
                                 description ?? "",
                                 style: AppStyle.cardTitleTextStle.copyWith(
-                                  fontSize: 13,
+                                  fontSize: 14,
                                   color: AppColor.black,
                                   height: 1.3,
                                 ),
@@ -144,7 +143,7 @@ class OpportunityMapCard extends StatelessWidget {
                         if (mainActivity?.isNotEmpty ?? false)
                           Text(
                             "activity_type".tr().replaceAll("{}", mainActivity ?? ""),
-                            style: AppStyle.cardTitleTextStle.copyWith(fontSize: 13, color: AppColor.black),
+                            style: AppStyle.cardTitleTextStle.copyWith(fontSize: 14, color: AppColor.black),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -161,7 +160,7 @@ class OpportunityMapCard extends StatelessWidget {
                                   Text(
                                     area != null ? ("${area!} م٢ ") : "",
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 12),
+                                    style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 14),
                                   ),
                                 ],
                               ),
@@ -197,7 +196,7 @@ class OpportunityMapCard extends StatelessWidget {
                       Text(
                         "${"bid_end_date".tr()} ${getBidEndDate(bidEndDate ?? "")}",
                         overflow: TextOverflow.ellipsis,
-                        style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 12),
+                        style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 14),
                       ),
                     ],
                   ),
@@ -293,7 +292,7 @@ String getBidEndDate(String bidEndDate) {
 
 class RentOrInvestWidget extends StatelessWidget {
   final String type;
-  const RentOrInvestWidget({Key? key, required this.type}) : super(key: key);
+  const RentOrInvestWidget({super.key, required this.type});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -301,7 +300,7 @@ class RentOrInvestWidget extends StatelessWidget {
       child: Text(
         type == "Investment" || type == "Dirct Rental" ? ('investment').tr() : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
-          fontSize: 12,
+          fontSize: 14,
           color: type == "Investment" ? AppColor.secondary900Light : AppColor.secondary900Light,
         ),
       ),

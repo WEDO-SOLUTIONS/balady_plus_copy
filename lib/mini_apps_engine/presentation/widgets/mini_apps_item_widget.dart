@@ -39,6 +39,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       child: ImageIconBasedTypeWidget(
                         icon: miniApp.logoKey!,
                         type: miniApp.cdnLogoRef?.split(".").last,
+                        cdnLogoRef: miniApp.cdnLogoRef,
                         iconSize: 40,
                         iconColor: isEvent ? AppColor.primary900LightEvent : AppColor.primary900Light,
                       ),
@@ -51,9 +52,9 @@ class MiniAppsItemWidget extends StatelessWidget {
                         fontSize: 17,
                         fontFamily: 'packages/balady_uikit/Frutiger',
                         color: context.colors.foregroundDefault,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(

@@ -181,16 +181,16 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       }
       emitter(state.copyWith(status: BlocStatus.loading));
 
-      final CameraController _controller = CameraController(
+      final CameraController controller = CameraController(
         cameraController!.description,
         ResolutionPreset.medium,
         enableAudio: false,
       );
-      cameraController = _controller;
+      cameraController = controller;
       initializingCamera = true;
-      await _controller.initialize();
+      await controller.initialize();
       initializingCamera = false;
-      _controller.setFlashMode(FlashMode.off);
+      controller.setFlashMode(FlashMode.off);
     } on CameraException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

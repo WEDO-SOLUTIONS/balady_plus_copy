@@ -13,7 +13,7 @@ class CustomBoxWidget extends StatelessWidget {
   final double horizontalMargin;
   final double verticalMargin;
   const CustomBoxWidget({
-    Key? key,
+    super.key,
     this.size = 6.0,
     this.radius = 1.0,
     this.color,
@@ -23,7 +23,7 @@ class CustomBoxWidget extends StatelessWidget {
     this.margin,
     this.horizontalMargin = 0.0,
     this.verticalMargin = 0.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

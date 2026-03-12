@@ -726,10 +726,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openQuran();
       } else if (url.path == '/snapSend') {
         await _openSnapSend();
+      } else if (url.path == '/services') {
+        await router.push(MapnessServicesRoute(groupId: params['groupId']));
       } else if (url.path == '/parking') {
         _openParking();
-      } else if (url.path == '/register') {
-        await _openRegisterPage();
       } else {
         await router.pushPath(url.toString());
       }

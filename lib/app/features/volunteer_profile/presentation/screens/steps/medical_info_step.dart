@@ -50,7 +50,7 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value: state.bloodTypeId,
+                  initialValue: state.bloodTypeId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(
@@ -118,7 +118,7 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value: state.diseaseId,
+                  initialValue: state.diseaseId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(

@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+
 import '../../../../core/utils/utils_exports.dart' show Log;
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InAppWebViewPage extends StatefulWidget {
   const InAppWebViewPage({super.key});
@@ -53,7 +54,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
             initialUrlRequest: URLRequest(
               // url: Uri.parse('https://flutter.dev/'),
               url: WebUri(url),
-              headers: {"Authorization": CommonProperties.token, "authToken": CommonProperties.token},
+              headers: {"Authorization": "Bearer ${CommonProperties.token}", "authToken": CommonProperties.token},
             ),
             initialOptions: InAppWebViewGroupOptions(
               android: AndroidInAppWebViewOptions(

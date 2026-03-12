@@ -5,7 +5,7 @@ import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/constants.dart';
 
 class ViewDMSImageScreen extends StatefulWidget {
-  const ViewDMSImageScreen({Key? key}) : super(key: key);
+  const ViewDMSImageScreen({super.key});
 
   @override
   State<ViewDMSImageScreen> createState() => _ViewDMSImageScreenState();
@@ -36,7 +36,7 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
             },
             child: Container(
               margin: EdgeInsetsDirectional.only(top: MediaQuery.of(context).padding.top + 5, start: 12),
-              child: Image.asset(Constants.imgPath + 'exit@3x.png', height: 38, width: 38),
+              child: Image.asset('${Constants.imgPath}exit@3x.png', height: 38, width: 38),
             ),
           ),
         ),

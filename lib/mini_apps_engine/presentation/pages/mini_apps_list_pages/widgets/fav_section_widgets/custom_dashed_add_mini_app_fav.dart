@@ -43,13 +43,14 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
             width: width ?? context.w(53.95),
             height: height ?? context.h(53.95),
             child: DottedBorder(
-              options: RoundedRectDottedBorderOptions(
-                radius: const Radius.circular(16),
+              options: RectDottedBorderOptions(
+                // radius: const Radius.circular(16),
+                // borderType: BorderType.RRect,
                 color: const Color(0XFF809AA4),
                 strokeWidth: 2,
                 dashPattern: const [2.2084856033325195, 2.2084856033325195],
               ),
-              child: const Center(child: Icon(Icons.add, color: Color(0XFF1B153D), size: 30)),
+              child: Center(child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSurface, size: 30)),
             ),
           ),
         ),
@@ -66,7 +67,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
                 height: 14.43 / 13,
                 fontWeight: FontWeight.w400,
                 fontFamily: GeneralKey.appFontType,
-                color: Color(0xFF1E2A36),
+                // color:  Color(0xFF1E2A36),
                 leadingDistribution: TextLeadingDistribution.even,
               ),
               textAlign: TextAlign.center,

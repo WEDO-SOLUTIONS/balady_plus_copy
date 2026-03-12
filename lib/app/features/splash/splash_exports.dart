@@ -1,5 +1,7 @@
 //! presentation
 /// presentation -> pages
+library;
+
 export 'presentation/pages/splash_page.dart';
 
 /// presentation -> widgets
