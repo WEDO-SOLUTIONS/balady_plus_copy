@@ -14,49 +14,49 @@ class PoiDeeplinkContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(left: 16, right: 16),
-        decoration: const ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-          ),
+    width: double.infinity,
+    padding: const EdgeInsets.only(left: 16, right: 16),
+    decoration: ShapeDecoration(
+      color: context.colors.backgroundSurface2,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
-        child: Builder(
-          builder: (context) {
-            final title = context.l10n.pointToMap;
+      ),
+    ),
+    child: Builder(
+      builder: (context) {
+        final title = context.l10n.pointToMap;
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 16),
-                CardHeader(
-                  onTapClose: onTapClose,
-                  title: CardHeaderText.title(text: title, context: context),
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            CardHeader(
+              onTapClose: onTapClose,
+              title: CardHeaderText.title(text: title, context: context),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: Spacing.$4x,
+                bottom: Spacing.$4x,
+              ),
+              child: Text(
+                data.maybeWhen(
+                  data: (value) => value?.address ?? '${location.latitude}, ${location.longitude}',
+                  orElse: () => '',
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: Spacing.$4x,
-                    bottom: Spacing.$4x,
-                  ),
-                  child: Text(
-                    data.maybeWhen(
-                      data: (value) => value?.address ?? '${location.latitude}, ${location.longitude}',
-                      orElse: () => '',
-                    ),
-                    style: context.textStyles.bodySmallRegular.copyWith(
-                      color: context.colors.foregroundSoft,
-                    ),
-                  ),
+                style: context.textStyles.bodySmallRegular.copyWith(
+                  color: context.colors.foregroundSoft,
                 ),
-              ],
-            );
-          },
-        ),
-      );
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
 }
