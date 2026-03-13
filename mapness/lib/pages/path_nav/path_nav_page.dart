@@ -274,28 +274,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     final stableBottomInset = InsetsUtils.platformAwareBottomInset(context, isLandscape: !isPortrait);
+    final topBarPadding = MediaQuery.viewPaddingOf(context).top;
 
     sheetController = useToggleSheetController(onClose: (_) {}, clipByHeader: true, resetContentScrollOnClosed: true)
-      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(uikit.Spacing.$3x));
+      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(topBarPadding));
 
     void onSheetHeightChanged() {
       if (isPortrait) {
-        final padding = MediaQuery.paddingOf(context).bottom;
-
-        final sheetHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + padding + uikit.Spacing.$4x;
+        final sheetHeight =
+            sheetController.componentSizes.header + uikit.Spacing.$3x + stableBottomInset + uikit.Spacing.$4x;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
           _setPaddingToCamera(_bottomHeightNotifier.value);
         }
         return;
-      }
-
-      final padding = stableBottomInset;
-      final height = padding + uikit.Spacing.$3x;
-      if (_bottomHeightNotifier.value != height) {
-        _bottomHeightNotifier.value = height;
-        _setPaddingToCamera(height);
       }
     }
 
@@ -314,14 +307,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       sheetController.addListener(onSheetHeightChanged);
       final bottomPadding = stableBottomInset;
 
-      double bottomHeight;
-
       if (isPortrait) {
-        bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + bottomPadding + uikit.Spacing.$4x;
-      } else {
-        bottomHeight = bottomPadding + uikit.Spacing.$3x;
+        final bottomHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x;
+        _bottomHeightNotifier.value = bottomHeight;
       }
-      _bottomHeightNotifier.value = bottomHeight;
+
       return () => sheetController.removeListener(onSheetHeightChanged);
     }, []);
 
