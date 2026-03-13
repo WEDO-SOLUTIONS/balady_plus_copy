@@ -96,7 +96,7 @@ class DeeplinkPage extends ConsumerWidget {
                       ),
                     );
                   },
-                )
+                ),
               ],
             ),
           ),
@@ -143,15 +143,18 @@ class DeeplinkPage extends ConsumerWidget {
     }
 
     return PoiSheetSizes.myLocation(
-      bottomPadding: MediaQuery.of(context).viewPadding.bottom,
+      bottomPadding: 0, // MediaQuery.of(context).viewPadding.bottom,
       isAddressInTwoLines: twoLineAddress,
       isTitleInTwoLine: twoLineTitle,
     );
   }
 
   Size _textSize(String text, TextStyle style) {
-    final TextPainter textPainter =
-        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
     return textPainter.size;
   }
 }
