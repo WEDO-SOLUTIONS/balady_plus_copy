@@ -143,7 +143,9 @@ class DeeplinkPage extends ConsumerWidget {
     }
 
     return PoiSheetSizes.myLocation(
-      bottomPadding: 0, // MediaQuery.of(context).viewPadding.bottom,
+      /// The old version {MediaQuery.of(context).viewPadding.bottom}
+      /// but this value create empty space at the bottom
+      bottomPadding: 0,
       isAddressInTwoLines: twoLineAddress,
       isTitleInTwoLine: twoLineTitle,
     );
