@@ -12,8 +12,7 @@ class BottomNavBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<BottomNavBarCubit, BottomNavBarState>(
       listenWhen: (previous, current) => previous != current,
-      listener: (_, state) =>
-          onSelectedBottomNavBar(state.previous?.index, state.current.index),
+      listener: (_, state) => onSelectedBottomNavBar(state.previous?.index, state.current.index),
       buildWhen: (previous, current) => previous != current,
       builder: (_, state) => BottomNavBarStructure(
         children: BottomNavBar.arrangedValues
@@ -21,9 +20,7 @@ class BottomNavBarWidget extends StatelessWidget {
                   icon: navBar.icon,
                   label: navBar.label,
                   isSelected: state.current.index == navBar.index,
-                  onSelected: () => context
-                      .read<BottomNavBarCubit>()
-                      .onChangeBottomNavBar(navBar.index),
+                  onSelected: () => context.read<BottomNavBarCubit>().onChangeBottomNavBar(navBar.index),
                 ))
             .toList(),
       ),

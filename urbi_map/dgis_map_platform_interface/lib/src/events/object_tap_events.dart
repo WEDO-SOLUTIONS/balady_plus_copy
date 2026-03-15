@@ -56,9 +56,9 @@ class ObjectTapEvent extends TapEvent {
 /// [sendDgisMyLocationEvent] send event to Flutter app
 /// Android: WIP
 class MyLocationTapEvent extends TapEvent {
-
   /// Constructor
   const MyLocationTapEvent(this.latLng);
+
   /// Event name
   static const name = "onMyLocationTap";
 

@@ -8,18 +8,13 @@ import '../widgets/volunteer_presentation_mode.dart';
 class VolunteerProfileEditingScreen extends StatefulWidget {
   final VolunteerProfileBloc volunteerProfileBloc;
 
-  const VolunteerProfileEditingScreen({
-    required this.volunteerProfileBloc,
-    super.key,
-  });
+  const VolunteerProfileEditingScreen({required this.volunteerProfileBloc, super.key});
 
   @override
-  State<VolunteerProfileEditingScreen> createState() =>
-      _VolunteerProfileEditingScreenState();
+  State<VolunteerProfileEditingScreen> createState() => _VolunteerProfileEditingScreenState();
 }
 
-class _VolunteerProfileEditingScreenState
-    extends State<VolunteerProfileEditingScreen> {
+class _VolunteerProfileEditingScreenState extends State<VolunteerProfileEditingScreen> {
   Map<String, dynamic>? originalValues;
   @override
   void initState() {
@@ -46,12 +41,8 @@ class _VolunteerProfileEditingScreenState
       'language': currentState.language,
       'languageId': currentState.languageId,
       'workExperience': currentState.workExperience,
-      'skills': currentState.skills.isNotEmpty
-          ? currentState.skills.join(', ')
-          : null,
-      'skillsIds': currentState.skillsIds.isNotEmpty
-          ? currentState.skillsIds.first
-          : null,
+      'skills': currentState.skills.isNotEmpty ? currentState.skills.join(', ') : null,
+      'skillsIds': currentState.skillsIds.isNotEmpty ? currentState.skillsIds.first : null,
       'volunteeringLevel': currentState.volunteeringLevel,
       'volunteeringLevelId': currentState.volunteeringLevelId,
       'volunteeringWorkField': currentState.volunteeringWorkField,
@@ -72,11 +63,7 @@ class _VolunteerProfileEditingScreenState
         // This will be called when back button is pressed
         print('WillPopScope triggered in edit mode');
         // Restore original values
-        VolunteerPresentationMode.cancelEditMode(
-          context,
-          widget.volunteerProfileBloc,
-          originalValues!,
-        );
+        VolunteerPresentationMode.cancelEditMode(context, widget.volunteerProfileBloc, originalValues!);
         return true; // Allow pop
       },
       child: Scaffold(
@@ -85,26 +72,15 @@ class _VolunteerProfileEditingScreenState
           backgroundColor: Theme.of(context).colorScheme.surface,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).colorScheme.onSurface),
             onPressed: () {
-              VolunteerPresentationMode.cancelEditMode(
-                context,
-                widget.volunteerProfileBloc,
-                originalValues!,
-              );
+              VolunteerPresentationMode.cancelEditMode(context, widget.volunteerProfileBloc, originalValues!);
               Navigator.of(context).pop();
             },
           ),
           title: Text(
             'volunteer_edit_info_title'.tr(),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
           ),
           centerTitle: true,
         ),

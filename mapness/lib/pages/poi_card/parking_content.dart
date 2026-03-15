@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/date_time_ext.dart';
+import 'package:provider/provider.dart';
 
 class ParkingContent extends ConsumerWidget {
   const ParkingContent({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final parkingManage = ref.read(parkingManageProvider).value;
+    final parkingManage = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
     final dateParking = parkingManage?.dateTime ?? DateTime.now();
 
     return SliverFillRemaining(
@@ -27,12 +29,10 @@ class ParkingContent extends ConsumerWidget {
                   title: context.l10n.location,
                   titleOptions: const ContentRowTextOption(isBold: true),
                   subtitle: parkingManage?.address,
-                  subtitleOptions: const ContentRowTextOption(
-                    maxLines: 99,
-                  ),
+                  subtitleOptions: const ContentRowTextOption(maxLines: 99),
                 ),
                 crossAxisAlignment: CrossAxisAlignment.start,
-              )
+              ),
             ],
           ),
           Spacing.$4x.heightBox,
@@ -69,10 +69,7 @@ class ParkingContent extends ConsumerWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  GeneralIcons.timeQuarter,
-                  color: context.colors.accentDefault,
-                ),
+                Icon(GeneralIcons.timeQuarter, color: context.colors.accentDefault),
                 Spacing.$3x.widthBox,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

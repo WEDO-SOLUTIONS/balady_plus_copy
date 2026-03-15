@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -21,7 +22,6 @@ import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dar
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
-
 
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
@@ -67,12 +67,14 @@ class SearchItemQuickActions extends HookConsumerWidget {
         .nonNulls
         .toList()
         .firstOrNull;
+    final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+    final colorScheme = isFoundingDay ? ButtonColorScheme.accent : ButtonColorScheme.accentSecondary;
 
     final actions = [
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
-        colorScheme: _buttonColorScheme,
+        colorScheme: colorScheme,
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
@@ -95,7 +97,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: iconData,
         buttonType: ButtonType.secondary,
-        colorScheme: _buttonColorScheme,
+        colorScheme: colorScheme,
         onPressed: () {
           _onFavoriteTap(
             context: context,
@@ -120,7 +122,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
           icon: SystemIcons.share,
-          colorScheme: _buttonColorScheme,
+          colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
         ),
@@ -128,7 +130,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (phoneNumber != null)
         ItemActionBar(
           icon: GeneralIcons.phoneLTR,
-          colorScheme: _buttonColorScheme,
+          colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: () {
             BssService.instance.trackCallTap(directoryObject, phoneNumber);
@@ -138,7 +140,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (website != null)
         ItemActionBar(
           icon: GeneralIcons.web,
-          colorScheme: _buttonColorScheme,
+          colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
@@ -181,12 +183,14 @@ class SearchItemQuickActions extends HookConsumerWidget {
     required DirectoryObjectMessage data,
     required FavouriteItem? favouriteItem,
   }) async {
-    await ref.read(authMethodsProvider.notifier).authOrOpen(
-      context,
-      callback: () {
-        BssService.instance.trackFavoriteTap(data);
-        toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
-      },
-    );
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authOrOpen(
+          context,
+          callback: () {
+            BssService.instance.trackFavoriteTap(data);
+            toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+          },
+        );
   }
 }

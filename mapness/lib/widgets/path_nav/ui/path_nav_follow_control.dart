@@ -1,4 +1,5 @@
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +16,9 @@ class PathNavFollowControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final followState = ref.watch(followStateProvider);
-    final iconColor = followState.type != LocationFollowType.off ? NonThemeColor.color30 : Colors.black;
+    final iconColor = followState.type != LocationFollowType.off
+        ? NonThemeColor.color30
+        : context.colors.foregroundDefault;
 
     return MapButton(
       onTap: () async {

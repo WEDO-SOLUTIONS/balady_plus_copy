@@ -25,10 +25,7 @@ enum Language {
     'english' => Language.english,
     'arabic' => Language.arabic,
     // default is arabic
-    _ =>
-      Platform.localeName.toLowerCase().contains('en')
-          ? Language.english
-          : Language.arabic,
+    _ => Platform.localeName.toLowerCase().contains('en') ? Language.english : Language.arabic,
   };
 
   static Language? parceString(String? s) => switch (s) {
@@ -106,25 +103,15 @@ class AppLanguage extends _$AppLanguage {
 
     // ✅ 3) Keep your updates (still inside update)
     ref.read(navigatorVoiceProvider.notifier).update(value.navigatorVoice);
+    // Update the SSO profile to get the information in the new language
+    unawaited(ref.read(authProvider.notifier).forceUpdate());
+    // Update cached text for the favourites items
+    unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
 
-    // ✅ 4) Defer provider refreshes to the next microtask/frame
-    // so they don't run while AppLanguage is in the middle of updating.
-    scheduleMicrotask(() {
-      // Update the SSO profile to get the information in the new language
-      unawaited(ref.read(authProvider.notifier).forceUpdate());
+    state = value;
 
-      // Update cached text for the favourites items
-      unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
-
-      // Update condition text for the weather texts
-      try {
-        unawaited(ref.read(forecastWeatherProvider.notifier).forceRefresh());
-      } catch (e) {
-        // keep your logging
-        // ignore: avoid_print
-        print(e);
-      }
-    });
+    // Invalidate weather provider after state update to avoid circular dependency
+    Future.microtask(() => ref.invalidate(forecastWeatherProvider));
   }
 
   /*
@@ -140,11 +127,8 @@ class AppLanguage extends _$AppLanguage {
   */
 
   Future<void> updateCachedMiniAppsLanguage(String value) async {
-    await ref
-        .read(sharedPrefsProvider)
-        .setString(_cachedMiniAppsLangKey, value);
+    await ref.read(sharedPrefsProvider).setString(_cachedMiniAppsLangKey, value);
   }
 
-  String? getCachedMiniAppsLanguage() =>
-      ref.read(sharedPrefsProvider).getString(_cachedMiniAppsLangKey);
+  String? getCachedMiniAppsLanguage() => ref.read(sharedPrefsProvider).getString(_cachedMiniAppsLangKey);
 }

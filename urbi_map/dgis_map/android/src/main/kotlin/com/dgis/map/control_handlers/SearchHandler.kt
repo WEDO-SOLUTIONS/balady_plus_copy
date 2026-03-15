@@ -8,6 +8,7 @@ import org.json.JSONObject
 import org.json.JSONTokener
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.await
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
@@ -20,6 +21,7 @@ class SearchHandler(
         private val map: DgisMap,
         private val searchManager: SearchManager,
         private val locationSource: FusedLocationSource,
+        private val searchHistory: SearchHistory,
 ) : AutoCloseable {
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null
@@ -316,5 +318,41 @@ class SearchHandler(
         val distance = points.map { it.toResponse(current) }
 
         callback(Result.success(distance))
+    }
+
+    suspend fun searchByDirectoryObjectIdSync(objectId: DgisObjectId): DirectoryObject? =
+        searchManager.searchByDirectoryObjectId(objectId).await()
+
+    suspend fun getSearchHistoryItems(): List<SearchHistoryDirectoryObjectMessage> {
+        return getRawSearchHistoryItems().map { it.toMessage() }
+    }
+
+    suspend fun getRawSearchHistoryItems(): List<SearchHistoryItem> =
+        searchHistory.items(SearchHistoryPage()).await().items
+
+    fun addDirectoryObjectSearchHistoryItem(directoryObject: DirectoryObject) {
+        searchHistory.addItem(
+            item = SearchHistoryItem(directoryObject)
+        )
+    }
+
+    fun addQuerySearchHistoryItem(queryText: String) {
+        searchHistory.addItem(
+            item = SearchHistoryItem(
+                SearchQueryWithInfo(
+                    searchQuery = SearchQueryBuilder.fromQueryText(queryText = queryText).build(),
+                    title = queryText,
+                    subtitle = ""
+                )
+            )
+        )
+    }
+
+    fun removeSearchHistoryItem(item: SearchHistoryItem) {
+        searchHistory.removeItem(item = item)
+    }
+
+    fun clearSearchHistory() {
+        searchHistory.clear()
     }
 }

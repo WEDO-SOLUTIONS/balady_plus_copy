@@ -13,24 +13,21 @@ class NotificationsSettingCubit extends Cubit<NotificationsSettingState> {
   final String notificationId;
   late NotificationsSettingsList notificationsSettingsList;
 
-  NotificationsSettingCubit(
-      {required this.notificationsSettingsListRepository,
-      required this.notificationId})
+  NotificationsSettingCubit({required this.notificationsSettingsListRepository, required this.notificationId})
       : super(InitialNotificationsSettingsState()) {
     getNotificationSetting(notificationId);
   }
 
   Future<void> getNotificationSetting(String notificationId) async {
     emit(LoadingEventsSettingsState());
-    final failureOrSuccess = await notificationsSettingsListRepository
-        .getNotificationsSettingsList(notificationChannelId: notificationId);
+    final failureOrSuccess =
+        await notificationsSettingsListRepository.getNotificationsSettingsList(notificationChannelId: notificationId);
     failureOrSuccess.fold(
       (failure) {
         if (failure is NoDataFoundException) {
           emit(EmptyNotificationsSettingsState());
         } else if (failure is ServerFailure) {
-          emit(FailureNotificationsSettingsState(
-              errorMessage: failure.errorMessage));
+          emit(FailureNotificationsSettingsState(errorMessage: failure.errorMessage));
         } else {
           emit(FailureNotificationsSettingsState(errorMessage: "error"));
         }
@@ -44,18 +41,15 @@ class NotificationsSettingCubit extends Cubit<NotificationsSettingState> {
     );
   }
 
-  Future<void> setNotificationsProfile(
-      SetNotificationsProfileParams params, bool isChecked) async {
+  Future<void> setNotificationsProfile(SetNotificationsProfileParams params, bool isChecked) async {
     emit(LoadingEventsSettingsState());
-    final failureOrSuccess = await notificationsSettingsListRepository
-        .setNotificationsProfile(params: params);
+    final failureOrSuccess = await notificationsSettingsListRepository.setNotificationsProfile(params: params);
     failureOrSuccess.fold(
       (failure) {
         if (failure is NoDataFoundException) {
           emit(EmptyNotificationsSettingsState());
         } else if (failure is ServerFailure) {
-          emit(FailureNotificationsSettingsState(
-              errorMessage: failure.errorMessage));
+          emit(FailureNotificationsSettingsState(errorMessage: failure.errorMessage));
         } else {
           emit(FailureNotificationsSettingsState(errorMessage: "error"));
         }

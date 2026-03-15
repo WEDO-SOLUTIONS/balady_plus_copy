@@ -8,25 +8,19 @@ class CustomShimmerListWidget extends StatelessWidget {
   final int? itemCount;
   final EdgeInsets? padding;
 
-  const CustomShimmerListWidget({
-    super.key,
-    required this.height,
-    this.itemCount,
-    this.padding,
-  });
+  const CustomShimmerListWidget({super.key, required this.height, this.itemCount, this.padding});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: itemCount ?? 10,
-        itemBuilder: (ctx, index) {
-          return Padding(
-            padding: padding ?? const EdgeInsets.all(8.0),
-            child: CustomShimmerWidget(
-              childHeight: height,
-            ),
-          );
-        });
+      itemCount: itemCount ?? 10,
+      itemBuilder: (ctx, index) {
+        return Padding(
+          padding: padding ?? const EdgeInsets.all(8.0),
+          child: CustomShimmerWidget(childHeight: height),
+        );
+      },
+    );
   }
 }
 
@@ -36,12 +30,7 @@ class CustomShimmerWidget extends StatelessWidget {
   final double? childWidth;
   final EdgeInsets? padding;
 
-  const CustomShimmerWidget(
-      {super.key,
-      this.childWidget,
-      this.childHeight,
-      this.childWidth,
-      this.padding});
+  const CustomShimmerWidget({super.key, this.childWidget, this.childHeight, this.childWidth, this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +39,8 @@ class CustomShimmerWidget extends StatelessWidget {
       child: Shimmer.fromColors(
         baseColor: Colors.grey.shade300,
         highlightColor: Colors.grey.shade100,
-        child: childWidget ??
+        child:
+            childWidget ??
             Container(
               decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
               height: childHeight ?? 100,
@@ -70,15 +60,16 @@ class CustomShimmerGridViewWidget extends StatelessWidget {
   final double mainAxisSpacing;
   final double mainAxisExtent;
 
-  const CustomShimmerGridViewWidget(
-      {super.key,
-      required this.height,
-      this.width = double.infinity,
-      this.itemCount,
-      this.padding,
-      this.crossAxisCount = 2,
-      this.mainAxisSpacing = 16,
-      this.mainAxisExtent = 100});
+  const CustomShimmerGridViewWidget({
+    super.key,
+    required this.height,
+    this.width = double.infinity,
+    this.itemCount,
+    this.padding,
+    this.crossAxisCount = 2,
+    this.mainAxisSpacing = 16,
+    this.mainAxisExtent = 100,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,16 +78,14 @@ class CustomShimmerGridViewWidget extends StatelessWidget {
       itemBuilder: (ctx, index) {
         return Padding(
           padding: padding ?? const EdgeInsets.all(8.0),
-          child: CustomShimmerWidget(
-            childWidth: width,
-            childHeight: height,
-          ),
+          child: CustomShimmerWidget(childWidth: width, childHeight: height),
         );
       },
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: crossAxisCount,
-          mainAxisSpacing: mainAxisSpacing,
-          mainAxisExtent: mainAxisExtent),
+        crossAxisCount: crossAxisCount,
+        mainAxisSpacing: mainAxisSpacing,
+        mainAxisExtent: mainAxisExtent,
+      ),
     );
   }
 }

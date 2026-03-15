@@ -13,8 +13,7 @@ class Cr700Validation extends FormzInput<String?, Validation> {
       return Validation.empty;
     } else if (enteredValue != null && !enteredValue.startsWith("7")) {
       return Validation.cr700StartsWith7;
-    } else if (enteredValue != null &&
-        (enteredValue.length < 10 || enteredValue.length > 10)) {
+    } else if (enteredValue != null && (enteredValue.length < 10 || enteredValue.length > 10)) {
       return Validation.cr700LengthValidation;
     } else {
       return null;

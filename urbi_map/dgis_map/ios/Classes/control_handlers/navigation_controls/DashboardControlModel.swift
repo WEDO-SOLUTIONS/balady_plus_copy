@@ -2,7 +2,7 @@ import Foundation
 import DGis
 
 class DashboardControlModel {
-    private class Events {
+    class Events {
         static let dashboardEvent = "dashboardEvent"
     }
     
@@ -40,7 +40,7 @@ class DashboardControlModel {
     ]
 
     
-    private static let dateFormatter = {
+    static let dateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         

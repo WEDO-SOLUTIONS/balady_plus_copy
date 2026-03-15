@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
-import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
+import 'package:mapness/app/auto_route/guards/theme_splash_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/stories_transition.dart';
+import 'package:mapness/pages/poi_makkah/poi_makkah_widget_page.dart';
 
 import 'app_routes.gr.dart';
 
@@ -15,10 +16,8 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter(
-    this.ref,
-    GlobalKey<NavigatorState> navigatorKey,
-  ) : super(navigatorKey: navigatorKey);
+  AppRouter(this.ref, GlobalKey<NavigatorState> navigatorKey)
+      : super(navigatorKey: navigatorKey);
 
   final Ref ref;
 
@@ -32,10 +31,10 @@ class AppRouter extends RootStackRouter {
           path: '/',
           initial: true,
           transitionsBuilder: TransitionsBuilders.zoomIn,
-          guards: [
-            OnboardRouteGuard(ref),
-            SaudiDaySplashGuard(ref),
-          ],
+          // Note: ThemeSplashGuard uses MaterialPageRoute directly because auto_route
+          // can't generate code for routes with enum parameters (SpecialThemeMode).
+          // The guard dynamically shows splash screens based on the current theme.
+          guards: [OnboardRouteGuard(ref), ThemeSplashGuard(ref)],
           children: [
             Routes.bottomMenuRoute,
             CustomRoute(
@@ -85,6 +84,7 @@ class AppRouter extends RootStackRouter {
               path: 'poi-map',
               page: PoiCardWidgetRoute.page,
             ),
+            AppRoute(path: 'poi-makkah', page: PoiMakkahWidgetRoute.page),
             AppRoute(
               path: 'hajj-poi-card',
               page: HajjPoiCardRoute.page,
@@ -231,6 +231,12 @@ class AppRouter extends RootStackRouter {
               page: PoiFavoriteDialogRoute.page,
             ),
             CustomRoute(
+              path: 'remove_history_confirmation',
+              page: RemoveHistoryConfirmationRoute.page,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
@@ -249,7 +255,9 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_favourite_offers_screen',
               page: FavouriteOffersScreenViewRoute.page,
             ),
-            RedirectRoute(path: 'saudi_pass_profile_preferences_screen', redirectTo: 'profile_preferences'),
+            RedirectRoute(
+                path: 'saudi_pass_profile_preferences_screen',
+                redirectTo: 'profile_preferences'),
             AppRoute(
               path: 'saudi_pass_offers_on_map_screen',
               page: OffersOnMapRoute.page,
@@ -284,7 +292,8 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_offer_page',
               page: OfferRoute.page,
             ),
-            RedirectRoute(path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
+            RedirectRoute(
+                path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
             CustomRoute(
               path: 'saudi_pass_offer_favorites_removing_sheet',
               page: OfferFavoritesRemovingSheetRoute.page,
@@ -330,6 +339,11 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
+              path: 'profile_logout_sheet',
+              page: ProfileLogoutSheetRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
               path: 'momra_website',
               page: MomraWebsiteRoute.page,
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
@@ -373,6 +387,11 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
+              path: 'gaussian_splatting',
+              page: GaussianSplattingRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
               path: 'addPhoto',
               page: AddPhotoRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -398,13 +417,22 @@ class AppRouter extends RootStackRouter {
             child: child,
           ),
         ),
-        CustomRoute(
-          page: SaudiDaySplashRoute.page,
-          opaque: false,
-          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-            type: StoryTypes.saudiDay,
-            child: child,
-          ),
-        ),
+        // NOTE: SaudiDaySplashRoute deprecated - replaced by ThemeSplashPage
+        // The guard now uses MaterialPageRoute directly instead of auto_route
+        // CustomRoute(
+        //   page: SaudiDaySplashRoute.page,
+        //   opaque: false,
+        //   transitionsBuilder:
+        //       (_, __, ___, child) =>
+        //           StoriesTransition(type: StoryTypes.saudiDay, child: child),
+        // ),
+        // NOTE: ThemeSplashRoute is used programmatically only (not in routes list)
+        // Auto_route has issues generating code when routes have enum parameters.
+        // Use context.router.push(MaterialPageRoute(...)) instead in guards/debug panel.
+        // CustomRoute(
+        //   page: ThemeSplashRoute.page,
+        //   opaque: false,
+        //   transitionsBuilder: TransitionsBuilders.fadeIn,
+        // ),
       ];
 }

@@ -21,8 +21,7 @@ class AlertsModalSheetContent extends StatelessWidget {
             // height: MediaQuery.of(context).size.height * 0.33,
             child: Container(
               child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 24, bottom: 30, right: 16, left: 16),
+                padding: const EdgeInsets.only(top: 24, bottom: 30, right: 16, left: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -63,16 +62,13 @@ class AlertsModalSheetContent extends StatelessWidget {
                     ),
                     ListView.builder(
                         shrinkWrap: true,
-                        itemCount:
-                            state.allWeatherInfo?.alerts?.alert?.length ?? 0,
+                        itemCount: state.allWeatherInfo?.alerts?.alert?.length ?? 0,
                         itemBuilder: (ctx, index) {
                           return Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               CustomTextWidget(
-                                state.allWeatherInfo?.alerts?.alert?[index]
-                                        .desc ??
-                                    '',
+                                state.allWeatherInfo?.alerts?.alert?[index].desc ?? '',
                                 fontColor: AppColor.blackModern500Light,
                                 fontWeight: AppFontWeight.bold,
                                 fontSize: 12,
@@ -83,9 +79,7 @@ class AlertsModalSheetContent extends StatelessWidget {
                               const SizedBox(
                                 height: 12,
                               ),
-                              if (state.allWeatherInfo?.alerts?.alert?[index]
-                                      .areas?.isNotEmpty ??
-                                  false)
+                              if (state.allWeatherInfo?.alerts?.alert?[index].areas?.isNotEmpty ?? false)
                                 Row(
                                   children: [
                                     const CustomTextWidget(
@@ -97,9 +91,7 @@ class AlertsModalSheetContent extends StatelessWidget {
                                       width: 8,
                                     ),
                                     CustomTextWidget(
-                                      state.allWeatherInfo?.alerts
-                                              ?.alert?[index].areas ??
-                                          '',
+                                      state.allWeatherInfo?.alerts?.alert?[index].areas ?? '',
                                       fontColor: AppColor.primary800Light,
                                       fontSize: 12,
                                     ),
@@ -121,13 +113,8 @@ class AlertsModalSheetContent extends StatelessWidget {
                                   ),
                                   Flexible(
                                     child: CustomTextWidget(
-                                      WeatherDateFormatter.getAlertDay(state
-                                              .allWeatherInfo
-                                              ?.alerts
-                                              ?.alert?[index]
-                                              .effective
-                                              .toString() ??
-                                          ''),
+                                      WeatherDateFormatter.getAlertDay(
+                                          state.allWeatherInfo?.alerts?.alert?[index].effective.toString() ?? ''),
                                       fontColor: AppColor.primary800Light,
                                       fontSize: 12,
                                       maxLines: 4,
@@ -139,13 +126,8 @@ class AlertsModalSheetContent extends StatelessWidget {
                                     fontSize: 12,
                                   ),
                                   CustomTextWidget(
-                                    WeatherDateFormatter.getAlertDay(state
-                                            .allWeatherInfo
-                                            ?.alerts
-                                            ?.alert?[index]
-                                            .expires
-                                            .toString() ??
-                                        ''),
+                                    WeatherDateFormatter.getAlertDay(
+                                        state.allWeatherInfo?.alerts?.alert?[index].expires.toString() ?? ''),
                                     fontColor: AppColor.primary800Light,
                                     fontSize: 12,
                                   ),

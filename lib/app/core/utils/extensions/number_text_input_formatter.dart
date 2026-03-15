@@ -6,11 +6,9 @@ class NumberTextInputFormatter extends TextInputFormatter {
   NumberTextInputFormatter({required this.onError});
 
   @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
     bool match = RegExp(r'[0-9]').hasMatch(newValue.text);
     onError(match);
-    return newValue.copyWith(
-        text: CommonFunctions.replaceArabicNumberWithEnglish(newValue.text));
+    return newValue.copyWith(text: CommonFunctions.replaceArabicNumberWithEnglish(newValue.text));
   }
 }

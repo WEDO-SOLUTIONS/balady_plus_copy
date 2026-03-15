@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 
 class FeedbackBannerCardV2 extends StatelessWidget {
   final String title;
@@ -13,11 +14,13 @@ class FeedbackBannerCardV2 extends StatelessWidget {
   final String? subtitle;
   final List<Color> gradientColors;
   final VoidCallback? onTap;
+  final ImageSizeCalculator? imageSizeCalculator;
 
   const FeedbackBannerCardV2({
     required this.path,
     required this.gradientColors,
     required this.title,
+    this.imageSizeCalculator,
     this.subtitle,
     this.onTap,
     super.key,
@@ -28,23 +31,33 @@ class FeedbackBannerCardV2 extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     child: GestureDetector(
       onTap: onTap,
-      child: _FeedBackWidget(
-        asset: path,
-        title: title,
-        subTitle: subtitle,
-        gradientColors: gradientColors,
-        textDirection: Directionality.of(context),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-          child: SizedBox(
-            width: Spacing.$6x,
-            height: Spacing.$6x,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                color: context.colors.staticWhite.withOpacity(0.2),
+      child: SizedBox(
+        width: double.maxFinite,
+        child: _FeedBackWidget(
+          asset: path,
+          title: title,
+          subTitle: subtitle,
+          gradientColors: gradientColors,
+          textDirection: Directionality.of(context),
+          imageSizeCalculator: imageSizeCalculator,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+            child: SizedBox(
+              width: Spacing.$6x,
+              height: Spacing.$6x,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(Spacing.$1_5x),
+                  color: context.colors.staticWhite.withOpacity(0.2),
+                ),
+                child: Center(
+                  child: Icon(
+                    SystemIcons.arrowRight,
+                    color: context.colors.staticWhite,
+                    size: Spacing.$4x,
+                  ),
+                ),
               ),
-              child: Center(child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x)),
             ),
           ),
         ),
@@ -59,6 +72,7 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
   final String asset;
   final List<Color> gradientColors;
   final TextDirection textDirection;
+  final ImageSizeCalculator? imageSizeCalculator;
 
   const _FeedBackWidget({
     required this.title,
@@ -66,12 +80,16 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
     required this.asset,
     required this.gradientColors,
     required this.textDirection,
+    this.imageSizeCalculator,
     super.child,
   });
 
   @override
   _RenderFeedBack createRenderObject(BuildContext context) => _RenderFeedBack(
-    title: TextSpan(text: title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite)),
+    title: TextSpan(
+      text: title,
+      style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite),
+    ),
     subTitle: TextSpan(
       text: subTitle ?? '',
       style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
@@ -83,12 +101,16 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
     textGap: Spacing.$1x,
     imageShift: 9.0,
     designMinHeight: 96,
+    imageSizeCalculator: imageSizeCalculator,
   );
 
   @override
   void updateRenderObject(BuildContext context, covariant _RenderFeedBack renderObject) {
     renderObject.update(
-      TextSpan(text: title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite)),
+      TextSpan(
+        text: title,
+        style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite),
+      ),
       TextSpan(
         text: subTitle ?? '',
         style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
@@ -96,6 +118,7 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
       asset,
       gradientColors,
       textDirection,
+      imageSizeCalculator,
     );
   }
 }
@@ -110,6 +133,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
   InlineSpan title;
   InlineSpan subTitle;
   TextDirection textDirection;
+  ImageSizeCalculator? imageSizeCalculator;
 
   TextPainter titlePainter;
   TextPainter subtitlePainter;
@@ -132,6 +156,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     required this.textGap,
     required this.imageShift,
     required this.designMinHeight,
+    required this.imageSizeCalculator,
   }) : titlePainter = TextPainter(text: title, textDirection: textDirection),
        subtitlePainter = TextPainter(text: subTitle, textDirection: textDirection) {
     loadImage();
@@ -143,6 +168,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     String asset,
     List<Color> gradientColors,
     TextDirection textDirection,
+    ImageSizeCalculator? imageSizeCalculator,
   ) {
     final isTextDirectionChanged = this.textDirection != textDirection;
     if (this.title != title || isTextDirectionChanged) {
@@ -169,6 +195,11 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     if (this.gradientColors != gradientColors) {
       this.gradientColors = gradientColors;
       markNeedsPaint();
+    }
+
+    if (this.imageSizeCalculator != imageSizeCalculator) {
+      this.imageSizeCalculator = imageSizeCalculator;
+      markNeedsLayout();
     }
   }
 
@@ -246,15 +277,18 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
 
       /// Paint image if it exist.
       if (hasImage && image != null) {
+        final imageWidth = imageSizeCalculator != null ? imageSizeCalculator!(imageSize.width) : imageSize.width;
+        const imageHeight = 87.0;
+
+        final imageTop = offset.dy + (size.height - imageHeight) / 2;
+
+        final imageLeft = isLTR
+            ? offset.dx + minTextPadding.left
+            : offset.dx + size.width - imageWidth - minTextPadding.right;
+
         paintImage(
           canvas: canvas,
-          rect: Rect.fromLTWH(
-            isLTR ? offset.dx + heightOffset : size.width - imageSize.width + minTextPadding.left,
-            offset.dy,
-            97, // const
-            87, // const
-          ),
-          alignment: isLTR ? Alignment.centerLeft : Alignment.centerRight,
+          rect: Rect.fromLTWH(imageLeft, imageTop, imageWidth, imageHeight),
           flipHorizontally: !isLTR,
           image: image!,
           fit: BoxFit.contain,
@@ -276,18 +310,11 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       titlePainter.paint(canvas, titleOffset);
       subtitlePainter.paint(canvas, subtitleOffset);
 
-      /// Paint button.
-      final childOffset = (child?.parentData as BoxParentData?)?.offset ?? Offset.zero;
-      final childPosition = Offset(
-        isLTR ? width - (child?.size.width ?? 0.0) : 0.0,
-        size.height -
-            childOffset.dy -
-            (child?.size.height ?? 0.0) -
-            minTextPadding.bottom -
-            heightOffset -
-            titleOffset.dy,
-      );
-      child?.paint(context, offset + childOffset + childPosition);
+      /// Paint button (arrow)
+      const arrowPadding = 16.0;
+      final childPosition = Offset(isLTR ? width - (child?.size.width ?? 0.0) : arrowPadding, arrowPadding);
+
+      child?.paint(context, offset + childPosition);
     }
 
     layer = context.pushClipRRect(

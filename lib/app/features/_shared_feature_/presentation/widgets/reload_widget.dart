@@ -13,12 +13,7 @@ class ReloadWidget extends StatelessWidget {
   final String? errorMessage;
   final VoidCallback onTab;
 
-  const ReloadWidget({
-    super.key,
-    this.widgetHeight = 150,
-    this.errorMessage,
-    required this.onTab,
-  });
+  const ReloadWidget({super.key, this.widgetHeight = 150, this.errorMessage, required this.onTab});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +24,7 @@ class ReloadWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         color: context.colors.backgroundSurface2,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x14d1d5db),
-            offset: Offset(-2, 4),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x14d1d5db), offset: Offset(-2, 4), blurRadius: 8, spreadRadius: 0)],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

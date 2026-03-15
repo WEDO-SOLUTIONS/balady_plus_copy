@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 
 class GISResponseModel extends GISResponse {
@@ -32,35 +31,34 @@ class GISResponseModel extends GISResponse {
       super.locationURL,
       super.cityName});
 
-  factory GISResponseModel.fromMap(Map<String, dynamic> json) =>
-      GISResponseModel(
-          adminMunicipalityId: json["Admin_MunicipalityID"],
-          adminMunicipalityName: json["Admin_MunicipalityName"],
-          Balady_DistrictID: json["Balady_DistrictID"],
-          Balady_DistrictName: json["Balady_DistrictName"],
-          //cleanInfo: json["CleanInfo"],
-          districtId: json["DistrictID"],
-          districtName: json["DistrictName"],
-          following: json["Following"],
-          // lightInfo: json["LightInfo"],
-          municipalityuniquecode: json["MUNICIPALITYUNIQUECODE"],
-          municipalityId: json["MunicipalityID"],
-          municipalityName: json["MunicipalityName"],
-          region: json["Region"],
-          streetCode: json["StreetCode"],
-          streetName: json["StreetName"],
-          // subDistrictId: json["SubDistrictID"],
-          // subDistrictName: json["SubDistrictName"],
-          subMunicipalityId: json["Sub_MunicipalityID"],
-          subMunicipalityName: json["Sub_MunicipalityName"],
-          subMunicipalityCategory: json["Sub_Municipality_CATEGORY"],
-          subMunicipalityguid: json["Sub_Municipalityguid"],
-          parcelNo: json["parcel_No"],
-          planNo: json["plan_No"],
-          vdExcepted: json["vdExcepted"],
-          vdPriority: json["vdPriority"],
-          locationURL: json["LocationURL"],
-          cityName: json["CityName"]);
+  factory GISResponseModel.fromMap(Map<String, dynamic> json) => GISResponseModel(
+      adminMunicipalityId: json["Admin_MunicipalityID"],
+      adminMunicipalityName: json["Admin_MunicipalityName"],
+      Balady_DistrictID: json["Balady_DistrictID"],
+      Balady_DistrictName: json["Balady_DistrictName"],
+      //cleanInfo: json["CleanInfo"],
+      districtId: json["DistrictID"],
+      districtName: json["DistrictName"],
+      following: json["Following"],
+      // lightInfo: json["LightInfo"],
+      municipalityuniquecode: json["MUNICIPALITYUNIQUECODE"],
+      municipalityId: json["MunicipalityID"],
+      municipalityName: json["MunicipalityName"],
+      region: json["Region"],
+      streetCode: json["StreetCode"],
+      streetName: json["StreetName"],
+      // subDistrictId: json["SubDistrictID"],
+      // subDistrictName: json["SubDistrictName"],
+      subMunicipalityId: json["Sub_MunicipalityID"],
+      subMunicipalityName: json["Sub_MunicipalityName"],
+      subMunicipalityCategory: json["Sub_Municipality_CATEGORY"],
+      subMunicipalityguid: json["Sub_Municipalityguid"],
+      parcelNo: json["parcel_No"],
+      planNo: json["plan_No"],
+      vdExcepted: json["vdExcepted"],
+      vdPriority: json["vdPriority"],
+      locationURL: json["LocationURL"],
+      cityName: json["CityName"]);
 
   Map<String, dynamic> toMap() => {
         "Admin_MunicipalityID": adminMunicipalityId,

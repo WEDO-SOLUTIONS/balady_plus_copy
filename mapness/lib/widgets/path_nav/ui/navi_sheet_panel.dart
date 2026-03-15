@@ -20,6 +20,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
+import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
@@ -73,8 +75,6 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
 }
 
 class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
-  final sheetKey = GlobalKey();
-
   late final shapeDelegate = ToggleSheetDelegateFunction<ShapeBorder?>(
     function: (controller) => SmoothRectangleBorder(
       borderRadius: BorderRadius.vertical(
@@ -85,9 +85,9 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   );
   late final paddingDelegate = ToggleSheetDelegateFunction<EdgeInsets?>(
     function: (controller) {
-      final padding = MediaQuery.viewPaddingOf(context);
+      final padding = InsetsUtils.platformAwareBottomInset(context, isLandscape: widget.isLandscape);
       return EdgeInsets.only(
-        bottom: ((widget.isLandscape ? 0.0 : Spacing.$3x) + padding.bottom) * (controller.interpolation),
+        bottom: ((widget.isLandscape ? 0.0 : Spacing.$3x) + padding) * (controller.interpolation),
         left: Spacing.$4x * controller.interpolation,
         right: Spacing.$4x * controller.interpolation,
       );
@@ -131,16 +131,20 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
       context,
     );
     final _subtitleVoiceInstruction = voiceName != null
-        ? '$_voiceInstructionTypeTitle • $voiceName'
+        ? '$_voiceInstructionTypeTitle • ${localizeVoicePackageName(context, voiceName)}'
         : _voiceInstructionTypeTitle;
     final hasIntermediateRoutePoints = (currentRoute?.points.length ?? 0) > 2;
 
     return Padding(
-      padding: EdgeInsetsDirectional.only(start: MediaQuery.paddingOf(context).left),
-      child: SizedBox(
-        width: widget.isLandscape ? NaviSheetPanel.landscapeWidth : null,
+      padding: EdgeInsetsDirectional.only(
+        start: MediaQuery.viewPaddingOf(context).left,
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: widget.isLandscape ? NaviSheetPanel.landscapeWidth : double.infinity,
+        ),
         child: ToggleSheet(
-          key: sheetKey,
+          key: ValueKey(widget.isLandscape),
           dragger: null,
           useSafeArea: !widget.isLandscape,
           shouldPop: (controller) {
@@ -188,7 +192,10 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
           content: [
             // hide share button for multilocation route because sharing is broken for such routes
             if (!hasIntermediateRoutePoints) ...[
-              ShareEtaBtn(durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0),
+              ShareEtaBtn(
+                sheetController: widget.sheetController,
+                durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
+              ),
               Spacing.$3x.heightBox,
             ],
             ContentWrapper.single(
@@ -265,7 +272,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             ),
             Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => context.router.push(NavigatorSettingsRoute()),
+              onTap: () => context.router.push(NavigatorSettingsRoute(showDarkModeSection: false)),
               options: ContentRowOptions(
                 titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
                 wrapperColor: context.colors.backgroundSurface1,

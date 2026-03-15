@@ -9,10 +9,8 @@ extension GeoRectExpanded on GeoRectMessage {
       }
 
       final percent = (by - 1) / 2;
-      final latDelta =
-          ((northEast.latitude - southWest.latitude) * percent).abs();
-      final lonDelta =
-          ((northEast.longitude - southWest.longitude) * percent).abs();
+      final latDelta = ((northEast.latitude - southWest.latitude) * percent).abs();
+      final lonDelta = ((northEast.longitude - southWest.longitude) * percent).abs();
 
       final expanded = GeoRectMessage(
         northEast: GeoPointMessage(

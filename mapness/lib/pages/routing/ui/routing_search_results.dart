@@ -42,7 +42,8 @@ class RoutingSearchResults extends ConsumerWidget {
       required SearchResultMessage results,
       required DirectoryObjectMessage item,
     }) async {
-      final index = results.firstPage?.items.indexWhere(
+      final index =
+          results.firstPage?.items.indexWhere(
             (e) => e.id?.objectId == item.id?.objectId,
           ) ??
           0;
@@ -84,29 +85,38 @@ class RoutingSearchResults extends ConsumerWidget {
         result: item,
         offers: offers,
         language: language,
-        myLocation:
-            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+        myLocation: myLocation == null
+            ? null
+            : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         onTap: () {
-          Metrics.logEventAdvanced(MetricsConstants.routesKeys.searchElement,
-              group: MetricsConstants.routesTag,
-              action: MetricAction.tap.toString(),
-              props: {'item': item.id?.objectId});
+          Metrics.logEventAdvanced(
+            MetricsConstants.routesKeys.searchElement,
+            group: MetricsConstants.routesTag,
+            action: MetricAction.tap.toString(),
+            props: {'item': item.id?.objectId},
+          );
 
           _bssAnalyticRequest(results: results, item: item);
 
           final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
           if (isFromSuggest) {
-            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+            ref
+                .read(urbiAnalyticsProvider.notifier)
+                .trackWithPrint(
                   '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
                 );
           } else {
-            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+            ref
+                .read(urbiAnalyticsProvider.notifier)
+                .trackWithPrint(
                   '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.fullSearchResultPressed}',
                 );
           }
 
-          ref.read(searchHistoryProvider(scope.value).notifier).put(
-                SearchHistoryItem.fromDirectoryObject(item),
+          ref
+              .read(searchHistoryProvider(scope.value).notifier)
+              .put(
+                SearchHistoryItem.fromDirectoryObject(item).toMessage(),
               );
           context.router.pop(RoutePointDirectoryObject(item));
         },

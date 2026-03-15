@@ -6,7 +6,6 @@ import '../../data/model/cv_upload_response.dart';
 import '../../data/model/profile_model/profile_model.dart';
 import '../../data/model/volunteer_lookup.dart';
 
-
 abstract class VolunteerProfileRepository {
   Future<Either<Failure, ProfileModel>> getProfile();
   Future<Either<Failure, List<VolunteerLookup>>> getCities(String regionId);
@@ -22,6 +21,5 @@ abstract class VolunteerProfileRepository {
   Future<Either<Failure, List<VolunteerLookup>>> getInterests();
   Future<Either<Failure, List<VolunteerLookup>>> getVolunteeringFields();
   Future<Either<Failure, CVUploadResponse>> uploadCV(FileDataItem file);
-  Future<Either<Failure, void>> submitProfile(
-      Map<String, dynamic> profileData, String profileId);
+  Future<Either<Failure, void>> submitProfile(Map<String, dynamic> profileData, String profileId);
 }

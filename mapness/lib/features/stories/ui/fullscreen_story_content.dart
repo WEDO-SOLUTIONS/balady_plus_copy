@@ -7,72 +7,61 @@ class _FullscreenErrorContent extends StatelessWidget {
   final String? errorLabel;
   final String? errorTitle;
 
-  const _FullscreenErrorContent({
-    this.onClose,
-    this.onRetry,
-    this.buttonLabel,
-    this.errorLabel,
-    this.errorTitle,
-  });
+  const _FullscreenErrorContent({this.onClose, this.onRetry, this.buttonLabel, this.errorLabel, this.errorTitle});
 
   @override
   Widget build(BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (onClose != null)
-            Padding(
-              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-              child: Align(
-                alignment: AlignmentDirectional.topEnd,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.$2x, top: Spacing.$1x),
-                  child: BaladyAppButton(
-                    buttonType: BaladyButtonType.secondary,
-                    buttonColorScheme: BaladyButtonColorScheme.neutral,
-                    primaryIcon: SystemIcons.close,
-                    onTap: () => context.router.pop(),
-                  ),
-                ),
-              ),
-            ),
-          const Spacer(),
-          Padding(
-            padding: EdgeInsets.zero,
-            child: SvgPicture.asset(
-              Assets.imagesSvg.illustrationError.keyName,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x),
-            child: Text(
-              errorTitle ?? context.l10n.somethingWentWrong,
-              textAlign: TextAlign.center,
-              style: context.textStyleV3.h3SemiBold.copyWith(
-                color: context.colors.foregroundDefault,
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      if (onClose != null)
+        Padding(
+          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+          child: Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.$2x, top: Spacing.$1x),
+              child: BaladyAppButton(
+                buttonType: BaladyButtonType.secondary,
+                buttonColorScheme: BaladyButtonColorScheme.neutral,
+                primaryIcon: SystemIcons.close,
+                onTap: () => context.router.pop(),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
-            child: Text(
-              errorLabel ?? context.l10n.somethingWentWrongPleaseTryAgainLater,
-              textAlign: TextAlign.center,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colors.foregroundSoft,
-              ),
-            ),
+        ),
+      const Spacer(),
+      const ErrorImageWidget(),
+      Padding(
+        padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x),
+        child: Text(
+          errorTitle ?? context.l10n.somethingWentWrong,
+          textAlign: TextAlign.center,
+          style: context.textStyleV3.h3SemiBold.copyWith(
+            color: context.colors.foregroundDefault,
           ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: BaladyAppButton(
-              onTap: onRetry,
-              size: BaladyButtonSize.large,
-              buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-              primaryLabel: buttonLabel ?? context.l10n.tryAgain,
-            ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+        child: Text(
+          errorLabel ?? context.l10n.somethingWentWrongPleaseTryAgainLater,
+          textAlign: TextAlign.center,
+          style: context.textStyleV3.bodyLargeRegular.copyWith(
+            color: context.colors.foregroundSoft,
           ),
-        ],
-      );
+        ),
+      ),
+      const Spacer(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: BaladyAppButton(
+          onTap: onRetry,
+          size: BaladyButtonSize.large,
+          buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+          primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+        ),
+      ),
+    ],
+  );
 }

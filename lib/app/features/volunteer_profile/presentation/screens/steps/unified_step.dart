@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/volunteer_profile/presentation/bloc/vol
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+
 import '../../bloc/volunteer_profile_bloc.dart';
 import '../../bloc/volunteer_profile_state.dart';
 
@@ -56,9 +57,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
 
   void _onRegionChanged(String? value, VolunteerProfileState state) {
     if (value != null) {
-      final selectedRegion = state.regionsList.firstWhere(
-        (region) => region.tid.toString() == value,
-      );
+      final selectedRegion = state.regionsList.firstWhere((region) => region.tid.toString() == value);
       setState(() {
         _selectedRegionId = value;
         _selectedCityId = null;
@@ -80,9 +79,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
 
   void _onCityChanged(String? value, VolunteerProfileState state) {
     if (value != null) {
-      final selectedCity = state.citiesList.firstWhere(
-        (city) => city.tid.toString() == value,
-      );
+      final selectedCity = state.citiesList.firstWhere((city) => city.tid.toString() == value);
       setState(() {
         _selectedCityId = value;
       });
@@ -101,40 +98,27 @@ class _UnifiedStepState extends State<UnifiedStep> {
   }
 
   @override
-  Widget build(
-    BuildContext context,
-  ) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
     builder: (context, state) => SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'full_name'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('full_name'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           TextFormField(
             readOnly: true,
             initialValue: state.fullName ?? '',
             decoration: InputDecoration(
               hintText: 'full_name'.tr(),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 15.0,
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               filled: true,
               fillColor: Theme.of(context).cardColor,
             ),
           ),
           const SizedBox(height: 20),
-          Text(
-            'national_id'.tr(),
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('national_id'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           TextFormField(
             readOnly: true,
@@ -147,54 +131,35 @@ class _UnifiedStepState extends State<UnifiedStep> {
             keyboardType: TextInputType.number,
           ),
           const SizedBox(height: 20),
-          Text(
-            '${'email'.tr()} *',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('${'email'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           TextFormField(
             controller: _emailController,
             decoration: InputDecoration(
               hintText: 'example@gmail.com',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 15.0,
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
             ),
             keyboardType: TextInputType.emailAddress,
             validator: (value) => Helpers.validateEmail(value),
             onChanged: _onEmailChanged,
           ),
           const SizedBox(height: 20),
-          Text(
-            '${'personal_mobile'.tr()} *',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('${'personal_mobile'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           TextFormField(
             controller: _phoneController,
             decoration: InputDecoration(
               hintText: '966500000000+',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12.0,
-                vertical: 15.0,
-              ),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
             ),
             keyboardType: TextInputType.phone,
             validator: (value) => Helpers.validateMobile(value),
             onChanged: _onPhoneChanged,
           ),
           const SizedBox(height: 20),
-          Text(
-            '${'region'.tr()} *',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
+          Text('${'region'.tr()} *', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           if (state.isLoadingRegions)
             const Center(child: CircularProgressIndicator())
@@ -207,21 +172,13 @@ class _UnifiedStepState extends State<UnifiedStep> {
               ),
 
               dropdownColor: Theme.of(context).cardColor,
-              initialValue: _selectedRegionId?.isEmpty == true
-                  ? null
-                  : _selectedRegionId,
+              initialValue: _selectedRegionId?.isEmpty == true ? null : _selectedRegionId,
               decoration: InputDecoration(
-                helperStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                helperStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 hintText: 'region'.tr(),
-                hintStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
 
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               items: state.regionsList
@@ -253,11 +210,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
           // City (editable, required)
           Text(
             '${'city'.tr()} *',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 8),
           if (state.isLoadingCities)
@@ -265,17 +218,11 @@ class _UnifiedStepState extends State<UnifiedStep> {
           else
             DropdownButtonFormField<String>(
               dropdownColor: Theme.of(context).cardColor,
-              initialValue: _selectedCityId?.isEmpty == true
-                  ? null
-                  : _selectedCityId,
+              initialValue: _selectedCityId?.isEmpty == true ? null : _selectedCityId,
               decoration: InputDecoration(
                 hintText: 'city'.tr(),
-                hintStyle: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               items: state.citiesList
@@ -314,29 +261,21 @@ class _UnifiedStepState extends State<UnifiedStep> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
-                ),
+                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Text(
                 'no_qualifications_available'.tr(),
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
-                ),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
               ),
             )
           else
             DropdownButtonFormField<String>(
               dropdownColor: Theme.of(context).cardColor,
-              initialValue: state.educationalQualificationId?.isEmpty == true
-                  ? null
-                  : state.educationalQualificationId,
+              initialValue: state.educationalQualificationId?.isEmpty == true ? null : state.educationalQualificationId,
               decoration: InputDecoration(
                 hintText: 'choose'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               items: state.qualificationsList
@@ -358,11 +297,9 @@ class _UnifiedStepState extends State<UnifiedStep> {
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
-                  final selectedQualification = state.qualificationsList
-                      .firstWhere(
-                        (qualification) =>
-                            qualification.tid.toString() == value,
-                      );
+                  final selectedQualification = state.qualificationsList.firstWhere(
+                    (qualification) => qualification.tid.toString() == value,
+                  );
                   context.read<VolunteerProfileBloc>().add(
                     UpdateScientificInfo(
                       educationalQualification: selectedQualification.name,
@@ -373,8 +310,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                       workExperience: state.workExperience,
                       language: state.language,
                       languageId: state.languageId,
-                      scientificExperienceSummary:
-                          state.scientificExperienceSummary,
+                      scientificExperienceSummary: state.scientificExperienceSummary,
                     ),
                   );
                 }
@@ -399,13 +335,8 @@ class _UnifiedStepState extends State<UnifiedStep> {
               initialValue: state.volunteeringWorkFieldId,
               decoration: InputDecoration(
                 hintText: 'choose'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
               ),
               items: state.volunteeringFieldsList.isEmpty
                   ? [
@@ -431,9 +362,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                                 field.name,
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
+                                  color: Theme.of(context).colorScheme.onSurface,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -445,10 +374,9 @@ class _UnifiedStepState extends State<UnifiedStep> {
                   ? null
                   : (value) {
                       if (value != null) {
-                        final selectedField = state.volunteeringFieldsList
-                            .firstWhere(
-                              (field) => field.tid.toString() == value,
-                            );
+                        final selectedField = state.volunteeringFieldsList.firstWhere(
+                          (field) => field.tid.toString() == value,
+                        );
                         context.read<VolunteerProfileBloc>().add(
                           UpdateVolunteeringInterests(
                             skills: state.skills,

@@ -9,6 +9,5 @@ class GetCities extends UseCase<List<VolunteerLookup>, String> {
 
   GetCities({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(String params) async =>
-      repository.getCities(params);
+  Future<Either<Failure, List<VolunteerLookup>>> call(String params) async => repository.getCities(params);
 }

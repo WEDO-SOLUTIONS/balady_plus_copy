@@ -11,7 +11,6 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
-import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
@@ -35,12 +34,7 @@ class RoutingMapControls extends ConsumerWidget {
           textDirection: TextDirection.ltr,
           child: Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                top: 12,
-                right: 12,
-                bottom: 16,
-              ),
+              padding: const EdgeInsets.only(left: 12, top: 12, right: 12, bottom: 16),
               child: Row(
                 children: [
                   Column(
@@ -68,11 +62,9 @@ class RoutingMapControls extends ConsumerWidget {
                           if (onAddStop != null) ...[
                             const SizedBox(width: uikit.Spacing.$2x),
                             uikit.AppButton(
-                              color: context.colors.backgroundSurface1,
+                              color: context.colors.onMapSurfaceOnMap,
                               iconColor: context.colors.foregroundSoft,
-                              innerPadding: const EdgeInsets.symmetric(
-                                horizontal: uikit.Spacing.$3x,
-                              ),
+                              innerPadding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
                               primaryLabel: context.l10n.addStop,
                               onTap: onAddStop,
                               buttonColorScheme: uikit.ButtonColorScheme.neutral,
@@ -85,20 +77,18 @@ class RoutingMapControls extends ConsumerWidget {
                     ],
                   ),
                   const Spacer(),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      LayersControl(),
-                      SizedBox(height: 8),
-                      TrafficControl(),
-                      SizedBox(height: uikit.Spacing.$2x),
-                      DimensionControl(),
-                      Spacer(),
-                      ZoomControl(),
-                      Spacer(),
-                      CompassControl(),
-                      SizedBox(height: 8),
-                      FollowControl(),
+                      const LayersControl(),
+                      uikit.Spacing.$2x.heightBox,
+                      const TrafficControl(),
+                      const Spacer(),
+                      const ZoomControl(),
+                      const Spacer(),
+                      const CompassControl(),
+                      uikit.Spacing.$2x.heightBox,
+                      const FollowControl(),
                     ],
                   ),
                 ],
@@ -115,10 +105,7 @@ class RoutingMapControls extends ConsumerWidget {
     );
 
     if (useSafeArea) {
-      return SafeArea(
-        bottom: false,
-        child: controlsMap,
-      );
+      return SafeArea(bottom: false, child: controlsMap);
     }
 
     return controlsMap;

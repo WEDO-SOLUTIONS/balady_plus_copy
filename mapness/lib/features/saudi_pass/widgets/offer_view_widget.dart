@@ -97,26 +97,38 @@ class OfferViewWidget extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
-                        TextSpan(
-                          text: ' • ',
-                          style: TextStyle(color: colors.neutralMuted),
-                        ),
-                        TextSpan(text: offerView.title),
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
+                              const TextSpan(text: ' '),
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: SizedBox(
+                                  width: 3,
+                                  height: 3,
+                                  child: DecoratedBox(
+                                    decoration: BoxDecoration(color: colors.neutralMuted, shape: BoxShape.circle),
+                                  ),
+                                ),
+                              ),
+                              const TextSpan(text: ' '),
+                              TextSpan(text: offerView.title),
+                            ],
+                            style: textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
                         ),
-                      ],
-                      style: textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(width: Spacing.$1x),
+                      Icon(PlacesIcons.markets, size: 16, color: colors.neutralDefault),
+                    ],
                   ),
                   Text(
                     offerView.subTitle,
@@ -124,13 +136,7 @@ class OfferViewWidget extends ConsumerWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    offerView.branchName,
-                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text('${context.l10n.saudiPassOfferBy} $byDate', style: byDateStyle, maxLines: 1),
+                  Text('${context.l10n.saudiPassOfferBy2} $byDate', style: byDateStyle, maxLines: 1),
                 ],
               ),
             ),
@@ -138,12 +144,13 @@ class OfferViewWidget extends ConsumerWidget {
             Align(
               alignment: Alignment.topRight,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   _HeartIconWidget(offerView),
                   const SizedBox(height: Spacing.$3x),
                   Text(
                     formatDistance(metersString: offerView.distance, context: context),
-                    style: textStyles.captionMediumRegular.copyWith(color: colors.neutralMuted),
+                    style: textStyles.captionMediumRegular.copyWith(color: colors.foregroundSoft),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -175,7 +182,7 @@ class _HeartIconWidget extends StatelessWidget {
         },
         child: Icon(
           offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
-          color: offerView.isHeartRedAndFilled ? colors.extra01Default : colors.neutralMuted,
+          color: offerView.isHeartRedAndFilled ? colors.extra01Default : colors.foregroundMuted,
         ),
       ),
     );

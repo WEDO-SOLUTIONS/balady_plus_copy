@@ -23,5 +23,6 @@ export 'navi/traffic_parking_controller.dart';
 export 'navi/zoom_controller.dart';
 
 /// Initialize DGis plugin with options
-Future<void> initialiseDGis({LogOptionsMessage? logOptions, VendorConfigMessage? config, VendorConfigContentMessage? configContent}) =>
+Future<void> initialiseDGis(
+        {LogOptionsMessage? logOptions, VendorConfigMessage? config, VendorConfigContentMessage? configContent}) =>
     PluginApi().initialize(logOptions, config, configContent);

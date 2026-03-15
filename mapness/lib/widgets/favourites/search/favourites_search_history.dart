@@ -36,13 +36,13 @@ class FavouritesSearchHistory extends ConsumerWidget {
 
     return ui.SearchHistory(
       onTap: (item, index, historyList) async {
-        if (item.objectId != null) {
+        if (item.id?.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
           try {
             final object = await dgisController.searchByObjectId(
               DgisObjectIdMessage(
-                objectId: int.tryParse(item.objectId ?? '') ?? 0,
-                entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+                objectId: item.id?.objectId ?? 0,
+                entranceId: item.id?.entranceId ?? 0,
               ),
             );
 
@@ -50,7 +50,7 @@ class FavouritesSearchHistory extends ConsumerWidget {
               MetricsConstants.searchKeys.suggestion,
               group: MetricsConstants.searchTag,
               action: MetricAction.tap.toString(),
-              props: {'object': item.objectId},
+              props: {'object': item.id?.objectId},
             );
 
             final favItem = object.mapToFavourite();
@@ -73,7 +73,7 @@ class FavouritesSearchHistory extends ConsumerWidget {
                 onBarrierTap: () => context.router.pop(true),
               ),
             );
-            await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);
+            await ref.read(searchHistoryProvider(scope.value).notifier).delete(index);
 
             if (result != null && result as bool) {
               await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
@@ -82,7 +82,7 @@ class FavouritesSearchHistory extends ConsumerWidget {
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
-        final bssHistoryHandlingType = item.objectId != null
+        final bssHistoryHandlingType = item.id?.objectId != null
             ? BssHistoryHandlingType.openRecord
             : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(

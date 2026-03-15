@@ -55,8 +55,7 @@ class LocationHomeCard extends StatelessWidget {
                   btnWidth: 157,
                   text: "تفعيل الموقع",
                   onPressed: () async {
-                    Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (ctx) {
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) {
                       return AcquireLocationPage();
                     }), (Route<dynamic> route) => false);
                   },

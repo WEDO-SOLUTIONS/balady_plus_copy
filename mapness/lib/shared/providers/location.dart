@@ -36,11 +36,17 @@ class _Location extends _$Location {
         try {
           const locationSettings = LocationSettings();
 
-          final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings).listen((
-            event,
-          ) async {
-            state = await _getLocation(event);
-          });
+          final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
+              .handleError((e) {
+                if (e is TimeoutException) {
+                  logger.log('Geolocator stream timeout');
+                } else {
+                  logger.log('Geolocator stream error: $e');
+                }
+              })
+              .listen((event) async {
+                state = await _getLocation(event);
+              });
           ref.onDispose(locationSubscription.cancel);
 
           return null;
@@ -94,7 +100,7 @@ class _Location extends _$Location {
             final isHuawei = await CommonFunctions.isHuaweiDevice();
             Position? userLocation;
 
-            if (isGmsAvailable) {
+            if (isGmsAvailable || Platform.isIOS) {
               userLocation = await Geolocator.getLastKnownPosition();
             } else if (isHuawei) {
               userLocation = await CommonFunctions.getLastLocationHuawei();
@@ -172,6 +178,35 @@ class _Location extends _$Location {
     final status = await perm.Permission.location.status;
 
     return status.isGranted;
+  }
+
+  Future<void> refreshLocation() async {
+    try {
+      final status = await perm.Permission.location.status;
+      if (!status.isGranted) {
+        logger.log('Location permission not granted, cannot refresh');
+        return;
+      }
+
+      final isGmsAvailable = await CommonFunctions.isGmsAvailable();
+      final isHuawei = await CommonFunctions.isHuaweiDevice();
+      Position? userLocation;
+
+      if (isGmsAvailable) {
+        userLocation = await Geolocator.getCurrentPosition();
+      } else if (isHuawei) {
+        userLocation = await CommonFunctions.getLastLocationHuawei();
+      } else {
+        // Fallback for simulator/devices without GMS or HMS - try Geolocator directly
+        userLocation = await Geolocator.getCurrentPosition();
+      }
+
+      if (userLocation != null) {
+        state = await _getLocation(userLocation);
+      }
+    } catch (ex) {
+      logger.log('Error refreshing location: ${ex.toString()}');
+    }
   }
 
   Future<Position?> _getLocation(Position? userLocation) async {

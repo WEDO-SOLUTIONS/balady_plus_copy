@@ -8,7 +8,7 @@ class SearchHandler: NSObject {
     private let sdkContext: Container
 
     private let searchManager: SearchManager
-
+    private let searchHistory: SearchHistory
     private var objectSearchCancelable: Cancellable?
     private var searchCancelable: Cancellable?
     private var itemMarkerInfosCancellable: Cancellable?
@@ -28,10 +28,12 @@ class SearchHandler: NSObject {
 
     init(
         searchManager: SearchManager,
+        searchHistory: SearchHistory,
         map: Map,
         sdkContext: Container
     ) {
         self.searchManager = searchManager
+        self.searchHistory = searchHistory
         self.map = map
         self.sdkContext = sdkContext
     }
@@ -451,5 +453,44 @@ class SearchHandler: NSObject {
         }
 
         return nil
+    }
+    
+    func searchByDirectoryObjectIdSync(objectId: DGis.DgisObjectId) async throws -> DirectoryObject? {
+        return try! await searchManager.searchByDirectoryObjectId(objectId: objectId).asAsync()
+    }
+    
+    func getSearchHistoryItems() async throws -> [SearchHistoryDirectoryObjectMessage] {
+        return try await getRawSearchHistoryItems().map { $0.toMessage() }
+    }
+    
+    func getRawSearchHistoryItems() async throws -> [SearchHistoryItem] {
+        return try await searchHistory.items(
+            page: SearchHistoryPage()
+        ).asAsync().items
+    }
+    
+    func addDirectoryObjectSearchHistoryItem(directoryObject: DGis.DirectoryObject) {
+        searchHistory.addItem(
+            item: SearchHistoryItem.directoryObject(directoryObject)
+        )
+    }
+    
+    func addQuerySearchHistoryItem(queryText: String) {
+        searchHistory.addItem(
+            item: SearchHistoryItem.searchQuery(
+                SearchQueryWithInfo(searchQuery: SearchQueryBuilder.fromQueryText(queryText: queryText).build(),
+                                    title: queryText,
+                                    subtitle: ""
+                                   )
+            )
+        )
+    }
+    
+    func removeSearchHistoryItem(item: SearchHistoryItem) {
+        searchHistory.removeItem(item: item)
+    }
+    
+    func clearSearchHistory() {
+        searchHistory.clear()
     }
 }

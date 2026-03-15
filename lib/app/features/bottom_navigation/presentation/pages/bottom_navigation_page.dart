@@ -8,8 +8,7 @@ import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cub
 import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_wrapper.dart';
 import 'package:balady_authorization/auth_package.dart';
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocProvider, MultiBlocProvider;
+import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, MultiBlocProvider;
 import 'package:flutter/material.dart';
 import 'mapness_page.dart';
 
@@ -57,8 +56,7 @@ class BottomNavigationPage extends StatelessWidget {
             );
             sl<EntryPointCubit>().mainPage = null;
           },
-          unAuthenticatedState: (data) =>
-              sl<EntryPointCubit>().clearAuth(loginData: data),
+          unAuthenticatedState: (data) => sl<EntryPointCubit>().clearAuth(loginData: data),
           linkWithNafaz: () => sl<EntryPointCubit>().onLoginNfaaz(),
           child: const MapnessPage(),
         ),

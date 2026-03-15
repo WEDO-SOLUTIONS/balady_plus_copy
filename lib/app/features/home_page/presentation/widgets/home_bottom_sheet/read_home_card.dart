@@ -13,14 +13,12 @@ class ReadHomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.menuQuranPage);
+        NavigationService.navigatorKey.currentState!.pushNamed(RouteName.menuQuranPage);
       },
       child: HomeSection(
         title: 'read_and_repeat'.tr(),
         child: Container(
-          padding: const EdgeInsetsDirectional.only(
-              start: 12, end: 18, top: 16, bottom: 16),
+          padding: const EdgeInsetsDirectional.only(start: 12, end: 18, top: 16, bottom: 16),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(16)),

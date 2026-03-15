@@ -2,10 +2,7 @@
 
 import 'package:pigeon/pigeon.dart';
 
-enum ZoomControlMessage {
-  zoomIn,
-  zoomOut,
-}
+enum ZoomControlMessage { zoomIn, zoomOut }
 
 class InitializeMessage {
   InitializeMessage(this.wasInitialized, this.errorDescription);
@@ -29,12 +26,7 @@ class ScreenSizeMessage {
 }
 
 class CalcPositionOptionsMessage {
-  CalcPositionOptionsMessage(
-    this.screenArea,
-    this.tilt,
-    this.bearing,
-    this.size,
-  );
+  CalcPositionOptionsMessage(this.screenArea, this.tilt, this.bearing, this.size);
 
   final CameraSetPaddingMessage? screenArea;
   final double? tilt;
@@ -68,17 +60,10 @@ class CameraPositionPointMessage {
   final double y;
 }
 
-enum CameraAnimationTypeMessage {
-  defaultType,
-  linear,
-  showBothPositions,
-}
+enum CameraAnimationTypeMessage { defaultType, linear, showBothPositions }
 
 class DgisObjectIdMessage {
-  const DgisObjectIdMessage({
-    required this.objectId,
-    required this.entranceId,
-  });
+  const DgisObjectIdMessage({required this.objectId, required this.entranceId});
 
   final int objectId;
   final int entranceId;
@@ -98,21 +83,10 @@ class DayTimeMessage {
   final int minutes;
 }
 
-enum WeekDayMessage {
-  monday,
-  tuesday,
-  wednesday,
-  thursday,
-  friday,
-  saturday,
-  sunday,
-}
+enum WeekDayMessage { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
 
 class WeekTimeMessage {
-  const WeekTimeMessage({
-    required this.weekDay,
-    required this.time,
-  });
+  const WeekTimeMessage({required this.weekDay, required this.time});
 
   final WeekDayMessage weekDay;
   final DayTimeMessage time;
@@ -191,12 +165,7 @@ class AddressMessage {
 }
 
 class FormattedAddressMessage {
-  FormattedAddressMessage(
-    this.drilldownAddress,
-    this.streetAddress,
-    this.addressComment,
-    this.postCode,
-  );
+  FormattedAddressMessage(this.drilldownAddress, this.streetAddress, this.addressComment, this.postCode);
 
   final String? drilldownAddress;
   final String? streetAddress;
@@ -227,46 +196,15 @@ class ReviewsMessage {
   final int count;
 }
 
-enum ParkingTypeMessage {
-  ground,
-  underground,
-  multilevel,
-  none,
-}
+enum ParkingTypeMessage { ground, underground, multilevel, none }
 
-enum ParkingPurposeMessage {
-  car,
-  bike,
-  motorbike,
-  babyCarriage,
-  scooter,
-}
+enum ParkingPurposeMessage { car, bike, motorbike, babyCarriage, scooter }
 
-enum ParkingAccessMessage {
-  publicAccess,
-  handicappedOnly,
-  customersOnly,
-  residentsOnly,
-  taxiOnly,
-}
+enum ParkingAccessMessage { publicAccess, handicappedOnly, customersOnly, residentsOnly, taxiOnly }
 
-enum ParkingPavingTypeMessage {
-  asphalt,
-  concrete,
-  gravel,
-  unpaved,
-  none,
-}
+enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
 
-enum SpecialSpaceTypeMessage {
-  bicycle,
-  motorbike,
-  family,
-  handicapped,
-  babyCarriage,
-  truck,
-  scooter,
-}
+enum SpecialSpaceTypeMessage { bicycle, motorbike, family, handicapped, babyCarriage, truck, scooter }
 
 class SpecialSpaceMessage {
   SpecialSpaceMessage(this.type, this.name, this.count);
@@ -406,21 +344,14 @@ class TradeLicenseMessage {
 }
 
 class GroupItemMessage {
-  GroupItemMessage({
-    required this.id,
-    required this.type,
-  });
+  GroupItemMessage({required this.id, required this.type});
 
   final DgisObjectIdMessage id;
   final ObjectTypeMessage type;
 }
 
 class OrgInfoMessage {
-  OrgInfoMessage({
-    required this.id,
-    required this.branchCount,
-    this.name,
-  });
+  OrgInfoMessage({required this.id, required this.branchCount, this.name});
 
   final int branchCount;
   final int id;
@@ -492,30 +423,19 @@ class DirectoryObjectMessage {
 }
 
 class PublicTransportDirectoryRouteDirectionNamesInfoMessage {
-  PublicTransportDirectoryRouteDirectionNamesInfoMessage({
-    required this.fromName,
-    required this.toName,
-  });
+  PublicTransportDirectoryRouteDirectionNamesInfoMessage({required this.fromName, required this.toName});
 
   final String fromName;
   final String toName;
 }
 
 class PublicTransportRouteDirectionIdMessage {
-  PublicTransportRouteDirectionIdMessage({
-    required this.value,
-  });
+  PublicTransportRouteDirectionIdMessage({required this.value});
 
   final int value;
 }
 
-enum PublicTransportRouteDirectionTypeMessage {
-  forward,
-  backward,
-  additional,
-  circular,
-  loop,
-}
+enum PublicTransportRouteDirectionTypeMessage { forward, backward, additional, circular, loop }
 
 enum PublicTransportRouteTypeMessage {
   bus,
@@ -553,18 +473,13 @@ class PublicTransportPlatformTransitionMessage {
 }
 
 class PolylineGeometryMessage {
-  PolylineGeometryMessage({
-    required this.points,
-  });
+  PolylineGeometryMessage({required this.points});
 
   final List<GeoPointMessage> points;
 }
 
 class PublicTransportRouteGeometryMessage {
-  PublicTransportRouteGeometryMessage({
-    required this.line,
-    this.centroid,
-  });
+  PublicTransportRouteGeometryMessage({required this.line, this.centroid});
 
   final PolylineGeometryMessage line;
   final GeoPointMessage? centroid;
@@ -589,12 +504,7 @@ class PublicTransportPlatformMessage {
 }
 
 class PublicTransportRouteDirectionMessage {
-  PublicTransportRouteDirectionMessage({
-    required this.id,
-    required this.type,
-    this.geometry,
-    required this.platforms,
-  });
+  PublicTransportRouteDirectionMessage({required this.id, required this.type, this.geometry, required this.platforms});
 
   final PublicTransportRouteDirectionIdMessage id;
   final PublicTransportRouteDirectionTypeMessage type;
@@ -614,23 +524,18 @@ class PublicTransportDirectoryRouteInfoMessage {
   final DgisObjectIdMessage id;
   final String name;
   final int? color;
-  final PublicTransportDirectoryRouteDirectionNamesInfoMessage?
-      fromToStationNames;
+  final PublicTransportDirectoryRouteDirectionNamesInfoMessage? fromToStationNames;
   final List<PublicTransportRouteDirectionMessage> directions;
 }
 
 class RouteDistanceMessage {
-  const RouteDistanceMessage({
-    required this.millimeters,
-  });
+  const RouteDistanceMessage({required this.millimeters});
 
   final int millimeters;
 }
 
 class RoutePointMessage {
-  const RoutePointMessage({
-    required this.distance,
-  });
+  const RoutePointMessage({required this.distance});
 
   final RouteDistanceMessage distance;
 }
@@ -654,20 +559,14 @@ class PublicTransportInfoMessage {
 }
 
 class PublicTransportStopMessage {
-  const PublicTransportStopMessage({
-    required this.coordinates,
-    required this.name,
-  });
+  const PublicTransportStopMessage({required this.coordinates, required this.name});
 
   final GeoPointMessage coordinates;
   final String name;
 }
 
 class PublicRoutePartMessage {
-  const PublicRoutePartMessage({
-    required this.transports,
-    required this.intermediateStops,
-  });
+  const PublicRoutePartMessage({required this.transports, required this.intermediateStops});
 
   final List<PublicTransportInfoMessage> transports;
   final List<PublicTransportStopMessage> intermediateStops;
@@ -686,29 +585,17 @@ class PublicTransportTransferMessage {
 }
 
 class PublicTransportTransferRouteLongEntryMessage {
-  const PublicTransportTransferRouteLongEntryMessage({
-    required this.point,
-    required this.length,
-    required this.value,
-  });
+  const PublicTransportTransferRouteLongEntryMessage({required this.point, required this.length, required this.value});
 
   final RoutePointMessage point;
   final RouteDistanceMessage length;
   final PublicTransportTransferMessage value;
 }
 
-enum SortingTypeMessage {
-  byRelevance,
-  byDistance,
-  byRating,
-}
+enum SortingTypeMessage { byRelevance, byDistance, byRating }
 
 class WeekTimeSearchMessage {
-  const WeekTimeSearchMessage({
-    this.weekDay,
-    this.time,
-    this.isOpenNow = false,
-  });
+  const WeekTimeSearchMessage({this.weekDay, this.time, this.isOpenNow = false});
 
   final WeekDayMessage? weekDay;
   final DayTimeMessage? time;
@@ -729,22 +616,10 @@ class DistanceResponseMessage {
   final DgisObjectIdMessage? dgisObjectId;
 }
 
-enum RouteSearchOptionsMessage {
-  car,
-  publicTransport,
-  bicycle,
-  pedestrian,
-  scooter,
-  truck,
-  taxi,
-}
+enum RouteSearchOptionsMessage { car, publicTransport, bicycle, pedestrian, scooter, truck, taxi }
 
 class RouteEditorRoutePointMessage {
-  RouteEditorRoutePointMessage(
-    this.point,
-    this.objectId,
-    this.levelId,
-  );
+  RouteEditorRoutePointMessage(this.point, this.objectId, this.levelId);
 
   final GeoPointMessage point;
   final DgisObjectIdMessage? objectId;
@@ -771,20 +646,13 @@ class RouteEditorRouteParamsMessage {
 }
 
 class CarRouteSearchOptionParamsMessage {
-  CarRouteSearchOptionParamsMessage({
-    required this.avoidTollRoads,
-    required this.avoidUnpavedRoads,
-  });
+  CarRouteSearchOptionParamsMessage({required this.avoidTollRoads, required this.avoidUnpavedRoads});
 
   final bool avoidTollRoads;
   final bool avoidUnpavedRoads;
 }
 
-enum DesiredAccuracyMessage {
-  low,
-  medium,
-  high,
-}
+enum DesiredAccuracyMessage { low, medium, high }
 
 class MarkerWithPhotoMessage {
   MarkerWithPhotoMessage({
@@ -820,28 +688,16 @@ class AddLayerPointObjectsMessage {
 }
 
 class GeoRectMessage {
-  GeoRectMessage({
-    required this.northEast,
-    required this.southWest,
-  });
+  GeoRectMessage({required this.northEast, required this.southWest});
 
   final GeoPointMessage northEast;
   final GeoPointMessage southWest;
 }
 
-enum WorkingFilterMessage {
-  none,
-  isOpen,
-  isOpen24x7,
-}
+enum WorkingFilterMessage { none, isOpen, isOpen24x7 }
 
 class CameraSetPaddingMessage {
-  CameraSetPaddingMessage({
-    this.leftPadding = 0,
-    this.topPadding = 0,
-    this.rightPadding = 0,
-    this.bottomPadding = 0,
-  });
+  CameraSetPaddingMessage({this.leftPadding = 0, this.topPadding = 0, this.rightPadding = 0, this.bottomPadding = 0});
 
   final int leftPadding;
   final int topPadding;
@@ -917,8 +773,7 @@ class MarkerTextStyleMessage {
 
 /// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection,
-      this.iconOpacity, this.pngData, this.pngPath);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
 
   final String? svgPath;
   final Uint8List? pngData;
@@ -996,12 +851,7 @@ class MarkerMessage {
 }
 
 class PolygonOptionsMessage {
-  PolygonOptionsMessage({
-    required this.contours,
-    this.color,
-    this.strokeWidth,
-    this.strokeColor,
-  });
+  PolygonOptionsMessage({required this.contours, this.color, this.strokeWidth, this.strokeColor});
 
   final List<List<GeoPointMessage>> contours;
   final int? color;
@@ -1017,13 +867,7 @@ class PolygonMessage {
 }
 
 class CircleOptionsMessage {
-  CircleOptionsMessage({
-    required this.position,
-    required this.radius,
-    this.color,
-    this.strokeWidth,
-    this.strokeColor,
-  });
+  CircleOptionsMessage({required this.position, required this.radius, this.color, this.strokeWidth, this.strokeColor});
 
   final GeoPointMessage position;
   final double radius;
@@ -1084,12 +928,7 @@ class PageMessage {
   final List<DirectoryObjectMessage> items;
 }
 
-enum GeometryKindMessage {
-  point,
-  polyline,
-  polygon,
-  complex,
-}
+enum GeometryKindMessage { point, polyline, polygon, complex }
 
 class GeometryMessage {
   GeometryMessage(this.kind, this.bounds, this.minPoint, this.maxPoint);
@@ -1106,10 +945,7 @@ class PolygonGeometryMessage {
   final List<Object> contours;
 }
 
-enum SearchResultTypeMessage {
-  recovery,
-  discovery,
-}
+enum SearchResultTypeMessage { recovery, discovery }
 
 class FlagFilterMessage {
   FlagFilterMessage(this.tagName, this.displayName, this.flagValue);
@@ -1120,8 +956,7 @@ class FlagFilterMessage {
 }
 
 class RangeFilterMessage {
-  RangeFilterMessage(
-      this.tagName, this.displayName, this.minValue, this.maxValue);
+  RangeFilterMessage(this.tagName, this.displayName, this.minValue, this.maxValue);
 
   final String tagName;
   final String displayName;
@@ -1137,13 +972,7 @@ class DynamicFilterMessage {
 }
 
 class ItemMarkerInfoMessage {
-  ItemMarkerInfoMessage(
-    this.objectId,
-    this.geoPoint,
-    this.floorInfo,
-    this.title,
-    this.rubricIds,
-  );
+  ItemMarkerInfoMessage(this.objectId, this.geoPoint, this.floorInfo, this.title, this.rubricIds);
 
   final DgisObjectIdMessage? objectId;
   final GeoPointWithElevationMessage geoPoint;
@@ -1204,11 +1033,7 @@ class PerformSearchHandlerMessage {
 }
 
 class SuggestHandlerMessage {
-  SuggestHandlerMessage(
-    this.objectHandler,
-    this.performSearchHandler,
-    this.incompleteTextHandler,
-  );
+  SuggestHandlerMessage(this.objectHandler, this.performSearchHandler, this.incompleteTextHandler);
 
   final SuggestObjectHandlerMessage? objectHandler;
   final PerformSearchHandlerMessage? performSearchHandler;
@@ -1304,8 +1129,7 @@ class SuggestResultMessage {
 
 /// We created this for convenience, but now we don't have to use this class
 /// You can find all information about rubric ids inside [QuickFilter] class
-@Deprecated(
-    "We don't have to use this class because we have to send rubricIds and keep this ids on Flutter side")
+@Deprecated("We don't have to use this class because we have to send rubricIds and keep this ids on Flutter side")
 enum SearchCategoryMessage {
   mousques,
   gasStations,
@@ -1335,12 +1159,7 @@ class SearchCategoriesMessage {
 }
 
 class SimpleClusterOptionsMessage {
-  SimpleClusterOptionsMessage({
-    this.icon,
-    this.anchor,
-    this.text,
-    this.textStyle,
-  });
+  SimpleClusterOptionsMessage({this.icon, this.anchor, this.text, this.textStyle});
 
   final MarkerIconMessage? icon;
   final MarkerAnchorMessage? anchor;
@@ -1349,11 +1168,7 @@ class SimpleClusterOptionsMessage {
 }
 
 class ClusteringMapObjectManagerOptionsMessage {
-  ClusteringMapObjectManagerOptionsMessage(
-    this.logicalPixel,
-    this.maxZoom,
-    this.minZoom,
-  );
+  ClusteringMapObjectManagerOptionsMessage(this.logicalPixel, this.maxZoom, this.minZoom);
 
   final double logicalPixel;
   final double maxZoom;
@@ -1366,20 +1181,9 @@ class MapObjectManagerMessage {
   final String id;
 }
 
-enum MapAppearanceMessage {
-  day,
-  night,
-  system,
-}
+enum MapAppearanceMessage { day, night, system }
 
-enum LogLevelMessage {
-  verbose,
-  info,
-  warning,
-  error,
-  fatal,
-  off,
-}
+enum LogLevelMessage { verbose, info, warning, error, fatal, off }
 
 class LogOptionsMessage {
   LogOptionsMessage(this.systemLevel, this.customLevel, this.customSink);
@@ -1390,8 +1194,7 @@ class LogOptionsMessage {
 }
 
 class RouteSearchPointMessage {
-  RouteSearchPointMessage(
-      this.coordinates, this.course, this.objectId, this.levelId);
+  RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
 
   final GeoPointMessage coordinates;
   final BearingMessage? course;
@@ -1461,8 +1264,15 @@ class PackageMessage {
 }
 
 class PackageInfoMessage {
-  PackageInfoMessage(this.name, this.installed, this.incomplete,
-      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
+  PackageInfoMessage(
+    this.name,
+    this.installed,
+    this.incomplete,
+    this.preinstalled,
+    this.compatible,
+    this.hasUpdate,
+    this.updateStatus,
+  );
 
   final String name;
   final bool installed;
@@ -1473,19 +1283,9 @@ class PackageInfoMessage {
   final PackageUpdateStatusMessage updateStatus;
 }
 
-enum PackageUpdateStatusMessage {
-  notAvailable,
-  inProgress,
-  paused,
-}
+enum PackageUpdateStatusMessage { notAvailable, inProgress, paused }
 
-enum BriefExtraRouteInfoTypeMessage {
-  bicycle,
-  car,
-  pedestrian,
-  publicTransport,
-  scooter,
-}
+enum BriefExtraRouteInfoTypeMessage { bicycle, car, pedestrian, publicTransport, scooter }
 
 class BriefExtraRouteInfoMessage {
   const BriefExtraRouteInfoMessage(this.type, this.distance);
@@ -1494,18 +1294,10 @@ class BriefExtraRouteInfoMessage {
   final int distance;
 }
 
-enum WeatherMapType {
-  temperature,
-  precipitation,
-}
+enum WeatherMapType { temperature, precipitation }
 
 class WeatherMapMessage {
-  WeatherMapMessage({
-    this.type,
-    required this.layerName,
-    required this.rasterTileUri,
-    required this.enabled,
-  });
+  WeatherMapMessage({this.type, required this.layerName, required this.rasterTileUri, required this.enabled});
 
   final WeatherMapType? type;
   final String? layerName;
@@ -1521,23 +1313,11 @@ class RenderedObjectMessage {
   final int? levelId;
 }
 
-enum VendorConfigMessage {
-  urbiPreProd,
-  momrahProd,
-  momrahStg,
-}
+enum VendorConfigMessage { urbiPreProd, momrahProd, momrahStg }
 
-enum FollowStateMessage {
-  off,
-  followPosition,
-  followDirection,
-}
+enum FollowStateMessage { off, followPosition, followDirection }
 
-enum BetterRouteResponseMessage {
-  accept,
-  reject,
-  timeout,
-}
+enum BetterRouteResponseMessage { accept, reject, timeout }
 
 class SpeedRangeZoom {
   SpeedRangeZoom({
@@ -1553,11 +1333,7 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
-enum NavigationState {
-  navigation,
-  finish,
-  disabled,
-}
+enum NavigationState { navigation, finish, disabled }
 
 class NavigationStateMessage {
   NavigationStateMessage(this.state, this.routeSearchOptions);
@@ -1660,15 +1436,20 @@ class FavouriteItemMessage {
   final GeoPointMessage coordinates;
 }
 
+class SearchHistoryDirectoryObjectMessage {
+  SearchHistoryDirectoryObjectMessage({required this.title, required this.address, this.id});
+
+  final String title;
+  final String address;
+  final DgisObjectIdMessage? id;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
     swiftOut: '../dgis_map/ios/Classes/Messages.swift',
-    kotlinOut:
-        '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
-    kotlinOptions: KotlinOptions(
-      package: 'com.dgis.map.map_api',
-    ),
+    kotlinOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
+    kotlinOptions: KotlinOptions(package: 'com.dgis.map.map_api'),
   ),
 )
 @HostApi()
@@ -1719,11 +1500,7 @@ abstract class MapApi {
   void setCameraPositionPoint(CameraPositionPointMessage cameraPosition);
 
   @async
-  void moveCamera(
-    CameraPositionMessage cameraPosition,
-    double duration,
-    CameraAnimationTypeMessage animationType,
-  );
+  void moveCamera(CameraPositionMessage cameraPosition, double duration, CameraAnimationTypeMessage animationType);
 
   @async
   List<RenderedObjectMessage> getNearestObjects();
@@ -1732,33 +1509,19 @@ abstract class MapApi {
   CameraPositionMessage getCameraPosition();
 
   @async
-  CameraPositionMessage calcPositionForRoute(
-    CalcPositionOptionsMessage options,
-  );
+  CameraPositionMessage calcPositionForRoute(CalcPositionOptionsMessage options);
 
   @async
-  CameraPositionMessage calcPositionForMarkers(
-    List<String> markers,
-    CalcPositionOptionsMessage options,
-  );
+  CameraPositionMessage calcPositionForMarkers(List<String> markers, CalcPositionOptionsMessage options);
 
   @async
-  CameraPositionMessage calcPositionForPolygons(
-    List<String> polygons,
-    CalcPositionOptionsMessage options,
-  );
+  CameraPositionMessage calcPositionForPolygons(List<String> polygons, CalcPositionOptionsMessage options);
 
   @async
-  CameraPositionMessage calcPositionForPolylines(
-    List<String> polylines,
-    CalcPositionOptionsMessage options,
-  );
+  CameraPositionMessage calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options);
 
   @async
-  CameraPositionMessage calcPositionForGeoPoints(
-    List<GeoPointMessage> points,
-    CalcPositionOptionsMessage options,
-  );
+  CameraPositionMessage calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options);
 
   @async
   void animateToRepresentativeArea(
@@ -1772,8 +1535,7 @@ abstract class MapApi {
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
-  List<DistanceResponseMessage> getDistanceTo(
-      List<DistanceRequestMessage> points);
+  List<DistanceResponseMessage> getDistanceTo(List<DistanceRequestMessage> points);
 
   @async
   SearchResultMessage search(
@@ -1835,10 +1597,7 @@ abstract class MapApi {
   void setMarkerOptions(String id, ChangeMarkerOptionsMessage options);
 
   @async
-  void addMarkers(
-    List<MarkerMessage> markers,
-    MapObjectManagerMessage? manager,
-  );
+  void addMarkers(List<MarkerMessage> markers, MapObjectManagerMessage? manager);
 
   @async
   void removeMarker(String id, MapObjectManagerMessage? manager);
@@ -1853,9 +1612,7 @@ abstract class MapApi {
   );
 
   @async
-  MapObjectManagerMessage createMapObjectManager(
-    String? layerId,
-  );
+  MapObjectManagerMessage createMapObjectManager(String? layerId);
 
   @async
   void removeMapObjectManager(MapObjectManagerMessage manager);
@@ -1867,19 +1624,13 @@ abstract class MapApi {
   void releaseCluster(String id);
 
   @async
-  void setMapObjectManagerIsVisible(
-    bool isVisible,
-    MapObjectManagerMessage? manager,
-  );
+  void setMapObjectManagerIsVisible(bool isVisible, MapObjectManagerMessage? manager);
 
   @async
   void addCircle(CircleMessage circle, MapObjectManagerMessage? manager);
 
   @async
-  void addCircles(
-    List<CircleMessage> circles,
-    MapObjectManagerMessage? manager,
-  );
+  void addCircles(List<CircleMessage> circles, MapObjectManagerMessage? manager);
 
   @async
   void removeCircle(String id, MapObjectManagerMessage? manager);
@@ -1891,10 +1642,7 @@ abstract class MapApi {
   void addPolygon(PolygonMessage polygon, MapObjectManagerMessage? manager);
 
   @async
-  void addPolygons(
-    List<PolygonMessage> polygons,
-    MapObjectManagerMessage? manager,
-  );
+  void addPolygons(List<PolygonMessage> polygons, MapObjectManagerMessage? manager);
 
   @async
   void removePolygon(String id, MapObjectManagerMessage? manager);
@@ -1906,16 +1654,10 @@ abstract class MapApi {
   void removeAllPolygons(MapObjectManagerMessage? manager);
 
   @async
-  void addPolyline(
-    PolylineMessage polyline,
-    MapObjectManagerMessage? manager,
-  );
+  void addPolyline(PolylineMessage polyline, MapObjectManagerMessage? manager);
 
   @async
-  void addPolylines(
-    List<PolylineMessage> polylines,
-    MapObjectManagerMessage? manager,
-  );
+  void addPolylines(List<PolylineMessage> polylines, MapObjectManagerMessage? manager);
 
   @async
   void removePolyline(String id, MapObjectManagerMessage? manager);
@@ -1992,8 +1734,7 @@ abstract class MapApi {
   NavigationStateMessage getCurrentNavigationState();
 
   @async
-  void restoreNavigationState(
-      Uint8List state, List<SpeedRangeZoom> speedRangeZoom);
+  void restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom);
 
   @async
   void setPanoramaMarkerAzimuth(MapDirectionMessage message);
@@ -2113,14 +1854,23 @@ abstract class MapApi {
 
   @async
   void setMaxFps(int? maxFps);
+
+  @async
+  List<SearchHistoryDirectoryObjectMessage> getSearchHistoryItems();
+
+  @async
+  void addSearchHistoryItem(SearchHistoryDirectoryObjectMessage item);
+
+  @async
+  void removeSearchHistoryItem(int index);
+
+  @async
+  void clearSearchHistoryItems();
 }
 
 @FlutterApi()
 abstract class FlutterMapApi {
-  SimpleClusterOptionsMessage renderCluster(
-    MapObjectManagerMessage manager,
-    int objectCount,
-  );
+  SimpleClusterOptionsMessage renderCluster(MapObjectManagerMessage manager, int objectCount);
 }
 
 @FlutterApi()
@@ -2146,7 +1896,8 @@ abstract class HostFlutterApi {
 abstract class PluginApi {
   @async
   void initialize(
-      LogOptionsMessage? message,
-      VendorConfigMessage? configMessage,
-      VendorConfigContentMessage? contentMessage);
+    LogOptionsMessage? message,
+    VendorConfigMessage? configMessage,
+    VendorConfigContentMessage? contentMessage,
+  );
 }

@@ -117,7 +117,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
             showDragHandle: false,
             builder: (context) => Container(
               decoration: BoxDecoration(
-                color: context.colors.backgroundSurface1,
+                color: context.colors.backgroundSurface2,
                 borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
               ),
               width: double.infinity,
@@ -146,7 +146,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
+                    padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : 0),
                     child: Text(
                       text,
                       style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),

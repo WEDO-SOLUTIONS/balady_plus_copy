@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as Dialog;
-import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -12,12 +13,10 @@ import 'PickerLocalizations.dart';
 const bool __printDebug = false;
 
 /// Picker selected callback.
-typedef PickerSelectedCallback = void Function(
-    Picker picker, int index, List<int> selecteds);
+typedef PickerSelectedCallback = void Function(Picker picker, int index, List<int> selecteds);
 
 /// Picker confirm callback.
-typedef PickerConfirmCallback = void Function(
-    Picker picker, List<int> selecteds);
+typedef PickerConfirmCallback = void Function(Picker picker, List<int> selecteds);
 
 /// Picker value format callback.
 typedef PickerValueFormat<T> = String Function(T value);
@@ -56,10 +55,7 @@ class Picker {
   /// Height of list item
   final double? itemExtent;
 
-  final TextStyle? textStyle,
-      cancelTextStyle,
-      confirmTextStyle,
-      selectedTextStyle;
+  final TextStyle? textStyle, cancelTextStyle, confirmTextStyle, selectedTextStyle;
   final TextAlign? textAlign;
 
   /// Text scaling factor
@@ -97,44 +93,44 @@ class Picker {
   Widget? _widget;
   PickerWidgetState? _state;
 
-  Picker(
-      {this.adapter,
-      this.delimiter,
-      this.selecteds,
-      this.height = 200.0,
-      this.itemExtent = 35.0,
-      this.columnPadding,
-      this.textStyle,
-      this.cancelTextStyle,
-      this.confirmTextStyle,
-      this.selectedTextStyle,
-      this.textAlign = TextAlign.center,
-      this.textScaleFactor,
-      this.title,
-      this.cancel,
-      this.confirm,
-      this.cancelText,
-      this.confirmText,
-      this.backgroundColor = Colors.white,
-      this.containerColor,
-      this.headercolor,
-      this.builderHeader,
-      this.changeToFirst = false,
-      this.hideHeader = false,
-      this.looping = false,
-      this.reversedOrder = false,
-      this.headerDecoration,
-      this.columnFlex,
-      this.footer,
-      this.smooth,
-      this.magnification = 1.0,
-      this.diameterRatio = 1.1,
-      this.squeeze = 1.45,
-      this.onCancel,
-      this.onSelect,
-      this.isSearchable = false,
-      this.onConfirm})
-      : assert(adapter != null);
+  Picker({
+    this.adapter,
+    this.delimiter,
+    this.selecteds,
+    this.height = 200.0,
+    this.itemExtent = 35.0,
+    this.columnPadding,
+    this.textStyle,
+    this.cancelTextStyle,
+    this.confirmTextStyle,
+    this.selectedTextStyle,
+    this.textAlign = TextAlign.center,
+    this.textScaleFactor,
+    this.title,
+    this.cancel,
+    this.confirm,
+    this.cancelText,
+    this.confirmText,
+    this.backgroundColor = Colors.white,
+    this.containerColor,
+    this.headercolor,
+    this.builderHeader,
+    this.changeToFirst = false,
+    this.hideHeader = false,
+    this.looping = false,
+    this.reversedOrder = false,
+    this.headerDecoration,
+    this.columnFlex,
+    this.footer,
+    this.smooth,
+    this.magnification = 1.0,
+    this.diameterRatio = 1.1,
+    this.squeeze = 1.45,
+    this.onCancel,
+    this.onSelect,
+    this.isSearchable = false,
+    this.onConfirm,
+  }) : assert(adapter != null);
 
   Widget? get widget => _widget;
 
@@ -147,8 +143,7 @@ class Picker {
     _maxLevel = adapter!.maxLevel;
     adapter!.picker = this;
     adapter!.initSelects();
-    _widget =
-        _PickerWidget(picker: this, themeData: themeData!, isModal: isModal);
+    _widget = _PickerWidget(picker: this, themeData: themeData!, isModal: isModal);
     return _widget!;
   }
 
@@ -162,83 +157,66 @@ class Picker {
   /// Display modal picker
   Future<T?> showModal<T>(BuildContext context, [ThemeData? themeData]) async {
     return await showModalBottomSheet<T>(
-        isScrollControlled: true,
-        context: context, //state.context,
-        builder: (BuildContext context) {
-          return Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: makePicker(themeData, true),
-          );
-        });
+      isScrollControlled: true,
+      context: context, //state.context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: makePicker(themeData, true),
+        );
+      },
+    );
   }
 
   /// show dialog picker
-  Future<List<int>?> showDialog(BuildContext context,
-      {bool barrierDismissible = true, Key? key}) {
+  Future<List<int>?> showDialog(BuildContext context, {bool barrierDismissible = true, Key? key}) {
     return Dialog.showDialog<List<int>>(
-        context: context,
-        barrierDismissible: barrierDismissible,
-        builder: (BuildContext context) {
-          List<Widget> actions = [];
+      context: context,
+      barrierDismissible: barrierDismissible,
+      builder: (BuildContext context) {
+        List<Widget> actions = [];
 
-          if (cancel == null) {
-            String _cancelText =
-                cancelText ?? PickerLocalizations.of(context).cancelText;
-            if (_cancelText != "") {
-              actions.add(TextButton(
-                  onPressed: () {
-                    Navigator.pop<List<int>>(context, null);
-                    if (onCancel != null) onCancel!();
-                  },
-                  child: cancelTextStyle == null
-                      ? Text(
-                          _cancelText,
-                          textScaleFactor: 1,
-                        )
-                      : DefaultTextStyle(
-                          child: Text(
-                            _cancelText,
-                            textScaleFactor: 1,
-                          ),
-                          style: cancelTextStyle!)));
-            }
-          } else {
-            actions.add(cancel!);
+        if (cancel == null) {
+          String _cancelText = cancelText ?? PickerLocalizations.of(context).cancelText;
+          if (_cancelText != "") {
+            actions.add(
+              TextButton(
+                onPressed: () {
+                  Navigator.pop<List<int>>(context, null);
+                  if (onCancel != null) onCancel!();
+                },
+                child: cancelTextStyle == null
+                    ? Text(_cancelText, textScaleFactor: 1)
+                    : DefaultTextStyle(child: Text(_cancelText, textScaleFactor: 1), style: cancelTextStyle!),
+              ),
+            );
           }
+        } else {
+          actions.add(cancel!);
+        }
 
-          if (confirm == null) {
-            String _confirmText =
-                confirmText ?? PickerLocalizations.of(context).confirmText;
-            if (_confirmText != "") {
-              actions.add(TextButton(
-                  onPressed: () {
-                    Navigator.pop<List<int>>(context, selecteds);
-                    if (onConfirm != null) onConfirm!(this, selecteds!);
-                  },
-                  child: confirmTextStyle == null
-                      ? Text(
-                          _confirmText,
-                          textScaleFactor: 1,
-                        )
-                      : DefaultTextStyle(
-                          child: Text(
-                            _confirmText,
-                            textScaleFactor: 1,
-                          ),
-                          style: confirmTextStyle!)));
-            }
-          } else {
-            actions.add(confirm!);
+        if (confirm == null) {
+          String _confirmText = confirmText ?? PickerLocalizations.of(context).confirmText;
+          if (_confirmText != "") {
+            actions.add(
+              TextButton(
+                onPressed: () {
+                  Navigator.pop<List<int>>(context, selecteds);
+                  if (onConfirm != null) onConfirm!(this, selecteds!);
+                },
+                child: confirmTextStyle == null
+                    ? Text(_confirmText, textScaleFactor: 1)
+                    : DefaultTextStyle(child: Text(_confirmText, textScaleFactor: 1), style: confirmTextStyle!),
+              ),
+            );
           }
+        } else {
+          actions.add(confirm!);
+        }
 
-          return AlertDialog(
-            key: key ?? Key('picker-dialog'),
-            title: title,
-            actions: actions,
-            content: makePicker(),
-          );
-        });
+        return AlertDialog(key: key ?? Key('picker-dialog'), title: title, actions: actions, content: makePicker());
+      },
+    );
   }
 
   /// 获取当前选择的值
@@ -303,8 +281,7 @@ class _PickerWidget<T> extends StatefulWidget {
   _PickerWidget({required this.picker, required this.themeData, this.isModal});
 
   @override
-  PickerWidgetState createState() =>
-      PickerWidgetState<T>(picker: this.picker, themeData: this.themeData);
+  PickerWidgetState createState() => PickerWidgetState<T>(picker: this.picker, themeData: this.themeData);
 }
 
 class PickerWidgetState<T> extends State<_PickerWidget> {
@@ -326,8 +303,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
 
     if (scrollController.isEmpty) {
       for (int i = 0; i < picker._maxLevel; i++) {
-        scrollController.add(
-            FixedExtentScrollController(initialItem: picker.selecteds![i]));
+        scrollController.add(FixedExtentScrollController(initialItem: picker.selecteds![i]));
         _keys.add(GlobalKey(debugLabel: i.toString()));
       }
     }
@@ -355,25 +331,26 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     var _body = <Widget>[];
     if (!picker.hideHeader!) {
       if (picker.builderHeader != null) {
-        _body.add(picker.headerDecoration == null
-            ? picker.builderHeader!(context)
-            : DecoratedBox(
-                child: picker.builderHeader!(context),
-                decoration: picker.headerDecoration!));
+        _body.add(
+          picker.headerDecoration == null
+              ? picker.builderHeader!(context)
+              : DecoratedBox(child: picker.builderHeader!(context), decoration: picker.headerDecoration!),
+        );
       } else {
-        _body.add(DecoratedBox(
-          child: Row(
-            children: _buildHeaderViews(),
-          ),
-          decoration: picker.headerDecoration ??
-              BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: theme!.dividerColor, width: 0.5),
-                  bottom: BorderSide(color: theme!.dividerColor, width: 0.5),
+        _body.add(
+          DecoratedBox(
+            child: Row(children: _buildHeaderViews()),
+            decoration:
+                picker.headerDecoration ??
+                BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: theme!.dividerColor, width: 0.5),
+                    bottom: BorderSide(color: theme!.dividerColor, width: 0.5),
+                  ),
+                  color: picker.headercolor ?? theme!.bottomAppBarTheme.color,
                 ),
-                color: picker.headercolor ?? theme!.bottomAppBarTheme.color,
-              ),
-        ));
+          ),
+        );
       }
     }
 
@@ -387,46 +364,32 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                 picker.adapter!.search(value);
               });
             },
-            style: const TextStyle(
-              color: Colors.black,
-            ),
+            style: const TextStyle(color: Colors.black),
             maxLines: 1,
             decoration: InputDecoration(
               contentPadding: const EdgeInsetsDirectional.only(start: 5),
               hintText: ("lbl_search").tr(),
-              hintStyle:
-                  const TextStyle(fontSize: 15, color: Color(0xffbfbfbf)),
-              focusedBorder: const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xffbfbfbf))),
+              hintStyle: const TextStyle(fontSize: 15, color: Color(0xffbfbfbf)),
+              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: Color(0xffbfbfbf))),
             ),
           ),
         ),
       );
     }
 
-    _body.add(_wait
-        ? Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _buildViews(),
-          )
-        : AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _buildViews(),
+    _body.add(
+      _wait
+          ? Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _buildViews())
+          : AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: _buildViews()),
             ),
-          ));
+    );
 
     if (picker.footer != null) _body.add(picker.footer!);
-    Widget v = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: _body,
-    );
+    Widget v = Column(mainAxisSize: MainAxisSize.min, children: _body);
     if (widget.isModal != null && widget.isModal!) {
-      return GestureDetector(
-        onTap: () {},
-        child: v,
-      );
+      return GestureDetector(onTap: () {}, child: v);
     }
     return v;
   }
@@ -439,66 +402,75 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     List<Widget> items = [];
 
     if (picker.cancel != null) {
-      items.add(DefaultTextStyle(
-          style: picker.cancelTextStyle ??
-              TextStyle(
-                  color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
-          child: picker.cancel!));
+      items.add(
+        DefaultTextStyle(
+          style: picker.cancelTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+          child: picker.cancel!,
+        ),
+      );
     } else {
-      String _cancelText =
-          picker.cancelText ?? PickerLocalizations.of(context).cancelText;
+      String _cancelText = picker.cancelText ?? PickerLocalizations.of(context).cancelText;
       if (_cancelText != null || _cancelText != "") {
-        items.add(TextButton(
+        items.add(
+          TextButton(
             onPressed: () {
               picker.doCancel(context);
             },
-            child: Text(_cancelText.toString(),
-                textScaleFactor: 1,
-                overflow: TextOverflow.ellipsis,
-                style: picker.cancelTextStyle ??
-                    TextStyle(
-                        color: theme!.primaryColor,
-                        fontSize: Picker.DefaultTextSize))));
+            child: Text(
+              _cancelText.toString(),
+              textScaleFactor: 1,
+              overflow: TextOverflow.ellipsis,
+              style: picker.cancelTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+            ),
+          ),
+        );
       }
     }
 
-    items.add(Expanded(
+    items.add(
+      Expanded(
         child: Container(
-      padding: const EdgeInsetsDirectional.only(start: 16),
-      alignment: AlignmentDirectional.topStart,
-      child: picker.title == null
-          ? picker.title
-          : DefaultTextStyle(
-              style: TextStyle(
-                  fontSize: Picker.DefaultTextSize,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: GeneralKey.appFontType,
-                  fontStyle: FontStyle.normal,
-                  color: theme!.primaryColor),
-              child: picker.title!),
-    )));
+          padding: const EdgeInsetsDirectional.only(start: 16),
+          alignment: AlignmentDirectional.topStart,
+          child: picker.title == null
+              ? picker.title
+              : DefaultTextStyle(
+                  style: TextStyle(
+                    fontSize: Picker.DefaultTextSize,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: GeneralKey.appFontType,
+                    fontStyle: FontStyle.normal,
+                    color: theme!.primaryColor,
+                  ),
+                  child: picker.title!,
+                ),
+        ),
+      ),
+    );
 
     if (picker.confirm != null) {
-      items.add(DefaultTextStyle(
-          style: picker.confirmTextStyle ??
-              TextStyle(
-                  color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
-          child: picker.confirm!));
+      items.add(
+        DefaultTextStyle(
+          style: picker.confirmTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+          child: picker.confirm!,
+        ),
+      );
     } else {
-      String _confirmText =
-          picker.confirmText ?? PickerLocalizations.of(context).confirmText;
+      String _confirmText = picker.confirmText ?? PickerLocalizations.of(context).confirmText;
       if (_confirmText != null || _confirmText != "") {
-        items.add(TextButton(
+        items.add(
+          TextButton(
             onPressed: () {
               picker.doConfirm(context);
             },
-            child: Text(_confirmText,
-                textScaleFactor: 1,
-                overflow: TextOverflow.ellipsis,
-                style: picker.confirmTextStyle ??
-                    TextStyle(
-                        color: theme!.primaryColor,
-                        fontSize: Picker.DefaultTextSize))));
+            child: Text(
+              _confirmText,
+              textScaleFactor: 1,
+              overflow: TextOverflow.ellipsis,
+              style: picker.confirmTextStyle ?? TextStyle(color: theme!.primaryColor, fontSize: Picker.DefaultTextSize),
+            ),
+          ),
+        );
       }
     }
 
@@ -520,9 +492,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     if (adapter != null) adapter.setColumn(-1);
 
     if (adapter != null && adapter.length > 0) {
-      var _decoration = BoxDecoration(
-        color: picker.containerColor ?? theme!.dialogBackgroundColor,
-      );
+      var _decoration = BoxDecoration(color: picker.containerColor ?? theme!.dialogBackgroundColor);
 
       for (int i = 0; i < picker._maxLevel; i++) {
         Widget view = Expanded(
@@ -553,9 +523,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                           updateScrollController(i);
                           adapter.doSelect(i, index);
                           if (picker.changeToFirst) {
-                            for (int j = i + 1;
-                                j < picker.selecteds!.length;
-                                j++) {
+                            for (int j = i + 1; j < picker.selecteds!.length; j++) {
                               picker.selecteds![j] = 0;
                               scrollController[j].jumpTo(0.0);
                             }
@@ -569,9 +537,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                           } else {
                             _keys[i].currentState!.update();
                             if (adapter.isLinkage) {
-                              for (int j = i + 1;
-                                  j < picker.selecteds!.length;
-                                  j++) {
+                              for (int j = i + 1; j < picker.selecteds!.length; j++) {
                                 if (j == i) continue;
                                 adapter.setColumn(j - 1);
                                 _keys[j].currentState!.update();
@@ -586,8 +552,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         childCount: picker.looping! ? null : _length,
                       );
 
-                      if (!picker.changeToFirst &&
-                          picker.selecteds![i] >= _length) {
+                      if (!picker.changeToFirst && picker.selecteds![i] >= _length) {
                         Timer(Duration(milliseconds: 100), () {
                           if (__printDebug) print("timer last");
                           adapter.setColumn(i - 1);
@@ -665,37 +630,37 @@ abstract class PickerAdapter<T> {
 
   Widget makeText(Widget? child, String? text, bool? isSel) {
     return Center(
-        child: DefaultTextStyle(
-            overflow: TextOverflow.visible,
-            textAlign: picker!.textAlign,
-            style: picker!.textStyle ??
-                const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontFamily: GeneralKey.appFontType,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 16.0,
-                  color: Colors.black87,
-                ),
-            child: child ??
-                Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  child: AutoSizeText(text!,
-                      minFontSize: 14.0,
-                      textScaleFactor: 1,
-                      style: (isSel! ? picker!.selectedTextStyle : null)),
-                )));
+      child: DefaultTextStyle(
+        overflow: TextOverflow.visible,
+        textAlign: picker!.textAlign,
+        style:
+            picker!.textStyle ??
+            const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontFamily: GeneralKey.appFontType,
+              fontStyle: FontStyle.normal,
+              fontSize: 16.0,
+              color: Colors.black87,
+            ),
+        child:
+            child ??
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: AutoSizeText(
+                text!,
+                minFontSize: 14.0,
+                textScaleFactor: 1,
+                style: (isSel! ? picker!.selectedTextStyle : null),
+              ),
+            ),
+      ),
+    );
   }
 
-  Widget makeTextEx(Widget? child, String? text, Widget? postfix,
-      Widget? suffix, bool? isSel) {
+  Widget makeTextEx(Widget? child, String? text, Widget? postfix, Widget? suffix, bool? isSel) {
     List<Widget> items = [];
     items.add(postfix!);
-    items.add(child ??
-        Text(
-          text!,
-          style: (isSel! ? picker!.selectedTextStyle : null),
-          textScaleFactor: 1,
-        ));
+    items.add(child ?? Text(text!, style: (isSel! ? picker!.selectedTextStyle : null), textScaleFactor: 1));
     items.add(suffix!);
 
     var _txtColor = Colors.black87;
@@ -710,15 +675,14 @@ abstract class PickerAdapter<T> {
     }
 
     return Center(
-        child: DefaultTextStyle(
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            textAlign: picker!.textAlign,
-            style: picker!.textStyle ??
-                TextStyle(color: _txtColor, fontSize: _txtSize),
-            child: Wrap(
-              children: items,
-            )));
+      child: DefaultTextStyle(
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        textAlign: picker!.textAlign,
+        style: picker!.textStyle ?? TextStyle(color: _txtColor, fontSize: _txtSize),
+        child: Wrap(children: items),
+      ),
+    );
   }
 
   String getText() {
@@ -938,9 +902,7 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
       if (isArray) {
         for (int i = 0; i < _sLen; i++) {
           int j = picker!.selecteds![i];
-          if (j < 0 ||
-              data![i].children == null ||
-              j >= data![i].children!.length) {
+          if (j < 0 || data![i].children == null || j >= data![i].children!.length) {
             break;
           }
           _items.add(data![i].children![j].value!);
@@ -1001,7 +963,7 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
       this.data!.addAll(data1);
       this.data!.add(PickerItem(text: Text(" ")));
     }
-//notifyDataChanged();
+    //notifyDataChanged();
   }
 }
 
@@ -1040,9 +1002,7 @@ class NumberPickerColumn {
   }
 
   String getValueText(int index) {
-    return onFormatValue == null
-        ? "${valueOf(index)}"
-        : onFormatValue!(valueOf(index));
+    return onFormatValue == null ? "${valueOf(index)}" : onFormatValue!(valueOf(index));
   }
 
   int count() {
@@ -1103,11 +1063,9 @@ class NumberPickerAdapter extends PickerAdapter<int> {
   @override
   Widget buildItem(BuildContext context, int index) {
     if (cur!.postfix == null && cur!.suffix == null) {
-      return makeText(
-          null, cur!.getValueText(index), index == picker!.selecteds![_col]);
+      return makeText(null, cur!.getValueText(index), index == picker!.selecteds![_col]);
     } else {
-      return makeTextEx(null, cur!.getValueText(index), cur!.postfix,
-          cur!.suffix, index == picker!.selecteds![_col]);
+      return makeTextEx(null, cur!.getValueText(index), cur!.postfix, cur!.suffix, index == picker!.selecteds![_col]);
     }
   }
 
@@ -1207,7 +1165,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "Sep",
     "Oct",
     "Nov",
-    "Dec"
+    "Dec",
   ];
 
   static const List<String> MonthsList_EN_L = const [
@@ -1222,7 +1180,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "September",
     "October",
     "November",
-    "December"
+    "December",
   ];
 
   static const List<String> MonthsList_AR_L = const [
@@ -1237,7 +1195,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "سبتمبر",
     "اكتوبر",
     "نوفمبر",
-    "ديسبمر"
+    "ديسبمر",
   ];
 
   DateTimePickerAdapter({
@@ -1259,9 +1217,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     this.minuteInterval,
     this.customColumnType,
     this.twoDigitYear = false,
-  }) : assert((minuteInterval! >= 1 &&
-            minuteInterval <= 30 &&
-            (60 % minuteInterval == 0))) {
+  }) : assert((minuteInterval! >= 1 && minuteInterval <= 30 && (60 % minuteInterval == 0))) {
     super.picker = picker;
     _yearBegin = yearBegin;
     if (minValue!.year > _yearBegin) {
@@ -1308,16 +1264,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     [0],
   ];
 
-  static const Map<int, int> columnTypeLength = {
-    0: 0,
-    1: 12,
-    2: 31,
-    3: 24,
-    4: 60,
-    5: 60,
-    6: 2,
-    7: 12
-  };
+  static const Map<int, int> columnTypeLength = {0: 0, 1: 12, 2: 31, 3: 24, 4: 60, 5: 60, 6: 2, 7: 12};
 
   /// year 0, month 1, day 2, hour 3, minute 4, sec 5, am/pm 6, hour-ap: 7
   static const List<List<int>> columnType = const [
@@ -1349,9 +1296,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
 
   @override
   int getLength() {
-    int? v = customColumnType == null
-        ? lengths[type][_col]
-        : columnTypeLength[customColumnType![_col]];
+    int? v = customColumnType == null ? lengths[type][_col] : columnTypeLength[customColumnType![_col]];
     if (v == 0) {
       int ye = yearEnd;
       ye = maxValue!.year;
@@ -1369,39 +1314,40 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         if (minuteInterval! > 1) return v! ~/ minuteInterval!;
         break;
       case 7: // hour am/pm
-        if ((minHour! >= 0) || (maxHour! <= 23)) if (_colAP < 0) {
-          // I don't know am or PM
-          return 12;
-        } else {
-          var _min = 0;
-          var _max = 0;
-          if (picker!.selecteds![_colAP] == 0) {
-            // am
-            _min = minHour == null
-                ? 1
-                : minHour! >= 12
-                    ? 12
-                    : minHour! + 1;
-            _max = maxHour == null
-                ? 12
-                : maxHour! >= 12
-                    ? 12
-                    : maxHour! + 1;
+        if ((minHour! >= 0) || (maxHour! <= 23))
+          if (_colAP < 0) {
+            // I don't know am or PM
+            return 12;
           } else {
-            // pm
-            _min = minHour == null
-                ? 1
-                : minHour! >= 12
-                    ? 24 - minHour! - 12
-                    : 1;
-            _max = maxHour == null
-                ? 12
-                : maxHour! >= 12
-                    ? maxHour! - 12
-                    : 1;
+            var _min = 0;
+            var _max = 0;
+            if (picker!.selecteds![_colAP] == 0) {
+              // am
+              _min = minHour == null
+                  ? 1
+                  : minHour! >= 12
+                  ? 12
+                  : minHour! + 1;
+              _max = maxHour == null
+                  ? 12
+                  : maxHour! >= 12
+                  ? 12
+                  : maxHour! + 1;
+            } else {
+              // pm
+              _min = minHour == null
+                  ? 1
+                  : minHour! >= 12
+                  ? 24 - minHour! - 12
+                  : 1;
+              _max = maxHour == null
+                  ? 12
+                  : maxHour! >= 12
+                  ? maxHour! - 12
+                  : 1;
+            }
+            return _max > _min ? _max - _min + 1 : _min - _max + 1;
           }
-          return _max > _min ? _max - _min + 1 : _min - _max + 1;
-        }
         break;
     }
     return v!;
@@ -1409,9 +1355,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
 
   @override
   int getMaxLevel() {
-    return customColumnType == null
-        ? lengths[type].length
-        : customColumnType!.length;
+    return customColumnType == null ? lengths[type].length : customColumnType!.length;
   }
 
   @override
@@ -1452,8 +1396,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         if (twoDigitYear!) {
           _text = "${_yearBegin + index}";
           var _l = _text.length;
-          _text =
-              "${_text.substring(_l - (_l - 2), _l)}${_checkStr(yearSuffix!)}";
+          _text = "${_text.substring(_l - (_l - 2), _l)}${_checkStr(yearSuffix!)}";
         } else {
           _text = "${_yearBegin + index}${_checkStr(yearSuffix!)}";
         }
@@ -1465,8 +1408,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
           if (months != null) {
             _text = "${months[index]}";
           } else {
-            List _months =
-                PickerLocalizations.of(context).months /* ?? MonthsList_AR_L*/;
+            List _months = PickerLocalizations.of(context).months /* ?? MonthsList_AR_L*/;
             _text = "${_months[index]}";
           }
         }
@@ -1493,8 +1435,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         _text = "${_ampm[index]}";
         break;
       case 7:
-        _text =
-            "${intToStr(index + (minHour == null ? 0 : (picker!.selecteds![_colAP] == 0 ? minHour : 0))! + 1)}";
+        _text = "${intToStr(index + (minHour == null ? 0 : (picker!.selecteds![_colAP] == 0 ? minHour : 0))! + 1)}";
         break;
     }
 
@@ -1523,9 +1464,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
       int colType = getColumnType(i);
       switch (colType) {
         case 0:
-          picker!.selecteds![i] = value!.year > yearEnd
-              ? yearEnd - _yearBegin
-              : value!.year - _yearBegin;
+          picker!.selecteds![i] = value!.year > yearEnd ? yearEnd - _yearBegin : value!.year - _yearBegin;
           break;
         case 1:
           picker!.selecteds![i] = value!.month - 1;
@@ -1537,23 +1476,20 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
           picker!.selecteds![i] = value!.hour;
           break;
         case 4:
-          picker!.selecteds![i] = minuteInterval! < 2
-              ? value!.minute
-              : value!.minute ~/ minuteInterval!;
+          picker!.selecteds![i] = minuteInterval! < 2 ? value!.minute : value!.minute ~/ minuteInterval!;
           break;
         case 5:
           picker!.selecteds![i] = value!.second;
           break;
         case 6:
-          picker!.selecteds![i] =
-              (value!.hour > 12 || value!.hour == 0) ? 1 : 0;
+          picker!.selecteds![i] = (value!.hour > 12 || value!.hour == 0) ? 1 : 0;
           break;
         case 7:
           picker!.selecteds![i] = value!.hour == 0
               ? 11
               : (value!.hour > 12)
-                  ? value!.hour - 12 - 1
-                  : value!.hour - 1;
+              ? value!.hour - 12 - 1
+              : value!.hour - 1;
           break;
       }
     }
@@ -1610,11 +1546,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         }
         break;
       case 7:
-        h = index +
-            (minHour == null
-                ? 0
-                : (picker!.selecteds![_colAP] == 0 ? minHour : 0))! +
-            1;
+        h = index + (minHour == null ? 0 : (picker!.selecteds![_colAP] == 0 ? minHour : 0))! + 1;
         if (_colAP >= 0 && picker!.selecteds![_colAP] == 1) h = h + 12;
         if (h > 23) h = 0;
         break;
@@ -1631,8 +1563,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     if ((value!.millisecondsSinceEpoch < minValue!.millisecondsSinceEpoch)) {
       value = minValue;
       notifyDataChanged();
-    } else if (value!.millisecondsSinceEpoch >
-        maxValue!.millisecondsSinceEpoch) {
+    } else if (value!.millisecondsSinceEpoch > maxValue!.millisecondsSinceEpoch) {
       value = maxValue;
       notifyDataChanged();
     } else if (_isChangeDay && _colDay >= 0) {

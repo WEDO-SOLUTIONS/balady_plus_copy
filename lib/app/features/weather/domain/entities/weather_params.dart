@@ -7,13 +7,7 @@ class WeatherParams {
   String? alert = "yes";
   String? key = '7fb258f132b04a298ae154452233007';
 
-  WeatherParams(
-      {this.longitude,
-      this.latitude,
-      this.numberOfDays,
-      this.languageCode,
-      this.alert,
-      this.key});
+  WeatherParams({this.longitude, this.latitude, this.numberOfDays, this.languageCode, this.alert, this.key});
 
   WeatherParams copyWith({
     double? longitude,

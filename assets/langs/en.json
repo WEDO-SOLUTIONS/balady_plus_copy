@@ -4806,9 +4806,9 @@
   "incorrect_username_password": "The username or password is incorrect",
   "quick_apps": "Quick Apps,",
   "one_place": "One Place",
-  "search2": "Search", 
-  "my_favorite_apps": "My Favorite Services ⭐",
-  "most_used_apps": "Most Used Services",
+  "search2": "Search",
+  "my_favorite_apps": "My Favorite Apps ⭐",
+  "most_used_apps": "Most Used Apps",
   "add2": "Add",
 
   "no_favorite_apps":"No favorite apps",

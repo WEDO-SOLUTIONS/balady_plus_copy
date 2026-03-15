@@ -1,7 +1,9 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.*
-import ru.dgis.sdk.geometry.*
+import com.dgis.map.map_api.GeometryKindMessage
+import com.dgis.map.map_api.GeometryMessage
+import ru.dgis.sdk.geometry.Geometry
+import ru.dgis.sdk.geometry.GeometryKind
 
 fun Geometry.toMessage(): GeometryMessage {
     return GeometryMessage(

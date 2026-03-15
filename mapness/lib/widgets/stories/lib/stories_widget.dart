@@ -82,18 +82,23 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> with AutomaticKee
     });
 
     final thumbnails = ref.watch(storyServiceProvider);
+    final titleWidget = widget.titleWidget;
 
     return Directionality(
       textDirection: Directionality.of(context),
-      child: thumbnails.maybeWhen(
-        data: (data) => StoriesRow(
-          onThumbnailPressed: (id) => _openStory(context, id),
-          stories: data,
-          titleWidget: widget.titleWidget,
-        ),
-        orElse: () => const SizedBox.shrink(),
-        error: (_, __) => const SizedBox.shrink(),
-        skipLoadingOnReload: true,
+      child: Column(
+        children: [
+          if (titleWidget != null) titleWidget,
+          thumbnails.maybeWhen(
+            data: (data) => StoriesRow(
+              onThumbnailPressed: (id) => _openStory(context, id),
+              stories: data,
+            ),
+            orElse: () => const SizedBox.shrink(),
+            error: (_, __) => const SizedBox.shrink(),
+            skipLoadingOnReload: true,
+          ),
+        ],
       ),
     );
   }

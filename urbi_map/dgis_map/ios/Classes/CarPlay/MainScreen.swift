@@ -49,7 +49,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         self.mapTemplate = CPMapTemplate()
         self.navigationSessionManeuvers = NavigationSessionManeuvers(
             model: model,
-            mapTemplate: mapTemplate
+            mapTemplate: mapTemplate,
+            eventChannel: eventChannel,
         )
         self.hostFlutterApi = hostFlutterApi
     }
@@ -73,6 +74,15 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var isRoutesShown = false
     private var everyMinuteTimer: Timer?
     private var isAuthorized: Bool = false
+
+    func startFreeRoam() {
+        do {
+            print("Starting free roam...")
+            try DgisMapInitializer.shared.getNavigationManager().start()
+        } catch {
+            print("Free roam started with error \(error)")
+        }
+    }
 
     func dispose() {
         navigatorStateCancellable?.cancel()
@@ -763,25 +773,25 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 0),
                 maxDistanceToManeuver: RouteDistance(millimeters: 10_000),
-                styleZoom: StyleZoom(value: 16.5)
+                styleZoom: StyleZoom(value: 22.0)
             ),
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: 5.0, maxSpeed: 20.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 10_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 50_000),
-                styleZoom: StyleZoom(value: 18.0)
+                styleZoom: StyleZoom(value: 20.0)
             ),
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: 20.0, maxSpeed: 60.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 50_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 100_000),
-                styleZoom: StyleZoom(value: 20.0)
+                styleZoom: StyleZoom(value: 18.0)
             ),
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: 60.0, maxSpeed: 200.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 100_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 300_000),
-                styleZoom: StyleZoom(value: 22.0)
+                styleZoom: StyleZoom(value: 16.5)
             ),
         ]
         navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = styles

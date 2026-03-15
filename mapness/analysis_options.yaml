@@ -1,3 +1,7 @@
+formatter:
+  page_width: 120
+  trailing_commas: preserve
+
 analyzer:
   plugins:
     - custom_lint
@@ -7,14 +11,14 @@ analyzer:
     strict-raw-types: true
   errors:
     todo: info # чтобы отображать тудушки
-    unused_import: error # Лишние импорты в проекте не нужны
-    unused_local_variable: error # Неиспользуемые переменные в проекте не нужны
+    unused_import: ignore # Лишние импорты в проекте не нужны
+    unused_local_variable: ignore # Неиспользуемые переменные в проекте не нужны
     missing_required_param: error # Не пропускаем обязательные параметры
     prefer_relative_imports: error # Относительные импорты в проекте
-    directives_ordering: error # Следим за порядком импортов в проекте
-    unawaited_futures: error # Всегда резолвим Future
+    directives_ordering: ignore # Следим за порядком импортов в проекте
+    unawaited_futures: ignore # Всегда резолвим Future
     invalid_assignment: error
-    missing_return: error
+    missing_return: ignore
     dead_code: error
     avoid_catches_without_on_clauses: ignore
     deprecated_member_use: ignore

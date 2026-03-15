@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide StopNumbersIcons, BaladyInputAffixIcon;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/balady_uikit/components/text_input/models/src/affix.dart';
-import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
@@ -115,15 +113,26 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                         : ABPointsChange.none,
                   ),
                 ),
-                AppButton(
-                  primaryIcon: TransportIcons.verticalChange,
-                  buttonColorScheme: ButtonColorScheme.neutral,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  onTap: _onSwipeRoutes,
-                ),
+                if (points.length > 2)
+                  AppButton(
+                    primaryIcon: General16Icons.edit,
+                    iconColor: colors.neutralOnContainer,
+                    buttonColorScheme: ButtonColorScheme.neutral,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    onTap: _changeRoute,
+                  )
+                else
+                  AppButton(
+                    primaryIcon: TransportIcons.verticalChange,
+                    buttonColorScheme: ButtonColorScheme.neutral,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    onTap: _onSwipeRoutes,
+                  ),
                 AppButton(
                   primaryIcon: SystemIcons.close,
+                  iconColor: colors.neutralOnContainer,
                   buttonColorScheme: ButtonColorScheme.neutral,
                   buttonType: ButtonType.secondary,
                   size: ButtonSize.large,

@@ -51,10 +51,7 @@ class CurrentWeatherContent extends StatelessWidget {
                     ),
                   ),
                   CustomTextWidget(
-                    state.allWeatherInfo?.current?.tempC
-                            .toString()
-                            .substring(0, 2) ??
-                        '',
+                    state.allWeatherInfo?.current?.tempC.toString().substring(0, 2) ?? '',
                     fontSize: 20,
                     fontWeight: AppFontWeight.regular,
                   ),
@@ -85,22 +82,17 @@ class CurrentWeatherContent extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SunriseOrSunsetTime.sunrise(
-                          time: state.allWeatherInfo?.forecast?.forecastday?[0]
-                                  .astro?.sunrise
-                                  ?.replaceAll('AM', '') ??
+                          time: state.allWeatherInfo?.forecast?.forecastday?[0].astro?.sunrise?.replaceAll('AM', '') ??
                               ''),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 36),
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 36),
                         child: VerticalDivider(
                           thickness: 1,
                           color: AppColor.divider.withOpacity(0.2),
                         ),
                       ),
                       SunriseOrSunsetTime.sunset(
-                          time: state.allWeatherInfo?.forecast!.forecastday?[0]
-                                  .astro?.sunset
-                                  ?.replaceAll('PM', '') ??
+                          time: state.allWeatherInfo?.forecast!.forecastday?[0].astro?.sunset?.replaceAll('PM', '') ??
                               ''),
                     ],
                   ),

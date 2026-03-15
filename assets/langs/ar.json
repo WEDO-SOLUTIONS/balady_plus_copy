@@ -4579,12 +4579,12 @@
   "passcode_sequence_error": "يجب ألا تكون كلمة المرور عبارة عن تسلسل رقمي.",
   "passcode_id_error": "يجب ألا تحتوي كلمة المرور على جزء من رقم الهوية.",
   "incorrect_username_password": "اسم المستخدم أو كلمة المرور غير صحيحة",
-  
-  "quick_apps": "تطبيقات سريعة",
+
+  "quick_apps": "تطبيقات سريعة،",
   "one_place":"مكان واحد",
   "search2": "بحث",
-  "my_favorite_apps": "خدماتي المفضلة ⭐",
-  "most_used_apps": "الخدمات الأكثر إستخداماً", 
+  "my_favorite_apps": "تطبيقاتي المفضلة ⭐",
+  "most_used_apps": "التطبيقات الأكثر إستخداماً",
   "add2": "أضف",
 
   "no_favorite_apps":"لا توجد تطبيقات مفضلة",

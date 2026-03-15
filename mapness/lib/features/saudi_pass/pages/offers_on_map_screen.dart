@@ -20,8 +20,7 @@ class OffersOnMapPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) =>
-      OffersOnMapWidget(
+  Widget build(BuildContext context) => OffersOnMapWidget(
         city: city,
         isAll: isAll,
         categories: categories,

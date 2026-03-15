@@ -9,6 +9,5 @@ class GetLvls extends UseCase<List<VolunteerLookup>, NoParams> {
 
   GetLvls({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
-      repository.getLvls();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getLvls();
 }

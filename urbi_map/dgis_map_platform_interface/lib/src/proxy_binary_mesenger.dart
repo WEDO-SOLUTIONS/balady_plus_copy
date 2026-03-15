@@ -2,11 +2,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 
 class ProxyBinaryMessenger implements BinaryMessenger {
-  ProxyBinaryMessenger(
-      {required String suffix, BinaryMessenger? binaryMessenger})
+  ProxyBinaryMessenger({required String suffix, BinaryMessenger? binaryMessenger})
       : _suffix = suffix,
-        _binaryMessenger =
-            binaryMessenger ?? ServicesBinding.instance.defaultBinaryMessenger;
+        _binaryMessenger = binaryMessenger ?? ServicesBinding.instance.defaultBinaryMessenger;
 
   final BinaryMessenger _binaryMessenger;
   final String _suffix;
@@ -17,8 +15,7 @@ class ProxyBinaryMessenger implements BinaryMessenger {
     ByteData? data,
     ui.PlatformMessageResponseCallback? callback,
   ) {
-    return _binaryMessenger.handlePlatformMessage(
-        "$channel$_suffix", data, callback);
+    return _binaryMessenger.handlePlatformMessage("$channel$_suffix", data, callback);
   }
 
   @override

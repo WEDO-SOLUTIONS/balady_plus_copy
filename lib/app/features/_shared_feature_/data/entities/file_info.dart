@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../../core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
+import '../../../../core/dependency_injection/dependency_injection_exports.dart' show sl;
 
 class FileInfo extends Equatable {
   final String fileName;
@@ -23,18 +22,17 @@ class FileInfo extends Equatable {
   });
 
   @override
-  List<Object?> get props =>
-      [id, isUploaded, filePath, fileName, sizeInMB, extension];
+  List<Object?> get props => [id, isUploaded, filePath, fileName, sizeInMB, extension];
 
   FileInfo initialState() => sl<FileInfo>().copyWith(
-        fileBase64: "",
-        fileName: "",
-        filePath: "",
-        isUploaded: false,
-        id: null,
-        sizeInMB: 0,
-        extension: "",
-      );
+    fileBase64: "",
+    fileName: "",
+    filePath: "",
+    isUploaded: false,
+    id: null,
+    sizeInMB: 0,
+    extension: "",
+  );
 
   FileInfo copyWith({
     String? fileName,

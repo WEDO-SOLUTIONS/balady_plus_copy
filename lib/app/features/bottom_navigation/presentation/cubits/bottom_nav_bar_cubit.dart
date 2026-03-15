@@ -13,9 +13,7 @@ class BottomNavBarCubit extends Cubit<BottomNavBarState> {
 
   void onChangeBottomNavBar(int index) {
     emit((
-      previous: previousIndex != null
-          ? BottomNavBar.values.elementAt(previousIndex!)
-          : null,
+      previous: previousIndex != null ? BottomNavBar.values.elementAt(previousIndex!) : null,
       current: BottomNavBar.values.elementAt(index)
     ));
     previousIndex = index;

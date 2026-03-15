@@ -1,13 +1,15 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/balady_uikit/core/icons/transport_icons.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -30,6 +32,9 @@ class PoiCardFooter extends HookConsumerWidget {
   static const double padding = 12;
   static const iconAsset = 'packages/mapness/assets/icons/svg/ic_complete.svg';
 
+  final Color? color;
+  final Curve? curve;
+  final Duration? duration;
   final DirectoryObjectMessage? data;
   final Future Function() share;
   final VoidCallback? callPhone;
@@ -47,6 +52,9 @@ class PoiCardFooter extends HookConsumerWidget {
     required this.onAddPointToRoute,
     required this.onRemovePointFromRoute,
     required this.onTapFavorite,
+    this.color,
+    this.curve,
+    this.duration,
     this.callPhone,
     this.onEntranceTap,
     this.data,
@@ -84,7 +92,7 @@ class PoiCardFooter extends HookConsumerWidget {
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
     final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
+    const iconData = SystemIcons.bookmark;
 
     final hasEntrances = data?.entrances.isNotEmpty == true;
     final hasContacts = data?.contactInfos.isNotEmpty == true;
@@ -107,11 +115,19 @@ class PoiCardFooter extends HookConsumerWidget {
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final parkingPoi = objectId == parkingObjectId;
+    final isFoundingDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
+
+    final colorScheme = isFoundingDay ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent;
 
     return ThrottledCallbackWidget(
-      callback: share,
+      callback: () {
+        share();
+      },
       resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
+        duration: duration,
+        curve: curve,
+        color: color,
         displayShadow: displayShadow.value,
         items: [
           ItemActionBar(
@@ -119,9 +135,16 @@ class PoiCardFooter extends HookConsumerWidget {
             buttonType: ButtonType.primary,
             label: context.l10n.poiCardDirections,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-            colorScheme: _buttonColorScheme,
+            colorScheme: colorScheme,
             onPressed: onTapCar,
           ),
+          if (!parkingPoi && isFavourite)
+            ItemActionBar(
+              icon: iconData,
+              buttonType: ButtonType.primary,
+              colorScheme: _buttonColorScheme,
+              onPressed: () => onTapFavorite(favouriteItem),
+            ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
               ItemActionBar(
@@ -141,61 +164,62 @@ class PoiCardFooter extends HookConsumerWidget {
               ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
-              icon: GeneralIcons.phoneLTR,
+              icon: context.isLTR ? GeneralIcons.phoneLTR : GeneralIcons.phoneRTL,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
-            ),
-          if (hasEntrances && onEntranceTap != null && !hasMetro)
-            ItemActionBar(
-              icon: SystemIcons.turnRight,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
-              onPressed: onEntranceTap,
             ),
           if (website != null && data != null)
             ItemActionBar(
               icon: GeneralIcons.web,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               buttonType: ButtonType.secondary,
               onPressed: () {
                 BssService.instance.trackLinkTap(data!, BssContactType.website, website);
                 poiActions.launch(website);
               },
             ),
-          if (!parkingPoi)
+          if (hasEntrances && onEntranceTap != null && !hasMetro)
+            ItemActionBar(
+              icon: GeneralIcons.doorEntrance,
+              buttonType: ButtonType.secondary,
+              colorScheme: colorScheme,
+              onPressed: onEntranceTap,
+            ),
+          if (!parkingPoi && !isFavourite)
             ItemActionBar(
               icon: iconData,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: ButtonType.secondary,
-            colorScheme: _buttonColorScheme,
+            colorScheme: colorScheme,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
+
           if (parkingPoi)
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
+              colorScheme: colorScheme,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],
@@ -204,7 +228,8 @@ class PoiCardFooter extends HookConsumerWidget {
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasParking = ref.read(parkingManageProvider).value != null;
+    final hasParking =
+        ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;
     if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
@@ -252,7 +277,7 @@ class PoiCardFooter extends HookConsumerWidget {
       ParkingDialogRoute(
         title: context.l10n.youSureWantDelete,
         onAcceptTab: () {
-          ref.read(parkingManageProvider.notifier).clearStore();
+          ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).clearStore();
           ToastOverlay.of(context).show(title: context.l10n.parkingSpotDeleted, icon: const ToastIconAsset(iconAsset));
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },

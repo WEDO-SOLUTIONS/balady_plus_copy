@@ -8,10 +8,7 @@ class ApigeeResponse<T> {
 }
 
 class StatusDetails {
-  StatusDetails({
-    this.code,
-    this.message,
-  });
+  StatusDetails({this.code, this.message});
 
   int? code;
   String? message;
@@ -24,12 +21,7 @@ class Response<T> {
   String? beRequestId;
   T? result;
 
-  Response(
-      {this.responseCode,
-      this.responseMessage,
-      this.beRequestId,
-      this.correlationId,
-      this.result});
+  Response({this.responseCode, this.responseMessage, this.beRequestId, this.correlationId, this.result});
 
   String? getRefResponseMessage() {
     if (beRequestId != null) {

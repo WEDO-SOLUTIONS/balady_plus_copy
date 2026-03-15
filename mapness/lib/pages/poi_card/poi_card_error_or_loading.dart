@@ -3,13 +3,14 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:sheetify/sheetify.dart';
 
 import '../../shared/providers/map/selected_marker.dart';
@@ -26,16 +27,12 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
   /// Data to show loading or error
   final PoiLoadingOrError data;
 
-  const PoiLoadingOrErrorSheet({
-    required this.data,
-    required this.sheetHeight,
-    required this.contentHeight,
-    super.key,
-  });
+  const PoiLoadingOrErrorSheet({required this.data, required this.sheetHeight, required this.contentHeight, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onClose = () {
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
       if (data is PoiError && (data as PoiError).onClose != null) {
         (data as PoiError).onClose!.call();
       } else {
@@ -49,10 +46,13 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
       },
       heightModel: ToggleSheetHeightModel.fraction(0.42),
     );
+
+    final activeEvent = ref.watch(activeCityEventProvider);
+
     return ToggleSheet(
       scrollController: scrollController,
-      backgroundColor: context.colors.backgroundSurface1,
-      safeAreaColor: context.colors.backgroundSurface1,
+      backgroundColor: context.colors.backgroundSurface2,
+      safeAreaColor: context.colors.backgroundSurface2,
       dragger: const SheetDragger(),
       sliver: SliverFillRemaining(
         child: Stack(
@@ -66,7 +66,8 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
             ),
             switch (data) {
               PoiLoading() => Center(child: Loading.large()),
-              PoiError() => Builder(builder: (context) {
+              PoiError() => Builder(
+                builder: (context) {
                   final error = data as PoiError;
                   final padding = MediaQuery.of(context).padding;
                   double bottomPadding = Spacing.$4x;
@@ -85,14 +86,12 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        SvgPicture.asset(Assets.imagesSvg.illustrationError.keyName),
+                        const ErrorImageWidget(),
                         const SizedBox(height: Spacing.$4x),
                         Text(
                           error.errorTitle,
                           textAlign: TextAlign.center,
-                          style: context.textStyles.h3SemiBold.copyWith(
-                            color: context.colors.foregroundDefault,
-                          ),
+                          style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
                         ),
                         if (error.errorContent != null)
                           Padding(
@@ -100,9 +99,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                             child: Text(
                               error.errorContent ?? '',
                               textAlign: TextAlign.center,
-                              style: context.textStyles.bodyLargeRegular.copyWith(
-                                color: context.colors.foregroundSoft,
-                              ),
+                              style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
                             ),
                           ),
                         Spacing.$6x.heightBox,
@@ -115,7 +112,8 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       ],
                     ),
                   );
-                }),
+                },
+              ),
             },
           ],
         ),

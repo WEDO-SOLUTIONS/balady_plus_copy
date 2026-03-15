@@ -13,9 +13,6 @@ class OfferViewDecorationWidget extends StatelessWidget {
       color: context.colors.backgroundSurface1,
       borderRadius: BorderRadius.circular(RadiusBorder.xl),
     ),
-    child: Padding(
-      padding: const EdgeInsets.all(Spacing.$3x).copyWith(left: Spacing.$4x),
-      child: child,
-    ),
+    child: Padding(padding: const EdgeInsets.all(Spacing.$3x), child: child),
   );
 }

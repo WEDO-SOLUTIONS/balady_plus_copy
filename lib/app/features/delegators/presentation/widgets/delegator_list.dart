@@ -122,7 +122,11 @@ class _DelegatorListState extends State<DelegatorList> {
           const SizedBox(height: 16),
           Text(
             "no_business_access_title".tr(),
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.grey[400] : Color(0xFF27272A)),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? Colors.grey[400] : Color(0xFF27272A),
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
@@ -160,19 +164,19 @@ class _DelegatorListState extends State<DelegatorList> {
 
     // Navigate to personal group after a short delay
     // Future.delayed(const Duration(milliseconds: 500), () {
-      if (context.mounted) {
-        // Close current group and navigate to personal group
-        Navigator.of(context).pop(); // Close current AppsGroupPage
+    if (context.mounted) {
+      // Close current group and navigate to personal group
+      Navigator.of(context).pop(); // Close current AppsGroupPage
 
-        // Navigate to personal group (business group will auto-disappear from list due to listener)
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            barrierColor: Colors.transparent,
-            pageBuilder: (_, __, ___) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId, ),
-          ),
-        );
-      }
+      // Navigate to personal group (business group will auto-disappear from list due to listener)
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          opaque: false,
+          barrierColor: Colors.transparent,
+          pageBuilder: (_, __, ___) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId),
+        ),
+      );
+    }
     // });
   }
 }

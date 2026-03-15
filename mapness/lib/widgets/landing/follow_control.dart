@@ -7,8 +7,8 @@ import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -18,13 +18,14 @@ class FollowControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isLTR = context.isLTR;
+    final isLTR = ref.watch(appLanguageProvider) != Language.arabic;
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
     final hasGPS = ref.watch(pathNavMessageProvider)?.state != PathNavMessageState.gpsConnectionLost;
 
-    final iconColor =
-        followState.type == LocationFollowType.off ? context.colors.foregroundDefault : context.colors.accentDefault;
+    final iconColor = followState.type == LocationFollowType.off
+        ? context.colors.foregroundDefault
+        : context.colors.accentDefault;
 
     return MapButton(
       onTap: () async {
@@ -46,8 +47,8 @@ class FollowControl extends ConsumerWidget {
       child: Icon(
         hasGPS
             ? (followState.type == LocationFollowType.followDirection
-                ? TransportIcons.locationDirection
-                : (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL))
+                  ? TransportIcons.locationDirection
+                  : (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL))
             : (isLTR ? TransportIcons.locationQuestionLTR : TransportIcons.locationQuestionRTL),
         color: iconColor,
         size: 24,

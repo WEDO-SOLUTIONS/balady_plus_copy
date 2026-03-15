@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -50,37 +52,19 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    // Styles
-    await controller
-        .loadStyles(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
+    await controller.loadStyles(MapnessConstants.mapStylesPath);
 
     // Appearance
-    await controller.setZoomRestrictions(
-      min: 5.5,
-    );
-    await controller.overrideLocales(
-      ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
-    );
+    await controller.setZoomRestrictions(min: 5.5);
+    await controller.overrideLocales(ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA']);
     await controller.setAppearance(
       (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
     );
-    ref
-      ..listen(
-        darkModeProvider,
-        (previous, next) {
-          controller.setAppearance(
-            next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day,
-          );
-        },
-      )
-      ..listen(
-        appLanguageProvider,
-        (previous, next) {
-          controller.overrideLocales(
-            next == Language.arabic ? ['ar-SA'] : ['en-SA'],
-          );
-        },
-      );
+    ref..listen(darkModeProvider, (previous, next) {
+      controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+    })..listen(appLanguageProvider, (previous, next) {
+      controller.overrideLocales(next == Language.arabic ? ['ar-SA'] : ['en-SA']);
+    });
 
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
@@ -98,41 +82,28 @@ class DgisController extends _$DgisController {
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
 
-    ///Through trial and error, I found a version where the user marker is displayed.
-    ///Even if the user doesn’t grant permission, calling these functions won’t break anything.
-    await controller.onLocationPermissionGranted(
-      desiredAccuracy: DesiredAccuracyMessage.high,
-    );
+    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
     await controller.toggleFollowState();
-
   }
 
   /// Moves camera on Riyadh Tower
   Future<void> _setDefaultLocation(DgisMapController controller) async {
-    await controller.setCameraPosition(
-      CameraPositionMessage(
-        point: _kingdomTower,
-        zoom: 17,
-        tilt: 0,
-        bearing: 0,
-      ),
-    );
+    await controller.setCameraPosition(CameraPositionMessage(point: _kingdomTower, zoom: 17, tilt: 0, bearing: 0));
   }
 
   Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
 
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
-    final visibleRectSubscription =
-        controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen(_listenVisibleRectangle);
+    final visibleRectSubscription = controller.visibleRectEvents
+        .debounceTime(const Duration(seconds: 1))
+        .listen(_listenVisibleRectangle);
     _visibleRectSubject.add(null);
 
     ref.onDispose(visibleRectSubscription.cancel);
   }
 
   void _listenVisibleRectangle(VisibleRectEvent event) {
-    ref.read(urbiAnalyticsProvider).track(
-          'mapInteraction',
-        );
+    ref.read(urbiAnalyticsProvider).track('mapInteraction');
     if (!_visibleRectSubject.isClosed) {
       _visibleRectSubject.add(event);
     }

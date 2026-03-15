@@ -26,8 +26,7 @@ class DelegatorsRepositoryImplementation implements DelegatorsRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, errorCode: error.errorCode));
+      return Left(ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
 
@@ -44,8 +43,7 @@ class DelegatorsRepositoryImplementation implements DelegatorsRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(
-          ServerFailure(error.errorMessage, errorCode: error.errorCode));
+      return Left(ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
 }

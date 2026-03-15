@@ -1,5 +1,3 @@
-
-
 import 'package:dgis_map/library.dart';
 
 class Location {
@@ -21,8 +19,7 @@ class Location {
         "y": y,
       };
 
-  LatLng? get mapLatLng =>
-      double.tryParse(x ?? "") != null && double.tryParse(y ?? "") != null
-          ? LatLng(latitude:double.tryParse(y ?? "")!, longitude:double.tryParse(x ?? "")!)
-          : null;
+  LatLng? get mapLatLng => double.tryParse(x ?? "") != null && double.tryParse(y ?? "") != null
+      ? LatLng(latitude: double.tryParse(y ?? "")!, longitude: double.tryParse(x ?? "")!)
+      : null;
 }

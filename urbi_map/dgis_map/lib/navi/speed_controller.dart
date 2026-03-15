@@ -10,21 +10,14 @@ class NaviSpeedController {
   /// All events without filtering
   final Stream<NaviSpeedEvent> events;
 
-  Stream<int?> get currentSpeedEvents => events
-      .where((it) => it is NaviCurrentSpeedEvent)
-      .cast<NaviCurrentSpeedEvent>()
-      .map((it) => it.speed);
+  Stream<int?> get currentSpeedEvents =>
+      events.where((it) => it is NaviCurrentSpeedEvent).cast<NaviCurrentSpeedEvent>().map((it) => it.speed);
 
-  Stream<int?> get speedLimitEvents => events
-      .where((it) => it is NaviSpeedLimitEvent)
-      .cast<NaviSpeedLimitEvent>()
-      .map((it) => it.speed);
+  Stream<int?> get speedLimitEvents =>
+      events.where((it) => it is NaviSpeedLimitEvent).cast<NaviSpeedLimitEvent>().map((it) => it.speed);
 
-  Stream<bool> get exceedSpeedLimitEvents => events
-      .where((it) => it is NaviExceedSpeedLimitEvent)
-      .cast<NaviExceedSpeedLimitEvent>()
-      .map((it) => it.isExceed);
+  Stream<bool> get exceedSpeedLimitEvents =>
+      events.where((it) => it is NaviExceedSpeedLimitEvent).cast<NaviExceedSpeedLimitEvent>().map((it) => it.isExceed);
 
-  Stream<NaviCameraEvent> get cameraEvents =>
-      events.where((it) => it is NaviCameraEvent).cast<NaviCameraEvent>();
+  Stream<NaviCameraEvent> get cameraEvents => events.where((it) => it is NaviCameraEvent).cast<NaviCameraEvent>();
 }

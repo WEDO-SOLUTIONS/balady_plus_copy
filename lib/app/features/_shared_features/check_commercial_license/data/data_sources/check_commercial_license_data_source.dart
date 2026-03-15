@@ -12,8 +12,7 @@ abstract class CheckCommercialLicenseDataSource {
   Future<bool> checkCommercialLicense(String licenseId);
 }
 
-class CheckCommercialLicesnseDataSourceImpl
-    implements CheckCommercialLicenseDataSource {
+class CheckCommercialLicesnseDataSourceImpl implements CheckCommercialLicenseDataSource {
   final WebService webService;
 
   CheckCommercialLicesnseDataSourceImpl({required this.webService});
@@ -27,8 +26,7 @@ class CheckCommercialLicesnseDataSourceImpl
 
       var data = response.data["data"]["result"];
 
-      final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+      final decodedResponse = ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.data!.result!;
     } on DioException catch (error, stackTrace) {
@@ -39,8 +37,7 @@ class CheckCommercialLicesnseDataSourceImpl
           stackTrace: stackTrace.toString(),
         ),
       );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
+      throw ServerException(error.toString(), statusCode: error.response?.statusCode, dioError: error);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

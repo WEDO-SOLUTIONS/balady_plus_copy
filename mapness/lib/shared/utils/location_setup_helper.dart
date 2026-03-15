@@ -43,7 +43,8 @@ class LocationSetupHelper with WidgetsBindingObserver {
       } on PlatformException catch (_) {
         // another request already running – just exit and wait for RESUMED
         _log(
-            'another request already running → waiting'); // another request already running – just exit and wait for RESUMED
+          'another request already running → waiting',
+        ); // another request already running – just exit and wait for RESUMED
         return;
       } finally {
         _requestInProgress = false;
@@ -60,10 +61,7 @@ class LocationSetupHelper with WidgetsBindingObserver {
       return;
     }
 
-    _log('permission granted → enabling follow-location'); // permission granted → enabling follow-location
-    await controller.onLocationPermissionGranted(
-      desiredAccuracy: DesiredAccuracyMessage.high,
-    );
-    await controller.toggleFollowState();
+    _log('permission granted → enabling location services');
+    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
   }
 }

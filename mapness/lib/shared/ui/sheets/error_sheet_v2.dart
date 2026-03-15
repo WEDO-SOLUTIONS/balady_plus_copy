@@ -37,15 +37,15 @@ class ErrorSheetV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Text styledText(String text, {bool isTitle = false}) => Text(
-          text,
-          textAlign: TextAlign.center,
-          style: (isTitle ? context.textStyles.h3SemiBold : context.textStyles.bodyLargeRegular).copyWith(
-            color: isTitle ? context.colors.foregroundDefault : NonThemeColor.color6,
-          ),
-        );
+      text,
+      textAlign: TextAlign.center,
+      style: (isTitle ? context.textStyles.h3SemiBold : context.textStyles.bodyLargeRegular).copyWith(
+        color: isTitle ? context.colors.foregroundDefault : NonThemeColor.color6,
+      ),
+    );
 
     return Material(
-      color: Colors.white,
+      color: context.colors.backgroundSurface1,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 34),
@@ -54,16 +54,11 @@ class ErrorSheetV2 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 6),
-                child: SheetDragger(),
-              ),
+              child: Padding(padding: EdgeInsets.symmetric(vertical: 6), child: SheetDragger()),
             ),
             Align(
               alignment: AlignmentDirectional.centerEnd,
-              child: CustomCloseButton(
-                onClose: onClose ?? () => context.router.pop(),
-              ),
+              child: CustomCloseButton(onClose: onClose ?? () => context.router.pop()),
             ),
             const SizedBox(height: 16),
             FractionallySizedBox(
@@ -71,23 +66,14 @@ class ErrorSheetV2 extends StatelessWidget {
               child: Builder(
                 builder: (context) {
                   if (assetImage == null || assetImage?.isEmpty == true) {
-                    return SvgPicture.asset(
-                      Assets.imagesSvg.sadFace.keyName,
-                    );
+                    return SvgPicture.asset(Assets.imagesSvg.sadFace.keyName);
                   }
 
                   if (assetImage!.endsWith('.svg')) {
-                    return SvgPicture.asset(
-                      assetImage!,
-                      package: package,
-                    );
+                    return SvgPicture.asset(assetImage!, package: package);
                   }
                   if (assetImage!.endsWith('.png')) {
-                    return Image.asset(
-                      assetImage!,
-                      package: package,
-                      fit: BoxFit.cover,
-                    );
+                    return Image.asset(assetImage!, package: package, fit: BoxFit.cover);
                   }
 
                   return const SizedBox();
@@ -95,22 +81,13 @@ class ErrorSheetV2 extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            FractionallySizedBox(
-              widthFactor: .7,
-              child: styledText(errorTitle ?? '', isTitle: true),
-            ),
+            FractionallySizedBox(widthFactor: .7, child: styledText(errorTitle ?? '', isTitle: true)),
             const SizedBox(height: 12),
-            FractionallySizedBox(
-              widthFactor: .7,
-              child: styledText(errorContent ?? ''),
-            ),
+            FractionallySizedBox(widthFactor: .7, child: styledText(errorContent ?? '')),
             const SizedBox(height: 24),
             SizedBox(
               height: 48,
-              child: LabeledElevatedButton(
-                onPressed: onRetry,
-                label: buttonLabel ?? '',
-              ),
+              child: LabeledElevatedButton(onPressed: onRetry, label: buttonLabel ?? ''),
             ),
           ],
         ),

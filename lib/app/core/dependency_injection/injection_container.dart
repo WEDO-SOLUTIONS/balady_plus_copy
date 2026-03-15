@@ -1,3 +1,5 @@
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+import 'package:balady_authorization/src/web/global/remote_config.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/features/_shared_features/check_commercial_license/data/data_sources/check_commercial_license_data_source.dart';
@@ -18,11 +20,11 @@ import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/repositori
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/repositories/new_mini_apps_logic_repository.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_cases/get_new_mini_apps_logic_usecase.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' show FlutterSecureStorage;
 import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart' show InternetConnection;
+
 import '../../features/_shared_feature_/balady_features/services/services.dart';
 import '../../features/_shared_feature_/balady_features/widgets/UrbiMap/search_provider.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
@@ -40,9 +42,6 @@ import '../services/services_exports.dart'
     show EntryPointBridge, NetworkConnection, NetworkConnectionImplementation, WebService;
 import '../utils/enums/bottom_nav_bar.dart';
 import 'features/profile/dashboard_injection.dart';
-
-import 'package:balady_authorization/src/utils/injection/injection_container.dart';
-import 'package:balady_authorization/src/web/global/remote_config.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;

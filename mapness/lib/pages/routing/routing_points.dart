@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' show ABRoute, ABRouteModel, Spacing;
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -19,7 +20,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/pages/landing/landing_state_mapper.dart';
+import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
@@ -28,6 +29,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -53,8 +55,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   /// Subscribes to object tap events on the map
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
 
-  /// Bottom sheet controller
-  late final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
@@ -63,26 +63,20 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   @override
   void initState() {
-    bottomSheetController = MultiStateSheetController(
-      behavior: MultiSnappingBehavior(
-        models: [
-          FractionSnappingModel(_bottomSheetAspectRatios),
-          ComponentsSnappingModel(componentsDescriptions: [const SnapComponentSize(component: Components.header)]),
-        ],
-      ),
-      stateMapper: const LandingStateMapper(),
-      initialState: ThreeStateSheet.open,
-    );
     _setupTapListener();
-    bottomSheetController.addListener(updateFooterOpacity);
+    ref.read(bottomSheetControllerProvider.notifier).state.controller?.addListener(updateFooterOpacity);
     super.initState();
   }
 
-  void updateFooterOpacity() => footerOpacity.value = min(1.0, (1 - bottomSheetController.fraction) * 2);
+  void updateFooterOpacity() => footerOpacity.value = min(
+    1.0,
+    (1 - ref.read(bottomSheetControllerProvider.notifier).state.controller!.fraction) * 2,
+  );
 
   @override
   void dispose() {
-    bottomSheetController.removeListener(updateFooterOpacity);
+    ref.read(bottomSheetControllerProvider.notifier).state.controller?.removeListener(updateFooterOpacity);
+    ref.read(bottomSheetControllerProvider.notifier).state.controller = null;
     footerOpacity.dispose();
     super.dispose();
   }
@@ -118,7 +112,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     });
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: MultiStateSheet<ThreeStateSheet>(
         animateOpening: false,
         useSafeArea: false,
@@ -135,7 +129,12 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$4x),
-            child: ABRoute(items: aBRouteModels.toList(), onTap: (i) => _onTap(i, context, ref), onReorder: _onReorder),
+            child: ABRoute(
+              stopByTitle: context.l10n.stopBy,
+              items: aBRouteModels.toList(),
+              onTap: (i) => _onTap(i, context, ref),
+              onReorder: _onReorder,
+            ),
           ),
         ),
         content: [
@@ -166,7 +165,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
             ),
           ),
         ),
-        scrollController: bottomSheetController,
+        scrollController: ref.read(bottomSheetControllerProvider.notifier).state.controller!,
       ),
     );
   }
@@ -314,13 +313,13 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   void _tapListener(event) {
     if (event is ObjectTapEvent) {
-      final state = bottomSheetController.state;
+      final state = ref.read(bottomSheetControllerProvider.notifier).state.controller!.state;
       switch (state) {
         case ThreeStateSheet.open:
           break;
         case ThreeStateSheet.hidden:
         case ThreeStateSheet.expanded:
-          bottomSheetController.setState(ThreeStateSheet.open);
+          ref.read(bottomSheetControllerProvider.notifier).state.controller?.setState(ThreeStateSheet.open);
           break;
       }
     }

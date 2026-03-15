@@ -8,7 +8,7 @@ class MapnessServicesPage extends StatelessWidget {
   const MapnessServicesPage({super.key, @QueryParam('groupId') this.groupId});
 
   @override
-  Widget build(BuildContext context) => Material(
-        child: HomeMiniAppsListPages(groupId: groupId, ),
-      );
+  Widget build(BuildContext context) => const Material(
+    child: HomeMiniAppsListPages(),
+  );
 }

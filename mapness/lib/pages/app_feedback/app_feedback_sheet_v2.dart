@@ -255,7 +255,11 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                     child: BaladyTextInput(
                       inputStyle: BaladyInputStyle.multiline,
                       controller: feedbackTextController,
-                      config: BaladyInputConfig(maxLines: 4, hintText: context.l10n.appFeedbackHintText),
+                      config: BaladyInputConfig(
+                        maxLines: 4,
+                        hintText: context.l10n.appFeedbackHintText,
+                        fillColor: context.colors.neutralContainerDefault,
+                      ),
                     ),
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }
@@ -62,11 +63,13 @@ class RoutePointMyLocation extends RoutePoint {
 }
 
 class RoutePointCoordinates extends RoutePoint {
-  RoutePointCoordinates(this.coords, this.address, this.levelIdParam);
+  RoutePointCoordinates(this.coords, this.address, this.levelIdParam, {this.objectIdParam, this.entranceIdParam});
 
   final GeoPointMessage coords;
   final String? address;
   final int? levelIdParam;
+  final int? objectIdParam;
+  final int? entranceIdParam;
 
   @override
   String get icon => Assets.icons.svg.icRoutingCircle.keyName;
@@ -81,13 +84,13 @@ class RoutePointCoordinates extends RoutePoint {
   double? get longitude => coords.longitude;
 
   @override
-  int? get entranceId => null;
+  int? get entranceId => entranceIdParam;
 
   @override
   int? get levelId => levelIdParam;
 
   @override
-  int? get objectId => null;
+  int? get objectId => objectIdParam;
 
   @override
   String? title(AppLocalizations locale) => label;
@@ -152,7 +155,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   double? get longitude => item?.coordinates.longitude;
 
   @override
-  int? get objectId => null;
+  int? get objectId => parseObjectIdFromFavouriteEntityId(item?.entity?.id);
 
   @override
   int? get entranceId => null;

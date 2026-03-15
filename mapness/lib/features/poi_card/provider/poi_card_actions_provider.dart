@@ -3,7 +3,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/map_controls.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -49,7 +51,11 @@ class PoiCardActions extends _$PoiCardActions {
     if (context == null) {
       return Future.value();
     }
-    return balady_utils.safeShareText(BaldayDeeplink.urlWithQuery(baseUri, query), context: context);
+    final shareUrl = BaldayDeeplink.urlWithQuery(baseUri, query);
+    if (objectId == parkingObjectId) {
+      return balady_utils.safeShareText('${context.l10n.leftMyCarHere} $shareUrl', context: context);
+    }
+    return balady_utils.safeShareText(shareUrl, context: context);
   }
 
   String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {

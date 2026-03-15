@@ -30,66 +30,53 @@ class MapObjectManagerSettings {
 
   const MapObjectManagerSettings._({required this.name, required this.layerId});
 
-  factory MapObjectManagerSettings.favourites() => const MapObjectManagerSettings._(
-        name: 'favourite-markers',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.favourites() =>
+      const MapObjectManagerSettings._(name: 'favourite-markers', layerId: MapObjectLayers.defaultLayerId);
 
-  factory MapObjectManagerSettings.esri() => const MapObjectManagerSettings._(
-        name: 'esri_markers',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.makkahPlaces() => const MapObjectManagerSettings._(
+    name: 'makkah-places',
+    layerId: MapObjectLayers.defaultLayerId,
+  );
 
-  factory MapObjectManagerSettings.mappness() => const MapObjectManagerSettings._(
-        name: MapnessConstants.mapLayerName,
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.esri() =>
+      const MapObjectManagerSettings._(name: 'esri_markers', layerId: MapObjectLayers.defaultLayerId);
 
-  factory MapObjectManagerSettings.search() => const MapObjectManagerSettings._(
-        name: 'balady_search',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.mappness() =>
+      const MapObjectManagerSettings._(name: MapnessConstants.mapLayerName, layerId: MapObjectLayers.defaultLayerId);
 
-  factory MapObjectManagerSettings.hajj() => const MapObjectManagerSettings._(
-        name: 'hajj_custom_marker',
-        layerId: MapObjectLayers.hajjLayerId,
-      );
+  factory MapObjectManagerSettings.search() =>
+      const MapObjectManagerSettings._(name: 'balady_search', layerId: MapObjectLayers.defaultLayerId);
 
-  factory MapObjectManagerSettings.myLocation() => const MapObjectManagerSettings._(
-        name: 'my_location',
-        layerId: MapObjectLayers.priorityLayerId,
-      );
+  factory MapObjectManagerSettings.hajj() =>
+      const MapObjectManagerSettings._(name: 'hajj_custom_marker', layerId: MapObjectLayers.hajjLayerId);
 
-  factory MapObjectManagerSettings.eta() => const MapObjectManagerSettings._(
-        name: 'eta',
-        layerId: MapObjectLayers.priorityLayerId,
-      );
+  factory MapObjectManagerSettings.myLocation() =>
+      const MapObjectManagerSettings._(name: 'my_location', layerId: MapObjectLayers.priorityLayerId);
 
-  factory MapObjectManagerSettings.jobs() => const MapObjectManagerSettings._(
-        name: 'jobs',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.cityEvent() => const MapObjectManagerSettings._(
+    name: 'city_event',
+    layerId: MapObjectLayers.priorityLayerId,
+  );
 
-  factory MapObjectManagerSettings.parking() => const MapObjectManagerSettings._(
-        name: 'parking-spot',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.eta() =>
+      const MapObjectManagerSettings._(name: 'eta', layerId: MapObjectLayers.priorityLayerId);
 
-  factory MapObjectManagerSettings.selectedMarker() => const MapObjectManagerSettings._(
-        name: 'selected-marker',
-        layerId: MapObjectLayers.defaultLayerId,
-      );
+  factory MapObjectManagerSettings.jobs() =>
+      const MapObjectManagerSettings._(name: 'jobs', layerId: MapObjectLayers.defaultLayerId);
 
-  factory MapObjectManagerSettings.metro() => const MapObjectManagerSettings._(
-        name: 'metro',
-        layerId: MapObjectLayers.metroLayerId,
-      );
+  factory MapObjectManagerSettings.parking() =>
+      const MapObjectManagerSettings._(name: 'parking-spot', layerId: MapObjectLayers.defaultLayerId);
 
-  const MapObjectManagerSettings.wrcEvent()
-      : this._(
-          name: 'wrc-event',
-          layerId: MapObjectLayers.hajjLayerId,
-        );
+  factory MapObjectManagerSettings.selectedMarker() =>
+      const MapObjectManagerSettings._(name: 'selected-marker', layerId: MapObjectLayers.defaultLayerId);
+
+  factory MapObjectManagerSettings.metro() =>
+      const MapObjectManagerSettings._(name: 'metro', layerId: MapObjectLayers.metroLayerId);
+
+  factory MapObjectManagerSettings.intermediateStops() =>
+      const MapObjectManagerSettings._(name: 'intermediate-stops', layerId: MapObjectLayers.priorityLayerId);
+
+  const MapObjectManagerSettings.wrcEvent() : this._(name: 'wrc-event', layerId: MapObjectLayers.hajjLayerId);
 }
 
 @riverpod
@@ -103,13 +90,8 @@ class MapObjectManager extends _$MapObjectManager {
     final dgisController = await ref.watch(dgisControllerProvider.future);
 
     final manager = clustering != null
-        ? await dgisController.createMapObjectManagerWithClustering(
-            clustering,
-            layerId: layerId,
-          )
-        : await dgisController.createMapObjectManager(
-            layerId: layerId,
-          );
+        ? await dgisController.createMapObjectManagerWithClustering(clustering, layerId: layerId)
+        : await dgisController.createMapObjectManager(layerId: layerId);
 
     ref.onDispose(() async {
       await dgisController.removeAllMarkers(fromManager: manager);
@@ -125,58 +107,47 @@ class MapObjectManager extends _$MapObjectManager {
   final _markers = <Marker>[];
 
   Marker? markerByGeoPoint(LatLng geoPoint) => _markers.firstWhereOrNull(
-        (element) =>
-            element.options.position.latitude == geoPoint.latitude &&
-            element.options.position.longitude == geoPoint.longitude,
-      );
+    (element) =>
+        element.options.position.latitude == geoPoint.latitude &&
+        element.options.position.longitude == geoPoint.longitude,
+  );
 
   Future<void> addMarker(Marker marker) async {
-    await ref.read(dgisControllerProvider).value?.addMarker(
-          marker,
-          toManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.addMarker(marker, toManager: await future);
 
     _markers.add(marker);
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
-    await ref.read(dgisControllerProvider).value?.addMarkers(
-          markers,
-          toManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.addMarkers(markers, toManager: await future);
 
     _markers.addAll(markers);
   }
 
   Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
-    await ref.read(dgisControllerProvider).value?.setMapObjectManagerIsVisible(
-          isVisible: isVisible,
-          manager: await future,
-        );
+    await ref
+        .read(dgisControllerProvider)
+        .value
+        ?.setMapObjectManagerIsVisible(isVisible: isVisible, manager: await future);
   }
 
-  Future<void> setMarkerOptions(String markerId, ChangeMarkerOptionsMessage options) async =>
-      await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
+  Future<void> setMarkerOptions(
+    String markerId,
+    ChangeMarkerOptionsMessage options,
+  ) async => await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
 
   Future<void> removeMarkerById(String markerId) async {
     _markers.removeWhere((element) => element.id == markerId);
     final manager = await future;
     try {
-      unawaited(
-        ref.read(dgisControllerProvider).value?.removeMarker(
-              markerId,
-              fromManager: manager,
-            ),
-      );
+      unawaited(ref.read(dgisControllerProvider).value?.removeMarker(markerId, fromManager: manager));
     } catch (ex, _) {
       logger.log('Error removing marker: ${ex.toString()}');
     }
   }
 
   Future<void> removeAllMarkers() async {
-    await ref.read(dgisControllerProvider).value?.removeAllMarkers(
-          fromManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.removeAllMarkers(fromManager: await future);
 
     _markers.clear();
   }
@@ -184,31 +155,21 @@ class MapObjectManager extends _$MapObjectManager {
   /// --- POLYLINE ---
 
   Future<void> addPolyLines(List<Polyline> polylines) async {
-    await ref.read(dgisControllerProvider).value?.addPolylines(
-          polylines,
-          toManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.addPolylines(polylines, toManager: await future);
   }
 
   Future<void> removeAllPolyLines() async {
-    await ref.read(dgisControllerProvider).value?.removeAllPolylines(
-          fromManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.removeAllPolylines(fromManager: await future);
   }
 
   /// --- POLYGON ---
 
   Future<void> addPolygons(List<Polygon> polygons) async {
-    await ref.read(dgisControllerProvider).value?.addPolygons(
-          polygons,
-          toManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.addPolygons(polygons, toManager: await future);
   }
 
   Future<void> removeAllPolygons() async {
-    await ref.read(dgisControllerProvider).value?.removeAllPolygons(
-          fromManager: await future,
-        );
+    await ref.read(dgisControllerProvider).value?.removeAllPolygons(fromManager: await future);
   }
 
   Future<void> removeAll() async {

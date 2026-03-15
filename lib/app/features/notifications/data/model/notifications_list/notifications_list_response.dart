@@ -15,15 +15,13 @@ class NotificationsListResponse extends Equatable {
     required this.listMessages,
   });
 
-  factory NotificationsListResponse.fromJson(Map<String, dynamic> json) =>
-      NotificationsListResponse(
+  factory NotificationsListResponse.fromJson(Map<String, dynamic> json) => NotificationsListResponse(
         totalItemsCount: json['totalItemsCount'] ?? 0,
         // pageSize: json['pageSize'] as int?,
         totalPageCount: json['totalPagesCount'] ?? 0,
         listMessages: json['items'] != null
             ? (json['items'] as List<dynamic>)
-                .map((e) => NotificationsMessageItem.fromJson(
-                    e as Map<String, dynamic>))
+                .map((e) => NotificationsMessageItem.fromJson(e as Map<String, dynamic>))
                 .toList()
             : [],
       );

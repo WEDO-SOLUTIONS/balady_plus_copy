@@ -11,32 +11,28 @@ class VerticalChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          width: 94,
-          height: 70,
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x, vertical: Spacing.$3x),
-          decoration: BoxDecoration(
-            color: context.colors.accentSecondaryContainerSoft.withOpacity(.2),
-            borderRadius: BorderRadius.circular(RadiusBorder.m),
+    onTap: onTap,
+    child: Container(
+      width: 94,
+      height: 70,
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x, vertical: Spacing.$3x),
+      decoration: BoxDecoration(
+        color: context.colors.accentSecondaryContainerSoft.withOpacity(.05),
+        borderRadius: BorderRadius.circular(RadiusBorder.m),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 24, color: context.colors.accentSecondaryDefault),
+          const SizedBox(height: Spacing.$1x),
+          Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.accentSecondaryDefault),
           ),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                size: 24,
-                color: context.colors.accentSecondaryDefault,
-              ),
-              const SizedBox(height: Spacing.$1x),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.accentSecondaryDefault),
-              ),
-            ],
-          ),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 }

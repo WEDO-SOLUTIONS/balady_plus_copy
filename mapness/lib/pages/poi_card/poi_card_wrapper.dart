@@ -19,21 +19,51 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   ConsumerState<_PoiCardWrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends ConsumerState<_PoiCardWrapper> {
+class _WrapperState extends ConsumerState<_PoiCardWrapper>
+    with SingleTickerProviderStateMixin, AutoRouteAwareStateMixin<_PoiCardWrapper> {
   bool prevRouteNavi = false;
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final routes = context.router.stack;
       prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
+
+      // Hide Makkah place markers when regular POI is open
+      // ignore: avoid_print
+      print('[MakkahPinDebug] Wrapper: initState setActive(true)');
+      ref.read(regularPoiActiveProvider.notifier).setActive(true);
     });
+
+    Future.delayed(Duration.zero, () {
+      final isFoundinDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
+
+      final isFoundingDayObject = ref
+          .read(foundingDayUrbiProvider.notifier)
+          .isFoundationObject(widget.objectId.objectId);
+
+      if (isFoundinDay && isFoundingDayObject) {
+        ConfettiAnimation.explodeInOverlay(context, this, config: getConfettiConfig(context));
+      }
+    });
+  }
+
+  ConfettiGeneratorConfig getConfettiConfig(BuildContext context) {
+    final color = ref.read(activeCityEventProvider)?.fireworkGradientColors;
+    final colors = ref.read(activeCityEventProvider)?.fireworkGradientColors2;
+    return ConfettiGeneratorConfig.confetti(
+      dissappearStartsAt: 0.33,
+      dissappearCurve: Curves.easeInOutQuint,
+      commonShapeAppearance: 1,
+      animationDuration: const Duration(seconds: 4),
+      mostCommonGradientColors: color,
+      gradientColors: colors,
+      mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
+          ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+    );
   }
 
   @override
@@ -46,6 +76,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
         DeviceOrientation.portraitDown,
       ]);
     }
+
     super.dispose();
   }
 
@@ -56,24 +87,71 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
   }
 
   @override
+  void didPop() {
+    _clearPoiSelectionState();
+  }
+
+  @override
+  void didPush() {
+    _scheduleProviderUpdate(() {
+      ref.read(regularPoiActiveProvider.notifier).setActive(true);
+    });
+  }
+
+  void _clearPoiSelectionState() {
+    ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+    ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+    ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
+
+    // Show Makkah place markers again when POI card is closed
+    ref.read(regularPoiActiveProvider.notifier).setActive(false);
+  }
+
+  void _scheduleProviderUpdate(VoidCallback action) {
+    Future<void>(() {
+      if (!mounted) {
+        return;
+      }
+      action();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
+      context.read<ThemeController>().currentTheme,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );
     final state = ref.watch(viewModelProvider);
     ref
+      ..listen(
+        viewModelProvider,
+        (prev, next) {
+          next.whenOrNull(
+            error: (error, stack) {
+              if (error is TimeoutException) {
+                ref.read(appRouterProvider).pop();
+              }
+            },
+          );
+        },
+      )
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
+          _clearPoiSelectionState();
           context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
         }
       });
 
     final poiCardState = state.value;
-    final storeParking = ref.read(parkingManageProvider.notifier);
-    final storeParkingData = ref.read(parkingManageProvider).value?.convertToDirectoryObject(context);
+    final storeParking = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier);
+    final storeParkingData = ref
+        .read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme))
+        .value
+        ?.convertToDirectoryObject(context);
     final isParkingPoi = widget.objectId.objectId == parkingObjectId;
     final data = isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
 
@@ -92,12 +170,19 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       );
     }
 
-    final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
+    final isFoundingDayObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(widget.objectId.objectId);
 
+    final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
     if (wrcEventPoint != null) {
-      return _WrcCardContent(
-        wrcEventPoint: wrcEventPoint,
+      return _WrcCardContent(wrcEventPoint: wrcEventPoint, poiCardState: poiCardState);
+    }
+    if (isFoundingDayObject && data != null) {
+      return _FoundingDayPoiCardContent(
+        objectId: widget.objectId.objectId,
+        closestPoint: widget.closestPoint,
+        cameraConfig: widget.cameraConfig,
         poiCardState: poiCardState,
+        data: data,
       );
     }
 
@@ -124,7 +209,8 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       }
       if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
         // sometimes error code is in message and sometimes in code, idk, probably changed in releases
-        final isPlatformException = state.error is PlatformException &&
+        final isPlatformException =
+            state.error is PlatformException &&
             ((state.error! as PlatformException).code == PoiError.platformExceptionCode ||
                 (state.error! as PlatformException).message == 'NotFoundException');
 
@@ -136,6 +222,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             onClose: () async {
               await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+              ref.read(regularPoiActiveProvider.notifier).setActive(false);
               context.router.pop();
             },
             onRetry: () {
@@ -147,16 +234,15 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           errorTitle: context.l10n.somethingWentWrong,
           errorContent: context.l10n.saudiPassSomethingWentWrongHint,
           buttonLabel: context.l10n.complete,
-          onRetry: () => context.router.pop(),
+          onRetry: () {
+            ref.read(regularPoiActiveProvider.notifier).setActive(false);
+            context.router.pop();
+          },
         );
       }
     }();
     if (dataAndError != null) {
-      return PoiLoadingOrErrorSheet(
-        sheetHeight: 360,
-        contentHeight: 300,
-        data: dataAndError,
-      );
+      return PoiLoadingOrErrorSheet(sheetHeight: 360, contentHeight: 300, data: dataAndError);
     }
 
     if (data == null) {
@@ -209,14 +295,7 @@ void _onAddObjectPointToRoute(
 ) {
   ref.read(currentRouteProvider.notifier).addPointToRoute(object.toRouteParamsPointWithLabel());
 
-  _onUpdateRouteState(
-    context,
-    l10n,
-    object.id!.objectId,
-    object.title,
-    object.toRouteParamsPoint(),
-    ref,
-  );
+  _onUpdateRouteState(context, l10n, object.id!.objectId, object.title, object.toRouteParamsPoint(), ref);
 }
 
 void _onAddEmptyPointToRoute(
@@ -237,14 +316,7 @@ void _onAddEmptyPointToRoute(
   );
   ref.read(currentRouteProvider.notifier).addPointToRoute(RouteParamsPointWithLabel(value: point, label: ''));
 
-  _onUpdateRouteState(
-    context,
-    l10n,
-    objectId,
-    '',
-    point,
-    ref,
-  );
+  _onUpdateRouteState(context, l10n, objectId, '', point, ref);
 }
 
 void _onRemoveObjectPointToRoute(
@@ -256,14 +328,7 @@ void _onRemoveObjectPointToRoute(
   final objectId = object.id!.objectId;
   ref.read(currentRouteProvider.notifier).removePointFromRoute(objectId);
 
-  _onUpdateRouteState(
-    context,
-    l10n,
-    objectId,
-    object.title,
-    object.toRouteParamsPoint(),
-    ref,
-  );
+  _onUpdateRouteState(context, l10n, objectId, object.title, object.toRouteParamsPoint(), ref);
 }
 
 void _onRemoveEmptyPointToRoute(
@@ -284,14 +349,7 @@ void _onRemoveEmptyPointToRoute(
   );
   ref.read(currentRouteProvider.notifier).removePointFromRoute(objectId);
 
-  _onUpdateRouteState(
-    context,
-    l10n,
-    objectId,
-    '',
-    point,
-    ref,
-  );
+  _onUpdateRouteState(context, l10n, objectId, '', point, ref);
 }
 
 void _onUpdateRouteState(
@@ -328,19 +386,19 @@ Future<void> _onFavoriteTap({
   required DirectoryObjectMessage data,
   FavouriteItem? favouriteItem,
 }) async {
-  await ref.read(authMethodsProvider.notifier).authOrOpen(
-    context,
-    callback: () {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.addToFavorite,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'objectId': data.id?.objectId,
+  await ref
+      .read(authMethodsProvider.notifier)
+      .authOrOpen(
+        context,
+        callback: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.addToFavorite,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+            props: {'objectId': data.id?.objectId},
+          );
+
+          toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
         },
       );
-
-      toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
-    },
-  );
 }

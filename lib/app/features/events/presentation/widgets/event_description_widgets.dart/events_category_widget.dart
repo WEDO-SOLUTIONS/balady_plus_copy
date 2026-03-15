@@ -34,8 +34,7 @@ class EventCategoryWidget extends StatelessWidget {
                     ),
                     decoration: ShapeDecoration(
                       color: Color(0x11145E75),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                     ),
                     child: CustomTextWidget(
                       category[index],

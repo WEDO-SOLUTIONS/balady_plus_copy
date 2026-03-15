@@ -15,8 +15,7 @@ class CompassControl extends HookConsumerWidget {
 
   String compass(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
     BaladyAppThemes.dark => Assets.icons.svg.icDarkCompass.keyName,
-    BaladyAppThemes.light => Assets.icons.svg.icControlCompass.keyName,
-    BaladyAppThemes.saudiDay => Assets.icons.svg.icControlCompass.keyName,
+    _ => Assets.icons.svg.icControlCompass.keyName,
   };
 
   @override

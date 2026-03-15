@@ -5,7 +5,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
-class RoutesObserver extends AutoRouterObserver {
+class RoutesObserver extends AutoRouteObserver {
   final WidgetRef ref;
 
   RoutesObserver({required this.ref});

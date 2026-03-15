@@ -132,6 +132,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
+            searchHistory: SearchHistory(context: try! sdk.context),
             map: map,
             sdkContext: self.sdk
         )
@@ -400,7 +401,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func calcPositionForPolylines(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
     }
-    
+
     func calcPositionForGeoPoints(points: [GeoPointMessage], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(points: points, options: options, completion: completion)
     }
@@ -1264,6 +1265,107 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             mapFactory?.energyConsumption.maxFps = nil
         }
         
+        completion(Result.success(()))
+    }
+    
+    func getSearchHistoryItems(completion: @escaping (Result<[SearchHistoryDirectoryObjectMessage], any Error>) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        Task {
+               do {
+                   let result = try await searchHandler.getSearchHistoryItems()
+                   completion(Result.success(result))
+               } catch {
+                   completion(
+                       Result.failure(FlutterError(code: "SEARCH_HISTORY_ERROR", message: "Failed to get search history items", details: error.localizedDescription)))
+               }
+           }
+    }
+
+    
+    func addSearchHistoryItem(item: SearchHistoryDirectoryObjectMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let objectId = item.id?.objectId else {
+            searchHandler?.addQuerySearchHistoryItem(queryText: item.title)
+            return completion(Result.success(()))
+        }
+
+        let entranceId = item.id?.entranceId ?? 0
+        guard let searchHandler = self.searchHandler else {
+            return completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+        }
+        
+        Task {
+               do {
+                   let directoryObject = try await searchHandler.searchByDirectoryObjectIdSync(objectId: DgisObjectId(objectId: UInt64(objectId), entranceId: UInt64(entranceId)))
+                   if (directoryObject == nil) {
+                       completion(
+                           Result.failure(
+                            FlutterError(
+                                code: "SEARCH_HISTORY_ERROR",
+                                message: "Failed to get directory object of id",
+                                details: "objectId: \(objectId), entranceId: \(entranceId)"
+                            )
+                           )
+                       )
+                       return
+                   }
+                   searchHandler.addDirectoryObjectSearchHistoryItem(directoryObject: directoryObject!)
+                   completion(Result.success(()))
+               } catch {
+                   completion(
+                       Result.failure(FlutterError(code: "SEARCH_HISTORY_ERROR", message: "Failed to add search history items", details: error.localizedDescription)))
+               }
+           }
+    }
+    
+    func removeSearchHistoryItem(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        Task {
+               do {
+                   let items = try await searchHandler.getRawSearchHistoryItems()
+                   searchHandler.removeSearchHistoryItem(item: items[Int(index)])
+                   completion(Result.success(()))
+               } catch {
+                   completion(
+                       Result.failure(FlutterError(code: "SEARCH_HISTORY_ERROR", message: "Failed to get search history items", details: error.localizedDescription)))
+               }
+           }
+    }
+    
+    func clearSearchHistoryItems(completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        searchHandler.clearSearchHistory()
         completion(Result.success(()))
     }
 }

@@ -16,12 +16,10 @@ class BuildingRequirementsDialog extends StatefulWidget {
   const BuildingRequirementsDialog({super.key});
 
   @override
-  State<BuildingRequirementsDialog> createState() =>
-      _BuildingRequirementsDialogState();
+  State<BuildingRequirementsDialog> createState() => _BuildingRequirementsDialogState();
 }
 
-class _BuildingRequirementsDialogState
-    extends State<BuildingRequirementsDialog> {
+class _BuildingRequirementsDialogState extends State<BuildingRequirementsDialog> {
   List<ConditionsModel> data2 = [];
 
   @override
@@ -47,16 +45,9 @@ class _BuildingRequirementsDialogState
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const DrawLineWidget(
-              lineWidth: 53,
-              lineHeight: 5,
-              lineColor: AppColor.white5,
-              radius: 46.0,
-            ),
+            const DrawLineWidget(lineWidth: 53, lineHeight: 5, lineColor: AppColor.white5, radius: 46.0),
             const SizedBox(height: 32),
-            DialogHeader(
-              title: "buildingRequirements".tr(),
-            ),
+            DialogHeader(title: "buildingRequirements".tr()),
             const SizedBox(height: 12),
             Flexible(
               child: CustomTextWidget(
@@ -83,10 +74,7 @@ class _BuildingRequirementsDialogState
                     itemCount: data2.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return BuildingReqCard(
-                        title: data2[index].desc,
-                        imgPath: data2[index].photo,
-                      );
+                      return BuildingReqCard(title: data2[index].desc, imgPath: data2[index].photo);
                     },
                   ),
                   const SizedBox(height: 32),
@@ -95,8 +83,7 @@ class _BuildingRequirementsDialogState
                     padding: const EdgeInsets.all(12),
                     decoration: ShapeDecoration(
                       color: const Color(0x7FE6EFEF),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: CustomTextWidget(
                       "building_requirements_warning".tr(),
@@ -105,7 +92,7 @@ class _BuildingRequirementsDialogState
                       maxLines: 5,
                       fontWeight: AppFontWeight.bold,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -117,11 +104,9 @@ class _BuildingRequirementsDialogState
   }
 
   Future<void> readComplianceData() async {
-    String qa = await rootBundle
-        .loadString("assets/compliance_pdf/text/conditions.json");
+    String qa = await rootBundle.loadString("assets/compliance_pdf/text/conditions.json");
     if (!CommonFunctions.isAppAR) {
-      qa = await rootBundle
-          .loadString("assets/compliance_pdf/text/conditions_en.json");
+      qa = await rootBundle.loadString("assets/compliance_pdf/text/conditions_en.json");
     }
 
     var r = json.decode(qa);
@@ -136,11 +121,7 @@ class _BuildingRequirementsDialogState
 }
 
 class BuildingReqCard extends StatelessWidget {
-  const BuildingReqCard({
-    super.key,
-    required this.title,
-    this.imgPath,
-  });
+  const BuildingReqCard({super.key, required this.title, this.imgPath});
 
   final String title;
   final String? imgPath;
@@ -158,10 +139,7 @@ class BuildingReqCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const CustomSvgIconWidget(
-                "assets/icons/svg/flag.svg",
-                iconSize: 14,
-              ),
+              const CustomSvgIconWidget("assets/icons/svg/flag.svg", iconSize: 14),
               const SizedBox(width: 4),
               Flexible(
                 child: CustomTextWidget(
@@ -195,13 +173,8 @@ class BuildingReqCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                placeholder: (context, url) => const Center(
-                  child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+                placeholder: (context, url) =>
+                    const Center(child: SizedBox(width: 50, height: 50, child: CircularProgressIndicator())),
                 errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
             ),

@@ -19,8 +19,8 @@ import 'package:mapness/features/saudi_pass/providers/offer_redeem_provider.dart
 import 'package:mapness/features/saudi_pass/providers/send_offer_feedback_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_code_sheet.dart';
+import 'package:mapness/features/saudi_pass/widgets/offer_description_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_favorites_removing_sheet.dart';
-import 'package:mapness/features/saudi_pass/widgets/offer_terms_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_image.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -178,23 +178,23 @@ class _Content extends HookConsumerWidget {
                                         : subtitleStyle,
                                   ),
                                 ),
-                                Spacing.$1_5x.heightBox,
-                                _OfferInfoRow(
-                                  title: Text(l10n.offerDescription, style: titleStyle),
-                                  subtitle: Text(
-                                    offer.description.length > 500
-                                        ? '${offer.description.substring(0, 500)}...'
-                                        : offer.description,
-                                    style: subtitleStyle,
-                                  ),
-                                ),
+                                // Spacing.$1_5x.heightBox,
+                                // _OfferInfoRow(
+                                //   title: Text(l10n.offerDescription, style: titleStyle),
+                                //   subtitle: Text(
+                                //     offer.description.length > 500
+                                //         ? '${offer.description.substring(0, 500)}...'
+                                //         : offer.description,
+                                //     style: subtitleStyle,
+                                //   ),
+                                // ),
                                 Spacing.$3x.heightBox,
                                 GestureDetector(
-                                  onTap: () => _showTerms(context, offer.terms),
+                                  onTap: () => _showDescription(context, offer.description),
                                   child: Row(
                                     children: [
                                       Text(
-                                        l10n.termAndConditions,
+                                        l10n.offerDescription,
                                         style: textStyle.bodySmallMedium.copyWith(color: colors.accentDefault),
                                       ),
                                       AppIcons(
@@ -228,7 +228,7 @@ class _Content extends HookConsumerWidget {
                                 ],
                               ),
                             ),
-                          Spacing.$3x.heightBox,
+                          Spacing.$4x.heightBox,
                         ],
                       ),
                     ),
@@ -291,7 +291,7 @@ class _Content extends HookConsumerWidget {
 
   String _getByDate(OfferDetails offer, BuildContext context) {
     final value = offer.byDate(Localizations.localeOf(context).languageCode);
-    return '${context.l10n.saudiPassOfferBy} $value';
+    return '${context.l10n.saudiPassOfferBy2} $value';
   }
 
   TextSpan? _getDiscount(OfferDetails offer, Language language, BuildContext context) {
@@ -306,13 +306,13 @@ class _Content extends HookConsumerWidget {
     );
   }
 
-  Future<void> _showTerms(BuildContext context, String terms) async {
+  Future<void> _showDescription(BuildContext context, String terms) async {
     await showDialog(
       context: context,
       useSafeArea: false,
-      builder: (_) => OfferTermsSheet(
+      builder: (_) => OfferDescriptionSheet(
         terms: terms,
-        title: context.l10n.termAndConditions,
+        title: context.l10n.offerDescription,
         close: context.l10n.saudiPassTermAndConditionsClose,
       ),
     );
@@ -538,7 +538,8 @@ class _OfferPreviewByBusiness extends StatelessWidget {
           Spacing.$3x.widthBox,
           Expanded(
             child: SizedBox(
-              height: 100,
+              height: 103,
+              width: 118,
               child: ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
                 child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
@@ -564,18 +565,25 @@ class _OfferCode extends StatelessWidget {
         color: context.colorsV3.neutralContainerDefault,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
       ),
-      height: 69,
+      height: 70,
       width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(code, style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer)),
-          Spacing.$0_5x.heightBox,
-          Text(
-            context.l10n.codeWasUsed,
-            style: context.textStyleV3.captionSmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              code.characters.take(15).string,
+              maxLines: 1,
+              style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer),
+            ),
+            Spacing.$0_5x.heightBox,
+            Text(
+              context.l10n.codeWasUsed,
+              style: context.textStyleV3.captionSmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+            ),
+          ],
+        ),
       ),
     ),
   );
@@ -652,12 +660,14 @@ class _FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => !offer.favorite
       ? AppButton(
+          size: ButtonSize.large,
           buttonColorScheme: ButtonColorScheme.primary,
           onTap: () => changeFavorite(favorite: true),
           primaryIcon: GeneralIcons.heart,
           primaryLabel: context.l10n.addToFavorites,
         )
       : AppButton(
+          size: ButtonSize.large,
           buttonColorScheme: ButtonColorScheme.secondary,
           onTap: () => changeFavorite(favorite: false),
           primaryLabel: context.l10n.removeFromFavorites,

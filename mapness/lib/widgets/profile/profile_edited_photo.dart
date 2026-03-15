@@ -16,37 +16,40 @@ class ProfileEditablePhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: () => _showBottomSheet(context),
-        child: Stack(
-          children: [
-            ProfileImageWidget(
-              dimension: AvatarSize.$80,
-              abbreviatedName: abbreviatedName,
-              style: AvatarEmptyStyle.accentSecondary,
+    onTap: () => _showBottomSheet(context),
+    child: Stack(
+      children: [
+        SizedBox.square(
+          dimension: AvatarSize.$80.size,
+          child: ProfileImageWidget(
+            abbreviatedName: abbreviatedName,
+            style: AvatarEmptyStyle.accentSecondary,
+            isEditing: true,
+          ),
+        ),
+        PositionedDirectional(
+          start: Spacing.none,
+          bottom: Spacing.none,
+          child: Container(
+            padding: const EdgeInsets.all(Spacing.$1x),
+            width: AppSizes.xxs,
+            height: AppSizes.xxs,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              // TODO: Change to background screen
+              color: context.colors.staticWhite,
             ),
-            PositionedDirectional(
-              start: Spacing.none,
-              bottom: Spacing.none,
-              child: Container(
-                padding: const EdgeInsets.all(Spacing.$1x),
-                width: AppSizes.xxs,
-                height: AppSizes.xxs,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  // TODO: Change to background screen
-                  color: context.colors.staticWhite,
-                ),
-                child: Center(
-                  child: General16Icons.edit.icon(
-                    color: context.colors.foregroundMuted,
-                    size: AppSizes.$4xs,
-                  ),
-                ),
+            child: Center(
+              child: General16Icons.edit.icon(
+                color: context.colors.foregroundMuted,
+                size: AppSizes.$4xs,
               ),
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 
   Future<void> _showBottomSheet(BuildContext context) async {
     // Result of the bottom sheet is "Should we open sheet with text 'Open settings to give permission'?"

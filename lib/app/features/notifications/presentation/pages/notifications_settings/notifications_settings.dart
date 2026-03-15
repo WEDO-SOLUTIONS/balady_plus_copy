@@ -23,19 +23,13 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).colorScheme.onSurface),
         ),
 
         elevation: 0,
         title: Text(
           'settings'.tr(),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-            fontFamily: GeneralKey.appFontType,
-          ),
+          style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontFamily: GeneralKey.appFontType),
         ),
         backgroundColor: Colors.transparent,
       ),
@@ -43,9 +37,7 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
         itemCount: widget.notificationsList.length,
         itemBuilder: ((context, index) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
-          child: NotificationsSettingsCell(
-            category: widget.notificationsList[index],
-          ),
+          child: NotificationsSettingsCell(category: widget.notificationsList[index]),
         )),
       ),
     );

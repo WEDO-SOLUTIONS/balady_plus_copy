@@ -8,12 +8,9 @@ import 'package:balady_plus/app/features/events/domain/entities/search_events/se
 import 'package:dartz/dartz.dart';
 
 abstract class EventRepository {
-  Future<Either<Failure, SearchEventsResponse>> getSearchEvents(
-      {required SearchEventsParams params});
+  Future<Either<Failure, SearchEventsResponse>> getSearchEvents({required SearchEventsParams params});
 
-  Future<Either<Failure, EventDetailsResponse>> getEventDetails(
-      {required EventDetailsParams params});
+  Future<Either<Failure, EventDetailsResponse>> getEventDetails({required EventDetailsParams params});
 
-  Future<Either<Failure, EventCategoryResponse>> getEventCategory(
-      {required EventsCategoryParams params});
+  Future<Either<Failure, EventCategoryResponse>> getEventCategory({required EventsCategoryParams params});
 }

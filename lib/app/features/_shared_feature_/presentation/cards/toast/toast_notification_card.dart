@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, MessageType, UIHelper, WidgetConversion;
-import '../../../shared_feature_exports.dart'
-    show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
+import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, MessageType, UIHelper, WidgetConversion;
+import '../../../shared_feature_exports.dart' show CustomAutoSizeTextWidget, DrawIconBasedTypeWidget;
 
 class ToastNotificationCard extends StatelessWidget {
   final MessageType msgType;
   final String msg;
-  const ToastNotificationCard({
-    super.key,
-    required this.msgType,
-    required this.msg,
-  });
+  const ToastNotificationCard({super.key, required this.msgType, required this.msg});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +20,7 @@ class ToastNotificationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Check Icon
-            DrawIconBasedTypeWidget(
-              icon: msgType.icon ?? '',
-              iconSize: 20.0,
-              iconColor: AppColor.white,
-            ),
+            DrawIconBasedTypeWidget(icon: msgType.icon ?? '', iconSize: 20.0, iconColor: AppColor.white),
             // Label
             Expanded(
               child: CustomAutoSizeTextWidget(
@@ -46,11 +36,8 @@ class ToastNotificationCard extends StatelessWidget {
     );
   }
 
-  EdgeInsetsGeometry get margin =>
-      const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding - 2.0);
-  BorderRadiusGeometry get borderRadius =>
-      const BorderRadius.all(Radius.circular(8.0));
+  EdgeInsetsGeometry get margin => const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding - 2.0);
+  BorderRadiusGeometry get borderRadius => const BorderRadius.all(Radius.circular(8.0));
 
-  TextStyle get msgStyle => AppStyle.mainTextSecondaryStyle
-      .copyWith(color: AppColor.white, height: 1.3);
+  TextStyle get msgStyle => AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.white, height: 1.3);
 }

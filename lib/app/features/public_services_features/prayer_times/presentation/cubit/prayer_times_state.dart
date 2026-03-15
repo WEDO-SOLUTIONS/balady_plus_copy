@@ -23,9 +23,7 @@ class PrayerTimesState extends Equatable {
       this.lastUpdatedDate});
 
   bool get isAM =>
-      nextPrayer?.prayer == Prayers.maghrib ||
-      nextPrayer?.prayer == Prayers.dhuhr ||
-      nextPrayer?.prayer == Prayers.asr;
+      nextPrayer?.prayer == Prayers.maghrib || nextPrayer?.prayer == Prayers.dhuhr || nextPrayer?.prayer == Prayers.asr;
 
   String get error => errorMessage ?? '';
   bool get isNotificationDisable => prayerTimeSettings.contains("0");

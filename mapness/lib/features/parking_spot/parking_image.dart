@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -15,12 +16,12 @@ const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
 @riverpod
 class _ParkingImage extends _$ParkingImage {
   @override
-  List<XFile> build({bool isEdit = false}) {
+  List<XFile> build({required BaladyAppThemes theme, bool isEdit = false}) {
     if (isEdit == false) {
       return stateOrNull ?? <XFile>[];
     }
 
-    final data = ref.read(parkingManageProvider).value;
+    final data = ref.read(parkingManageProvider(theme: theme)).value;
 
     return data?.imagesPaths.map((e) => XFile(e)).toList() ?? <XFile>[];
   }
@@ -68,12 +69,14 @@ class _ParkingImage extends _$ParkingImage {
   Future<Size> _getImageDimensions(String path) {
     final completer = Completer<Size>();
     final image = Image.file(File(path));
-    image.image.resolve(const ImageConfiguration()).addListener(
-      ImageStreamListener((imageInfo, _) {
-        final img = imageInfo.image;
-        completer.complete(Size(img.width.toDouble(), img.height.toDouble()));
-      }),
-    );
+    image.image
+        .resolve(const ImageConfiguration())
+        .addListener(
+          ImageStreamListener((imageInfo, _) {
+            final img = imageInfo.image;
+            completer.complete(Size(img.width.toDouble(), img.height.toDouble()));
+          }),
+        );
     return completer.future;
   }
 }

@@ -20,27 +20,24 @@ class OffersBottomSheetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
-        decoration: BoxDecoration(
-          color: context.colors.backgroundSurface1,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: offers
-              .map<Widget>((e) => _OfferViewWidgetDetails(e))
-              .insertBetween(
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
-                  child: Divider(
-                    height: 1,
-                    color: context.colors.borderDefault,
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      );
+    margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface1,
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: offers
+          .map<Widget>((e) => _OfferViewWidgetDetails(e))
+          .insertBetween(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+              child: Divider(height: 1, color: context.colors.borderDefault),
+            ),
+          )
+          .toList(),
+    ),
+  );
 }
 
 class _OfferViewWidgetDetails extends ConsumerWidget {
@@ -53,8 +50,7 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
     final colors = context.colors;
     final textStyles = context.textStyles;
     final locale = Localizations.localeOf(context);
-    final byDate = DateFormat('d MMMM', locale.languageCode)
-        .format(offerDetails.publishEndDate);
+    final byDate = DateFormat('d MMMM', locale.languageCode).format(offerDetails.publishEndDate);
     final byDateStyle = textStyles.captionMediumRegular.copyWith(
       color: offerDetails.willExpiredSoon ? colors.errorDefault : null,
     );
@@ -76,8 +72,7 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
           children: [
             if (offerImage != null)
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
                 child: SizedBox.square(
                   dimension: Spacing.$12x,
                   child: SaudiPassImage(imageId: offerDetails.provider.logo),
@@ -91,8 +86,7 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
                   Text.rich(
                     TextSpan(
                       children: [
-                        if (amountOrRatioTextSpan != null)
-                          amountOrRatioTextSpan,
+                        if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
                         TextSpan(
                           text: ' • ',
                           style: TextStyle(color: colors.neutralMuted),
@@ -100,43 +94,37 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
                         TextSpan(text: offerDetails.name),
                         WidgetSpan(
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.only(
-                              start: Spacing.$1x,
-                            ),
-                            child: Icon(
-                              PlacesIcons.markets,
-                              size: 16,
-                              color: colors.neutralMuted,
-                            ),
+                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
                           ),
                         ),
                       ],
-                      style: textStyles.bodySmallSemiBold,
+                      style: textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerDetails.description,
-                    style: textStyles.captionMediumRegular,
+                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerDetails.branchName,
-                    style: textStyles.captionMediumRegular,
+                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     '${context.l10n.saudiPassOfferBy} $byDate',
-                    style: byDateStyle,
+                    style: byDateStyle.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                   ),
                 ],
               ),
             ),
-            SystemIcons.arrowCornerRightSmall.icon()
+            SystemIcons.arrowCornerRightSmall.icon(color: context.colors.foregroundDefault),
           ],
         ),
       ),

@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -85,7 +86,7 @@ class EndTripModal extends HookWidget {
                   onTap: Navigator.of(context).pop,
                 ),
               ),
-              const SizedBox(height: Spacing.$3x),
+              SizedBox(height: Spacing.$3x + InsetsUtils.platformAwareBottomInset(context, isLandscape: isLandscape)),
             ],
           ),
         ),

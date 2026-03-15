@@ -1,16 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 enum FeedbackSheetState { success, failure, loading }
@@ -29,11 +34,12 @@ final confettiShapes = [
   (startPosition, velocity, scale, gradient, x, y, z) => ArcShape(startPosition, velocity, scale, gradient, x, y, z),
 ];
 
-class FeedbackSheetWidget extends HookWidget {
+class FeedbackSheetWidget extends HookConsumerWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
+  final bool hasPhotos;
 
-  const FeedbackSheetWidget({required this.onRetry, required this.state, super.key});
+  const FeedbackSheetWidget({required this.onRetry, required this.state, this.hasPhotos = false, super.key});
 
   void popNavigation(BuildContext context, AnimationController confettiController) => context.router.popUntil(
     (route) =>
@@ -44,7 +50,7 @@ class FeedbackSheetWidget extends HookWidget {
   );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final confettiController = useAnimationController();
     final sheetController = useToggleSheetController(onClose: (_) => popNavigation(context, confettiController));
 
@@ -71,8 +77,10 @@ class FeedbackSheetWidget extends HookWidget {
       return null;
     }, [state]);
 
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: Material(
         color: Colors.transparent,
         child: Stack(
@@ -109,7 +117,7 @@ class FeedbackSheetWidget extends HookWidget {
                           child: SizedBox(
                             width: 180.0,
                             child: SvgPicture.asset(
-                              Assets.imagesSvg.illustrationNotifications.keyName,
+                              ref.watch(activeCityEventProvider).getIllustrationNotifications(isDark: isDark),
                               matchTextDirection: true,
                             ),
                           ),
@@ -125,19 +133,36 @@ class FeedbackSheetWidget extends HookWidget {
                             ),
                           ),
                         ),
+                        if (hasPhotos) ...[
+                          const SizedBox(height: Spacing.$2x),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
+                              child: Text(
+                                context.l10n.feedbackSuccessPhotoUploaded,
+                                style: context.textStyles.bodyLargeRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: AppSizes.$4xs),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                          padding: const EdgeInsets.only(top: Spacing.$3x),
                           child: SizedBox(
                             width: double.infinity,
                             child: AppButton(
-                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
-                              buttonColorScheme: ButtonColorScheme.accent,
-                              primaryLabel: context.l10n.done,
+                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                              buttonColorScheme: ButtonColorScheme.accentSecondary,
+                              size: ButtonSize.large,
+                              primaryLabel: context.l10n.complete,
                               onTap: sheetController.close,
                             ),
                           ),
                         ),
+                        const SizedBox(height: Spacing.$4x),
                       ],
                     ),
                     FeedbackSheetState.loading => Column(
@@ -173,6 +198,7 @@ class FeedbackSheetWidget extends HookWidget {
                     ),
                   },
                 ),
+                if (state == FeedbackSheetState.success) const SizedBox(height: Spacing.$4x),
               ],
             ),
             RepaintBoundary(

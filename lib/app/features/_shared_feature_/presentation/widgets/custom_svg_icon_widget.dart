@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
-import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -55,7 +54,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
 
   const CustomNetworkImageWidget(
     this.imagePath, {
-    Key? key,
+    super.key,
     this.imageWidth,
     this.imageHeight,
     this.imageColor,
@@ -65,11 +64,10 @@ class CustomNetworkImageWidget extends StatefulWidget {
     this.isVerifyingKey = false,
     this.sso = false,
     this.addHeader = false,
-  }) : super(key: key);
+  });
 
   @override
-  State<CustomNetworkImageWidget> createState() =>
-      _CustomNetworkImageWidgetState();
+  State<CustomNetworkImageWidget> createState() => _CustomNetworkImageWidgetState();
 }
 
 class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
@@ -83,20 +81,14 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
         : widget.isVerifyingKey
         ? //null
           {
-            "verifyingKEY": CommonFunctions.hashRequest(
-              widget.imagePath,
-              "GET",
-            ),
+            "verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET"),
 
             //  "Authorization":
             //      "Bearer ${locator<AuthService>().accessToken}"
           }
         : !widget
               .isVerifyingKey //MM
-        ? {
-            'Authorization':
-                'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
-          }
+        ? {'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'}
         : null;
 
     if (widget.addHeader == true && header != null) {
@@ -125,41 +117,27 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                   height: widget.imageHeight,
                   fit: widget.imageFit,
                   headers: header,
-                  loadingBuilder:
-                      (
-                        BuildContext context,
-                        Widget child,
-                        ImageChunkEvent? loadingProgress,
-                      ) {
-                        if (loadingProgress == null) return child;
-                        return widget.placeHolderWidget ??
-                            Container(
-                              color: AppColor.primary900Light,
-                              width: widget.imageWidth,
-                              height: widget.imageHeight,
-                            );
-                      },
-                  errorBuilder:
-                      (
-                        BuildContext context,
-                        Object exception,
-                        StackTrace? stackTrace,
-                      ) {
-                        print(exception.toString());
-                        return widget.placeHolderWidget ??
-                            Container(
-                              color: AppColor.primary900Light,
-                              width: widget.imageWidth,
-                              height: widget.imageHeight,
-                            );
-                      },
+                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return widget.placeHolderWidget ??
+                        Container(
+                          color: AppColor.primary900Light,
+                          width: widget.imageWidth,
+                          height: widget.imageHeight,
+                        );
+                  },
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    print(exception.toString());
+                    return widget.placeHolderWidget ??
+                        Container(
+                          color: AppColor.primary900Light,
+                          width: widget.imageWidth,
+                          height: widget.imageHeight,
+                        );
+                  },
                 )
         : widget.placeHolderWidget ??
-              Container(
-                color: AppColor.primary900Light,
-                width: widget.imageWidth,
-                height: widget.imageHeight,
-              );
+              Container(color: AppColor.primary900Light, width: widget.imageWidth, height: widget.imageHeight);
   }
 }
 
@@ -175,7 +153,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
 
   const CustomCachedNetworkImage(
     this.imagePath, {
-    Key? key,
+    super.key,
     this.imageWidth,
     this.imageHeight,
     this.imageColor,
@@ -183,7 +161,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
     this.imageFit = BoxFit.cover,
     this.placeHolderWidget,
     this.ssoAuth = false,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImage();
@@ -196,38 +174,21 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
     return isUrl
         ? CachedNetworkImage(
             imageUrl: widget.imagePath,
-            httpHeaders: {
-              "verifyingKEY": CommonFunctions.hashRequest(
-                widget.imagePath,
-                "GET",
-              ),
-            },
+            httpHeaders: {"verifyingKEY": CommonFunctions.hashRequest(widget.imagePath, "GET")},
             width: widget.imageWidth,
             height: widget.imageHeight,
             fit: widget.imageFit,
             placeholder: (context, url) {
               return widget.placeHolderWidget ??
-                  Container(
-                    color: AppColor.primary900Light,
-                    width: widget.imageWidth,
-                    height: widget.imageHeight,
-                  );
+                  Container(color: AppColor.primary900Light, width: widget.imageWidth, height: widget.imageHeight);
             },
             errorWidget: (context, url, error) {
               return widget.placeHolderWidget ??
-                  Container(
-                    color: AppColor.primary900Light,
-                    width: widget.imageWidth,
-                    height: widget.imageHeight,
-                  );
+                  Container(color: AppColor.primary900Light, width: widget.imageWidth, height: widget.imageHeight);
             },
           )
         : widget.placeHolderWidget ??
-              Container(
-                color: AppColor.primary900Light,
-                width: widget.imageWidth,
-                height: widget.imageHeight,
-              );
+              Container(color: AppColor.primary900Light, width: widget.imageWidth, height: widget.imageHeight);
   }
 }
 

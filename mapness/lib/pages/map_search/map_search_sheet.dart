@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate, MultiSnappingBehavior, OffsetSnappingModel;
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +12,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -36,6 +36,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -68,14 +69,20 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>(
-    (controller) {
-      final fraction = controller.fraction;
-      final state = controller.state;
+  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
+  Color? _barrierColor;
 
-      return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
-    },
-  );
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
+    final fraction = controller.fraction;
+    final state = controller.state;
+
+    return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+  });
+
+  late final barrierColorDelegate = StatefulSheetDelegate.func<Color?, ThreeStateSheet>((controller) {
+    final state = controller.state;
+    return state.index > 1 ? _barrierColor : null;
+  });
 
   @override
   void initState() {
@@ -83,22 +90,32 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
-      behavior: MultiSnappingBehavior(models: [
-        FractionSnappingModel({
-          0.0,
-          if (Platform.isIOS) .3 else .38,
-        }),
-        OffsetSnappingModel({Spacing.$4x}),
-      ]),
+      behavior: MultiSnappingBehavior(
+        models: [
+          FractionSnappingModel({.8, 1.0}),
+          ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
+        ],
+      ),
       stateMapper: const LandingStateMapper(),
     );
+    _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _onSheetChanged() {
+    final newState = _multiStateSheetController.state;
+    if (newState != _sheetState) {
+      setState(() {
+        _sheetState = newState;
+      });
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _barrierColor = context.colors.screenOverlayDimming40;
     _clustering ??= ClusteringMapObjectManager(
       options: ClusteringMapObjectManagerOptionsMessage(
         logicalPixel: MediaQuery.of(context).devicePixelRatio,
@@ -117,7 +134,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
-    _multiStateSheetController.dispose();
+    _multiStateSheetController
+      ..removeListener(_onSheetChanged)
+      ..dispose();
     _keyboardVisible.cancel();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -146,11 +165,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager);
+    });
+    final isCloseButton = ref.watch(
+      searchProvider(
+        _scope,
+      ).select((state) => state is SearchStateResults || state is SearchStateEmpty || state is SearchStateLoading),
     );
 
     return SearchScope(
@@ -171,23 +192,23 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: containerColor,
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden ? contentColor : containerColor,
               dragger: SheetDragger(backgroundColor: contentColor),
               outsideOpacityDelegate: outsideOpacityDelegate,
+              barrierColorDelegate: barrierColorDelegate,
               header: Container(
                 color: contentColor,
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                child: MapSearchBar(
-                  requestFocus: widget.requestFocus,
-                  onClose: onClose,
-                ),
+                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
               ),
-              outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-              content: [
-                MapSearchContent(
-                  bottomSheetContentScrollController: _multiStateSheetController,
-                ),
-              ],
+              outside: MapSearchSheetControls(
+                currentSize: currentSize,
+                collapsedSize: collapsedHeight,
+                sheetState: _sheetState,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              ),
             ),
           ),
         ],
@@ -206,11 +227,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
@@ -223,10 +246,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 ownerName: BssUIElementNames.searchResultList,
               ),
               payload: BssPayload(
-                mapMarker: const BssMapMarker(
-                  scale: BssMarkerSize.small,
-                  adsHighlight: false,
-                ),
+                mapMarker: const BssMapMarker(scale: BssMarkerSize.small, adsHighlight: false),
                 searchResultList: searchState.results.toBss(),
                 placeItem: markerInfo?.toBss(index),
               ),
@@ -245,16 +265,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-        icon: SaudiNationalDay.isNow()
-            ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
-            : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
-        text: '$objectCount',
-        textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(
-            placement: TextPlacementMessage.centerCenter,
-          ),
-        ),
-      );
+    icon: switch (context.read<ThemeController>().currentTheme) {
+      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
+      BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
+      BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewFoundingDay.icDefault.keyName.markerIcon(),
+      _ => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),
+    },
+    text: '$objectCount',
+    textStyle: MarkerTextStyleMessage(
+      textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+    ),
+  );
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {

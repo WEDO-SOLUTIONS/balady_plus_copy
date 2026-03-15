@@ -9,21 +9,24 @@ import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/profile/log_out_sheet.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
+import 'package:provider/provider.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -43,15 +46,17 @@ class ProfilePage extends HookConsumerWidget {
         Icon(icon, color: context.colors.accentDefault, size: 24);
     final userData = ref.watch(authProvider);
     final isAuth = userData.value != null;
-    final backgroundColor = isAuth ? context.colors.backgroundSurface1 : context.colorsV3.staticDarkblue;
 
-    final overlay = switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
-      Brightness.dark => SystemUiOverlayStyle.light,
-      Brightness.light => SystemUiOverlayStyle.dark,
-    };
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isFoundingDay = activeEvent == CityEventType.foundingDay;
+    final backgroundColor = isAuth
+        ? context.colors.backgroundSurface1
+        : isFoundingDay
+        ? const Color(0xFFDFC6A8)
+        : context.colorsV3.staticDarkblue;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlay,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: Scaffold(
         backgroundColor: backgroundColor,
         body: SafeArea(
@@ -65,7 +70,12 @@ class ProfilePage extends HookConsumerWidget {
                   slivers: [
                     const SliverToBoxAdapter(child: SizedBox(height: 20)),
                     const SliverToBoxAdapter(
-                      child: SafeArea(bottom: false, right: false, left: false, child: ProfileHeader()),
+                      child: SafeArea(
+                        bottom: false,
+                        right: false,
+                        left: false,
+                        child: ProfileHeader(),
+                      ),
                     ),
                     DecoratedSliver(
                       decoration: BoxDecoration(
@@ -103,7 +113,6 @@ class ProfilePage extends HookConsumerWidget {
                                                   ContentRowV2(
                                                     isDividerEnabled: true,
                                                     onTap: () => CommonFunctions.openVolunteerProfileScreen(),
-
                                                     trailing: trailing,
                                                     leading: leadingIconBuilder(Icons.favorite),
                                                     text: ContentRowTextOptions(title: 'volunteer_info'.tr()),
@@ -132,7 +141,12 @@ class ProfilePage extends HookConsumerWidget {
                                         isDividerEnabled: true,
                                         onTap: () => context.router.push(const ProfilePreferencesRoute()),
                                         trailing: trailing,
-                                        leading: SvgPicture.asset(Assets.icons.svg.percent.keyName),
+                                        leading: Assets.icons.svg.percent.svg(
+                                          colorFilter: ColorFilter.mode(
+                                            context.colors.accentDefault,
+                                            BlendMode.srcATop,
+                                          ),
+                                        ),
                                         text: ContentRowTextOptions(title: context.l10n.preferences),
                                       ),
                                       ContentRowV2(
@@ -628,23 +642,17 @@ class ProfilePage extends HookConsumerWidget {
   }
 
   Future<void> _logOut(BuildContext context, WidgetRef ref, ValueNotifier isLoading) async {
-    await showDialog(
-      context: context,
-      builder: (ctx) => LogoutSheet(
-        title: context.l10n.signOut,
-        description: context.l10n.signOutDescription,
-        buttonText: context.l10n.signOutSwipe,
-        onLogout: () async {
-          if (!context.mounted) {
-            return;
-          }
-          isLoading.value = true;
-
-          Navigator.of(ctx).pop();
-          await ref.read(authProvider.notifier).logOut();
-          isLoading.value = false;
-        },
-      ),
-    );
+    final shouldLogout = await context.router.root.push<bool>(const ProfileLogoutSheetRoute());
+    if (shouldLogout != true || !context.mounted) {
+      return;
+    }
+    isLoading.value = true;
+    try {
+      await ref.read(authProvider.notifier).logOut();
+    } catch (exception) {
+      logger.log('Error logging out: $exception', logLevel: MapnessLogLevel.error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
