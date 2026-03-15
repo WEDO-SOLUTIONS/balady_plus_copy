@@ -358,11 +358,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _themeChanged({bool isDark = false}) async {
     final themeController = context.read<ThemeController>();
-    if (isDark == true) {
+    final specialThemeMode = ref.read(specialThemeModeProvider);
+    final bool isMakkahTheme =
+        specialThemeMode == SpecialThemeMode.mekkahBase;
+    // In Makkah, always use light / Makkah theme regardless of user's dark mode preference
+    if (isDark && !isMakkahTheme) {
       await themeController.setTheme(BaladyAppThemes.dark);
     } else {
-      final specialThemeMode = ref.read(specialThemeModeProvider);
-
       final theme = switch (specialThemeMode) {
         SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
         SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,

@@ -9,7 +9,7 @@ class SearchScreen {
     init(
         interfaceController: CPInterfaceController,
         map: Map,
-        searchNavigation: SearchNavigation,
+        searchNavigation: SearchNavigation
     ) {
         self.interfaceController = interfaceController
         self.map = map
@@ -59,7 +59,7 @@ class SearchScreen {
             searchHistory: searchHistory,
             searchNavigation: searchNavigation,
             searchManager: searchManager,
-            map: map,
+            map: map
         )
         screen.createTemplate().show(with: interfaceController)
     }

@@ -10,12 +10,13 @@ import 'package:bot_toast/bot_toast.dart'
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:provider/provider.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
@@ -122,16 +123,19 @@ class AppWidgetState extends State<AppWidget> {
                 data: MediaQuery.of(
                   context,
                 ).copyWith(textScaler: TextScaler.linear(controller.textScale)),
-                child: MaterialApp(
-                  title: 'appNameWord'.tr(),
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: NavigationService.navigatorKey,
-                  theme: myLightTheme,
-                  darkTheme: myDarkTheme,
-                  themeMode: themeController.isDarkMode
-                      ? ThemeMode.dark
-                      : ThemeMode.light,
-                  builder: (context, child) {
+                child: Consumer2<BaladyThemeNotifier, SpecialThemeMode?>(
+                  builder: (context, themeController, specialThemeMode, child) {
+                    final bool isMakkahTheme =
+                        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
+
+                    return MaterialApp(
+                      title: 'appNameWord'.tr(),
+                      debugShowCheckedModeBanner: false,
+                      navigatorKey: NavigationService.navigatorKey,
+                      theme: myLightTheme,
+                      darkTheme: myDarkTheme,
+                      themeMode: (themeController.isDarkMode && !isMakkahTheme) ? ThemeMode.dark : ThemeMode.light,
+                      builder: (context, child) {
                     final botToastBuilder = BotToastInit();
                     final easyLoadingBuilder = EasyLoading.init(
                       builder: botToastBuilder,
@@ -155,11 +159,12 @@ class AppWidgetState extends State<AppWidget> {
                     ..add(CountryLocalizations.delegate),
                   locale: translator.activeLocale,
                   supportedLocales: translator.locals(),
-                  initialRoute: RouteName.bottomNavigation,
-                  routes: Routes.routes(),
-                ),
+                      initialRoute: RouteName.bottomNavigation,
+                      routes: Routes.routes(),
+                    );
+                  },
               ),
-            );
+            ));
           },
         );
       },
