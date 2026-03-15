@@ -25,22 +25,55 @@ class CVUploadResponse {
     this.changed,
   });
 
-  factory CVUploadResponse.fromJson(Map<String, dynamic> json) => CVUploadResponse(
-        fid: json['fid'] != null ? (json['fid'] as List).map((e) => FileIdValue.fromJson(e)).toList() : null,
-        uuid: json['uuid'] != null ? (json['uuid'] as List).map((e) => UuidValue.fromJson(e)).toList() : null,
-        langcode:
-            json['langcode'] != null ? (json['langcode'] as List).map((e) => StringValue.fromJson(e)).toList() : null,
-        uid: json['uid'] != null ? (json['uid'] as List).map((e) => UserValue.fromJson(e)).toList() : null,
-        filename:
-            json['filename'] != null ? (json['filename'] as List).map((e) => StringValue.fromJson(e)).toList() : null,
-        uri: json['uri'] != null ? (json['uri'] as List).map((e) => UriValue.fromJson(e)).toList() : null,
-        filemime:
-            json['filemime'] != null ? (json['filemime'] as List).map((e) => StringValue.fromJson(e)).toList() : null,
-        filesize:
-            json['filesize'] != null ? (json['filesize'] as List).map((e) => IntValue.fromJson(e)).toList() : null,
-        status: json['status'] != null ? (json['status'] as List).map((e) => BoolValue.fromJson(e)).toList() : null,
-        created: json['created'] != null ? (json['created'] as List).map((e) => DateValue.fromJson(e)).toList() : null,
-        changed: json['changed'] != null ? (json['changed'] as List).map((e) => DateValue.fromJson(e)).toList() : null,
+  factory CVUploadResponse.fromJson(Map<String, dynamic> json) =>
+      CVUploadResponse(
+        fid: json['fid'] != null
+            ? (json['fid'] as List).map((e) => FileIdValue.fromJson(e)).toList()
+            : null,
+        uuid: json['uuid'] != null
+            ? (json['uuid'] as List).map((e) => UuidValue.fromJson(e)).toList()
+            : null,
+        langcode: json['langcode'] != null
+            ? (json['langcode'] as List)
+                .map((e) => StringValue.fromJson(e))
+                .toList()
+            : null,
+        uid: json['uid'] != null
+            ? (json['uid'] as List).map((e) => UserValue.fromJson(e)).toList()
+            : null,
+        filename: json['filename'] != null
+            ? (json['filename'] as List)
+                .map((e) => StringValue.fromJson(e))
+                .toList()
+            : null,
+        uri: json['uri'] != null
+            ? (json['uri'] as List).map((e) => UriValue.fromJson(e)).toList()
+            : null,
+        filemime: json['filemime'] != null
+            ? (json['filemime'] as List)
+                .map((e) => StringValue.fromJson(e))
+                .toList()
+            : null,
+        filesize: json['filesize'] != null
+            ? (json['filesize'] as List)
+                .map((e) => IntValue.fromJson(e))
+                .toList()
+            : null,
+        status: json['status'] != null
+            ? (json['status'] as List)
+                .map((e) => BoolValue.fromJson(e))
+                .toList()
+            : null,
+        created: json['created'] != null
+            ? (json['created'] as List)
+                .map((e) => DateValue.fromJson(e))
+                .toList()
+            : null,
+        changed: json['changed'] != null
+            ? (json['changed'] as List)
+                .map((e) => DateValue.fromJson(e))
+                .toList()
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -58,7 +91,8 @@ class CVUploadResponse {
       };
 
   // Helper getters to easily access common values
-  String? get fileName => filename?.isNotEmpty == true ? filename!.first.value : null;
+  String? get fileName =>
+      filename?.isNotEmpty == true ? filename!.first.value : null;
 
   String? get fileUrl => uri?.isNotEmpty == true ? uri!.first.url : null;
 

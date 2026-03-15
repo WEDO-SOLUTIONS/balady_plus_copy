@@ -48,7 +48,8 @@ class ActionShowTypeDateWidget extends StatelessWidget {
             break;
           case 2:
             await CustomPopUpsWidgets.showConfirmAppMessageDialog(
-                context, ("delete_all_notifications_confirmation").tr(), primaryBtn: () {
+                context, ("delete_all_notifications_confirmation").tr(),
+                primaryBtn: () {
               cubit.deletedNotificationsMessages();
               Navigator.of(context).pop(true);
             });

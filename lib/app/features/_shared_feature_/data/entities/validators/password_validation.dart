@@ -3,9 +3,11 @@ import 'package:formz/formz.dart' show FormzInput;
 import '../../../../../core/utils/utils_exports.dart' show Validation;
 
 class PasswordValidation extends FormzInput<String, Validation> {
-  const PasswordValidation.pure({required String password}) : super.pure(password);
+  const PasswordValidation.pure({required String password})
+      : super.pure(password);
 
-  const PasswordValidation.dirty({required String password}) : super.dirty(password);
+  const PasswordValidation.dirty({required String password})
+      : super.dirty(password);
 
   @override
   Validation? validator(String value) {

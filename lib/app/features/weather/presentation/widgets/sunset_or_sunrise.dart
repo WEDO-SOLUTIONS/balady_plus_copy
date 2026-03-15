@@ -1,11 +1,14 @@
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show AppFontWeight, IconPath;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show AppFontWeight, IconPath;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget;
+import '../../../_shared_feature_/shared_feature_exports.dart'
+    show CustomTextWidget;
 
 class SunriseOrSunsetTime extends StatelessWidget {
-  const SunriseOrSunsetTime({super.key, required this.time, required this.icon});
+  const SunriseOrSunsetTime(
+      {super.key, required this.time, required this.icon});
 
   const SunriseOrSunsetTime.sunrise({
     super.key,

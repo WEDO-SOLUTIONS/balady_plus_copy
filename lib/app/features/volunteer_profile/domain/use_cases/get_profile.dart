@@ -4,7 +4,9 @@ import 'package:dartz/dartz.dart';
 import '../../data/model/profile_model/profile_model.dart';
 import '../../domain/repository/volunteer_profile_repository.dart';
 
-class GetProfile extends UseCase<ProfileModel, NoParams> {
+
+class GetProfile extends UseCase<
+   ProfileModel, NoParams> {
   final VolunteerProfileRepository repository;
 
   GetProfile({required this.repository});

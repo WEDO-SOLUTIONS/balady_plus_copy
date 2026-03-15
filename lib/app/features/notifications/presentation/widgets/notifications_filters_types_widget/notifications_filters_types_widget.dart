@@ -23,7 +23,8 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
         BlocBuilder<NotificationsFilterCubit, NotificationsFilterState>(
           bloc: cubit,
           builder: (_, state) {
-            if (state is InitialNotificationsFilterState || state is LoadingNotificationsFilterState) {
+            if (state is InitialNotificationsFilterState ||
+                state is LoadingNotificationsFilterState) {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is FailureNotificationsFilterState) {
@@ -47,7 +48,8 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
                           items: state.listProducts,
                           selectedValue: null,
                           onTap: (item) {
-                            cubit.getNotificationsServicesProducts(product: item);
+                            cubit.getNotificationsServicesProducts(
+                                product: item);
                             cubitList.params = cubitList.params.copyWith(
                               productId: item.id,
                               serviceId: null,
@@ -66,8 +68,10 @@ class NotificationsFiltersTypesWidget extends StatelessWidget {
                           onTap: () {
                             BottomSheetDialog.showDraggableSheet(
                               context,
-                              dialogKeyName: DialogName.notificationsServicesDialog,
-                              currentRouteName: RouteName.notificationsListScreen,
+                              dialogKeyName:
+                                  DialogName.notificationsServicesDialog,
+                              currentRouteName:
+                                  RouteName.notificationsListScreen,
                               child: GenericBottomSheetList<NotificationType>(
                                 title: "services".tr(),
                                 items: state.listServices,

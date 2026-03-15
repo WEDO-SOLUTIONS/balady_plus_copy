@@ -5,7 +5,8 @@ class NotificationsFilterState extends Equatable {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class InitialNotificationsFilterState implements NotificationsFilterState {
+final class InitialNotificationsFilterState
+    implements NotificationsFilterState {
   @override
   List<Object?> get props => throw UnimplementedError();
 
@@ -31,10 +32,12 @@ final class SucceedProductsFilterState extends NotificationsFilterState {
   final List<NotificationType> listProducts;
   final NotificationType? selectedProduct;
 
-  SucceedProductsFilterState({required this.listProducts, this.selectedProduct});
+  SucceedProductsFilterState(
+      {required this.listProducts, this.selectedProduct});
 
   @override
-  List<Object?> get props => [listProducts, listProducts.length, selectedProduct];
+  List<Object?> get props =>
+      [listProducts, listProducts.length, selectedProduct];
 }
 
 final class LoadingServicesFilterState extends NotificationsFilterState {
@@ -70,5 +73,6 @@ final class SucceedServicesFilterState extends SucceedProductsFilterState {
   }
 
   @override
-  List<Object?> get props => [listProducts, selectedProduct, listServices, selectedServices];
+  List<Object?> get props =>
+      [listProducts, selectedProduct, listServices, selectedServices];
 }

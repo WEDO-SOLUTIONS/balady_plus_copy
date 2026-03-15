@@ -12,7 +12,8 @@ class DescValidation extends FormzInput<String?, Validation> {
     final enteredValue = value;
     if (enteredValue != null && enteredValue.isEmpty) {
       return Validation.empty;
-    } else if (enteredValue != null && !CommonFunctions.doesContainsLettrs(enteredValue.toString())) {
+    } else if (enteredValue != null &&
+        !CommonFunctions.doesContainsLettrs(enteredValue.toString())) {
       return Validation.invalidDesc;
     } else {
       return null;

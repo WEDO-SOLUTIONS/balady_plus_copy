@@ -16,7 +16,8 @@ class EventRepositoryImpl implements EventRepository {
   EventRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, SearchEventsResponse>> getSearchEvents({required SearchEventsParams params}) async {
+  Future<Either<Failure, SearchEventsResponse>> getSearchEvents(
+      {required SearchEventsParams params}) async {
     try {
       final data = await remoteDataSource.getSearchEvents(params: params);
       return Right(data);
@@ -30,12 +31,14 @@ class EventRepositoryImpl implements EventRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode, errorCode: error.errorCode));
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 
   @override
-  Future<Either<Failure, EventDetailsResponse>> getEventDetails({required EventDetailsParams params}) async {
+  Future<Either<Failure, EventDetailsResponse>> getEventDetails(
+      {required EventDetailsParams params}) async {
     try {
       final data = await remoteDataSource.getEventDetails(params: params);
 
@@ -56,7 +59,8 @@ class EventRepositoryImpl implements EventRepository {
   }
 
   @override
-  Future<Either<Failure, EventCategoryResponse>> getEventCategory({required EventsCategoryParams params}) async {
+  Future<Either<Failure, EventCategoryResponse>> getEventCategory(
+      {required EventsCategoryParams params}) async {
     try {
       final data = await remoteDataSource.getEventCategory(params: params);
       return Right(data);

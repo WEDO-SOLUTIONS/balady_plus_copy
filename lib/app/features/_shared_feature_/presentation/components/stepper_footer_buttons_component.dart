@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
 
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion, UIHelper;
-import '../../shared_feature_exports.dart' show CustomElevatedButtonWidget, CustomTextButtonWidget;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, ContextConversion, UIHelper;
+import '../../shared_feature_exports.dart'
+    show CustomElevatedButtonWidget, CustomTextButtonWidget;
 
 class StepperFooterButtonsComponent extends StatelessWidget {
   final VoidCallback? onFinish;
@@ -33,15 +36,19 @@ class StepperFooterButtonsComponent extends StatelessWidget {
               onPressed: context.popRoute,
               text: "closeButton".tr(),
               btnWidth: context.screenWidth * 0.20,
-              textStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.gray),
+              textStyle:
+                  AppStyle.textButtonStyle.copyWith(color: AppColor.gray),
             ),
             secondChild: CustomTextButtonWidget(
               onPressed: onPrevious ?? () {},
               text: "previousButton".tr(),
               btnWidth: context.screenWidth * 0.20,
-              textStyle: AppStyle.textButtonStyle.copyWith(color: AppColor.gray),
+              textStyle:
+                  AppStyle.textButtonStyle.copyWith(color: AppColor.gray),
             ),
-            crossFadeState: isFirstStep ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: isFirstStep
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             duration: kThemeAnimationDuration,
           ),
 
@@ -65,7 +72,11 @@ class StepperFooterButtonsComponent extends StatelessWidget {
     );
   }
 
-  EdgeInsetsGeometry get padding =>
-      EdgeInsets.fromLTRB(UIHelper.mediumPadding, UIHelper.smallPadding, UIHelper.mediumPadding, context.bottomPadding);
+  EdgeInsetsGeometry get padding => EdgeInsets.fromLTRB(
+        UIHelper.mediumPadding,
+        UIHelper.smallPadding,
+        UIHelper.mediumPadding,
+        context.bottomPadding,
+      );
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }

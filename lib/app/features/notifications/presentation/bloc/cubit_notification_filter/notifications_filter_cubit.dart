@@ -19,15 +19,19 @@ class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
 
   Future<void> getNotificationsProducts() async {
     NotificationsFilterState stateType = state;
-    if (stateType is InitialNotificationsFilterState || stateType is FailureNotificationsFilterState) {
+    if (stateType is InitialNotificationsFilterState ||
+        stateType is FailureNotificationsFilterState) {
       emit(LoadingNotificationsFilterState());
-      Either<Failure, List<NotificationType>> failureOrSuccess = await filterRepository.getNotificationsProducts();
+      Either<Failure, List<NotificationType>> failureOrSuccess =
+          await filterRepository.getNotificationsProducts();
       failureOrSuccess.fold(
         (failure) {
           if (failure is NoDataFoundException) {
-            emit(SucceedServicesFilterState(listProducts: const [], listServices: []));
+            emit(SucceedServicesFilterState(
+                listProducts: const [], listServices: []));
           } else if (failure is ServerFailure) {
-            emit(FailureNotificationsFilterState(errorMessage: failure.errorMessage));
+            emit(FailureNotificationsFilterState(
+                errorMessage: failure.errorMessage));
           } else {
             emit(FailureNotificationsFilterState(errorMessage: "error"));
           }
@@ -44,10 +48,12 @@ class NotificationsFilterCubit extends Cubit<NotificationsFilterState> {
     }
   }
 
-  Future<void> getNotificationsServicesProducts({required NotificationType product}) async {
+  Future<void> getNotificationsServicesProducts(
+      {required NotificationType product}) async {
     SucceedServicesFilterState states = state as SucceedServicesFilterState;
     emit(states.copyWith(selectedProduct: product));
-    Either<Failure, List<NotificationType>> failureOrSuccess = await filterRepository.getNotificationsServicesProducts(
+    Either<Failure, List<NotificationType>> failureOrSuccess =
+        await filterRepository.getNotificationsServicesProducts(
       productId: product.id,
     );
     failureOrSuccess.fold(

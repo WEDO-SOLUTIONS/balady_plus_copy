@@ -17,14 +17,20 @@ class NotificationsSettingsList {
     this.categories,
   });
 
-  factory NotificationsSettingsList.fromJson(Map<String, dynamic> json) => NotificationsSettingsList(
+  factory NotificationsSettingsList.fromJson(Map<String, dynamic> json) =>
+      NotificationsSettingsList(
         id: json['id'] as String?,
-        actorContext:
-            json['actorContext'] == null ? null : ActorContext.fromJson(json['actorContext'] as Map<String, dynamic>),
-        channel: json['channel'] == null ? null : Channel.fromJson(json['channel'] as Map<String, dynamic>),
+        actorContext: json['actorContext'] == null
+            ? null
+            : ActorContext.fromJson(
+                json['actorContext'] as Map<String, dynamic>),
+        channel: json['channel'] == null
+            ? null
+            : Channel.fromJson(json['channel'] as Map<String, dynamic>),
         enabled: json['enabled'] as bool?,
-        categories:
-            (json['categories'] as List<dynamic>?)?.map((e) => Category.fromJson(e as Map<String, dynamic>)).toList(),
+        categories: (json['categories'] as List<dynamic>?)
+            ?.map((e) => Category.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 
   Map<String, dynamic> toJson() => {

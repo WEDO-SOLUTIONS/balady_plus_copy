@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -9,7 +11,6 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'navigation_services.dart';
 import 'package:huawei_push/huawei_push.dart';
-
 String navigationActionId = 'id_3';
 
 @pragma('vm:entry-point')
@@ -26,8 +27,12 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 }
 
 class HawaiiNotificationService {
+
+
+
   static final _notifications = FlutterLocalNotificationsPlugin();
-  static final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
+  static final StreamController<String?> selectNotificationStream =
+  StreamController<String?>.broadcast();
 
   static Future<void> init({bool initScheduled = false}) async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -43,7 +48,8 @@ class HawaiiNotificationService {
     await _notifications.initialize(
       settings,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
         switch (notificationResponse.notificationResponseType) {
           case NotificationResponseType.selectedNotification:
             selectNotificationStream.add(notificationResponse.payload);
@@ -60,25 +66,22 @@ class HawaiiNotificationService {
 
   static NotificationDetails _notificationDetails() {
     return const NotificationDetails(
-      android: AndroidNotificationDetails(
-        "channel id",
-        "channel name",
-        priority: Priority.high,
-        ticker: 'ticker',
-        // sound: RawResourceAndroidNotificationSound("azan"),
-        channelDescription: "Channel description",
-      ),
+      android: AndroidNotificationDetails("channel id", "channel name",
+          priority: Priority.high,
+          ticker: 'ticker',
+          // sound: RawResourceAndroidNotificationSound("azan"),
+          channelDescription: "Channel description"),
       iOS: DarwinNotificationDetails(sound: ""),
     );
   }
 
-  static Future<void> showScheduledNotification({
-    int id = 0,
-    String? title,
-    String? body,
-    String? payload,
-    required DateTime scheduledDate,
-  }) async {
+
+  static Future<void> showScheduledNotification(
+      {int id = 0,
+        String? title,
+        String? body,
+        String? payload,
+        required DateTime scheduledDate}) async {
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,
@@ -96,6 +99,7 @@ class HawaiiNotificationService {
 
   static void cancelAll() => _notifications.cancelAll();
 
+
   Future<void> launchURL(String strUrl) async {
     final Uri url = Uri.parse(strUrl);
     if (await canLaunchUrl(url)) {
@@ -104,36 +108,50 @@ class HawaiiNotificationService {
       throw 'Could not launch $url';
     }
   }
-
   void handleMessage(Map<String, dynamic> message) {
-    if (message["extras"] != null && message["extras"].containsKey('url') == true) {
+
+    if (message["extras"] != null && message["extras"].containsKey('url')==true) {
       String? url = message["extras"]['url'];
-      if (url != null && url.isNotEmpty) {
+      if(url != null && url.isNotEmpty) {
         launchURL(url);
       }
       return;
     }
     // Open notifications List Screen  if user is login and have the idNo
-    if (CommonProperties.userInfo?.idNo != null) {
+    if(CommonProperties.userInfo?.idNo != null) {
       Future.delayed(const Duration(seconds: 2), () {
-        NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
+        NavigationService.pushNamed(
+            routeName: RouteName.notificationsListScreen);
       });
     }
+
   }
 
-  Future<void> configure() async {
+   Future<void> configure() async {
     try {
       await Push.setAutoInitEnabled(true);
 
-      Push.getTokenStream.listen(_onTokenEvent, onError: _onTokenError);
-      Push.onNotificationOpenedApp.listen(_onNotificationOpenedApp);
+      Push.getTokenStream.listen(
+        _onTokenEvent,
+        onError: _onTokenError,
+      );
+      Push.onNotificationOpenedApp.listen(
+        _onNotificationOpenedApp ,
+      );
 
       final dynamic initialNotification = await Push.getInitialNotification();
       _onNotificationOpenedApp(initialNotification);
 
-      Push.onMessageReceivedStream.listen(_onMessageReceived, onError: _onMessageReceiveError);
-      bool backgroundMessageHandler = await Push.registerBackgroundMessageHandler(backgroundMessageCallback);
-    } catch (error, stackTrace) {
+      Push.onMessageReceivedStream.listen(
+        _onMessageReceived,
+        onError: _onMessageReceiveError,
+      );
+      bool backgroundMessageHandler = await Push
+          .registerBackgroundMessageHandler(
+        backgroundMessageCallback,
+      );
+    }
+    catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -142,21 +160,25 @@ class HawaiiNotificationService {
         ),
       );
     }
-  }
 
+  }
   void _onTokenEvent(String token) {
-    if (token.isNotEmpty) {
+
+    if ( token.isNotEmpty) {
       CommonProperties.fcmToken = token;
 
       Future.delayed(const Duration(seconds: 15), () {
         CommonFunctions.updateNotificationSettings(token);
       });
     }
+
+
   }
 
   void _onTokenError(Object error) {
     CommonProperties.fcmToken = "";
   }
+
 
   void _onNotificationOpenedApp(dynamic initialNotification) {
     if (initialNotification != null) {
@@ -165,28 +187,35 @@ class HawaiiNotificationService {
     }
   }
 
+
   void _onMessageReceived(RemoteMessage remoteMessage) {
     Map? data = remoteMessage.dataOfMap;
 
+
+
     if (data != null && data.isNotEmpty) {
-      _notifications.show(
-        remoteMessage.hashCode,
-        data["title"],
-        data['body'],
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            CommonFunctions.generateUUID(),
-            "Notification",
-            channelDescription: "Notification",
 
-            playSound: true,
 
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            icon: 'mipmap/ic_launcher',
-          ),
-        ),
-      );
+        _notifications.show(
+            remoteMessage.hashCode,
+           data["title"],
+            data['body'],
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                CommonFunctions.generateUUID(),
+                "Notification",
+                channelDescription: "Notification",
+
+                playSound: true,
+
+
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'mipmap/ic_launcher',
+              ),
+            ));
+
+
 
       // Push.localNotification(
       //   <String, String>{
@@ -194,7 +223,9 @@ class HawaiiNotificationService {
       //     HMSLocalNotificationAttr.MESSAGE: data,
       //   },
       // );
+
     }
+
   }
 
   // void _onMessageReceived(RemoteMessage remoteMessage) {
@@ -215,25 +246,26 @@ class HawaiiNotificationService {
   void backgroundMessageCallback(RemoteMessage remoteMessage) async {
     Map? data = remoteMessage.dataOfMap;
 
+
     if (data != null && data.isNotEmpty) {
       _notifications.show(
-        remoteMessage.hashCode,
-        data["title"],
-        data['body'],
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            CommonFunctions.generateUUID(),
-            "Notification",
-            channelDescription: "Notification",
+          remoteMessage.hashCode,
+          data["title"],
+          data['body'],
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              CommonFunctions.generateUUID(),
+              "Notification",
+              channelDescription: "Notification",
 
-            playSound: true,
+              playSound: true,
 
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            icon: 'mipmap/ic_launcher',
-          ),
-        ),
-      );
+
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'mipmap/ic_launcher',
+            ),
+          ));
     }
   }
 

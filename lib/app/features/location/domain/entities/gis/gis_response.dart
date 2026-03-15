@@ -27,35 +27,34 @@ class GISResponse extends Equatable {
   String? Balady_DistrictID;
   String? Balady_DistrictName;
 
-  GISResponse({
-    this.adminMunicipalityId,
-    this.adminMunicipalityName,
-    this.cityName,
-    this.Balady_DistrictID,
-    this.Balady_DistrictName,
-    // this.cleanInfo,
-    this.districtId,
-    this.districtName,
-    this.following,
-    // this.lightInfo,
-    this.municipalityuniquecode,
-    this.municipalityId,
-    this.municipalityName,
-    this.region,
-    this.streetCode,
-    this.streetName,
-    // this.subDistrictId,
-    // this.subDistrictName,
-    this.subMunicipalityId,
-    this.subMunicipalityName,
-    this.subMunicipalityCategory,
-    this.subMunicipalityguid,
-    this.parcelNo,
-    this.planNo,
-    this.vdExcepted,
-    this.vdPriority,
-    this.locationURL,
-  });
+  GISResponse(
+      {this.adminMunicipalityId,
+      this.adminMunicipalityName,
+      this.cityName,
+      this.Balady_DistrictID,
+      this.Balady_DistrictName,
+      // this.cleanInfo,
+      this.districtId,
+      this.districtName,
+      this.following,
+      // this.lightInfo,
+      this.municipalityuniquecode,
+      this.municipalityId,
+      this.municipalityName,
+      this.region,
+      this.streetCode,
+      this.streetName,
+      // this.subDistrictId,
+      // this.subDistrictName,
+      this.subMunicipalityId,
+      this.subMunicipalityName,
+      this.subMunicipalityCategory,
+      this.subMunicipalityguid,
+      this.parcelNo,
+      this.planNo,
+      this.vdExcepted,
+      this.vdPriority,
+      this.locationURL});
 
   String getFullAddress({
     bool includeStreetName = true,
@@ -69,7 +68,10 @@ class GISResponse extends Equatable {
     var subMunicipalityName = this.subMunicipalityName;
     var adminMunicipalityName = this.adminMunicipalityName;
 
-    if (includeStreetName && streetName != null && streetName.toLowerCase() != "null" && streetName.isNotEmpty) {
+    if (includeStreetName &&
+        streetName != null &&
+        streetName.toLowerCase() != "null" &&
+        streetName.isNotEmpty) {
       address += "$streetName, ";
     }
 
@@ -87,7 +89,9 @@ class GISResponse extends Equatable {
       address += "$subMunicipalityName, ";
     }
 
-    if (includeAdminMunicipalityName && adminMunicipalityName != null && adminMunicipalityName.isNotEmpty) {
+    if (includeAdminMunicipalityName &&
+        adminMunicipalityName != null &&
+        adminMunicipalityName.isNotEmpty) {
       address += adminMunicipalityName;
     }
 
@@ -106,7 +110,10 @@ class GISResponse extends Equatable {
     var subMunicipalityName = this.subMunicipalityName;
     var municipalityName = this.municipalityName;
 
-    if (includeStreetName && streetName != null && streetName.toLowerCase() != "null" && streetName.isNotEmpty) {
+    if (includeStreetName &&
+        streetName != null &&
+        streetName.toLowerCase() != "null" &&
+        streetName.isNotEmpty) {
       address += "$streetName, ";
     }
 
@@ -124,7 +131,9 @@ class GISResponse extends Equatable {
       address += "$subMunicipalityName, ";
     }
 
-    if (includeMunicipalityName && municipalityName != null && municipalityName.isNotEmpty) {
+    if (includeMunicipalityName &&
+        municipalityName != null &&
+        municipalityName.isNotEmpty) {
       address += municipalityName;
     }
 
@@ -137,15 +146,15 @@ class GISResponse extends Equatable {
 
   @override
   List<Object?> get props => [
-    adminMunicipalityId,
-    districtId,
-    municipalityuniquecode,
-    municipalityId,
-    subMunicipalityId,
-    subMunicipalityCategory,
-    subMunicipalityguid,
-    streetCode,
-    locationURL,
-    cityName,
-  ];
+        adminMunicipalityId,
+        districtId,
+        municipalityuniquecode,
+        municipalityId,
+        subMunicipalityId,
+        subMunicipalityCategory,
+        subMunicipalityguid,
+        streetCode,
+        locationURL,
+        cityName,
+      ];
 }

@@ -11,9 +11,12 @@ class PhoneNumberValidation extends FormzInput<String?, Validation> {
     final enteredValue = value;
     if (enteredValue != null && enteredValue.isEmpty) {
       return Validation.empty;
-    } else if (enteredValue != null && enteredValue.length > 2 && !enteredValue.startsWith("05")) {
+    } else if (enteredValue != null &&
+        enteredValue.length > 2 &&
+        !enteredValue.startsWith("05")) {
       return Validation.phoneNumberStartWith05;
-    } else if (enteredValue != null && (enteredValue.length < 10 || enteredValue.length > 10)) {
+    } else if (enteredValue != null &&
+        (enteredValue.length < 10 || enteredValue.length > 10)) {
       return Validation.phoneNumberLengthIs10;
     } else {
       return null;

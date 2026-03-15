@@ -12,12 +12,14 @@ class VersionInfo {
   Data? data;
 
   factory VersionInfo.fromJson(Map<String, dynamic> json) => VersionInfo(
-        statusDetails: List<StatusDetail>.from(json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+        statusDetails: List<StatusDetail>.from(
+            json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
         data: Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "statusDetails": List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
+        "statusDetails":
+            List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
         "data": data!.toJson(),
       };
 }

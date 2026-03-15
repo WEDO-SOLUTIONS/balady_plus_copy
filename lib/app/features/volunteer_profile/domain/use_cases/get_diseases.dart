@@ -9,5 +9,6 @@ class GetDiseases extends UseCase<List<VolunteerLookup>, NoParams> {
 
   GetDiseases({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getDiseases();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
+      repository.getDiseases();
 }

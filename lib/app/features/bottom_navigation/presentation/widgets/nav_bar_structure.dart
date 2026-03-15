@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart' show AppColor, ContextConversion;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, ContextConversion;
 
 class BottomNavBarStructure extends StatelessWidget {
   final double height;

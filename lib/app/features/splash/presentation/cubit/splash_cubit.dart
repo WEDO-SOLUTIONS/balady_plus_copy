@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
+import 'package:balady_plus/app/features/splash/data/model/splash_model.dart';
 import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -12,15 +13,37 @@ part 'splash_state.dart';
 class SplashCubit extends Cubit<SplashState> {
   final SplashRemoteDataSource splashRemoteDataSource;
 
-  SplashCubit({required this.splashRemoteDataSource}) : super(const InitialSplashState()) {
+  SplashCubit({required this.splashRemoteDataSource})
+      : super(const InitialSplashState()) {
     fetchSplashData();
   }
 
   void fetchSplashData() async {
     try {
-      Map<String, dynamic>? dataOffline; //sharedPrefs.getDataOfSplash();
-      emit(const OfflineSplashState());
-      // getNewOnlineSplashAndDownload();
+      Map<String, dynamic>? dataOffline;//sharedPrefs.getDataOfSplash();
+      if (dataOffline == null) {
+        emit(const OfflineSplashState());
+       // getNewOnlineSplashAndDownload();
+      } else {
+        SplashModel splashData = SplashModel.fromJson(dataOffline);
+        final currentDate = DateTime.now();
+        final startDate = splashData.startDate;
+        final endDate = splashData.endDate;
+        if (currentDate.isAfter(startDate) &&
+            currentDate.isBefore(endDate) &&
+            splashData.splashImage != '') {
+          checkSaveFile(
+            splashData.splashImage,
+            splashData.seasonalSplashDuration,
+          );
+        } else if (splashData.defaultImage.isNotEmpty) {
+          checkSaveFile(
+            splashData.defaultImage,
+            splashData.defaultSplashDuration,
+          );
+        }
+        getNewOnlineSplashAndDownload();
+      }
     } catch (e) {
       emit(const OfflineSplashState());
     }
@@ -54,7 +77,12 @@ class SplashCubit extends Cubit<SplashState> {
     String pathImage = directory.path + splashImage.split('/').last;
     File file = File(pathImage);
     if (file.existsSync()) {
-      emit(OnlineSplashState(splashFile: file, splashDuration: defaultSplashDuration));
+      emit(
+        OnlineSplashState(
+          splashFile: file,
+          splashDuration: defaultSplashDuration,
+        ),
+      );
     } else {
       emit(const OfflineSplashState());
       downloadNewSplashImage(splashImage);

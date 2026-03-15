@@ -23,8 +23,11 @@ class GetForceVersion extends UseCase<bool, NoParams> {
     return Right(false);
   }
 
-  bool compareVersion(String? currentVersionNo, String? latestVersionNo, bool? forceUpdate) {
-    if (currentVersionNo != null && latestVersionNo != null && forceUpdate != null) {
+  bool compareVersion(
+      String? currentVersionNo, String? latestVersionNo, bool? forceUpdate) {
+    if (currentVersionNo != null &&
+        latestVersionNo != null &&
+        forceUpdate != null) {
       if (forceUpdate) {
         Version currentVersion = Version.parse(currentVersionNo);
         Version latestVersion = Version.parse(latestVersionNo);

@@ -20,7 +20,8 @@ class ExpandableTextWidget extends StatelessWidget {
       child: Selector<ExpandableTextProvider, bool>(
         selector: (_, provider) => provider.isExpandable,
         builder: (contextProvider, isExpandable, _) {
-          ExpandableTextProvider provider = Provider.of<ExpandableTextProvider>(contextProvider);
+          ExpandableTextProvider provider =
+              Provider.of<ExpandableTextProvider>(contextProvider);
           return InkWell(
             onTap: () {
               provider.expandableText();
@@ -39,7 +40,8 @@ class ExpandableTextWidget extends StatelessWidget {
                       vertical: 8,
                     ),
                     child: Linkify(
-                      onOpen: (link) => CommonFunctions.openBaladyWebView(link.url),
+                      onOpen: (link) =>
+                          CommonFunctions.openBaladyWebView(link.url),
                       text: text,
                       maxLines: isExpandable ? null : 1,
                       style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
@@ -52,7 +54,9 @@ class ExpandableTextWidget extends StatelessWidget {
                   ),
                 ),
                 Icon(
-                  isExpandable ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                  isExpandable
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
                 ),
               ],
             ),

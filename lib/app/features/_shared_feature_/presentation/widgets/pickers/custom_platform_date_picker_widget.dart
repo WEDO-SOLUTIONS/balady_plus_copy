@@ -1,7 +1,8 @@
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 
-import '../../../shared_feature_exports.dart' show CustomCupertinoDatePickerWidget, CustomMaterialDatePickerWidget;
+import '../../../shared_feature_exports.dart'
+    show CustomCupertinoDatePickerWidget, CustomMaterialDatePickerWidget;
 
 class CustomPlatformDatePickerWidget extends StatelessWidget {
   final bool ignoreHolidays;
@@ -65,23 +66,23 @@ class CustomPlatformDatePickerWidget extends StatelessWidget {
             onDisabledTapped: onDisabledTapped,
           )
         : Platform.isIOS
-        ? CustomCupertinoDatePickerWidget(
-            ignoreHolidays: ignoreHolidays,
-            isRequired: isRequired,
-            readOnly: readOnly,
-            startDate: startDate,
-            endDate: endDate,
-            dateStyle: dateStyle,
-            label: label,
-            labelStyle: labelStyle,
-            initialDate: initialDate,
-            fillColor: fillColor,
-            borderRadius: borderRadius,
-            borderColor: borderColor,
-            errorMsg: errorMsg,
-            onSelected: onSelected,
-            onDisabledTapped: onDisabledTapped,
-          )
-        : const SizedBox();
+            ? CustomCupertinoDatePickerWidget(
+                ignoreHolidays: ignoreHolidays,
+                isRequired: isRequired,
+                readOnly: readOnly,
+                startDate: startDate,
+                endDate: endDate,
+                dateStyle: dateStyle,
+                label: label,
+                labelStyle: labelStyle,
+                initialDate: initialDate,
+                fillColor: fillColor,
+                borderRadius: borderRadius,
+                borderColor: borderColor,
+                errorMsg: errorMsg,
+                onSelected: onSelected,
+                onDisabledTapped: onDisabledTapped,
+              )
+            : const SizedBox();
   }
 }

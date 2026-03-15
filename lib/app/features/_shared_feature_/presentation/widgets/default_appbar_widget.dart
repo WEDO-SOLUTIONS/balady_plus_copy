@@ -1,10 +1,12 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ImagePath;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, ImagePath;
 import '../../shared_feature_exports.dart' show CustomTextWidget;
 
-class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget {
+class DefaultAppBarWidget extends StatelessWidget
+    implements PreferredSizeWidget {
   final String? title;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
@@ -14,17 +16,16 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
   final bool showBack;
   Widget? titleWidget;
 
-  DefaultAppBarWidget({
-    super.key,
-    this.title,
-    this.bottom,
-    this.actions,
-    this.showBack = true,
-    this.x = false,
-    this.onBack,
-    this.flexibleSpace,
-    this.titleWidget,
-  });
+  DefaultAppBarWidget(
+      {super.key,
+      this.title,
+      this.bottom,
+      this.actions,
+      this.showBack = true,
+      this.x = false,
+      this.onBack,
+      this.flexibleSpace,
+      this.titleWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +49,7 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
           : null,
       titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
-      title:
-          titleWidget ??
+      title: titleWidget ??
           CustomTextWidget(
             title ?? "",
             fontSize: 20,
@@ -60,10 +60,15 @@ class DefaultAppBarWidget extends StatelessWidget implements PreferredSizeWidget
           ),
       bottom: bottom,
       actions: actions,
-      flexibleSpace: flexibleSpace ?? Image.asset(ImagePath.appbarBg, fit: BoxFit.fill),
+      flexibleSpace: flexibleSpace ??
+          Image.asset(
+            ImagePath.appbarBg,
+            fit: BoxFit.fill,
+          ),
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 }

@@ -40,20 +40,24 @@ class NotificationsDetailsScreen extends StatelessWidget {
                           children: [
                             Text(
                               "تم اصدار الفتورة",
-                              style: AppStyle.signInFullTextStyle.copyWith(fontWeight: FontWeight.w600),
+                              style: AppStyle.signInFullTextStyle
+                                  .copyWith(fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(width: 4),
                             Card(
                               shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(6)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(6)),
                               ),
                               color: Colors.red.shade800.withAlpha(60),
                               elevation: 0,
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
                                 child: Text(
                                   "تنبية",
-                                  style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
+                                  style: AppStyle.nearbyItemSubTitleTextStyle
+                                      .copyWith(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.red.shade800,
                                   ),
@@ -63,7 +67,8 @@ class NotificationsDetailsScreen extends StatelessWidget {
                             const Spacer(),
                             Text(
                               " 5:31  صباحا , اليوم",
-                              style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
+                              style:
+                                  AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 11,
                                 color: AppColor.warmGrey2,

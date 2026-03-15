@@ -28,7 +28,9 @@ class NotificationsItemWidget extends StatelessWidget {
         return Card(
           margin: const EdgeInsets.only(bottom: 12),
           elevation: state.message.status.id != "read" ? 3 : 0,
-          color: state.message.status.id != "read" ? null : Colors.white.withOpacity(0.77),
+          color: state.message.status.id != "read"
+              ? null
+              : Colors.white.withOpacity(0.77),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -61,22 +63,26 @@ class NotificationsItemWidget extends StatelessWidget {
                           const SizedBox(width: 2),
                           Card(
                             shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(6)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6)),
                             ),
                             color: state.message.status.id == "read"
                                 ? Colors.green.shade800.withAlpha(60)
                                 : Colors.red.shade800.withAlpha(60),
                             elevation: 0,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
                               child: Text(
                                 state.message.status.id == "read"
                                     ? ('notification_read').tr()
                                     : 'notification_unread'.tr(),
-                                style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
+                                style: AppStyle.nearbyItemSubTitleTextStyle
+                                    .copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color:
-                                      state.message.status.id == "read" ? Colors.green.shade800 : Colors.red.shade800,
+                                  color: state.message.status.id == "read"
+                                      ? Colors.green.shade800
+                                      : Colors.red.shade800,
                                 ),
                               ),
                             ),
@@ -84,7 +90,8 @@ class NotificationsItemWidget extends StatelessWidget {
                           Flexible(
                             child: Text(
                               "${Jiffy.parseFromDateTime(message.createTime).toLocal().Hm} ,${Jiffy.parseFromDateTime(message.createTime).toLocal().fromNow()}",
-                              style: AppStyle.nearbyItemSubTitleTextStyle.copyWith(
+                              style:
+                                  AppStyle.nearbyItemSubTitleTextStyle.copyWith(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 11,
                                 color: AppColor.warmGrey2,
@@ -97,7 +104,9 @@ class NotificationsItemWidget extends StatelessWidget {
                         text: message.body,
                         onTap: () {
                           if (message.status.id != "read") {
-                            contextBloc.read<NotificationsItemCubit>().markReadNotificationsMessages();
+                            contextBloc
+                                .read<NotificationsItemCubit>()
+                                .markReadNotificationsMessages();
                           }
                         },
                       ),

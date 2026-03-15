@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
 
 import '../../../../core/utils/utils_exports.dart' show AppColor;
 import '../../shared_feature_exports.dart' show CustomTextFieldWidget;

@@ -1,16 +1,14 @@
 import 'dart:async';
-
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter_insider/flutter_insider.dart';
 import 'navigation_services.dart';
 
 /// A notification action which triggers a App navigation event
@@ -32,13 +30,15 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (message.data['source'] == 'Insider') {
-    FlutterInsider.Instance.handleNotification(<String, dynamic>{"data": message.data});
+    FlutterInsider.Instance.handleNotification(
+        <String, dynamic>{"data": message.data});
   }
 }
 
 class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
-  static final StreamController<String?> selectNotificationStream = StreamController<String?>.broadcast();
+  static final StreamController<String?> selectNotificationStream =
+      StreamController<String?>.broadcast();
 
   static Future<void> init({bool initScheduled = false}) async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -54,7 +54,8 @@ class NotificationService {
     await _notifications.initialize(
       settings,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
         switch (notificationResponse.notificationResponseType) {
           case NotificationResponseType.selectedNotification:
             selectNotificationStream.add(notificationResponse.payload);
@@ -71,26 +72,22 @@ class NotificationService {
 
   static NotificationDetails _notificationDetails() {
     return const NotificationDetails(
-      android: AndroidNotificationDetails(
-        "channel id",
-        "channel name",
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker',
-        // sound: RawResourceAndroidNotificationSound("azan"),
-        channelDescription: "Channel description",
-      ),
+      android: AndroidNotificationDetails("channel id", "channel name",
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker',
+          // sound: RawResourceAndroidNotificationSound("azan"),
+          channelDescription: "Channel description"),
       iOS: DarwinNotificationDetails(sound: ""),
     );
   }
 
-  static Future<void> showScheduledNotification({
-    int id = 0,
-    String? title,
-    String? body,
-    String? payload,
-    required DateTime scheduledDate,
-  }) async {
+  static Future<void> showScheduledNotification(
+      {int id = 0,
+      String? title,
+      String? body,
+      String? payload,
+      required DateTime scheduledDate}) async {
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,
@@ -122,7 +119,8 @@ class NotificationService {
     }
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -151,16 +149,23 @@ class NotificationService {
       if (message.data.containsKey('url')) {
         return;
       }
-      Future.delayed(const Duration(seconds: 2), () {
-        // Open notifications List Screen  if user is login and have the idNo
-        if (CommonProperties.userInfo?.idNo != null) {
-          NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
-        }
-      });
+      Future.delayed(
+        const Duration(seconds: 2),
+            () {
+          // Open notifications List Screen  if user is login and have the idNo
+          if(CommonProperties.userInfo?.idNo != null) {
+            NavigationService.pushNamed(
+              routeName: RouteName.notificationsListScreen,
+            );
+          }
+        },
+      );
     }
 
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
       if (message != null) {
         // Future.delayed(const Duration(seconds: 2), () {
         handleMessage(message);
@@ -171,7 +176,8 @@ class NotificationService {
     // Register Background Handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       if (message.data['source'] == 'Insider') {
-        FlutterInsider.Instance.handleNotification(<String, dynamic>{"data": message.data});
+        FlutterInsider.Instance.handleNotification(
+            <String, dynamic>{"data": message.data});
       } else {
         RemoteNotification? notification = message.notification;
 
@@ -179,19 +185,18 @@ class NotificationService {
 
         if (notification != null && android != null) {
           _notifications.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                CommonFunctions.generateUUID(),
-                "Notification",
-                channelDescription: "Notification",
-                playSound: true,
-                icon: 'mipmap/ic_launcher',
-              ),
-            ),
-          );
+              notification.hashCode,
+              notification.title,
+              notification.body,
+              NotificationDetails(
+                android: AndroidNotificationDetails(
+                  CommonFunctions.generateUUID(),
+                  "Notification",
+                  channelDescription: "Notification",
+                  playSound: true,
+                  icon: 'mipmap/ic_launcher',
+                ),
+              ));
         }
       }
     });

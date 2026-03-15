@@ -38,7 +38,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
     if (stateType is! SucceedWithPaginationNotificationsListState) {
       emit(LoadingEventsListState());
     }
-    Either<Failure, NotificationsListResponse> failureOrSuccess = await listRepository.getNotificationsMessagesList(
+    Either<Failure, NotificationsListResponse> failureOrSuccess =
+        await listRepository.getNotificationsMessagesList(
       request: params,
     );
     failureOrSuccess.fold(
@@ -46,7 +47,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
         if (failure is NoDataFoundException || failure is NoDataFoundFailure) {
           emit(EmptyNotificationsListState());
         } else if (failure is ServerFailure) {
-          emit(FailureNotificationsListState(filerMessage: failure.errorMessage));
+          emit(FailureNotificationsListState(
+              filerMessage: failure.errorMessage));
         } else {
           emit(FailureNotificationsListState(filerMessage: "error"));
         }
@@ -81,7 +83,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
     NotificationsListState stateType = state;
     if (stateType is! LoadingEventsListState) {
       emit(LoadingEventsListState());
-      Either<Failure, bool> failureOrSuccess = await listRepository.markReadNotificationsMessages(
+      Either<Failure, bool> failureOrSuccess =
+          await listRepository.markReadNotificationsMessages(
         request: MarkReadNotificationsParams(
           productId: params.productId,
           serviceId: params.serviceId,
@@ -92,10 +95,13 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundFailure) {
-            emit(FailureNotificationsListState(filerMessage: "no_data_shown".tr()));
+          if (failure is NoDataFoundException ||
+              failure is NoDataFoundFailure) {
+            emit(FailureNotificationsListState(
+                filerMessage: "no_data_shown".tr()));
           } else if (failure is ServerFailure) {
-            emit(FailureNotificationsListState(filerMessage: failure.errorMessage));
+            emit(FailureNotificationsListState(
+                filerMessage: failure.errorMessage));
           } else {
             emit(FailureNotificationsListState(filerMessage: "error"));
           }
@@ -113,7 +119,8 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
     NotificationsListState stateType = state;
     if (stateType is! LoadingEventsListState) {
       emit(LoadingEventsListState());
-      Either<Failure, bool> failureOrSuccess = await listRepository.deletedNotificationsMessages(
+      Either<Failure, bool> failureOrSuccess =
+          await listRepository.deletedNotificationsMessages(
         request: DeletedNotificationsParams(
           productId: params.productId,
           serviceId: params.serviceId,
@@ -123,10 +130,12 @@ class NotificationsListCubit extends Cubit<NotificationsListState> {
       );
       failureOrSuccess.fold(
         (failure) {
-          if (failure is NoDataFoundException || failure is NoDataFoundFailure) {
+          if (failure is NoDataFoundException ||
+              failure is NoDataFoundFailure) {
             emit(EmptyNotificationsListState());
           } else if (failure is ServerFailure) {
-            emit(FailureNotificationsListState(filerMessage: failure.errorMessage));
+            emit(FailureNotificationsListState(
+                filerMessage: failure.errorMessage));
           } else {
             emit(FailureNotificationsListState(filerMessage: "error"));
           }

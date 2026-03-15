@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, BlocRequestStatus, IconPath;
-import '../../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget, ShimmerEffectWidget;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, BlocRequestStatus, IconPath;
+import '../../../../_shared_feature_/shared_feature_exports.dart'
+    show CustomTextWidget, ShimmerEffectWidget;
 
 class DropDownWithTitle extends StatelessWidget {
   final String title;
@@ -34,8 +36,10 @@ class DropDownWithTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loading = (status == BlocRequestStatus.submissionGetLoading || blocStatus == BlocStatus.loading);
-    final retry = (status == BlocRequestStatus.submissionGetFailure || blocStatus == BlocStatus.failure);
+    final loading = (status == BlocRequestStatus.submissionGetLoading ||
+        blocStatus == BlocStatus.loading);
+    final retry = (status == BlocRequestStatus.submissionGetFailure ||
+        blocStatus == BlocStatus.failure);
 
     return InkWell(
       onTap: () {
@@ -49,11 +53,16 @@ class DropDownWithTitle extends StatelessWidget {
             if (title.isNotEmpty)
               Row(
                 children: [
-                  CustomTextWidget(title, textStyle: AppStyle.dropDownTitleTextStyle),
+                  CustomTextWidget(
+                    title,
+                    textStyle: AppStyle.dropDownTitleTextStyle,
+                  ),
                   isRequired
                       ? CustomTextWidget(
                           '*'.tr(),
-                          textStyle: AppStyle.dropDownTitleTextStyle.copyWith(color: Colors.red.shade700),
+                          textStyle: AppStyle.dropDownTitleTextStyle.copyWith(
+                            color: Colors.red.shade700,
+                          ),
                         )
                       : const SizedBox(),
                 ],
@@ -62,13 +71,20 @@ class DropDownWithTitle extends StatelessWidget {
             if (retry)
               RetryWidget(onRetry: onRetry)
             else if (loading)
-              const ShimmerEffectWidget(height: 48, borderRadius: 8)
+              const ShimmerEffectWidget(
+                height: 48,
+                borderRadius: 8,
+              )
             else
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 height: height ?? 48,
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColor.blackModern300Light, width: 1.5),
+                  border: Border.all(
+                    color: AppColor.blackModern300Light,
+                    width: 1.5,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(

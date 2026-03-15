@@ -3,7 +3,12 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
-    show AlertsModalSheetContent, CurrentWeatherContent, DayCardShimmer, SunriseOrSunsetTime, WeatherDayCard;
+    show
+        AlertsModalSheetContent,
+        CurrentWeatherContent,
+        DayCardShimmer,
+        SunriseOrSunsetTime,
+        WeatherDayCard;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,9 +73,13 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                   children: [
                     Container(
                       decoration: const BoxDecoration(
-                        image: DecorationImage(image: AssetImage(ImagePath.weatherBackground3x), fit: BoxFit.cover),
+                        image: DecorationImage(
+                            image: AssetImage(ImagePath.weatherBackground3x),
+                            fit: BoxFit.cover),
                       ),
-                      height: (state.showLocationError ?? false) ? screenHeight * 0.5 : screenHeight * 0.4,
+                      height: (state.showLocationError ?? false)
+                          ? screenHeight * 0.5
+                          : screenHeight * 0.4,
                       width: double.infinity,
                     ),
                     const CurrentWeatherContent()
@@ -83,14 +92,19 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                         ? ListView.builder(
                             shrinkWrap: true,
                             padding: EdgeInsets.only(bottom: 24),
-                            itemCount: state.allWeatherInfo?.forecast?.forecastday?.length ?? 0,
+                            itemCount: state.allWeatherInfo?.forecast
+                                    ?.forecastday?.length ??
+                                0,
                             itemBuilder: (context, index) {
-                              var forecastDay = state.allWeatherInfo?.forecast?.forecastday?[index];
+                              var forecastDay = state.allWeatherInfo?.forecast
+                                  ?.forecastday?[index];
                               return WeatherDayCard(
                                 forecastDay: forecastDay,
                                 isExpanded: state.selectedTile == index,
                                 onExpansionChanged: (bool expanded) {
-                                  context.read<WeatherBloc>().add(ChangeIndexEvent(index: expanded ? index : -1));
+                                  context.read<WeatherBloc>().add(
+                                      ChangeIndexEvent(
+                                          index: expanded ? index : -1));
                                 },
                               );
                             },

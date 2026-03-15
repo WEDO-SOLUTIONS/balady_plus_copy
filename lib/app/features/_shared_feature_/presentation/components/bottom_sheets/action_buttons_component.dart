@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle, ContextConversion, UIHelper, WidgetConversion;
+    show
+        AppColor,
+        AppFontWeight,
+        AppStyle,
+        ContextConversion,
+        UIHelper,
+        WidgetConversion;
 import '../../../shared_feature_exports.dart'
-    show CustomElevatedButtonWidget, CustomElevatedStackIconButtonWidget, DrawIconBasedTypeWidget;
+    show
+        CustomElevatedButtonWidget,
+        CustomElevatedStackIconButtonWidget,
+        DrawIconBasedTypeWidget;
 
 class ActionButtonComponent extends StatelessWidget {
   final VoidCallback onAction;
@@ -72,7 +82,9 @@ class ActionButtonsComponent extends StatelessWidget {
         children: [
           // Action-Button Widget
           if (isActionsEqualsTexts)
-            throw Exception("Buttons must have same length of texts and actions")
+            throw Exception(
+              "Buttons must have same length of texts and actions",
+            )
           else if (isIconsNotNullAndEqualsLength)
             throw Exception("Buttons icons must have same length")
           else if (isTextsColorsNotNullAndEqualsLength)
@@ -95,7 +107,10 @@ class ActionButtonsComponent extends StatelessWidget {
                 icon: btnIcons?[index] != null
                     ? Padding(
                         padding: iconPadding,
-                        child: DrawIconBasedTypeWidget(icon: btnIcons![index]!, iconSize: iconSize),
+                        child: DrawIconBasedTypeWidget(
+                          icon: btnIcons![index]!,
+                          iconSize: iconSize,
+                        ),
                       )
                     : const SizedBox(),
                 iconAlignment: AlignmentDirectional.centerStart,
@@ -115,12 +130,15 @@ class ActionButtonsComponent extends StatelessWidget {
   }
 
   bool get isActionsEqualsTexts => btnOnActions.length != btnTexts.length;
-  bool get isIconsNotNullAndEqualsLength => btnIcons != null && btnIcons?.length != btnOnActions.length;
+  bool get isIconsNotNullAndEqualsLength =>
+      btnIcons != null && btnIcons?.length != btnOnActions.length;
   bool get isTextsColorsNotNullAndEqualsLength =>
       btnTextsColors != null && btnTextsColors?.length != btnOnActions.length;
 
   int get length => btnTexts.length;
 
-  EdgeInsetsGeometry get btnPadding => const EdgeInsetsDirectional.only(start: UIHelper.mediumPadding * 2.5);
-  EdgeInsetsGeometry get iconPadding => const EdgeInsetsDirectional.only(start: UIHelper.mediumPadding);
+  EdgeInsetsGeometry get btnPadding =>
+      const EdgeInsetsDirectional.only(start: UIHelper.mediumPadding * 2.5);
+  EdgeInsetsGeometry get iconPadding =>
+      const EdgeInsetsDirectional.only(start: UIHelper.mediumPadding);
 }

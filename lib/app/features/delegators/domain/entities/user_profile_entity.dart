@@ -11,7 +11,13 @@ class UserProfileEntity {
   String? agencyRequestKey;
   UserProfileType? profileType;
   UserProfileEntity(
-      {this.id, this.type, this.name, this.roleName, this.roleId, this.profileType, this.agencyRequestKey});
+      {this.id,
+      this.type,
+      this.name,
+      this.roleName,
+      this.roleId,
+      this.profileType,
+      this.agencyRequestKey});
 
   UserProfileEntity copyWith(
       {String? id,

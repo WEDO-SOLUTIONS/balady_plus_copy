@@ -17,9 +17,11 @@ class GetCookie extends UseCase<String, bool?> {
   Future<Either<Failure, String>> call(bool? parseCookies) async {
     Either<Failure, String> res = await repository.getCookie();
     return res.fold((l) => Left(l), (r) async {
-      if (parseCookies == false) {
-        return Right(r);
-      } else {
+      if(parseCookies==false)
+        {
+          return Right(r);
+        }
+      else {
         await parseCookieValues(r);
         return Right(r);
       }

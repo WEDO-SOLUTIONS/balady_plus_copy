@@ -41,7 +41,6 @@ class SplashModel {
     };
   }
 }
-
 class StatusDetails {
   final int code;
   final String message;
@@ -84,6 +83,7 @@ class SplashData {
       result: (json['result'] as List?)?.map((e) => SplashModel.fromJson(e)).toList() ?? [],
     );
   }
+
 }
 
 class SplashResponse {
@@ -98,4 +98,6 @@ class SplashResponse {
       data: SplashData.fromJson(json['data'] ?? {}),
     );
   }
+
+
 }

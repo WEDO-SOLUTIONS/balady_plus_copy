@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_respon
 import 'package:dartz/dartz.dart' show Either;
 import 'package:balady_plus/app/core/errors/errors_exports.dart' show Failure;
 
+
 abstract class VDRepository {
   Future<Either<Failure, GISResponse>> getGISData({required GISParams params});
 }

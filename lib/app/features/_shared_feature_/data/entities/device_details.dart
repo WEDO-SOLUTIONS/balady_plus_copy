@@ -5,12 +5,20 @@ class DeviceDetails extends Equatable {
   final String deviceId;
   final String deviceName;
 
-  const DeviceDetails({this.deviceOs = "", this.deviceId = "", this.deviceName = ""});
+  const DeviceDetails({
+    this.deviceOs = "",
+    this.deviceId = "",
+    this.deviceName = "",
+  });
 
   @override
   List<Object?> get props => [deviceOs, deviceId, deviceName];
 
-  DeviceDetails copyWith({String? deviceOs, String? deviceId, String? deviceName}) {
+  DeviceDetails copyWith({
+    String? deviceOs,
+    String? deviceId,
+    String? deviceName,
+  }) {
     return DeviceDetails(
       deviceOs: deviceOs ?? this.deviceOs,
       deviceId: deviceId ?? this.deviceId,
@@ -19,5 +27,6 @@ class DeviceDetails extends Equatable {
   }
 
   @override
-  String toString() => 'DeviceDetails(deviceOs: $deviceOs, deviceId: $deviceId, deviceName: $deviceName)';
+  String toString() =>
+      'DeviceDetails(deviceOs: $deviceOs, deviceId: $deviceId, deviceName: $deviceName)';
 }

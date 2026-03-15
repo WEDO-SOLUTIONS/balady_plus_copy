@@ -7,7 +7,7 @@ enum MimeType {
   bmp(mime: "image/bmp"),
   cdf(mime: "application/x-netcdf"),
   cgm(mime: "image/cgm"),
-  // class(mime: "application/octet-stream"),
+// class(mime: "application/octet-stream"),
   cpio(mime: "application/x-cpio"),
   cpt(mime: "application/mac-compactpro"),
   csh(mime: "application/x-csh"),
@@ -20,8 +20,14 @@ enum MimeType {
   dmg(mime: "application/octet-stream"),
   dms(mime: "application/octet-stream"),
   doc(mime: "application/msword"),
-  docx(mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
-  dotx(mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.template"),
+  docx(
+    mime:
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ),
+  dotx(
+    mime:
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+  ),
   docm(mime: "application/vnd.ms-word.document.macroEnabled.12"),
   dotm(mime: "application/vnd.ms-word.template.macroEnabled.12"),
   dtd(mime: "application/xml-dtd"),
@@ -79,9 +85,18 @@ enum MimeType {
   pntg(mime: "image/x-macpaint"),
   ppm(mime: "image/x-portable-pixmap"),
   ppt(mime: "application/vnd.ms-powerpoint"),
-  pptx(mime: "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
-  potx(mime: "application/vnd.openxmlformats-officedocument.presentationml.template"),
-  ppsx(mime: "application/vnd.openxmlformats-officedocument.presentationml.slideshow"),
+  pptx(
+    mime:
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ),
+  potx(
+    mime:
+        "application/vnd.openxmlformats-officedocument.presentationml.template",
+  ),
+  ppsx(
+    mime:
+        "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+  ),
   ppam(mime: "application/vnd.ms-powerpoint.addin.macroEnabled.12"),
   pptm(mime: "application/vnd.ms-powerpoint.presentation.macroEnabled.12"),
   potm(mime: "application/vnd.ms-powerpoint.template.macroEnabled.12"),
@@ -144,8 +159,13 @@ enum MimeType {
   xml(mime: "application/xml"),
   xpm(mime: "image/x-xpixmap"),
   xsl(mime: "application/xml"),
-  xlsx(mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-  xltx(mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.template"),
+  xlsx(
+    mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ),
+  xltx(
+    mime:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+  ),
   xlsm(mime: "application/vnd.ms-excel.sheet.macroEnabled.12"),
   xltm(mime: "application/vnd.ms-excel.template.macroEnabled.12"),
   xlam(mime: "application/vnd.ms-excel.addin.macroEnabled.12"),
@@ -154,7 +174,8 @@ enum MimeType {
   xul(mime: "application/vnd.mozilla.xul+xml"),
   xwd(mime: "image/x-xwindowdump"),
   xyz(mime: "chemical/x-xyz"),
-  zip(mime: "application/zip");
+  zip(mime: "application/zip"),
+  ;
 
   const MimeType({required this.mime});
   final String mime;

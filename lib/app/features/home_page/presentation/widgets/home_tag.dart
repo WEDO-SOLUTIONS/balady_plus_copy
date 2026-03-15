@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
-import '../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget, DrawIconBasedTypeWidget;
+import '../../../_shared_feature_/shared_feature_exports.dart'
+    show CustomTextWidget, DrawIconBasedTypeWidget;
 
 class HomeTag extends StatelessWidget {
   final String title;
@@ -25,13 +26,18 @@ class HomeTag extends StatelessWidget {
     this.iconColor,
     this.height,
     this.selected = false,
-  }) : assert((color == null && backgroundColor != null) || (color != null && backgroundColor == null),
+  }) : assert(
+            (color == null && backgroundColor != null) ||
+                (color != null && backgroundColor == null),
             "can't choose color and backgroundColor at the same time");
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = this.backgroundColor ?? (selected ? color : AppColor.blackModern50Light);
-    final textColor = this.textColor ?? (selected ? AppColor.blackModern50Light : AppColor.blackModern600Light);
-    final iconColor = this.iconColor ?? (selected ? AppColor.blackModern50Light : color);
+    final backgroundColor = this.backgroundColor ??
+        (selected ? color : AppColor.blackModern50Light);
+    final textColor = this.textColor ??
+        (selected ? AppColor.blackModern50Light : AppColor.blackModern600Light);
+    final iconColor =
+        this.iconColor ?? (selected ? AppColor.blackModern50Light : color);
 
     return Container(
       height: height,

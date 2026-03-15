@@ -64,11 +64,13 @@ class UnKownWeatherLocation extends StatelessWidget {
                 children: [
                   Container(
                     height: 36,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: AppColor.primary900Light,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

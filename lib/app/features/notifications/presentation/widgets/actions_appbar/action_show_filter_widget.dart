@@ -23,7 +23,7 @@ class ActionShowFilterWidget extends StatelessWidget {
     return IconButton(
       onPressed: () {
         if (CommonProperties.isLoggedInMunicipality) {
-          showDialogParsona(cubit, context);
+          showDialogParsona( cubit, context);
         } else {
           showDialog(
             context: context,
@@ -32,7 +32,7 @@ class ActionShowFilterWidget extends StatelessWidget {
                 if (isSuccess ?? false) {
                   context.read<DelegatorsCubit>().getDelegators();
                   context.read<DelegatorsCubit>().getAgents();
-                  showDialogParsona(cubit, context);
+                  showDialogParsona( cubit, context);
                 }
               },
             ),

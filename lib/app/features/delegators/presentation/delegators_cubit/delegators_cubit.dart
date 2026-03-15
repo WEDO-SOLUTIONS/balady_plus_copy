@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus, Nullable;
-import '../../../delegators/services/account_selection_service.dart';
 import '../../delegators_exports.dart' show AgentEntity, DelegatorEntity, GetDelegators, GetAgents;
+import '../../../delegators/services/account_selection_service.dart';
 
 part 'delegators_state.dart';
 
@@ -91,6 +91,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
     );
   }
 
+
   /// Restores the selected delegator/agent from SharedPreferences
   /// Should be called after delegators/agents are loaded
   void restoreSelectionFromPreferences() {
@@ -115,4 +116,5 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
       }
     }
   }
+
 }

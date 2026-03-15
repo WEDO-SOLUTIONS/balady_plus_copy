@@ -9,10 +9,12 @@ class SocialMeidaInformationStep extends StatefulWidget {
   const SocialMeidaInformationStep({super.key});
 
   @override
-  State<SocialMeidaInformationStep> createState() => _SocialMeidaInformationStepState();
+  State<SocialMeidaInformationStep> createState() =>
+      _SocialMeidaInformationStepState();
 }
 
-class _SocialMeidaInformationStepState extends State<SocialMeidaInformationStep> {
+class _SocialMeidaInformationStepState
+    extends State<SocialMeidaInformationStep> {
   late TextEditingController _xAccountController;
   late TextEditingController _instagramController;
   late TextEditingController _linkedinController;
@@ -37,7 +39,8 @@ class _SocialMeidaInformationStepState extends State<SocialMeidaInformationStep>
   }
 
   @override
-  Widget build(BuildContext context) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) =>
+      BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
         builder: (context, state) {
           // Update controllers with state values if they've changed
           if (_xAccountController.text != (state.xAccount ?? '')) {
@@ -147,7 +150,10 @@ class _SocialMeidaInformationStepState extends State<SocialMeidaInformationStep>
                         );
                   },
                 ),
-                SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 120 : 40),
+                SizedBox(
+                    height: MediaQuery.of(context).viewInsets.bottom > 0
+                        ? 120
+                        : 40),
               ],
             ),
           );

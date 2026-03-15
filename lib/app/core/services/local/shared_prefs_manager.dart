@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 // ignore: depend_on_referenced_packages
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/gis_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/utils_exports.dart' show LocalStorageKey;
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SharedPrefs {
   static SharedPreferences? _sharedPreferences;

@@ -1,5 +1,11 @@
 class NotificationRequest {
-  NotificationRequest({this.device, this.appId, this.appVersion, this.fcmToken, this.FCMTokenSource});
+  NotificationRequest({
+    this.device,
+    this.appId,
+    this.appVersion,
+    this.fcmToken,
+    this.FCMTokenSource
+  });
 
   Device? device;
   String? appId;
@@ -37,8 +43,10 @@ class Device {
     osTypeId = json['osTypeId'];
     isRooted = json['isRooted'];
     ip = json['ip'];
-    location = json['location'] != null ? Location.fromJson(json['location']) : null;
-    metaData = json['metaData'] != null ? MetaData.fromJson(json['metaData']) : null;
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
+    metaData =
+        json['metaData'] != null ? MetaData.fromJson(json['metaData']) : null;
   }
   String? id;
   String? typeId;

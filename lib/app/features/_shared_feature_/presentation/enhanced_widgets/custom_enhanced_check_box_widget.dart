@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocConsumer, BlocProvider, ReadContext;
+import 'package:flutter_bloc/flutter_bloc.dart'
+    show BlocConsumer, BlocProvider, ReadContext;
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, WidgetConversion;
-import '../../shared_feature_exports.dart' show CheckBoxCubit, CustomTextWidget, ErrorUnderWidget;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, WidgetConversion;
+import '../../shared_feature_exports.dart'
+    show CheckBoxCubit, CustomTextWidget, ErrorUnderWidget;
 
 class CustomEnhancedCheckBoxWidget extends StatelessWidget {
   final TextDirection? directionality;
@@ -68,14 +71,20 @@ class CustomEnhancedCheckBoxWidget extends StatelessWidget {
                           checkColor: checkColor,
                           fillColor: fillColor,
                           borderColor: borderColor,
-                          onChanged: context.read<CheckBoxCubit>().onChangeState,
+                          onChanged:
+                              context.read<CheckBoxCubit>().onChangeState,
                         );
                       },
                     );
                   },
                 ),
                 // Label
-                Expanded(child: CustomTextWidget(label, textStyle: labelStyle ?? AppStyle.checkBoxStyle)),
+                Expanded(
+                  child: CustomTextWidget(
+                    label,
+                    textStyle: labelStyle ?? AppStyle.checkBoxStyle,
+                  ),
+                ),
               ].addPadding(end: checkBoxLabelSpace),
             ),
             // Error
@@ -106,7 +115,9 @@ class _CheckWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
+      customBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radius),
+      ),
       splashColor: AppColor.blue,
       highlightColor: Theme.of(context).scaffoldBackgroundColor,
       onTap: () => onChanged(selected),
@@ -120,12 +131,14 @@ class _CheckWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(color: _borderColor),
         ),
-        child: selected ? Icon(Icons.check, size: 18.0, color: _checkColor) : null,
+        child:
+            selected ? Icon(Icons.check, size: 18.0, color: _checkColor) : null,
       ),
     );
   }
 
-  Color get _fillColor => selected ? fillColor ?? AppColor.blue : AppColor.white;
+  Color get _fillColor =>
+      selected ? fillColor ?? AppColor.blue : AppColor.white;
   Color get _borderColor => AppColor.blue;
   Color get _checkColor => checkColor ?? AppColor.white;
 }

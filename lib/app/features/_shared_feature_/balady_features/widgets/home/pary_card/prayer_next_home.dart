@@ -8,7 +8,11 @@ class NextPrayerHome extends StatefulWidget {
   final Prayers prayer;
   final DateTime time;
 
-  const NextPrayerHome({super.key, required this.prayer, required this.time});
+  const NextPrayerHome({
+    super.key,
+    required this.prayer,
+    required this.time,
+  });
 
   @override
   State<NextPrayerHome> createState() => _NextPrayerState();
@@ -68,11 +72,21 @@ class _NextPrayerState extends State<NextPrayerHome> {
         return hours != "00"
             ? Text(
                 "$hours:$minutes:$seconds",
-                style: Theme.of(context).extension<ThemeTextStyles>()!.accent.copyWith(color: Colors.white),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accent
+                    .copyWith(
+                      color: Colors.white,
+                    ),
               )
             : Text(
                 "$minutes:$seconds",
-                style: Theme.of(context).extension<ThemeTextStyles>()!.accent.copyWith(color: Colors.white),
+                style: Theme.of(context)
+                    .extension<ThemeTextStyles>()!
+                    .accent
+                    .copyWith(
+                      color: Colors.white,
+                    ),
               );
       },
     );

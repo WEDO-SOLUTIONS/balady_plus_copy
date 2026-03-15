@@ -22,7 +22,8 @@ import '../../domain/use_cases/upload_cv.dart';
 import 'volunteer_profile_event.dart';
 import 'volunteer_profile_state.dart';
 
-class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileState> {
+class VolunteerProfileBloc
+    extends Bloc<VolunteerProfileEvent, VolunteerProfileState> {
   final GetProfile getProfile;
   final GetRegions getRegions;
   final GetCities getCities;
@@ -95,13 +96,17 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
 
       result.fold(
         (failure) {
-          emit(state.copyWith(isLoading: false, errorMessage: 'failed_to_load_profile'.tr()));
+          emit(state.copyWith(
+              isLoading: false, errorMessage: 'failed_to_load_profile'.tr()));
         },
         (profile) {
           // Check if fields exist in the API response
-          final hasGender = profile.gender != null && profile.gender!.isNotEmpty;
-          final hasMaritalStatus = profile.maritalStatus != null && profile.maritalStatus!.isNotEmpty;
-          final hasNationalId = profile.nationalId != null && profile.nationalId!.isNotEmpty;
+          final hasGender =
+              profile.gender != null && profile.gender!.isNotEmpty;
+          final hasMaritalStatus = profile.maritalStatus != null &&
+              profile.maritalStatus!.isNotEmpty;
+          final hasNationalId =
+              profile.nationalId != null && profile.nationalId!.isNotEmpty;
 
           // Parse birthdate from string if available
 
@@ -115,7 +120,9 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
           if (profile.specialization?.id != null) {
             specializationId = profile.specialization!.id.toString();
           }
-          if (profile.languages != null && profile.languages!.isNotEmpty && profile.languages!.first.id != null) {
+          if (profile.languages != null &&
+              profile.languages!.isNotEmpty &&
+              profile.languages!.first.id != null) {
             languageId = profile.languages!.first.id.toString();
           }
 
@@ -130,13 +137,17 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
           if (profile.volunteeringFields != null &&
               profile.volunteeringFields!.isNotEmpty &&
               profile.volunteeringFields!.first.id != null) {
-            volunteeringWorkFieldId = profile.volunteeringFields!.first.id.toString();
+            volunteeringWorkFieldId =
+                profile.volunteeringFields!.first.id.toString();
           }
           if (profile.volunteeringType?.id != null) {
             volunteeringTypeId = profile.volunteeringType!.id.toString();
           }
           if (profile.skills != null) {
-            skillsIds = profile.skills!.where((skill) => skill.id != null).map((skill) => skill.id.toString()).toList();
+            skillsIds = profile.skills!
+                .where((skill) => skill.id != null)
+                .map((skill) => skill.id.toString())
+                .toList();
           }
 
           // Determine individual and group selections based on existing volunteeringType
@@ -148,9 +159,11 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
               // Combined type - both selected
               isIndividualSelected = true;
               isGroupSelected = true;
-            } else if (typeName.toLowerCase().contains('individual') || typeName.contains('فردي')) {
+            } else if (typeName.toLowerCase().contains('individual') ||
+                typeName.contains('فردي')) {
               isIndividualSelected = true;
-            } else if (typeName.toLowerCase().contains('group') || typeName.contains('جماعي')) {
+            } else if (typeName.toLowerCase().contains('group') ||
+                typeName.contains('جماعي')) {
               isGroupSelected = true;
             }
           }
@@ -210,23 +223,33 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
             specializationId: specializationId,
             profession: profile.job,
             workExperience: profile.scientificExpertise,
-            language: profile.languages?.isNotEmpty == true ? profile.languages!.first.name : null,
+            language: profile.languages?.isNotEmpty == true
+                ? profile.languages!.first.name
+                : null,
             languageId: languageId,
             scientificExperienceSummary: profile.breif,
 
             // Volunteering Interests fields
-            skills: profile.skills?.where((skill) => skill.name != null).map((skill) => skill.name!).toList() ?? [],
+            skills: profile.skills
+                    ?.where((skill) => skill.name != null)
+                    .map((skill) => skill.name!)
+                    .toList() ??
+                [],
             skillsIds: skillsIds,
             volunteeringLevel: profile.volunteeringLevel?.name,
             volunteeringLevelId: volunteeringLevelId,
             volunteeringWorkField:
-                profile.volunteeringFields?.isNotEmpty == true ? profile.volunteeringFields!.first.name : null,
+                profile.volunteeringFields?.isNotEmpty == true
+                    ? profile.volunteeringFields!.first.name
+                    : null,
             volunteeringWorkFieldId: volunteeringWorkFieldId,
             volunteeringType: profile.volunteeringType?.name,
             volunteeringTypeId: volunteeringTypeId,
             isIndividualSelected: isIndividualSelected,
             isGroupSelected: isGroupSelected,
-            interests: profile.interests?.name != null ? [profile.interests!.name!] : [],
+            interests: profile.interests?.name != null
+                ? [profile.interests!.name!]
+                : [],
 
             // Medical Info fields
             bloodType: profile.bloodType?.name,
@@ -260,7 +283,9 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
         },
       );
     } catch (e) {
-      emit(state.copyWith(isLoading: false, errorMessage: '${'failed_to_load_profile'.tr()}: $e'));
+      emit(state.copyWith(
+          isLoading: false,
+          errorMessage: '${'failed_to_load_profile'.tr()}: $e'));
     }
   }
 
@@ -271,14 +296,17 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingRegions: true, regionsList: []));
     final result = await getRegions(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingRegions: false, errorMessage: 'failed_to_load_regions'.tr())),
+      (failure) => emit(state.copyWith(
+          isLoadingRegions: false,
+          errorMessage: 'failed_to_load_regions'.tr())),
       (regions) {
         // Use the regionId we already have from the API response
         // or try to match by name as fallback
         String? finalRegionId = state.regionId;
 
         // If we don't have regionId but have region name, try to match
-        if ((finalRegionId == null || finalRegionId.isEmpty) && state.region?.isNotEmpty == true) {
+        if ((finalRegionId == null || finalRegionId.isEmpty) &&
+            state.region?.isNotEmpty == true) {
           try {
             final matchingRegion = regions.firstWhere(
               (region) => region.name.trim() == state.region?.trim(),
@@ -288,7 +316,9 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
             // Try partial matching as fallback
             try {
               final partialMatch = regions.firstWhere(
-                (region) => region.name.contains(state.region!) || state.region!.contains(region.name),
+                (region) =>
+                    region.name.contains(state.region!) ||
+                    state.region!.contains(region.name),
               );
               finalRegionId = partialMatch.tid.toString();
             } catch (e2) {
@@ -318,14 +348,16 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingCities: true, citiesList: []));
     final result = await getCities(event.regionId);
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingCities: false, errorMessage: 'failed_to_load_cities'.tr())),
+      (failure) => emit(state.copyWith(
+          isLoadingCities: false, errorMessage: 'failed_to_load_cities'.tr())),
       (cities) {
         // Use the cityId we already have from the API response
         // or try to match by name as fallback
         String? finalCityId = state.cityId;
 
         // If we don't have cityId but have city name, try to match
-        if ((finalCityId == null || finalCityId.isEmpty) && state.city?.isNotEmpty == true) {
+        if ((finalCityId == null || finalCityId.isEmpty) &&
+            state.city?.isNotEmpty == true) {
           try {
             final matchingCity = cities.firstWhere(
               (city) => city.name.trim() == state.city?.trim(),
@@ -335,7 +367,9 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
             // Try partial matching as fallback
             try {
               final partialMatch = cities.firstWhere(
-                (city) => city.name.contains(state.city!) || state.city!.contains(city.name),
+                (city) =>
+                    city.name.contains(state.city!) ||
+                    state.city!.contains(city.name),
               );
               finalCityId = partialMatch.tid.toString();
             } catch (e2) {
@@ -360,9 +394,11 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingQualifications: true, qualificationsList: []));
     final result = await getQualifications(NoParams());
     result.fold(
-      (failure) =>
-          emit(state.copyWith(isLoadingQualifications: false, errorMessage: 'failed_to_load_qualifications'.tr())),
-      (qualifications) => emit(state.copyWith(isLoadingQualifications: false, qualificationsList: qualifications)),
+      (failure) => emit(state.copyWith(
+          isLoadingQualifications: false,
+          errorMessage: 'failed_to_load_qualifications'.tr())),
+      (qualifications) => emit(state.copyWith(
+          isLoadingQualifications: false, qualificationsList: qualifications)),
     );
   }
 
@@ -370,12 +406,16 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     FetchSpecializations event,
     Emitter<VolunteerProfileState> emit,
   ) async {
-    emit(state.copyWith(isLoadingSpecializations: true, specializationsList: []));
+    emit(state
+        .copyWith(isLoadingSpecializations: true, specializationsList: []));
     final result = await getSpecializations(NoParams());
     result.fold(
-      (failure) =>
-          emit(state.copyWith(isLoadingSpecializations: false, errorMessage: 'failed_to_load_specializations'.tr())),
-      (specializations) => emit(state.copyWith(isLoadingSpecializations: false, specializationsList: specializations)),
+      (failure) => emit(state.copyWith(
+          isLoadingSpecializations: false,
+          errorMessage: 'failed_to_load_specializations'.tr())),
+      (specializations) => emit(state.copyWith(
+          isLoadingSpecializations: false,
+          specializationsList: specializations)),
     );
   }
 
@@ -386,8 +426,11 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingLanguages: true, languagesList: []));
     final result = await getLaunguages(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingLanguages: false, errorMessage: 'failed_to_load_languages'.tr())),
-      (languages) => emit(state.copyWith(isLoadingLanguages: false, languagesList: languages)),
+      (failure) => emit(state.copyWith(
+          isLoadingLanguages: false,
+          errorMessage: 'failed_to_load_languages'.tr())),
+      (languages) => emit(
+          state.copyWith(isLoadingLanguages: false, languagesList: languages)),
     );
   }
 
@@ -398,8 +441,10 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingSkills: true, skillsList: []));
     final result = await getSkills(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingSkills: false, errorMessage: 'failed_to_load_skills'.tr())),
-      (skills) => emit(state.copyWith(isLoadingSkills: false, skillsList: skills)),
+      (failure) => emit(state.copyWith(
+          isLoadingSkills: false, errorMessage: 'failed_to_load_skills'.tr())),
+      (skills) =>
+          emit(state.copyWith(isLoadingSkills: false, skillsList: skills)),
     );
   }
 
@@ -410,7 +455,8 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingLvls: true, lvlsList: []));
     final result = await getLvls(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingLvls: false, errorMessage: 'failed_to_load_levels'.tr())),
+      (failure) => emit(state.copyWith(
+          isLoadingLvls: false, errorMessage: 'failed_to_load_levels'.tr())),
       (levels) => emit(state.copyWith(isLoadingLvls: false, lvlsList: levels)),
     );
   }
@@ -422,8 +468,11 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingInterests: true, interestsList: []));
     final result = await getInterests(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingInterests: false, errorMessage: 'failed_to_load_interests'.tr())),
-      (interests) => emit(state.copyWith(isLoadingInterests: false, interestsList: interests)),
+      (failure) => emit(state.copyWith(
+          isLoadingInterests: false,
+          errorMessage: 'failed_to_load_interests'.tr())),
+      (interests) => emit(
+          state.copyWith(isLoadingInterests: false, interestsList: interests)),
     );
   }
 
@@ -431,12 +480,15 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     FetchVolunteeringFields event,
     Emitter<VolunteerProfileState> emit,
   ) async {
-    emit(state.copyWith(isLoadingVolunteeringFields: true, volunteeringFieldsList: []));
+    emit(state.copyWith(
+        isLoadingVolunteeringFields: true, volunteeringFieldsList: []));
     final result = await getVolunteeringFields(NoParams());
     result.fold(
-      (failure) => emit(
-          state.copyWith(isLoadingVolunteeringFields: false, errorMessage: 'failed_to_load_volunteering_fields'.tr())),
-      (fields) => emit(state.copyWith(isLoadingVolunteeringFields: false, volunteeringFieldsList: fields)),
+      (failure) => emit(state.copyWith(
+          isLoadingVolunteeringFields: false,
+          errorMessage: 'failed_to_load_volunteering_fields'.tr())),
+      (fields) => emit(state.copyWith(
+          isLoadingVolunteeringFields: false, volunteeringFieldsList: fields)),
     );
   }
 
@@ -494,7 +546,8 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     Emitter<VolunteerProfileState> emit,
   ) {
     // Determine individual and group selections
-    final bool isIndividualSelected = event.isIndividualSelected ?? state.isIndividualSelected;
+    final bool isIndividualSelected =
+        event.isIndividualSelected ?? state.isIndividualSelected;
     final bool isGroupSelected = event.isGroupSelected ?? state.isGroupSelected;
 
     // Determine the correct volunteeringType and volunteeringTypeId based on selection combination
@@ -528,9 +581,12 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
       skillsIds: event.skillsIds ?? state.skillsIds,
       interests: event.interests ?? state.interests,
       volunteeringLevel: event.volunteeringLevel ?? state.volunteeringLevel,
-      volunteeringLevelId: event.volunteeringLevelId ?? state.volunteeringLevelId,
-      volunteeringWorkField: event.volunteeringWorkField ?? state.volunteeringWorkField,
-      volunteeringWorkFieldId: event.volunteeringWorkFieldId ?? state.volunteeringWorkFieldId,
+      volunteeringLevelId:
+          event.volunteeringLevelId ?? state.volunteeringLevelId,
+      volunteeringWorkField:
+          event.volunteeringWorkField ?? state.volunteeringWorkField,
+      volunteeringWorkFieldId:
+          event.volunteeringWorkFieldId ?? state.volunteeringWorkFieldId,
       volunteeringType: volunteeringType,
       volunteeringTypeId: volunteeringTypeId,
       isIndividualSelected: isIndividualSelected,
@@ -579,8 +635,11 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingBloodTypes: true, bloodTypesList: []));
     final result = await getBloodTypes(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingBloodTypes: false, errorMessage: 'failed_to_load_blood_types'.tr())),
-      (bloodTypes) => emit(state.copyWith(isLoadingBloodTypes: false, bloodTypesList: bloodTypes)),
+      (failure) => emit(state.copyWith(
+          isLoadingBloodTypes: false,
+          errorMessage: 'failed_to_load_blood_types'.tr())),
+      (bloodTypes) => emit(state.copyWith(
+          isLoadingBloodTypes: false, bloodTypesList: bloodTypes)),
     );
   }
 
@@ -591,8 +650,11 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     emit(state.copyWith(isLoadingDiseases: true, diseasesList: []));
     final result = await getDiseases(NoParams());
     result.fold(
-      (failure) => emit(state.copyWith(isLoadingDiseases: false, errorMessage: 'failed_to_load_diseases'.tr())),
-      (diseases) => emit(state.copyWith(isLoadingDiseases: false, diseasesList: diseases)),
+      (failure) => emit(state.copyWith(
+          isLoadingDiseases: false,
+          errorMessage: 'failed_to_load_diseases'.tr())),
+      (diseases) => emit(
+          state.copyWith(isLoadingDiseases: false, diseasesList: diseases)),
     );
   }
 
@@ -601,15 +663,18 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     Emitter<VolunteerProfileState> emit,
   ) {
     emit(state.copyWith(
-      educationalQualification: event.educationalQualification ?? state.educationalQualification,
-      educationalQualificationId: event.educationalQualificationId ?? state.educationalQualificationId,
+      educationalQualification:
+          event.educationalQualification ?? state.educationalQualification,
+      educationalQualificationId:
+          event.educationalQualificationId ?? state.educationalQualificationId,
       specialization: event.specialization ?? state.specialization,
       specializationId: event.specializationId ?? state.specializationId,
       profession: event.profession ?? state.profession,
       workExperience: event.workExperience ?? state.workExperience,
       language: event.language ?? state.language,
       languageId: event.languageId ?? state.languageId,
-      scientificExperienceSummary: event.scientificExperienceSummary ?? state.scientificExperienceSummary,
+      scientificExperienceSummary: event.scientificExperienceSummary ??
+          state.scientificExperienceSummary,
     ));
   }
 
@@ -624,7 +689,8 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
         //   !state.isMedicalInfoValid ||
         //   !state.isSocialMediaInfoValid ||
         !state.isUnifiedStepValid) {
-      emit(state.copyWith(errorMessage: 'please_fill_all_required_fields'.tr()));
+      emit(
+          state.copyWith(errorMessage: 'please_fill_all_required_fields'.tr()));
       return;
     }
     emit(state.copyWith(isSubmitting: true));
@@ -643,18 +709,24 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
         'instagramAccount': state.instagramAccount,
         'facebookAccount': state.facebookAccount,
         'linkedInAccount': state.linkedinAccount,
-        'qualification': state.educationalQualificationId, // Use ID instead of name
-        'ademicQualification': state.educationalQualificationId, // Note: API has typo "ademicQualification"
+        'qualification':
+            state.educationalQualificationId, // Use ID instead of name
+        'ademicQualification': state
+            .educationalQualificationId, // Note: API has typo "ademicQualification"
         'specialization': state.specializationId, // Use ID instead of name
-        'scientificExpertise': state.workExperience, // Years of experience (0-50)
+        'scientificExpertise':
+            state.workExperience, // Years of experience (0-50)
         'breif': state.scientificExperienceSummary,
         'job': state.profession,
         'bloodType': state.bloodTypeId, // Use ID instead of name
         'diseases': state.diseaseId, // Use ID instead of name
-        'volunteeringLevel': state.volunteeringLevelId, // Use ID instead of name
+        'volunteeringLevel':
+            state.volunteeringLevelId, // Use ID instead of name
         'volunteeringType': state.volunteeringTypeId, // Use ID instead of name
         'languages': state.languageId, // Use ID instead of name
-        'skills': state.skillsIds.isNotEmpty ? state.skillsIds.first : null, // Use ID instead of name
+        'skills': state.skillsIds.isNotEmpty
+            ? state.skillsIds.first
+            : null, // Use ID instead of name
         'volunteering': state.volunteeringWorkFieldId, // Use ID instead of name
         'volunteerCV': state.cvFileId?.toString(),
       };
@@ -681,7 +753,8 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
       result.fold(
         (failure) => emit(state.copyWith(
           isSubmitting: false,
-          errorMessage: '${'failed_to_submit_profile'.tr()}: ${failure.toString()}',
+          errorMessage:
+              '${'failed_to_submit_profile'.tr()}: ${failure.toString()}',
         )),
         (_) => emit(state.copyWith(
           isSubmitting: false,
@@ -716,18 +789,24 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
         'instagramAccount': state.instagramAccount,
         'facebookAccount': state.facebookAccount,
         'linkedInAccount': state.linkedinAccount,
-        'qualification': state.educationalQualificationId, // Use ID instead of name
-        'ademicQualification': state.educationalQualificationId, // Note: API has typo "ademicQualification"
+        'qualification':
+            state.educationalQualificationId, // Use ID instead of name
+        'ademicQualification': state
+            .educationalQualificationId, // Note: API has typo "ademicQualification"
         'specialization': state.specializationId, // Use ID instead of name
-        'scientificExpertise': state.workExperience, // Years of experience (0-50)
+        'scientificExpertise':
+            state.workExperience, // Years of experience (0-50)
         'breif': state.scientificExperienceSummary,
         'job': state.profession,
         'bloodType': state.bloodTypeId, // Use ID instead of name
         'diseases': state.diseaseId, // Use ID instead of name
-        'volunteeringLevel': state.volunteeringLevelId, // Use ID instead of name
+        'volunteeringLevel':
+            state.volunteeringLevelId, // Use ID instead of name
         'volunteeringType': state.volunteeringTypeId, // Use ID instead of name
         'languages': state.languageId, // Use ID instead of name
-        'skills': state.skillsIds.isNotEmpty ? state.skillsIds.first : null, // Use ID instead of name
+        'skills': state.skillsIds.isNotEmpty
+            ? state.skillsIds.first
+            : null, // Use ID instead of name
         'volunteering': state.volunteeringWorkFieldId, // Use ID instead of name
         'volunteerCV': state.cvFileId?.toString(),
       };
@@ -754,7 +833,8 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
       result.fold(
         (failure) => emit(state.copyWith(
           isSubmitting: false,
-          errorMessage: '${'failed_to_update_profile'.tr()}: ${failure.toString()}',
+          errorMessage:
+              '${'failed_to_update_profile'.tr()}: ${failure.toString()}',
         )),
         (_) => emit(state.copyWith(
           isSubmitting: false,
@@ -782,9 +862,12 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
 
     // Check if we need to fetch data for scientific info step (step 1)
     if (event.step == 1) {
-      final needsQualifications = state.qualificationsList.isEmpty && !state.isLoadingQualifications;
-      final needsSpecializations = state.specializationsList.isEmpty && !state.isLoadingSpecializations;
-      final needsLanguages = state.languagesList.isEmpty && !state.isLoadingLanguages;
+      final needsQualifications =
+          state.qualificationsList.isEmpty && !state.isLoadingQualifications;
+      final needsSpecializations =
+          state.specializationsList.isEmpty && !state.isLoadingSpecializations;
+      final needsLanguages =
+          state.languagesList.isEmpty && !state.isLoadingLanguages;
 
       // Trigger fetch events instead of calling async methods directly
       if (needsQualifications) {
@@ -801,8 +884,10 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     else if (event.step == 2) {
       final needsSkills = state.skillsList.isEmpty && !state.isLoadingSkills;
       final needsLvls = state.lvlsList.isEmpty && !state.isLoadingLvls;
-      final needsInterests = state.interestsList.isEmpty && !state.isLoadingInterests;
-      final needsVolunteeringFields = state.volunteeringFieldsList.isEmpty && !state.isLoadingVolunteeringFields;
+      final needsInterests =
+          state.interestsList.isEmpty && !state.isLoadingInterests;
+      final needsVolunteeringFields = state.volunteeringFieldsList.isEmpty &&
+          !state.isLoadingVolunteeringFields;
 
       // Trigger fetch events instead of calling async methods directly
       if (needsSkills) {
@@ -820,8 +905,10 @@ class VolunteerProfileBloc extends Bloc<VolunteerProfileEvent, VolunteerProfileS
     }
     // Check if we need to fetch data for medical info step (step 3)
     else if (event.step == 3) {
-      final needsBloodTypes = state.bloodTypesList.isEmpty && !state.isLoadingBloodTypes;
-      final needsDiseases = state.diseasesList.isEmpty && !state.isLoadingDiseases;
+      final needsBloodTypes =
+          state.bloodTypesList.isEmpty && !state.isLoadingBloodTypes;
+      final needsDiseases =
+          state.diseasesList.isEmpty && !state.isLoadingDiseases;
 
       // Trigger fetch events instead of calling async methods directly
       if (needsBloodTypes) {

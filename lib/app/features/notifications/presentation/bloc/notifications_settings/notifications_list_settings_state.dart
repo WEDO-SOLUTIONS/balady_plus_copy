@@ -5,7 +5,8 @@ class NotificationsListSettingsState extends Equatable {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class InitialNotificationsSettingsState implements NotificationsListSettingsState {
+final class InitialNotificationsSettingsState
+    implements NotificationsListSettingsState {
   @override
   List<Object?> get props => throw UnimplementedError();
 
@@ -18,12 +19,14 @@ final class LoadingEventsSettingsState extends NotificationsListSettingsState {
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class EmptyNotificationsSettingsState extends NotificationsListSettingsState {
+final class EmptyNotificationsSettingsState
+    extends NotificationsListSettingsState {
   @override
   List<Object?> get props => throw UnimplementedError();
 }
 
-final class FailureNotificationsSettingsState extends NotificationsListSettingsState {
+final class FailureNotificationsSettingsState
+    extends NotificationsListSettingsState {
   final String errorMessage;
 
   FailureNotificationsSettingsState({required this.errorMessage});
@@ -32,7 +35,8 @@ final class FailureNotificationsSettingsState extends NotificationsListSettingsS
   List<Object?> get props => [errorMessage];
 }
 
-final class SucceedEventsNotificationState extends NotificationsListSettingsState {
+final class SucceedEventsNotificationState
+    extends NotificationsListSettingsState {
   final bool isChecked;
 
   SucceedEventsNotificationState({required this.isChecked});

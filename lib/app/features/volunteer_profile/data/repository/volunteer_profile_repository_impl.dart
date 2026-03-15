@@ -10,6 +10,7 @@ import '../model/cv_upload_response.dart';
 import '../model/profile_model/profile_model.dart';
 import '../model/volunteer_lookup.dart';
 
+
 class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
   final VolunteerProfileRemoteDataSource remoteDataSource;
 
@@ -29,12 +30,14 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> getCities(String regionId) async {
+  Future<Either<Failure, List<VolunteerLookup>>> getCities(
+      String regionId) async {
     try {
       final data = await remoteDataSource.getCities(regionId);
 
@@ -47,7 +50,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -65,7 +69,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -83,7 +88,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -101,7 +107,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -119,7 +126,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -137,7 +145,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -155,7 +164,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -173,7 +183,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -191,7 +202,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -209,7 +221,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -227,7 +240,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -244,7 +258,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
@@ -261,12 +276,14 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 
   @override
-  Future<Either<Failure, void>> submitProfile(Map<String, dynamic> profileData, String profileId) async {
+  Future<Either<Failure, void>> submitProfile(
+      Map<String, dynamic> profileData, String profileId) async {
     try {
       await remoteDataSource.submitProfile(profileData, profileId);
       return const Right(null);
@@ -278,7 +295,8 @@ class VolunteerProfileRepositoryImpl implements VolunteerProfileRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 }

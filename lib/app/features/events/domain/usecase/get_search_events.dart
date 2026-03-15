@@ -5,12 +5,14 @@ import 'package:balady_plus/app/features/events/domain/entities/search_events/se
 import 'package:balady_plus/app/features/events/domain/repository/events_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetSearchEvents extends UseCase<SearchEventsResponse, SearchEventsParams> {
+class GetSearchEvents
+    extends UseCase<SearchEventsResponse, SearchEventsParams> {
   final EventRepository repository;
   GetSearchEvents({required this.repository});
 
   @override
-  Future<Either<Failure, SearchEventsResponse>> call(SearchEventsParams params) async {
+  Future<Either<Failure, SearchEventsResponse>> call(
+      SearchEventsParams params) async {
     return await repository.getSearchEvents(params: params);
   }
 }

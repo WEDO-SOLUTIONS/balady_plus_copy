@@ -45,7 +45,8 @@ class _EventImageSwiperState extends State<EventImageSwiper> {
                       ),
                       fit: BoxFit.fill,
                     ),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
                 ),
               ),

@@ -22,7 +22,8 @@ class HomeSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsetsDirectional.only(top: isNew ? 0 : topPadding, start: 16, end: 16),
+          padding: EdgeInsetsDirectional.only(
+              top: isNew ? 0 : topPadding, start: 16, end: 16),
           child: HomeSectionTitle(title: title, isNew: isNew),
         ),
         child,

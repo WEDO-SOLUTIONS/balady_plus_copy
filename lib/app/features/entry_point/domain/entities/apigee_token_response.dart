@@ -37,7 +37,8 @@ class ApigeeTokenResponse extends Equatable {
   DateTime getExpireTime() {
     try {
       int durationInSeconds = int.parse(expiresIn);
-      DateTime expiresInDate = DateTime.now().add(Duration(seconds: durationInSeconds));
+      DateTime expiresInDate =
+          DateTime.now().add(Duration(seconds: durationInSeconds));
 
       return expiresInDate;
     } catch (error, stackTrace) {

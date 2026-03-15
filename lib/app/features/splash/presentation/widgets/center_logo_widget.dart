@@ -2,7 +2,8 @@ import 'package:balady_plus/app/features/splash/presentation/widgets/splash_scre
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
-import '../../../_shared_feature_/shared_feature_exports.dart' show CustomSvgIconWidget, CustomVerticalSpace;
+import '../../../_shared_feature_/shared_feature_exports.dart'
+    show CustomSvgIconWidget, CustomVerticalSpace;
 
 class CenterLogoWidget extends StatelessWidget {
   const CenterLogoWidget({

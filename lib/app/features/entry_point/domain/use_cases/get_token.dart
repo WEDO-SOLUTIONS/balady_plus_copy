@@ -11,7 +11,8 @@ class GetToken extends UseCase<AuthorizationTokenResponse, NoParams> {
 
   GetToken({required this.repository});
   @override
-  Future<Either<Failure, AuthorizationTokenResponse>> call(NoParams params) async {
+  Future<Either<Failure, AuthorizationTokenResponse>> call(
+      NoParams params) async {
     return await repository.authorize();
   }
 }

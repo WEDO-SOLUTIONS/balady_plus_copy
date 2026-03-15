@@ -5,8 +5,10 @@ import 'package:balady_plus/app/features/events/domain/entities/events_category/
 class EventsCategoryResponseModel extends EventCategoryResponse {
   EventsCategoryResponseModel({super.items});
 
-  factory EventsCategoryResponseModel.fromMap(Map<String, dynamic> json) => EventsCategoryResponseModel(
-      items: json["result"] != null
-          ? List<EventCategoryItem>.from(json["result"].map((x) => EventCategoryItemModel.fromMap(x)))
-          : null);
+  factory EventsCategoryResponseModel.fromMap(Map<String, dynamic> json) =>
+      EventsCategoryResponseModel(
+          items: json["result"] != null
+              ? List<EventCategoryItem>.from(
+                  json["result"].map((x) => EventCategoryItemModel.fromMap(x)))
+              : null);
 }

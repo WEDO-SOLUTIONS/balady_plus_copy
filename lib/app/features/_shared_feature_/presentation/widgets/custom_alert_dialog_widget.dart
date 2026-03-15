@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
 
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, AppStyle, CommonFunctions, MessageType, UIHelper;
-import '../../shared_feature_exports.dart' show CustomTextButtonWidget, CustomTextWidget;
+    show
+        AppColor,
+        AppFontWeight,
+        AppStyle,
+        CommonFunctions,
+        MessageType,
+        UIHelper;
+import '../../shared_feature_exports.dart'
+    show CustomTextButtonWidget, CustomTextWidget;
 
 class CustomAlertDialogWidget extends StatelessWidget {
   final Color? backgroundColor;
@@ -43,7 +51,9 @@ class CustomAlertDialogWidget extends StatelessWidget {
     this.radius = 10.0,
     this.borderSide,
     this.borderSideColor = Colors.transparent,
-    this.insetPadding = const EdgeInsets.symmetric(horizontal: UIHelper.mediumPadding),
+    this.insetPadding = const EdgeInsets.symmetric(
+      horizontal: UIHelper.mediumPadding,
+    ),
     this.buttonPadding = EdgeInsets.zero,
     this.actionsPadding = EdgeInsets.zero,
     this.contentPadding = const EdgeInsets.symmetric(
@@ -51,7 +61,9 @@ class CustomAlertDialogWidget extends StatelessWidget {
       horizontal: UIHelper.mediumPadding,
     ),
     this.title,
-    this.titlePadding = const EdgeInsets.symmetric(vertical: UIHelper.smallPadding),
+    this.titlePadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.smallPadding,
+    ),
     this.titleBorder,
     this.titleBorderColor = AppColor.gray,
     this.titleBorderWidth = 1.0,
@@ -83,15 +95,16 @@ class CustomAlertDialogWidget extends StatelessWidget {
       buttonPadding: buttonPadding,
       actionsPadding: actionsPadding,
       contentPadding: contentPadding,
-      title:
-          title ??
+      title: title ??
           Container(
             padding: titlePadding,
             decoration: BoxDecoration(
-              border:
-                  titleBorder ??
+              border: titleBorder ??
                   Border(
-                    bottom: BorderSide(color: titleBorderColor, width: titleBorderWidth),
+                    bottom: BorderSide(
+                      color: titleBorderColor,
+                      width: titleBorderWidth,
+                    ),
                   ),
             ),
             child: Row(
@@ -113,7 +126,7 @@ class CustomAlertDialogWidget extends StatelessWidget {
                       fontSize: titleTextSize,
                       fontWeight: titleTextWeight.fontWeight,
                     ),
-                  ),
+                  )
                 ],
                 // if (titleMessageType != MessageType.none)
                 //   UIHelper.horizontalSmallSpace,
@@ -125,23 +138,28 @@ class CustomAlertDialogWidget extends StatelessWidget {
               ],
             ),
           ),
-      content:
-          content ??
+      content: content ??
           CustomTextWidget(
             contentText ?? "popUpNoMessage".tr(),
             maxLines: 10,
             textAlign: TextAlign.center,
-            textStyle: AppStyle.mainTextSecondaryStyle.copyWith(color: contentTextColor, height: 1.5),
+            textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+              color: contentTextColor,
+              height: 1.5,
+            ),
           ),
-      actions:
-          actions ??
+      actions: actions ??
           [
             CustomTextButtonWidget(
-              onPressed: primaryBtnPressed ?? () => Navigator.of(context).pop(true),
+              onPressed:
+                  primaryBtnPressed ?? () => Navigator.of(context).pop(true),
               text: primaryBtnText ?? "popUpConfirmButton".tr(),
             ),
             if (secondaryBtnPressed != null && secondaryBtnText != null)
-              CustomTextButtonWidget(onPressed: secondaryBtnPressed!, text: secondaryBtnText!),
+              CustomTextButtonWidget(
+                onPressed: secondaryBtnPressed!,
+                text: secondaryBtnText!,
+              ),
           ],
     );
   }
@@ -183,7 +201,9 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
     this.radius = 10.0,
     this.borderSide,
     this.borderSideColor = Colors.transparent,
-    this.insetPadding = const EdgeInsets.symmetric(horizontal: UIHelper.mediumPadding),
+    this.insetPadding = const EdgeInsets.symmetric(
+      horizontal: UIHelper.mediumPadding,
+    ),
     this.buttonPadding = EdgeInsets.zero,
     this.actionsPadding = EdgeInsets.zero,
     this.contentPadding = const EdgeInsets.symmetric(
@@ -191,7 +211,9 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
       horizontal: UIHelper.mediumPadding,
     ),
     this.title,
-    this.titlePadding = const EdgeInsets.symmetric(vertical: UIHelper.smallPadding),
+    this.titlePadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.smallPadding,
+    ),
     this.titleBorder,
     this.titleBorderColor = AppColor.gray,
     this.titleBorderWidth = 1.0,
@@ -208,7 +230,7 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
     this.primaryBtnText,
     this.secondaryBtnPressed,
     this.secondaryBtnText,
-    this.isHtml,
+    this.isHtml
   });
 
   @override
@@ -235,13 +257,14 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
                 child: Icon(Icons.close),
               ),
             ),
-            if (isHtml == false)
-              Flexible(
-                child:
-                    content ??
-                    Linkify(
-                      onOpen: (link) => CommonFunctions.openBaladyWebView(link.url),
-                      text: contentText ?? "",
+
+        if (isHtml == false)
+            Flexible(
+              child: content ??
+                  Linkify(
+                      onOpen: (link) =>
+                          CommonFunctions.openBaladyWebView(link.url),
+                      text:contentText ?? "",
                       softWrap: true,
                       textAlign: TextAlign.start,
                       style: TextStyle(
@@ -250,28 +273,27 @@ class CustomHTMLAlertDialogWidget extends StatelessWidget {
                         height: 1.4,
                         color: contentTextColor,
                         fontFamily: Constants.appFontType,
-                      ),
-                    ),
-              ),
-            if (isHtml == true)
-              Flexible(
-                child:
-                    content ??
-                    Html(
-                      onLinkTap: (url, attributes, element) => CommonFunctions.openBaladyWebView(url),
-                      data: contentText ?? "",
-                      style: {
-                        "body": Style(
-                          fontSize: FontSize(14.0),
-                          fontWeight: FontWeight.w600,
-                          lineHeight: const LineHeight(1.4),
-                          textAlign: TextAlign.start,
-                          color: AppColor.primary500Light,
-                          fontFamily: Constants.appFontType,
-                        ),
-                      },
-                    ),
-              ),
+                      ))
+            ),
+
+    if (isHtml == true)
+      Flexible(
+    child: content ??
+        Html(
+            onLinkTap: (url, attributes, element) =>
+        CommonFunctions.openBaladyWebView(url),
+            data:contentText ?? "",
+          style: {
+            "body": Style(
+                fontSize: FontSize(14.0),
+                fontWeight: FontWeight.w600,
+                lineHeight: const LineHeight(1.4),
+                textAlign: TextAlign.start,
+                color: AppColor.primary500Light,
+                fontFamily: Constants.appFontType),
+          },
+        )
+    ),
           ],
         ),
       ),
