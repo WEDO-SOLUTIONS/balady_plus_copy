@@ -1,0 +1,34 @@
+import 'package:dio/dio.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'makkah_bus_dio_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+Future<Dio> makkahBusDio(Ref ref) async {
+  final env = await ref.read(dgisEnvironmentProvider.future);
+  
+  // Base URLs in env usually look like "https://domain.com/api" or "/api/1.0/"
+  // We need "https://domain.com/api/v1/mb/"
+  // The appFeedbackApi field provides the clean api base: "https://urbi-lifestyle.momrah.gov.sa/api"
+  final baseUrl = '${env.appFeedbackApi}/v1/mb/';
+  
+  final dio = ref.read(baseDioProvider);
+  final appLanguage = ref.read(appLanguageProvider);
+  final makkahBusDio = Dio(
+    dio.options.copyWith(
+      baseUrl: baseUrl,
+      headers: {
+        ...dio.options.headers,
+        'X-API-Key': 'ce49130d-1d91-4ea1-9b56-68d866494842',
+        'X-Locale': appLanguage == Language.arabic ? 'ar_SA' : 'en_SA',
+      },
+    ),
+  );
+  
+  makkahBusDio.interceptors.addAll(dio.interceptors);
+  
+  return makkahBusDio;
+}

@@ -20,8 +20,10 @@ import 'package:mapness/features/poi_card/provider/poi_search_by_object.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_makkah_bus.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/makkah_bus/providers/makkah_bus_departures_provider.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
@@ -112,6 +114,7 @@ class PoiContentSliver extends ConsumerWidget {
       child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
     );
 
+    final makkahBusDepartures = ref.watch(makkahBusDeparturesProvider(data.id!.objectId.toString()));
     final workingHours = data.openingHours?.toWorkingHours();
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
@@ -301,6 +304,15 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 )
                 .toList(),
+            if (makkahBusDepartures.value?.data.routes != null)
+              ...makkahBusDepartures.value!.data.routes
+                  .map(
+                    (route) => Padding(
+                      padding: itemPadding,
+                      child: PoiLinesMakkahBus(routeInfo: route),
+                    ),
+                  )
+                  .toList(),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(
