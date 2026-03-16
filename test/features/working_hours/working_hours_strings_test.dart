@@ -15,7 +15,7 @@ void main() {
     appLocalizations = MockAppLocalizations();
     when(() => appLocalizations.temporarilyClosed).thenReturn('Temporarily closed');
     when(() => appLocalizations.breakUntil).thenReturn('Break until');
-    when(() => appLocalizations.closedUntill).thenReturn('Closed until');
+    when(() => appLocalizations.closedUntil).thenReturn('Closed until');
     when(() => appLocalizations.closed).thenReturn('Closed');
     when(() => appLocalizations.closesIn).thenReturn('Closes in ');
     when(() => appLocalizations.minutes).thenReturn('minutes');
@@ -31,25 +31,24 @@ void main() {
     setUp(() => workingHours = WorkingHours({}));
     final monday = DateTime(2025, 9, 1);
 
-    test(
-      'THEN any day is Temporary closed',
-      () {
-        for (int day = DateTime.monday; day <= DateTime.sunday; day++) {
-          expect(
-            workingHours.closedStatus(monday.add(Duration(days: day, hours: 9)), appLocalizations),
-            'Temporarily closed',
-          );
-        }
-      },
-    );
+    test('THEN any day is Temporary closed', () {
+      for (int day = DateTime.monday; day <= DateTime.sunday; day++) {
+        expect(
+          workingHours.closedStatus(monday.add(Duration(days: day, hours: 9)), appLocalizations),
+          'Temporarily closed',
+        );
+      }
+    });
   });
 
   group('GIVEN working hours monday 10:00-14:00 15:00-18:00, tuesday 11:00-18:00', () {
-    setUp(() => workingHours = WorkingHours({
-          Duration(days: DateTime.monday, hours: 10): Duration(hours: 4),
-          Duration(days: DateTime.monday, hours: 15): Duration(hours: 3),
-          Duration(days: DateTime.tuesday, hours: 11): Duration(hours: 7),
-        }));
+    setUp(
+      () => workingHours = WorkingHours({
+        Duration(days: DateTime.monday, hours: 10): Duration(hours: 4),
+        Duration(days: DateTime.monday, hours: 15): Duration(hours: 3),
+        Duration(days: DateTime.tuesday, hours: 11): Duration(hours: 7),
+      }),
+    );
 
     group(' WHEN not yet worked this day (before intervals)', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 09, 30)));
