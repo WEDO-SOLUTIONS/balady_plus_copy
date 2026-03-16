@@ -1,8 +1,10 @@
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
+import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -97,7 +99,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.watch(highlightProvider.notifier);
   await highlightController.removeAll();
-  await highlightController.addHighlight(objectId.toMessage());
+
+  if (directoryObject.hasHighlightableType) {
+    await highlightController.addHighlight(objectId.toMessage());
+  }
 
   for (final entrance in directoryObject.entrances) {
     await highlightController.addHighlight(entrance.id);
