@@ -76,6 +76,9 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.intermediateStops() =>
       const MapObjectManagerSettings._(name: 'intermediate-stops', layerId: MapObjectLayers.priorityLayerId);
 
+  factory MapObjectManagerSettings.makkahBuses() =>
+      const MapObjectManagerSettings._(name: 'makkah-buses', layerId: MapObjectLayers.defaultLayerId);
+
   const MapObjectManagerSettings.wrcEvent() : this._(name: 'wrc-event', layerId: MapObjectLayers.hajjLayerId);
 }
 

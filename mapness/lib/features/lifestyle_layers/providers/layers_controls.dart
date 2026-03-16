@@ -20,6 +20,8 @@ import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
+import 'package:mapness/features/makkah_buses/makkah_buses_layer_provider.dart';
+import 'package:mapness/features/makkah_buses/makkah_buses_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -199,6 +201,9 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         toggleMetro();
         break;
+      case LayerType.makkahBuses:
+        toggleMakkahBuses();
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -216,6 +221,9 @@ class LayersControls extends _$LayersControls {
     } else if (layerType case LayerType.metro) {
       ref.read(metroLayerRepositoryProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
+    } else if (layerType case LayerType.makkahBuses) {
+      ref.read(makkahBusesLayerRepositoryProvider.notifier).showMakkahBuses();
+      setSelection(selectedType: LayerType.makkahBuses);
     }
   }
 
@@ -259,6 +267,15 @@ class LayersControls extends _$LayersControls {
     ref.read(metroLayerProvider.notifier).toggleMetro();
     if (state.selectedType != (LayerType.metro)) {
       setSelection(selectedType: LayerType.metro);
+    } else {
+      setSelection();
+    }
+  }
+
+  void toggleMakkahBuses() {
+    ref.read(makkahBusesLayerProvider.notifier).toggleMakkahBuses();
+    if (state.selectedType != (LayerType.makkahBuses)) {
+      setSelection(selectedType: LayerType.makkahBuses);
     } else {
       setSelection();
     }
@@ -583,6 +600,9 @@ class LayersControls extends _$LayersControls {
 
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).toggleMetro();
+        break;
+      case LayerType.makkahBuses:
+        await ref.read(makkahBusesLayerProvider.notifier).toggleMakkahBuses();
         break;
     }
   }
