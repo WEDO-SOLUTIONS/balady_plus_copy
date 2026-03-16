@@ -10,7 +10,7 @@ class NavigationSessionManeuvers {
     init(
         model: Model,
         mapTemplate: CPMapTemplate,
-        eventChannel: DgisStreamHandler?
+        eventChannel: DgisStreamHandler?,
     ) {
         self.model = model
         self.mapTemplate = mapTemplate

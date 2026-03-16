@@ -6,6 +6,7 @@ import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
@@ -14,6 +15,7 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -99,6 +101,8 @@ import 'features/search/ui/search_scope.dart';
 import 'features/special_themes/core/special_theme_mode.dart';
 import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'features/wrc/wrc.dart';
+import 'package:provider/provider.dart' as p;
+
 
 Mixpanel? mixpanel;
 
@@ -137,6 +141,7 @@ class MapnessProviderScope extends StatelessWidget {
           return provider.MultiProvider(
             providers: [
               provider.ChangeNotifierProvider(create: (_) => ThemeController()),
+              provider.ChangeNotifierProvider(create: (_) => BaladyThemeNotifier()),
               provider.Provider<AppLocalizations>.value(value: localizations),
             ],
             child: child,
@@ -359,10 +364,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> _themeChanged({bool isDark = false}) async {
     final themeController = context.read<ThemeController>();
     final specialThemeMode = ref.read(specialThemeModeProvider);
-    final bool isMakkahTheme =
-        specialThemeMode == SpecialThemeMode.mekkahBase;
-    // In Makkah, always use light / Makkah theme regardless of user's dark mode preference
-    if (isDark && !isMakkahTheme) {
+    if (isDark) {
       await themeController.setTheme(BaladyAppThemes.dark);
     } else {
       final theme = switch (specialThemeMode) {
@@ -387,10 +389,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final baladyTheme = context.watch<BaladyThemeNotifier>();
 
     // Track theme changes for analytics
     ref
       ..listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
+        if(next == SpecialThemeMode.mekkahBase)
+          {
+            ref
+                .read(darkModeProvider.notifier)
+                .changeDarkModeState(
+              DarkMapStateEnum.off,
+            );
+            final themeController = p.Provider.of<BaladyThemeNotifier>(context,listen: false);
+            if(themeController.isDarkMode)
+              {
+                themeController.toggleTheme(false);
+              }
+          }
+
         if (prev == next) {
           return;
         }
