@@ -93,60 +93,59 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     Spacing.$2x.heightBox,
                     Consumer(
-                        builder: (context, ref, child) {
-                          final specialThemeMode = ref.watch(specialThemeModeProvider);
-                          final bool isMakkahTheme =
-                              specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
-                          return Opacity(
-                            opacity: isMakkahTheme ? 0.5 : 1.0,
-                            child: ContentWrapper(
-                              color: context.colors.backgroundSurface1,
-                              children: [
-                                ContentRow(
-                                  options: ContentRowOptions(
-                                    leadingIcon: AppIcons(
-                                      iconData: Icons.brightness_2_rounded,
-                                      color: context.colors.accentDefault,
-                                      size: 24,
-                                    ),
-                                    title: context.l10n.darkMode,
-                                    actionWidget: ContentRowActionOptions(
-                                      customToggleBuilder:
-                                          ({
-                                        required onToggle,
-                                        initial,
-                                      }) => CupertinoSwitch(
-                                        value: theme == BaladyAppThemes.dark,
-                                        onChanged: isMakkahTheme
-                                            ? null // Disable the switch
-                                            : (value) {
-                                          themeController.toggleTheme(value);
+                      builder: (context, ref, child) {
+                        final specialThemeMode = ref.watch(specialThemeModeProvider);
+                        final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase;
+                        return Opacity(
+                          opacity: isMakkahTheme ? 0.5 : 1.0,
+                          child: ContentWrapper(
+                            color: context.colors.backgroundSurface1,
+                            children: [
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  leadingIcon: AppIcons(
+                                    iconData: Icons.brightness_2_rounded,
+                                    color: context.colors.accentDefault,
+                                    size: 24,
+                                  ),
+                                  title: context.l10n.darkMode,
+                                  actionWidget: ContentRowActionOptions(
+                                    customToggleBuilder:
+                                        ({
+                                          required onToggle,
+                                          initial,
+                                        }) => CupertinoSwitch(
+                                          value: theme == BaladyAppThemes.dark,
+                                          onChanged: isMakkahTheme
+                                              ? null // Disable the switch
+                                              : (value) {
+                                                  themeController.toggleTheme(value);
 
-                                          /// Just For Can Test The Dark Theme With Urib
-                                          if (value) {
-                                            ref
-                                                .read(darkModeProvider.notifier)
-                                                .changeDarkModeState(
-                                              DarkMapStateEnum.alwaysEnabled,
-                                            );
-                                          } else {
-                                            ref
-                                                .read(darkModeProvider.notifier)
-                                                .changeDarkModeState(
-                                              DarkMapStateEnum.off,
-                                            );
-                                          }
-                                          onToggle?.call(value);
-                                        },
-                                        activeColor: context.colors.accentDefault,
-                                      ),
-                                    ),
+                                                  /// Just For Can Test The Dark Theme With Urib
+                                                  if (value) {
+                                                    ref
+                                                        .read(darkModeProvider.notifier)
+                                                        .changeDarkModeState(
+                                                          DarkMapStateEnum.alwaysEnabled,
+                                                        );
+                                                  } else {
+                                                    ref
+                                                        .read(darkModeProvider.notifier)
+                                                        .changeDarkModeState(
+                                                          DarkMapStateEnum.off,
+                                                        );
+                                                  }
+                                                  onToggle?.call(value);
+                                                },
+                                          activeColor: context.colors.accentDefault,
+                                        ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          );
-                        }
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                     Spacing.$2x.heightBox,
                     ContentWrapper(
@@ -155,8 +154,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ContentRow(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const AccessibilitySettingsPage(),
+                              builder: (context) => const AccessibilitySettingsPage(),
                             ),
                           ),
                           options: ContentRowOptions(
