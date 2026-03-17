@@ -154,17 +154,15 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     /// If the current time is before opening time, return a model indicating the place is closed until opening.
     if (currentDateTime.isBefore(openTime)) {
       return _buildWorkTimeModel(
-        title: '${context.l10n.closedUntill} ${openHours.openHour}',
+        title: '${context.l10n.closedUntil} ${openHours.openHour}',
         workTimeType: WorkTimeType.closed,
         days: days,
       );
     }
-
     /// If the current time is after closing time, return the next opening time model.
     else if (currentDateTime.isAfter(closeTime)) {
       return _buildNextOpeningTimeModel(context, model, days);
     }
-
     /// If the current time is between open and close time, return a model with the remaining time until closing.
     else {
       final remainingMinutes = closeTime.difference(currentDateTime).inMinutes;
@@ -197,7 +195,9 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     List<PoiContentWorkTimeDayModel>? days,
   ) {
     /// Get the next day with working hours, skipping weekends.
-    final nextOpen = model.openingHours?.skip(1).firstWhere(
+    final nextOpen = model.openingHours
+        ?.skip(1)
+        .firstWhere(
           (day) => !day.isWeekend,
           orElse: () => model.openingHours!.first,
         );
@@ -211,7 +211,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       /// Get the next weekday and return the model indicating when the place will open.
       final nextWeekday = DateTime.now().add(const Duration(days: 1)).weekDayName(context.l10n);
       return _buildWorkTimeModel(
-        title: '${context.l10n.closedUntill} ${nextWeekday.toCapitalized()} $nextOpenTime',
+        title: '${context.l10n.closedUntil} ${nextWeekday.toCapitalized()} $nextOpenTime',
         workTimeType: WorkTimeType.closed,
         days: days,
       );
@@ -219,7 +219,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
 
     /// If there is no next opening time, return a model indicating the place is temporarily not working.
     return _buildWorkTimeModel(
-      title: '${context.l10n.closedUntill} $nextOpenTime',
+      title: '${context.l10n.closedUntil} $nextOpenTime',
       workTimeType: WorkTimeType.closed,
       days: days,
     );
@@ -242,11 +242,10 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     required String title,
     required WorkTimeType workTimeType,
     List<PoiContentWorkTimeDayModel>? days,
-  }) =>
-      ContentWorkTimeModel(
-        workTimeType: workTimeType,
-        poiContentWorkTime: PoiContentWorkTimeModel(workHours: title, days: days),
-      );
+  }) => ContentWorkTimeModel(
+    workTimeType: workTimeType,
+    poiContentWorkTime: PoiContentWorkTimeModel(workHours: title, days: days),
+  );
 
   OpeningHoursModel _getOpeningHoursModel(AppLocalizations locale) {
     final displayOpenHours = openingHours?.getDisplayOpenHours(locale);
