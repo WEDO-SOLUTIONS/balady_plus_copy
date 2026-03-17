@@ -8,8 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/bridge.dart';
-import '../wisgets/location_retrive_data.dart';
 import '../wisgets/location_retrive_location.dart';
+import '../wisgets/location_retrive_data.dart';
 
 class AcquireLocationPage extends StatefulWidget {
   const AcquireLocationPage({super.key});
@@ -18,7 +18,8 @@ class AcquireLocationPage extends StatefulWidget {
   State<AcquireLocationPage> createState() => _AcquireLocationPageState();
 }
 
-class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsBindingObserver {
+class _AcquireLocationPageState extends State<AcquireLocationPage>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     // TODO: implement initState
@@ -34,7 +35,8 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
     } else if (state == AppLifecycleState.resumed) {
       sl<LocationCubit>().getLocationInit();
     }
@@ -51,7 +53,9 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
               final entryPointBridge = sl<EntryPointBridge>();
               entryPointBridge(params);
 
-              context.read<LocationCubit>().emit(state.copyWith(requestsStatus: BlocStatus.initial));
+              context
+                  .read<LocationCubit>()
+                  .emit(state.copyWith(requestsStatus: BlocStatus.initial));
             });
           }
         }
@@ -60,37 +64,45 @@ class _AcquireLocationPageState extends State<AcquireLocationPage> with WidgetsB
         return Scaffold(
           body: Container(
             decoration: const BoxDecoration(
-              image: DecorationImage(image: AssetImage(ImagePath.successPageBackground), fit: BoxFit.cover),
-            ),
-            child: Builder(
-              builder: (context) {
-                if (state.locationStatus == BlocStatus.success) {
-                  return LocationRetriveData();
-                }
-                //  return Container(
-                //     child: Center(child: Text("Getting Location Success")));
-                if (state.locationStatus == BlocStatus.loading) {
-                  return LocationRetriveData();
-                }
-                if (state.locationStatus == BlocStatus.failure) {
-                  return Container(child: Center(child: Text("Getting Location")));
-                }
+                image: DecorationImage(
+                    image: AssetImage(ImagePath.successPageBackground),
+                    fit: BoxFit.cover)),
+            child: Builder(builder: (context) {
+              if (state.locationStatus == BlocStatus.success) {
+                return LocationRetriveData();
+              }
+              //  return Container(
+              //     child: Center(child: Text("Getting Location Success")));
+              if (state.locationStatus == BlocStatus.loading) {
+                return LocationRetriveData();
+              }
+              if (state.locationStatus == BlocStatus.failure) {
+                return Container(
+                    child: Center(child: Text("Getting Location")));
+              }
 
-                if (state.locationPermissionStatus == BlocStatus.locationPermissionSuceess &&
-                    state.locationServiceStatus == BlocStatus.locationServiceSuceess) {
-                  return LocationRetriveData();
-                }
+              if (state.locationPermissionStatus ==
+                      BlocStatus.locationPermissionSuceess &&
+                  state.locationServiceStatus ==
+                      BlocStatus.locationServiceSuceess) {
+                return LocationRetriveData();
+              }
 
-                if (state.locationServiceStatus == BlocStatus.locationServiceFailed) {
-                  return LocationRetriveLocation(permission: false);
-                }
-                if (state.locationPermissionStatus == BlocStatus.locationPermissionFailed) {
-                  return LocationRetriveLocation(permission: true);
-                }
+              if (state.locationServiceStatus ==
+                  BlocStatus.locationServiceFailed) {
+                return LocationRetriveLocation(
+                  permission: false,
+                );
+              }
+              if (state.locationPermissionStatus ==
+                  BlocStatus.locationPermissionFailed) {
+                return LocationRetriveLocation(
+                  permission: true,
+                );
+              }
 
-                return Container(child: Center(child: Text("")));
-              },
-            ),
+              return Container(child: Center(child: Text("")));
+            }),
           ),
         );
       },

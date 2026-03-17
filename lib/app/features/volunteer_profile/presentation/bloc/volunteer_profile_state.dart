@@ -452,11 +452,13 @@ class VolunteerProfileState extends Equatable {
         city: city ?? this.city,
         cityId: cityId ?? this.cityId,
         isGenderFromApi: isGenderFromApi ?? this.isGenderFromApi,
-        isMaritalStatusFromApi: isMaritalStatusFromApi ?? this.isMaritalStatusFromApi,
+        isMaritalStatusFromApi:
+            isMaritalStatusFromApi ?? this.isMaritalStatusFromApi,
         isNationalIdFromApi: isNationalIdFromApi ?? this.isNationalIdFromApi,
         isRegionFromApi: isRegionFromApi ?? this.isRegionFromApi,
         isCityFromApi: isCityFromApi ?? this.isCityFromApi,
-        isNearbyPhoneNumberFromApi: isNearbyPhoneNumberFromApi ?? this.isNearbyPhoneNumberFromApi,
+        isNearbyPhoneNumberFromApi:
+            isNearbyPhoneNumberFromApi ?? this.isNearbyPhoneNumberFromApi,
         isDateOfBirthFromApi: isDateOfBirthFromApi ?? this.isDateOfBirthFromApi,
         district: district ?? this.district,
         street: street ?? this.street,
@@ -468,13 +470,16 @@ class VolunteerProfileState extends Equatable {
         canTravel: canTravel ?? this.canTravel,
         isLoadingRegions: isLoadingRegions ?? this.isLoadingRegions,
         isLoadingCities: isLoadingCities ?? this.isLoadingCities,
-        isLoadingQualifications: isLoadingQualifications ?? this.isLoadingQualifications,
-        isLoadingSpecializations: isLoadingSpecializations ?? this.isLoadingSpecializations,
+        isLoadingQualifications:
+            isLoadingQualifications ?? this.isLoadingQualifications,
+        isLoadingSpecializations:
+            isLoadingSpecializations ?? this.isLoadingSpecializations,
         isLoadingLanguages: isLoadingLanguages ?? this.isLoadingLanguages,
         isLoadingSkills: isLoadingSkills ?? this.isLoadingSkills,
         isLoadingLvls: isLoadingLvls ?? this.isLoadingLvls,
         isLoadingInterests: isLoadingInterests ?? this.isLoadingInterests,
-        isLoadingVolunteeringFields: isLoadingVolunteeringFields ?? this.isLoadingVolunteeringFields,
+        isLoadingVolunteeringFields:
+            isLoadingVolunteeringFields ?? this.isLoadingVolunteeringFields,
         isLoadingBloodTypes: isLoadingBloodTypes ?? this.isLoadingBloodTypes,
         isLoadingDiseases: isLoadingDiseases ?? this.isLoadingDiseases,
         regionsList: regionsList ?? this.regionsList,
@@ -485,22 +490,28 @@ class VolunteerProfileState extends Equatable {
         skillsList: skillsList ?? this.skillsList,
         lvlsList: lvlsList ?? this.lvlsList,
         interestsList: interestsList ?? this.interestsList,
-        volunteeringFieldsList: volunteeringFieldsList ?? this.volunteeringFieldsList,
+        volunteeringFieldsList:
+            volunteeringFieldsList ?? this.volunteeringFieldsList,
         bloodTypesList: bloodTypesList ?? this.bloodTypesList,
         diseasesList: diseasesList ?? this.diseasesList,
-        educationalQualification: educationalQualification ?? this.educationalQualification,
-        educationalQualificationId: educationalQualificationId ?? this.educationalQualificationId,
+        educationalQualification:
+            educationalQualification ?? this.educationalQualification,
+        educationalQualificationId:
+            educationalQualificationId ?? this.educationalQualificationId,
         specialization: specialization ?? this.specialization,
         specializationId: specializationId ?? this.specializationId,
         profession: profession ?? this.profession,
         workExperience: workExperience ?? this.workExperience,
         language: language ?? this.language,
         languageId: languageId ?? this.languageId,
-        scientificExperienceSummary: scientificExperienceSummary ?? this.scientificExperienceSummary,
+        scientificExperienceSummary:
+            scientificExperienceSummary ?? this.scientificExperienceSummary,
         volunteeringLevel: volunteeringLevel ?? this.volunteeringLevel,
         volunteeringLevelId: volunteeringLevelId ?? this.volunteeringLevelId,
-        volunteeringWorkField: volunteeringWorkField ?? this.volunteeringWorkField,
-        volunteeringWorkFieldId: volunteeringWorkFieldId ?? this.volunteeringWorkFieldId,
+        volunteeringWorkField:
+            volunteeringWorkField ?? this.volunteeringWorkField,
+        volunteeringWorkFieldId:
+            volunteeringWorkFieldId ?? this.volunteeringWorkFieldId,
         volunteeringType: volunteeringType ?? this.volunteeringType,
         volunteeringTypeId: volunteeringTypeId ?? this.volunteeringTypeId,
         isIndividualSelected: isIndividualSelected ?? this.isIndividualSelected,
@@ -637,18 +648,18 @@ class VolunteerProfileState extends Equatable {
     return Helpers.validateMobile(phone) == null;
   }
 
-  bool get isPersonalInfoValid =>
-      _isValidField(nationalId) &&
-      _isValidField(fullName) &&
-      _isValidField(firstName) &&
-      _isValidField(lastName) &&
-      _isValidField(dateOfBirth) &&
-      _isValidField(gender) &&
-      _isValidField(nationality) &&
-      isEmailValid(email) &&
-      isPhoneValid(phoneNumber) &&
-      _isValidField(regionId) &&
-      _isValidField(cityId);
+    bool get isPersonalInfoValid =>
+        _isValidField(nationalId) &&
+        _isValidField(fullName) &&
+        _isValidField(firstName) &&
+        _isValidField(lastName) &&
+        _isValidField(dateOfBirth) &&
+        _isValidField(gender) &&
+        _isValidField(nationality) &&
+        isEmailValid(email) &&
+        isPhoneValid(phoneNumber) &&
+        _isValidField(regionId) &&
+        _isValidField(cityId);
 
   bool get isUnifiedStepValid =>
       _isValidField(nationalId) &&
@@ -658,7 +669,7 @@ class VolunteerProfileState extends Equatable {
       _isValidField(regionId) &&
       _isValidField(cityId) &&
       _isValidField(educationalQualificationId) &&
-      _isValidField(volunteeringWorkFieldId);
+      _isValidField(volunteeringWorkFieldId) ;
   // Note: nearbyPhoneNumber (relative phone) is optional
 
   bool get isScientificInfoValid =>
@@ -671,7 +682,8 @@ class VolunteerProfileState extends Equatable {
       skills.isNotEmpty &&
       volunteeringLevel?.isNotEmpty == true &&
       volunteeringWorkField?.isNotEmpty == true &&
-      (isIndividualSelected || isGroupSelected); // At least one type must be selected
+      (isIndividualSelected ||
+          isGroupSelected); // At least one type must be selected
 
   bool get isMedicalInfoValid => true; // Medical info fields are optional
 
@@ -724,7 +736,8 @@ class VolunteerSkillsUpdated extends VolunteerProfileState {
   @override
   final List<String> skills;
 
-  const VolunteerSkillsUpdated(this.skills) : super(skills: skills, isLoading: false, errorMessage: null);
+  const VolunteerSkillsUpdated(this.skills)
+      : super(skills: skills, isLoading: false, errorMessage: null);
 
   @override
   List<Object?> get props => [skills, isLoading, errorMessage];
@@ -734,7 +747,8 @@ class VolunteerInterestsUpdated extends VolunteerProfileState {
   @override
   final List<String> interests;
 
-  const VolunteerInterestsUpdated(this.interests) : super(interests: interests, isLoading: false, errorMessage: null);
+  const VolunteerInterestsUpdated(this.interests)
+      : super(interests: interests, isLoading: false, errorMessage: null);
 
   @override
   List<Object?> get props => [interests, isLoading, errorMessage];

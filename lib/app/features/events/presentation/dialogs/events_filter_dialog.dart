@@ -403,7 +403,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                             selectedFees: Nullable(selectedFees),
                           ));
 
-                      CommonFunctions.sendUXCamEvent(UXCamEvents.Events_List_Click_Apply_Filter_Event);
+                      CommonFunctions.sendUXCamEvent(
+                          UXCamEvents.Events_List_Click_Apply_Filter_Event);
                     },
                   ),
                   const SizedBox(height: 16),

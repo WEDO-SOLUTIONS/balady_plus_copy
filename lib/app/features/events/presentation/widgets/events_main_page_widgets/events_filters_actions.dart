@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../_shared_feature_/shared_feature_exports.dart' show ElevatedButtonWidget;
+import '../../../../_shared_feature_/shared_feature_exports.dart'
+    show ElevatedButtonWidget;
 import '../../bloc/events_bloc.dart';
 
 class EventsFilterActions extends StatelessWidget {

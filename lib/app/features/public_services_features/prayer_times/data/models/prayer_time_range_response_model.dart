@@ -29,7 +29,8 @@ class PrayerTimeRangeResponseModel extends PrayerTimeRangeEntity {
           zuhr: zuhr ?? '',
         );
 
-  factory PrayerTimeRangeResponseModel.fromJson(Map<String, dynamic> json) => PrayerTimeRangeResponseModel(
+  factory PrayerTimeRangeResponseModel.fromJson(Map<String, dynamic> json) =>
+      PrayerTimeRangeResponseModel(
         asr: json["Asr"],
         day: json["Day"],
         fajr: json["Fajr"],

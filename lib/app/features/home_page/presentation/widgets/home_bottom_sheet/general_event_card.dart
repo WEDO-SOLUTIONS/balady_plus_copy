@@ -22,7 +22,8 @@ class GeneralEventHomeCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
                   image: DecorationImage(
-                      colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.srcOver),
+                      colorFilter: ColorFilter.mode(
+                          Color(0x33034356), BlendMode.srcOver),
                       image: AssetImage(
                         IconPath.rockHomeEvents,
                       )),
@@ -96,7 +97,8 @@ class IconName extends StatelessWidget {
   final String name;
   final String icon;
   final Color color;
-  const IconName({super.key, required this.name, required this.icon, required this.color});
+  const IconName(
+      {super.key, required this.name, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {

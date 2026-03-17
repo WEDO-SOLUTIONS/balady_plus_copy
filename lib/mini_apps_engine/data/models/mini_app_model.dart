@@ -18,10 +18,13 @@ class MiniAppModel {
     serviceKey = json['serviceKey'];
     description = json['description'];
     cdnLogoRef = json['cdnLogoRef'];
-    portNumber = json['portNumber'] != null ? int.tryParse(json['portNumber']) : null;
+    portNumber =
+        json['portNumber'] != null ? int.tryParse(json['portNumber']) : null;
     entity = json['entity'];
     logoKey = json['logoKey'];
-    latestVersion = json['latestVersion'] != null ? LatestVersion.fromJson(json['latestVersion']) : null;
+    latestVersion = json['latestVersion'] != null
+        ? LatestVersion.fromJson(json['latestVersion'])
+        : null;
     path = json['path'] ?? "";
     if (json['requirements'] != null) {
       requirements = [];
@@ -91,11 +94,14 @@ class LatestVersion {
     nafathLogin = json['nafathLogin'];
     otpLogin = json['otpLogin'];
     forceUpdate = json['forceUpdate'];
-    packageMetaDataDto =
-        json['packageMetaDataDto'] != null ? PackageMetaDataDto.fromJson(json['packageMetaDataDto']) : null;
+    packageMetaDataDto = json['packageMetaDataDto'] != null
+        ? PackageMetaDataDto.fromJson(json['packageMetaDataDto'])
+        : null;
     status = json['status'];
     type = json['type'];
-    deepLinkModel = json['deepLinkDto'] != null ? DeepLinkModel.fromJson(json['deepLinkDto']) : null;
+    deepLinkModel = json['deepLinkDto'] != null
+        ? DeepLinkModel.fromJson(json['deepLinkDto'])
+        : null;
   }
 
   String? id;

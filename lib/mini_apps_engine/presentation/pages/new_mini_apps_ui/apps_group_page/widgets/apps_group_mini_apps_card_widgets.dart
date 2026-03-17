@@ -47,10 +47,11 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
     final titleHeight = (baseTitleHeight * textScale).clamp(40.0, 85.0);
     // Widen title when font is bigger so words don't break with 1–2 letters on the next line
     final cellWidth = screenWidth / 3 - 12;
-    final titleWidth = (screenWidth * 0.25 * (0.92 + 0.16 * textScale.clamp(1.0, 1.5))).clamp(
-      screenWidth * 0.24,
-      cellWidth,
-    );
+    final titleWidth =
+        (screenWidth * 0.25 * (0.92 + 0.16 * textScale.clamp(1.0, 1.5))).clamp(
+          screenWidth * 0.24,
+          cellWidth,
+        );
 
     final iconMaxHeight = height ?? context.h(87.12268829345703);
     final cardWidth = width ?? context.w(87.12268829345703);
@@ -61,35 +62,52 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
           ? LayoutBuilder(
               builder: (context, parentConstraints) {
                 final maxTotalHeight = parentConstraints.maxHeight;
-                final hasBoundedHeight = maxTotalHeight.isFinite && maxTotalHeight > 0;
+                final hasBoundedHeight =
+                    maxTotalHeight.isFinite && maxTotalHeight > 0;
 
                 // Responsive to text scale: gap between icon and title grows with font size
                 final verticalGap = (4.0 * textScale).clamp(0.0, 10.0);
                 final minIconHeight = 56.0;
                 // Title area scales with font: 13*1.4*3 ≈ 54.6 + buffer for metrics at large scale
-                final minTitleHeightFor3Lines = (56.0 * textScale + 14.0).clamp(32.0, double.infinity);
+                final minTitleHeightFor3Lines = (56.0 * textScale + 14.0).clamp(
+                  32.0,
+                  double.infinity,
+                );
                 final double iconMaxActual;
                 final double titleMaxActual;
                 if (hasBoundedHeight) {
                   final spaceForIconAndTitle = maxTotalHeight - verticalGap;
-                  final maxTitleAllowed = math.max(0.0, spaceForIconAndTitle - minIconHeight);
+                  final maxTitleAllowed = math.max(
+                    0.0,
+                    spaceForIconAndTitle - minIconHeight,
+                  );
                   titleMaxActual = math
-                      .min(minTitleHeightFor3Lines, math.min(titleHeight, maxTitleAllowed))
+                      .min(
+                        minTitleHeightFor3Lines,
+                        math.min(titleHeight, maxTitleAllowed),
+                      )
                       .clamp(32.0, maxTitleAllowed);
-                  iconMaxActual = math.max(minIconHeight, spaceForIconAndTitle - titleMaxActual);
+                  iconMaxActual = math.max(
+                    minIconHeight,
+                    spaceForIconAndTitle - titleMaxActual,
+                  );
                 } else {
                   iconMaxActual = iconMaxHeight;
                   titleMaxActual = titleHeight;
                 }
 
                 final iconSection = Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.screenWidth * 0.01,
+                  ),
                   child: SizedBox(
                     width: cardWidth,
                     height: iconMaxActual,
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).brightness == Brightness.dark ? Color(0xFF012F41) : Color(0XFFE5EBED),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Color(0xFF012F41)
+                            : Color(0XFFE5EBED),
                         borderRadius: BorderRadius.circular(radius ?? 22),
                       ),
                       child: Center(
@@ -98,7 +116,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                           isVerifyingKey: true,
                           imageWidth: iconWidth ?? context.w(60),
                           imageHeight: iconHeight ?? context.h(60),
-                          placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
+                          placeHolderWidget: SvgPicture.asset(
+                            ImagePath.calendarBackground,
+                          ),
                         ),
                       ),
                     ),
@@ -157,13 +177,17 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
               },
             )
           : Padding(
-              padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screenWidth * 0.01,
+              ),
               child: SizedBox(
                 width: width ?? context.w(87.12268829345703),
                 height: height ?? context.h(87.12268829345703),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark ? Color(0xFF012F41) : Color(0XFFE5EBED),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Color(0xFF012F41)
+                        : Color(0XFFE5EBED),
                     borderRadius: BorderRadius.circular(radius ?? 22),
                   ),
                   child: Center(
@@ -174,7 +198,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                       isVerifyingKey: true,
                       imageWidth: iconWidth ?? context.w(60),
                       imageHeight: iconHeight ?? context.h(60),
-                      placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
+                      placeHolderWidget: SvgPicture.asset(
+                        ImagePath.calendarBackground,
+                      ),
                     ),
                   ),
                 ),

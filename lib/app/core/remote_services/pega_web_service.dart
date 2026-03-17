@@ -17,13 +17,11 @@ class PegaWebService {
   static String baseURL = RemoteConfig.apigeeURL;
   // static String pegaBaseURL = RemoteConfig.pegaURL;
 
-  Future<Map<String, dynamic>> getNewApigeeRequest(
-    String url, {
-    String? relativePath,
-    Map<String, dynamic>? queryParams,
-    Map<String, String>? extraHeadersParams,
-    bool autoLogout = true,
-  }) async {
+  Future<Map<String, dynamic>> getNewApigeeRequest(String url,
+      {String? relativePath,
+      Map<String, dynamic>? queryParams,
+      Map<String, String>? extraHeadersParams,
+      bool autoLogout = true}) async {
     String queryString = "";
     if (relativePath != null) {
       queryString = relativePath;
@@ -45,14 +43,19 @@ class PegaWebService {
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
-      var response = await http.get(Uri.parse(requestUrl), headers: headers);
+      var response = await http.get(
+        Uri.parse(requestUrl),
+        headers: headers,
+      );
       print("url response: ${utf8.decode(response.bodyBytes)}");
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
-        result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+        result.putIfAbsent(
+            "data", () => utf8.decode(response.bodyBytes).toString());
       } else if (response.statusCode == HttpStatus.unauthorized) {
         result.putIfAbsent("state", () => false);
-        result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+        result.putIfAbsent(
+            "data", () => utf8.decode(response.bodyBytes).toString());
         if (autoLogout) {
           result.putIfAbsent("error", () => ('session_ended_error').tr());
         } else {
@@ -61,11 +64,10 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: utf8.decode(response.bodyBytes).toString(),
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: utf8.decode(response.bodyBytes).toString(),
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -78,16 +80,16 @@ class PegaWebService {
         if (autoLogout) sl<EntryPointCubit>().autoLogout();
       } else {
         result.putIfAbsent("state", () => false);
-        result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+        result.putIfAbsent(
+            "data", () => utf8.decode(response.bodyBytes).toString());
         result.putIfAbsent("error", () => ('errors_server_error_1').tr());
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: response.body,
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: response.body,
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -114,7 +116,11 @@ class PegaWebService {
       }
 
       try {
-        Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, data: error.toString(), statusCode: 0);
+        Helpers.sendLog(
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: error.toString(),
+            statusCode: 0);
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -244,14 +250,12 @@ class PegaWebService {
   //   return result;
   // }
 
-  Future<Map<String, dynamic>> getApigeeRequest(
-    String url, {
-    String? relativePath,
-    Map<String, dynamic>? queryParams,
-    Map<String, String>? extraHeadersParams,
-    int? timeLimit,
-    bool autoLogout = true,
-  }) async {
+  Future<Map<String, dynamic>> getApigeeRequest(String url,
+      {String? relativePath,
+      Map<String, dynamic>? queryParams,
+      Map<String, String>? extraHeadersParams,
+      int? timeLimit,
+      bool autoLogout = true}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
     String queryString = "";
     if (relativePath != null) {
@@ -270,15 +274,13 @@ class PegaWebService {
         String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
         String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-        String verifyingKEY = hashRequest(
-          requestUrl,
-          "GET",
-          loginIdentityId: loginIdentityId,
-          loginIdentityType: loginIdentityType,
-        );
+        String verifyingKEY = hashRequest(requestUrl, "GET",
+            loginIdentityId: loginIdentityId,
+            loginIdentityType: loginIdentityType);
 
         var headers = {
-          'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
+          'Authorization':
+              'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
           "loginIdentityId": loginIdentityId,
           "loginIdentityType": loginIdentityType,
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
@@ -293,16 +295,20 @@ class PegaWebService {
         print(headers);
         if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
-        var response = await http
-            .get(Uri.parse(requestUrl), headers: headers)
-            .timeout(Duration(seconds: timeLimit ?? 5));
+        var response = await http.get(
+          Uri.parse(requestUrl),
+          headers: headers,
+        )
+        .timeout(Duration(seconds: timeLimit ?? 5));
         print("url response: ${utf8.decode(response.bodyBytes)}");
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
-          result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+          result.putIfAbsent(
+              "data", () => utf8.decode(response.bodyBytes).toString());
         } else if (response.statusCode == HttpStatus.unauthorized) {
           result.putIfAbsent("state", () => false);
-          result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+          result.putIfAbsent(
+              "data", () => utf8.decode(response.bodyBytes).toString());
           if (autoLogout) {
             result.putIfAbsent("error", () => ('session_ended_error').tr());
           } else {
@@ -311,11 +317,10 @@ class PegaWebService {
 
           try {
             Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: utf8.decode(response.bodyBytes).toString(),
-              statusCode: response.statusCode,
-            );
+                url: baseURL + url,
+                qeuryParms: queryString,
+                data: utf8.decode(response.bodyBytes).toString(),
+                statusCode: response.statusCode);
           } catch (error, stackTrace) {
             LogsViewModel().sendEventFromModel(
               event: ErrorExceptionModel(
@@ -328,16 +333,16 @@ class PegaWebService {
           if (autoLogout) sl<EntryPointCubit>().autoLogout();
         } else {
           result.putIfAbsent("state", () => false);
-          result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+          result.putIfAbsent(
+              "data", () => utf8.decode(response.bodyBytes).toString());
           result.putIfAbsent("error", () => ('errors_server_error_1').tr());
 
           try {
             Helpers.sendLog(
-              url: baseURL + url,
-              qeuryParms: queryString,
-              data: response.body,
-              statusCode: response.statusCode,
-            );
+                url: baseURL + url,
+                qeuryParms: queryString,
+                data: response.body,
+                statusCode: response.statusCode);
           } catch (error, stackTrace) {
             LogsViewModel().sendEventFromModel(
               event: ErrorExceptionModel(
@@ -364,7 +369,11 @@ class PegaWebService {
         }
 
         try {
-          Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, data: error.toString(), statusCode: 0);
+          Helpers.sendLog(
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: error.toString(),
+              statusCode: 0);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -378,7 +387,8 @@ class PegaWebService {
       return result;
     } else {
       try {
-        Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, statusCode: 1);
+        Helpers.sendLog(
+            url: baseURL + url, qeuryParms: queryString, statusCode: 1);
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -396,13 +406,11 @@ class PegaWebService {
     }
   }
 
-  Future<Map<String, dynamic>> postApigeeRequest(
-    String url, {
-    String? relativePath,
-    Map<String, dynamic>? queryParams,
-    Map<String, String>? extraHeadersParams,
-    dynamic body,
-  }) async {
+  Future<Map<String, dynamic>> postApigeeRequest(String url,
+      {String? relativePath,
+      Map<String, dynamic>? queryParams,
+      Map<String, String>? extraHeadersParams,
+      dynamic body}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -421,16 +429,14 @@ class PegaWebService {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
       String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-      String verifyingKEY = hashRequest(
-        requestUrl,
-        "POST",
-        body: data,
-        loginIdentityId: loginIdentityId,
-        loginIdentityType: loginIdentityType,
-      );
+      String verifyingKEY = hashRequest(requestUrl, "POST",
+          body: data,
+          loginIdentityId: loginIdentityId,
+          loginIdentityType: loginIdentityType);
 
       var headers = {
-        'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
+        'Authorization':
+            'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
         "loginIdentityId": loginIdentityId,
         "loginIdentityType": loginIdentityType,
         'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
@@ -443,23 +449,25 @@ class PegaWebService {
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
-      var response = await http.post(Uri.parse(requestUrl), body: data, headers: headers);
+      var response =
+          await http.post(Uri.parse(requestUrl), body: data, headers: headers);
       print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
-        result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+        result.putIfAbsent(
+            "data", () => utf8.decode(response.bodyBytes).toString());
       } else if (response.statusCode == HttpStatus.unauthorized) {
         result.putIfAbsent("state", () => false);
-        result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+        result.putIfAbsent(
+            "data", () => utf8.decode(response.bodyBytes).toString());
         result.putIfAbsent("error", () => ('errors_server_error_1').tr());
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: utf8.decode(response.bodyBytes).toString(),
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: utf8.decode(response.bodyBytes).toString(),
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -473,17 +481,17 @@ class PegaWebService {
         //  locator<AuthService>().autoLogout();
       } else {
         result.putIfAbsent("state", () => false);
-        result.putIfAbsent("data", () => utf8.decode(response.bodyBytes).toString());
+        result.putIfAbsent(
+            "data", () => utf8.decode(response.bodyBytes).toString());
         result.putIfAbsent("error", () => ('errors_server_error_1').tr());
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: utf8.decode(response.bodyBytes).toString(),
-            body: data,
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: utf8.decode(response.bodyBytes).toString(),
+              body: data,
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -510,7 +518,11 @@ class PegaWebService {
       }
 
       try {
-        Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, data: error.toString(), statusCode: 0);
+        Helpers.sendLog(
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: error.toString(),
+            statusCode: 0);
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -525,7 +537,8 @@ class PegaWebService {
     return result;
   }
 
-  String hashRequest(String url, String method, {String? body, String? loginIdentityId, String? loginIdentityType}) {
+  String hashRequest(String url, String method,
+      {String? body, String? loginIdentityId, String? loginIdentityType}) {
     //var encodedURL = Uri.encodeComponent(url);
     String message = "";
     message = '$url${method}Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
@@ -547,15 +560,13 @@ class PegaWebService {
     return base64;
   }
 
-  Future<Map<String, dynamic>> uploadApigeeFile(
-    String url, {
-    String? relativePath,
-    Map<String, dynamic>? queryParams,
-    Uint8List? base64,
-    String? fileName,
-    String? mimeType,
-    dynamic body,
-  }) async {
+  Future<Map<String, dynamic>> uploadApigeeFile(String url,
+      {String? relativePath,
+      Map<String, dynamic>? queryParams,
+      Uint8List? base64,
+      String? fileName,
+      String? mimeType,
+      dynamic body}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -571,28 +582,31 @@ class PegaWebService {
 
     Map<String, dynamic> result = {};
     try {
-      var request = http.MultipartRequest('POST', Uri.parse(requestUrl));
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(requestUrl),
+      );
 
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
       String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-      String verifyingKEY = hashRequest(
-        requestUrl,
-        "POST",
-        body: data,
-        loginIdentityId: loginIdentityId,
-        loginIdentityType: loginIdentityType,
-      );
+      String verifyingKEY = hashRequest(requestUrl, "POST",
+          body: data,
+          loginIdentityId: loginIdentityId,
+          loginIdentityType: loginIdentityType);
 
       request.headers['fileContentType'] = mimeType ?? "";
-      request.headers['authorization'] = 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
+      request.headers['authorization'] =
+          'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
       request.headers['loginIdentityId'] = loginIdentityId;
       request.headers['loginIdentityType'] = loginIdentityType;
       request.headers['verifyingKEY'] = verifyingKEY;
       request.headers['SSOToken'] = CommonProperties.token ?? "";
       request.headers['x-channel-id'] = "MOBILE";
 
-      http.MultipartFile file = http.MultipartFile.fromBytes('file', base64!.toList(), filename: fileName);
+      http.MultipartFile file = http.MultipartFile.fromBytes(
+          'file', base64!.toList(),
+          filename: fileName);
 
       request.files.add(file);
       var response = await request.send();
@@ -608,12 +622,11 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: respStr,
-            body: data,
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: respStr,
+              body: data,
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -640,7 +653,12 @@ class PegaWebService {
       }
 
       try {
-        Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, data: error.toString(), body: data, statusCode: 0);
+        Helpers.sendLog(
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: error.toString(),
+            body: data,
+            statusCode: 0);
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -655,11 +673,11 @@ class PegaWebService {
     return result;
   }
 
-  Future<Map<String, dynamic>> getApigeeRequestWithoutUTF(
-    String url, {
-    String? relativePath,
-    Map<String, dynamic>? queryParams,
-  }) async {
+
+
+
+  Future<Map<String, dynamic>> getApigeeRequestWithoutUTF(String url,
+      {String? relativePath, Map<String, dynamic>? queryParams}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -677,17 +695,15 @@ class PegaWebService {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
       String loginIdentityType = CommonProperties.userInfo?.getIdType() ?? "";
 
-      String verifyingKEY = hashRequest(
-        requestUrl,
-        "GET",
-        loginIdentityId: loginIdentityId,
-        loginIdentityType: loginIdentityType,
-      );
+      String verifyingKEY = hashRequest(requestUrl, "GET",
+          loginIdentityId: loginIdentityId,
+          loginIdentityType: loginIdentityType);
 
       var response = await http.get(
         Uri.parse(requestUrl),
         headers: {
-          'Authorization': 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
+          'Authorization':
+              'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
           "loginIdentityId": loginIdentityId,
           "loginIdentityType": loginIdentityType,
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
@@ -703,7 +719,8 @@ class PegaWebService {
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
-        result.putIfAbsent("Content-Type", () => response.headers["content-type"]);
+        result.putIfAbsent(
+            "Content-Type", () => response.headers["content-type"]);
       } else {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -711,11 +728,10 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: response.body.toString(),
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: response.body.toString(),
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -743,7 +759,11 @@ class PegaWebService {
       }
 
       try {
-        Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, data: error.toString(), statusCode: 0);
+        Helpers.sendLog(
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: error.toString(),
+            statusCode: 0);
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -783,13 +803,17 @@ class PegaWebService {
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
-      var response = await http.get(Uri.parse(requestUrl), headers: headers);
+      var response = await http.get(
+        Uri.parse(requestUrl),
+        headers: headers,
+      );
       //print("response: " + response.body);
       //print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
-        result.putIfAbsent("Content-Type", () => response.headers["content-type"]);
+        result.putIfAbsent(
+            "Content-Type", () => response.headers["content-type"]);
       } else {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -797,11 +821,10 @@ class PegaWebService {
 
         try {
           Helpers.sendLog(
-            url: baseURL + url,
-            qeuryParms: queryString,
-            data: response.body.toString(),
-            statusCode: response.statusCode,
-          );
+              url: baseURL + url,
+              qeuryParms: queryString,
+              data: response.body.toString(),
+              statusCode: response.statusCode);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -829,7 +852,11 @@ class PegaWebService {
       }
 
       try {
-        Helpers.sendLog(url: baseURL + url, qeuryParms: queryString, data: error.toString(), statusCode: 0);
+        Helpers.sendLog(
+            url: baseURL + url,
+            qeuryParms: queryString,
+            data: error.toString(),
+            statusCode: 0);
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(

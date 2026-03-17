@@ -25,12 +25,13 @@ class SubmitRatingSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (BuildContext context) => SubmitRatingViewModel(
-        webService: sl(),
+        webService: sl(),  
         ratingRequest: ratingRequest,
       ),
       child: Builder(
         builder: (BuildContext contextViewModel) {
-          SubmitRatingViewModel provider = contextViewModel.watch<SubmitRatingViewModel>();
+          SubmitRatingViewModel provider =
+              contextViewModel.watch<SubmitRatingViewModel>();
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -119,11 +120,13 @@ class SubmitRatingSheet extends StatelessWidget {
                             text: 'send_evaluation'.tr(),
                             onPressed: () async {
                               if ((provider.ratingRequest.value ?? 0) > 0) {
-                                NavigatorState navigator = Navigator.of(context);
+                                NavigatorState navigator =
+                                    Navigator.of(context);
                                 int? id = await provider.submitRating();
                                 if (id != null) {
                                   navigator.pop(true);
-                                  CommonFunctions.showSuccess("done_send_rating".tr());
+                                  CommonFunctions.showSuccess(
+                                      "done_send_rating".tr());
                                 }
                               } else {
                                 CommonFunctions.showError('select_rating'.tr());

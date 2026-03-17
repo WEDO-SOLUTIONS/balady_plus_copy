@@ -17,7 +17,8 @@ class AuthQuickAccessCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticatedState state = context.read<AuthenticationBloc>().state as AuthenticatedState;
+    AuthenticatedState state =
+        context.read<AuthenticationBloc>().state as AuthenticatedState;
     return Column(
       children: [
         Padding(
@@ -40,20 +41,24 @@ class AuthQuickAccessCell extends StatelessWidget {
                       "packages/balady_authorization/assets/svg/passcode.svg",
                       height: 24,
                       width: 24,
-                      colorFilter: ColorFilter.mode(context.colors.accentActive, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(
+                       context.colors.accentActive,
+                        BlendMode.srcIn,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2.0),
                       child: Text(
                         'quick_access'.tr(),
-                        style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                          color: context.colors.foregroundDefault,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: AppConfig.appFontType,
-                          // height: 24,
-                        ),
+                        style: Theme.of(context).textTheme.labelMedium!
+                            .copyWith(
+                              color: context.colors.foregroundDefault,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: AppConfig.appFontType,
+                              // height: 24,
+                            ),
                       ),
                     ),
                     const Spacer(),

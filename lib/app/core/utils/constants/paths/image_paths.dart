@@ -43,7 +43,8 @@ class ImagePath {
   static const visaBg = '${_imagePath}visa_bg';
   static const walletBg = '${_imagePath}wallet_bg$_png';
   static const qrBg = '${_imagePath}qr_bg$_png';
-  static const appBarGradientBackground = '${_imagePath}light_gradient_appbar$_png';
+  static const appBarGradientBackground =
+      '${_imagePath}light_gradient_appbar$_png';
 
   static const diggingMapCard = '${_imagePath}digging_map_card$_png';
 
@@ -83,12 +84,14 @@ class ImagePath {
   static const buildingFacades = '${_imagePath}buildingFacades$_png';
   static const buildingFacadesBad = '${_imagePath}buildingFacadesBad$_png';
   static const buildingFacadesGood = '${_imagePath}buildingFacadesGood$_png';
-  static const visualDistortionFooter = '${_imagePath}visual_distortion_footer$_png';
+  static const visualDistortionFooter =
+      '${_imagePath}visual_distortion_footer$_png';
   static const whiteBg = '${_imagePath}white_bg$_png';
   static const grayBg = '${_imagePath}gray_bg$_png';
 
   //etmam app
-  static const providerDetailsImgExample = '${_etmamImagePath}ProviderDetailsExample$_png';
+  static const providerDetailsImgExample =
+      '${_etmamImagePath}ProviderDetailsExample$_png';
 
   static const violationImage = '${_imagePath}violation_image$_png';
   static const complianceFirstImage = '${_imagePath}compliance1$_png';
@@ -109,7 +112,8 @@ class ImagePath {
   static const saudiFlag = '${_imagePath}saudi_flag$_png';
   static const calendarBackground = '${_imagePath}calendar_background$_svg';
 
-  static const backgroundServiceCard = '${_imagePath}background_service_card$_png';
+  static const backgroundServiceCard =
+      '${_imagePath}background_service_card$_png';
 
   static const featureServiceImage = '${_imagePath}constructions$_png';
   static const sortDescending = '${_imagePath}sort-descending$_png';

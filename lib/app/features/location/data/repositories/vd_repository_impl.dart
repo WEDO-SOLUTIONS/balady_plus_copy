@@ -13,10 +13,13 @@ class VDRepositoryImpl implements VDRepository {
   final VDRemoteDataSource remoteDataSource;
   final VDLocalDataSource localDataSource;
 
-  VDRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
+  VDRepositoryImpl(
+      {required this.remoteDataSource, required this.localDataSource});
+
 
   @override
-  Future<Either<Failure, GISResponse>> getGISData({required GISParams params}) async {
+  Future<Either<Failure, GISResponse>> getGISData(
+      {required GISParams params}) async {
     try {
       final data = await remoteDataSource.getGISData(params: params);
 
@@ -29,7 +32,10 @@ class VDRepositoryImpl implements VDRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage, statusCode: error.statusCode));
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+
 }

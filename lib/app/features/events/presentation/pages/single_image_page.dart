@@ -13,6 +13,8 @@ import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
@@ -21,10 +23,12 @@ class SingleEventDescriptionPage extends StatefulWidget {
   const SingleEventDescriptionPage({super.key});
 
   @override
-  State<SingleEventDescriptionPage> createState() => _SingleEventDescriptionPageState();
+  State<SingleEventDescriptionPage> createState() =>
+      _SingleEventDescriptionPageState();
 }
 
-class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage> {
+class _SingleEventDescriptionPageState
+    extends State<SingleEventDescriptionPage> {
   @override
   void initState() {
     super.initState();
@@ -33,7 +37,6 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
   }
 
   String img = "";
-
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context)!.settings.arguments as String;
@@ -45,7 +48,9 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
         body: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
             if (img.isEmpty) img = state.eventDetails.logoUrl ?? "";
-            if (state.status == BlocStatus.loading) return const Center(child: CustomCircularLoadingWidget());
+            if (state.status == BlocStatus.loading) {
+              return const Center(child: CustomCircularLoadingWidget());
+            }
 
             if (state.status == BlocStatus.failure) {
               return Center(
@@ -69,12 +74,22 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                     Stack(
                       children: [
                         ConstrainedBox(
-                          constraints: const BoxConstraints(minHeight: 0.0, maxHeight: 350.0),
-                          child: Image.network(img, width: double.infinity, fit: BoxFit.contain),
+                          constraints: const BoxConstraints(
+                            minHeight: 0.0,
+                            maxHeight: 350.0,
+                          ),
+                          child: Image.network(
+                            img,
+                            width: double.infinity,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, right: 16),
+                          padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).padding.top,
+                            right: 16,
+                          ),
                           /*  decoration: BoxDecoration(
                             image: (img.endsWith(".svg"))
                                 ? DecorationImage(
@@ -93,9 +108,13 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                           child: Column(
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top, left: 16),
+                                padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).padding.top,
+                                  left: 16,
+                                ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     InkWell(
@@ -103,7 +122,8 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                                         iconSize: 24,
                                         circleSize: 36,
                                         icon: Icons.close,
-                                        backgroundColor: Colors.white.withOpacity(0.7),
+                                        backgroundColor: Colors.white
+                                            .withOpacity(0.7),
                                       ),
                                       onTap: () {
                                         Navigator.of(context).pop();
@@ -116,16 +136,24 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                                       startDay: state.eventDetails.getStartDay(),
                                       startMonth: state.eventDetails.getStartMonth(),
                                     ),*/
-                                    if (state.eventDetails.getEndDateFull() != null &&
-                                        state.eventDetails.getStartDateFull() != null)
+                                    if (state.eventDetails.getEndDateFull() !=
+                                            null &&
+                                        state.eventDetails.getStartDateFull() !=
+                                            null)
                                       GestureDetector(
                                         onTap: () {
-                                          if (state.eventDetails.ticketUrl != null) {
-                                            safeShareText(state.eventDetails.ticketUrl ?? "", context: context);
+                                          if (state.eventDetails.ticketUrl !=
+                                              null) {
+                                            safeShareText(
+                                              state.eventDetails.ticketUrl ??
+                                                  "",
+                                              context: context,
+                                            );
                                           }
 
                                           CommonFunctions.sendUXCamEvent(
-                                            UXCamEvents.Events_List_Click_Item_Share_Event,
+                                            UXCamEvents
+                                                .Events_List_Click_Item_Share_Event,
                                           );
                                         },
                                         child: Container(
@@ -134,9 +162,14 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                                           padding: const EdgeInsets.all(5),
                                           decoration: ShapeDecoration(
                                             color: AppColor.primary100Light,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
                                           ),
-                                          child: SvgPicture.asset(IconPath.export),
+                                          child: SvgPicture.asset(
+                                            IconPath.export,
+                                          ),
                                         ),
                                       ),
                                   ],
@@ -170,7 +203,10 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                           ),
                           const SizedBox(height: 16),
                           EventCategoryWidget(
-                            category: [state.eventDetails.season ?? '', state.eventDetails.category ?? ''],
+                            category: [
+                              state.eventDetails.season ?? '',
+                              state.eventDetails.category ?? '',
+                            ],
                           ),
                           const SizedBox(height: 16),
                           EventsDetailsWidget(
@@ -184,18 +220,26 @@ class _SingleEventDescriptionPageState extends State<SingleEventDescriptionPage>
                             season: state.eventDetails.season ?? "",
                           ),
                           const SizedBox(height: 16),
-                          EventsDescriptionWidget(description: state.eventDetails.description ?? ''),
+                          EventsDescriptionWidget(
+                            description: state.eventDetails.description ?? '',
+                          ),
                           const SizedBox(height: 16),
-                          EventMapWidget(location: state.eventDetails.getLocation(), name: state.eventDetails.name),
+                          EventMapWidget(
+                            location: state.eventDetails.getLocation(),
+                            name: state.eventDetails.name,
+                          ),
                           const SizedBox(height: 16),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedIconButtonWidget.export(
                               onPressed: () {
-                                CommonFunctions.externalLaunch(state.eventDetails.ticketUrl);
+                                CommonFunctions.externalLaunch(
+                                  state.eventDetails.ticketUrl,
+                                );
 
                                 CommonFunctions.sendUXCamEvent(
-                                  UXCamEvents.Events_List_Click_Item_Move_To_Details_Event,
+                                  UXCamEvents
+                                      .Events_List_Click_Item_Move_To_Details_Event,
                                 );
                               },
                             ),

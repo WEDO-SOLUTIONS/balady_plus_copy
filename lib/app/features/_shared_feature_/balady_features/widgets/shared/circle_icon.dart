@@ -1,8 +1,6 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../_shared_feature_/shared_feature_exports.dart' show DrawIconBasedTypeWidget;
-
 class CircleIcon extends StatelessWidget {
   const CircleIcon({
     super.key,
@@ -31,16 +29,20 @@ class CircleIcon extends StatelessWidget {
         color: backgroundColor,
         boxShadow: showShadow == true
             ? [
-                BoxShadow(
-                  color: Theme.of(context).dividerColor.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ]
+          BoxShadow(
+            color: Theme.of(context).dividerColor.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ]
             : [],
       ),
       child: Center(
-        child: DrawIconBasedTypeWidget(icon: icon, iconColor: iconColor, iconSize: iconSize),
+        child: DrawIconBasedTypeWidget(
+          icon: icon,
+          iconColor: iconColor,
+          iconSize: iconSize,
+        ),
       ),
     );
   }

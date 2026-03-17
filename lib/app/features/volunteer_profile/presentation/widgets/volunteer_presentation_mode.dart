@@ -17,10 +17,15 @@ class VolunteerPresentationMode extends StatefulWidget {
   const VolunteerPresentationMode({super.key, this.isEditMode = false});
 
   @override
-  State<VolunteerPresentationMode> createState() => _VolunteerPresentationModeState();
+  State<VolunteerPresentationMode> createState() =>
+      _VolunteerPresentationModeState();
 
   // Static method to handle cancel logic
-  static void cancelEditMode(BuildContext context, VolunteerProfileBloc bloc, Map<String, dynamic> originalValues) {
+  static void cancelEditMode(
+    BuildContext context,
+    VolunteerProfileBloc bloc,
+    Map<String, dynamic> originalValues,
+  ) {
     print('Static cancelEditMode called');
 
     // Restore original values
@@ -42,20 +47,26 @@ class VolunteerPresentationMode extends StatefulWidget {
       ..add(
         UpdateScientificInfo(
           educationalQualification: originalValues['educationalQualification'],
-          educationalQualificationId: originalValues['educationalQualificationId'],
+          educationalQualificationId:
+              originalValues['educationalQualificationId'],
           specialization: originalValues['specialization'],
           specializationId: originalValues['specializationId'],
           profession: originalValues['profession'],
           workExperience: originalValues['workExperience'],
           language: originalValues['language'],
           languageId: originalValues['languageId'],
-          scientificExperienceSummary: originalValues['scientificExperienceSummary'],
+          scientificExperienceSummary:
+              originalValues['scientificExperienceSummary'],
         ),
       )
       ..add(
         UpdateVolunteeringInterests(
-          skills: originalValues['skills'] != null ? [originalValues['skills']] : [],
-          skillsIds: originalValues['skillsIds'] != null ? [originalValues['skillsIds']] : [],
+          skills: originalValues['skills'] != null
+              ? [originalValues['skills']]
+              : [],
+          skillsIds: originalValues['skillsIds'] != null
+              ? [originalValues['skillsIds']]
+              : [],
           volunteeringLevel: originalValues['volunteeringLevel'],
           volunteeringLevelId: originalValues['volunteeringLevelId'],
           volunteeringWorkField: originalValues['volunteeringWorkField'],
@@ -119,7 +130,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   void initState() {
     super.initState();
     _isEditMode = widget.isEditMode;
-    print('initState - isEditMode: $_isEditMode, widget.isEditMode: ${widget.isEditMode}');
+    print(
+      'initState - isEditMode: $_isEditMode, widget.isEditMode: ${widget.isEditMode}',
+    );
     _initializeControllers();
     // Initial validation
     WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
@@ -158,7 +171,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
     // Debug: Print original values
     print('Stored original city: $_originalCity, cityId: $_originalCityId');
-    print('Stored original region: $_originalRegion, regionId: $_originalRegionId');
+    print(
+      'Stored original region: $_originalRegion, regionId: $_originalRegionId',
+    );
   }
 
   @override
@@ -224,7 +239,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('volunteer_profile_submit_success'.tr()), backgroundColor: const Color(0xFF00796B)),
+      SnackBar(
+        content: Text('volunteer_profile_submit_success'.tr()),
+        backgroundColor: const Color(0xFF00796B),
+      ),
     );
 
     // Exit the entire volunteer profile flow after saving
@@ -234,7 +252,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   void _cancelEdit() {
     // Debug: Print what we're restoring
     print('Restoring city to: $_originalCity, cityId: $_originalCityId');
-    print('Restoring region to: $_originalRegion, regionId: $_originalRegionId');
+    print(
+      'Restoring region to: $_originalRegion, regionId: $_originalRegionId',
+    );
 
     // Reset controllers to original values (only unified step fields)
     _emailController.text = _originalEmail ?? '';
@@ -300,20 +320,28 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         if (file.path != null) {
           // Check file size (limit to 10MB)
           if (file.size > 10 * 1024 * 1024) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('file_size_too_large'.tr()), backgroundColor: Colors.red));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('file_size_too_large'.tr()),
+                backgroundColor: Colors.red,
+              ),
+            );
             return;
           }
 
           // Trigger upload
-          context.read<VolunteerProfileBloc>().add(UploadCVFile(filePath: file.path!, fileName: file.name));
+          context.read<VolunteerProfileBloc>().add(
+            UploadCVFile(filePath: file.path!, fileName: file.name),
+          );
         }
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('${'failed_to_select_file'.tr()}: $e'), backgroundColor: Colors.red));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('${'failed_to_select_file'.tr()}: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -321,15 +349,19 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     final state = context.read<VolunteerProfileBloc>().state;
     // Unified Step validation - only required fields
     final isEmailValid =
-        Helpers.validateEmail(_emailController.text) == null && _emailController.text.trim().isNotEmpty;
+        Helpers.validateEmail(_emailController.text) == null &&
+        _emailController.text.trim().isNotEmpty;
     final isPhoneValid =
-        Helpers.validateMobile(_phoneController.text) == null && _phoneController.text.trim().isNotEmpty;
+        Helpers.validateMobile(_phoneController.text) == null &&
+        _phoneController.text.trim().isNotEmpty;
     final isRegionValid = state.regionId != null && state.regionId!.isNotEmpty;
     final isCityValid = state.cityId != null && state.cityId!.isNotEmpty;
     final isQualificationValid =
-        state.educationalQualificationId != null && state.educationalQualificationId!.isNotEmpty;
+        state.educationalQualificationId != null &&
+        state.educationalQualificationId!.isNotEmpty;
     final isVolunteeringWorkFieldValid =
-        state.volunteeringWorkFieldId != null && state.volunteeringWorkFieldId!.isNotEmpty;
+        state.volunteeringWorkFieldId != null &&
+        state.volunteeringWorkFieldId!.isNotEmpty;
 
     // All required unified step fields must be valid
     final valid =
@@ -348,7 +380,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }
 
   @override
-  Widget build(BuildContext context) => BlocListener<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(
+    BuildContext context,
+  ) => BlocListener<VolunteerProfileBloc, VolunteerProfileState>(
     listener: (context, state) {
       // Update controllers when state changes (for state restoration)
       if (_isEditMode) {
@@ -362,7 +396,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       builder: (context, state) => PopScope(
         canPop: !_isEditMode, // Prevent pop only in edit mode
         onPopInvokedWithResult: (didPop, result) {
-          print('PopScope triggered - didPop: $didPop, isEditMode: $_isEditMode, canPop: ${!_isEditMode}');
+          print(
+            'PopScope triggered - didPop: $didPop, isEditMode: $_isEditMode, canPop: ${!_isEditMode}',
+          );
           if (!didPop && _isEditMode) {
             print('Canceling edit mode...');
             // Exit edit mode when back button is pressed
@@ -384,7 +420,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     _buildExpandableSection(
                       title: 'lbl_personal_info'.tr(),
                       isExpanded: _isPersonalInfoExpanded,
-                      onToggle: () => setState(() => _isPersonalInfoExpanded = !_isPersonalInfoExpanded),
+                      onToggle: () => setState(
+                        () =>
+                            _isPersonalInfoExpanded = !_isPersonalInfoExpanded,
+                      ),
                       children: _buildUnifiedStepRows(state),
                     ),
 
@@ -456,12 +495,30 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     _buildInfoRow('national_id'.tr(), state.nationalId ?? '', isReadOnly: true),
 
     // Editable fields
-    _buildEditableInfoRow('email'.tr(), _emailController, keyboardType: TextInputType.emailAddress),
-    _buildEditableInfoRow('personal_mobile'.tr(), _phoneController, keyboardType: TextInputType.phone),
+    _buildEditableInfoRow(
+      'email'.tr(),
+      _emailController,
+      keyboardType: TextInputType.emailAddress,
+    ),
+    _buildEditableInfoRow(
+      'personal_mobile'.tr(),
+      _phoneController,
+      keyboardType: TextInputType.phone,
+    ),
 
     // Location fields - editable in edit mode via dropdowns
-    _buildLocationRow('region'.tr(), state.region ?? '', isRegion: true, state: state),
-    _buildLocationRow('city'.tr(), state.city ?? '', isRegion: false, state: state),
+    _buildLocationRow(
+      'region'.tr(),
+      state.region ?? '',
+      isRegion: true,
+      state: state,
+    ),
+    _buildLocationRow(
+      'city'.tr(),
+      state.city ?? '',
+      isRegion: false,
+      state: state,
+    ),
 
     // Educational Qualification - dropdown in edit mode
     _buildDropdownOrInfoRow(
@@ -499,7 +556,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       state.volunteeringWorkFieldId,
       (value) {
         if (value != null) {
-          final selectedField = state.volunteeringFieldsList.firstWhere((field) => field.tid.toString() == value);
+          final selectedField = state.volunteeringFieldsList.firstWhere(
+            (field) => field.tid.toString() == value,
+          );
           context.read<VolunteerProfileBloc>().add(
             UpdateVolunteeringInterests(
               skills: state.skills,
@@ -527,7 +586,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       state.skillsIds.isNotEmpty ? state.skillsIds.first : null,
       (value) {
         if (value != null) {
-          final selectedSkill = state.skillsList.firstWhere((skill) => skill.tid.toString() == value);
+          final selectedSkill = state.skillsList.firstWhere(
+            (skill) => skill.tid.toString() == value,
+          );
           context.read<VolunteerProfileBloc>().add(
             UpdateVolunteeringInterests(
               skills: [selectedSkill.name],
@@ -552,7 +613,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       state.volunteeringLevelId,
       (value) {
         if (value != null) {
-          final selectedLevel = state.lvlsList.firstWhere((level) => level.tid.toString() == value);
+          final selectedLevel = state.lvlsList.firstWhere(
+            (level) => level.tid.toString() == value,
+          );
           context.read<VolunteerProfileBloc>().add(
             UpdateVolunteeringInterests(
               skills: state.skills,
@@ -572,11 +635,17 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     // Interests - dropdown in edit mode
     _buildDropdownOrInfoRow(
       'interests'.tr(),
-      state.interests.isNotEmpty ? state.interests.join(', ') : 'not_selected'.tr(),
+      state.interests.isNotEmpty
+          ? state.interests.join(', ')
+          : 'not_selected'.tr(),
       _isEditMode ? state.interestsList : null,
-      state.interests.isNotEmpty ? _getInterestIdFromName(state.interests.first, state.interestsList) : null,
+      state.interests.isNotEmpty
+          ? _getInterestIdFromName(state.interests.first, state.interestsList)
+          : null,
       (value) {
-        context.read<VolunteerProfileBloc>().add(UpdateVolunteeringInterests(interests: value != null ? [value] : []));
+        context.read<VolunteerProfileBloc>().add(
+          UpdateVolunteeringInterests(interests: value != null ? [value] : []),
+        );
       },
     ),
 
@@ -588,7 +657,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       state.volunteeringWorkFieldId,
       (value) {
         if (value != null) {
-          final selectedField = state.volunteeringFieldsList.firstWhere((field) => field.tid.toString() == value);
+          final selectedField = state.volunteeringFieldsList.firstWhere(
+            (field) => field.tid.toString() == value,
+          );
           context.read<VolunteerProfileBloc>().add(
             UpdateVolunteeringInterests(
               skills: state.skills,
@@ -618,7 +689,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       state.bloodTypeId,
       (value) {
         if (value != null) {
-          final selectedBloodType = state.bloodTypesList.firstWhere((bloodType) => bloodType.tid.toString() == value);
+          final selectedBloodType = state.bloodTypesList.firstWhere(
+            (bloodType) => bloodType.tid.toString() == value,
+          );
           context.read<VolunteerProfileBloc>().add(
             UpdateMedicalInfo(
               bloodType: selectedBloodType.name,
@@ -639,7 +712,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       state.diseaseId,
       (value) {
         if (value != null) {
-          final selectedDisease = state.diseasesList.firstWhere((disease) => disease.tid.toString() == value);
+          final selectedDisease = state.diseasesList.firstWhere(
+            (disease) => disease.tid.toString() == value,
+          );
           context.read<VolunteerProfileBloc>().add(
             UpdateMedicalInfo(
               bloodType: state.bloodType,
@@ -665,7 +740,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Theme.of(context).colorScheme.onSurface.withAlpha(100).withOpacity(0.1),
+          color: Theme.of(
+            context,
+          ).colorScheme.onSurface.withAlpha(100).withOpacity(0.1),
           spreadRadius: 1,
           blurRadius: 4,
           offset: const Offset(0, 2),
@@ -695,20 +772,32 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     color: const Color(0xFF00796B).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(_getSectionIcon(title), color: const Color(0xFF00796B), size: 20),
+                  child: Icon(
+                    _getSectionIcon(title),
+                    color: const Color(0xFF00796B),
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF00796B)),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF00796B),
+                    ),
                   ),
                 ),
                 // Expand/Collapse Icon
                 AnimatedRotation(
                   duration: const Duration(milliseconds: 200),
                   turns: isExpanded ? 0.5 : 0,
-                  child: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF00796B), size: 24),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Color(0xFF00796B),
+                    size: 24,
+                  ),
                 ),
               ],
             ),
@@ -717,7 +806,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         // Section Content (Expandable)
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
-          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           firstChild: const SizedBox.shrink(),
           secondChild: Column(children: children),
         ),
@@ -740,11 +831,22 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     return Icons.info;
   }
 
-  Widget _buildInfoRow(String label, String value, {bool isLast = false, bool isReadOnly = false}) => Container(
+  Widget _buildInfoRow(
+    String label,
+    String value, {
+    bool isLast = false,
+    bool isReadOnly = false,
+  }) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(
-      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
-      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+      border: isLast
+          ? null
+          : Border(
+              bottom: BorderSide(color: Theme.of(context).colorScheme.surface),
+            ),
+      borderRadius: isLast
+          ? const BorderRadius.vertical(bottom: Radius.circular(12))
+          : null,
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -754,14 +856,21 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120, // Fixed width for consistent alignment
           child: Text(
             label,
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16), // Consistent spacing
         Expanded(
           child: Text(
             value,
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ],
@@ -777,8 +886,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(
-      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
-      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+      border: isLast
+          ? null
+          : Border(
+              bottom: BorderSide(color: Theme.of(context).colorScheme.surface),
+            ),
+      borderRadius: isLast
+          ? const BorderRadius.vertical(bottom: Radius.circular(12))
+          : null,
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -788,7 +903,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120, // Fixed width for consistent alignment
           child: Text(
             label,
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16), // Consistent spacing
@@ -800,7 +918,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                   maxLines: maxLines,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
                   style: TextStyle(
                     fontSize: 14,
@@ -830,8 +951,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(
-      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
-      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+      border: isLast
+          ? null
+          : Border(
+              bottom: BorderSide(color: Theme.of(context).colorScheme.surface),
+            ),
+      borderRadius: isLast
+          ? const BorderRadius.vertical(bottom: Radius.circular(12))
+          : null,
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -841,7 +968,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120, // Fixed width for consistent alignment
           child: Text(
             label,
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16), // Consistent spacing
@@ -861,11 +991,17 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     ),
   );
 
-  Widget _buildLocationDropdown({required bool isRegion, required VolunteerProfileState state}) {
+  Widget _buildLocationDropdown({
+    required bool isRegion,
+    required VolunteerProfileState state,
+  }) {
     if (isRegion) {
       // Region dropdown
       if (state.isLoadingRegions) {
-        return const SizedBox(height: 45, child: Center(child: CircularProgressIndicator()));
+        return const SizedBox(
+          height: 45,
+          child: Center(child: CircularProgressIndicator()),
+        );
       }
       return DropdownButtonFormField<String>(
         dropdownColor: Theme.of(context).cardColor,
@@ -893,7 +1029,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             .toList(),
         onChanged: (value) {
           if (value != null) {
-            final selectedRegion = state.regionsList.firstWhere((region) => region.tid.toString() == value);
+            final selectedRegion = state.regionsList.firstWhere(
+              (region) => region.tid.toString() == value,
+            );
             context.read<VolunteerProfileBloc>().add(
               UpdatePersonalInfo(
                 email: state.email,
@@ -915,7 +1053,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     } else {
       // City dropdown
       if (state.isLoadingCities) {
-        return const SizedBox(height: 40, child: Center(child: CircularProgressIndicator()));
+        return const SizedBox(
+          height: 40,
+          child: Center(child: CircularProgressIndicator()),
+        );
       }
 
       return DropdownButtonFormField<String>(
@@ -946,7 +1087,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             ? null // Disable if no region selected
             : (value) {
                 if (value != null) {
-                  final selectedCity = state.citiesList.firstWhere((city) => city.tid.toString() == value);
+                  final selectedCity = state.citiesList.firstWhere(
+                    (city) => city.tid.toString() == value,
+                  );
                   context.read<VolunteerProfileBloc>().add(
                     UpdatePersonalInfo(
                       email: state.email,
@@ -991,9 +1134,15 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     return 'not_selected'.tr();
   }
 
-  String? _getInterestIdFromName(String interestName, List<dynamic> interestsList) {
+  String? _getInterestIdFromName(
+    String interestName,
+    List<dynamic> interestsList,
+  ) {
     try {
-      final interest = interestsList.firstWhere((interest) => interest.name == interestName, orElse: () => null);
+      final interest = interestsList.firstWhere(
+        (interest) => interest.name == interestName,
+        orElse: () => null,
+      );
       return interest?.tid?.toString();
     } catch (e) {
       return null;
@@ -1011,8 +1160,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(
-      border: isLast ? null : Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
-      borderRadius: isLast ? const BorderRadius.vertical(bottom: Radius.circular(12)) : null,
+      border: isLast
+          ? null
+          : Border(
+              bottom: BorderSide(color: Theme.of(context).colorScheme.surface),
+            ),
+      borderRadius: isLast
+          ? const BorderRadius.vertical(bottom: Radius.circular(12))
+          : null,
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1021,7 +1176,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120,
           child: Text(
             label,
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -1029,13 +1187,23 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           child: _isEditMode && items != null
               ? DropdownButtonFormField<String>(
                   dropdownColor: Theme.of(context).cardColor,
-                  initialValue: selectedValue?.isEmpty == true ? null : selectedValue,
+                  initialValue: selectedValue?.isEmpty == true
+                      ? null
+                      : selectedValue,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
                   items: items
-                      .map((item) => DropdownMenuItem<String>(value: item.tid.toString(), child: Text(item.name)))
+                      .map(
+                        (item) => DropdownMenuItem<String>(
+                          value: item.tid.toString(),
+                          child: Text(item.name),
+                        ),
+                      )
                       .toList(),
                   onChanged: onChanged,
                 )
@@ -1056,7 +1224,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   Widget _buildWorkExperienceRow(VolunteerProfileState state) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(
-      border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.surface)),
+      border: Border(
+        bottom: BorderSide(color: Theme.of(context).colorScheme.surface),
+      ),
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1065,7 +1235,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120,
           child: Text(
             'work_experience'.tr(),
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -1073,12 +1246,17 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           child: _isEditMode
               ? DropdownButtonFormField<String>(
                   dropdownColor: Theme.of(context).cardColor,
-                  initialValue: state.workExperience?.isEmpty == true || state.workExperience == 'null'
+                  initialValue:
+                      state.workExperience?.isEmpty == true ||
+                          state.workExperience == 'null'
                       ? null
                       : state.workExperience,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
                   items: List.generate(51, (index) => index)
                       .map(
@@ -1097,15 +1275,18 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                   onChanged: (value) {
                     context.read<VolunteerProfileBloc>().add(
                       UpdateScientificInfo(
-                        educationalQualification: state.educationalQualification,
-                        educationalQualificationId: state.educationalQualificationId,
+                        educationalQualification:
+                            state.educationalQualification,
+                        educationalQualificationId:
+                            state.educationalQualificationId,
                         specialization: state.specialization,
                         specializationId: state.specializationId,
                         profession: state.profession,
                         workExperience: value,
                         language: state.language,
                         languageId: state.languageId,
-                        scientificExperienceSummary: state.scientificExperienceSummary,
+                        scientificExperienceSummary:
+                            state.scientificExperienceSummary,
                       ),
                     );
                   },
@@ -1126,7 +1307,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   // Helper method for volunteering type preference (checkboxes)
   Widget _buildVolunteeringTypeRow(VolunteerProfileState state) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    decoration: const BoxDecoration(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))),
+    decoration: const BoxDecoration(
+      borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+    ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1134,7 +1317,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120,
           child: Text(
             'volunteering_type_preference'.tr(),
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -1153,9 +1339,12 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                                   skills: state.skills,
                                   skillsIds: state.skillsIds,
                                   volunteeringLevel: state.volunteeringLevel,
-                                  volunteeringLevelId: state.volunteeringLevelId,
-                                  volunteeringWorkField: state.volunteeringWorkField,
-                                  volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+                                  volunteeringLevelId:
+                                      state.volunteeringLevelId,
+                                  volunteeringWorkField:
+                                      state.volunteeringWorkField,
+                                  volunteeringWorkFieldId:
+                                      state.volunteeringWorkFieldId,
                                   isIndividualSelected: value ?? false,
                                   isGroupSelected: state.isGroupSelected,
                                 ),
@@ -1178,10 +1367,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                                   skills: state.skills,
                                   skillsIds: state.skillsIds,
                                   volunteeringLevel: state.volunteeringLevel,
-                                  volunteeringLevelId: state.volunteeringLevelId,
-                                  volunteeringWorkField: state.volunteeringWorkField,
-                                  volunteeringWorkFieldId: state.volunteeringWorkFieldId,
-                                  isIndividualSelected: state.isIndividualSelected,
+                                  volunteeringLevelId:
+                                      state.volunteeringLevelId,
+                                  volunteeringWorkField:
+                                      state.volunteeringWorkField,
+                                  volunteeringWorkFieldId:
+                                      state.volunteeringWorkFieldId,
+                                  isIndividualSelected:
+                                      state.isIndividualSelected,
                                   isGroupSelected: value ?? false,
                                 ),
                               );
@@ -1245,7 +1438,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   // Helper method to build CV upload row
   Widget _buildCVUploadRow(VolunteerProfileState state) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    decoration: const BoxDecoration(borderRadius: BorderRadius.vertical(bottom: Radius.circular(12))),
+    decoration: const BoxDecoration(
+      borderRadius: BorderRadius.vertical(bottom: Radius.circular(12)),
+    ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1253,7 +1448,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           width: 120,
           child: Text(
             'resume_cv'.tr(),
-            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface.withAlpha(100)),
+            style: TextStyle(
+              fontSize: 14,
+              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -1269,16 +1467,26 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                         decoration: BoxDecoration(
                           color: Colors.green.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.green.withOpacity(0.3)),
+                          border: Border.all(
+                            color: Colors.green.withOpacity(0.3),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.file_present, color: Colors.green, size: 16),
+                            const Icon(
+                              Icons.file_present,
+                              color: Colors.green,
+                              size: 16,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 state.cvFileName!,
-                                style: const TextStyle(fontSize: 14, color: Colors.green, fontWeight: FontWeight.w500),
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],
@@ -1290,18 +1498,29 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                       onPressed: () => _pickAndUploadFile(context),
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12.0),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                         backgroundColor: const Color(0xFF00796B),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.upload_file, color: Theme.of(context).colorScheme.surface, size: 16),
+                          Icon(
+                            Icons.upload_file,
+                            color: Theme.of(context).colorScheme.surface,
+                            size: 16,
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0, right: 8),
                             child: Text(
-                              state.cvFileName != null ? 'change_cv'.tr() : 'attach_cv'.tr(),
-                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.surface),
+                              state.cvFileName != null
+                                  ? 'change_cv'.tr()
+                                  : 'attach_cv'.tr(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.surface,
+                              ),
                             ),
                           ),
                         ],
@@ -1313,9 +1532,16 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Row(
                           children: [
-                            const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                            const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
                             const SizedBox(width: 8),
-                            Text('uploading_cv'.tr(), style: const TextStyle(color: Colors.orange)),
+                            Text(
+                              'uploading_cv'.tr(),
+                              style: const TextStyle(color: Colors.orange),
+                            ),
                           ],
                         ),
                       ),
@@ -1346,11 +1572,17 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF00796B),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           child: Text(
             'save'.tr(),
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.surface),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.surface,
+            ),
           ),
         ),
       ),

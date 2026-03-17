@@ -11,7 +11,8 @@ class GetCategory extends UseCase<EventCategoryResponse, EventsCategoryParams> {
   GetCategory({required this.repository});
 
   @override
-  Future<Either<Failure, EventCategoryResponse>> call(EventsCategoryParams params) async {
+  Future<Either<Failure, EventCategoryResponse>> call(
+      EventsCategoryParams params) async {
     return await repository.getEventCategory(params: params);
   }
 }

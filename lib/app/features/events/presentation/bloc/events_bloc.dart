@@ -46,33 +46,40 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
 
     on<GetMoreSearchEvent>(_getMoreSearchEventsHandler);
   }
-  Future<void> _getSearchEventsHandler(GetSearchEvent e, Emitter emitter) async {
+  Future<void> _getSearchEventsHandler(
+      GetSearchEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         status: BlocStatus.loading,
-        searchedParams:
-            e.params != null ? e.params!.copyWith(page: 1, size: 10) : SearchEventsParams(page: 1, size: 10)));
-    final failureOrSuccess = await _getSearchEvents(
-        e.params != null ? e.params!.copyWith(page: 1, size: 10) : SearchEventsParams(page: 1, size: 10));
+        searchedParams: e.params != null
+            ? e.params!.copyWith(page: 1, size: 10)
+            : SearchEventsParams(page: 1, size: 10)));
+    final failureOrSuccess = await _getSearchEvents(e.params != null
+        ? e.params!.copyWith(page: 1, size: 10)
+        : SearchEventsParams(page: 1, size: 10));
 
     failureOrSuccess.fold((l) {
       if (l == NoDataFoundFailure()) {
         emitter(state.copyWith(status: BlocStatus.success, searchItems: []));
       } else {
         emitter(
-          state.copyWith(status: BlocStatus.retry, errorMessage: (l as ServerFailure).errorMessage),
+          state.copyWith(
+              status: BlocStatus.retry,
+              errorMessage: (l as ServerFailure).errorMessage),
         );
       }
     }, (r) {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: r.items,
-        searchedParams: state.searchedParams.copyWith(page: (state.searchedParams.page ?? 1) + 1),
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
         errorMessage: "",
       ));
     });
   }
 
-  Future<void> _getMoreSearchEventsHandler(GetMoreSearchEvent e, Emitter emitter) async {
+  Future<void> _getMoreSearchEventsHandler(
+      GetMoreSearchEvent e, Emitter emitter) async {
     emitter(state.copyWith(
       status: BlocStatus.loadMore,
     ));
@@ -85,7 +92,9 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
         );
       } else {
         emitter(
-          state.copyWith(status: BlocStatus.failure, errorMessage: (l as ServerFailure).errorMessage),
+          state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (l as ServerFailure).errorMessage),
         );
       }
     }, (r) {
@@ -94,13 +103,15 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: items,
-        searchedParams: state.searchedParams.copyWith(page: (state.searchedParams.page ?? 1) + 1),
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
         errorMessage: "",
       ));
     });
   }
 
-  Future<void> _getEventsDetailsHandler(GetEventsDetails e, Emitter emitter) async {
+  Future<void> _getEventsDetailsHandler(
+      GetEventsDetails e, Emitter emitter) async {
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
@@ -122,7 +133,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     });
   }
 
-  Future<void> _getCitiesEventsHandler(GetCitiesEvent e, Emitter emitter) async {
+  Future<void> _getCitiesEventsHandler(
+      GetCitiesEvent e, Emitter emitter) async {
     if (state.citiesList?.isNotEmpty ?? false) return;
 
     emitter(state.copyWith(
@@ -147,7 +159,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     });
   }
 
-  Future<void> _getSesonsEventsHandler(GetSeasonsEvent e, Emitter emitter) async {
+  Future<void> _getSesonsEventsHandler(
+      GetSeasonsEvent e, Emitter emitter) async {
     if (state.seasonList?.isNotEmpty ?? false) return;
 
     emitter(state.copyWith(
@@ -197,7 +210,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     });
   }
 
-  Future<void> _getAudinceEventsHandler(GetAudienceEvent e, Emitter emitter) async {
+  Future<void> _getAudinceEventsHandler(
+      GetAudienceEvent e, Emitter emitter) async {
     if (state.audinceList?.isNotEmpty ?? false) return;
 
     emitter(state.copyWith(
@@ -222,7 +236,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     });
   }
 
-  Future<void> _getCategoriesEventsHandler(GetCategoriesEvent e, Emitter emitter) async {
+  Future<void> _getCategoriesEventsHandler(
+      GetCategoriesEvent e, Emitter emitter) async {
     if (state.categoryList?.isNotEmpty ?? false) return;
     emitter(state.copyWith(
       categoryStatus: BlocRequestStatus.submissionGetLoading,
@@ -246,7 +261,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     });
   }
 
-  Future<void> _updateSearchParamsHandler(UpdateSearchParamsEvent e, Emitter emitter) async {
+  Future<void> _updateSearchParamsHandler(
+      UpdateSearchParamsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         fromDate: e.fromDate,
         toDate: e.toDate,

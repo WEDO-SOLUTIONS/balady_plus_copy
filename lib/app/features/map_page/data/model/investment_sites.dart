@@ -61,9 +61,15 @@ class InvestmentSites extends PointLayersData {
       this.AMANA_ID,
       this.MUNICIPALITY_ID,
       this.SUBMUNICIPALITY_ID})
-      : super(id: id, name: name, description: description, type: type, latLng: latLng);
+      : super(
+            id: id,
+            name: name,
+            description: description,
+            type: type,
+            latLng: latLng);
 
-  factory InvestmentSites.fromJson(Map<String, dynamic> json) => InvestmentSites(
+  factory InvestmentSites.fromJson(Map<String, dynamic> json) =>
+      InvestmentSites(
         id: json['attributes']["OBJECTID"].toString(),
         name: json['attributes']["CONTRACTNAME"] ?? '',
         description: json['attributes']["OPPORTUNITYDESCRIPTION"] ?? '',
@@ -76,7 +82,8 @@ class InvestmentSites extends PointLayersData {
         DOCUMENTVALUE: json['attributes']["DOCUMENTVALUE"] ?? '',
         DAILYLEASECOST: json['attributes']["DAILYLEASECOST"] ?? '',
         TYPE: json['attributes']["TYPE"] ?? '',
-        OPPORTUNITYDESCRIPTION: json['attributes']["OPPORTUNITYDESCRIPTION"] ?? '',
+        OPPORTUNITYDESCRIPTION:
+            json['attributes']["OPPORTUNITYDESCRIPTION"] ?? '',
         SITENUMBER: json['attributes']["SITENUMBER"] ?? '',
         BIDENDDATE: json['attributes']["BIDENDDATE"] ?? '',
         SITEADDRESS: json['attributes']["SITEADDRESS"] ?? '',

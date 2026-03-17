@@ -18,8 +18,10 @@ abstract class EntryPointRepository {
   Future<Either<Failure, SsoUserInfo>> checkSSOProfile();
   Future<Either<Failure, String>> getCookie();
   Future<Either<Failure, ApigeeTokenResponse>> getAPIgeeToken();
-  Future<Either<Failure, PermissionResponseModel>> getEkramRules(GetPermissionParamsModel params);
-  Future<Either<Failure, ForceUpdateResponse>> getForceVersion(ForceUpdateParams params);
+  Future<Either<Failure, PermissionResponseModel>> getEkramRules(
+      GetPermissionParamsModel params);
+  Future<Either<Failure, ForceUpdateResponse>> getForceVersion(
+      ForceUpdateParams params);
   Future<Either<Failure, String>> getPaymentURL(PaymentRequest params);
   Future<Either<Failure, TestModel>> getDataTest();
 }

@@ -38,7 +38,8 @@ class EventsDetailsItemModel extends EventDetailsResponse {
       description: json["description"],
       category: json["category"],
       city: json["city"],
-      startDate: json["startDate"] != null ? parseDate(json["startDate"]) : null,
+      startDate:
+          json["startDate"] != null ? parseDate(json["startDate"]) : null,
       endDate: json["endDate"] != null ? parseDate(json["endDate"]) : null,
       startTime: json["startTime"],
       endTime: json["endTime"],
@@ -46,10 +47,14 @@ class EventsDetailsItemModel extends EventDetailsResponse {
       feesType: json["feesType"],
       season: json["season"],
       audience: json["audience"],
-      location: json["location"] == null ? null : Location.fromJson(json["location"]),
+      location:
+          json["location"] == null ? null : Location.fromJson(json["location"]),
       ticketUrl: json["ticketURL"],
       fees: json["fees"],
-      pictures: json["pictures"] == null ? [] : List<Picture>.from(json["pictures"]!.map((x) => Picture.fromJson(x))),
+      pictures: json["pictures"] == null
+          ? []
+          : List<Picture>.from(
+              json["pictures"]!.map((x) => Picture.fromJson(x))),
     );
   }
 
@@ -69,6 +74,8 @@ class EventsDetailsItemModel extends EventDetailsResponse {
         "audience": audience,
         "location": location?.toJson(),
         "ticketURL": ticketUrl,
-        "pictures": pictures == null ? [] : List<dynamic>.from(pictures!.map((x) => x.toJson())),
+        "pictures": pictures == null
+            ? []
+            : List<dynamic>.from(pictures!.map((x) => x.toJson())),
       };
 }

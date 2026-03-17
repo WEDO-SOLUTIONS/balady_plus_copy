@@ -9,6 +9,7 @@ import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../widgets/search_text_field_widget.dart';
 import 'dialog_header.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class IncidentTypeWithSearchDialog extends StatefulWidget {
   final Function(DropDownItem item) onSelect;
@@ -18,15 +19,14 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   String? searchHint;
   final bool? isButtonDisabled;
 
-  IncidentTypeWithSearchDialog({
-    super.key,
-    required this.onSelect,
-    this.selectedItem,
-    required this.items,
-    this.title,
-    this.searchHint,
-    this.isButtonDisabled,
-  });
+  IncidentTypeWithSearchDialog(
+      {super.key,
+      required this.onSelect,
+      this.selectedItem,
+      required this.items,
+      this.title,
+      this.searchHint,
+      this.isButtonDisabled});
 
   @override
   State<StatefulWidget> createState() {
@@ -34,7 +34,8 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   }
 }
 
-class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> {
+class _IncidentTypeWithSearchDialog
+    extends State<IncidentTypeWithSearchDialog> {
   List<DropDownItem> items = [];
   DropDownItem? currentSelected;
 
@@ -61,15 +62,21 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
       child: Column(
         children: [
           // header
-          DialogHeader(title: widget.title ?? ('choose_incident_type').tr()),
+          DialogHeader(
+            title: widget.title ?? ('choose_incident_type').tr(),
+          ),
           const CustomVerticalSpace(height: 20),
           // search
           SearchTextFieldWidget(
             containerHeight: 52,
             hintText: widget.searchHint ?? ('searchFor').tr(),
-            onTextChanged: /* () {},*/ (value) {
+            onTextChanged: /* () {},*/
+                (value) {
               setState(() {
-                items = widget.items.where((element) => element.name.contains(value) ?? element.name == value).toList();
+                items = widget.items
+                    .where((element) =>
+                        element.name.contains(value) ?? element.name == value)
+                    .toList();
               });
             },
             onSubmitSearch: (String val) {},
@@ -78,26 +85,26 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
           // incident type list
           Expanded(
             child: ListView.builder(
-              //   itemCount: items != null ? items.length : 0,
-              itemCount: items.length,
-              shrinkWrap: true,
-              controller: _scrollController,
-              itemBuilder: (ctx, index) {
-                return CustomRadioButtonEnd<DropDownItem>(
-                  // title: items[index].name,
-                  // value: items[index].id,
-                  title: items[index].name ?? "",
-                  value: items[index],
-                  currentSelected: currentSelected,
-                  onChange: onItemChanged,
-                );
-              },
-            ),
+                //   itemCount: items != null ? items.length : 0,
+                itemCount: items.length,
+                shrinkWrap: true,
+                controller: _scrollController,
+                itemBuilder: (ctx, index) {
+                  return CustomRadioButtonEnd<DropDownItem>(
+                    // title: items[index].name,
+                    // value: items[index].id,
+                    title: items[index].name ?? "",
+                    value: items[index],
+                    currentSelected: currentSelected,
+                    onChange: onItemChanged,
+                  );
+                }),
           ),
           const CustomVerticalSpace(height: 5),
           // button
           EnhancedCustomElevatedButtonWidget(
-            btnColor: isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
+            btnColor:
+                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isButtonDisabled
                 ? null
@@ -115,7 +122,7 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
             btnTextWeight: AppFontWeight.regular,
             btnHeight: 56,
             btnRadius: 8,
-          ),
+          )
         ],
       ),
     );
@@ -140,13 +147,13 @@ class _IncidentTypeWithSearchDialog extends State<IncidentTypeWithSearchDialog> 
     //         duration: Duration(seconds: 1), curve: Curves.fastOutSlowIn)
     //   });
     // } catch (error, stackTrace) {
-    //   LogsViewModel().sendEventFromModel(
-    //     event: ErrorExceptionModel(
-    //       nameEvent: EventsName.handledException,
-    //       message: error.toString(),
-    //       stackTrace: stackTrace.toString(),
-    //     ),
-    //   );
-    // }
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
   }
 }

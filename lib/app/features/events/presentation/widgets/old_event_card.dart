@@ -31,7 +31,8 @@ class OldEventHomeCard extends StatelessWidget {
                 item.logoImage ?? "",
                 imageWidth: MediaQuery.of(context).size.width,
                 imageHeight: 187,
-                placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
+                placeHolderWidget:
+                    SvgPicture.asset(ImagePath.calendarBackground),
               ),
             ),
             Container(
@@ -88,7 +89,8 @@ class OldEventHomeCard extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               CustomHorizontalSpace(width: 8),
-                              if (item.feesType != null && item.feesType!.isNotEmpty)
+                              if (item.feesType != null &&
+                                  item.feesType!.isNotEmpty)
                                 IconName(
                                   icon: IconPath.tagHomeEvents,
                                   name: item.feesType!,
@@ -108,8 +110,9 @@ class OldEventHomeCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.all(16),
-                decoration:
-                    const BoxDecoration(color: Color(0x8F4CA5B4), borderRadius: BorderRadius.all(Radius.circular(4))),
+                decoration: const BoxDecoration(
+                    color: Color(0x8F4CA5B4),
+                    borderRadius: BorderRadius.all(Radius.circular(4))),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -133,7 +136,8 @@ class IconName extends StatelessWidget {
   final String name;
   final String icon;
   final Color color;
-  const IconName({super.key, required this.name, required this.icon, required this.color});
+  const IconName(
+      {super.key, required this.name, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +201,13 @@ class Date extends StatelessWidget {
   }
 }
 
-DecorationImage calendarImage(String? url, String? defaultImage) => (url?.isEmpty ?? true)
+DecorationImage calendarImage(String? url, String? defaultImage) => (url
+            ?.isEmpty ??
+        true)
     ? (defaultImage ?? "").endsWith(".svg")
         ? DecorationImage(
-            image: svgProvider.Svg(defaultImage ?? "", source: svgProvider.SvgSource.asset),
+            image: svgProvider.Svg(defaultImage ?? "",
+                source: svgProvider.SvgSource.asset),
             fit: BoxFit.fill,
             colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
           )

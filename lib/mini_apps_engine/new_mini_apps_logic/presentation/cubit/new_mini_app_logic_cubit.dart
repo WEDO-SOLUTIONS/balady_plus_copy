@@ -414,6 +414,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       return;
     }
 
+
     await _deepLinkSubscription?.cancel();
 
     _deepLinkSubscription = stream.listen((state) {

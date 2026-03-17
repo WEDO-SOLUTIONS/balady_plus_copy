@@ -16,7 +16,8 @@ class FavPageShimmerLoadingWidget extends StatelessWidget {
           Brightness.dark
           ?Colors.grey[700]!:Colors.grey[100]!,
       child: ListView.separated(
-        separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.02),
+        separatorBuilder: (context, index) =>
+            SizedBox(height: context.screenHeight * 0.02),
         scrollDirection: Axis.vertical,
         itemCount: 6,
         itemBuilder: (context, index) {

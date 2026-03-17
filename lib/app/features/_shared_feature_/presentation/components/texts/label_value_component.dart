@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, WidgetConversion;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, WidgetConversion;
 import '../../../shared_feature_exports.dart' show CustomTextWidget;
 
 class LabelValueComponent extends StatelessWidget {
@@ -23,13 +24,15 @@ class LabelValueComponent extends StatelessWidget {
         // Label
         CustomTextWidget(
           label,
-          textStyle: labelTextStyle ?? AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.gray),
+          textStyle: labelTextStyle ??
+              AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.gray),
         ),
         // Value
         Expanded(
           child: CustomTextWidget(
             value,
-            textStyle: valueTextStyle ?? AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.black),
+            textStyle: valueTextStyle ??
+                AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.black),
           ),
         ),
       ].addPadding(end: 8.0),

@@ -19,11 +19,14 @@ class MapRequestParams {
 
   Map<String, dynamic> toMap({bool pointsDetails = false}) {
     return {
-      "outFields": pointsDetails ? layer.outFieldsLong.join(",") : layer.outFieldsShort.join(","),
+      "outFields": pointsDetails
+          ? layer.outFieldsLong.join(",")
+          : layer.outFieldsShort.join(","),
       //  "where": "1=1",
       "geometryType": "esriGeometryEnvelope",
       if (pointsDetails && objectId != null) "objectIds": objectId,
-      "geometry": "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
+      "geometry":
+          "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
       "spatialRel": "esriSpatialRelIntersects",
       //  "resultRecordCount": layer.resultRecordCount
     };

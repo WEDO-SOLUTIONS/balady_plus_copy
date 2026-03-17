@@ -11,20 +11,30 @@ class AppsGroupSectionShimmerWidget extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Premium shimmer palette (no pure black)
-    final baseColor = isDark ? const Color(0xFF2A2F3A) : const Color(0xFFE7E9EF);
-    final highlightColor = isDark ? const Color(0xFF3A4150) : const Color(0xFFF5F6FA);
+    final baseColor = isDark
+        ? const Color(0xFF2A2F3A)
+        : const Color(0xFFE7E9EF);
+    final highlightColor = isDark
+        ? const Color(0xFF3A4150)
+        : const Color(0xFFF5F6FA);
 
     // Surfaces
     final surface = isDark ? const Color(0xFF141821) : Colors.white;
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Inner "sub-card" shade (slightly different)
-    final subSurface = isDark ? const Color(0xFF202838) : Colors.white.withOpacity(0.55);
+    final subSurface = isDark
+        ? const Color(0xFF202838)
+        : Colors.white.withOpacity(0.55);
 
     // Subtle borders & shadow for premium feel
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.black.withOpacity(0.04);
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.06);
 
     // GridView specific dimensions:
     final double gridViewHeight = context.screenHeight * 0.55;
@@ -70,7 +80,11 @@ class AppsGroupSectionShimmerWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: borderColor, width: 1),
                         boxShadow: [
-                          BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6)),
+                          BoxShadow(
+                            color: shadowColor,
+                            blurRadius: isDark ? 10 : 8,
+                            offset: const Offset(0, 6),
+                          ),
                         ],
                       ),
                       child: Padding(
@@ -172,7 +186,9 @@ class _SubCardShimmerBox extends StatelessWidget {
         color: color,
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(
-          color: Colors.white.withOpacity(Theme.of(context).brightness == Brightness.dark ? 0.06 : 0.04),
+          color: Colors.white.withOpacity(
+            Theme.of(context).brightness == Brightness.dark ? 0.06 : 0.04,
+          ),
           width: 1,
         ),
       ),

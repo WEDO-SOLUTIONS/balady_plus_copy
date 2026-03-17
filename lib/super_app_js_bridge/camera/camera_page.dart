@@ -14,7 +14,8 @@ class VDCameraPage extends StatefulWidget {
   State<VDCameraPage> createState() => _VDCameraPageState();
 }
 
-class _VDCameraPageState extends State<VDCameraPage> with TickerProviderStateMixin {
+class _VDCameraPageState extends State<VDCameraPage>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
@@ -34,10 +35,13 @@ class _VDCameraPageState extends State<VDCameraPage> with TickerProviderStateMix
       child: Scaffold(
         body: BlocBuilder<CameraBloc, CameraState>(
           builder: (context, state) {
-            return !(state.showCamera ?? false) ? const PhotoPreviewWidgetNew() : const CameraWidget();
+            return !(state.showCamera ?? false)
+                ? const PhotoPreviewWidgetNew()
+                : const CameraWidget();
           },
         ),
       ),
     );
   }
 }
+

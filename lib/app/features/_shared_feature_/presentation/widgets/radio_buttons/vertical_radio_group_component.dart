@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../shared_feature_exports.dart';
 import 'custom_radio_button_widget copy.dart';
@@ -11,14 +10,13 @@ class VerticalRadioGroup<T> extends StatelessWidget {
   final List<RadioItem<T>> items;
   final Function(T?) onChanged;
 
-  const VerticalRadioGroup({
-    super.key,
-    this.currentItem,
-    this.isMandatory,
-    required this.groupName,
-    required this.items,
-    required this.onChanged,
-  });
+  const VerticalRadioGroup(
+      {super.key,
+      this.currentItem,
+      this.isMandatory,
+      required this.groupName,
+      required this.items,
+      required this.onChanged});
 
   @override
   build(BuildContext context) {
@@ -36,26 +34,24 @@ class VerticalRadioGroup<T> extends StatelessWidget {
         // types
         Column(
           children: items
-              .map(
-                (e) => Padding(
-                  padding: EdgeInsetsDirectional.only(end: items.last == e ? 0 : 16),
-                  child: CustomRadioButtonEnd<T>(
-                    title: e.radioText,
-                    value: e.radioValue,
-                    height: 48,
-                    currentSelected: currentItem,
-                    onChange: (T? item) {
-                      onChanged(item);
-                    },
-                    endRadio: false,
-                    unSelectedBackgroundColor: Colors.transparent,
-                    textSize: 12,
-                  ),
-                ),
-              )
+              .map((e) => Padding(
+                    padding: EdgeInsetsDirectional.only(
+                        end: items.last == e ? 0 : 16),
+                    child: CustomRadioButtonEnd<T>(
+                      title: e.radioText,
+                      value: e.radioValue,
+                      height: 48,
+                      currentSelected: currentItem,
+                      onChange: (T? item) {
+                        onChanged(item);
+                      },
+                      endRadio: false,
+                      unSelectedBackgroundColor: Colors.transparent,
+                      textSize: 12,
+                    ),
+                  ))
               .toList(),
         ),
-
         // ListView.builder(
         //     padding: EdgeInsets.zero,
         //     itemCount: items.length,
@@ -76,6 +72,7 @@ class VerticalRadioGroup<T> extends StatelessWidget {
         //         textSize: 16,
         //       );
         //     }),
+
         const CustomVerticalSpace(height: 30.0),
       ],
     );

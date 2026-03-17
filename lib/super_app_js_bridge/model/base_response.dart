@@ -6,7 +6,11 @@ class BaseResponse {
   BaseData? data;
   String eventName;
 
-  BaseResponse({required this.code, required this.message, required this.data, required this.eventName});
+  BaseResponse(
+      {required this.code,
+      required this.message,
+      required this.data,
+      required this.eventName});
 
   factory BaseResponse.fromJson(Map<String, dynamic> json, BaseData data) {
     return BaseResponse(

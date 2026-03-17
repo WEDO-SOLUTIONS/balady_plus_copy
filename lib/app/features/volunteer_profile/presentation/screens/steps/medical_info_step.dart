@@ -15,7 +15,8 @@ class MedicalInfoStep extends StatefulWidget {
 
 class _MedicalInfoStepState extends State<MedicalInfoStep> {
   @override
-  Widget build(BuildContext context) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+  Widget build(BuildContext context) =>
+      BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
         builder: (context, state) => SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Column(
@@ -64,32 +65,27 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                   items: state.bloodTypesList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Center(
-                                child: Text('no_blood_types_available'.tr(),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                    ))),
-                          )
+          child: Center(child: Text('no_blood_types_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.bloodTypesList
                           .map((bloodType) => DropdownMenuItem<String>(
                                 value: bloodType.tid.toString(),
-                                child: Center(
-                                    child: Text(bloodType.name,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ))),
-                              ))
+          child: Center(child: Text(bloodType.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.bloodTypesList.isEmpty
                       ? null
                       : (value) {
                           if (value != null) {
-                            final selectedBloodType = state.bloodTypesList.firstWhere(
+                            final selectedBloodType =
+                                state.bloodTypesList.firstWhere(
                               (bloodType) => bloodType.tid.toString() == value,
                             );
                             context.read<VolunteerProfileBloc>().add(
@@ -132,32 +128,27 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                   items: state.diseasesList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Center(
-                                child: Text('no_diseases_available'.tr(),
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w500,
-                                    ))),
-                          )
+          child: Center(child: Text('no_diseases_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.diseasesList
                           .map((disease) => DropdownMenuItem<String>(
                                 value: disease.tid.toString(),
-                                child: Center(
-                                    child: Text(disease.name,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                        ))),
-                              ))
+          child: Center(child: Text(disease.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.diseasesList.isEmpty
                       ? null
                       : (value) {
                           if (value != null) {
-                            final selectedDisease = state.diseasesList.firstWhere(
+                            final selectedDisease =
+                                state.diseasesList.firstWhere(
                               (disease) => disease.tid.toString() == value,
                             );
                             context.read<VolunteerProfileBloc>().add(

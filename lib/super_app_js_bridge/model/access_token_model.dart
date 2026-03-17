@@ -11,6 +11,7 @@ class AccessTokenModel implements BaseData {
     );
   }
 
+
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -18,6 +19,7 @@ class AccessTokenModel implements BaseData {
     return data;
   }
 }
+
 
 class CookiesModel implements BaseData {
   String cookies;

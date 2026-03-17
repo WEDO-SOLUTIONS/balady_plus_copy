@@ -15,7 +15,6 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
   final BorderRadiusGeometry? borderRadius;
   final Widget? child;
   final String? text;
-
   const CustomDashedAddMiniAppFav({
     super.key,
     this.width,
@@ -34,8 +33,10 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) =>
-                    BlocProvider.value(value: context.read<NewMiniAppLogicCubit>(), child: const AddFavMiniApps()),
+                builder: (_) => BlocProvider.value(
+                  value: context.read<NewMiniAppLogicCubit>(),
+                  child: const AddFavMiniApps(),
+                ),
               ),
             );
           },
@@ -50,7 +51,13 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
                 strokeWidth: 2,
                 dashPattern: const [2.2084856033325195, 2.2084856033325195],
               ),
-              child: Center(child: Icon(Icons.add, color: Theme.of(context).colorScheme.onSurface, size: 30)),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  color: Theme.of(context).colorScheme.onSurface,
+                  size: 30,
+                ),
+              ),
             ),
           ),
         ),

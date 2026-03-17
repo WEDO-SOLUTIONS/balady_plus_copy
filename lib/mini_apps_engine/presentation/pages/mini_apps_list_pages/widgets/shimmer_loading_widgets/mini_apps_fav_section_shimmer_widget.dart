@@ -11,17 +11,25 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Premium shimmer palette (no pure black)
-    final baseColor = isDark ? const Color(0xFF2A2F3A) : const Color(0xFFE7E9EF);
-    final highlightColor = isDark ? const Color(0xFF3A4150) : const Color(0xFFF5F6FA);
+    final baseColor = isDark
+        ? const Color(0xFF2A2F3A)
+        : const Color(0xFFE7E9EF);
+    final highlightColor = isDark
+        ? const Color(0xFF3A4150)
+        : const Color(0xFFF5F6FA);
 
     // Surfaces
     final surface = isDark ? const Color(0xFF141821) : Colors.white;
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Subtle borders & shadow for “premium”
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.black.withOpacity(0.04);
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.06);
 
     // Dimensions
     final double iconWidth = context.w(53.95);
@@ -43,11 +51,19 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: isDashedAdd
-                      ? (isDark ? Colors.white.withOpacity(0.14) : Colors.black.withOpacity(0.08))
+                      ? (isDark
+                            ? Colors.white.withOpacity(0.14)
+                            : Colors.black.withOpacity(0.08))
                       : borderColor,
                   width: isDashedAdd ? 1.5 : 1,
                 ),
-                boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
+                boxShadow: [
+                  BoxShadow(
+                    color: shadowColor,
+                    blurRadius: isDark ? 10 : 8,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
               child: isDashedAdd
                   ? Center(
@@ -58,7 +74,9 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
                           color: placeholder,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                            color: isDark
+                                ? Colors.white.withOpacity(0.06)
+                                : Colors.black.withOpacity(0.04),
                             width: 1,
                           ),
                         ),
@@ -101,7 +119,13 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
               color: surface,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: borderColor, width: 1),
-              boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
+              boxShadow: [
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: isDark ? 10 : 8,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
           ),
         ),
@@ -117,10 +141,12 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
               height: context.screenHeight * 0.13,
               width: context.screenWidth * 0.70,
               child: ListView.separated(
-                separatorBuilder: (context, index) => SizedBox(width: context.screenWidth * 0.03),
+                separatorBuilder: (context, index) =>
+                    SizedBox(width: context.screenWidth * 0.03),
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
-                itemBuilder: (context, index) => buildShimmerItem(context, false),
+                itemBuilder: (context, index) =>
+                    buildShimmerItem(context, false),
               ),
             ),
           ],

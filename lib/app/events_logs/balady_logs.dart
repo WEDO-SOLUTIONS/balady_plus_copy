@@ -52,8 +52,10 @@ void unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
   );
 }
 
+
+
 String cURLRepresentation(RequestOptions options) {
-  try {
+  try{
     List<String> components = ['curl -i'];
     if (options.method.toUpperCase() != 'GET') {
       components.add('-X ${options.method}');

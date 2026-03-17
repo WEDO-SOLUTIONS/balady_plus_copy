@@ -38,8 +38,10 @@ class LocationState extends Equatable {
         errorMessage: errorMessage ?? this.errorMessage,
         gisResponse: gisResponse ?? this.gisResponse,
         gisParams: gisParams ?? this.gisParams,
-        locationPermissionStatus: locationPermissionStatus ?? this.locationPermissionStatus,
-        locationServiceStatus: locationServiceStatus ?? this.locationServiceStatus,
+        locationPermissionStatus:
+            locationPermissionStatus ?? this.locationPermissionStatus,
+        locationServiceStatus:
+            locationServiceStatus ?? this.locationServiceStatus,
         loadAppStatus: loadAppStatus ?? this.loadAppStatus,
         locationStatus: locationStatus ?? this.locationStatus);
   }

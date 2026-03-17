@@ -7,7 +7,8 @@ class ApigeeTokenResponseModel extends ApigeeTokenResponse {
     required super.expiresIn,
   });
 
-  factory ApigeeTokenResponseModel.fromMap(Map<String, dynamic> json) => ApigeeTokenResponseModel(
+  factory ApigeeTokenResponseModel.fromMap(Map<String, dynamic> json) =>
+      ApigeeTokenResponseModel(
         refreshTokenExpiresIn: json['refresh_token_expires_in'],
         accessToken: json['access_token'],
         expiresIn: json['expires_in'],

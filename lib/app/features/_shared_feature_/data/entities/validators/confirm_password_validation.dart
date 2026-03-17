@@ -4,7 +4,8 @@ import '../../../../../core/utils/utils_exports.dart' show Validation;
 
 class ConfirmPasswordValidation extends FormzInput<String, Validation> {
   final String originalPassword;
-  const ConfirmPasswordValidation.pure({required this.originalPassword}) : super.pure(originalPassword);
+  const ConfirmPasswordValidation.pure({required this.originalPassword})
+      : super.pure(originalPassword);
 
   const ConfirmPasswordValidation.dirty({
     /// This is what we will use to compare it with entered-password

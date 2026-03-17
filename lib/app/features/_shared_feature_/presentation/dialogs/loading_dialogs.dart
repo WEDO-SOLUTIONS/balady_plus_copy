@@ -1,32 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart' show LoadingAnimationWidget;
+import 'package:loading_animation_widget/loading_animation_widget.dart'
+    show LoadingAnimationWidget;
 
 import '../../../../core/utils/utils_exports.dart' show AppColor;
 
 class LoadingDialog {
-  static Future<bool> showAnimatedLoading(BuildContext context, {Color loadingColor = AppColor.blue}) async =>
+  static Future<bool> showAnimatedLoading(
+    BuildContext context, {
+    Color loadingColor = AppColor.blue,
+  }) async =>
       await _showDialog(
         context,
         child: Container(
           height: 50.0,
           alignment: Alignment.center,
           color: Colors.transparent,
-          child: LoadingAnimationWidget.fourRotatingDots(color: loadingColor, size: 40),
+          child: LoadingAnimationWidget.fourRotatingDots(
+            color: loadingColor,
+            size: 40,
+          ),
         ),
       );
 
-  static Future<bool> showDefaultLoading(BuildContext context, {Color loadingColor = AppColor.blue}) async =>
+  static Future<bool> showDefaultLoading(
+    BuildContext context, {
+    Color loadingColor = AppColor.blue,
+  }) async =>
       await _showDialog(
         context,
         child: Container(
           height: 50,
           alignment: Alignment.center,
           color: Colors.transparent,
-          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(loadingColor)),
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(loadingColor),
+          ),
         ),
       );
 
-  static Future<bool> _showDialog(BuildContext context, {required Widget child}) async =>
+  static Future<bool> _showDialog(
+    BuildContext context, {
+    required Widget child,
+  }) async =>
       (await showGeneralDialog<bool>(
         barrierColor: Colors.black.withOpacity(0.6),
         transitionBuilder: (_, a1, a2, widget) {

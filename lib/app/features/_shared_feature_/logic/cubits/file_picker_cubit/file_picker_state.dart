@@ -5,7 +5,11 @@ class FilePickerState extends Equatable {
   final String fileName;
   final FileInfo? file;
 
-  const FilePickerState({this.status = FileSelectorStatus.unselected, required this.fileName, this.file});
+  const FilePickerState({
+    this.status = FileSelectorStatus.unselected,
+    required this.fileName,
+    this.file,
+  });
 
   String get selectedFileName => file?.fileName ?? fileName;
   bool get isSelected => status == FileSelectorStatus.selected;
@@ -13,9 +17,18 @@ class FilePickerState extends Equatable {
   @override
   List<Object?> get props => [status, fileName, file];
 
-  FilePickerState copyWith({FileSelectorStatus? status, String? fileName, FileInfo? file}) =>
-      FilePickerState(status: status ?? this.status, fileName: fileName ?? this.fileName, file: file ?? this.file);
+  FilePickerState copyWith({
+    FileSelectorStatus? status,
+    String? fileName,
+    FileInfo? file,
+  }) =>
+      FilePickerState(
+        status: status ?? this.status,
+        fileName: fileName ?? this.fileName,
+        file: file ?? this.file,
+      );
 
   @override
-  String toString() => 'FilePickerState(status: $status, fileName: $fileName, file: $file)';
+  String toString() =>
+      'FilePickerState(status: $status, fileName: $fileName, file: $file)';
 }

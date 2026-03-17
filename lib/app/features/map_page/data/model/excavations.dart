@@ -2,7 +2,8 @@ import 'package:dgis_map/library.dart';
 
 import '../data_sources/point_layers_data.dart';
 
-List<Excavations> excavationsFromJson(List list) => List<Excavations>.from(list.map((x) => Excavations.fromJson(x)));
+List<Excavations> excavationsFromJson(List list) =>
+    List<Excavations>.from(list.map((x) => Excavations.fromJson(x)));
 
 class Excavations extends PointLayersData {
   /// final GeoPointMessage startPoint;
@@ -78,11 +79,13 @@ class Excavations extends PointLayersData {
 
         licStatus: json['attributes']["LIC_STATUS"],
 
-        worksStartDate:
-            json['attributes']["WORKSTARTDATE"] != null ? DateTime.tryParse(json['attributes']["WORKSTARTDATE"]) : null,
+        worksStartDate: json['attributes']["WORKSTARTDATE"] != null
+            ? DateTime.tryParse(json['attributes']["WORKSTARTDATE"])
+            : null,
 
-        worksEndDate:
-            json['attributes']["WORKENDDATE"] != null ? DateTime.tryParse(json['attributes']["WORKENDDATE"]) : null,
+        worksEndDate: json['attributes']["WORKENDDATE"] != null
+            ? DateTime.tryParse(json['attributes']["WORKENDDATE"])
+            : null,
         streetCloseType: json['attributes']["STREET_CLOSE_TYPE"],
         pathLength: json['attributes']["PATHLENGTH"],
         siteName: json['attributes']["SITE_NAME"],

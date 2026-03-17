@@ -12,14 +12,13 @@ class FormPledgesSummuryWidget extends StatelessWidget {
   final String consentcheck;
   final bool? currentValue;
   final Function onChanged;
-  const FormPledgesSummuryWidget({
-    super.key,
-    required this.title,
-    required this.consent,
-    required this.consentcheck,
-    this.currentValue,
-    required this.onChanged,
-  });
+  const FormPledgesSummuryWidget(
+      {super.key,
+      required this.title,
+      required this.consent,
+      required this.consentcheck,
+      this.currentValue,
+      required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -37,30 +36,31 @@ class FormPledgesSummuryWidget extends StatelessWidget {
         ),
         CustomVerticalSpace(height: 8),
         Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(color: Color(0x80E6EFEF), borderRadius: BorderRadius.circular(8)),
-          child: Row(
-            children: [
-              Checkbox(
-                value: currentValue ?? false,
-                activeColor: AppColor.primary900Light,
-                onChanged: (newVal) {
-                  onChanged(newVal);
-                },
-              ),
-              Flexible(
-                child: CustomTextWidget(
-                  consentcheck,
-                  fontColor: AppColor.primary700Light,
-                  fontSize: 12,
-                  maxLines: 10,
-                  fontWeight: AppFontWeight.semiBold,
-                  height: 1.3,
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+                color: Color(0x80E6EFEF),
+                borderRadius: BorderRadius.circular(8)),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: currentValue ?? false,
+                  activeColor: AppColor.primary900Light,
+                  onChanged: (newVal) {
+                    onChanged(newVal);
+                  },
                 ),
-              ),
-            ],
-          ),
-        ),
+                Flexible(
+                  child: CustomTextWidget(
+                    consentcheck,
+                    fontColor: AppColor.primary700Light,
+                    fontSize: 12,
+                    maxLines: 10,
+                    fontWeight: AppFontWeight.semiBold,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ))
       ],
     );
   }

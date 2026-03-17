@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 
 class AppLaunchService {
   static Future<void> launchApp({
@@ -12,7 +11,9 @@ class AppLaunchService {
     // String? deepLink,
   }) async {
     //_fallbackUrl the same value of deepLink paramter
-    String? fallbackUrl = Platform.isAndroid ? deepLinkInfo.deepLinkAndroid : deepLinkInfo.deepLinkIos;
+    String? fallbackUrl = Platform.isAndroid
+        ? deepLinkInfo.deepLinkAndroid
+        : deepLinkInfo.deepLinkIos;
 
     try {
       bool launched = await _tryLaunchApp(
@@ -80,7 +81,8 @@ class AppLaunchService {
         final androidIntents = [
           if (deepLink.startsWith('http'))
             'intent://${deepLink.replaceFirst(RegExp('^https?://'), '')}#Intent;package=$androidPackageName;scheme=https;end',
-          if (!deepLink.contains('://')) 'intent://$deepLink#Intent;package=$androidPackageName;end',
+          if (!deepLink.contains('://'))
+            'intent://$deepLink#Intent;package=$androidPackageName;end',
           deepLink, // try original again
         ];
 
@@ -92,7 +94,8 @@ class AppLaunchService {
       } else if (Platform.isIOS && iosUrlScheme != null) {
         // iOS-specific deep link formats
         final iosLinks = [
-          if (deepLink.startsWith('http')) '$iosUrlScheme://${deepLink.replaceFirst(RegExp('^https?://'), '')}',
+          if (deepLink.startsWith('http'))
+            '$iosUrlScheme://${deepLink.replaceFirst(RegExp('^https?://'), '')}',
           if (!deepLink.contains('://')) '$iosUrlScheme://$deepLink',
           deepLink, // try original again
         ];
@@ -128,11 +131,19 @@ class AppLaunchService {
     }
   }
 
-  static Future<void> _redirectToStore({String? appStoreId, String? playStoreId, String? fallbackUrl}) async {
+  static Future<void> _redirectToStore({
+    String? appStoreId,
+    String? playStoreId,
+    String? fallbackUrl,
+  }) async {
     if (Platform.isAndroid && playStoreId != null) {
-      await StoreRedirect.redirect(androidAppId: playStoreId);
+      await StoreRedirect.redirect(
+        androidAppId: playStoreId,
+      );
     } else if (Platform.isIOS && appStoreId != null) {
-      await StoreRedirect.redirect(iOSAppId: appStoreId);
+      await StoreRedirect.redirect(
+        iOSAppId: appStoreId,
+      );
     } else if (fallbackUrl != null) {
       final uri = Uri.parse(fallbackUrl);
       if (await canLaunchUrl(uri)) {

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart'
-    show Color, Column, CrossAxisAlignment, EdgeInsetsDirectional, Padding, SliverPadding, Widget;
+    show
+        Color,
+        Column,
+        CrossAxisAlignment,
+        EdgeInsetsDirectional,
+        Padding,
+        SliverPadding,
+        Widget;
 
-import '../../../features/_shared_feature_/shared_feature_exports.dart' show DrawLineWidget;
+import '../../../features/_shared_feature_/shared_feature_exports.dart'
+    show DrawLineWidget;
 import '../utils_exports.dart' show AppColor;
 
 extension WidgetConversion on List<Widget> {
@@ -12,14 +20,19 @@ extension WidgetConversion on List<Widget> {
     double bottom = 0.0,
     bool ignoreFirstItem = false,
     bool ignoreLastItem = true,
-  }) => map(
-    (child) => ignoreLastItem && child == last || ignoreFirstItem && child == first
-        ? child
-        : Padding(
-            padding: EdgeInsetsDirectional.only(start: start, top: top, end: end, bottom: bottom),
-            child: child,
-          ),
-  ).toList();
+  }) =>
+      map((child) =>
+          ignoreLastItem && child == last || ignoreFirstItem && child == first
+              ? child
+              : Padding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: start,
+                    top: top,
+                    end: end,
+                    bottom: bottom,
+                  ),
+                  child: child,
+                )).toList();
 
   List<Widget> addSliverPadding({
     double start = 0.0,
@@ -28,14 +41,19 @@ extension WidgetConversion on List<Widget> {
     double bottom = 0.0,
     bool ignoreFirstItem = false,
     bool ignoreLastItem = true,
-  }) => map(
-    (child) => ignoreLastItem && child == last || ignoreFirstItem && child == first
-        ? child
-        : SliverPadding(
-            padding: EdgeInsetsDirectional.only(start: start, top: top, end: end, bottom: bottom),
-            sliver: child,
-          ),
-  ).toList();
+  }) =>
+      map((child) =>
+          ignoreLastItem && child == last || ignoreFirstItem && child == first
+              ? child
+              : SliverPadding(
+                  padding: EdgeInsetsDirectional.only(
+                    start: start,
+                    top: top,
+                    end: end,
+                    bottom: bottom,
+                  ),
+                  sliver: child,
+                )).toList();
 
   List<Widget> addSeparator({
     Color color = AppColor.gray,
@@ -43,19 +61,18 @@ extension WidgetConversion on List<Widget> {
     double verticalSpace = 0.0,
     double horizontalSpace = 0.0,
     bool ignoreLastItem = true,
-  }) => map(
-    (child) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        child,
-        if (ignoreLastItem && child != last)
-          DrawLineWidget(
-            lineColor: color,
-            lineHeight: width,
-            verticalMargin: verticalSpace,
-            horizontalMargin: horizontalSpace,
-          ),
-      ],
-    ),
-  ).toList();
+  }) =>
+      map((child) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              child,
+              if (ignoreLastItem && child != last)
+                DrawLineWidget(
+                  lineColor: color,
+                  lineHeight: width,
+                  verticalMargin: verticalSpace,
+                  horizontalMargin: horizontalSpace,
+                ),
+            ],
+          )).toList();
 }

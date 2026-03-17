@@ -2,7 +2,8 @@ import 'package:auto_size_text/auto_size_text.dart' show AutoSizeText;
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, AppStyle;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppFontWeight, AppStyle;
 
 class CustomTextWidget extends StatelessWidget {
   final String text;
@@ -51,8 +52,7 @@ class CustomTextWidget extends StatelessWidget {
       overflow: textOverflow ?? TextOverflow.visible,
       textDirection: textDirection,
       maxLines: maxLines,
-      style:
-          textStyle ??
+      style: textStyle ??
           AppStyle.mainTextSecondaryStyle.copyWith(
             fontSize: fontSize,
             fontWeight: fontWeight?.fontWeight,
@@ -89,26 +89,24 @@ class CustomAutoSizeTextWidget extends StatelessWidget {
   final double? textScaleFactor;
   final double? letterSpacing;
 
-  const CustomAutoSizeTextWidget(
-    this.text, {
-    super.key,
-    this.textAlign,
-    this.textOverflow,
-    this.textDirection,
-    this.maxLines = 1,
-    this.textStyle,
-    this.fontWeight,
-    this.maxFontSize = 16.0,
-    this.minFontSize = 10.0,
-    this.fontFamily = GeneralKey.appFontType,
-    this.fontColor = AppColor.white,
-    this.height = 1.0,
-    this.textDecoration = TextDecoration.none,
-    this.textDecorationThickness = 1.5,
-    this.letterSpacing,
-    this.textDecorationColor,
-    this.textScaleFactor,
-  });
+  const CustomAutoSizeTextWidget(this.text,
+      {super.key,
+      this.textAlign,
+      this.textOverflow,
+      this.textDirection,
+      this.maxLines = 1,
+      this.textStyle,
+      this.fontWeight,
+      this.maxFontSize = 16.0,
+      this.minFontSize = 10.0,
+      this.fontFamily = GeneralKey.appFontType,
+      this.fontColor = AppColor.white,
+      this.height = 1.0,
+      this.textDecoration = TextDecoration.none,
+      this.textDecorationThickness = 1.5,
+      this.letterSpacing,
+      this.textDecorationColor,
+      this.textScaleFactor});
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +118,7 @@ class CustomAutoSizeTextWidget extends StatelessWidget {
       maxFontSize: maxFontSize,
       minFontSize: minFontSize,
       maxLines: maxLines,
-      style:
-          textStyle ??
+      style: textStyle ??
           AppStyle.mainTextSecondaryStyle.copyWith(
             fontSize: maxFontSize,
             fontWeight: fontWeight?.fontWeight,

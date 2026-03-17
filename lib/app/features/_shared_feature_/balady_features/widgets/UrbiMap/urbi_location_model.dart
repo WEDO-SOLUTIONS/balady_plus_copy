@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 class UrbiLocationModel {
   UrbiLocationModel({
     this.admDiv,
@@ -7,8 +17,7 @@ class UrbiLocationModel {
     this.point,
     this.searchAttributes,
     this.subtype,
-    this.type,
-  });
+    this.type,});
 
   UrbiLocationModel.fromJson(dynamic json) {
     if (json['adm_div'] != null) {
@@ -33,8 +42,7 @@ class UrbiLocationModel {
   SearchAttributes? searchAttributes;
   String? subtype;
   String? type;
-  UrbiLocationModel copyWith({
-    List<AdmDiv>? admDiv,
+  UrbiLocationModel copyWith({  List<AdmDiv>? admDiv,
     String? fullName,
     String? id,
     String? name,
@@ -42,8 +50,7 @@ class UrbiLocationModel {
     SearchAttributes? searchAttributes,
     String? subtype,
     String? type,
-  }) => UrbiLocationModel(
-    admDiv: admDiv ?? this.admDiv,
+  }) => UrbiLocationModel(  admDiv: admDiv ?? this.admDiv,
     fullName: fullName ?? this.fullName,
     id: id ?? this.id,
     name: name ?? this.name,
@@ -70,10 +77,14 @@ class UrbiLocationModel {
     map['type'] = type;
     return map;
   }
+
 }
 
 class SearchAttributes {
-  SearchAttributes({this.handlingType, this.suggestParts, this.suggestedText});
+  SearchAttributes({
+    this.handlingType,
+    this.suggestParts,
+    this.suggestedText,});
 
   SearchAttributes.fromJson(dynamic json) {
     handlingType = json['handling_type'];
@@ -88,12 +99,13 @@ class SearchAttributes {
   int? handlingType;
   List<SuggestParts>? suggestParts;
   String? suggestedText;
-  SearchAttributes copyWith({int? handlingType, List<SuggestParts>? suggestParts, String? suggestedText}) =>
-      SearchAttributes(
-        handlingType: handlingType ?? this.handlingType,
-        suggestParts: suggestParts ?? this.suggestParts,
-        suggestedText: suggestedText ?? this.suggestedText,
-      );
+  SearchAttributes copyWith({  int? handlingType,
+    List<SuggestParts>? suggestParts,
+    String? suggestedText,
+  }) => SearchAttributes(  handlingType: handlingType ?? this.handlingType,
+    suggestParts: suggestParts ?? this.suggestParts,
+    suggestedText: suggestedText ?? this.suggestedText,
+  );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['handling_type'] = handlingType;
@@ -103,10 +115,13 @@ class SearchAttributes {
     map['suggested_text'] = suggestedText;
     return map;
   }
+
 }
 
 class SuggestParts {
-  SuggestParts({this.isSuggested, this.text});
+  SuggestParts({
+    this.isSuggested,
+    this.text,});
 
   SuggestParts.fromJson(dynamic json) {
     isSuggested = json['is_suggested'];
@@ -114,18 +129,24 @@ class SuggestParts {
   }
   bool? isSuggested;
   String? text;
-  SuggestParts copyWith({bool? isSuggested, String? text}) =>
-      SuggestParts(isSuggested: isSuggested ?? this.isSuggested, text: text ?? this.text);
+  SuggestParts copyWith({  bool? isSuggested,
+    String? text,
+  }) => SuggestParts(  isSuggested: isSuggested ?? this.isSuggested,
+    text: text ?? this.text,
+  );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['is_suggested'] = isSuggested;
     map['text'] = text;
     return map;
   }
+
 }
 
 class Point {
-  Point({this.lat, this.lon});
+  Point({
+    this.lat,
+    this.lon,});
 
   Point.fromJson(dynamic json) {
     lat = json['lat'];
@@ -133,17 +154,25 @@ class Point {
   }
   double? lat;
   double? lon;
-  Point copyWith({double? lat, double? lon}) => Point(lat: lat ?? this.lat, lon: lon ?? this.lon);
+  Point copyWith({  double? lat,
+    double? lon,
+  }) => Point(  lat: lat ?? this.lat,
+    lon: lon ?? this.lon,
+  );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['lat'] = lat;
     map['lon'] = lon;
     return map;
   }
+
 }
 
 class AdmDiv {
-  AdmDiv({this.id, this.name, this.type});
+  AdmDiv({
+    this.id,
+    this.name,
+    this.type,});
 
   AdmDiv.fromJson(dynamic json) {
     id = json['id'];
@@ -153,8 +182,13 @@ class AdmDiv {
   String? id;
   String? name;
   String? type;
-  AdmDiv copyWith({String? id, String? name, String? type}) =>
-      AdmDiv(id: id ?? this.id, name: name ?? this.name, type: type ?? this.type);
+  AdmDiv copyWith({  String? id,
+    String? name,
+    String? type,
+  }) => AdmDiv(  id: id ?? this.id,
+    name: name ?? this.name,
+    type: type ?? this.type,
+  );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['id'] = id;
@@ -162,4 +196,5 @@ class AdmDiv {
     map['type'] = type;
     return map;
   }
+
 }

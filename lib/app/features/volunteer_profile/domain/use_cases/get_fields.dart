@@ -9,5 +9,6 @@ class GetFields extends UseCase<List<VolunteerLookup>, NoParams> {
 
   GetFields({required this.repository});
   @override
-  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async => repository.getFields();
+  Future<Either<Failure, List<VolunteerLookup>>> call(NoParams params) async =>
+      repository.getFields();
 }

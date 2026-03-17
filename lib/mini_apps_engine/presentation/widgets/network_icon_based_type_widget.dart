@@ -1,6 +1,6 @@
-import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';

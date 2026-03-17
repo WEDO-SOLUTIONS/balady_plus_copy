@@ -43,6 +43,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     getPrayerTimeRange();
   }
 
+
   Future<bool> checkExactAlarmPermission() async {
     if ((await Permission.scheduleExactAlarm.request()).isGranted) {
       return true;
@@ -52,6 +53,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void setNotifications() async {
+
     await checkExactAlarmPermission();
     final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
     if (isNotificationTurnOff) return NotificationService.cancelAll();

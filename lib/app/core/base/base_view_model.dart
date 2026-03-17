@@ -13,7 +13,6 @@ GetIt locator = GetIt.instance;
 class BaseViewModel extends ChangeNotifier {
   bool isLoading = false;
   final navigation = NavigationService.navigatorKey;
-
   // final webService = locator<WebService>();
   // final apiServie = locator<APIService>();
 
@@ -54,17 +53,15 @@ class BaseViewModel extends ChangeNotifier {
     if (error.isNotEmpty) {
       try {
         BotToast.showSimpleNotification(
-          title: error,
-          backgroundColor: const Color.fromARGB(255, 204, 51, 51),
-          titleStyle: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-            fontStyle: FontStyle.normal,
-            fontSize: 16.0,
-          ),
-          hideCloseButton: true,
-          duration: const Duration(seconds: 3),
-        );
+            title: error,
+            backgroundColor: const Color.fromARGB(255, 204, 51, 51),
+            titleStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal,
+                fontSize: 16.0),
+            hideCloseButton: true,
+            duration: const Duration(seconds: 3));
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(

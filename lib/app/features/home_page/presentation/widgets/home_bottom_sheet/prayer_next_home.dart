@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppFontWeight, Prayers;
-import '../../../../_shared_feature_/shared_feature_exports.dart' show CustomTextWidget;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppFontWeight, Prayers;
+import '../../../../_shared_feature_/shared_feature_exports.dart'
+    show CustomTextWidget;
 
 class NextPrayerHome extends StatefulWidget {
   final Prayers prayer;

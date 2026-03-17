@@ -1,9 +1,10 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -18,7 +19,8 @@ class CameraWidget extends StatefulWidget {
   State<CameraWidget> createState() => _CameraWidgetState();
 }
 
-class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver {
+class _CameraWidgetState extends State<CameraWidget>
+    with WidgetsBindingObserver {
   late CameraBloc bloc;
 
   @override
@@ -35,7 +37,8 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
           !context.read<CameraBloc>().cameraController!.value.isInitialized) {
         return;
       }
-      if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+      if (state == AppLifecycleState.inactive ||
+          state == AppLifecycleState.paused) {
         context.read<CameraBloc>().cameraController?.dispose();
       } else if (state == AppLifecycleState.resumed) {
         context.read<CameraBloc>().add(OnNewCameraSelected());
@@ -71,24 +74,38 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
                 ? GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onScaleStart: (details) {
-                      context.read<CameraBloc>().add(SetZoomLevelEvent(zoom: state.scaleFactor));
+                      context
+                          .read<CameraBloc>()
+                          .add(SetZoomLevelEvent(zoom: state.scaleFactor));
                     },
                     onScaleUpdate: (details) {
-                      context.read<CameraBloc>().add(UpdateScaleLevelEvent(scale: details.scale));
+                      context
+                          .read<CameraBloc>()
+                          .add(UpdateScaleLevelEvent(scale: details.scale));
                     },
                     child: SizedBox(
                       height: double.infinity,
-                      child: CameraPreview(context.read<CameraBloc>().cameraController!),
+                      child: CameraPreview(
+                        context.read<CameraBloc>().cameraController!,
+                      ),
                     ),
                   )
                 : const Center(),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onScaleStart: (details) {
-                context.read<CameraBloc>().add(SetZoomLevelEvent(zoom: state.scaleFactor));
+                context.read<CameraBloc>().add(
+                      SetZoomLevelEvent(
+                        zoom: state.scaleFactor,
+                      ),
+                    );
               },
               onScaleUpdate: (details) {
-                context.read<CameraBloc>().add(UpdateScaleLevelEvent(scale: details.scale));
+                context.read<CameraBloc>().add(
+                      UpdateScaleLevelEvent(
+                        scale: details.scale,
+                      ),
+                    );
               },
               child: Align(
                 alignment: Alignment.center,
@@ -101,7 +118,9 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
                       margin: const EdgeInsets.symmetric(horizontal: 24),
                       decoration: BoxDecoration(
                         border: Border.all(color: AppColor.white, width: 2),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(
+                          24,
+                        ),
                       ),
                     ),
                     const CustomVerticalSpace(height: 24),
@@ -126,19 +145,29 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
                   children: [
                     // take photo button
                     GestureDetector(
-                      onTap: () async {
-                        context.read<CameraBloc>().add(TakePhoto());
-                      },
-                      child: Image.asset(IconPath.vdButtonCameraIcon, height: 72, width: 72),
-                    ),
-                    const CustomVerticalSpace(height: 30),
+                        onTap: () async {
+                          context.read<CameraBloc>().add(TakePhoto());
+                        },
+                        child: Image.asset(
+                          IconPath.vdButtonCameraIcon,
+                          height: 72,
+                          width: 72,
+                        )),
+                    const CustomVerticalSpace(height: 30)
                   ],
                 ),
               ),
             if (state.status == BlocStatus.loading)
-              const Align(alignment: Alignment.center, child: CustomCircularLoadingWidget()),
+              const Align(
+                alignment: Alignment.center,
+                child: CustomCircularLoadingWidget(),
+              ),
             Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16, left: 16, right: 16),
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                right: 16,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -152,7 +181,9 @@ class _CameraWidgetState extends State<CameraWidget> with WidgetsBindingObserver
                     },
                   ),
                   CustomIconButtonWidget(
-                    icon: !state.isFlashOn ? IconPath.vdCameraFlashOff : IconPath.vdCameraFlashOn,
+                    icon: !state.isFlashOn
+                        ? IconPath.vdCameraFlashOff
+                        : IconPath.vdCameraFlashOn,
                     iconSize: 32,
                     btnHeight: 32,
                     btnWidth: 32,

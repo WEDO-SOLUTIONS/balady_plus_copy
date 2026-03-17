@@ -1,9 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, ContextConversion;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, ContextConversion;
 import '../../../shared_feature_exports.dart'
-    show CustomElevatedIconButtonWidget, CustomIconButtonWidget, ErrorUnderWidget, WidgetLabel;
+    show
+        CustomElevatedIconButtonWidget,
+        CustomIconButtonWidget,
+        ErrorUnderWidget,
+        WidgetLabel;
 
 class CustomCupertinoDatePickerWidget extends StatelessWidget {
   final bool ignoreHolidays;
@@ -52,7 +57,11 @@ class CustomCupertinoDatePickerWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label widget
-        WidgetLabel(isRequired: isRequired, label: label, labelStyle: labelStyle),
+        WidgetLabel(
+          isRequired: isRequired,
+          label: label,
+          labelStyle: labelStyle,
+        ),
         // Date Picker
         CustomElevatedIconButtonWidget(
           btnHeight: 55.0,
@@ -67,7 +76,10 @@ class CustomCupertinoDatePickerWidget extends StatelessWidget {
           iconAlignment: AlignmentDirectional.centerEnd,
           onPressed: readOnly
               ? onDisabledTapped
-              : () async => await onSelectedDate(context, selectedDate: validateDate ?? DateTime.now()),
+              : () async => await onSelectedDate(
+                    context,
+                    selectedDate: validateDate ?? DateTime.now(),
+                  ),
         ),
         //* Space
         // if (showError) const CustomVerticalSpace(height: 6.0),
@@ -77,25 +89,31 @@ class CustomCupertinoDatePickerWidget extends StatelessWidget {
     );
   }
 
-  Color get _fillColor => readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
+  Color get _fillColor =>
+      readOnly ? AppColor.gray : fillColor ?? AppColor.gray.withOpacity(0.3);
   Color get _borderColor => borderColor ?? AppColor.gray.withOpacity(0.60);
 
   TextStyle get hintStyle => dateStyle ?? AppStyle.pickerStyle;
   bool get showError => errorMsg != null && errorMsg!.isNotEmpty;
 
-  String get dateString =>
-      initialDate != null ? "${initialDate!.year}/${initialDate!.month}/${initialDate!.day}" : "yyyy-mm-dd";
+  String get dateString => initialDate != null
+      ? "${initialDate!.year}/${initialDate!.month}/${initialDate!.day}"
+      : "yyyy-mm-dd";
 
   DateTime? get validateDate => initialDate?.weekday == 5
       ? initialDate!.add(const Duration(days: 2))
       : initialDate?.weekday == 6
-      ? initialDate!.add(const Duration(days: 1))
-      : initialDate;
+          ? initialDate!.add(const Duration(days: 1))
+          : initialDate;
 
   DateTime get firstDate => startDate ?? DateTime(1996, 1, 1);
-  DateTime get lastDate => endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
+  DateTime get lastDate =>
+      endDate ?? DateTime(DateTime.now().year + 4, DateTime.now().month + 1, 0);
 
-  Future<void> onSelectedDate(BuildContext context, {required DateTime selectedDate}) async =>
+  Future<void> onSelectedDate(
+    BuildContext context, {
+    required DateTime selectedDate,
+  }) async =>
       await showCupertinoModalPopup(
         context: context,
         barrierDismissible: true,
@@ -118,7 +136,7 @@ class CustomCupertinoDatePickerWidget extends StatelessWidget {
                         else if (date.weekday == 6)
                           {onSelected(date.add(const Duration(days: 1)))}
                         else
-                          {onSelected(date)},
+                          {onSelected(date)}
                       }
                     : onSelected(date),
               ),

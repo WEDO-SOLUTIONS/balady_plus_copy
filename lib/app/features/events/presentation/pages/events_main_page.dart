@@ -40,7 +40,8 @@ class _EventsMainPageState extends State<EventsMainPage> {
       create: (context) => EventsBloc()..add(const GetSearchEvent()),
       child: BlocListener<EventsBloc, EventsState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure || state.status == BlocStatus.retry) {
+          if (state.status == BlocStatus.failure ||
+              state.status == BlocStatus.retry) {
             CommonFunctions.showError(state.errorMessage ?? "");
           }
         },
@@ -63,7 +64,8 @@ class _EventsMainPageState extends State<EventsMainPage> {
       
                           final selectedRequestType = state.selectedInvoiceStatus;
       */
-                      final SearchEventsParams? params = await BottomSheetDialog.showDraggableSheet(
+                      final SearchEventsParams? params =
+                          await BottomSheetDialog.showDraggableSheet(
                         context,
                         //  dialogKeyName: DialogName.violationsFilterDialog,
                         //  currentRouteName: RouteName.violationsPage,
@@ -77,7 +79,9 @@ class _EventsMainPageState extends State<EventsMainPage> {
                       );
 
                       if (context.mounted) {
-                        context.read<EventsBloc>().add(GetSearchEvent(params: params));
+                        context
+                            .read<EventsBloc>()
+                            .add(GetSearchEvent(params: params));
                         /*   context.read<EventsBloc>().add(
                                   ResetViolationsFiltersEvent(
                                       selectedSortType: sortType,

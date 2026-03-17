@@ -69,13 +69,16 @@ class MiniAppsSearchPage extends StatelessWidget {
                         Expanded(
                           child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                             builder: (context, state) {
-                              if (controller.text.isEmpty && state.searchResults.isEmpty && !state.isSearching) {
+                              if (controller.text.isEmpty &&
+                                  state.searchResults.isEmpty &&
+                                  !state.isSearching) {
                                 //! Intro section
                                 return Center(
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 80),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           "search_for_mini_app".tr(),
@@ -96,7 +99,10 @@ class MiniAppsSearchPage extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.visible,
                                           style: TextStyle(
-                                            color: Theme.of(context).colorScheme.onSurface.withAlpha(400),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withAlpha(400),
                                             fontWeight: FontWeight.w400,
                                             fontSize: 15,
                                             fontFamily: GeneralKey.appFontType,
@@ -124,7 +130,9 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         maxFontSize: 30,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onSurface,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: GeneralKey.appFontType,
                                         ),
@@ -136,35 +144,50 @@ class MiniAppsSearchPage extends StatelessWidget {
                                 //! Results section - FIXED SCROLLING ISSUE
                                 return SingleChildScrollView(
                                   padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context).viewInsets.bottom > 0
-                                        ? MediaQuery.of(context).viewInsets.bottom + 100
+                                    bottom:
+                                        MediaQuery.of(
+                                              context,
+                                            ).viewInsets.bottom >
+                                            0
+                                        ? MediaQuery.of(
+                                                context,
+                                              ).viewInsets.bottom +
+                                              100
                                         : 100,
                                   ),
                                   child: StaggeredAppear(
-                                    initialDelay: const Duration(milliseconds: 200),
-                                    itemDuration: const Duration(milliseconds: 450),
-                                    itemDelay: const Duration(milliseconds: 130),
+                                    initialDelay: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    itemDuration: const Duration(
+                                      milliseconds: 450,
+                                    ),
+                                    itemDelay: const Duration(
+                                      milliseconds: 130,
+                                    ),
                                     children: [
                                       GridView.builder(
                                         shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 16,
-                                          mainAxisSpacing:
-                                              16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                          childAspectRatio:
-                                              (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5))
-                                                  .clamp(0.52, 0.78),
-                                        ),
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 16,
+                                              mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                              childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
+                                            ),
                                         itemCount: state.searchResults.length,
                                         itemBuilder: (context, index) {
-                                          final miniApp = state.searchResults[index];
+                                          final miniApp =
+                                              state.searchResults[index];
                                           return AppsGroupMiniAppsCardWidgets(
                                             title: miniApp.name,
                                             iconPath: miniApp.iconPath,
                                             onTap: () {
-                                              context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
+                                              context
+                                                  .read<NewMiniAppLogicCubit>()
+                                                  .openMiniApp(miniApp);
                                             },
                                           );
                                         },
@@ -186,9 +209,14 @@ class MiniAppsSearchPage extends StatelessWidget {
                                 height: context.h(49),
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.surface,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(100),
-                                    border: Border.all(color: Theme.of(context).cardColor, width: 1),
+                                    border: Border.all(
+                                      color: Theme.of(context).cardColor,
+                                      width: 1,
+                                    ),
                                   ),
                                   child: IconButton(
                                     onPressed: () {
@@ -196,7 +224,9 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     },
                                     icon: Icon(
                                       Icons.arrow_back,
-                                      color: Theme.of(context).colorScheme.onSurface.withAlpha(400),
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withAlpha(400),
                                     ),
                                   ),
                                 ),
@@ -210,8 +240,12 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     width: context.screenWidth * 0.75,
                                     height: context.h(49),
                                     suffixPadding: hasText
-                                        ? const EdgeInsets.symmetric(horizontal: 8)
-                                        : const EdgeInsets.symmetric(horizontal: 20),
+                                        ? const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          )
+                                        : const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
                                     autoFocus: true,
                                     autofocus: true,
                                     controller: controller,
@@ -223,7 +257,9 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(
                                             colorFilter: ColorFilter.mode(
-                                              Theme.of(context).colorScheme.onSurface,
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                               BlendMode.srcIn,
                                             ),
                                             IconPath.searchSVG,
@@ -231,15 +267,21 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
-                                              context.read<NewMiniAppLogicCubit>().searchMiniApp('');
+                                              context
+                                                  .read<NewMiniAppLogicCubit>()
+                                                  .searchMiniApp('');
                                             },
                                             icon: Icon(
                                               Icons.close_rounded,
-                                              color: Theme.of(context).colorScheme.onSurface,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                             ),
                                           ),
                                     onChanged: (query) {
-                                      context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
+                                      context
+                                          .read<NewMiniAppLogicCubit>()
+                                          .searchMiniApp(query);
                                     },
                                   );
                                 },

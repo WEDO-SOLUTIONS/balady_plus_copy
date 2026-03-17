@@ -1,3 +1,4 @@
+
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/mini_apps_engine/data/datasource/events_data_source.dart';
@@ -17,7 +18,7 @@ class MiniAppsRepository {
     try {
       services = await localDataSource.getAllServices();
       return Right(services);
-    } on ServerException catch (error, stackTrace) {
+    } on ServerException catch  (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -32,7 +33,7 @@ class MiniAppsRepository {
           errorCode: null,
         ),
       );
-    } catch (error, stackTrace) {
+    } catch  (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -51,10 +52,11 @@ class MiniAppsRepository {
   }
 
   Future<Either<Failure, String>> getMiniAppAcessToken(String serviceId) async {
+
     try {
       String accessToken = await localDataSource.getMiniAppAcessToken(serviceId);
       return Right(accessToken);
-    } on ServerException catch (error, stackTrace) {
+    } on ServerException catch  (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -69,7 +71,7 @@ class MiniAppsRepository {
           errorCode: null,
         ),
       );
-    } catch (error, stackTrace) {
+    } catch  (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

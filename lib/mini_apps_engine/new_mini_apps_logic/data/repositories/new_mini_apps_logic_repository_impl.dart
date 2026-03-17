@@ -53,7 +53,10 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
       }
 
       // Process groups to combine groups with < 2 apps
-      final processedGroups = _processAppGroups(mapAppCategoryGroup.values.toList(), isLoggedInMunicipality);
+      final processedGroups = _processAppGroups(
+        mapAppCategoryGroup.values.toList(),
+        isLoggedInMunicipality,
+      );
 
       return Right(
         NewMiniAppsLogicEntity(
@@ -108,7 +111,10 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     return mapAppCategoryGroup;
   }
 
-  List<CategoryGroup> _processAppGroups(List<CategoryGroup> groups, bool isLoggedInMunicipality) {
+  List<CategoryGroup> _processAppGroups(
+    List<CategoryGroup> groups,
+    bool isLoggedInMunicipality,
+  ) {
     final List<CategoryGroup> processedGroups = [];
     final List<MiniApp> otherServicesApps = [];
 

@@ -87,7 +87,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
           absorbing: !isEnabled,
           child: TextFormField(
             textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
-            textDirection: CommonFunctions.isAppAR ? TextDirection.rtl : TextDirection.ltr,
+            textDirection:
+                CommonFunctions.isAppAR ? TextDirection.rtl : TextDirection.ltr,
             textAlignVertical: TextAlignVertical.center,
             readOnly: isReadOnly,
             enabled: isEnabled,
@@ -95,12 +96,13 @@ class MiniAppsCustomTextField extends StatelessWidget {
             textInputAction: textInputAction,
             onFieldSubmitted: onFieldSubmitted,
             onTap: onTap,
-            inputFormatters:
-                inputFormatters ??
+            inputFormatters: inputFormatters ??
                 [
                   if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
-                  if (allowedInputPattern != null) FilteringTextInputFormatter.allow(allowedInputPattern!),
-                  if (deniedInputPattern != null) FilteringTextInputFormatter.deny(deniedInputPattern!),
+                  if (allowedInputPattern != null)
+                    FilteringTextInputFormatter.allow(allowedInputPattern!),
+                  if (deniedInputPattern != null)
+                    FilteringTextInputFormatter.deny(deniedInputPattern!),
                 ],
             onChanged: onChanged,
             focusNode: focusNode,
@@ -108,7 +110,10 @@ class MiniAppsCustomTextField extends StatelessWidget {
             cursorColor: const Color(0XFF2AB3A9),
             style: TextStyle(color: textColor),
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 0,
+                horizontal: 16,
+              ),
               filled: true,
               fillColor: backgroundColor ?? Theme.of(context).colorScheme.surface,
               errorStyle: const TextStyle(color: Colors.red),
@@ -121,15 +126,23 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 1,
+                ),
                 borderRadius: BorderRadius.circular(50),
               ),
               disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).disabledColor),
+                borderSide: BorderSide(
+                  color: Theme.of(context).disabledColor,
+                ),
                 borderRadius: BorderRadius.circular(50),
               ),
               hintText: hintText,
-              hintStyle: TextStyle(color: hintColor, fontSize: hintTextSize ?? 15),
+              hintStyle: TextStyle(
+                color: hintColor,
+                fontSize: hintTextSize ?? 15,
+              ),
               prefixIcon: icon,
               suffixIcon: _buildSuffix(context),
             ),
@@ -154,13 +167,20 @@ class MiniAppsCustomTextField extends StatelessWidget {
         children: [
           if (suffixString != null)
             DefaultTextStyle.merge(
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontFamily: GeneralKey.appFontType),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontFamily: GeneralKey.appFontType,
+              ),
               child: suffixString!,
             ),
-          if (suffixString != null && suffixIcon != null) const SizedBox(width: 12),
+          if (suffixString != null && suffixIcon != null)
+            const SizedBox(width: 12),
           if (suffixIcon != null)
             ColorFiltered(
-              colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.onSurface, BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
+                BlendMode.srcIn,
+              ),
               child: suffixIcon!,
             ),
         ],

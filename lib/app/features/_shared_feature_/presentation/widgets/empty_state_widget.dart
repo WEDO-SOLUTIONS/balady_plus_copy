@@ -21,9 +21,18 @@ class EmptyStateWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(img ?? "assets/images/searchEmptyIcon.png", width: 105, height: 69),
+            Image.asset(
+              img ?? "assets/images/searchEmptyIcon.png",
+              width: 105,
+              height: 69,
+            ),
             const CustomVerticalSpace(height: 18),
-            CustomTextWidget(title ?? "", fontSize: 17.0, fontColor: AppColor.black800, fontWeight: AppFontWeight.bold),
+            CustomTextWidget(
+              title ?? "",
+              fontSize: 17.0,
+              fontColor: AppColor.black800,
+              fontWeight: AppFontWeight.bold,
+            ),
             const CustomVerticalSpace(height: 18),
             CustomTextWidget(
               desc ?? "",

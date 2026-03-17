@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppFontWeight, WidgetConversion;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppFontWeight, WidgetConversion;
 import '../../../shared_feature_exports.dart' show CustomTextWidget;
 
 class TitleSubtitleComponent extends StatelessWidget {

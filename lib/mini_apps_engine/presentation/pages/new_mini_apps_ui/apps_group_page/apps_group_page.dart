@@ -1,30 +1,30 @@
 import 'dart:ui';
-
-import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_sub_category.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/filter_buttom_sheet.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/nafath_login_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/persona_banner_section.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {
   final String groupId;
@@ -81,7 +81,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       if (cubit.state.isAppsGroupLoading) {
         return const Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
+          body: Center(
+            child: CircularProgressIndicator(
+              color: Color(0xFF1CA9A6),
+            ),
+          ),
         );
       }
 
@@ -92,7 +96,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       });
       return const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF1CA9A6),
+          ),
+        ),
       );
     }
 
@@ -218,20 +226,20 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                         : null,
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(
-                                            Theme.of(context).brightness == Brightness.dark
-                                                ? IconPath.searchSVG2
-                                                : IconPath.searchSVG,
-                                          )
+                                      Theme.of(context).brightness == Brightness.dark
+                                          ? IconPath.searchSVG2
+                                          : IconPath.searchSVG,
+                                    )
                                         : IconButton(
-                                            onPressed: () {
-                                              controller.clear();
-                                              context.read<NewMiniAppLogicCubit>().searchMiniApp(
-                                                '',
-                                                source: appGroup!.apps,
-                                              );
-                                            },
-                                            icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
-                                          ),
+                                      onPressed: () {
+                                        controller.clear();
+                                        context.read<NewMiniAppLogicCubit>().searchMiniApp(
+                                          '',
+                                          source: appGroup!.apps,
+                                        );
+                                      },
+                                      icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
+                                    ),
                                     onChanged: (query) {
                                       context.read<NewMiniAppLogicCubit>().searchMiniApp(query, source: appGroup!.apps);
                                     },
@@ -299,10 +307,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                               PageRouteBuilder(
                                                 opaque: false,
                                                 barrierColor: Colors.transparent,
-                                                pageBuilder: (_, __, ___) => AppsGroupPage(
-                                                  groupId: categoryGroup.id,
-                                                  dashboard: widget.dashboard ?? fetchedDashboard,
-                                                ),
+                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id, dashboard: widget.dashboard ?? fetchedDashboard,),
                                               ),
                                             ),
                                           ),
@@ -329,11 +334,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 16,
                                     mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                    childAspectRatio:
-                                        (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
-                                          0.52,
-                                          0.78,
-                                        ),
+                                    childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                   ),
                                 ),
                                 // Add bottom spacing so the gradient overlay doesn't hide last items
@@ -387,11 +388,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                  childAspectRatio:
-                                      (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
-                                        0.52,
-                                        0.78,
-                                      ),
+                                  childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                 ),
                               ),
                               SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
@@ -416,16 +413,16 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                     end: Alignment.bottomCenter,
                     colors: Theme.of(context).brightness == Brightness.dark
                         ? [
-                            // replaced with Color.fromRGBO to avoid withOpacity deprecation
-                            const Color.fromRGBO(0, 0, 0, 0.0),
-                            const Color.fromRGBO(0, 0, 0, 0.6),
-                            const Color.fromRGBO(0, 0, 0, 1.0),
-                          ]
+                      // replaced with Color.fromRGBO to avoid withOpacity deprecation
+                      const Color.fromRGBO(0, 0, 0, 0.0),
+                      const Color.fromRGBO(0, 0, 0, 0.6),
+                      const Color.fromRGBO(0, 0, 0, 1.0),
+                    ]
                         : [
-                            const Color.fromRGBO(255, 255, 255, 0.0),
-                            const Color.fromRGBO(255, 255, 255, 0.6),
-                            const Color.fromRGBO(255, 255, 255, 1.0),
-                          ],
+                      const Color.fromRGBO(255, 255, 255, 0.0),
+                      const Color.fromRGBO(255, 255, 255, 0.6),
+                      const Color.fromRGBO(255, 255, 255, 1.0),
+                    ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
                 ),
@@ -453,11 +450,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         if (!isLoggedIn) {
           return SliverToBoxAdapter(child: NafathLoginWidget());
         } else {
-          return SliverToBoxAdapter(
-            child: PersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard ?? fetchedDashboard),
-          );
+          return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard ?? fetchedDashboard,));
         }
       },
     );
   }
 }
+

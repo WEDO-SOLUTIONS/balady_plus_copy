@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show IconPath, WeatherDateFormatter;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show IconPath, WeatherDateFormatter;
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/weather/presentation/widgets/expansion_tile.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
@@ -8,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/weather_date.dart';
-import '../../../_shared_feature_/shared_feature_exports.dart' show CustomAutoSizeTextWidget, CustomTextWidget;
+import '../../../_shared_feature_/shared_feature_exports.dart'
+    show CustomAutoSizeTextWidget, CustomTextWidget;
 
 class WeatherDayCard extends StatelessWidget {
   const WeatherDayCard({
@@ -43,9 +45,11 @@ class WeatherDayCard extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: CustomTextWidget(
-                    WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01')
+                    WeatherDateFormatter.isToday(
+                            forecastDay?.date ?? '2022-01-01')
                         ? 'today'.tr()
-                        : WeatherDateFormatter.getDay(forecastDay?.date ?? '2022-01-01'),
+                        : WeatherDateFormatter.getDay(
+                            forecastDay?.date ?? '2022-01-01'),
                     fontColor: AppColor.blackModern800Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 16,

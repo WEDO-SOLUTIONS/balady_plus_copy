@@ -1,10 +1,15 @@
-import 'package:country_picker/country_picker.dart' show Country, showCountryPicker;
+import 'package:country_picker/country_picker.dart'
+    show Country, showCountryPicker;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder, BlocProvider, ReadContext;
-import 'package:localize_and_translate/localize_and_translate.dart' show Translation;
+import 'package:flutter_bloc/flutter_bloc.dart'
+    show BlocBuilder, BlocProvider, ReadContext;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle, UIHelper;
-import '../../../shared_feature_exports.dart' show CountryPickerCubit, CustomElevatedIconButtonWidget, ErrorUnderWidget;
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, UIHelper;
+import '../../../shared_feature_exports.dart'
+    show CountryPickerCubit, CustomElevatedIconButtonWidget, ErrorUnderWidget;
 
 class CustomEnhancedCountryPickerWidget extends StatelessWidget {
   final Country? initialCountry;
@@ -52,7 +57,8 @@ class CustomEnhancedCountryPickerWidget extends StatelessWidget {
                     btnWidth: btnWidth,
                     btnHeight: btnHeight,
                     onPressed: () => onShowPicker(context),
-                    text: state?.displayNameNoCountryCode ?? "selectFromHere".tr(),
+                    text: state?.displayNameNoCountryCode ??
+                        "selectFromHere".tr(),
                     textStyle: btnTextStyle,
                     btnColor: btnColor,
                     btnBorderColor: btnBorderColor,
@@ -73,15 +79,16 @@ class CustomEnhancedCountryPickerWidget extends StatelessWidget {
   }
 
   TextStyle get btnTextStyle => AppStyle.pickerStyle;
-  EdgeInsetsGeometry get btnPadding => padding ?? const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding);
+  EdgeInsetsGeometry get btnPadding =>
+      padding ?? const EdgeInsets.symmetric(horizontal: UIHelper.middlePadding);
   Color get btnColor => filledColor ?? AppColor.gray.withOpacity(0.5);
   Color get btnBorderColor => borderColor ?? AppColor.gray;
 
   void onShowPicker(BuildContext context) => showCountryPicker(
-    context: context,
-    // optional. Shows phone code before the country name.
-    showPhoneCode: true,
-    favorite: <String>['SA'],
-    onSelect: context.read<CountryPickerCubit>().onChangeValue,
-  );
+        context: context,
+        // optional. Shows phone code before the country name.
+        showPhoneCode: true,
+        favorite: <String>['SA'],
+        onSelect: context.read<CountryPickerCubit>().onChangeValue,
+      );
 }

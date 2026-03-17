@@ -1,14 +1,14 @@
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-import './app/app.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
+import './app/app.dart';
 import './env.dart';
 
 void main() async {
@@ -21,7 +21,8 @@ void main() async {
       await SentryFlutter.init(
         (options) {
           // added by fawzy
-          options.dsn = 'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
+          options.dsn =
+              'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
 
           // Keep performance monitoring but lower sampling
           options.tracesSampleRate = 0.1; // or even 0.05 in stable releases
@@ -34,7 +35,8 @@ void main() async {
 
           // Enable only the essentials
           options.enableAutoSessionTracking = true;
-          options.enableAutoPerformanceTracing = false; // manual tracing is better
+          options.enableAutoPerformanceTracing =
+              false; // manual tracing is better
           options.enableUserInteractionTracing = false;
 
           // Environment
@@ -90,7 +92,9 @@ void main() async {
         appRunner: () => runApp(
           SentryScreenshotWidget(
             child: SentryUserInteractionWidget(
-              child: const MapnessProviderScope(child: LocalizedApp(child: App())),
+              child: const MapnessProviderScope(
+                child: LocalizedApp(child: App()),
+              ),
             ),
           ),
         ),

@@ -6,7 +6,9 @@ class ArabicNumberTextInputFormatter extends TextInputFormatter {
   ArabicNumberTextInputFormatter({required this.onError});
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    return newValue.copyWith(text: CommonFunctions.replaceArabicNumberWithEnglish(newValue.text));
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    return newValue.copyWith(
+        text: CommonFunctions.replaceArabicNumberWithEnglish(newValue.text));
   }
 }

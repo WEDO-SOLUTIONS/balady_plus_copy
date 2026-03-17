@@ -13,7 +13,8 @@ class FavSearchSectionShimmerLoadingWidget extends StatelessWidget {
 
     final double horizontalPadding = context.screenWidth * 0.02;
     return ListView.separated(
-      separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.02),
+      separatorBuilder: (context, index) =>
+          SizedBox(height: context.screenHeight * 0.02),
       scrollDirection: Axis.vertical,
       itemCount: 10,
       itemBuilder: (context, index) {
@@ -36,20 +37,29 @@ class FavSearchSectionShimmerLoadingWidget extends StatelessWidget {
                       Container(
                         width: context.w(48),
                         height: context.h(48),
-                        decoration: BoxDecoration(color: placeholderColor, borderRadius: BorderRadius.circular(10)),
+                        decoration: BoxDecoration(
+                          color: placeholderColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       SizedBox(width: context.screenWidth * 0.02),
                       Container(
                         width: context.w(192),
                         height: context.h(15),
-                        decoration: BoxDecoration(color: placeholderColor, borderRadius: BorderRadius.circular(4)),
+                        decoration: BoxDecoration(
+                          color: placeholderColor,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                       ),
                     ],
                   ),
                   Container(
                     width: context.w(40),
                     height: context.h(25),
-                    decoration: BoxDecoration(color: placeholderColor, borderRadius: BorderRadius.circular(15)),
+                    decoration: BoxDecoration(
+                      color: placeholderColor,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
                 ],
               ),

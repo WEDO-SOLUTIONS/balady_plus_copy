@@ -69,17 +69,22 @@ class RouteName {
   static const createDCDetailsPage = 'Report_Write-Off_Vehicle_Details_Page';
   static const dcMapRoute = 'Report_Write-Off_Vehicle_Map_Page';
 
-  static const VeichlesListPage = 'Retrieve_Impounded_Vehicle_Show_Vehicles_Page';
-  static const CheckVeichlesPage = 'Retrieve_Impounded_Vehicle_Vehicles_Data_Page';
-  static const CreateRetriveDetailsPage = 'Retrieve_Impounded_Vehicle_Vehicles_Details_Page';
+  static const VeichlesListPage =
+      'Retrieve_Impounded_Vehicle_Show_Vehicles_Page';
+  static const CheckVeichlesPage =
+      'Retrieve_Impounded_Vehicle_Vehicles_Data_Page';
+  static const CreateRetriveDetailsPage =
+      'Retrieve_Impounded_Vehicle_Vehicles_Details_Page';
 
-  static const DCVeichlePage = 'Retrieve_Impounded_Vehicle_Show_My_Vehicles_Page';
+  static const DCVeichlePage =
+      'Retrieve_Impounded_Vehicle_Show_My_Vehicles_Page';
   static const DCSelectRetreiveTypePage = '/DCSelectRetreiveTypePage';
 
   // -------  Appointments ---------
 
   static const NewAppointmentPage = 'Appointment_Booking_Create_Page';
-  static const previousAppointmentsRoute = 'Appointment_Booking_Previous_List_Page';
+  static const previousAppointmentsRoute =
+      'Appointment_Booking_Previous_List_Page';
   static const appointmentDetailsRoute = 'Appointment_Booking_Details_Page';
   static const AppointmentsListScreen = 'Appointment_Booking_List_Page';
   // -------  DAEM ---------
@@ -88,7 +93,8 @@ class RouteName {
 
   // -------  Inquiery Transactions ---------
 
-  static const newTransactionInquiryScreen = 'RequestFollowup_Create_Details_Page';
+  static const newTransactionInquiryScreen =
+      'RequestFollowup_Create_Details_Page';
   static const inquiryDetailsScreen = 'RequestFollowup_View_Details_Page';
 
   // ------- General Inquiery  ---------
@@ -106,9 +112,12 @@ class RouteName {
 
   // ------- Health Certificates  ---------
 
-  static const newHealthCertificatePage = 'HealthCertificate_Create_Details_Page';
-  static const healthLicenseDetailsScreen = 'My_Licenses_HealthCertificate_Details_Page';
-  static const healthRequestDetailsScreen = 'My_Requests_HealthCertificate_Details_Page';
+  static const newHealthCertificatePage =
+      'HealthCertificate_Create_Details_Page';
+  static const healthLicenseDetailsScreen =
+      'My_Licenses_HealthCertificate_Details_Page';
+  static const healthRequestDetailsScreen =
+      'My_Requests_HealthCertificate_Details_Page';
 
   // ------- Quran Page  ---------
   static const quranScreen = 'َQuran_View_Surah_Page';
@@ -122,7 +131,8 @@ class RouteName {
 
   // ------- CR ---------
   static const commercialLicensePage = 'CommercialLicense_Service_Card_Page';
-  static const commercialLicenseServicePage = 'CommercialLicense_Create_Details_Page';
+  static const commercialLicenseServicePage =
+      'CommercialLicense_Create_Details_Page';
 
   // ------- Wallet ------
   static const walletPage = 'Wallet_Page';
@@ -137,11 +147,16 @@ class RouteName {
 
   // -------  CRM Details ---------
 
-  static const DCDetails = 'Customer_Voice_Requests_ReportWriteOffVehicle_Details_Page';
-  static const IncidentDetails = 'Customer_Voice_Requests_SnapAndSend_Details_Page';
-  static const InqDetails = 'Customer_Voice_Requests_General_Inquiry_Details_Page';
-  static const ReqDetails = 'Customer_Voice_Requests_MuncipalServiceRequest_Details_Page';
-  static const VHRDetails = 'Customer_Voice_Requests_RetrieveImpoundedVehicle_Details_Page';
+  static const DCDetails =
+      'Customer_Voice_Requests_ReportWriteOffVehicle_Details_Page';
+  static const IncidentDetails =
+      'Customer_Voice_Requests_SnapAndSend_Details_Page';
+  static const InqDetails =
+      'Customer_Voice_Requests_General_Inquiry_Details_Page';
+  static const ReqDetails =
+      'Customer_Voice_Requests_MuncipalServiceRequest_Details_Page';
+  static const VHRDetails =
+      'Customer_Voice_Requests_RetrieveImpoundedVehicle_Details_Page';
   static const DaemDetails = 'Customer_Voice_Requests_Daem_Details_Page';
 
   // Violations
@@ -162,12 +177,17 @@ class RouteName {
   static const visualDistortionDetailsPage = '/visualDistortionDetailsPage';
 
   // -------  Create Compliance ---------
-  static const createCompliancePage = 'Compliance_Certificate_Service_Card_Page';
-  static const complinaceMapView = 'Compliance_Certificate_Create_Details_Map_Page';
+  static const createCompliancePage =
+      'Compliance_Certificate_Service_Card_Page';
+  static const complinaceMapView =
+      'Compliance_Certificate_Create_Details_Map_Page';
   static const complianceDetailsPage = 'My_Requests_Compliance_Details_Page';
-  static const nonComplianceScreen = 'Compliance_Certificate_Non_Compliance_Page';
-  static const submitCompliancePage = 'Compliance_Certificate_Create_Details_Page';
-  static const submitComplianceOTPPage = 'Compliance_Certificate_Create_OTP_Page';
+  static const nonComplianceScreen =
+      'Compliance_Certificate_Non_Compliance_Page';
+  static const submitCompliancePage =
+      'Compliance_Certificate_Create_Details_Page';
+  static const submitComplianceOTPPage =
+      'Compliance_Certificate_Create_OTP_Page';
 
   // -------  Events ---------
   static const eventsMainPage = 'Events_page';
@@ -186,33 +206,44 @@ class RouteName {
 
   static const calendarDetailsPage = 'kingdomCalendar_Details_Page';
 
-  // -------  Commercial License Cancel ---------
-  static const commercialLicenseApplyCancel = 'CancelCommercialLicense_Service_Card_Page';
-  static const commercialLicenseCancel = 'CancelCommercialLicense_Create_Details_Page';
-  static const submitApplicationSuccessfullyCancel = 'CancelCommercialLicense_Success_Page';
+// -------  Commercial License Cancel ---------
+  static const commercialLicenseApplyCancel =
+      'CancelCommercialLicense_Service_Card_Page';
+  static const commercialLicenseCancel =
+      'CancelCommercialLicense_Create_Details_Page';
+  static const submitApplicationSuccessfullyCancel =
+      'CancelCommercialLicense_Success_Page';
   static const submitRatingCancelScreen = '/submitRatingCancelScreen';
 
   static const commercialLicenseDetails = 'My_Licenses_Commercial_Details_Page';
 
-  // -------  Commercial License Issue ---------
-  static const crMapScreen = 'CommercialLicense_Create_Details_Map_Locator_Page';
+// -------  Commercial License Issue ---------
+  static const crMapScreen =
+      'CommercialLicense_Create_Details_Map_Locator_Page';
 
-  static const CommercialOtpScreen = 'CommercialLicense_Create_Details_OTP_Page';
+  static const CommercialOtpScreen =
+      'CommercialLicense_Create_Details_OTP_Page';
 
-  static const requestCommercialLicenseDetails = 'My_Requests_Commercial_Details_Page';
+  static const requestCommercialLicenseDetails =
+      'My_Requests_Commercial_Details_Page';
 
-  // -------  Commercial License Renew ---------
-  static const renewCommercialLicenseStartService = 'RenewCommercialLicense_Service_Card_Page';
+// -------  Commercial License Renew ---------
+  static const renewCommercialLicenseStartService =
+      'RenewCommercialLicense_Service_Card_Page';
 
-  static const renewCommercialLicenseSubmitForm = 'RenewCommercialLicense_Create_Details_Page';
+  static const renewCommercialLicenseSubmitForm =
+      'RenewCommercialLicense_Create_Details_Page';
 
-  static const submitApplicationSuccessfullyRenew = 'RenewCommercialLicense_Success_Page';
+  static const submitApplicationSuccessfullyRenew =
+      'RenewCommercialLicense_Success_Page';
 
-  static const submitApplicationSuccessfullyNew = 'CommercialLicense_Create_Success_Page';
+  static const submitApplicationSuccessfullyNew =
+      'CommercialLicense_Create_Success_Page';
 
   static const violationResultsPage = 'ViolationGuide_Results_Page';
 
-  static const violationRegulationDetailsPage = 'ViolationGuide_Regulation_Details_Page';
+  static const violationRegulationDetailsPage =
+      'ViolationGuide_Regulation_Details_Page';
 
   static const violationGuideMainPage = 'ViolationGuide_Main_Page';
 
@@ -220,9 +251,11 @@ class RouteName {
 
   // Posters
 
-  static const postersStartService = 'Posters_Create_Details_For_Multiple_License_Page';
+  static const postersStartService =
+      'Posters_Create_Details_For_Multiple_License_Page';
   static const postersDetailsPage = 'Posters_Create_Details_Page';
-  static const postersLicenseStartService = 'Posters_Create_Details_For_License_Page';
+  static const postersLicenseStartService =
+      'Posters_Create_Details_For_License_Page';
   static const submitApplicationSuccessfullyPosters = 'Posters_Success_Page';
   static const posterReqeuestDetailsPage = 'My_Requests_Poster_Details_Page';
 
@@ -231,54 +264,71 @@ class RouteName {
   static const tobaccoDisclosed = '/tobaccoDisclosed';
   static const submitDisclosedSuccessfully = '/submitDisclosedSuccessfully';
 
-  // Permits 24
+// Permits 24
   static const permitsLicenseStartService = 'Permit_24_Service_Card_Page';
   static const permitsDetailsPage = 'Permit_24_Create_Details_Page';
   static const permitsRequestDetailsPage = 'My_Requests_24_Permit_Details_Page';
 
   static const submitApplicationSuccessfullyPermits = 'Permit_24_Success_Page';
 
-  // Permit Tobacco
+// Permit Tobacco
 
-  static const permitsTobaccoLicenseStartService = '/permitsTobaccoLicenseStartService';
+  static const permitsTobaccoLicenseStartService =
+      '/permitsTobaccoLicenseStartService';
   static const permitsTobaccoDetailsPage = '/permitsTobaccoDetailsPage';
-  static const permitsTobaccoRequestDetailsPage = 'My_Requests_Tobacco_Permit_Details_Page';
-  static const submitApplicationSuccessfullyTobaccoPermits = '/submitApplicationSuccessfullyTobaccoPermits';
+  static const permitsTobaccoRequestDetailsPage =
+      'My_Requests_Tobacco_Permit_Details_Page';
+  static const submitApplicationSuccessfullyTobaccoPermits =
+      '/submitApplicationSuccessfullyTobaccoPermits';
 
   // Ekram
   static const ekramOrdersScreen = 'ekramOrdersHomeScreen';
   static const ekramHomeScreen = 'ekramHomeScreen';
-  static const ekramTransportationListScreen = 'RequestsTransportingAndPreparingDeceased_List_Page';
+  static const ekramTransportationListScreen =
+      'RequestsTransportingAndPreparingDeceased_List_Page';
   static const driverEkramTransportationListScreen = 'FuneralDriver_List_Page';
 
   static const ekramBookingListScreen = 'SelectAndReserveCemetery_List_Page';
   static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
-  static const ekramRequestTransportationScreen = 'RequestsTransportingAndPreparingDeceased_Create_Details_Page';
-  static const IdenticalListPage = 'IdenticalListPage';
-  static const driverEkramTransportationDetailsScreen = 'FuneralDriver_Details_Page';
+  static const ekramRequestTransportationScreen =
+      'RequestsTransportingAndPreparingDeceased_Create_Details_Page';
+  static const IdenticalListPage =
+      'IdenticalListPage';
+  static const driverEkramTransportationDetailsScreen =
+      'FuneralDriver_Details_Page';
 
   static const ekramSuccessScreen = 'ekramSuccessScreen';
   static const EkramMapPage = 'EkramMapPage';
-  static const ekramCemetryRequestScreen = 'SelectAndReserveCemetery_Create_Details_Page';
-  static const EkramCemetryDetailsPage = 'SelectAndReserveCemetery_Details_Page';
+  static const ekramCemetryRequestScreen =
+      'SelectAndReserveCemetery_Create_Details_Page';
+  static const EkramCemetryDetailsPage =
+      'SelectAndReserveCemetery_Details_Page';
 
-  static const EkramInquiryCemetryDetailsPage = 'Cemetery_Inquiry_Create_Details_Page';
+  static const EkramInquiryCemetryDetailsPage =
+      'Cemetery_Inquiry_Create_Details_Page';
 
-  static const EkramInquiryCemetryResultsPage = 'Cemetery_Inquiry_Create_Results_Page';
+  static const EkramInquiryCemetryResultsPage =
+      'Cemetery_Inquiry_Create_Results_Page';
 
-  static const EkramInquiryOrgnizationsDetailsPage = 'Funeral_Service_Inquiry_Create_Details_Page';
+  static const EkramInquiryOrgnizationsDetailsPage =
+      'Funeral_Service_Inquiry_Create_Details_Page';
 
-  static const EkramInquiryOrgnizationsResultsPage = 'Funeral_Service_Inquiry_Create_Results_Page';
+  static const EkramInquiryOrgnizationsResultsPage =
+      'Funeral_Service_Inquiry_Create_Results_Page';
 
-  static const EkramInquiryOrgnizationsResultsDetailsPage = 'Funeral_Service_Inquiry_Results_Details_Page';
+  static const EkramInquiryOrgnizationsResultsDetailsPage =
+      'Funeral_Service_Inquiry_Results_Details_Page';
 
-  static const EkramInquiryGravesDetailsPage = 'Grave_Inquiry_Create_Details_Page';
+  static const EkramInquiryGravesDetailsPage =
+      'Grave_Inquiry_Create_Details_Page';
 
-  static const EkramInquiryGravesResultsPage = 'Grave_Inquiry_Create_Results_Page';
+  static const EkramInquiryGravesResultsPage =
+      'Grave_Inquiry_Create_Results_Page';
 
   static const EkramInquiryPrintDetailsPage = 'Print_Burial_Certificate_Page';
 
-  static const EkramBookCemetryStartService = 'SelectAndReserveCemetery_Create_Condolence_Page';
+  static const EkramBookCemetryStartService =
+      'SelectAndReserveCemetery_Create_Condolence_Page';
 
   static const EkramRequestTransportationStartService =
       'RequestsTransportingAndPreparingDeceased_Create_Condolence_Page';
@@ -292,31 +342,40 @@ class RouteName {
 
   static const commercialLicenseOverView = 'OverviewCommercialLicense_Screen';
   static const commercialLicenseQuery = 'QueryCommercialLicense_Screen';
-  static const commercialLicenseQueryDetails = 'QueryCommercialLicense_query_details_Screen';
+  static const commercialLicenseQueryDetails =
+      'QueryCommercialLicense_query_details_Screen';
 
   // static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
   static const surveyReportInquery = 'SurveyReportInquery_Screen';
   static const surveyReportInqueryDetails = 'SurveyReportInqueryDetails_Screen';
 
+
   static const notificationsListScreen = 'notifications_list_screen';
   static const notificationsDetailsScreen = 'notifications_details_screen';
 
-  static const constructionLicenseOverView = 'ConstructionLicenseOverView_Screen';
+  static const constructionLicenseOverView =
+      'ConstructionLicenseOverView_Screen';
   static const constructionLicenseInquery = 'constructionLicenseInquery_Screen';
-  static const constructionLicenseInqueryDetails = 'constructionLicenseInqueryDetails_Screen';
+  static const constructionLicenseInqueryDetails =
+      'constructionLicenseInqueryDetails_Screen';
+
 
   ///// RequestOwnershipTransferDetailsPage
-  static const requestOwnershipTransferDetailsPage = '/requestOwnershipTransferDetailsPage';
+  static const requestOwnershipTransferDetailsPage =
+      '/requestOwnershipTransferDetailsPage';
   static const approvalSequenceMainScreen = '/approvalSequenceMainScreen';
 
-  static const commercialLicenseTransferOverView = 'commercialLicenseTransferOverView_Screen';
-  static const approvalSequenceShopLocationScreen = '/ApprovalSequenceShopLocationScreen';
+  static const commercialLicenseTransferOverView =
+      'commercialLicenseTransferOverView_Screen';
+  static const approvalSequenceShopLocationScreen =
+      '/ApprovalSequenceShopLocationScreen';
 
   static const homeSequence = 'HomeSequenceScreen';
   static const transferLicensePermits = 'transferLicensePermits_Screen';
   static const newOwner = 'newOwner_Screen';
   static const SucessfullScreen = 'Sucessfull_Screen';
   static const chatHistoryDetailsRoute = 'chat_history_details';
+
 
   static const vDAllTypesScreen = 'VDAllTypesScreen';
   static const daemTypeScreen = 'DaemTypeScreen';
@@ -328,17 +387,21 @@ class RouteName {
   static const CommercialLicenseInitialApprovelScreen = 'Commercial_license_initial_approvel_screen';
   static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
 
+
   static const Observer_Choose_Municipality = 'Observer_Choose_Municipality';
 
   static String trainingScreen = "trainingScreen";
   static String municipalServicesScreen = "municipalServicesScreen";
 
+
+
   static String miniAppsMainScreen = "miniAppsMainScreen";
   static String VolunteerProfile = "VolunteerProfile";
-  static String VolunteerEditProfile = "VolunteerEditProfile";
+  static String VolunteerEditProfile="VolunteerEditProfile";
 
-  static String accessibilitySettingsPage = "accessibilitySettingsPage";
-  static String textSizePage = "textSizePage";
+  static String accessibilitySettingsPage="accessibilitySettingsPage";
+  static String textSizePage="textSizePage";
+
 }
 
 class EtmamRoutesNames {
@@ -382,7 +445,7 @@ class EtmamRoutesNames {
   // orders details page
   static const orderDetailsRoute = '/orderDetailsRoute';
 
-  // requests details page
+// requests details page
   static const requestDetailsRoute = '/requestDetailsRoute';
 
   // evaluate order
@@ -407,4 +470,9 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
+
+
+
 }

@@ -11,5 +11,6 @@ class UploadCV extends UseCase<CVUploadResponse, FileDataItem> {
   UploadCV({required this.repository});
 
   @override
-  Future<Either<Failure, CVUploadResponse>> call(FileDataItem params) async => repository.uploadCV(params);
+  Future<Either<Failure, CVUploadResponse>> call(FileDataItem params) async =>
+      repository.uploadCV(params);
 }

@@ -2,18 +2,18 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_controller.dart';
-import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
+import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
+import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_controller.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 
 class MiniAppsMainScreen extends StatefulWidget {
   const MiniAppsMainScreen({super.key});
@@ -32,15 +32,25 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   }
 
   Future<bool> _showExitConfirmationDialog() async {
-    Widget title = Text("closeService".tr(), style: const TextStyle(fontSize: 16));
+    Widget title = Text(
+      "closeService".tr(),
+      style: const TextStyle(fontSize: 16),
+    );
     List<Widget> actions = [
-      TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text("cancel".tr())),
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(false),
+        child: Text("cancel".tr()),
+      ),
       TextButton(
         onPressed: () => Navigator.of(context).pop(true),
         child: Text("yes".tr(), style: const TextStyle(color: Colors.red)),
       ),
     ];
-    return await ShowDialogOnWebView.showAlertDialog<bool>(context: context, title: title, actions: (_) => actions) ??
+    return await ShowDialogOnWebView.showAlertDialog<bool>(
+          context: context,
+          title: title,
+          actions: (_) => actions,
+        ) ??
         false;
   }
 
@@ -53,7 +63,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
+              NavigationService.navigatorKey.currentState?.pushNamed(
+                RouteName.chatbot,
+              );
             }
           },
         ),
@@ -79,13 +91,18 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
           //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
           appBar: AppBar(
-            title: Text(data.name ?? " ", maxLines: 3, textAlign: TextAlign.center),
+            title: Text(
+              data.name ?? " ",
+              maxLines: 3,
+              textAlign: TextAlign.center,
+            ),
             actions: [
               IconButton(
                 icon: const Icon(Icons.close),
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
-                  if (shouldExit && context.mounted) Navigator.of(context).pop();
+                  if (shouldExit && context.mounted)
+                    Navigator.of(context).pop();
                 },
               ),
             ],
@@ -107,7 +124,12 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Image.asset("assets/images/newload.gif", width: 120, height: 120, fit: BoxFit.contain),
+                          Image.asset(
+                            "assets/images/newload.gif",
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.contain,
+                          ),
                           const SizedBox(height: 16),
                           if (state is MiniAppsEngineLoadingState)
                             state.progress.isEmpty
@@ -117,14 +139,27 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                                     child: SizedBox(
                                       height: 10,
                                       child: LinearProgressIndicator(
-                                        value: (double.parse(state.progress) / 100),
-                                        backgroundColor: Theme.of(context).disabledColor,
-                                        valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
+                                        value:
+                                            (double.parse(state.progress) /
+                                            100),
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).disabledColor,
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
+                                              AppColor.primary900Light,
+                                            ),
                                       ),
                                     ),
                                   ),
                           const SizedBox(height: 16),
-                          Text("loading".tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                          Text(
+                            "loading".tr(),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -132,7 +167,8 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                   // WebMiniAppsScreen
                   content,
                   // Error / reload overlay
-                  if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
+                  if (state is FailedDownloadState ||
+                      state is MiniAppsEngineErrorState)
                     Center(
                       child: ReloadWidget(
                         errorMessage: "errors_server_error_1".tr(),

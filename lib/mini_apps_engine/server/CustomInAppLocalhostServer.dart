@@ -18,10 +18,13 @@ class CustomInAppLocalhostServer {
   String _directoryIndex = 'index.html';
   String _documentRoot = './';
 
-  CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams params) {
+  CustomInAppLocalhostServer(
+      PlatformInAppLocalhostServerCreationParams params) {
     _port = params.port;
     _directoryIndex = params.directoryIndex;
-    _documentRoot = (params.documentRoot.endsWith('/')) ? params.documentRoot : '${params.documentRoot}/';
+    _documentRoot = (params.documentRoot.endsWith('/'))
+        ? params.documentRoot
+        : '${params.documentRoot}/';
     _shared = params.shared;
   }
 
@@ -72,7 +75,9 @@ class CustomInAppLocalhostServer {
                 final file = File(Uri.decodeFull(path));
                 body = await file.readAsBytes();
               } else {
-                body = (await rootBundle.load(Uri.decodeFull(path))).buffer.asUint8List();
+                body = (await rootBundle.load(Uri.decodeFull(path)))
+                    .buffer
+                    .asUint8List();
               }
             } catch (e) {
               return Response.badRequest(
@@ -83,8 +88,10 @@ class CustomInAppLocalhostServer {
             // var contentType = ContentType('text', 'html', charset: 'utf-8');
 
             String content = "text/html";
-            if (!request.requestedUri.path.endsWith('/') && request.requestedUri.pathSegments.isNotEmpty) {
-              final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
+            if (!request.requestedUri.path.endsWith('/') &&
+                request.requestedUri.pathSegments.isNotEmpty) {
+              final mimeType =
+                  MimeTypeResolver.lookup(request.requestedUri.path);
               if (mimeType != null) {
                 // contentType = _getContentTypeFromMimeType(mimeType);
                 content = _getContentTypeFromMimeType(mimeType);
@@ -127,6 +134,7 @@ class CustomInAppLocalhostServer {
         _started = true;
         _server = server;
         print('✅ Server successfully started on http://localhost:$_port');
+
       } on SocketException catch (e) {
         // Port is already in use
         _started = false;

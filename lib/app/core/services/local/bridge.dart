@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart' show BuildContext;
 
-import '../../../features/_shared_feature_/shared_feature_exports.dart' show BridgeParams;
-import '../../utils/utils_exports.dart' show BridgeFlow, ContextConversion, RouteName;
+import '../../../features/_shared_feature_/shared_feature_exports.dart'
+    show BridgeParams;
+import '../../utils/utils_exports.dart'
+    show BridgeFlow, ContextConversion, RouteName;
 import '../services_exports.dart' show NavigationService;
 
 abstract class Bridge {
