@@ -30,18 +30,15 @@ class DefaultAppBarWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: flexibleSpace == null
-          ? Colors.transparent
-          : Theme.of(context).appBarTheme.backgroundColor ??
-              Theme.of(context).colorScheme.surface,
+      backgroundColor:  Theme.of(context).scaffoldBackgroundColor ,
       elevation: 0,
-      shadowColor: Theme.of(context).shadowColor,
+    //  shadowColor: Theme.of(context).shadowColor,
       leadingWidth: showBack == true ? null : 8,
       leading: Navigator.canPop(context) && showBack
           ? IconButton(
               icon: Icon(
                 x ? Icons.close : Icons.arrow_back_ios,
-                color: Theme.of(context).iconTheme.color,
+                color: Theme.of(context).colorScheme.onSurface,
                 size: x ? 28 : null,
               ),
               onPressed: onBack ?? () => Navigator.of(context).pop(),
@@ -60,11 +57,11 @@ class DefaultAppBarWidget extends StatelessWidget
           ),
       bottom: bottom,
       actions: actions,
-      flexibleSpace: flexibleSpace ??
-          Image.asset(
-            ImagePath.appbarBg,
-            fit: BoxFit.fill,
-          ),
+      flexibleSpace: flexibleSpace ??SizedBox()
+          // Image.asset(
+          //   ImagePath.appbarBg,
+          //   fit: BoxFit.fill,
+          // ),
     );
   }
 
