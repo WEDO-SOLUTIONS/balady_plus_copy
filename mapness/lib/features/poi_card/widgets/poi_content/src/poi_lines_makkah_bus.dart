@@ -5,17 +5,24 @@ import 'package:intl/intl.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/makkah_bus/makkah_bus_departures_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
-class PoiLinesMakkahBus extends StatelessWidget {
+class PoiLinesMakkahBus extends StatefulWidget {
   final MakkahBusRoute routeInfo;
 
   const PoiLinesMakkahBus({required this.routeInfo, super.key});
 
+  @override
+  State<PoiLinesMakkahBus> createState() => _PoiLinesMakkahBusState();
+}
+
+class _PoiLinesMakkahBusState extends State<PoiLinesMakkahBus> {
+  final format = DateFormat('hh:mm a');
+
   int getMinutesFromDepartureTime(String departureTime) {
     final now = DateTime.now();
 
-    final format = DateFormat('hh:mm a');
     final parsedTime = format.parse(departureTime);
     final departureDateTime = DateTime(
       now.year,
@@ -30,10 +37,14 @@ class PoiLinesMakkahBus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorLine = routeInfo.routeColor.toColor() ?? context.colorsV3.foregroundDefault;
-    final textColorLine = routeInfo.routeTextColor.toColor() ?? context.colorsV3.foregroundDefault;
+    final colorLine = widget.routeInfo.routeColor.toColor() ?? context.colorsV3.foregroundDefault;
+    final textColorLine = widget.routeInfo.routeTextColor.toColor() ?? context.colorsV3.foregroundDefault;
     final l10n = context.l10n;
-
+    final trips = widget.routeInfo.trips
+        .where(
+          (element) => getMinutesFromDepartureTime(element.departureTime) >= 0,
+        )
+        .toList();
     return ContentWrapper(
       color: context.colors.backgroundSurface1,
       children: [
@@ -49,7 +60,7 @@ class PoiLinesMakkahBus extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: routeInfo.headsign,
+                    text: widget.routeInfo.headsign,
                     style: TextStyle(
                       color: context.colors.foregroundDefault,
                       fontSize: 16,
@@ -64,7 +75,7 @@ class PoiLinesMakkahBus extends StatelessWidget {
                       ),
                       margin: const EdgeInsetsDirectional.only(start: Spacing.$1x),
                       child: Text(
-                        routeInfo.routeShortName,
+                        widget.routeInfo.routeShortName,
                         style: TextStyle(color: textColorLine, fontSize: 12),
                       ),
                     ),
@@ -74,35 +85,56 @@ class PoiLinesMakkahBus extends StatelessWidget {
             ),
           ),
           content: Column(
-            children: List.generate(routeInfo.trips.length, (index) {
-              final trip = routeInfo.trips[index];
-              final inMinutes = getMinutesFromDepartureTime(trip.departureTime);
+            children: List.generate(trips.length, (index) {
+              final trip = trips[index];
+              final isDelayed = trip.delaySeconds > 0 ;
+              final delayedTime = format.format(format.parse(trip.departureTime).add(Duration(seconds: trip.delaySeconds)));
+              final inMinutes = getMinutesFromDepartureTime(isDelayed?delayedTime:trip.departureTime);
+
               return CustomPaint(
                 painter: _TripLinePainter(
                   isFirst: index == 0,
-                  isLast: index == routeInfo.trips.length - 1,
+                  isLast: index == trips.length - 1,
                   color: colorLine,
                 ),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(width: Spacing.$10x),
                       Text(
                         trip.departureTime,
                         style: context.textStyleV3.bodyLargeRegular.copyWith(
                           color: context.colors.foregroundDefault,
+                          decoration: isDelayed ? TextDecoration.lineThrough : null,
+                          fontSize: 14,
                         ),
                       ),
+                      if (isDelayed)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.arrow_forward, size: 14, color: colorLine),
+                              const SizedBox(width: Spacing.$1x),
+                              Text(
+                                delayedTime,
+                                style: context.textStyleV3.bodyLargeRegular.copyWith(
+                                  color: context.colors.successDefault,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       const Spacer(),
-                      if (!inMinutes.isNegative && inMinutes > 0 && inMinutes <60)
+                      if (!inMinutes.isNegative && inMinutes >= 0 && inMinutes < 60)
                         Text(
-                          l10n.minLeft(inMinutes),
-                          // '$inMinutes ${l10n.min}',
+                          inMinutes == 0 ? l10n.ready : l10n.minLeft(inMinutes),
                           style: context.textStyleV3.bodyLargeRegular.copyWith(
-                            color: context.colors.foregroundDefault,
-                            fontSize: 10
+                            color: inMinutes == 0 ? context.colors.successDefault : context.colors.foregroundMuted,
+                            fontSize: 12,
                           ),
                         ),
                       const SizedBox(width: Spacing.$4x),
