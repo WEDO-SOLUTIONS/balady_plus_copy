@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/makkah_bus/makkah_bus_departures_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -11,12 +12,38 @@ class PoiLinesMakkahBus extends StatelessWidget {
 
   const PoiLinesMakkahBus({required this.routeInfo, super.key});
 
+  int getMinutesFromDepartureTime(String departureTime) {
+    final now = DateTime.now();
+
+    final format = DateFormat('hh:mm a');
+    final parsedTime = format.parse(departureTime);
+
+    var departureDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      parsedTime.hour,
+      parsedTime.minute,
+    );
+
+    // // لو الوقت عدى → نخليه بكرة
+    // if (departureDateTime.isBefore(now)) {
+    //   departureDateTime = departureDateTime.add(Duration(days: 1));
+    // }
+
+    final difference = departureDateTime.difference(now);
+
+    return difference.inMinutes;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Try to parse color from hex string like "214C9B"
     Color colorLine;
+    Color? textColorLine;
     try {
       colorLine = Color(int.parse('FF${routeInfo.routeColor}', radix: 16));
+      textColorLine = Color(int.parse('FF${routeInfo.routeTextColor}', radix: 16));
     } catch (_) {
       colorLine = context.colorsV3.foregroundDefault;
     }
@@ -26,18 +53,44 @@ class PoiLinesMakkahBus extends StatelessWidget {
       children: [
         ContentRowExpandable(
           expandIconColor: context.colors.foregroundMuted,
-          // ignore: deprecated_member_use
           options: ContentRowOptions(
-            title: '${routeInfo.routeShortName} - ${routeInfo.headsign}',
             leadingIcon: Icon(
               Icons.directions_bus_filled_sharp,
               color: colorLine,
               size: 24,
             ),
+            titleBuilder: (context) => Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: routeInfo.headsign,
+                    style: TextStyle(
+                      color: context.colors.foregroundDefault,
+                      fontSize: 16,
+                    ),
+                  ),
+                  WidgetSpan(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x,horizontal: Spacing.$1x),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Spacing.$0_5x),
+                        color: colorLine,
+                      ),
+                      margin: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                      child: Text(
+                        routeInfo.routeShortName,
+                        style: TextStyle(color: textColorLine, fontSize: 12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           content: Column(
             children: List.generate(routeInfo.trips.length, (index) {
               final trip = routeInfo.trips[index];
+              final inMinutes = getMinutesFromDepartureTime(trip.departureTime);
               return CustomPaint(
                 painter: _TripLinePainter(
                   isFirst: index == 0,
@@ -49,13 +102,22 @@ class PoiLinesMakkahBus extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 40),
+                      const SizedBox(width: Spacing.$10x),
                       Text(
                         trip.departureTime,
                         style: context.textStyleV3.bodyLargeRegular.copyWith(
                           color: context.colors.foregroundDefault,
                         ),
                       ),
+                      const Spacer(),
+                      if (!inMinutes.isNegative && inMinutes > 0)
+                        Text(
+                          '$inMinutes min',
+                          style: context.textStyleV3.bodyLargeRegular.copyWith(
+                            color: context.colors.foregroundDefault,
+                          ),
+                        ),
+                      const SizedBox(width: Spacing.$4x),
                     ],
                   ),
                 ),
@@ -109,7 +171,5 @@ class _TripLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _TripLinePainter oldDelegate) =>
-      oldDelegate.isFirst != isFirst ||
-      oldDelegate.isLast != isLast ||
-      oldDelegate.color != color;
+      oldDelegate.isFirst != isFirst || oldDelegate.isLast != isLast || oldDelegate.color != color;
 }
