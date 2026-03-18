@@ -17,36 +17,22 @@ class PoiLinesMakkahBus extends StatelessWidget {
 
     final format = DateFormat('hh:mm a');
     final parsedTime = format.parse(departureTime);
-
-    var departureDateTime = DateTime(
+    final departureDateTime = DateTime(
       now.year,
       now.month,
       now.day,
       parsedTime.hour,
       parsedTime.minute,
     );
-
-    // // لو الوقت عدى → نخليه بكرة
-    // if (departureDateTime.isBefore(now)) {
-    //   departureDateTime = departureDateTime.add(Duration(days: 1));
-    // }
-
     final difference = departureDateTime.difference(now);
-
     return difference.inMinutes;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Try to parse color from hex string like "214C9B"
-    Color colorLine;
-    Color? textColorLine;
-    try {
-      colorLine = Color(int.parse('FF${routeInfo.routeColor}', radix: 16));
-      textColorLine = Color(int.parse('FF${routeInfo.routeTextColor}', radix: 16));
-    } catch (_) {
-      colorLine = context.colorsV3.foregroundDefault;
-    }
+    final colorLine = routeInfo.routeColor.toColor() ?? context.colorsV3.foregroundDefault;
+    final textColorLine = routeInfo.routeTextColor.toColor() ?? context.colorsV3.foregroundDefault;
+    final l10n = context.l10n;
 
     return ContentWrapper(
       color: context.colors.backgroundSurface1,
@@ -71,7 +57,7 @@ class PoiLinesMakkahBus extends StatelessWidget {
                   ),
                   WidgetSpan(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x,horizontal: Spacing.$1x),
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x, horizontal: Spacing.$1x),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(Spacing.$0_5x),
                         color: colorLine,
@@ -110,11 +96,13 @@ class PoiLinesMakkahBus extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
-                      if (!inMinutes.isNegative && inMinutes > 0)
+                      if (!inMinutes.isNegative && inMinutes > 0 && inMinutes <60)
                         Text(
-                          '$inMinutes min',
+                          l10n.minLeft(inMinutes),
+                          // '$inMinutes ${l10n.min}',
                           style: context.textStyleV3.bodyLargeRegular.copyWith(
                             color: context.colors.foregroundDefault,
+                            fontSize: 10
                           ),
                         ),
                       const SizedBox(width: Spacing.$4x),

@@ -115,6 +115,7 @@ class PoiContentSliver extends ConsumerWidget {
     );
 
     final makkahBusDepartures = ref.watch(makkahBusDeparturesProvider(data.id!.objectId.toString()));
+    final departuresList = makkahBusDepartures.value?.data.routes;
     final workingHours = data.openingHours?.toWorkingHours();
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
@@ -304,15 +305,16 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 )
                 .toList(),
-            if (makkahBusDepartures.value?.data.routes != null)
-              ...makkahBusDepartures.value!.data.routes
-                  .map(
-                    (route) => Padding(
-                      padding: itemPadding,
-                      child: PoiLinesMakkahBus(routeInfo: route),
-                    ),
-                  )
-                  .toList(),
+            if (departuresList != null)
+              Column(
+                children: List.generate(
+                  departuresList.length,
+                  (index) => Padding(
+                    padding: itemPadding,
+                    child: PoiLinesMakkahBus(routeInfo: departuresList[index]),
+                  ),
+                ),
+              ),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(
