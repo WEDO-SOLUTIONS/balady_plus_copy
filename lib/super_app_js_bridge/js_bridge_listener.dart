@@ -16,7 +16,8 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocRequestStatus;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show BlocRequestStatus;
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -55,7 +56,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   ValueNotifier<bool> isLoading;
 
   JsBridgeListener({required this.miniAppsEngineBloc, required this.isLoading})
-      : super();
+    : super();
 
   @override
   void register() {
@@ -63,6 +64,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     ////////////////////////////////////////////////////////////
     ///  need remove this function, for the partner knows this
     registerFunction(getAccessSSOToken);
+
     /// this the new Oen For Use in the Municipal Mini App
     registerFunction(getBaladySSOToken);
     ////////////////////////////////////////////////////////////
@@ -107,7 +109,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
-    getBaladySSOToken(msg,handler);
+    getBaladySSOToken(msg, handler);
   }
 
   @pragma('vm:entry-point')
@@ -118,15 +120,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       eventName: "getAccessToken",
       data: AccessTokenModel(accessToken: CommonProperties.token),
     );
-    if (CommonProperties.isLoggedInMunicipality) {
-      response = BaseResponse(
-        code: 200,
-        message: "success",
-        eventName: "getAccessToken",
-        data: AccessTokenModel(accessToken: CommonProperties.token),
-      );
-      handler.complete(response.jsonEncodeModel());
-    } else {
+
+    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' ||
+            miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp') &&
+        !CommonProperties.isLoggedInMunicipality) {
+
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
@@ -157,6 +155,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       } catch (_) {
         handler.complete(response.jsonEncodeModel());
       }
+    } else {
+      response = BaseResponse(
+        code: 200,
+        message: "success",
+        eventName: "getAccessToken",
+        data: AccessTokenModel(accessToken: CommonProperties.token),
+      );
+      handler.complete(response.jsonEncodeModel());
     }
   }
 
@@ -164,7 +170,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
     if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' ||
-        miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp') &&
+            miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp') &&
         !CommonProperties.isLoggedInMunicipality) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
@@ -172,8 +178,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             await sl<NewMiniAppLogicCubit>()
                 .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
                 .then((result) {
-              response = result!;
-            });
+                  response = result!;
+                });
           } else {
             response = BaseResponse(
               code: 401,
@@ -204,8 +210,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       await sl<NewMiniAppLogicCubit>()
           .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
           .then((result) {
-        response = result!;
-      });
+            response = result!;
+          });
     }
     handler.complete(response.jsonEncodeModel());
   }
@@ -276,7 +282,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(false);
         failureOrSuccessForCookie.fold(
-              (l) {
+          (l) {
             BaseResponse response = BaseResponse(
               code: 401,
               message: "failure get cookies",
@@ -285,7 +291,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             );
             handler.complete(response.jsonEncodeModel());
           },
-              (r) async {
+          (r) async {
             response = BaseResponse(
               code: 200,
               eventName: "getCookies",
@@ -329,7 +335,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void getAppPreferences(dynamic msg, CompletionHandler handler) async{
+  void getAppPreferences(dynamic msg, CompletionHandler handler) async {
     try {
       final accessibility = await AccessibilitySettings.load();
       BaseResponse response = BaseResponse(
@@ -338,7 +344,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         eventName: "AppPreferences",
         data: AppThemeConfig(
           language: 'locale'.tr(),
-           accessibilityModel: accessibility,
+          accessibilityModel: accessibility,
           themeType: Theme.of(
             NavigationService.navigatorKey.currentContext!,
           ).brightness.name,
@@ -363,7 +369,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             scaffoldBackgroundColor: Theme.of(
               NavigationService.navigatorKey.currentContext!,
             ).scaffoldBackgroundColor,
-          )
+          ),
         ),
       );
       var dataJsonString = response.jsonEncodeModel();
@@ -385,9 +391,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-      serviceKey,
-      RequirementEnum.navigateToSuperAppScreen.name,
-    ) ==
+          serviceKey,
+          RequirementEnum.navigateToSuperAppScreen.name,
+        ) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
@@ -429,9 +435,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
 
     if (checkAppRequirement(
-      serviceKey,
-      RequirementEnum.navigateToSuperAppScreen.name,
-    ) ==
+          serviceKey,
+          RequirementEnum.navigateToSuperAppScreen.name,
+        ) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String) {
@@ -700,8 +706,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     final String? attachmentSource = data["attachmentSource"]?.toString();
     final List<String> attachmentExtension = data["attachmentExtension"] != null
         ? (data["attachmentExtension"] as List<dynamic>)
-        .map((e) => e.toString())
-        .toList()
+              .map((e) => e.toString())
+              .toList()
         : [];
 
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
@@ -940,7 +946,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         Map<String, dynamic> miniAppData = {
           'MiniAppKey': miniAppsEngineBloc.miniApp.serviceKey,
           'MiniAppVersion':
-          miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
+              miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
         };
         if (data['type'] == "marketing") {
           FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
@@ -1140,10 +1146,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             notificationsForType.sort((a, b) {
               final dateA =
                   DateTime.tryParse(a['scheduled_date'] ?? '') ??
-                      DateTime(2000);
+                  DateTime(2000);
               final dateB =
                   DateTime.tryParse(b['scheduled_date'] ?? '') ??
-                      DateTime(2000);
+                  DateTime(2000);
               return dateA.compareTo(dateB);
             });
             // Find the next notification that's in the future
@@ -1223,15 +1229,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void downloadAndExtractInAssets(
-      dynamic data,
-      CompletionHandler handler,
-      ) async {
+    dynamic data,
+    CompletionHandler handler,
+  ) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-      serviceKey,
-      RequirementEnum.downloadAndExtractInAssets.name,
-    ) ==
+          serviceKey,
+          RequirementEnum.downloadAndExtractInAssets.name,
+        ) ==
         true) {
       if (data != null && data is Map) {
         try {
@@ -1291,10 +1297,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   Future<void> unarchiveAndSave(
-      String? extractPath,
-      var zippedFile,
-      CompletionHandler handler,
-      ) async {
+    String? extractPath,
+    var zippedFile,
+    CompletionHandler handler,
+  ) async {
     try {
       extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
@@ -1349,14 +1355,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void selectedDelegator(dynamic msg, CompletionHandler handler) async {
     try {
       final cubit = sl<DelegatorsCubit>();
-      
+
       // First, check if there's a currently selected delegator in the cubit state
       DelegatorEntity? selectedDelegate = cubit.state.selectedDelegate;
-      
+
       // If not in state, try to get from SharedPreferences and find it in the list
       if (selectedDelegate == null) {
         final savedDelegatorId = sharedPrefs.getSelectedDelegatorId();
-        
+
         if (savedDelegatorId == null) {
           // No selection saved
           final response = BaseResponse(
@@ -1368,19 +1374,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           handler.complete(response.jsonEncodeModel());
           return;
         }
-        
+
         // Fetch delegators if not already loaded
         if (cubit.state.delegators.isEmpty) {
           cubit.getDelegators();
-          
+
           // Wait for delegators to load (max 10 seconds)
           int attempts = 0;
-          while (attempts < 20 && cubit.state.status == BlocRequestStatus.submissionGetLoading) {
+          while (attempts < 20 &&
+              cubit.state.status == BlocRequestStatus.submissionGetLoading) {
             await Future.delayed(const Duration(milliseconds: 500));
             attempts++;
           }
         }
-        
+
         // Find the delegator matching the saved ID
         try {
           selectedDelegate = cubit.state.delegators.firstWhere(
@@ -1388,10 +1395,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           );
         } catch (e) {
           // Delegator not found in current list
-          print('Selected delegator $savedDelegatorId not found in delegators list');
+          print(
+            'Selected delegator $savedDelegatorId not found in delegators list',
+          );
         }
       }
-      
+
       BaseResponse response;
       if (selectedDelegate != null) {
         response = BaseResponse(
@@ -1409,7 +1418,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
-      
+
       handler.complete(response.jsonEncodeModel());
     } catch (e) {
       BaseResponse response = BaseResponse(
@@ -1426,14 +1435,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void selectedAgent(dynamic msg, CompletionHandler handler) async {
     try {
       final cubit = sl<DelegatorsCubit>();
-      
+
       // First, check if there's a currently selected agent in the cubit state
       AgentEntity? selectedAgent = cubit.state.selectedAgent;
-      
+
       // If not in state, try to get from SharedPreferences and find it in the list
       if (selectedAgent == null) {
         final savedAgentId = sharedPrefs.getSelectedAgentId();
-        
+
         if (savedAgentId == null) {
           // No selection saved
           final response = BaseResponse(
@@ -1445,19 +1454,21 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           handler.complete(response.jsonEncodeModel());
           return;
         }
-        
+
         // Fetch agents if not already loaded
         if (cubit.state.agents.isEmpty) {
           cubit.getAgents();
-          
+
           // Wait for agents to load (max 10 seconds)
           int attempts = 0;
-          while (attempts < 20 && cubit.state.agentStatus == BlocRequestStatus.submissionGetLoading) {
+          while (attempts < 20 &&
+              cubit.state.agentStatus ==
+                  BlocRequestStatus.submissionGetLoading) {
             await Future.delayed(const Duration(milliseconds: 500));
             attempts++;
           }
         }
-        
+
         // Find the agent matching the saved ID
         try {
           selectedAgent = cubit.state.agents.firstWhere(
@@ -1468,7 +1479,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           print('Selected agent $savedAgentId not found in agents list');
         }
       }
-      
+
       BaseResponse response;
       if (selectedAgent != null) {
         response = BaseResponse(
@@ -1486,7 +1497,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
-      
+
       handler.complete(response.jsonEncodeModel());
     } catch (e) {
       BaseResponse response = BaseResponse(
