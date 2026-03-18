@@ -96,6 +96,7 @@ class _PoiLinesMakkahBusState extends State<PoiLinesMakkahBus> {
                   isFirst: index == 0,
                   isLast: index == trips.length - 1,
                   color: colorLine,
+                  isArabic: true,
                 ),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
@@ -154,18 +155,20 @@ class _TripLinePainter extends CustomPainter {
   final bool isFirst;
   final bool isLast;
   final Color color;
+  final bool isArabic ;
 
   _TripLinePainter({
     required this.isFirst,
     required this.isLast,
     required this.color,
+    required this.isArabic,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    const double lineX = 20.0;
     const double dotRadius = 4.0;
     const double spacing = 2.0;
+    final double lineX = isArabic ? size.width - 20.0 : 20.0;
 
     final double centerY = size.height / 2;
     final double topY = centerY - dotRadius - spacing;
@@ -176,7 +179,7 @@ class _TripLinePainter extends CustomPainter {
       ..strokeWidth = 2;
 
     if (!isFirst) {
-      canvas.drawLine(const Offset(lineX, 0), Offset(lineX, topY), linePaint);
+      canvas.drawLine(Offset(lineX, 0), Offset(lineX, topY), linePaint);
     }
     if (!isLast) {
       canvas.drawLine(Offset(lineX, bottomY), Offset(lineX, size.height), linePaint);
@@ -191,5 +194,8 @@ class _TripLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _TripLinePainter oldDelegate) =>
-      oldDelegate.isFirst != isFirst || oldDelegate.isLast != isLast || oldDelegate.color != color;
+      oldDelegate.isFirst != isFirst ||
+      oldDelegate.isLast != isLast ||
+      oldDelegate.color != color ||
+      oldDelegate.isArabic != isArabic;
 }
