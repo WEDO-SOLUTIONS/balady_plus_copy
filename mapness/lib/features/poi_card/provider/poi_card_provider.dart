@@ -12,6 +12,7 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -19,7 +20,6 @@ import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
-import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -94,14 +94,22 @@ class PoiCardProvider extends _$PoiCardProvider {
   @override
   Future<PoiCardState?> build(
     int objectId,
-    BaladyAppThemes theme, {
+    BaladyAppThemes theme,
+    AppLocalizations l10n, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
     state = const AsyncValue.loading();
 
     final result = await ref
-        .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
+        .watch(
+          pointOfInterestProvider(
+            DgisObjectId(objectId: objectId, entranceId: 0),
+            closestPoint,
+            theme,
+            l10n,
+          ).future,
+        )
         .timeout(const Duration(minutes: 10));
 
     await ref.watch(poiPhotoProvider(objectId).future);

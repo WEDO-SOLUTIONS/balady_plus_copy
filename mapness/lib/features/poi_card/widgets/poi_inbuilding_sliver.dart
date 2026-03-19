@@ -21,6 +21,7 @@ import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -73,6 +74,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
       context.read<ThemeController>().currentTheme,
+      context.l10n,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );
@@ -148,6 +150,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
       context.read<ThemeController>().currentTheme,
+      context.l10n,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );

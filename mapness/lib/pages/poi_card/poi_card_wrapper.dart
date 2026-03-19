@@ -121,6 +121,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
       context.read<ThemeController>().currentTheme,
+      context.l10n,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );

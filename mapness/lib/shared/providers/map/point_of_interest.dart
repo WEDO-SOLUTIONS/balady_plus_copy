@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -25,6 +26,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectId objectId,
   LatLng? closestPoint,
   BaladyAppThemes theme,
+  AppLocalizations l10n,
 ) async {
   final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
 
@@ -66,14 +68,19 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final dark = await ref.watch(darkModeProvider.future);
   final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
 
-  final title = directoryObject.title;
+  bool isDroppedPin = false;
+  if (directoryObject.fullAddressName?.streetAddress == directoryObject.title) {
+    directoryObject.title = l10n.droppedPin;
+    isDroppedPin = true;
+  }
+
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
     color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
-    fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
+    fontName: directoryObject.title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
   final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
@@ -85,7 +92,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         longitude: position.longitude,
         elevation: 1,
       ),
-      text: title,
+      text: isDroppedPin ? null : directoryObject.title,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       id: poiPinId,

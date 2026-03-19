@@ -201,27 +201,37 @@ class PoiContentSliver extends ConsumerWidget {
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            Padding(
-              padding: itemPadding,
-              child: PoiContentFeedbackCard(
-                onTap: () {
-                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
-                  if (objectIdInt == null) {
-                    return;
-                  }
-
-                  context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.editCompany,
-                      params: FeedbackObjectIdParams(objectIdInt),
-                    ),
-                  );
-                },
-                data: PoiContentFeedbackType.cityExpert,
-                padding: EdgeInsets.zero,
-                activeCityEvent: activeCityEvent,
+            if (data.title == context.l10n.droppedPin)
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  padding: EdgeInsetsGeometry.zero,
+                  data: PoiContentFeedbackType.addPlace,
+                  onTap: () => context.router.push(QuickFeedbackRoute()),
+                  activeCityEvent: ref.watch(activeCityEventProvider),
+                ),
+              )
+            else
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  onTap: () {
+                    final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                    if (objectIdInt == null) {
+                      return;
+                    }
+                    context.router.push(
+                      QuickFeedbackRoute(
+                        type: QuickFeedbackType.editCompany,
+                        params: FeedbackObjectIdParams(objectIdInt),
+                      ),
+                    );
+                  },
+                  data: PoiContentFeedbackType.cityExpert,
+                  padding: EdgeInsets.zero,
+                  activeCityEvent: activeCityEvent,
+                ),
               ),
-            ),
             Padding(
               padding: itemPadding,
               child: PoiContentFullAddressCard(
