@@ -57,7 +57,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     latitude: (fallbackPosition?.latitude ?? markerPosition?.latitude)!,
     longitude: (fallbackPosition?.longitude ?? markerPosition?.longitude)!,
   );
-  directoryObject.markerPosition ??= GeoPointWithElevationMessage(
+  directoryObject.markerPosition = GeoPointWithElevationMessage(
     latitude: position.latitude,
     longitude: position.longitude,
     elevation: 0,
