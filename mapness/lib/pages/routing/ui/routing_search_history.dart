@@ -54,7 +54,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                   isDividerEnabled: true,
                   leading: Icon(
                     isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
-                    color: isFoundingDay ? context.colors.accentDefault : context.colors.accentActive,
+                    color: context.colors.accentDefault,
                     size: 22,
                   ),
                   text: ContentRowTextOptions(title: context.l10n.yourLocation),
