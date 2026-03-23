@@ -9,6 +9,7 @@ import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
@@ -201,27 +202,37 @@ class PoiContentSliver extends ConsumerWidget {
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            Padding(
-              padding: itemPadding,
-              child: PoiContentFeedbackCard(
-                onTap: () {
-                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
-                  if (objectIdInt == null) {
-                    return;
-                  }
-
-                  context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.editCompany,
-                      params: FeedbackObjectIdParams(objectIdInt),
-                    ),
-                  );
-                },
-                data: PoiContentFeedbackType.cityExpert,
-                padding: EdgeInsets.zero,
-                activeCityEvent: activeCityEvent,
+            if (data.isDroppedPin)
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  padding: EdgeInsetsGeometry.zero,
+                  data: PoiContentFeedbackType.addPlace,
+                  onTap: () => context.router.push(QuickFeedbackRoute()),
+                  activeCityEvent: activeCityEvent,
+                ),
+              )
+            else
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  onTap: () {
+                    final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                    if (objectIdInt == null) {
+                      return;
+                    }
+                    context.router.push(
+                      QuickFeedbackRoute(
+                        type: QuickFeedbackType.editCompany,
+                        params: FeedbackObjectIdParams(objectIdInt),
+                      ),
+                    );
+                  },
+                  data: PoiContentFeedbackType.cityExpert,
+                  padding: EdgeInsets.zero,
+                  activeCityEvent: activeCityEvent,
+                ),
               ),
-            ),
             Padding(
               padding: itemPadding,
               child: PoiContentFullAddressCard(

@@ -377,6 +377,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         },
                         onTap: () => ctx.router.replaceOrPush(
                           route: PoiCardWidgetRoute(
+                            closestPoint: LatLng(
+                              latitude: item.coordinates.latitude,
+                              longitude: item.coordinates.longitude,
+                            ),
                             objectId: DgisObjectIdMessage(
                               objectId: parseObjectIdFromFavouriteEntityId(item.entity?.id)!,
                               entranceId: 0,
