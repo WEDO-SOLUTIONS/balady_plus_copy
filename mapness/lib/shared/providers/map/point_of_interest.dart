@@ -2,7 +2,6 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -12,6 +11,7 @@ import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -26,10 +26,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectId objectId,
   LatLng? closestPoint,
   BaladyAppThemes theme,
-  AppLocalizations l10n,
 ) async {
   final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
-
+  final l10n = ref.watch(appLocaleProvider);
   final dgisController = await ref.read(dgisControllerProvider.future);
   final directoryObject = await dgisController.searchByObjectId(objectId.toMessage());
 

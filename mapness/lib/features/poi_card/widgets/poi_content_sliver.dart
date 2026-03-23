@@ -208,7 +208,7 @@ class PoiContentSliver extends ConsumerWidget {
                   padding: EdgeInsetsGeometry.zero,
                   data: PoiContentFeedbackType.addPlace,
                   onTap: () => context.router.push(QuickFeedbackRoute()),
-                  activeCityEvent: ref.watch(activeCityEventProvider),
+                  activeCityEvent: activeCityEvent,
                 ),
               )
             else

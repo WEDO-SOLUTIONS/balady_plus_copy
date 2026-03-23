@@ -94,20 +94,17 @@ class PoiCardProvider extends _$PoiCardProvider {
   @override
   Future<PoiCardState?> build(
     int objectId,
-    BaladyAppThemes theme,
-    AppLocalizations l10n, {
+    BaladyAppThemes theme, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
     state = const AsyncValue.loading();
-
     final result = await ref
         .watch(
           pointOfInterestProvider(
             DgisObjectId(objectId: objectId, entranceId: 0),
             closestPoint,
             theme,
-            l10n,
           ).future,
         )
         .timeout(const Duration(minutes: 10));
