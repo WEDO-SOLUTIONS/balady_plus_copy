@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -67,12 +68,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final dark = await ref.watch(darkModeProvider.future);
   final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
 
-  bool isDroppedPin = false;
-  if (directoryObject.fullAddressName?.streetAddress == directoryObject.title) {
-    directoryObject.title = l10n.droppedPin;
-    isDroppedPin = true;
-  }
-
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
@@ -91,7 +86,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         longitude: position.longitude,
         elevation: 1,
       ),
-      text: isDroppedPin ? null : directoryObject.title,
+      text: directoryObject.isDroppedPin ? null : directoryObject.title,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       id: poiPinId,
