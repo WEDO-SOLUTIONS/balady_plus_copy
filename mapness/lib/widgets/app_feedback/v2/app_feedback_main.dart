@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -63,8 +65,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             alignment: AlignmentDirectional.centerEnd,
             child: CustomCloseButton(
               onClose: () {
-                if (rating.value == (initialRating ?? 0) ||
-                    onNeedPopConfirm == null) {
+                if (rating.value == (initialRating ?? 0) || onNeedPopConfirm == null) {
                   context.router.pop();
                 } else {
                   onNeedPopConfirm?.call();
@@ -78,8 +79,7 @@ class AppFeedbackMain extends HookConsumerWidget {
           child: Text(
             switch (source) {
               FeedbackSourceMain() => context.l10n.appFeedbackAppExperience,
-              FeedbackSourceNavi() =>
-                context.l10n.appFeedbackNavigationExperience,
+              FeedbackSourceNavi() => context.l10n.appFeedbackNavigationExperience,
               FeedbackSourceOffer() => context.l10n.doYouLikeOffer,
             },
             textAlign: TextAlign.center,
@@ -100,23 +100,18 @@ class AppFeedbackMain extends HookConsumerWidget {
         ),
         ValueListenableBuilder(
           valueListenable: rating,
-          builder: (context, ratingValue, _) =>
-              source is! FeedbackSourceOffer || ratingValue == 0
-                  ? Padding(
-                      padding: const EdgeInsets.only(
-                          left: Spacing.$4x,
-                          top: Spacing.$4x,
-                          right: Spacing.$4x),
-                      child: Text(
-                        _feedbackSubtitleText(
-                            context.l10n, rating.value, source),
-                        textAlign: TextAlign.center,
-                        style: context.textStyles.bodyLargeRegular.copyWith(
-                          color: context.colors.foregroundSoft,
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
+          builder: (context, ratingValue, _) => source is! FeedbackSourceOffer || ratingValue == 0
+              ? Padding(
+                  padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
+                  child: Text(
+                    _feedbackSubtitleText(context.l10n, rating.value, source),
+                    textAlign: TextAlign.center,
+                    style: context.textStyles.bodyLargeRegular.copyWith(
+                      color: context.colors.foregroundSoft,
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
         ValueListenableBuilder(
           valueListenable: rating,
@@ -142,15 +137,14 @@ class AppFeedbackMain extends HookConsumerWidget {
             }
             return Padding(
               key: const ValueKey('app-feedback-balady-input'),
-              padding: const EdgeInsets.only(
-                  left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
+              padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   /// change feedback text
                   final result = await context.router.push(
-                      AppFeedbackInputSheet(
-                          initialText: feedbackTextController.text));
+                    AppFeedbackInputSheet(initialText: feedbackTextController.text),
+                  );
                   if (result != null && result is String) {
                     feedbackTextController.text = result;
                   }
@@ -179,8 +173,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             valueListenable: rating,
             builder: (context, ratingValue, _) {
               final canSend = ratingValue > 0;
-              final buttonState =
-                  !canSend ? ButtonState.disabled : ButtonState.defaultState;
+              final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
               return SizedBox(
                 width: double.infinity,
                 child: AppButton(
@@ -195,15 +188,11 @@ class AppFeedbackMain extends HookConsumerWidget {
                             stars: ratingValue,
                             source: source,
                             // Convert tag labels to source tags
-                            tags: selectedTags.value
-                                .map((tag) =>
-                                    AppFeedbackTagMapper.getSourceTagText(tag))
-                                .toList(),
-                            text: text.isEmpty
-                                ? null
-                                : feedbackTextController.text,
+                            tags: selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
+                            text: text.isEmpty ? null : feedbackTextController.text,
                           );
-                          await openInAppReviewRating(ratingValue);
+                          // Unawaited for not freezed HMS
+                          unawaited(openInAppReviewRating(ratingValue));
                         },
                   primaryLabel: context.l10n.appFeedbackSubmitButton,
                 ),
@@ -216,11 +205,8 @@ class AppFeedbackMain extends HookConsumerWidget {
     );
   }
 
-  String _feedbackSubtitleText(
-          AppLocalizations l10n, int rating, FeedbackSource source) =>
-      source is FeedbackSourceOffer
-          ? l10n.offerFeedbackMessage
-          : _ratingText(l10n, rating);
+  String _feedbackSubtitleText(AppLocalizations l10n, int rating, FeedbackSource source) =>
+      source is FeedbackSourceOffer ? l10n.offerFeedbackMessage : _ratingText(l10n, rating);
 
   Future<void> openInAppReviewRating(ratingValue) async {
     if (ratingValue > 3) {
@@ -239,11 +225,11 @@ class AppFeedbackMain extends HookConsumerWidget {
   }
 
   String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {
-        1 => l10n.appFeedbackRating1,
-        2 => l10n.appFeedbackRating2,
-        3 => l10n.appFeedbackRating3,
-        4 => l10n.appFeedbackRating4,
-        5 => l10n.appFeedbackRating5,
-        _ => l10n.appFeedbackRatingDefault,
-      };
+    1 => l10n.appFeedbackRating1,
+    2 => l10n.appFeedbackRating2,
+    3 => l10n.appFeedbackRating3,
+    4 => l10n.appFeedbackRating4,
+    5 => l10n.appFeedbackRating5,
+    _ => l10n.appFeedbackRatingDefault,
+  };
 }
