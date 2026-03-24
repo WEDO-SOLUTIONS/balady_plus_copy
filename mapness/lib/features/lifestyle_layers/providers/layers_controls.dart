@@ -20,6 +20,7 @@ import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
+import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -35,6 +36,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/traffic_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -181,6 +183,15 @@ class LayersControls extends _$LayersControls {
 
   Future<void> toggleLayers(LayerType value) async {
     switch (value) {
+      case LayerType.three3D:
+        await toggle3D();
+        break;
+      case LayerType.roadEvents:
+        await toggleRoadEvents();
+        break;
+      case LayerType.traffic:
+        await toggleTraffic();
+        break;
       case LayerType.favourites:
         await toggleFavourites();
         break;
@@ -466,6 +477,7 @@ class LayersControls extends _$LayersControls {
 
   // We need to store the previous layer to restore it when we go back
   LayerType? _previousLayer;
+
   void hideLayer(LayerType layer, {bool restorable = true}) {
     // Do not hide the same layer twice, it is already hidden
     if (layer == _previousLayer) {
@@ -549,7 +561,6 @@ class LayersControls extends _$LayersControls {
     if (currentState != null && currentState != value) {
       await _hidePreviousLayers(currentState);
     }
-
     await toggleLayers(value);
   }
 
@@ -583,6 +594,11 @@ class LayersControls extends _$LayersControls {
 
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).toggleMetro();
+        break;
+
+      case LayerType.traffic:
+      case LayerType.three3D:
+      case LayerType.roadEvents:
         break;
     }
   }
@@ -787,5 +803,25 @@ class LayersControls extends _$LayersControls {
     await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
+  }
+
+  Future<void> toggle3D() async {
+    await ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions();
+  }
+
+  Future<void> toggleRoadEvents() async {}
+
+  Future<void> toggleTraffic() async {
+    final trafficState = ref.watch(trafficStateProvider);
+    final trafficNotifier = ref.read(trafficStateProvider.notifier);
+    final isEnabled = trafficState.status == TrafficControlStatus.enabled;
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.trafficLightButton,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+    );
+    trafficNotifier.onTrafficTap();
+    hideLayer(LayerType.metro, restorable: false);
   }
 }
