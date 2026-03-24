@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
-import 'package:sheetify/multi_state_sheet/state_snapping/sheet_state_mapper.dart';
 
 class QuickFilter extends ConsumerWidget {
   final FilterItemConfig item;
@@ -40,39 +39,34 @@ class QuickFilter extends ConsumerWidget {
         : null;
     final label = item.title;
 
-    return ListenableBuilder(
-      listenable: controller!,
-      builder: (_, _) {
-        final isHidden = controller.closestState == ThreeStateSheet.hidden;
-        final WidgetColors colors = WidgetColors(
-          background: context.colors.backgroundSurface2,
-          foreground: context.colors.foregroundDefault,
-        );
-        if (label == null || label.isEmpty == true) {
-          if (leadingIcon == null) {
-            return const SizedBox.shrink();
-          }
-          return ChipsElement(
-            colors: isHidden ? colors : null,
-            onPressed: item.onTap,
-            isSelected: item.selected,
-            type: chipsType,
-            options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
-          );
-        }
-        return ChipsElement(
-          colors: isHidden ? colors : null,
-          onPressed: item.onTap,
-          isSelected: item.selected,
-          type: chipsType,
-          options: ChipsLabelOptions(
-            labelFirst: label,
-            leadingIcon: leadingIcon,
-            leadingIconColor: iconColor,
-            labelFirstColor: labelColor,
-          ),
-        );
-      },
+    final WidgetColors chipsColors = WidgetColors(
+      background: context.colors.backgroundSurface2,
+      foreground: context.colors.foregroundDefault,
+    );
+
+    if (label == null || label.isEmpty == true) {
+      if (leadingIcon == null) {
+        return const SizedBox.shrink();
+      }
+      return ChipsElement(
+        colors: chipsColors,
+        onPressed: item.onTap,
+        isSelected: item.selected,
+        type: chipsType,
+        options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
+      );
+    }
+    return ChipsElement(
+      colors: chipsColors,
+      onPressed: item.onTap,
+      isSelected: item.selected,
+      type: chipsType,
+      options: ChipsLabelOptions(
+        labelFirst: label,
+        leadingIcon: leadingIcon,
+        leadingIconColor: iconColor,
+        labelFirstColor: labelColor,
+      ),
     );
   }
 }

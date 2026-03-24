@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/debouncer.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -64,29 +65,33 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     return QuickFilters(
       height: widget.height,
       itemScrollController: widget.itemScrollController,
-      onFavouritesBookmarkTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
-        context,
-        callback: () {
-          if (!mounted) {
-            return;
-          }
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.bookmarkIcon,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
+      onFavouritesBookmarkTap: () => ref
+          .read(authMethodsProvider.notifier)
+          .authAndOpen(
+            context,
+            callback: () {
+              if (!mounted) {
+                return;
+              }
+              Metrics.logEventAdvanced(
+                MetricsConstants.exploreKeys.bookmarkIcon,
+                action: MetricAction.tap.name,
+                group: MetricsConstants.exploreTag,
+              );
 
-          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-          context.router.push(const FavouritesRoute());
-        },
-      ),
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+              context.router.push(const FavouritesRoute());
+            },
+          ),
       onQuickFilterTap: (quickFilter) {
-        ref.read(urbiAnalyticsProvider).track(
-          'quickFilterSearch',
-          properties: {
-            'filter': quickFilter.name,
-          },
-        );
+        ref
+            .read(urbiAnalyticsProvider)
+            .track(
+              'quickFilterSearch',
+              properties: {
+                'filter': quickFilter.name,
+              },
+            );
         ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
         final language = ref.read(appLanguageProvider);
@@ -124,7 +129,10 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       },
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
-      padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),
+
+      padding: widget.forMap
+          ? const EdgeInsets.symmetric(horizontal: Spacing.$3x)
+          : const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     );
   }
 }

@@ -13,6 +13,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
@@ -20,7 +21,7 @@ import 'package:mapness/widgets/landing/dashboard_contents/base_dashboard_conten
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/makkah_based_dashboard_content.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/national_day_dashboard_content.dart';
-import 'package:mapness/widgets/landing/dashboard_header.dart';
+import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'city_event_config.dart';
@@ -161,7 +162,10 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 dragger: SheetDragger(
                   backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
                 ),
-                header: const DashboardHeader(),
+                header: Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                  child: DashboardTitle(context.l10n.whatIsNewInBalady),
+                ),
                 footer: IgnorePointer(
                   child: SizedBox(
                     height: Spacing.$16x + Spacing.$5x,
@@ -190,11 +194,6 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                   key: const ValueKey('MapDashboardControls'),
                 ),
                 outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
-                sliver: SliverPersistentHeader(
-                  delegate: DashboardHeaderDelegate(vsync: this),
-                  pinned: true,
-                  floating: true,
-                ),
                 content: [
                   _buildDashboardContent(specialThemeMode, themeConfig),
                 ],

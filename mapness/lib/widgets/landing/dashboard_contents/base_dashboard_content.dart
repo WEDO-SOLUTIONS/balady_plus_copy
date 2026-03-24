@@ -46,6 +46,11 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
+            const Column(
+              children: [
+                StoriesWidget(),
+              ],
+            ),
             const SizedBox(height: Spacing.$3x),
             SizedBox(
               width: double.infinity,
@@ -59,13 +64,6 @@ class BaseDashboardContent extends ConsumerWidget {
                 title: context.l10n.contribute,
                 subtitle: context.l10n.buildBaladyTogether,
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
-              ),
-            ),
-            const SizedBox(height: Spacing.$6x),
-            StoriesWidget(
-              titleWidget: Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                child: DashboardTitle(context.l10n.whatIsNewInBalady),
               ),
             ),
             const SizedBox(height: Spacing.$6x),
