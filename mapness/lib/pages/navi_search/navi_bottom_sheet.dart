@@ -51,6 +51,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   final _scope = SearchScopeEnum.navi.value;
   ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
+  bool _showMoreQuickFilters = false;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
@@ -91,6 +92,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   }
 
   void _onSheetChanged() {
+    if (!mounted) {
+      return;
+    }
     final newState = _multiStateSheetController.state;
     if (newState == ThreeStateSheet.hidden) {
       _unfocusSearchField();
@@ -150,6 +154,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
     ref.listen(searchProvider(_scope), (previous, next) {
+      if (!mounted) {
+        return;
+      }
+      if (_showMoreQuickFilters && next is! SearchStateHistory) {
+        _setShowMoreQuickFilters(false);
+      }
       _drawSearchMarkers(next, previous, searchObjectManager);
     });
 
@@ -173,7 +183,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
               outside: NaviSearchSheetControls(_multiStateSheetController),
-              safeAreaColor: _sheetState == ThreeStateSheet.hidden
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
                   ? context.colors.backgroundSurface1
                   : context.colors.backgroundSurface4,
               dragger: null,
@@ -183,9 +193,15 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
                 backgroundColor: context.colors.backgroundSurface1,
                 requestFocus: true,
                 onClose: () => context.router.pop(),
+                showLeadingBackButton: _showMoreQuickFilters,
+                onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
               ),
               sliver: SliverToBoxAdapter(
-                child: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+                child: NaviSearchContent(
+                  bottomSheetContentScrollController: _multiStateSheetController,
+                  showMoreQuickFilters: _showMoreQuickFilters,
+                  onMoreQuickFiltersChanged: _setShowMoreQuickFilters,
+                ),
               ),
             ),
           ),
@@ -275,5 +291,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   void _collapseBottomSheet() {
     _multiStateSheetController.setState(ThreeStateSheet.hidden);
+  }
+
+  void _setShowMoreQuickFilters(bool value) {
+    if (!mounted || _showMoreQuickFilters == value) {
+      return;
+    }
+    setState(() => _showMoreQuickFilters = value);
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
@@ -12,13 +11,14 @@ List<FilterItemModel> naviQuickFilter(Ref ref) {
   final l10n = ref.watch(appLocaleProvider);
   final lang = ref.watch(appLanguageProvider);
 
-  return NaviQuickFilterList()
-      .list
-      .map((filter) => FilterItemModel(
-            title: filter.title(l10n, isShort: true),
-            isSelected: false,
-            query: filter.query[lang] ?? '',
-            icon: filter.icon,
-          ))
+  return NaviQuickFilterList().list
+      .map(
+        (filter) => FilterItemModel(
+          title: filter.title(l10n),
+          isSelected: false,
+          query: filter.query[lang] ?? '',
+          icon: filter.icon,
+        ),
+      )
       .toList();
 }

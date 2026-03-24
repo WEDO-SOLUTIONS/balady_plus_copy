@@ -9,11 +9,15 @@ class NaviSearchHeader extends SheetAnimatedWidget<ThreeStateSheet> {
   final bool requestFocus;
   final VoidCallback onClose;
   final Color backgroundColor;
+  final bool showLeadingBackButton;
+  final VoidCallback? onLeadingBackPressed;
 
   const NaviSearchHeader({
     required this.requestFocus,
     required this.onClose,
     required this.backgroundColor,
+    this.showLeadingBackButton = false,
+    this.onLeadingBackPressed,
     super.key,
   }) : super(defaultState: ThreeStateSheet.open);
 
@@ -39,7 +43,10 @@ class NaviSearchHeader extends SheetAnimatedWidget<ThreeStateSheet> {
                 width: double.infinity,
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: Padding(padding: EdgeInsets.only(top: Spacing.$2x), child: Dragger()),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: Spacing.$2x),
+                    child: Dragger(),
+                  ),
                 ),
               ),
             ),
@@ -49,6 +56,8 @@ class NaviSearchHeader extends SheetAnimatedWidget<ThreeStateSheet> {
                 requestFocus: requestFocus,
                 onClose: onClose,
                 isCloseButton: interpolation == 0.0 && state == ThreeStateSheet.hidden,
+                showLeadingBackButton: showLeadingBackButton,
+                onLeadingBackPressed: onLeadingBackPressed,
               ),
             ),
           ],
