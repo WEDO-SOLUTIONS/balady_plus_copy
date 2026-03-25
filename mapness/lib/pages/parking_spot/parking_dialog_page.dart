@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -33,6 +34,7 @@ class ParkingDialogPage extends HookConsumerWidget {
       backgroundColor: context.colors.backgroundSurface4,
       safeAreaColor: context.colors.backgroundSurface4,
       dragger: const SheetDragger(),
+      useSafeArea: false,
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -85,6 +87,7 @@ class ParkingDialogPage extends HookConsumerWidget {
             onTap: onCancelTab,
           ),
         ),
+        SizedBox(height: Spacing.$3x + InsetsUtils.platformAwareBottomInset(context, isLandscape: false)),
       ],
     );
   }
