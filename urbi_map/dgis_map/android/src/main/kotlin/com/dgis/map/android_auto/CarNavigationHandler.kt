@@ -235,20 +235,20 @@ class CarNavigationHandler(
     }
 
     private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
-        if (!sharedPrefs.suggestBetterRoad) {
+        if (!sharedPrefs.suggestBetterRoad || routeInfo == null) {
             navigationListener?.onBetterRouteFound(durationProfit = null)
             return
         }
         val activeRouteDuration = navigationManager.uiModel.duration?.inSeconds
         val betterRouteDuration =
-                routeInfo?.trafficRoute?.route?.geometry?.first?.point?.let {
+                routeInfo.trafficRoute.route.geometry.first?.point?.let {
                     routeInfo.trafficRoute.traffic.durations.calculateDuration(it).inSeconds
                 }
         val durationProfit =
                 if (activeRouteDuration != null && betterRouteDuration != null)
                         (activeRouteDuration - betterRouteDuration).toInt()
-                else null
-        navigationListener?.onBetterRouteFound(durationProfit = durationProfit)
+                else 0
+        navigationListener?.onBetterRouteFound(durationProfit = durationProfit.coerceAtLeast(0))
     }
 
     private fun updateManeuverInfo(
