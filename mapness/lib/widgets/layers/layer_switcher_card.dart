@@ -1,6 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart' show BuildContextExt;
-import 'package:dgis_map/library.dart' ;
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -50,13 +50,15 @@ class LayerSwitcherCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(RadiusBorder.m),
           ),
           child: ClipRRect(
-            clipBehavior: Clip.antiAlias,
             borderRadius: BorderRadius.circular(RadiusBorder.m),
             child: SvgPicture.asset(
               value.imageAsset(),
               fit: BoxFit.cover,
               height: 80,
-              colorFilter: ColorFilter.mode(Colors.black.withAlpha(40), BlendMode.overlay),
+              colorFilter: ColorFilter.mode(
+                Colors.black.withAlpha(40),
+                BlendMode.overlay,
+              ),
             ),
           ),
         ),
