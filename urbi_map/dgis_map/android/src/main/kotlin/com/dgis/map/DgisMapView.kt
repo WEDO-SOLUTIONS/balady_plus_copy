@@ -500,6 +500,7 @@ class DgisMapView(
                         api = FlutterMapApi(binaryMessenger)
                 )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)
+        mapView.addObjectLongTouchCallback(objectTapHandler::objectLongTapListener)
         this.objectTapHandler = objectTapHandler
     }
 
