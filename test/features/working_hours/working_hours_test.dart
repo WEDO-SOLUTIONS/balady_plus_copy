@@ -40,9 +40,7 @@ void main() {
       );
       test(
         'THEN breaks 14:00-15:00',
-        () => expect(dayBreaks, [
-          (from: Duration(hours: 14), till: Duration(hours: 15)),
-        ]),
+        () => expect(dayBreaks, [(from: Duration(hours: 14), till: Duration(hours: 15))]),
       );
     });
   });
@@ -74,10 +72,7 @@ void main() {
       late Iterable<Hours> periods;
       setUp(() => periods = workingHours.todayHours(DateTime.tuesday));
 
-      test(
-        'THEN works 11:00-18:00',
-        () => expect(periods, [(from: Duration(hours: 11), till: Duration(hours: 18))]),
-      );
+      test('THEN works 11:00-18:00', () => expect(periods, [(from: Duration(hours: 11), till: Duration(hours: 18))]));
       test('THEN NOT same working hours', () => expect(workingHours.isSameEveryDay, isFalse));
       test('THEN NOT open 24/7', () => expect(workingHours.isOpen24x7, isFalse));
     });
@@ -98,10 +93,7 @@ void main() {
       test('THEN is open', () => expect(workingHours.isOpen(now), isTrue));
       test('THEN NOT closed', () => expect(workingHours.isClosed(now), isFalse));
       test('THEN NOT break', () => expect(workingHours.isBreak(now), isFalse));
-      test(
-        'THEN closes in 8h 0min',
-        () => expect(workingHours.closesIn(now), Duration(hours: 8, minutes: 0)),
-      );
+      test('THEN closes in 4h 0min', () => expect(workingHours.closesIn(now), Duration(hours: 4, minutes: 0)));
     });
 
     group(' WHEN has break (between intervals)', () {
@@ -120,10 +112,7 @@ void main() {
       test('THEN is open', () => expect(workingHours.isOpen(now), isTrue));
       test('THEN NOT closed', () => expect(workingHours.isClosed(now), isFalse));
       test('THEN NOT break', () => expect(workingHours.isBreak(now), isFalse));
-      test(
-        'THEN closes in 2h 18min',
-        () => expect(workingHours.closesIn(now), Duration(hours: 2, minutes: 18)),
-      );
+      test('THEN closes in 2h 18min', () => expect(workingHours.closesIn(now), Duration(hours: 2, minutes: 18)));
     });
 
     group(' WHEN already closed (after intervals)', () {
@@ -152,6 +141,47 @@ void main() {
         'THEN NOT opening tomorrow',
         () => expect(workingHours.isTomorrow(now, workingHours.nextOpen(now)), isFalse),
       );
+    });
+  });
+
+  group('GIVEN working hours monday 22:00-02:00 (cross-midnight)', () {
+    setUp(() => workingHours = WorkingHours({Duration(days: DateTime.monday, hours: 22): Duration(hours: 4)}));
+
+    test('THEN monday 23:00 is open', () {
+      expect(workingHours.isOpen(DateTime(2025, 9, 1, 23, 00)), isTrue);
+    });
+
+    test('THEN tuesday 01:00 is still open', () {
+      expect(workingHours.isOpen(DateTime(2025, 9, 2, 01, 00)), isTrue);
+    });
+
+    test('THEN tuesday 01:00 closes in 1h', () {
+      expect(workingHours.closesIn(DateTime(2025, 9, 2, 01, 00)), const Duration(hours: 1));
+    });
+
+    test('THEN tuesday 03:00 is closed and next open is monday 22:00', () {
+      final now = DateTime(2025, 9, 2, 03, 00);
+      expect(workingHours.isClosed(now), isTrue);
+      expect(workingHours.nextOpen(now), const Duration(days: DateTime.monday, hours: 22));
+    });
+  });
+
+  group('GIVEN threshold-based status states', () {
+    setUp(() => workingHours = WorkingHours({Duration(days: DateTime.monday, hours: 10): Duration(hours: 8)}));
+
+    test('THEN before opening and <=2h is closedSoon', () {
+      final status = workingHours.statusType(DateTime(2025, 9, 1, 09, 10));
+      expect(status, WorkingHoursStatusType.closedSoon);
+    });
+
+    test('THEN while open and >2h is open', () {
+      final status = workingHours.statusType(DateTime(2025, 9, 1, 12, 00));
+      expect(status, WorkingHoursStatusType.open);
+    });
+
+    test('THEN before close and <=2h is openSoon', () {
+      final status = workingHours.statusType(DateTime(2025, 9, 1, 16, 10));
+      expect(status, WorkingHoursStatusType.openSoon);
     });
   });
 }
