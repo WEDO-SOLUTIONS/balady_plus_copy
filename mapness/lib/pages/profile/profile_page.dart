@@ -26,7 +26,6 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
-import 'package:provider/provider.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -122,7 +121,7 @@ class ProfilePage extends HookConsumerWidget {
                                               ],
                                             ),
                                     ),
-                                    ContentRow(
+                                    ContentRowV2(
                                       onTap: () => context.router.push(const SettingsRoute()),
                                       trailing: trailing,
                                       leading: leadingIconBuilder(SystemIcons.settings),
@@ -162,20 +161,29 @@ class ProfilePage extends HookConsumerWidget {
                               ContentWrapper(
                                 color: context.colors.backgroundSurface1,
                                 children: [
-                                  ContentRow(
-                                    isDividerEnabled: true,
+                                  ContentRowV2(
                                     onTap: () => context.router.push(const HelpCenterRoute()),
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
-                                    text: ContentRowTextOptions(title: context.l10n.helpCenter),
+                                    isDividerEnabled: true,
+                                    options: ContentRowOptions(
+                                      dividerEnabled: true,
+                                      wrapperEnabled: true,
+                                      title: context.l10n.helpCenter,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
-                                  ContentRow(
+                                  ContentRowV2(
                                     onTap: () {
                                       context.router.push(const AboutBaladyRoute());
                                     },
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
-                                    text: ContentRowTextOptions(title: context.l10n.aboutApp),
+                                    options: ContentRowOptions(
+                                      wrapperEnabled: true,
+                                      title: context.l10n.aboutApp,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -240,7 +248,7 @@ class ProfilePage extends HookConsumerWidget {
       // Method 2: Try BlocProvider.of
       if (selectedDelegate == null) {
         try {
-          foundCubit = BlocProvider.of<DelegatorsCubit>(context, listen: false);
+          foundCubit = BlocProvider.of<DelegatorsCubit>(context);
           selectedDelegate = foundCubit.state.selectedDelegate;
           print('✅ Method 2 SUCCESS: Got DelegatorsCubit from BlocProvider.of');
           print('   Selected: ${selectedDelegate?.entityName ?? 'NULL'}');
@@ -271,7 +279,7 @@ class ProfilePage extends HookConsumerWidget {
         try {
           final navContext = NavigationService.navigatorKey.currentContext;
           if (navContext != null) {
-            foundCubit = BlocProvider.of<DelegatorsCubit>(navContext, listen: false);
+            foundCubit = BlocProvider.of<DelegatorsCubit>(navContext);
             selectedDelegate = foundCubit.state.selectedDelegate;
             print('✅ Method 4 SUCCESS: Got DelegatorsCubit from NavigationService BlocProvider.of');
             print('   Selected: ${selectedDelegate?.entityName ?? 'NULL'}');
@@ -384,45 +392,45 @@ class ProfilePage extends HookConsumerWidget {
           if (data['entityName'] != null) {
             // Full entity data available
             snackbarMessage =
-                "✅ JS Bridge Response - Delegator Found:\n"
+                '✅ JS Bridge Response - Delegator Found:\n'
                 "Entity Name: ${data['entityName']}\n"
                 "Role: ${data['roleName'] ?? 'N/A'}\n"
                 "CR/UNN: ${data['crNumber'] ?? data['unifiedNationalNumber'] ?? 'N/A'}\n"
-                "Check console for access method";
+                'Check console for access method';
             backgroundColor = Colors.green;
             print('✅ Showing full entity data snackbar');
           } else if (data['id'] != null) {
             // Only ID available from SharedPreferences
             snackbarMessage =
-                "✅ JS Bridge Response - Delegator ID Found:\n"
+                '✅ JS Bridge Response - Delegator ID Found:\n'
                 "Saved Delegator ID: ${data['id']}\n"
-                "✅ Selection exists in SharedPreferences\n"
-                "⚠️ Full entity data not accessible from ProfilePage\n"
-                "This is expected - cubit is in different widget tree\n"
-                "JS Bridge will work correctly from mini apps";
+                '✅ Selection exists in SharedPreferences\n'
+                '⚠️ Full entity data not accessible from ProfilePage\n'
+                'This is expected - cubit is in different widget tree\n'
+                'JS Bridge will work correctly from mini apps';
             backgroundColor = Colors.green;
             print('✅ Showing ID-only snackbar with ID: ${data['id']}');
           } else {
             // Data exists but doesn't match expected format
             snackbarMessage =
-                "⚠️ JS Bridge Response - Unexpected data format\n"
-                "Code: $code\n"
-                "Data exists but format unexpected\n"
+                '⚠️ JS Bridge Response - Unexpected data format\n'
+                'Code: $code\n'
+                'Data exists but format unexpected\n'
                 "Data keys: ${(data as Map).keys.join(', ')}";
             backgroundColor = Colors.orange;
             print('⚠️ Showing unexpected format snackbar');
           }
         } else {
           snackbarMessage =
-              "⚠️ JS Bridge Response - No delegator selected\n"
-              "Code: $code\n"
-              "Selected delegate is NULL\n"
-              "No selection found in SharedPreferences either";
+              '⚠️ JS Bridge Response - No delegator selected\n'
+              'Code: $code\n'
+              'Selected delegate is NULL\n'
+              'No selection found in SharedPreferences either';
           backgroundColor = Colors.orange;
           print('⚠️ Showing no selection snackbar');
         }
       } else {
-        snackbarMessage = "❌ JS Bridge Error (Code $code): $message";
+        snackbarMessage = '❌ JS Bridge Error (Code $code): $message';
         backgroundColor = Colors.red;
         print('❌ Showing error snackbar');
       }
@@ -437,8 +445,7 @@ class ProfilePage extends HookConsumerWidget {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("❌ Error simulating JS bridge: $e"),
-          duration: const Duration(seconds: 4),
+          content: Text('❌ Error simulating JS bridge: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -465,7 +472,7 @@ class ProfilePage extends HookConsumerWidget {
       // Method 2: Try BlocProvider.of
       if (selectedAgent == null) {
         try {
-          foundCubit = BlocProvider.of<DelegatorsCubit>(context, listen: false);
+          foundCubit = BlocProvider.of<DelegatorsCubit>(context);
           selectedAgent = foundCubit.state.selectedAgent;
           print('✅ Method 2 SUCCESS: Got DelegatorsCubit from BlocProvider.of');
           print('   Selected: ${selectedAgent?.agentName ?? 'NULL'}');
@@ -496,7 +503,7 @@ class ProfilePage extends HookConsumerWidget {
         try {
           final navContext = NavigationService.navigatorKey.currentContext;
           if (navContext != null) {
-            foundCubit = BlocProvider.of<DelegatorsCubit>(navContext, listen: false);
+            foundCubit = BlocProvider.of<DelegatorsCubit>(navContext);
             selectedAgent = foundCubit.state.selectedAgent;
             print('✅ Method 4 SUCCESS: Got DelegatorsCubit from NavigationService BlocProvider.of');
             print('   Selected: ${selectedAgent?.agentName ?? 'NULL'}');
@@ -597,39 +604,39 @@ class ProfilePage extends HookConsumerWidget {
           if (data['agentName'] != null) {
             // Full entity data available
             snackbarMessage =
-                "✅ JS Bridge Response - Agent Found:\n"
+                '✅ JS Bridge Response - Agent Found:\n'
                 "Agent Name: ${data['agentName']}\n"
                 "Grantor Name: ${data['grantorName'] ?? 'N/A'}\n"
                 "Agency Number: ${data['agencyNumber'] ?? 'N/A'}\n"
-                "Check console for access method";
+                'Check console for access method';
             backgroundColor = Colors.green;
           } else if (data['agencyNumber'] != null) {
             // Only ID available from SharedPreferences
             snackbarMessage =
-                "⚠️ JS Bridge Response - Agent ID Found:\n"
+                '⚠️ JS Bridge Response - Agent ID Found:\n'
                 "Saved Agency Number: ${data['agencyNumber']}\n"
-                "⚠️ Full entity data not accessible\n"
-                "Selection exists in SharedPreferences\n"
-                "But cubit instance not accessible from this context";
+                '⚠️ Full entity data not accessible\n'
+                'Selection exists in SharedPreferences\n'
+                'But cubit instance not accessible from this context';
             backgroundColor = Colors.orange;
           } else {
             // Data exists but doesn't match expected format
             snackbarMessage =
-                "⚠️ JS Bridge Response - Unexpected data format\n"
-                "Code: $code\n"
-                "Data exists but format unexpected";
+                '⚠️ JS Bridge Response - Unexpected data format\n'
+                'Code: $code\n'
+                'Data exists but format unexpected';
             backgroundColor = Colors.orange;
           }
         } else {
           snackbarMessage =
-              "⚠️ JS Bridge Response - No agent selected\n"
-              "Code: $code\n"
-              "Selected agent is NULL\n"
-              "No selection found in SharedPreferences either";
+              '⚠️ JS Bridge Response - No agent selected\n'
+              'Code: $code\n'
+              'Selected agent is NULL\n'
+              'No selection found in SharedPreferences either';
           backgroundColor = Colors.orange;
         }
       } else {
-        snackbarMessage = "❌ JS Bridge Error (Code $code): $message";
+        snackbarMessage = '❌ JS Bridge Error (Code $code): $message';
         backgroundColor = Colors.red;
       }
 
@@ -643,8 +650,7 @@ class ProfilePage extends HookConsumerWidget {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("❌ Error simulating JS bridge: $e"),
-          duration: const Duration(seconds: 4),
+          content: Text('❌ Error simulating JS bridge: $e'),
           backgroundColor: Colors.red,
         ),
       );
