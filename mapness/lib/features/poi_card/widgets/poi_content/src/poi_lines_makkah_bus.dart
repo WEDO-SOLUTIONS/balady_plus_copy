@@ -1,23 +1,25 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/makkah_bus/makkah_bus_departures_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
-class PoiLinesMakkahBus extends StatefulWidget {
+class PoiLinesMakkahBus extends ConsumerStatefulWidget {
   final MakkahBusRoute routeInfo;
 
   const PoiLinesMakkahBus({required this.routeInfo, super.key});
 
   @override
-  State<PoiLinesMakkahBus> createState() => _PoiLinesMakkahBusState();
+  ConsumerState<PoiLinesMakkahBus> createState() => _PoiLinesMakkahBusState();
 }
 
-class _PoiLinesMakkahBusState extends State<PoiLinesMakkahBus> {
+class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
   final format = DateFormat('hh:mm a');
 
   int getMinutesFromDepartureTime(String departureTime) {
@@ -37,14 +39,11 @@ class _PoiLinesMakkahBusState extends State<PoiLinesMakkahBus> {
 
   @override
   Widget build(BuildContext context) {
+    final appLanguage = ref.read(appLanguageProvider);
     final colorLine = widget.routeInfo.routeColor.toColor() ?? context.colorsV3.foregroundDefault;
     final textColorLine = widget.routeInfo.routeTextColor.toColor() ?? context.colorsV3.foregroundDefault;
     final l10n = context.l10n;
-    final trips = widget.routeInfo.trips
-        .where(
-          (element) => getMinutesFromDepartureTime(element.departureTime) >= 0,
-        )
-        .toList();
+    final trips = widget.routeInfo.trips;
     return ContentWrapper(
       color: context.colors.backgroundSurface1,
       children: [
@@ -87,16 +86,18 @@ class _PoiLinesMakkahBusState extends State<PoiLinesMakkahBus> {
           content: Column(
             children: List.generate(trips.length, (index) {
               final trip = trips[index];
-              final isDelayed = trip.delaySeconds > 0 ;
-              final delayedTime = format.format(format.parse(trip.departureTime).add(Duration(seconds: trip.delaySeconds)));
-              final inMinutes = getMinutesFromDepartureTime(isDelayed?delayedTime:trip.departureTime);
+              final isDelayed = trip.delaySeconds > 0;
+              final delayedTime = format.format(
+                format.parse(trip.departureTime).add(Duration(seconds: trip.delaySeconds)),
+              );
+              final inMinutes = getMinutesFromDepartureTime(isDelayed ? delayedTime : trip.departureTime);
 
               return CustomPaint(
                 painter: _TripLinePainter(
                   isFirst: index == 0,
                   isLast: index == trips.length - 1,
                   color: colorLine,
-                  isArabic: true,
+                  isArabic: appLanguage.isArabic,
                 ),
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
@@ -134,7 +135,7 @@ class _PoiLinesMakkahBusState extends State<PoiLinesMakkahBus> {
                         Text(
                           inMinutes == 0 ? l10n.ready : l10n.minLeft(inMinutes),
                           style: context.textStyleV3.bodyLargeRegular.copyWith(
-                            color: inMinutes == 0 ? context.colors.successDefault : context.colors.foregroundMuted,
+                            color: isDelayed ? context.colors.errorDefault : context.colors.successDefault,
                             fontSize: 12,
                           ),
                         ),
@@ -155,7 +156,7 @@ class _TripLinePainter extends CustomPainter {
   final bool isFirst;
   final bool isLast;
   final Color color;
-  final bool isArabic ;
+  final bool isArabic;
 
   _TripLinePainter({
     required this.isFirst,
