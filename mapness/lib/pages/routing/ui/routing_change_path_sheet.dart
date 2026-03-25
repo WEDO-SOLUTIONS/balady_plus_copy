@@ -102,7 +102,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
             padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
             child: SingleChildScrollView(
               child: ABRoute(
-                stopByTitle: context.l10n.stopBy,
+                stopByTitle: context.l10n.addStop,
                 items: pointsModels,
                 startPointSubtitle: context.l10n.startPosition,
                 arrivalPointSubtitle: context.l10n.placeOfArrival,
