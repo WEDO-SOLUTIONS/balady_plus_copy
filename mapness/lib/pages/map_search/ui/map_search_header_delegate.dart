@@ -6,15 +6,22 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 
 class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
-  MapSearchHeaderDelegate({required this.requestFocus, required this.onClose, required this.backgroundColor});
+  MapSearchHeaderDelegate({
+    required this.requestFocus,
+    required this.onClose,
+    required this.backgroundColor,
+  });
 
   final bool requestFocus;
   final VoidCallback onClose;
   final Color backgroundColor;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) =>
-      DashboardHeader(requestFocus: requestFocus, onClose: onClose, backgroundColor: backgroundColor);
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
+    requestFocus: requestFocus,
+    onClose: onClose,
+    backgroundColor: backgroundColor,
+  );
 
   @override
   double get maxExtent => 76;
@@ -27,8 +34,12 @@ class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  const DashboardHeader({required this.requestFocus, required this.onClose, required this.backgroundColor, super.key});
-
+  const DashboardHeader({
+    required this.requestFocus,
+    required this.onClose,
+    required this.backgroundColor,
+    super.key,
+  });
   final bool requestFocus;
   final VoidCallback onClose;
   final Color backgroundColor;
@@ -44,7 +55,10 @@ class DashboardHeader extends ConsumerWidget {
         Center(child: SheetDragger(draggerColor: context.colors.backgroundSurface5)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: MapSearchBar(requestFocus: requestFocus, onClose: onClose),
+          child: MapSearchBar(
+            requestFocus: requestFocus,
+            onClose: onClose,
+          ),
         ),
         const SizedBox(height: Spacing.$4x),
       ],

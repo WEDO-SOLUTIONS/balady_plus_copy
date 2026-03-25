@@ -71,6 +71,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
+  bool _showMoreQuickFilters = false;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
@@ -104,6 +105,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onSheetChanged() {
+    if (!mounted) {
+      return;
+    }
     final newState = _multiStateSheetController.state;
     if (newState != _sheetState) {
       setState(() {
@@ -166,6 +170,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       ).notifier,
     );
     ref.listen(searchProvider(_scope), (previous, next) {
+      if (!mounted) {
+        return;
+      }
+      if (_showMoreQuickFilters && next is! SearchStateHistory) {
+        setState(() {
+          _showMoreQuickFilters = false;
+        });
+      }
       _drawSearchMarkers(next, previous, searchObjectManager);
     });
     final isCloseButton = ref.watch(
@@ -192,14 +204,22 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: _sheetState == ThreeStateSheet.hidden ? contentColor : containerColor,
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
+                  ? contentColor
+                  : containerColor,
               dragger: SheetDragger(backgroundColor: contentColor),
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
               header: Container(
                 color: contentColor,
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
+                child: MapSearchBar(
+                  requestFocus: widget.requestFocus,
+                  onClose: onClose,
+                  isCloseButton: isCloseButton,
+                  showLeadingBackButton: _showMoreQuickFilters,
+                  onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
+                ),
               ),
               outside: MapSearchSheetControls(
                 currentSize: currentSize,
@@ -207,7 +227,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 sheetState: _sheetState,
               ),
               sliver: SliverToBoxAdapter(
-                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+                child: MapSearchContent(
+                  bottomSheetContentScrollController: _multiStateSheetController,
+                  showMoreQuickFilters: _showMoreQuickFilters,
+                  onMoreQuickFiltersChanged: _setShowMoreQuickFilters,
+                ),
               ),
             ),
           ),
@@ -336,5 +360,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   void _collapseBottomSheet() {
     _multiStateSheetController.setState(ThreeStateSheet.hidden);
+  }
+
+  void _setShowMoreQuickFilters(bool value) {
+    if (!mounted || _showMoreQuickFilters == value) {
+      return;
+    }
+    setState(() => _showMoreQuickFilters = value);
   }
 }
