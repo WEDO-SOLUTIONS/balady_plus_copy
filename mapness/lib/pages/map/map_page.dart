@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 
@@ -67,17 +68,22 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
     return Stack(
       fit: StackFit.expand,
       children: [
-        DgisMap(
-          key: ValueKey(_keyIndex),
-          androidUseExpensive: true,
-          onMapCreated: (controller) async {
-            await dgisController.onMapCreated(controller);
-            Future.delayed(const Duration(seconds: 3), () {
-              ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
-            });
-          },
+        Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+          onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+          child: DgisMap(
+            key: ValueKey(_keyIndex),
+            androidUseExpensive: true,
+            onMapCreated: (controller) async {
+              await dgisController.onMapCreated(controller);
+              Future.delayed(const Duration(seconds: 3), () {
+                ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+              });
+            },
+          ),
         ),
-        const AutoRouter()
+        const AutoRouter(),
       ],
     );
   }

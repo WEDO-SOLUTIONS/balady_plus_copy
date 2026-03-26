@@ -80,6 +80,13 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
   final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+  final markerTitle = directoryObject.title.trim();
+  final fullStreetAddress = directoryObject.fullAddressName?.streetAddress?.trim();
+  final shortStreetAddress = directoryObject.shortAddressName?.streetAddress?.trim();
+  final isAddressUsedAsTitle =
+      (fullStreetAddress != null && fullStreetAddress == markerTitle) ||
+      (shortStreetAddress != null && shortStreetAddress == markerTitle);
+  final showPinLabel = markerTitle.isNotEmpty && !directoryObject.isDroppedPin && !isAddressUsedAsTitle;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(
@@ -88,7 +95,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         longitude: position.longitude,
         elevation: 1,
       ),
-      text: directoryObject.isDroppedPin ? null : directoryObject.title,
+      text: showPinLabel ? directoryObject.title : null,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       id: poiPinId,

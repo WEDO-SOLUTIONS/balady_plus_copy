@@ -20,7 +20,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
-import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:sheetify/sheetify.dart';
@@ -196,10 +195,8 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                                   DimensionControl(),
                                   Spacer(),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       IndoorControl(),
-                                      ZoomControl(),
                                     ],
                                   ),
                                   Spacer(),
