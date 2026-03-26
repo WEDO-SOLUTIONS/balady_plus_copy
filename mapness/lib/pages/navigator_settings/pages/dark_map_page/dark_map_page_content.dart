@@ -45,15 +45,6 @@ class DarkMapPageContent extends ConsumerWidget {
                     currentMode: e,
                   ),
                 )
-                .insertBetween(
-                  Divider(
-                    height: 0.5,
-                    color: context.colors.borderSoft,
-                    thickness: 1,
-                    indent: Spacing.$4x,
-                    endIndent: 0,
-                  ),
-                )
                 .toList(),
           ),
         ].insertBetween(Spacing.$4x.heightBox).toList(),
