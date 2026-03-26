@@ -90,7 +90,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         }
         final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
         if (next.searchText.isEmpty) {
-          ref.read(searchInRectProvider(scope.value).notifier).update();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) {
+              return;
+            }
+            ref.read(searchInRectProvider(scope.value).notifier).update();
+          });
         }
 
         _updateText(next.searchText);

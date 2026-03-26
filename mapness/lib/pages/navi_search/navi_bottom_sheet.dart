@@ -192,7 +192,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               header: NaviSearchHeader(
                 backgroundColor: context.colors.backgroundSurface1,
                 requestFocus: true,
-                onClose: () => context.router.pop(),
+                onClose: onClose,
                 showLeadingBackButton: _showMoreQuickFilters,
                 onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
               ),

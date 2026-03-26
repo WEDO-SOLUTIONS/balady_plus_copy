@@ -75,10 +75,10 @@ class NaviQuickFilterMoreList {
 
 extension NaviQuickFilterMoreExtension on NaviQuickFilterMore {
   String title(AppLocalizations locale) => switch (this) {
-    NaviQuickFilterMore.mosques => locale.mosques,
-    NaviQuickFilterMore.fuel => locale.fuel,
-    NaviQuickFilterMore.hotels => locale.hotels,
-    NaviQuickFilterMore.markets => locale.markets,
+    NaviQuickFilterMore.mosques => locale.naviQuickFilterMoreMosques,
+    NaviQuickFilterMore.fuel => locale.naviQuickFilterMoreFuel,
+    NaviQuickFilterMore.hotels => locale.naviQuickFilterMoreHotels,
+    NaviQuickFilterMore.markets => locale.naviQuickFilterMoreMarkets,
     NaviQuickFilterMore.restaurants => locale.naviQuickFilterMoreRestaurants,
     NaviQuickFilterMore.beauty => locale.naviQuickFilterMoreBeauty,
     NaviQuickFilterMore.gyms => locale.naviQuickFilterMoreGyms,
@@ -128,7 +128,7 @@ extension NaviQuickFilterMoreExtension on NaviQuickFilterMore {
     NaviQuickFilterMore.medicine => PlacesIcons.medicine,
     NaviQuickFilterMore.airport => PlacesIcons.airport,
     NaviQuickFilterMore.education => PlacesIcons.school,
-    NaviQuickFilterMore.markets => PlacesIcons.markets,
+    NaviQuickFilterMore.markets => PlacesIcons.marketsFilled,
     NaviQuickFilterMore.carService => PlacesIcons.carServices,
     NaviQuickFilterMore.qibla => PlacesIcons.qibla,
     NaviQuickFilterMore.media => PlacesIcons.media,
@@ -213,7 +213,7 @@ extension QuickFilterExtension on QuickFilter {
   IconData? get icon => switch (this) {
     QuickFilter.eatOut => PlacesIcons.restaurant,
     QuickFilter.mosques => PlacesIcons.mosques,
-    QuickFilter.markets => PlacesIcons.markets,
+    QuickFilter.markets => PlacesIcons.marketsFilled,
     QuickFilter.hotels => PlacesIcons.hotelsFilled,
     QuickFilter.fuel => PlacesIcons.gasstationFilled,
   };
