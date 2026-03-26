@@ -8,11 +8,7 @@ part 'makkah_buses_layer_repository.g.dart';
 @riverpod
 class MakkahBusesLayerRepository extends _$MakkahBusesLayerRepository {
   @override
-  Future<List<MakkahBusesModel>> build() {
-    final makkahBusesJsonDatasource = MakkahBusesJsonDatasource();
-
-    return makkahBusesJsonDatasource.getMakkahBusesInfo();
-  }
+  Future<List<MakkahBusesModel>> build() => MakkahBusesJsonDatasource().getMakkahBusesInfo();
 
   void showMakkahBuses() {
     ref.read(makkahBusesLayerVisibleProvider.notifier).showMakkahBuses();

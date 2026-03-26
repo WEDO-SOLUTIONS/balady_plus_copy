@@ -291,7 +291,6 @@ flutter:
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/
     - assets/maps/metro/
-    - assets/maps/makkah_buses/
     - assets/icons/svg/home_events/
     - assets/etmam_app/icons/png/
     - assets/etmam_app/icons/svg/
@@ -381,3 +380,4 @@ sentry:
   upload_sources: true          # <— optional: also upload .dart/.js sources
   wait_for_processing: true     # optional
   log_level: debug              # optional
+

@@ -10,8 +10,11 @@ abstract class MakkahBusesModel with _$MakkahBusesModel {
   @JsonSerializable(explicitToJson: true)
   const factory MakkahBusesModel({
     final String? id,
-    final double? lat,
-    final double? lon,
+    final String? nameArabic,
+    final String? nameEnglish,
+    final String? colorCode,
+    final String? colorName,
+    final List<List<double>>? coordinates, // [lon, lat] pairs
   }) = _MakkahBusesModel;
 
   factory MakkahBusesModel.fromJson(Map<String, dynamic> json) => _$MakkahBusesModelFromJson(json);

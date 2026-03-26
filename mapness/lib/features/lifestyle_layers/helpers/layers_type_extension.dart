@@ -8,6 +8,7 @@ extension LayerTypeExt on LayerType {
   GISMapLayers? getGISLayerType() => switch (this) {
         LayerType.favourites => null,
         LayerType.metro => null,
+        LayerType.makkahBuses => null,
         LayerType.invest => GISMapLayers.opportunities,
         LayerType.buildings => GISMapLayers.bsAimtithalBuildingsCertificateL,
         LayerType.fencing => GISMapLayers.bsWhiteParcelS,
@@ -21,6 +22,7 @@ extension LayerTypeExt on LayerType {
         LayerType.invest => GeneralIcons.invest,
         LayerType.buildings => GeneralIcons.buildings,
         LayerType.fencing => GeneralIcons.fence,
+        LayerType.makkahBuses => PlacesIcons.qibla,
         // LayerType.joy => GeneralIcons.joy,
         LayerType.parkingLots => TransportIcons.parkingEnable,
       };
@@ -31,6 +33,7 @@ extension LayerTypeExt on LayerType {
         LayerType.invest => l10n.investmentOpportunities,
         LayerType.buildings => l10n.compilanceBuildings,
         LayerType.fencing => l10n.fencingVacantLands,
+        LayerType.makkahBuses => 'Makkah Buses',
         // LayerType.joy => l10n.joyParks,
         LayerType.parkingLots => l10n.parkingLots,
       };
