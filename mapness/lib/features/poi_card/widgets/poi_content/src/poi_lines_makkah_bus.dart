@@ -86,7 +86,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
           content: Column(
             children: List.generate(trips.length, (index) {
               final trip = trips[index];
-              final isDelayed = trip.delaySeconds > 0;
+              final isDelayed = trip.delaySeconds != 0 && trip.delaySeconds>59;
               final delayedTime = format.format(
                 format.parse(trip.departureTime).add(Duration(seconds: trip.delaySeconds)),
               );
@@ -135,7 +135,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                         Text(
                           inMinutes == 0 ? l10n.ready : l10n.minLeft(inMinutes),
                           style: context.textStyleV3.bodyLargeRegular.copyWith(
-                            color: isDelayed ? context.colors.errorDefault : context.colors.successDefault,
+                            color: isDelayed && trip.delaySeconds >0 ? context.colors.errorDefault : context.colors.successDefault,
                             fontSize: 12,
                           ),
                         ),
