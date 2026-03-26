@@ -15,47 +15,42 @@ double _toDouble(dynamic val) {
 List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
   final List<MakkahBusesModel> result = [];
   try {
+    // ESRI format: top-level object with features array
     final Map<String, dynamic> json = jsonDecode(jsonInput);
     final features = json['features'] as List<dynamic>? ?? [];
 
     for (final item in features) {
       if (item is! Map<String, dynamic>) continue;
-      
+
       final attributes = item['attributes'] as Map<String, dynamic>? ?? {};
       final geometry = item['geometry'] as Map<String, dynamic>? ?? {};
-      
+
       final id = attributes['OBJECTID']?.toString();
       final nameArabic = attributes['Name_Arabic']?.toString();
       final nameEnglish = attributes['Name_English']?.toString();
       final colorCode = attributes['Color_Code']?.toString();
-      final colorName = attributes['Color_Name']?.toString();
-      
+
+      // New format uses "paths" — plain [lon, lat] arrays, already densified by GIS
+      final paths = geometry['paths'] as List<dynamic>? ?? [];
       final List<List<double>> coordinates = [];
-      final curvePaths = geometry['curvePaths'] as List<dynamic>? ?? [];
-      
-      for (final path in curvePaths) {
+
+      for (final path in paths) {
         if (path is! List<dynamic>) continue;
-        for (final segment in path) {
-          if (segment is List<dynamic> && segment.length >= 2) {
-            coordinates.add([_toDouble(segment[0]), _toDouble(segment[1])]);
-          } else if (segment is Map<String, dynamic> && segment.containsKey('c')) {
-            final cData = segment['c'] as List<dynamic>? ?? [];
-            for (final point in cData) {
-              if (point is List<dynamic> && point.length >= 2) {
-                coordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
-              }
-            }
+        for (final point in path) {
+          if (point is List<dynamic> && point.length >= 2) {
+            coordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
           }
         }
       }
-      
+
+      if (coordinates.isEmpty) continue;
+
       result.add(MakkahBusesModel(
         id: id,
         nameArabic: nameArabic,
         nameEnglish: nameEnglish,
         colorCode: colorCode,
-        colorName: colorName,
-        coordinates: coordinates.isNotEmpty ? coordinates : null,
+        coordinates: coordinates,
       ));
     }
   } catch (e) {
