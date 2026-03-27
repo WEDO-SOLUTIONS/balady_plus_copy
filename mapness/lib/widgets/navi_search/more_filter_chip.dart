@@ -29,14 +29,14 @@ class MoreFilterChip extends StatelessWidget {
           child: Icon(icon, size: 24, color: context.colors.accentSecondaryDefault),
         ),
         const SizedBox(height: Spacing.$2x),
-        SizedBox(
-          height: 32,
-          child: Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+        Text(
+          title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: context.textStyles.bodySmallRegular.copyWith(
+            color: context.colors.foregroundDefault,
+            height: 1.25,
           ),
         ),
       ],

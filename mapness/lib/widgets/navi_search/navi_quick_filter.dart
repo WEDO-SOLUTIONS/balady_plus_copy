@@ -33,60 +33,48 @@ class NaviQuickFilter extends ConsumerWidget {
     return Container(
       color: context.colors.backgroundSurface1,
       padding: const EdgeInsets.only(bottom: Spacing.$4x),
-      child: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 280),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        transitionBuilder: (child, animation) {
-          final slide = Tween<Offset>(begin: const Offset(0.12, 0), end: Offset.zero).animate(animation);
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(position: slide, child: child),
-          );
-        },
-        child: showMoreView
-            ? _SecondaryQuickFiltersView(
-                key: const ValueKey('secondary-quick-filters'),
-                items: secondaryItems,
-                locale: l10n,
-                language: language,
-                onTap: (query) {
-                  onFilterSelected?.call(query);
-                  onMoreTap?.call();
-                },
-              )
-            : SizedBox(
-                key: const ValueKey('primary-quick-filters'),
-                height: 70,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: quickFilters.length + 1,
-                  itemBuilder: (context, index) {
-                    final isMore = index == quickFilters.length;
-                    final isFirst = index == 0;
-                    final isLast = index == quickFilters.length;
+      child: showMoreView
+          ? _SecondaryQuickFiltersView(
+              key: const ValueKey('secondary-quick-filters'),
+              items: secondaryItems,
+              locale: l10n,
+              language: language,
+              onTap: (query) {
+                onFilterSelected?.call(query);
+                onMoreTap?.call();
+              },
+            )
+          : SizedBox(
+              key: const ValueKey('primary-quick-filters'),
+              height: 70,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: quickFilters.length + 1,
+                itemBuilder: (context, index) {
+                  final isMore = index == quickFilters.length;
+                  final isFirst = index == 0;
+                  final isLast = index == quickFilters.length;
 
-                    return Container(
-                      margin: EdgeInsetsDirectional.only(
-                        start: isFirst ? Spacing.$4x : Spacing.$2x,
-                        end: isLast ? Spacing.$4x : 0.0,
-                      ),
-                      child: isMore
-                          ? VerticalChip(
-                              icon: SystemIcons.ellipsis,
-                              title: context.l10n.more,
-                              onTap: onMoreTap,
-                            )
-                          : VerticalChip(
-                              icon: quickFilters[index].icon!,
-                              title: quickFilters[index].title,
-                              onTap: () => onFilterSelected?.call(quickFilters[index].query),
-                            ),
-                    );
-                  },
-                ),
+                  return Container(
+                    margin: EdgeInsetsDirectional.only(
+                      start: isFirst ? Spacing.$4x : Spacing.$2x,
+                      end: isLast ? Spacing.$4x : 0.0,
+                    ),
+                    child: isMore
+                        ? VerticalChip(
+                            icon: SystemIcons.ellipsis,
+                            title: context.l10n.more,
+                            onTap: onMoreTap,
+                          )
+                        : VerticalChip(
+                            icon: quickFilters[index].icon!,
+                            title: quickFilters[index].title,
+                            onTap: () => onFilterSelected?.call(quickFilters[index].query),
+                          ),
+                  );
+                },
               ),
-      ),
+            ),
     );
   }
 }
