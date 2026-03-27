@@ -310,9 +310,7 @@ class Search extends _$Search {
   Future<void> searchByText(String query, {bool isGoogle = false}) async {
     try {
       await _searchOperation?.cancel();
-      if (state is! SearchStateSuggest) {
-        state = SearchStateLoading(searchText: query);
-      }
+      state = SearchStateLoading(searchText: query); // for loading only Suggests use (state is! SearchStateSuggest)
       await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;

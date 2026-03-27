@@ -10,6 +10,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/features/search/ui/search_scope.dart' as scope;
 import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
@@ -30,6 +31,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final bool requestFocus;
   final VoidCallback onClose;
   final bool isCloseButton;
+  final String? initialState;
   final bool showLeadingBackButton;
   final VoidCallback? onLeadingBackPressed;
 
@@ -40,6 +42,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
     this.showLeadingBackButton = false,
     this.onLeadingBackPressed,
     super.key,
+    this.initialState,
   });
 
   @override
@@ -50,6 +53,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   late final _MapSearchTextEditingController _controller;
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
+  final _scope = scope.SearchScopeEnum.map.value;
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -74,6 +78,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     _focusNode = FocusNode();
     if (widget.requestFocus) {
       _safeFocusAction(_focusNode.requestFocus);
+    }
+    if (widget.initialState != null) {
+      _updateText(widget.initialState!);
+      ref.read(searchProvider(_scope).notifier).fetchSuggest(_controller.text);
     }
   }
 
@@ -194,14 +202,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               ),
             );
           },
-          onSubmitted: (query) async {
+          onSubmitted: (query) {
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
               action: metrics.MetricAction.type.toString(),
               props: {'query': query},
             );
-            await BssService.instance.sendEvent(
+            BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
                 actionType: BSSActionType.tap,
@@ -213,13 +221,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               ),
             );
             if (query.trim().isNotEmpty) {
-              await searcher.searchByText(query);
-              await ref
+              searcher.searchByText(query);
+              ref
                   .read(urbiAnalyticsProvider)
                   .track(
                     '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
                   );
-              await ref
+              ref
                   .read(searchHistoryProvider(scope.value).notifier)
                   .put(SearchHistoryItem.fromQuery(query: query).toMessage());
             }

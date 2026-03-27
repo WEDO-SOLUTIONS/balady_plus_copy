@@ -8,21 +8,24 @@ class SearchPage extends StatelessWidget {
   final bool withClustering;
   final bool requestFocus;
   final Expansion? expansion;
+  final String? initialState;
 
   const SearchPage({
     this.withClustering = false,
     this.requestFocus = true,
     this.expansion,
     super.key,
+    this.initialState,
   });
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constrains) => MapSearchSheet(
-          withClustering: withClustering,
-          biggestHeight: constrains.biggest.height,
-          requestFocus: requestFocus,
-          expansion: expansion,
-        ),
-      );
+    builder: (context, constrains) => MapSearchSheet(
+      initialState: initialState,
+      withClustering: withClustering,
+      biggestHeight: constrains.biggest.height,
+      requestFocus: requestFocus,
+      expansion: expansion,
+    ),
+  );
 }

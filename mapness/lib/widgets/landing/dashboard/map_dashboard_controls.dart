@@ -6,6 +6,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
+import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:mapness/widgets/landing/eta_sharing_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -30,11 +31,24 @@ class MapDashboardControls extends ConsumerWidget {
     final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
     return Directionality(
       textDirection: TextDirection.ltr,
-      child: Padding(
-        padding: const EdgeInsets.only(left: uikit.Spacing.$3x, right: uikit.Spacing.$3x),
-        child: Column(
-          children: [
-            Expanded(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
+            child: Column(
+              children: [
+                const DashboardHeader(),
+                uikit.Spacing.$2x.heightBox,
+              ],
+            ),
+          ),
+          const MapQuickFiltersDefault(
+            forMap: true,
+          ),
+          uikit.Spacing.$4x.heightBox,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
               child: Row(
                 children: [
                   Column(
@@ -71,24 +85,31 @@ class MapDashboardControls extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: uikit.Spacing.$2x),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [EtaSharingControl(), FollowControl()],
-            ),
-            if (!isNationalDay) uikit.Spacing.$4x.heightBox,
-            if (isNationalDay)
-              MultiStateSheetBuilder<ThreeStateSheet>(
-                builder: (context, state, interpolation, child) => SizedBox(
-                  height: state == ThreeStateSheet.hidden
-                      ? scrollController.componentSizes.topHeader * (1 - interpolation) +
-                            uikit.Spacing.$12x * interpolation
-                      : uikit.Spacing.$12x,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
+            child: Column(
+              children: [
+                const SizedBox(height: uikit.Spacing.$2x),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [EtaSharingControl(), FollowControl()],
                 ),
-                defaultState: ThreeStateSheet.hidden,
-              ),
-          ],
-        ),
+                if (!isNationalDay) uikit.Spacing.$4x.heightBox,
+                if (isNationalDay)
+                  MultiStateSheetBuilder<ThreeStateSheet>(
+                    builder: (context, state, interpolation, child) => SizedBox(
+                      height: state == ThreeStateSheet.hidden
+                          ? scrollController.componentSizes.topHeader * (1 - interpolation) +
+                                uikit.Spacing.$12x * interpolation
+                          : uikit.Spacing.$12x,
+                    ),
+                    defaultState: ThreeStateSheet.hidden,
+                  ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

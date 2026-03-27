@@ -112,11 +112,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
               child: AnimatedCrossFade(
                 crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                 firstChild: const FreeRoamBar(),
-                secondChild: QuickSearchBar(
-                  direction: uiDirection,
-                  quickScrollController: quickScrollController,
-                  showLaunchingFreeRoam: showLaunchingFreeRoam,
-                ),
+                secondChild: Container(),
                 duration: const Duration(milliseconds: 300),
               ),
             ),
