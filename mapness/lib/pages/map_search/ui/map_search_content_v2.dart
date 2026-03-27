@@ -28,8 +28,13 @@ import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
   final ScrollController bottomSheetContentScrollController;
+  final bool showMoreQuickFilters;
+  final ValueChanged<bool>? onMoreQuickFiltersChanged;
+
   const MapSearchContent({
     required this.bottomSheetContentScrollController,
+    this.showMoreQuickFilters = false,
+    this.onMoreQuickFiltersChanged,
     super.key,
   });
 
@@ -254,13 +259,17 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         final hasFavourites = favourites.hasValue && favourites.requireValue.items.isNotEmpty;
 
         final history = ref.watch(searchHistoryProvider(scope.value));
+        final shouldShowHistoryAndFavorites = !widget.showMoreQuickFilters;
 
         return SafeArea(
           top: false,
           child: Column(
             children: [
               NaviQuickFilter(
+                showMoreView: widget.showMoreQuickFilters,
+                onMoreTap: () => widget.onMoreQuickFiltersChanged?.call(true),
                 onFilterSelected: (q) {
+                  widget.onMoreQuickFiltersChanged?.call(false);
                   ref.read(searchProvider(scope.value).notifier).searchByText(q);
                   ref
                       .read(urbiAnalyticsProvider)
@@ -272,13 +281,13 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                       .put(SearchHistoryItem.fromQuery(query: q).toMessage());
                 },
               ),
-              if (hasFavourites)
+              if (shouldShowHistoryAndFavorites && hasFavourites)
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
                   child: const NaviFindInFav(),
                 ),
-              if (history.isEmpty) const SizedBox(height: Spacing.$4x),
-              const MapSearchHistory(),
+              if (shouldShowHistoryAndFavorites && history.isEmpty) const SizedBox(height: Spacing.$4x),
+              if (shouldShowHistoryAndFavorites) const MapSearchHistory(),
             ],
           ),
         );

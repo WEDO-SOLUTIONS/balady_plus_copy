@@ -59,8 +59,6 @@ class _LandscapeLayout extends StatelessWidget {
                     const SizedBox(height: uikit.Spacing.$2x),
                     const DimensionControl(),
                     const Spacer(),
-                    const ZoomControl(),
-                    const Spacer(),
                     compassControlWidget,
                     uikit.Spacing.$2x.heightBox,
                     pathNavFollowControlWidget,

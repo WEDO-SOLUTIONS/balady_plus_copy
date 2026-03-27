@@ -945,7 +945,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         mapView.addObjectTappedCallback(callback: MapObjectTappedCallback(
             callback: objectTapHandler.objectTapListener(_:)))
-        
+
+
+        mapView.addObjectLongPressCallback(callback: MapObjectTappedCallback(
+            callback: objectTapHandler.objectLongTapListener(_:)))
+
+
         self.objectTapHandler = objectTapHandler
     }
     

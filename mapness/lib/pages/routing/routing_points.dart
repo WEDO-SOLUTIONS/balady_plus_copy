@@ -154,8 +154,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      context.colors.backgroundSurface1.withOpacity(0),
-                      context.colors.backgroundSurface1.withOpacity(0.8),
+                      Colors.transparent,
+                      context.colors.screenOverlayDimming40,
                     ],
                   ),
                 ),

@@ -52,7 +52,7 @@ class _ParkingManage extends _$ParkingManage {
     if (cachedData is Map) {
       final model = ParkingStoreModel.fromJson(Map<String, dynamic>.from(cachedData));
 
-      final isExpired = DateTime.now().difference(model.dateTime) > const Duration(hours: 24);
+      final isExpired = DateTime.now().difference(model.dateTime).inHours > 23;
       if (isExpired) {
         await hive.delete(_keyCache);
         return null;

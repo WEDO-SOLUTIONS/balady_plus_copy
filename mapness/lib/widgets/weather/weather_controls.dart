@@ -7,7 +7,6 @@ import 'package:mapness/entities/weather/weather_type_ext.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
-import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -49,8 +48,6 @@ class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsB
               children: [
                 const WeatherStateIcon(),
                 Spacing.$2x.heightBox,
-                const Spacer(),
-                const ZoomControl(),
                 const Spacer(),
                 Spacing.$2x.heightBox,
                 const CompassControl(),

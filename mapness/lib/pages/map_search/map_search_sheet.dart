@@ -72,6 +72,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
+  bool _showMoreQuickFilters = false;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
@@ -108,6 +109,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onSheetChanged() {
+    if (!mounted) {
+      return;
+    }
     final newState = _multiStateSheetController.state;
     if (newState != _sheetState) {
       setState(() {
@@ -173,6 +177,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     );
     ref
       ..listen(searchProvider(_scope), (previous, next) {
+        if (!mounted) {
+          return;
+        }
+        if (_showMoreQuickFilters && next is! SearchStateHistory) {
+          setState(() {
+            _showMoreQuickFilters = false;
+          });
+        }
         _drawSearchMarkers(next, previous, searchObjectManager);
       })
       ..listen<SearchState>(
@@ -207,7 +219,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: _sheetState == ThreeStateSheet.hidden
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
                   ? switch (searchState) {
                       SearchStateEmpty() ||
                       SearchStateLoading() ||
@@ -261,6 +273,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                     requestFocus: widget.requestFocus,
                     onClose: onClose,
                     isCloseButton: isCloseButton,
+                    showLeadingBackButton: _showMoreQuickFilters,
+                    onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
                   ),
                 ),
               },
@@ -271,7 +285,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 sheetState: _sheetState,
               ),
               sliver: SliverToBoxAdapter(
-                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+                child: MapSearchContent(
+                  bottomSheetContentScrollController: _multiStateSheetController,
+                  showMoreQuickFilters: _showMoreQuickFilters,
+                  onMoreQuickFiltersChanged: _setShowMoreQuickFilters,
+                ),
               ),
             ),
           ),
@@ -406,5 +424,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   void _collapseBottomSheet() {
     _multiStateSheetController.setState(ThreeStateSheet.hidden);
+  }
+
+  void _setShowMoreQuickFilters(bool value) {
+    if (!mounted || _showMoreQuickFilters == value) {
+      return;
+    }
+    setState(() => _showMoreQuickFilters = value);
   }
 }

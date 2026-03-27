@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -21,16 +20,27 @@ import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dar
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
+/// Exposes listener notification for uikit sync when [BaladyTextInput] is recreated but text is unchanged.
+class _MapSearchTextEditingController extends TextEditingController {
+  void notifySuffixSync() => notifyListeners();
+}
+
+/// Search field for map / navi / favourites. Owns [TextEditingController] and [FocusNode]
+/// so the parent sheet must not create or dispose them — avoids use-after-dispose races.
 class MapSearchBar extends ConsumerStatefulWidget {
   final bool requestFocus;
   final VoidCallback onClose;
   final bool isCloseButton;
   final String? initialState;
+  final bool showLeadingBackButton;
+  final VoidCallback? onLeadingBackPressed;
 
   const MapSearchBar({
     required this.requestFocus,
     required this.onClose,
     this.isCloseButton = false,
+    this.showLeadingBackButton = false,
+    this.onLeadingBackPressed,
     super.key,
     this.initialState,
   });
@@ -40,17 +50,34 @@ class MapSearchBar extends ConsumerStatefulWidget {
 }
 
 class _MapSearchBarState extends ConsumerState<MapSearchBar> {
-  late FocusNode _focusNode;
-  late TextEditingController _controller;
+  late final _MapSearchTextEditingController _controller;
+  late final FocusNode _focusNode;
+  ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
+
+  void _safeControllerWrite(VoidCallback action) {
+    try {
+      action();
+    } catch (_) {
+      // Ignore if internals detached during transitions.
+    }
+  }
+
+  void _safeFocusAction(VoidCallback action) {
+    try {
+      action();
+    } catch (_) {
+      // Ignore if focus node disposed / detached.
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = _MapSearchTextEditingController();
     _focusNode = FocusNode();
     if (widget.requestFocus) {
-      _focusNode.requestFocus();
+      _safeFocusAction(_focusNode.requestFocus);
     }
     if (widget.initialState != null) {
       _updateText(widget.initialState!);
@@ -59,17 +86,65 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _searchSubscription?.close();
+    final scope = context.read<SearchScope>();
+    _searchSubscription = ref.listenManual<SearchState>(
+      searchProvider(scope.value),
+      (previous, next) {
+        if (!mounted) {
+          return;
+        }
+        final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
+        if (next.searchText.isEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) {
+              return;
+            }
+            ref.read(searchInRectProvider(scope.value).notifier).update();
+          });
+        }
+
+        _updateText(next.searchText);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          if (next is SearchStateLoading) {
+            _safeFocusAction(_focusNode.unfocus);
+          } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
+            _safeFocusAction(_focusNode.requestFocus);
+          }
+        });
+      },
+      fireImmediately: true,
+    );
+  }
+
+  @override
   void dispose() {
+    _searchSubscription?.close();
+    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
   void _updateText(String text) {
-    if (text != _controller.text) {
-      _controller
-        ..text = text
-        ..selection = TextSelection.collapsed(offset: _controller.text.length);
-    }
+    _safeControllerWrite(() {
+      final unchanged = text == _controller.text;
+      if (!unchanged) {
+        _controller
+          ..text = text
+          ..selection = TextSelection.collapsed(offset: _controller.text.length);
+      } else if (text.isNotEmpty) {
+        // Programmatic text already matches, but BaladyTextInput may have been recreated (e.g. toggling
+        // more-filters changes BaladySearchWithBackButtonV2 layout: option null vs Row). New State starts
+        // with _showClearButton=false and only the controller listener updates it — no notification if text
+        // did not change. Ping listeners so the in-field clear icon syncs.
+        _controller.notifySuffixSync();
+      }
+    });
   }
 
   @override
@@ -77,28 +152,21 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
-    ref
-      ..watch(poiOffersProvider.select((_) => null))
-      ..listen(searchProvider(scope.value), (previous, next) {
-        final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
-        if (next.searchText.isEmpty) {
-          ref.read(searchInRectProvider(scope.value).notifier).update();
-        }
+    ref.watch(poiOffersProvider.select((_) => null));
 
-        _updateText(next.searchText);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (next is SearchStateLoading) {
-            _focusNode.unfocus();
-          } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
-            _focusNode.requestFocus();
-          }
-        });
-      });
+    return _buildSearchRow(context, scope, searcher);
+  }
 
-    return BaladySearchWithBackButtonV2(
+  Widget _buildSearchRow(BuildContext context, SearchScope scope, Search searcher) {
+    // Always keep BaladySearch under Expanded — never swap between "bare" vs Row+Expanded.
+    // Otherwise toggling showLeadingBackButton disposes the text field; if uikit disposes the
+    // passed controller, our State still owns a dead controller and crashes next sync.
+    final searchField = BaladySearchWithBackButtonV2(
+      key: const ValueKey('map-search-balady-field'),
       searchInput: BaladyTextInput.search(
         controller: _controller,
         config: BaladyInputConfig(
+          isDisposed: false,
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
@@ -133,7 +201,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 ),
               ),
             );
-            _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
           },
           onSubmitted: (query) {
             metrics.Metrics.logEventAdvanced(
@@ -164,19 +231,38 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   .read(searchHistoryProvider(scope.value).notifier)
                   .put(SearchHistoryItem.fromQuery(query: query).toMessage());
             }
-            _focusNode.requestFocus();
+            _safeFocusAction(_focusNode.requestFocus);
           },
-
           hintText: context.l10n.searchPlaceOrAddress,
           fillColor: context.colors.neutralContainerDefault,
           hintColor: context.colors.foregroundSoft,
-          // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
           textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
-      option: widget.isCloseButton
+      option: widget.showLeadingBackButton
+          ? null
+          : widget.isCloseButton
           ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
           : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
+    );
+
+    if (!widget.showLeadingBackButton) {
+      return searchField;
+    }
+
+    return Row(
+      children: [
+        AppButton(
+          buttonColorScheme: ButtonColorScheme.neutral,
+          buttonType: ButtonType.secondary,
+          primaryIcon: SystemIcons.arrowCornerLeftSmall,
+          onTap: widget.onLeadingBackPressed,
+          padding: const EdgeInsets.all(0),
+          innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+        ),
+        const SizedBox(width: Spacing.$3x),
+        Expanded(child: searchField),
+      ],
     );
   }
 

@@ -13,12 +13,15 @@ void main() {
 
   setUpAll(() {
     appLocalizations = MockAppLocalizations();
-    when(() => appLocalizations.temporarilyClosed).thenReturn('Temporarily closed');
-    when(() => appLocalizations.breakUntil).thenReturn('Break until');
-    when(() => appLocalizations.closedUntill).thenReturn('Closed until');
+    when(() => appLocalizations.openUntil).thenReturn('Open until');
     when(() => appLocalizations.closed).thenReturn('Closed');
+    when(() => appLocalizations.closedUntil).thenReturn('Closed until');
+    when(() => appLocalizations.breakUntil).thenReturn('Break until');
     when(() => appLocalizations.closesIn).thenReturn('Closes in ');
+    when(() => appLocalizations.hoursShort).thenReturn('h');
+    when(() => appLocalizations.minutesShort).thenReturn('min');
     when(() => appLocalizations.minutes).thenReturn('minutes');
+    when(() => appLocalizations.open24Hours).thenReturn('Open 24 hours');
     when(() => appLocalizations.weekdayNameShortMonday).thenReturn('Monday');
     when(() => appLocalizations.tomorrow).thenReturn('tomorrow');
   });
@@ -31,25 +34,21 @@ void main() {
     setUp(() => workingHours = WorkingHours({}));
     final monday = DateTime(2025, 9, 1);
 
-    test(
-      'THEN any day is Temporary closed',
-      () {
-        for (int day = DateTime.monday; day <= DateTime.sunday; day++) {
-          expect(
-            workingHours.closedStatus(monday.add(Duration(days: day, hours: 9)), appLocalizations),
-            'Temporarily closed',
-          );
-        }
-      },
-    );
+    test('THEN any day has empty status', () {
+      for (int day = DateTime.monday; day <= DateTime.sunday; day++) {
+        expect(workingHours.closedStatus(monday.add(Duration(days: day, hours: 9)), appLocalizations), '');
+      }
+    });
   });
 
   group('GIVEN working hours monday 10:00-14:00 15:00-18:00, tuesday 11:00-18:00', () {
-    setUp(() => workingHours = WorkingHours({
-          Duration(days: DateTime.monday, hours: 10): Duration(hours: 4),
-          Duration(days: DateTime.monday, hours: 15): Duration(hours: 3),
-          Duration(days: DateTime.tuesday, hours: 11): Duration(hours: 7),
-        }));
+    setUp(
+      () => workingHours = WorkingHours({
+        Duration(days: DateTime.monday, hours: 10): Duration(hours: 4),
+        Duration(days: DateTime.monday, hours: 15): Duration(hours: 3),
+        Duration(days: DateTime.tuesday, hours: 11): Duration(hours: 7),
+      }),
+    );
 
     group(' WHEN not yet worked this day (before intervals)', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 09, 30)));
@@ -58,12 +57,17 @@ void main() {
 
     group(' WHEN has break (between intervals)', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 14, 01)));
-      test('THEN Break until 15:00', () => expect(closedStatus, 'Break until 15:00'));
+      test('THEN Closed until 15:00', () => expect(closedStatus, 'Closed until 15:00'));
     });
 
     group(' WHEN less than 30min before close', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 17, 42)));
       test('THEN Closes in 18 minutes', () => expect(closedStatus, 'Closes in 18 minutes'));
+    });
+
+    group(' WHEN more than 1 hour before close and less than 2 hours', () {
+      setUp(() => createStatusFor(DateTime(2025, 9, 1, 16, 20)));
+      test('THEN Closes in 1 h 40 min', () => expect(closedStatus, 'Closes in 1 h 40 min'));
     });
 
     group(' WHEN less than 2min before close', () {
@@ -73,7 +77,7 @@ void main() {
 
     group(' WHEN tuesday already closed', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 2, 21, 00)));
-      test('THEN Closed until monday 10:00', () => expect(closedStatus, 'Closed until Monday 10:00'));
+      test('THEN Closed until Monday 10:00', () => expect(closedStatus, 'Closed until Monday 10:00'));
     });
 
     group('WHEN monday already closed', () {
@@ -88,7 +92,7 @@ void main() {
 
     group('WHEN friday now working', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 5, 09, 00)));
-      test('THEN Closed until monday 10:00', () => expect(closedStatus, 'Closed until Monday 10:00'));
+      test('THEN Closed until Monday 10:00', () => expect(closedStatus, 'Closed until Monday 10:00'));
     });
   });
 }
