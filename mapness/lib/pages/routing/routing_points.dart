@@ -48,8 +48,6 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
-  static final _bottomSheetAspectRatios = {0.4, 0.931};
-
   List<RoutePoint> points = [RoutePointMyLocation(), RoutePointDirectoryObject(null)];
 
   /// Subscribes to object tap events on the map

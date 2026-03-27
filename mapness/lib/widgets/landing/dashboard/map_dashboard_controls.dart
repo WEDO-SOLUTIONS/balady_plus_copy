@@ -38,7 +38,7 @@ class MapDashboardControls extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
             child: Column(
               children: [
-                const DashboardHeader(),
+                DashboardHeader(),
                 uikit.Spacing.$2x.heightBox,
               ],
             ),

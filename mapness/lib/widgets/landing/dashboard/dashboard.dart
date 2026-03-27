@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/arrow_dragger.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
@@ -13,7 +14,6 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
@@ -21,7 +21,6 @@ import 'package:mapness/widgets/landing/dashboard_contents/base_dashboard_conten
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/makkah_based_dashboard_content.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/national_day_dashboard_content.dart';
-import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'city_event_config.dart';
@@ -119,7 +118,6 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         widget.bottomSheetController.setState(ThreeStateSheet.hidden);
       }
     });
-
     freeRoamState = ref.watch(freeRoamStarterProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
@@ -150,53 +148,68 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
           children: [
             Directionality(
               textDirection: Directionality.of(context),
-              child: MultiStateSheet<ThreeStateSheet>(
-                animateOpening: false,
-                keepContentBehindFooter: true,
-                useSafeArea: false,
-                scrollController: widget.bottomSheetController,
-                topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
-                topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
-                offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
-                backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                dragger: SheetDragger(
+              child: ListenableBuilder(
+                listenable: widget.bottomSheetController,
+                builder: (context, child) => MultiStateSheet<ThreeStateSheet>(
+                  animateOpening: false,
+                  keepContentBehindFooter: true,
+                  useSafeArea: false,
+                  scrollController: widget.bottomSheetController,
+                  topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+                  topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
+                  offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
                   backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                ),
-                header: Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                  child: DashboardTitle(context.l10n.whatIsNewInBalady),
-                ),
-                footer: IgnorePointer(
-                  child: SizedBox(
-                    height: Spacing.$16x + Spacing.$5x,
-                    width: double.infinity,
-                    child: FadeTransition(
-                      opacity: Animation.fromValueListenable(footerOpacity),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          backgroundBlendMode: BlendMode.srcOver,
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              context.colors.gradientBackgroundSurface4opacity0,
-                              context.colors.gradientBackgroundSurface4opacity80,
-                            ],
+                  dragger: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 450),
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: SizeTransition(
+                        sizeFactor: animation,
+                        child: child,
+                      ),
+                    ),
+                    child: widget.bottomSheetController.closestState == ThreeStateSheet.hidden
+                        ? ArrowDragger(
+                            key: const ValueKey('arrow'),
+                            backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
+                          )
+                        : SheetDragger(
+                            key: const ValueKey('line'),
+                            backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
+                          ),
+                  ),
+                  footer: IgnorePointer(
+                    child: SizedBox(
+                      height: Spacing.$16x + Spacing.$5x,
+                      width: double.infinity,
+                      child: FadeTransition(
+                        opacity: Animation.fromValueListenable(footerOpacity),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            backgroundBlendMode: BlendMode.srcOver,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                context.colors.gradientBackgroundSurface4opacity0,
+                                context.colors.gradientBackgroundSurface4opacity80,
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
+                  barrierColorDelegate: barrierColorDelegate,
+                  outside: MapDashboardControls(
+                    widget.bottomSheetController,
+                    key: const ValueKey('MapDashboardControls'),
+                  ),
+                  outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
+                  content: [
+                    _buildDashboardContent(specialThemeMode, themeConfig),
+                  ],
                 ),
-                barrierColorDelegate: barrierColorDelegate,
-                outside: MapDashboardControls(
-                  widget.bottomSheetController,
-                  key: const ValueKey('MapDashboardControls'),
-                ),
-                outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
-                content: [
-                  _buildDashboardContent(specialThemeMode, themeConfig),
-                ],
               ),
             ),
             if (eventLogo != null)

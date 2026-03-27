@@ -131,6 +131,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
               dragger: const SheetDragger(),
               outsideOpacityDelegate: outsideOpacityDelegate,
               outside: MapSearchSheetControls(
+                onClose: () => context.router.pop(),
                 currentSize: currentSize,
                 collapsedSize: collapsedHeight,
                 sheetState: _multiStateSheetController.state,

@@ -46,9 +46,14 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
-            const Column(
+            Column(
               children: [
-                StoriesWidget(),
+                StoriesWidget(
+                  titleWidget: Padding(
+                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: Spacing.$3x),

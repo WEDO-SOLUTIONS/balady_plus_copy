@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
@@ -131,11 +132,35 @@ class MapQuickFiltersDefault extends ConsumerWidget {
   );
 }
 
-class DashboardHeader extends ConsumerWidget {
+class DashboardHeader extends ConsumerStatefulWidget {
   const DashboardHeader({super.key});
+  @override
+  DashboardHeaderState createState() => DashboardHeaderState();
+}
+
+class DashboardHeaderState extends ConsumerState<DashboardHeader> {
+  final _scope = SearchScopeEnum.map.value;
+  final TextEditingController ctrl = TextEditingController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void initState() {
+    super.initState();
+    ctrl.text = ref.read(searchProvider(_scope)).searchText;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.listen<SearchState>(
+      searchProvider(_scope),
+      (previous, next) {
+        ctrl.value = ctrl.value.copyWith(
+          text: next.searchText,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: next.searchText.length),
+          ),
+        );
+      },
+    );
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
     final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
@@ -165,17 +190,20 @@ class DashboardHeader extends ConsumerWidget {
 
           // Here we clean the search query on tap on the search field
           // So the user can see the search history, not previous search results
-          ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
+          final text = ref.read(searchProvider(_scope)).searchText;
+          ref.read(searchProvider(_scope).notifier).clear();
 
           ref
               .read(urbiAnalyticsProvider.notifier)
               .trackWithPrint(
                 '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
               );
-          context.router.push(SearchRoute(expansion: Expansion.expanded));
+
+          context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text));
         },
         child: AbsorbPointer(
           child: BaladyTextInput.search(
+            controller: ctrl,
             inputState: BaladyInputState.readOnly,
             config: BaladyInputConfig(
               hintText: context.l10n.searchPlaceOrAddress,
