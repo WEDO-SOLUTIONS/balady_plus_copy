@@ -47,7 +47,8 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
 
     final paddingConfig = PoiPaddingConfig(paddingOfCamera: paddingOfCamera, sizeOfScreen: sizeOfScreen);
 
-    final position = closestPoint ??
+    final position =
+        closestPoint ??
         (markerPosition == null
             ? null
             : LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude));
@@ -113,10 +114,14 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     // c) zoom set to 17 if point is not in view zone or if zoom is not set
     // d) bearing set to 0 if not set
 
+    final double zoom = cameraConfig?.zoom != null
+        ? cameraConfig!.zoom!
+        : (isInViewZone ? cameraZoom ?? 16 : cameraConfig?.zoom ?? 16);
+
     await cameraPosition.animateTo(
       CameraPositionMessage(
         point: cameraPoint,
-        zoom: isInViewZone ? cameraZoom ?? 16 : cameraConfig?.zoom ?? 16,
+        zoom: zoom,
         tilt: (isInViewZone ? cameraTilt : cameraConfig?.tilt) ?? 0,
         bearing: bearing ?? 0,
       ),
