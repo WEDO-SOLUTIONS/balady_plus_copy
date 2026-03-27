@@ -139,10 +139,42 @@ class WorkingHours {
     return (from: it.key - Duration(days: it.key.inDays), till: close);
   });
 
+  /// Return working hours for weekday in display form, including carry-over
+  /// intervals from previous day after midnight.
+  Iterable<Hours> todayHoursForDisplay(int weekday) {
+    final result = todayHours(weekday).toList();
+
+    final previousWeekday = weekday == DateTime.monday ? DateTime.sunday : weekday - 1;
+    for (final previousDayHours in todayHours(previousWeekday)) {
+      final crossesMidnight = previousDayHours.from > previousDayHours.till;
+      final hasCarryOver = previousDayHours.till > Duration.zero;
+      if (crossesMidnight && hasCarryOver) {
+        result.add((from: Duration.zero, till: previousDayHours.till));
+      }
+    }
+
+    result.sort((a, b) => a.from.compareTo(b.from));
+    return result;
+  }
+
   /// Return break hours for weekday 1-7 as [DateTime.monday]
   /// Ex. if hours [11:00-14:00, 15:00-18:00] then breaks [14:00-15:00]
   Iterable<Hours> todayBreaks(int weekday) {
     final hours = todayHours(weekday);
+    final breaks = <Hours>[];
+
+    if (hours.length > 1) {
+      for (int i = 0; i < hours.length - 1; i += 1) {
+        breaks.add((from: hours.elementAt(i).till, till: hours.elementAt(i + 1).from));
+      }
+    }
+
+    return breaks;
+  }
+
+  /// Return break hours for display intervals in weekday.
+  Iterable<Hours> todayBreaksForDisplay(int weekday) {
+    final hours = todayHoursForDisplay(weekday).toList();
     final breaks = <Hours>[];
 
     if (hours.length > 1) {

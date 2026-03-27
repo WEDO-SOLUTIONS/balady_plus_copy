@@ -164,6 +164,12 @@ void main() {
       expect(workingHours.isClosed(now), isTrue);
       expect(workingHours.nextOpen(now), const Duration(days: DateTime.monday, hours: 22));
     });
+
+    test('THEN tuesday display hours includes midnight carry-over', () {
+      expect(workingHours.todayHoursForDisplay(DateTime.tuesday), [
+        (from: Duration.zero, till: const Duration(hours: 2)),
+      ]);
+    });
   });
 
   group('GIVEN threshold-based status states', () {
@@ -172,6 +178,11 @@ void main() {
     test('THEN before opening and <=2h is closedSoon', () {
       final status = workingHours.statusType(DateTime(2025, 9, 1, 09, 10));
       expect(status, WorkingHoursStatusType.closedSoon);
+    });
+
+    test('THEN before opening and >2h is closed', () {
+      final status = workingHours.statusType(DateTime(2025, 9, 1, 07, 30));
+      expect(status, WorkingHoursStatusType.closed);
     });
 
     test('THEN while open and >2h is open', () {

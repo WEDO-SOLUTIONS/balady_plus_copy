@@ -7,6 +7,7 @@ import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/features/poi_card/extensions/opening_hours_message_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 
 extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
   PoiContentWorkTimeModel? getOpeningHours(AppLocalizations l10n) {
@@ -139,12 +140,11 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     List<PoiContentWorkTimeDayModel>? days,
   ) {
     /// Get the current date and time
-    final currentDateTime = DateTime.now();
+    final currentDateTime = saudiTimeNow();
 
     /// Parse the opening and closing hours into DateTime objects.
     final openTime = _parseTime(currentDateTime, openHours.openHour!);
-    var closeTime = DateTime.now().add(const Duration(minutes: 1));
-    // _parseTime(currentDateTime, openHours.closeHour!);
+    var closeTime = _parseTime(currentDateTime, openHours.closeHour!);
 
     /// Handle case when closing time is after midnight (next day)
     if (closeTime.isBefore(openTime)) {
@@ -159,12 +159,10 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
         days: days,
       );
     }
-
     /// If the current time is after closing time, return the next opening time model.
     else if (currentDateTime.isAfter(closeTime)) {
       return _buildNextOpeningTimeModel(context, model, days);
     }
-
     /// If the current time is between open and close time, return a model with the remaining time until closing.
     else {
       final remainingMinutes = closeTime.difference(currentDateTime).inMinutes;
@@ -197,7 +195,9 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     List<PoiContentWorkTimeDayModel>? days,
   ) {
     /// Get the next day with working hours, skipping weekends.
-    final nextOpen = model.openingHours?.skip(1).firstWhere(
+    final nextOpen = model.openingHours
+        ?.skip(1)
+        .firstWhere(
           (day) => !day.isWeekend,
           orElse: () => model.openingHours!.first,
         );
@@ -209,7 +209,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     final nextOpenTime = nextOpen.openHour;
     if (nextOpen.isWeekend) {
       /// Get the next weekday and return the model indicating when the place will open.
-      final nextWeekday = DateTime.now().add(const Duration(days: 1)).weekDayName(context.l10n);
+      final nextWeekday = saudiTimeNow().add(const Duration(days: 1)).weekDayName(context.l10n);
       return _buildWorkTimeModel(
         title: '${context.l10n.closedUntill} ${nextWeekday.toCapitalized()} $nextOpenTime',
         workTimeType: WorkTimeType.closed,
@@ -242,11 +242,10 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     required String title,
     required WorkTimeType workTimeType,
     List<PoiContentWorkTimeDayModel>? days,
-  }) =>
-      ContentWorkTimeModel(
-        workTimeType: workTimeType,
-        poiContentWorkTime: PoiContentWorkTimeModel(workHours: title, days: days),
-      );
+  }) => ContentWorkTimeModel(
+    workTimeType: workTimeType,
+    poiContentWorkTime: PoiContentWorkTimeModel(workHours: title, days: days),
+  );
 
   OpeningHoursModel _getOpeningHoursModel(AppLocalizations locale) {
     final displayOpenHours = openingHours?.getDisplayOpenHours(locale);
@@ -271,7 +270,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
 
 extension PoiContentExt on OpeningHoursModel {
   OpenHours? getTodayOpeningInfo(AppLocalizations locale) {
-    final todayName = DateTime.now().weekDayName(locale);
+    final todayName = saudiTimeNow().weekDayName(locale);
 
     return openingHours?.firstWhereOrNull(
       (e) => e.weekDay.toLowerCase() == todayName.toLowerCase(),

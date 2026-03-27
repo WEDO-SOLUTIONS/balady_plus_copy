@@ -18,6 +18,8 @@ void main() {
     when(() => appLocalizations.closedUntil).thenReturn('Closed until');
     when(() => appLocalizations.breakUntil).thenReturn('Break until');
     when(() => appLocalizations.closesIn).thenReturn('Closes in ');
+    when(() => appLocalizations.hoursShort).thenReturn('h');
+    when(() => appLocalizations.minutesShort).thenReturn('min');
     when(() => appLocalizations.minutes).thenReturn('minutes');
     when(() => appLocalizations.open24Hours).thenReturn('Open 24 hours');
     when(() => appLocalizations.weekdayNameShortMonday).thenReturn('Monday');
@@ -55,12 +57,17 @@ void main() {
 
     group(' WHEN has break (between intervals)', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 14, 01)));
-      test('THEN Break until 15:00', () => expect(closedStatus, 'Break until 15:00'));
+      test('THEN Closed until 15:00', () => expect(closedStatus, 'Closed until 15:00'));
     });
 
     group(' WHEN less than 30min before close', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 17, 42)));
       test('THEN Closes in 18 minutes', () => expect(closedStatus, 'Closes in 18 minutes'));
+    });
+
+    group(' WHEN more than 1 hour before close and less than 2 hours', () {
+      setUp(() => createStatusFor(DateTime(2025, 9, 1, 16, 20)));
+      test('THEN Closes in 1 h 40 min', () => expect(closedStatus, 'Closes in 1 h 40 min'));
     });
 
     group(' WHEN less than 2min before close', () {

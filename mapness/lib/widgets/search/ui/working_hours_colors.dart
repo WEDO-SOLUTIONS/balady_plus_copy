@@ -20,11 +20,11 @@ extension WorkingHoursColorsExt on WorkingHours {
           background: colors.accentContainerDefault.withOpacity(0.1),
         );
       case WorkingHoursStatusType.openSoon:
-      case WorkingHoursStatusType.closedSoon:
         return (
           text: colors.extra01Default,
           background: colors.extra01ContainerDefault.withValues(alpha: 0.1),
         );
+      case WorkingHoursStatusType.closedSoon:
       case WorkingHoursStatusType.closed:
         return (
           text: colors.errorOnContainer,
