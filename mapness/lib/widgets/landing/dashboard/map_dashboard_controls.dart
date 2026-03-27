@@ -51,18 +51,13 @@ class MapDashboardControls extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
               child: Row(
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        height: scrollController.state == ThreeStateSheet.hidden
-                            ? controlsHeight * (1 - scrollController.interpolation)
-                            : 0,
-                      ),
-                      const Spacer(),
-                      const IndoorControl(),
-                      const Spacer(),
+                      Spacer(),
+                      IndoorControl(),
+                      Spacer(),
                     ],
                   ),
                   const Spacer(),
