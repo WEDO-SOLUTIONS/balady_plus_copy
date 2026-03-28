@@ -4,12 +4,8 @@ import 'package:balady_plus/app/features/_shared_feature_/balady_features/widget
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/services/global/web_service.dart';
-
-import '../../../data/models/response_body_model.dart';
 
 class UrbiSearchProvider extends ChangeNotifier {
   ValueNotifier<UrbiLocationModel>? lstSuggestedLocation;
@@ -27,23 +23,21 @@ class UrbiSearchProvider extends ChangeNotifier {
         "locale": "ar_SA",
         "fields": "items.full_address_name,items.point,items.adm_div",
         "q": query,
-        "location": "${location.longitude},${location.latitude}"
+        "location": "${location.longitude},${location.latitude}",
       };
-      response = await webService.dio.get(
-        url,
-        queryParameters: formMap,
-      );
+      response = await webService.dio.get(url, queryParameters: formMap);
 
       final data = response.data["result"]["items"];
 
-      List<UrbiLocationModel> parsedResult =
-          data != null ? List<UrbiLocationModel>.from(data.map((x) => UrbiLocationModel.fromJson(x))) : [];
+      List<UrbiLocationModel> parsedResult = data != null
+          ? List<UrbiLocationModel>.from(data.map((x) => UrbiLocationModel.fromJson(x)))
+          : [];
 
       parsedResult = parsedResult.where((item) => (item.fullName != null && item.fullName!.isNotEmpty)).toList();
       return parsedResult;
-    } on DioException catch (error) {
+    } on DioException catch (_) {
       return [];
-    } catch (error) {
+    } catch (_) {
       return [];
     }
   }

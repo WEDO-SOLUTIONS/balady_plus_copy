@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/_shared_features/notifications_cell/wid
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_settings_page.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +17,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
 import 'package:provider/provider.dart' as p; // Add this import
 
@@ -35,7 +37,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final themeController = p.Provider.of<BaladyThemeNotifier>(context);
-
+    final theme = context.read<ThemeController>().currentTheme;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Directionality(
@@ -90,49 +92,60 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       },
                     ),
                     Spacing.$2x.heightBox,
-                    ContentWrapper(
-                      color: context.colors.backgroundSurface1,
-                      children: [
-                        ContentRow(
-                          options: ContentRowOptions(
-                            leadingIcon: AppIcons(
-                              iconData: Icons.brightness_2_rounded,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            title: context.l10n.darkMode,
-                            actionWidget: ContentRowActionOptions(
-                              customToggleBuilder:
-                                  ({
-                                    required onToggle,
-                                    initial,
-                                  }) => CupertinoSwitch(
-                                    value: themeController.isDarkMode,
-                                    onChanged: (value) {
-                                      themeController.toggleTheme(value);
-
-                                      /// Just For Can Test The Dark Theme With Urib
-                                      if (value) {
-                                        ref
-                                            .read(darkModeProvider.notifier)
-                                            .changeDarkModeState(
-                                              DarkMapStateEnum.alwaysEnabled,
-                                            );
-                                      } else {
-                                        ref
-                                            .read(darkModeProvider.notifier)
-                                            .changeDarkModeState(
-                                              DarkMapStateEnum.off,
-                                            );
-                                      }
-                                      onToggle?.call(value);
-                                    },
-                                    activeColor: context.colors.accentDefault,
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final specialThemeMode = ref.watch(specialThemeModeProvider);
+                        final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase;
+                        return Opacity(
+                          opacity: isMakkahTheme ? 0.5 : 1.0,
+                          child: ContentWrapper(
+                            color: context.colors.backgroundSurface1,
+                            children: [
+                              ContentRow(
+                                options: ContentRowOptions(
+                                  leadingIcon: AppIcons(
+                                    iconData: Icons.brightness_2_rounded,
+                                    color: context.colors.accentDefault,
+                                    size: 24,
                                   ),
-                            ),
+                                  title: context.l10n.darkMode,
+                                  actionWidget: ContentRowActionOptions(
+                                    customToggleBuilder:
+                                        ({
+                                          required onToggle,
+                                          initial,
+                                        }) => CupertinoSwitch(
+                                          value: theme == BaladyAppThemes.dark,
+                                          onChanged: isMakkahTheme
+                                              ? null // Disable the switch
+                                              : (value) {
+                                                  themeController.toggleTheme(value);
+
+                                                  /// Just For Can Test The Dark Theme With Urib
+                                                  if (value) {
+                                                    ref
+                                                        .read(darkModeProvider.notifier)
+                                                        .changeDarkModeState(
+                                                          DarkMapStateEnum.alwaysEnabled,
+                                                        );
+                                                  } else {
+                                                    ref
+                                                        .read(darkModeProvider.notifier)
+                                                        .changeDarkModeState(
+                                                          DarkMapStateEnum.off,
+                                                        );
+                                                  }
+                                                  onToggle?.call(value);
+                                                },
+                                          activeColor: context.colors.accentDefault,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
                     Spacing.$2x.heightBox,
                     ContentWrapper(
@@ -141,8 +154,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ContentRow(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const AccessibilitySettingsPage(),
+                              builder: (context) => const AccessibilitySettingsPage(),
                             ),
                           ),
                           options: ContentRowOptions(

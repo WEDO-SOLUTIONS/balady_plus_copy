@@ -38,8 +38,24 @@ class RemoveHistoryConfirmationPage extends HookConsumerWidget {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: Text(context.l10n.removeHistory, style: context.textStyles.h2SemiBold)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.l10n.removeHistory,
+                          style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                        ),
+                        const SizedBox(height: Spacing.$2x),
+                        Text(
+                          context.l10n.removeHistoryConfirmation,
+                          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                        ),
+                      ],
+                    ),
+                  ),
                   AppButton.close(
                     onTap: () => context.router.pop(false),
                     padding: EdgeInsets.zero,
@@ -49,11 +65,7 @@ class RemoveHistoryConfirmationPage extends HookConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: Spacing.$2x),
-              Text(
-                context.l10n.removeHistoryConfirmation,
-                style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
-              ),
+
               const SizedBox(height: Spacing.$4x),
               Row(
                 children: [

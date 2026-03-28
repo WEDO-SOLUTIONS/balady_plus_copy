@@ -21,7 +21,7 @@ class PoiDeeplinkPersonActions extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: context.colors.backgroundSurface1,
+        color: context.colors.backgroundSurface2,
         boxShadow: Shadows.s,
       ),
       padding: const EdgeInsets.all(8),

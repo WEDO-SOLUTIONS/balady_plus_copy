@@ -376,7 +376,9 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
                       color: context.colors.foregroundSoft,
                     ),
                   ),
-            leadingIcon: _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor),
+            leadingIcon: isMakkahMode
+                ? _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor)
+                : GeneralIcons.timeQuarter.icon(color: context.colors.accentDefault),
           ),
           content: Column(
             children: <Widget>[
