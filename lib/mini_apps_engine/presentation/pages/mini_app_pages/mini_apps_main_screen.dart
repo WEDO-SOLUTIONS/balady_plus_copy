@@ -98,7 +98,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: Icon(Icons.close,color: Theme.of(context).colorScheme.onSurface,),
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
                   if (shouldExit && context.mounted)
