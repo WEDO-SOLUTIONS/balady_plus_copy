@@ -16,6 +16,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_respon
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/mini_apps_list_pages.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dgis_map/library.dart';
@@ -305,6 +306,14 @@ class CommonFunctions {
       serviceKey: serviceKey,
       path: path,
     );
+  }
+  static void openMiniAppGroupId({required String groupId}) {
+      servicesNavigatorKey.currentState?.pushNamed(
+        '/group',
+        arguments: {
+          'groupId': groupId,
+        },
+      );
   }
 
   static Future<LatLng?> handelLocationCatch(

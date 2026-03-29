@@ -372,7 +372,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     /// continue flow
 
-    if (miniApp.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
+    if (miniApp.otpLogin == true && !CommonProperties.isLoggedIn) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.latestVersion?.deepLinkDto != null) {
@@ -638,5 +638,14 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         })
         .whereType<EntryPoints>()
         .toList();
+  }
+
+
+  MiniApp? getMiniAppByServiceId(String serviceKey) {
+    try {
+      return state.allMiniApps.firstWhere((miniApp) => miniApp.serviceKey == serviceKey);
+    } catch (e) {
+      return null;
+    }
   }
 }

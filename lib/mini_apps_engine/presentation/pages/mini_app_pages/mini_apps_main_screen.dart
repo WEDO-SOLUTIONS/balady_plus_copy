@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -34,16 +35,25 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   Future<bool> _showExitConfirmationDialog() async {
     Widget title = Text(
       "closeService".tr(),
-      style: const TextStyle(fontSize: 16),
+      style: const TextStyle(fontSize: 16, fontFamily: GeneralKey.appFontType),
     );
     List<Widget> actions = [
       TextButton(
         onPressed: () => Navigator.of(context).pop(false),
-        child: Text("cancel".tr()),
+        child: Text(
+          "cancel".tr(),
+          style: TextStyle(fontFamily: GeneralKey.appFontType),
+        ),
       ),
       TextButton(
         onPressed: () => Navigator.of(context).pop(true),
-        child: Text("yes".tr(), style: const TextStyle(color: Colors.red)),
+        child: Text(
+          "yes".tr(),
+          style: const TextStyle(
+            color: Colors.red,
+            fontFamily: GeneralKey.appFontType,
+          ),
+        ),
       ),
     ];
     return await ShowDialogOnWebView.showAlertDialog<bool>(
@@ -95,6 +105,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
               data.name ?? " ",
               maxLines: 3,
               textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: GeneralKey.appFontType),
             ),
             actions: [
               IconButton(

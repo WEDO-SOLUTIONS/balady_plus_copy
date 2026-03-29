@@ -28,9 +28,8 @@ import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {
   final String groupId;
-  final MiniApp? dashboard;
 
-  const AppsGroupPage({super.key, required this.groupId, this.dashboard});
+  const AppsGroupPage({super.key, required this.groupId});
 
   @override
   State<AppsGroupPage> createState() => _AppsGroupPageState();
@@ -307,7 +306,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                               PageRouteBuilder(
                                                 opaque: false,
                                                 barrierColor: Colors.transparent,
-                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id, dashboard: widget.dashboard ?? fetchedDashboard,),
+                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id),
                                               ),
                                             ),
                                           ),
@@ -450,7 +449,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         if (!isLoggedIn) {
           return SliverToBoxAdapter(child: NafathLoginWidget());
         } else {
-          return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard ?? fetchedDashboard,));
+          return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId));
         }
       },
     );
