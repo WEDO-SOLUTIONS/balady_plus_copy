@@ -217,12 +217,12 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     autoFocus: false,
                                     autofocus: false,
                                     controller: controller,
-                                    onTap: () {},
+                                    onTap: null,
                                     keyboardType: TextInputType.text,
                                     isReadOnly: false,
                                     suffixString: value.text.isEmpty
                                         ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
-                                        : const SizedBox(),
+                                        : null,
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(
                                       Theme.of(context).brightness == Brightness.dark
@@ -329,11 +329,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                       ],
                                     );
                                   }, childCount: totalCount),
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 16,
-                                    mainAxisSpacing: 16,
-                                    childAspectRatio: 0.8,
+                                    mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                    childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                   ),
                                 ),
                                 // Add bottom spacing so the gradient overlay doesn't hide last items
@@ -383,11 +383,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
                                   );
                                 }, childCount: sortedResults.length),
-                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 16,
-                                  mainAxisSpacing: 16,
-                                  childAspectRatio: 0.8,
+                                  mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                  childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
                                 ),
                               ),
                               SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),

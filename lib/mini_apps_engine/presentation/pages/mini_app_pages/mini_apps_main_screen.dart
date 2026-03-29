@@ -103,11 +103,13 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
           appBar: AppBar(
             title: Text(
               data.name ?? " ",
+              maxLines: 3,
+              textAlign: TextAlign.center,
               style: TextStyle(fontFamily: GeneralKey.appFontType),
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: Icon(Icons.close,color: Theme.of(context).colorScheme.onSurface,),
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
                   if (shouldExit && context.mounted)
