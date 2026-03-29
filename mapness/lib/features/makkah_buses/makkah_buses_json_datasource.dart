@@ -22,21 +22,29 @@ List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
     for (final item in features) {
       if (item is! Map<String, dynamic>) continue;
 
-      final attributes = item['attributes'] as Map<String, dynamic>? ?? {};
+      final attributes = item['properties'] as Map<String, dynamic>? ?? {};
       final geometry = item['geometry'] as Map<String, dynamic>? ?? {};
 
       final id = attributes['OBJECTID']?.toString();
-      final nameArabic = attributes['Name_Arabic']?.toString();
-      final nameEnglish = attributes['Name_English']?.toString();
-      final colorCode = attributes['Color_Code']?.toString();
+      final nameArabic = attributes['Name Arabic']?.toString();
+      final nameEnglish = attributes['Name English']?.toString();
+      final colorCode = attributes['Color Code']?.toString();
 
-      // New format uses "paths" — plain [lon, lat] arrays, already densified by GIS
-      final paths = geometry['paths'] as List<dynamic>? ?? [];
+      final geomType = geometry['type'] as String?;
+      final rawCoords = geometry['coordinates'] as List<dynamic>? ?? [];
       final List<List<double>> coordinates = [];
 
-      for (final path in paths) {
-        if (path is! List<dynamic>) continue;
-        for (final point in path) {
+      if (geomType == 'MultiLineString') {
+        for (final line in rawCoords) {
+          if (line is! List<dynamic>) continue;
+          for (final point in line) {
+            if (point is List<dynamic> && point.length >= 2) {
+              coordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
+            }
+          }
+        }
+      } else if (geomType == 'LineString') {
+        for (final point in rawCoords) {
           if (point is List<dynamic> && point.length >= 2) {
             coordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
           }
