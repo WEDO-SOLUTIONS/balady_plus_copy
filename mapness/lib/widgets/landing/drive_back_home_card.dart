@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,9 +14,6 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -26,7 +22,6 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:provider/provider.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class DriveBackHomeCard extends ConsumerStatefulWidget {
@@ -92,7 +87,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                       text: TextSpan(
                         text: context.l10n.driveBack,
                         style: context.textStyles.h3Medium.copyWith(
-                          color: activeCityEvent?.textColor(context.colors) ?? context.colors.staticWhite,
+                          color: activeCityEvent?.textColor(context.colors) ?? context.colors.foregroundDefault,
                         ),
                         children: [
                           TextSpan(

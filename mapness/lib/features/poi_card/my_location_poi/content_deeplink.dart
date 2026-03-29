@@ -96,7 +96,7 @@ class DeeplinkPage extends ConsumerWidget {
                       ),
                     );
                   },
-                )
+                ),
               ],
             ),
           ),
@@ -143,15 +143,20 @@ class DeeplinkPage extends ConsumerWidget {
     }
 
     return PoiSheetSizes.myLocation(
-      bottomPadding: MediaQuery.of(context).viewPadding.bottom,
+      /// The old version {MediaQuery.of(context).viewPadding.bottom}
+      /// but this value create empty space at the bottom
+      bottomPadding: 0,
       isAddressInTwoLines: twoLineAddress,
       isTitleInTwoLine: twoLineTitle,
     );
   }
 
   Size _textSize(String text, TextStyle style) {
-    final TextPainter textPainter =
-        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout();
     return textPainter.size;
   }
 }

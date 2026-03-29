@@ -6,7 +6,6 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
-import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
@@ -109,6 +108,7 @@ class _ParkingManage extends _$ParkingManage {
 
   Future<void> clearStore() async {
     final hive = await ref.read(hiveProvider(_boxName).future);
+    unawaited(_mapObjectManager.removeMarkerById(parkingId));
 
     await hive.delete(_keyCache);
     state = const AsyncValue.data(null);

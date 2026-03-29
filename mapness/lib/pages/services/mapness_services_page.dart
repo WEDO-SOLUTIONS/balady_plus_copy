@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 @RoutePage()
 class MapnessServicesPage extends StatelessWidget {
   final String? groupId;
+
   const MapnessServicesPage({super.key, @QueryParam('groupId') this.groupId});
 
   @override
-  Widget build(BuildContext context) => const Material(
-    child: HomeMiniAppsListPages(),
-  );
+  Widget build(BuildContext context) => Material(
+      child: HomeMiniAppsListPages(
+        key: ValueKey(Theme.of(context).brightness),
+        groupId: groupId,
+      ),
+    );
 }

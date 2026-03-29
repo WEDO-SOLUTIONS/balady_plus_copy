@@ -19,8 +19,6 @@ class QuickFilter extends ConsumerWidget {
     final controllerWrapper = ref.watch(bottomSheetControllerProvider);
     final controller = controllerWrapper.controller;
 
-    final colors = context.colors;
-
     final specialThemeMode = ref.watch(specialThemeModeProvider);
 
     final bool isMekkahTheme =
@@ -30,7 +28,7 @@ class QuickFilter extends ConsumerWidget {
         ? const Color(0xFF806E5C)
         : const Color(0xFF307457);
 
-    final Color iconColor = isMekkahTheme ? themedColor : colors.foregroundSoft;
+    final Color iconColor = isMekkahTheme ? themedColor : context.colors.foregroundSoft;
     final Color? labelColor = isMekkahTheme ? themedColor : null;
 
     final leadingIcon = item.icon != null
@@ -42,7 +40,7 @@ class QuickFilter extends ConsumerWidget {
 
     return ListenableBuilder(
       listenable: controller!,
-      builder: (_, _) {
+      builder: (context, _) {
         final isHidden = controller.closestState == ThreeStateSheet.hidden;
         final WidgetColors colors = WidgetColors(
           background: context.colors.backgroundSurface2,

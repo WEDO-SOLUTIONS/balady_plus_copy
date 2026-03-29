@@ -274,28 +274,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
     final stableBottomInset = InsetsUtils.platformAwareBottomInset(context, isLandscape: !isPortrait);
+    final topBarPadding = MediaQuery.viewPaddingOf(context).top;
 
     sheetController = useToggleSheetController(onClose: (_) {}, clipByHeader: true, resetContentScrollOnClosed: true)
-      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(uikit.Spacing.$3x));
+      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(topBarPadding));
 
     void onSheetHeightChanged() {
       if (isPortrait) {
-        final padding = MediaQuery.paddingOf(context).bottom;
-
-        final sheetHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + padding + uikit.Spacing.$4x;
+        final sheetHeight =
+            sheetController.componentSizes.header + uikit.Spacing.$3x + stableBottomInset + uikit.Spacing.$4x;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
           _setPaddingToCamera(_bottomHeightNotifier.value);
         }
         return;
-      }
-
-      final padding = stableBottomInset;
-      final height = padding + uikit.Spacing.$3x;
-      if (_bottomHeightNotifier.value != height) {
-        _bottomHeightNotifier.value = height;
-        _setPaddingToCamera(height);
       }
     }
 
@@ -314,14 +307,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       sheetController.addListener(onSheetHeightChanged);
       final bottomPadding = stableBottomInset;
 
-      double bottomHeight;
-
       if (isPortrait) {
-        bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + bottomPadding + uikit.Spacing.$4x;
-      } else {
-        bottomHeight = bottomPadding + uikit.Spacing.$3x;
+        final bottomHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x;
+        _bottomHeightNotifier.value = bottomHeight;
       }
-      _bottomHeightNotifier.value = bottomHeight;
+
       return () => sheetController.removeListener(onSheetHeightChanged);
     }, []);
 
@@ -334,7 +324,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref
       ..listen(
         betterRouteProvider,
-        (_, next) => next == null
+            (_, next) => next == null
             ? _betterRouteDurationProfit.value = null
             : _betterRouteDurationProfit.value = next.durationProfit,
       )
@@ -342,13 +332,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         final connected = next.value ?? false;
         final shouldEndTrip =
             connected &&
-            widget.navType != RouteSearchOptionsMessage.car &&
-            _navigationState.value != PathNavState.finished;
+                widget.navType != RouteSearchOptionsMessage.car &&
+                _navigationState.value != PathNavState.finished;
         if (shouldEndTrip) {
           unawaited(_endTripAndShowHome());
         }
       })
-      ..listen(pathNavEtaProvider, (previous, next) {
+      ..listen(pathNavEtaProvider, (previous, next) async {
         if (next != null) {
           if (next.distanceEtaUnits != DistanceUnits.m) {
             return;
@@ -365,12 +355,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           // Fallback: finish pedestrian trip when very close to destination
           final shouldFinishByEta =
               widget.navType == RouteSearchOptionsMessage.pedestrian &&
-              !_finishedByEta &&
-              distance != null &&
-              distance <= 5;
+                  !_finishedByEta &&
+                  distance != null &&
+                  distance <= 5;
           if (shouldFinishByEta) {
             _finishedByEta = true;
-            _finishNavigation();
+            await _finishNavigation();
             if (mounted) {
               unawaited(_endTripAndShowHome());
             }
@@ -405,13 +395,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 listenable: sheetController,
                 builder: (context, _) => !sheetController.isClosed
                     ? GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-                          sheetController.close();
-                        },
-                        child: const SizedBox.expand(),
-                      )
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+                    sheetController.close();
+                  },
+                  child: const SizedBox.expand(),
+                )
                     : const SizedBox.shrink(),
               ),
             if (widget.navType == RouteSearchOptionsMessage.publicTransport && publicRoute != null)
@@ -510,12 +500,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref
         .read(appAnalyticsProvider)
         .navigationCompleted(
-          origin: route.startPoint?.analyticsLabel ?? '',
-          destination: route.endPoint?.analyticsLabel ?? '',
-          originCity: originCity.name,
-          destinationCity: destinationCity.name,
-          spentTime: pathInfo?.spentTime ?? Duration.zero,
-        );
+      origin: route.startPoint?.analyticsLabel ?? '',
+      destination: route.endPoint?.analyticsLabel ?? '',
+      originCity: originCity.name,
+      destinationCity: destinationCity.name,
+      spentTime: pathInfo?.spentTime ?? Duration.zero,
+    );
     await _stopActiveSharing();
     await ref.read(cameraPaddingProvider.notifier).resetPadding();
 
@@ -730,42 +720,60 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   // Notify the listeners about the end of the trip
-  void _naviEvent(NavigationEvent event) {
-    if (event == NavigationEvent.finished) {
-      if (widget.navType == RouteSearchOptionsMessage.car) {
-        _isSwitchingToPedestrian = true;
-        _checkAndSwitchToPedestrian();
-        return;
-      }
-      // If pedestrian navigation finished, ensure trip ends and navigate home
-      _finishNavigation();
-      if (mounted) {
-        unawaited(_endTripAndShowHome());
-      }
-    } else if (event == NavigationEvent.disabled) {
-      if (_isSwitchingToPedestrian) {
-        return;
-      }
-      if (context.mounted && _navigationState.value != PathNavState.finished) {
-        unawaited(_endTripAndShowHome());
-      }
+  void _naviEvent(NavigationEvent event) async {
+    switch (event) {
+      case NavigationEvent.navigation:
+      case NavigationEvent.routeSearch:
+        break;
+      case NavigationEvent.disabled:
+        if (_isSwitchingToPedestrian) {
+          return;
+        }
+        if (context.mounted && _navigationState.value != PathNavState.finished) {
+          unawaited(_endTripAndShowHome());
+        }
+        break;
+      case NavigationEvent.finished:
+        if (widget.navType == RouteSearchOptionsMessage.car) {
+          _isSwitchingToPedestrian = true;
+          _checkAndSwitchToPedestrian();
+          return;
+        }
+        // If pedestrian navigation finished, ensure trip ends and navigate home
+        await _finishNavigation();
+        if (mounted) {
+          unawaited(_endTripAndShowHome());
+        }
+        break;
     }
   }
 
-  void _finishNavigation() {
-    ref.read(urbiAnalyticsProvider).track('tripCompleted');
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.journeyCompleteUnique, isUniquePerSession: true);
+  Future<void> _finishNavigation() async {
+    _sendAnalitycs();
     _navigationState.value = PathNavState.finished;
+    await Future.delayed(const Duration(seconds: 3));
+    if (!mounted) return;
     ref.read(layersControlsProvider.notifier).hideParking();
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     ref.read(currentRouteProvider.notifier).clearRoute();
-
     sheetController.close();
     unawaited(clearNavigationState());
     unawaited(_stopActiveSharing());
+  }
+
+  void _sendAnalitycs() {
+    ref.read(urbiAnalyticsProvider).track('tripCompleted');
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(
+      AdvertMetricsKeys.navigationRoutingCompleted,
+    );
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(
+      AdvertMetricsKeys.journeyCompleteUnique,
+      isUniquePerSession: true,
+    );
   }
 
   Future<void> _checkAndSwitchToPedestrian() async {
@@ -776,7 +784,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       final dgisController = ref.read(dgisControllerProvider).value;
 
       if (finishPoint == null || location == null || dgisController == null) {
-        _finishNavigation();
+        await _finishNavigation();
         if (mounted) {
           await _endTripAndShowHome();
         }
@@ -860,7 +868,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         }
       }
       _isSwitchingToPedestrian = false;
-      _finishNavigation();
+      await _finishNavigation();
       if (mounted) {
         await _endTripAndShowHome();
       }

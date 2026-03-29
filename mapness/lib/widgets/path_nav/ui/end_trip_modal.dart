@@ -38,6 +38,7 @@ class EndTripModal extends HookWidget {
             backgroundColor: context.colors.backgroundSurface1,
             safeAreaColor: context.colors.backgroundSurface1,
             dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface1),
+            useSafeArea: false,
             scrollController: bottomsheetController,
             barrierColorDelegate: barrierColorDelegate,
             content: [

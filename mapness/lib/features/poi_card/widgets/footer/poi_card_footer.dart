@@ -133,9 +133,9 @@ class PoiCardFooter extends HookConsumerWidget {
           ItemActionBar(
             icon: TransportIcons.locationDirectionNavigator,
             buttonType: ButtonType.primary,
+            colorScheme: _buttonColorScheme,
             label: context.l10n.poiCardDirections,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-            colorScheme: colorScheme,
             onPressed: onTapCar,
           ),
           if (!parkingPoi && isFavourite)
@@ -150,6 +150,7 @@ class PoiCardFooter extends HookConsumerWidget {
               ItemActionBar(
                 icon: TransportIcons.addStop,
                 buttonType: ButtonType.secondary,
+                colorScheme: _buttonColorScheme,
                 label: context.l10n.addStop,
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
                 onPressed: onAddPointToRoute,
@@ -158,6 +159,7 @@ class PoiCardFooter extends HookConsumerWidget {
               ItemActionBar(
                 icon: SystemIcons.closeSmall,
                 buttonType: ButtonType.primary,
+                colorScheme: _buttonColorScheme,
                 label: context.l10n.deletePoint,
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
                 onPressed: onRemovePointFromRoute,
@@ -166,14 +168,14 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: context.isLTR ? GeneralIcons.phoneLTR : GeneralIcons.phoneRTL,
               buttonType: ButtonType.secondary,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
             ),
           if (website != null && data != null)
             ItemActionBar(
               icon: GeneralIcons.web,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               buttonType: ButtonType.secondary,
               onPressed: () {
                 BssService.instance.trackLinkTap(data!, BssContactType.website, website);
@@ -184,27 +186,27 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: GeneralIcons.doorEntrance,
               buttonType: ButtonType.secondary,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi && !isFavourite)
             ItemActionBar(
               icon: iconData,
               buttonType: ButtonType.secondary,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: ButtonType.secondary,
-            colorScheme: colorScheme,
+            colorScheme: _buttonColorScheme,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
               buttonType: ButtonType.secondary,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
 
@@ -212,14 +214,14 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
-              colorScheme: colorScheme,
+              colorScheme: _buttonColorScheme,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

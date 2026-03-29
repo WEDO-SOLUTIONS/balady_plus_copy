@@ -130,7 +130,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$4x),
             child: ABRoute(
-              stopByTitle: context.l10n.stopBy,
+              stopByTitle: context.l10n.addStop,
               items: aBRouteModels.toList(),
               onTap: (i) => _onTap(i, context, ref),
               onReorder: _onReorder,

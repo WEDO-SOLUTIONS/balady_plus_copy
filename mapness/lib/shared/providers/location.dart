@@ -15,6 +15,8 @@ part 'location.g.dart';
 
 final locationProvider = _locationProvider;
 
+/// WARNING: the returned [Position] is always an object not equal to the previous one because it has [timestamp]
+/// field. You might need to [select()] from this provider only when lat and long have really changed
 @Riverpod(keepAlive: true)
 class _Location extends _$Location {
   final _saRect = GeoRectMessage(
