@@ -168,8 +168,9 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         boxShadow: Shadows.s,
+        borderRadius: BorderRadius.circular(RadiusBorder.m),
       ),
       child: GestureDetector(
         onTap: () {
