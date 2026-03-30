@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
@@ -29,17 +30,22 @@ class MapDashboardControls extends ConsumerWidget {
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
     final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
+
+    final isArabic = CommonFunctions.isAppAR;
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
-            child: Column(
-              children: [
-                const DashboardHeader(),
-                uikit.Spacing.$2x.heightBox,
-              ],
+          Directionality(
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
+              child: Column(
+                children: [
+                  const DashboardHeader(),
+                  uikit.Spacing.$2x.heightBox,
+                ],
+              ),
             ),
           ),
           const MapQuickFiltersDefault(
