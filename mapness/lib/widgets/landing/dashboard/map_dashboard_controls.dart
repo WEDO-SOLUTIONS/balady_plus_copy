@@ -51,19 +51,13 @@ class MapDashboardControls extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
               child: Row(
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(children: [const WeatherControl(), uikit.Spacing.$1_5x.heightBox, const ParkingControl()]),
-                      const Spacer(),
-                      const IndoorControl(),
-                      const Spacer(),
-                      SizedBox(
-                        height: scrollController.state == ThreeStateSheet.hidden
-                            ? controlsHeight * (1 - scrollController.interpolation)
-                            : 0,
-                      ),
+                      Spacer(),
+                      IndoorControl(),
+                      Spacer(),
                     ],
                   ),
                   const Spacer(),
@@ -89,9 +83,20 @@ class MapDashboardControls extends ConsumerWidget {
             child: Column(
               children: [
                 const SizedBox(height: uikit.Spacing.$2x),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [EtaSharingControl(), FollowControl()],
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        const WeatherControl(),
+                        uikit.Spacing.$1_5x.heightBox,
+                        const ParkingControl(),
+                      ],
+                    ),
+                    const EtaSharingControl(),
+                    const FollowControl(),
+                  ],
                 ),
                 if (!isNationalDay) uikit.Spacing.$4x.heightBox,
                 if (isNationalDay)
