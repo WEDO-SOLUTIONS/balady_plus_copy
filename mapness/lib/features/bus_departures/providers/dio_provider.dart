@@ -4,10 +4,10 @@ import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'makkah_bus_dio_provider.g.dart';
+part 'dio_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-Future<Dio> makkahBusDio(Ref ref) async {
+Future<Dio> busDeparturesDio(Ref ref) async {
   final env = await ref.read(dgisEnvironmentProvider.future);
   
   // Base URLs in env usually look like "https://domain.com/api" or "/api/1.0/"

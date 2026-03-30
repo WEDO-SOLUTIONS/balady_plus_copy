@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/entities/makkah_bus/makkah_bus_departures_model.dart';
+import 'package:mapness/entities/bus_departures/model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class PoiLinesMakkahBus extends ConsumerStatefulWidget {
-  final MakkahBusRoute routeInfo;
+  final BusRoute routeInfo;
 
   const PoiLinesMakkahBus({required this.routeInfo, super.key});
 

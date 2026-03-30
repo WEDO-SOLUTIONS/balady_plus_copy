@@ -1,21 +1,21 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/entities/makkah_bus/makkah_bus_departures_model.dart';
-import 'package:mapness/features/makkah_bus/providers/makkah_bus_dio_provider.dart';
+import 'package:mapness/entities/bus_departures/model.dart';
+import 'package:mapness/features/bus_departures/providers/dio_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart' show appLanguageProvider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../shared/providers/app_language.dart' show appLanguageProvider, LanguageData;
 
-part 'makkah_bus_repository.g.dart';
+part 'repo.g.dart';
 
 @riverpod
-class MakkahBusRepository extends _$MakkahBusRepository {
+class BusDeparturesRepo extends _$BusDeparturesRepo {
   @override
   void build() {}
 
-  Future<MakkahBusDeparturesResponse?> getDepartures(String poiId) async {
+  Future<BusDeparturesResponse?> getDepartures(String poiId) async {
     try {
-      final dio = await ref.read(makkahBusDioProvider.future);
+      final dio = await ref.read(busDeparturesDioProvider.future);
       final appLanguage = ref.read(appLanguageProvider);
       final response = await dio.get(
         '$poiId/departures',
@@ -28,7 +28,7 @@ class MakkahBusRepository extends _$MakkahBusRepository {
       if (data == null) {
         return null;
       }
-      return MakkahBusDeparturesResponse.fromJson(data);
+      return BusDeparturesResponse.fromJson(data);
     } on DioException catch (_) {
       return null;
     } catch (e) {
