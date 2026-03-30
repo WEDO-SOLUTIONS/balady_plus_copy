@@ -44,13 +44,17 @@ class ParkingLotRow extends ConsumerWidget {
       options: ContentRowOptions(
         dividerEnabled: dividerEnabled,
         padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-        leadingIcon: type.icon().icon(color: isSelected ? selectedColor : context.colors.foregroundSoft),
+        leadingIcon: type.icon().icon(
+          color: isSelected ? selectedColor : context.colors.foregroundSoft,
+        ),
         wrapperEnabled: true,
         title: type.title(context.l10n),
         titleStyle: textStyle,
-        actionWidget: isSelected ? ContentRowActionOptions(
-
-            actionIcon: General16Icons.checkmarkLTR.icon()) : null,
+        actionWidget: isSelected
+            ? ContentRowActionOptions(
+                actionIcon: General16Icons.checkmarkLTR.icon(),
+              )
+            : null,
       ),
     );
   }
