@@ -33,6 +33,13 @@ target 'Runner' do
 end
 
 post_install do |installer|
+    installer.generated_projects.each do |project| # تأكد من المرور على كل المشاريع المولدة
+        project.targets.each do |target|
+          target.build_configurations.each do |config|
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+          end
+        end
+      end
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
@@ -62,15 +69,15 @@ post_install do |installer|
 end
 
 target 'InsiderNotificationContent' do
+  platform :ios, '16.0' # أضف هذا السطر هنا
   use_frameworks!
   inherit! :search_paths
-  # Pods for InsiderNotificationContent
   pod "InsiderMobileAdvancedNotification"
 end
 
 target 'InsiderNotificationService' do
+  platform :ios, '16.0' # وأيضاً هنا
   use_frameworks!
   inherit! :search_paths
-  # Pods for InsiderNotificationService
   pod "InsiderMobileAdvancedNotification"
 end
