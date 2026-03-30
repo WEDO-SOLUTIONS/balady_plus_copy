@@ -22,7 +22,7 @@ extension ParkingFilterExt on ParkingFilter {
   IconData icon() => switch (this) {
         ParkingFilter.all => TransportIcons.parkingEnable,
         ParkingFilter.free => GeneralIcons.checkmarkCircle,
-        ParkingFilter.paid => GeneralIcons.money,
+        ParkingFilter.paid => GeneralIcons.timeQuarter,
         _ => GeneralIcons.placeholder,
       };
 

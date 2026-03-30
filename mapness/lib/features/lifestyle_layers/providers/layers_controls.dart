@@ -809,7 +809,14 @@ class LayersControls extends _$LayersControls {
     await ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions();
   }
 
-  Future<void> toggleRoadEvents() async {}
+  Future<void> toggleRoadEvents() async {
+    if (state.selectedType != (LayerType.roadEvents)) {
+      ///TODO: implements road events here
+      setSelection(selectedType: LayerType.roadEvents);
+    } else {
+      setSelection();
+    }
+  }
 
   Future<void> toggleTraffic() async {
     final trafficState = ref.watch(trafficStateProvider);

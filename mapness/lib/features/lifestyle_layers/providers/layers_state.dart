@@ -24,7 +24,6 @@ enum LayerType {
   static List<LayerType> get v1 => [
     LayerType.traffic,
     LayerType.metro,
-    LayerType.three3D,
     LayerType.parkingLots,
     LayerType.roadEvents,
     LayerType.favourites,
