@@ -20,16 +20,7 @@ class MakkahBusesLayer extends _$MakkahBusesLayer {
 
   bool _isDisposed = false;
 
-  // Performances improvements, we don't need to update the map on every zoom change
-  int _zoomSegment(int? zoom) => switch (zoom) {
-        null => 0,
-        >= 18 => 1,
-        >= 17 => 2,
-        >= 16 => 3,
-        >= 14 => 4,
-        >= 5 => 5,
-        _ => 6,
-      };
+
 
   @override
   Future<List<MakkahBusesModel>> build() async {
@@ -44,35 +35,45 @@ class MakkahBusesLayer extends _$MakkahBusesLayer {
     final makkahBusesLayerJsonDatasource = await ref.watch(makkahBusesLayerRepositoryProvider.future);
     if (_isDisposed) return makkahBusesLayerJsonDatasource;
 
-    final isMakkahBusesShown = ref.read(makkahBusesLayerVisibleProvider);
-    if (isMakkahBusesShown) {
-      unawaited(showMakkahBuses());
-    }
+    bool isDrawn = false;
 
     ref.listen(cameraPositionProvider, (prev, positon) {
       if (_isDisposed) return;
-      final oldZoomSeg = _zoomSegment(prev?.zoom.ceil());
-      final newZoomSeg = _zoomSegment(positon?.zoom.ceil());
-      if (oldZoomSeg == newZoomSeg) {
-        return;
-      }
-
-      final isMakkahBusesShown = ref.read(makkahBusesLayerVisibleProvider);
-
-      if (isMakkahBusesShown) {
+      final isShown = ref.read(makkahBusesLayerVisibleProvider);
+      if (isShown && !isDrawn) {
+        isDrawn = true;
         unawaited(showMakkahBuses());
+      } else if (!isShown && isDrawn) {
+        isDrawn = false;
+        unawaited(hideMakkahBuses());
       }
     });
+
+    ref.listen(makkahBusesLayerVisibleProvider, (prev, isShown) {
+      if (_isDisposed) return;
+      if (isShown && !isDrawn) {
+        isDrawn = true;
+        unawaited(showMakkahBuses());
+      } else if (!isShown && isDrawn) {
+        isDrawn = false;
+        unawaited(hideMakkahBuses());
+      }
+    });
+
+    final isMakkahBusesShown = ref.read(makkahBusesLayerVisibleProvider);
+    if (isMakkahBusesShown) {
+      isDrawn = true;
+      unawaited(showMakkahBuses(data: makkahBusesLayerJsonDatasource));
+    }
 
     return makkahBusesLayerJsonDatasource;
   }
 
-  Future<void> showMakkahBuses() async {
-    if (!state.hasValue || state.value == null || state.value!.isEmpty) {
+  Future<void> showMakkahBuses({List<MakkahBusesModel>? data}) async {
+    final makkahBuses = data ?? state.value;
+    if (makkahBuses == null || makkahBuses.isEmpty) {
       return;
     }
-
-    final makkahBuses = state.value!;
     final mapManager = ref.read(mapObjectManagerProvider(
       named: mapOptions.name,
       layerId: mapOptions.layerId,
@@ -114,9 +115,7 @@ class MakkahBusesLayer extends _$MakkahBusesLayer {
             points: geoPoints,
             width: 5,
             color: colorValue,
-            borderWidth: 2,
             zIndex: 0,
-            borderColor: 0xFFFFFFFF,
           ),
         ),
       );
