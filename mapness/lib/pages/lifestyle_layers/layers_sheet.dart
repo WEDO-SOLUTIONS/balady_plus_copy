@@ -102,12 +102,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
                   final controller = ref.read(bottomSheetControllerProvider).controller;
                   final isBottomSheetOpen = controller?.state == ThreeStateSheet.open;
                   if (isBottomSheetOpen) {
-                    controller?.setState(ThreeStateSheet.hidden, duration: Duration.zero);
-
-                    Future.delayed(
-                      const Duration(milliseconds: 200),
-                      () => controller?.setState(ThreeStateSheet.open),
-                    );
+                    controller?.setState(ThreeStateSheet.open);
                   }
                 }
                 _closeRouteWithoutSheetPopScope();
