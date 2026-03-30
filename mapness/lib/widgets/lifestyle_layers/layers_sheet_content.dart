@@ -20,7 +20,11 @@ class LayersSheetContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        bottom: Spacing.$4x,
+      ),
       sliver: MultiSliver(
         children: [
           SliverToBoxAdapter(

@@ -8,6 +8,8 @@ import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
+import 'package:mapness/features/metro/metro_layer_provider.dart';
+import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 
@@ -29,6 +31,10 @@ class LayerSwitcherCard extends ConsumerWidget {
     if (value == layers_state.LayerType.three3D) {
       final mapDimensionsState = ref.watch(mapDimensionsControlProvider);
       isSelected = mapDimensionsState == MapDimensionsState.threeDimensional;
+    }
+
+    if (value == layers_state.LayerType.metro) {
+      isSelected = ref.watch(metroLayerVisibleProvider);
     }
 
     if (value == layers_state.LayerType.traffic) {

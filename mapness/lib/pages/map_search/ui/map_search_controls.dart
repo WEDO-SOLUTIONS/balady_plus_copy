@@ -154,8 +154,6 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                                         children: [
                                           const LayersControl(),
                                           const SizedBox(height: 8),
-                                          const TrafficControl(),
-                                          const SizedBox(height: uikit.Spacing.$2x),
                                           const DimensionControl(),
                                           const Spacer(),
                                           const CompassControl(),

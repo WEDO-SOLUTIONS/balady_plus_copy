@@ -80,8 +80,6 @@ class RoutingMapControls extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const LayersControl(),
-                      uikit.Spacing.$2x.heightBox,
-                      const TrafficControl(),
                       const Spacer(),
                       const CompassControl(),
                       uikit.Spacing.$2x.heightBox,

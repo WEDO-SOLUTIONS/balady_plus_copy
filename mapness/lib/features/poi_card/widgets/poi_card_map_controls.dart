@@ -50,18 +50,7 @@ class PoiCardMapControls extends StatelessWidget {
                     children: [
                       const LayersControl(),
                       const SizedBox(height: ui_kit.Spacing.$2x),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final navi = ref.watch(appFeaturesProvider);
-                          return Visibility(
-                            visible: navi.naviEnabled,
-                            replacement: const SizedBox.square(
-                              dimension: 28,
-                            ),
-                            child: const TrafficControl(),
-                          );
-                        },
-                      ),
+
                       const SizedBox(height: ui_kit.Spacing.$2x),
                       const DimensionControl(),
                       const Spacer(),

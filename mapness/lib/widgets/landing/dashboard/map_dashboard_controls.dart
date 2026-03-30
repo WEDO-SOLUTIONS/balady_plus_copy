@@ -72,8 +72,6 @@ class MapDashboardControls extends ConsumerWidget {
                     children: [
                       const LayersControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
-                      const TrafficControl(),
-                      const SizedBox(height: uikit.Spacing.$2x),
                       const DimensionControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
                       const Spacer(),
