@@ -8,8 +8,9 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 
 class DarkMapModeRowWidget extends ConsumerWidget {
   final DarkMapStateEnum currentMode;
+  final bool dividerEnabled;
 
-  const DarkMapModeRowWidget({required this.currentMode, super.key});
+  const DarkMapModeRowWidget({required this.dividerEnabled, required this.currentMode, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,10 +20,11 @@ class DarkMapModeRowWidget extends ConsumerWidget {
       onTap: () {
         ref.read(darkModeProvider.notifier).changeDarkModeState(currentMode);
       },
+      constraints: const BoxConstraints(minHeight: 66),
       options: ContentRowOptions(
         padding: EdgeInsets.zero,
         wrapperColor: context.colors.backgroundSurface1,
-        dividerEnabled: true,
+        dividerEnabled: dividerEnabled,
         title: _getTitleFromDarkModeState(context),
         subtitle: _getSubtitle(context),
         titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
