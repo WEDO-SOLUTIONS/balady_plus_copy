@@ -32,34 +32,46 @@ List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
 
       final geomType = geometry['type'] as String?;
       final rawCoords = geometry['coordinates'] as List<dynamic>? ?? [];
-      final List<List<double>> coordinates = [];
 
       if (geomType == 'MultiLineString') {
+        int lineIndex = 0;
         for (final line in rawCoords) {
           if (line is! List<dynamic>) continue;
+          final List<List<double>> lineCoordinates = [];
           for (final point in line) {
             if (point is List<dynamic> && point.length >= 2) {
-              coordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
+              lineCoordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
             }
+          }
+          if (lineCoordinates.isNotEmpty) {
+            result.add(MakkahBusesModel(
+              id: id != null ? '${id}_$lineIndex' : null,
+              nameArabic: nameArabic,
+              nameEnglish: nameEnglish,
+              colorCode: colorCode,
+              coordinates: lineCoordinates,
+            ));
+            lineIndex++;
           }
         }
       } else if (geomType == 'LineString') {
+        final List<List<double>> coordinates = [];
         for (final point in rawCoords) {
           if (point is List<dynamic> && point.length >= 2) {
             coordinates.add([_toDouble(point[0]), _toDouble(point[1])]);
           }
         }
+
+        if (coordinates.isNotEmpty) {
+          result.add(MakkahBusesModel(
+            id: id,
+            nameArabic: nameArabic,
+            nameEnglish: nameEnglish,
+            colorCode: colorCode,
+            coordinates: coordinates,
+          ));
+        }
       }
-
-      if (coordinates.isEmpty) continue;
-
-      result.add(MakkahBusesModel(
-        id: id,
-        nameArabic: nameArabic,
-        nameEnglish: nameEnglish,
-        colorCode: colorCode,
-        coordinates: coordinates,
-      ));
     }
   } catch (e) {
     debugPrint('Error parsing makkah buses JSON: $e');
