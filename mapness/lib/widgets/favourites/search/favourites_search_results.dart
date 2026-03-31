@@ -9,7 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:provider/provider.dart';
 
 class FavouritesSearchResults extends ConsumerWidget {
   const FavouritesSearchResults({
@@ -25,6 +28,8 @@ class FavouritesSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scope = context.read<SearchScope>();
+    final searcher = ref.watch(searchProvider(scope.value).notifier);
     final contentColor = context.colors.backgroundSurface1;
 
     final items = results.firstPage?.items;
@@ -60,7 +65,11 @@ class FavouritesSearchResults extends ConsumerWidget {
                   return ContentRow(
                     backgroundColor: context.colors.backgroundSurface1,
                     isDividerEnabled: index != length - 1,
-                    onTap: () async => onSearchTap(ref, context, item),
+                    onTap: () async {
+                      FocusScope.of(context).unfocus();
+                      searcher.clear();
+                      await onSearchTap(ref, context, item);
+                    },
                     leading: GeneralIcons.location.icon(color: context.colors.accentActive),
                     text: ContentRowTextOptions(
                       title: item.title,
