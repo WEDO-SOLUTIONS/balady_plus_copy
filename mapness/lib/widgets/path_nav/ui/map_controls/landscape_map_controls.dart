@@ -26,49 +26,54 @@ class _LandscapeLayout extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsetsDirectional.only(
-      top: uikit.Spacing.$3x,
-      bottom: InsetsUtils.platformAwareBottomInset(context, isLandscape: true) + uikit.Spacing.$3x,
-      end: uikit.Spacing.$4x,
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              maneuverAndLimitWidget,
-              const Spacer(),
-            ],
-          ),
+  Widget build(BuildContext context) {
+    final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? uikit.Spacing.$3x : 0;
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(
+          top: uikit.Spacing.$3x,
+          bottom: uikit.Spacing.$3x + stableBottomInset,
+          end: uikit.Spacing.$4x,
         ),
-        ValueListenableBuilder(
-          valueListenable: showControls,
-          builder: (context, isVisible, child) => AnimatedOpacity(
-            opacity: isVisible ? 1 : 0,
-            duration: const Duration(milliseconds: 250),
-            child: IgnorePointer(
-              ignoring: !isVisible,
-              child: GestureDetector(
-                onTap: onUserActivity,
-                child: Column(
-                  children: [
-                    const TrafficParkingControl(parkingVisible: false),
-                    const SizedBox(height: uikit.Spacing.$2x),
-                    const DimensionControl(),
-                    const Spacer(),
-                    compassControlWidget,
-                    uikit.Spacing.$2x.heightBox,
-                    pathNavFollowControlWidget,
-                  ],
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  maneuverAndLimitWidget,
+                  const Spacer(),
+                ],
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable: showControls,
+              builder: (context, isVisible, child) => AnimatedOpacity(
+                opacity: isVisible ? 1 : 0,
+                duration: const Duration(milliseconds: 250),
+                child: IgnorePointer(
+                  ignoring: !isVisible,
+                  child: GestureDetector(
+                    onTap: onUserActivity,
+                    child: Column(
+                      children: [
+                        const TrafficParkingControl(parkingVisible: false),
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        const DimensionControl(),
+                        const Spacer(),
+                        compassControlWidget,
+                        uikit.Spacing.$2x.heightBox,
+                        pathNavFollowControlWidget,
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      ),
+    );
+  }
 }
