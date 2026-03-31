@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/location.dart';
 
 class DarkMapModeRowWidget extends ConsumerWidget {
   final DarkMapStateEnum currentMode;
@@ -18,6 +19,10 @@ class DarkMapModeRowWidget extends ConsumerWidget {
 
     return ContentRow(
       onTap: () {
+        if (currentMode == DarkMapStateEnum.autoSunDependent) {
+          // check permissions in case of first app start as the location may not be available
+          ref.read(locationProvider.notifier).checkLocationPermission();
+        }
         ref.read(darkModeProvider.notifier).changeDarkModeState(currentMode);
       },
       constraints: const BoxConstraints(minHeight: 66),
