@@ -602,6 +602,7 @@ class Search extends _$Search {
         .animateToGeoPoints(
           points.take(requiredVisiblePlaces).toList(),
           options: _quickFilterCameraOptions(),
+          keepCameraPositionPoint: true,
         );
   }
 
