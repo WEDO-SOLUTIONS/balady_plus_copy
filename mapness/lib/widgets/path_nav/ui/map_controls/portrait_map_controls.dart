@@ -27,7 +27,6 @@ class _PortraitLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SafeArea(
-    bottom: false,
     child: Stack(
       children: [
         Column(
