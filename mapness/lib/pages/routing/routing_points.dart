@@ -27,6 +27,7 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
@@ -108,6 +109,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           };
       return ABRouteModel(title: title, isMyLocation: point is RoutePointMyLocation);
     });
+    final isDarkMode = ref.watch(darkModeProvider).value?.isDark ?? false;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.read<ThemeController>().systemOverlayStyle,
@@ -153,10 +155,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      context.colors.screenOverlayDimming40,
-                    ],
+                    colors: isDarkMode
+                        ? [
+                            Colors.transparent,
+                            context.colors.screenOverlayDimming40,
+                          ]
+                        : [
+                            context.colors.gradientBackgroundSurface4opacity0,
+                            context.colors.gradientBackgroundSurface4opacity80,
+                          ],
                   ),
                 ),
               ),
