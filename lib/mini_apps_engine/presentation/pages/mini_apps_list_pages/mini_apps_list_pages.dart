@@ -652,6 +652,12 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                                                       favMiniApp.iconPath,
                                                                                                       isVerifyingKey: true,
                                                                                                       imageFit: BoxFit.contain,
+                                                                                                      imageWidth: ctx.w(
+                                                                                                        30,
+                                                                                                      ),
+                                                                                                      imageHeight: ctx.h(
+                                                                                                        30,
+                                                                                                      ),
                                                                                                     ),
                                                                                                   ),
                                                                                                 ),
