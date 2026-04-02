@@ -527,7 +527,7 @@ class ObjectTapHandler {
         let options = PolygonOptions(
             // TODO : fix force unwrap
             contours: polygon.options.contours.map { contour in
-                contour.compactMap {
+                contour.points.compactMap {
                     GeoPoint(
                         latitude: Latitude(value: $0.latitude),
                       longitude: Longitude(value: $0.longitude)
