@@ -58,7 +58,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   static const double _kClusterMaxZoom = 20;
   static const double _kClusterFitPaddingDp = 40.0;
   static const double _kClusterIconSize = 32.0;
-  final ValueNotifier<List<String>> _notifierIds = ValueNotifier([]);
+  final ValueNotifier<List<Offer>> _notifierOffers = ValueNotifier([]);
 
   @override
   void initState() {
@@ -148,8 +148,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         context.read<ThemeController>().currentTheme,
       );
 
+      final offersInState = ref.read(showMapOffersProvider);
       final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
-      _notifierIds.value = ids;
+      _notifierOffers.value = offersInState.where((o) => ids.contains(o.id)).toList();
     } else {
       await cameraPosition.animateToMarkers(
         simpleClusterObject.markers.toMarkers(),
@@ -185,7 +186,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       context.read<ThemeController>().currentTheme,
     );
 
-    _notifierIds.value = [item.id];
+    _notifierOffers.value = [item];
   }
 
   late StreamSubscription<VisibleRectEvent> _visibleRectSub;
@@ -208,7 +209,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   @override
   void dispose() {
     _visibleRectSub.cancel();
-    _notifierIds.dispose();
+    _notifierOffers.dispose();
     super.dispose();
   }
 
@@ -305,15 +306,15 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           ),
         ),
         ValueListenableBuilder(
-          valueListenable: _notifierIds,
-          builder: (context, val, _) {
-            if (val.isEmpty) {
+          valueListenable: _notifierOffers,
+          builder: (context, offers, _) {
+            if (offers.isEmpty) {
               return const Expanded(
                 child: RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls'), useSafeArea: false),
               );
             }
 
-            return Expanded(child: OfferListBottomSheetMapWidget(offersId: val));
+            return Expanded(child: OfferListBottomSheetMapWidget(list: offers));
           },
         ),
       ],

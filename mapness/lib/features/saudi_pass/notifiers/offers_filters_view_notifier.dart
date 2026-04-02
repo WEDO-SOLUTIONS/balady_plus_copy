@@ -297,6 +297,7 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
 
     offerFavorites.syncState(isFavorite: isHeartRedAndFilled);
 
+    ref.read(currentSelectedOfferProvider.notifier).state = offer;
     await ref.read(appRouterProvider).push(OfferRoute(offerId: offer.id));
 
     _syncState(ref.read(offerFavoritesProvider(offerId)));
