@@ -112,53 +112,44 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                   fit: widget.imageFit,
                   placeholderBuilder: (BuildContext context) {
                     return widget.placeHolderWidget ??
-                        Container(
-                          color: AppColor.primary900Light,
+                        _DefaultImageSkeleton(
                           width: widget.imageWidth,
                           height: widget.imageHeight,
+                          borderRadius: BorderRadius.circular(12),
                         );
                   },
                 )
-              : Image.network(
-                  widget.imagePath,
+              : CachedNetworkImage(
+                  imageUrl: widget.imagePath,
+                  httpHeaders: header,
                   width: widget.imageWidth,
                   height: widget.imageHeight,
                   fit: widget.imageFit,
-                  headers: header,
-                  loadingBuilder:
-                      (
-                        BuildContext context,
-                        Widget child,
-                        ImageChunkEvent? loadingProgress,
-                      ) {
-                        if (loadingProgress == null) return child;
-                        return widget.placeHolderWidget ??
-                            Container(
-                              color: AppColor.primary900Light,
-                              width: widget.imageWidth,
-                              height: widget.imageHeight,
-                            );
-                      },
-                  errorBuilder:
-                      (
-                        BuildContext context,
-                        Object exception,
-                        StackTrace? stackTrace,
-                      ) {
-                        print(exception.toString());
-                        return widget.placeHolderWidget ??
-                            Container(
-                              color: AppColor.primary900Light,
-                              width: widget.imageWidth,
-                              height: widget.imageHeight,
-                            );
-                      },
+                  fadeInDuration: const Duration(milliseconds: 140),
+                  fadeOutDuration: const Duration(milliseconds: 120),
+                  useOldImageOnUrlChange: true,
+                  placeholder: (context, url) {
+                    return widget.placeHolderWidget ??
+                        _DefaultImageSkeleton(
+                          width: widget.imageWidth,
+                          height: widget.imageHeight,
+                          borderRadius: BorderRadius.circular(12),
+                        );
+                  },
+                  errorWidget: (context, url, error) {
+                    return widget.placeHolderWidget ??
+                        _DefaultImageError(
+                          width: widget.imageWidth,
+                          height: widget.imageHeight,
+                          borderRadius: BorderRadius.circular(12),
+                        );
+                  },
                 )
         : widget.placeHolderWidget ??
-              Container(
-                color: AppColor.primary900Light,
+              _DefaultImageSkeleton(
                 width: widget.imageWidth,
                 height: widget.imageHeight,
+                borderRadius: BorderRadius.circular(12),
               );
   }
 }
@@ -207,27 +198,100 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
             fit: widget.imageFit,
             placeholder: (context, url) {
               return widget.placeHolderWidget ??
-                  Container(
-                    color: AppColor.primary900Light,
+                  _DefaultImageSkeleton(
                     width: widget.imageWidth,
                     height: widget.imageHeight,
+                    borderRadius: BorderRadius.circular(12),
                   );
             },
             errorWidget: (context, url, error) {
               return widget.placeHolderWidget ??
-                  Container(
-                    color: AppColor.primary900Light,
+                  _DefaultImageError(
                     width: widget.imageWidth,
                     height: widget.imageHeight,
+                    borderRadius: BorderRadius.circular(12),
                   );
             },
           )
         : widget.placeHolderWidget ??
-              Container(
-                color: AppColor.primary900Light,
+              _DefaultImageSkeleton(
                 width: widget.imageWidth,
                 height: widget.imageHeight,
+                borderRadius: BorderRadius.circular(12),
               );
+  }
+}
+
+class _DefaultImageSkeleton extends StatelessWidget {
+  final double? width;
+  final double? height;
+  final BorderRadius borderRadius;
+
+  const _DefaultImageSkeleton({
+    this.width,
+    this.height,
+    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final base = isDark ? const Color(0xFF243042) : const Color(0xFFF0F2F6);
+    final highlight = isDark ? const Color(0xFF34455E) : Colors.white;
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: Shimmer.fromColors(
+        baseColor: base,
+        highlightColor: highlight,
+        child: Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: base,
+            border: Border.all(
+              color: (isDark ? Colors.white : Colors.black).withOpacity(0.06),
+              width: 1,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DefaultImageError extends StatelessWidget {
+  final double? width;
+  final double? height;
+  final BorderRadius borderRadius;
+
+  const _DefaultImageError({
+    this.width,
+    this.height,
+    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surface = isDark ? const Color(0xFF1D2430) : const Color(0xFFF6F7FA);
+    final iconColor = isDark ? Colors.white70 : Colors.black45;
+
+    return ClipRRect(
+      borderRadius: borderRadius,
+      child: Container(
+        width: width,
+        height: height,
+        color: surface,
+        alignment: Alignment.center,
+        child: Icon(
+          Icons.image_not_supported_outlined,
+          size: (height != null) ? (height! * 0.55).clamp(16, 28) : 22,
+          color: iconColor,
+        ),
+      ),
+    );
   }
 }
 
