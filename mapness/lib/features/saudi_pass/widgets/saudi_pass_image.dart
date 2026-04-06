@@ -7,12 +7,13 @@ import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_rive
 
 class SaudiPassImage extends ConsumerWidget {
   final String imageId;
-
-  final BoxFit imageFit;
+  final Widget? errorWidget;
+  final BoxFit? imageFit;
 
   const SaudiPassImage({
     required this.imageId,
     this.imageFit = BoxFit.cover,
+    this.errorWidget,
     Key? key,
   }) : super(key: key);
 
@@ -30,7 +31,7 @@ class SaudiPassImage extends ConsumerWidget {
         imageUrl: imageUri.url,
         httpHeaders: imageUri.headers,
         fit: BoxFit.cover,
-        errorWidget: (context, _, __) => const SizedBox.shrink(),
+        errorWidget: (context, _, __) => errorWidget ?? const SizedBox.shrink(),
       ),
     );
   }

@@ -18,6 +18,7 @@ import 'package:mapness/features/saudi_pass/notifiers/recommended_type_selection
 import 'package:mapness/features/saudi_pass/notifiers/settings_screen_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/notifiers/sorting_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/offer_details_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
