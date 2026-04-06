@@ -10,6 +10,9 @@ import io.flutter.FlutterInjector
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.FileNotFoundException
 import kotlin.math.round
@@ -81,6 +84,8 @@ class DgisMapView(
 
     private val closables = mutableListOf<AutoCloseable>()
 
+    private var soundUpdateJob: kotlinx.coroutines.Job? = null
+
     private fun getCurrentLevelId(): LevelId? {
         return indoorControlHandler?.currentLevelId
     }
@@ -88,11 +93,25 @@ class DgisMapView(
     init {
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
+
+        // Listen for sound changes from Android Auto and forward them to Flutter
+        soundUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+            for (toggleType in SoundUpdateNotifier.events) {
+                val isSoundOn = toggleType != SoundToggleType.NONE
+                eventSink.success(
+                    mapOf(
+                        "event" to "soundOnEvent",
+                        "value" to isSoundOn,
+                    )
+                )
+            }
+        }
     }
 
     override fun getView() = mapView
 
     override fun dispose() {
+        soundUpdateJob?.cancel()
         map?.close()
         routeHandler?.close()
         zoomControlHandler?.close()

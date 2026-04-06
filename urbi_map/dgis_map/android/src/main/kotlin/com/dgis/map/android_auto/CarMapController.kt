@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.location.Location
 import android.util.DisplayMetrics
 import com.dgis.map.DgisMapInitializer
+import com.dgis.map.SoundUpdateNotifier
 import com.dgis.map.android_auto.settings.NotificationVolume
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
@@ -329,6 +330,8 @@ class CarMapController(
         set(value) {
             sharedPrefs.voiceInstructionsValue = value
             navigationHandler.toggleVoiceInstruction(value)
+            // Notify Flutter so the phone-side state stays in sync
+            SoundUpdateNotifier.sendEvent(value)
         }
 
     // -- Traffic

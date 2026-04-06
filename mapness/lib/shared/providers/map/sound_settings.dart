@@ -163,8 +163,13 @@ class SoundSettings extends _$SoundSettings {
     );
 
     toggleVoiceInstruction(currentVoiceInstruction: _defaultSoundSettings.voiceInstructionIndex);
-    toggleOverSpeeding(overSpeeding: _defaultSoundSettings.overSpeeding);
-    toggleRoadCameras(roadCameras: _defaultSoundSettings.roadCameras);
+    // Only apply overSpeeding/roadCameras if voice instruction is not NONE.
+    // When voice is NONE, all sound categories are cleared — re-applying these
+    // would add categories back and re-enable partial sound output.
+    if (_soundToggleTypesList[_defaultSoundSettings.voiceInstructionIndex] != SoundToggleType.none) {
+      toggleOverSpeeding(overSpeeding: _defaultSoundSettings.overSpeeding);
+      toggleRoadCameras(roadCameras: _defaultSoundSettings.roadCameras);
+    }
     toggleNavigatorVolume(currentPromptVolumeIndex: _defaultSoundSettings.promptsVolumeIndex);
     toggleBackgroundNavigation(backgroundNavigation: _defaultSoundSettings.backgroundNavigation);
 
@@ -186,8 +191,11 @@ class SoundSettings extends _$SoundSettings {
 
   Future<void> _handleSoundEvent(SoundOnEvent soundOn) async {
     final index = SoundToggleType.values.indexOf(soundOn.value ? SoundToggleType.all : SoundToggleType.none);
-    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, index);
-    state = state.copyWith(voiceInstructionIndex: index);
+    // Sync sound state with the phone-side SDK components (NavigationHandler/DashboardControlModel).
+    // CarPlay/Android Auto already set the NavigationManager's enabledSoundCategories directly,
+    // but we must also propagate via toggleVoiceInstruction so the phone-side DashboardControlModel
+    // stays in sync — otherwise toggleOverSpeeding/toggleRoadCameras can re-enable categories.
+    await toggleVoiceInstruction(currentVoiceInstruction: index);
   }
 
   Future<void> toggleRoadCameras({required bool roadCameras}) async {
@@ -222,8 +230,21 @@ class SoundSettings extends _$SoundSettings {
 
   Future<void> toggleVoiceInstruction({required int currentVoiceInstruction}) async {
     final dGisController = await ref.watch(dgisControllerProvider.future);
+    final toggleType = _soundToggleTypesList[currentVoiceInstruction];
 
-    await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[currentVoiceInstruction]);
+    await dGisController.toggleVoiceInstruction(toggleType: toggleType);
+
+    // When voice is set to NONE, ensure overSpeeding and roadCameras are also
+    // disabled on the SDK side. Otherwise their categories remain enabled and
+    // partial sound output continues even though voice instruction is NONE.
+    // When voice is re-enabled, restore overSpeeding and roadCameras settings.
+    if (toggleType == SoundToggleType.none) {
+      await dGisController.toggleOverSpeeding(overSpeeding: false);
+      await dGisController.toggleRoadCameras(roadCameras: false);
+    } else {
+      await dGisController.toggleOverSpeeding(overSpeeding: state.overSpeeding);
+      await dGisController.toggleRoadCameras(roadCameras: state.roadCameras);
+    }
 
     await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, currentVoiceInstruction);
 
