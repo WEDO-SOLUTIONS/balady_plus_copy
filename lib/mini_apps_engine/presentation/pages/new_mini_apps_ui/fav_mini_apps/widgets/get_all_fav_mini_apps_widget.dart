@@ -16,6 +16,10 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+      buildWhen: (previous, current) =>
+          previous.favoriteApps != current.favoriteApps ||
+          previous.isFavLoading != current.isFavLoading ||
+          previous.favError != current.favError,
       builder: (context, state) {
         if (state.isFavLoading) {
           return const FavPageShimmerLoadingWidget();
@@ -23,11 +27,12 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
 
         if (state.favError != null) {
           return Center(
-            child: Text(
-              state.favError!,
-              style: const TextStyle(color: Colors.red),
-            ),
+            child: Text(state.favError!, style: const TextStyle(color: Colors.red)),
           );
+        }
+
+        if (state.favoriteApps.isEmpty) {
+          return const SizedBox();
         }
 
         return ReorderableListView.builder(
@@ -35,52 +40,35 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: state.favoriteApps.length,
-          // --- ADD THIS SECTION ---
           proxyDecorator: (Widget child, int index, Animation<double> animation) {
             return AnimatedBuilder(
               animation: animation,
               builder: (BuildContext context, Widget? child) {
-                return Material(
-                  // This makes the "proxy" container transparent
-                  color: Colors.transparent,
-                  // Set elevation to 0 to remove the default shadow if you want it flat
-                  elevation: 0,
-                  child: child,
-                );
+                return Material(color: Colors.transparent, elevation: 0, child: child);
               },
               child: child,
             );
           },
-          // -------------------------
           onReorder: (oldIndex, newIndex) {
-            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(
-              oldIndex,
-              newIndex,
-            );
+            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(oldIndex, newIndex);
           },
           itemBuilder: (context, index) {
             final favApp = state.favoriteApps[index];
+
             return Padding(
-              key: Key(favApp.id),
+              key: ValueKey(favApp.id),
               padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
               child: SizedBox(
                 width: context.screenWidth,
                 height: context.h(64),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    // Use your theme colors here to ensure it looks right in both modes
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withAlpha(15),
-                    ),
+                    border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(15)),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.screenWidth * 0.01,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -110,19 +98,13 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
                             CustomMiniAppSwitch(
                               isActive: true,
                               onChanged: (_) {
-                                context
-                                    .read<NewMiniAppLogicCubit>()
-                                    .toggleFavoriteLocal(favApp.id);
+                                context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
                               },
                             ),
                             Icon(
                               Icons.drag_indicator_rounded,
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface.withAlpha(90)
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Theme.of(context).colorScheme.onSurface.withAlpha(90)
                                   : Theme.of(context).hoverColor,
                               size: 20,
                             ),

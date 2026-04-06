@@ -17,6 +17,10 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+      buildWhen: (previous, current) =>
+          previous.unFavoriteApps != current.unFavoriteApps ||
+          previous.isUnFavLoading != current.isUnFavLoading ||
+          previous.unFavError != current.unFavError,
       builder: (context, state) {
         if (state.isUnFavLoading) {
           return const FavPageShimmerLoadingWidget();
@@ -24,39 +28,34 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
 
         if (state.unFavError != null) {
           return Center(
-            child: Text(
-              state.unFavError!,
-              style: const TextStyle(color: Colors.red),
-            ),
+            child: Text(state.unFavError!, style: const TextStyle(color: Colors.red)),
           );
         }
 
+        if (state.unFavoriteApps.isEmpty) {
+          return const SizedBox();
+        }
+
         return ListView.separated(
-          separatorBuilder: (context, index) =>
-              SizedBox(height: context.screenHeight * 0.01),
+          separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.01),
           scrollDirection: Axis.vertical,
           itemCount: state.unFavoriteApps.length,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             final miniApp = state.unFavoriteApps[index];
+
             return SizedBox(
+              key: ValueKey(miniApp.id),
               width: context.screenWidth,
               height: context.h(64),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  //    color: const Color(0XFFFFFFFF),
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(15),
-                  ),
+                  border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(15)),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.screenWidth * 0.01,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -76,7 +75,6 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                             width: context.w(192),
                             height: context.h(30),
                             text: miniApp.name,
-                            //  fontColor: const Color(0XFF1E2A36),
                             fontWeight: FontWeight.w500,
                             fontSize: 15,
                           ),
@@ -85,9 +83,7 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                       CustomMiniAppSwitch(
                         isActive: false,
                         onChanged: (_) {
-                          context
-                              .read<NewMiniAppLogicCubit>()
-                              .toggleFavoriteLocal(miniApp.id);
+                          context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(miniApp.id);
                         },
                       ),
                     ],
