@@ -57,7 +57,18 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
-    private val navigationManager = DgisMapInitializer.getNavigationManager()
+    private val navigationManager = DgisMapInitializer.getNavigationManager().also { navManager ->
+        // Apply persisted sound setting immediately, before any navigation starts.
+        // The SDK enables all sound categories by default. We read from Flutter's
+        // SharedPreferences and default to OFF if the key is not set.
+        val flutterPrefs = context.getSharedPreferences("FlutterSharedPreferences", android.content.Context.MODE_PRIVATE)
+        val key = "flutter.voice_instruction_index"
+        val voiceIndex = if (flutterPrefs.contains(key)) flutterPrefs.getLong(key, 0).toInt() else 0
+        if (voiceIndex == 0) {
+            navManager.soundNotificationSettings.enabledSoundCategories =
+                java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
+        }
+    }
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,

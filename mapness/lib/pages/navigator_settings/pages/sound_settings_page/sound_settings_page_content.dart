@@ -96,6 +96,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
                   child: SegmentTabsButton(
+                    key: ValueKey('prompts_volume_${soundSettingsModel.promptsVolumeIndex}'),
                     tabsContent: [
                       TabsRowV2Content(title: l10n.segmentButtonMinimumTitle),
                       TabsRowV2Content(title: l10n.segmentButtonQuietTitle),

@@ -55,7 +55,7 @@ class SoundSettingsModel {
     required this.englishUnInstalledVoices,
     required this.arabicInstalledVoices,
     required this.arabicUnInstalledVoices,
-    this.voiceInstructionIndex = 2,
+    this.voiceInstructionIndex = 0,
     this.muffleOtherSounds = false,
     this.promptsVolumeIndex = 2,
     this.backgroundNavigation = true,
@@ -126,7 +126,7 @@ class SoundSettings extends _$SoundSettings {
     final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
     final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
     final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
-    const prefsBackgroundNavigation = false;
+    final prefsBackgroundNavigation = sharedPrefs.getBool(MapnessConstants.backgroundNavigationPrefsKey);
     final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
     final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 

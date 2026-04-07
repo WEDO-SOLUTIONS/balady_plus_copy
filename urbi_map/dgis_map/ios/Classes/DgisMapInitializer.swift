@@ -67,6 +67,16 @@ class DgisMapInitializer {
             navigationManager!.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = TimeInterval(2 * 60)
             navigationManager!.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: 500 * 1000)
             navigationManager!.routeMapSettings.onRouteDisplayFlags.insert(.immersiveRouteParts)
+            
+            // Apply persisted sound setting immediately when NavigationManager is created.
+            // The SDK enables all sound categories by default. We read from Flutter's
+            // SharedPreferences and default to OFF if the key is not set.
+            let voiceKey = "flutter.voice_instruction_index"
+            let hasKey = UserDefaults.standard.object(forKey: voiceKey) != nil
+            let voiceIndex = hasKey ? UserDefaults.standard.integer(forKey: voiceKey) : 0
+            if voiceIndex == 0 {
+                navigationManager!.soundNotificationSettings.enabledSoundCategories = []
+            }
         }
         return navigationManager!
     }

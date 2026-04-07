@@ -48,17 +48,17 @@ class SharedPrefs(val context: Context) : AutoCloseable {
     }
 
     // Amount of instructions that user will hear during the driving
-    // 0: All events, 1: Important, 2: Off
+    // 0: None (off), 1: Important, 2: All
     var voiceInstructionsValue: SoundToggleType
         get() {
             val name = sharedPreferences.getString(
                 "$keyPrefix$voiceInstructionsKey",
-                SoundToggleType.ALL.name
+                SoundToggleType.NONE.name
             )
             return try {
                 SoundToggleType.valueOf(name!!)
             } catch (e: IllegalArgumentException) {
-                SoundToggleType.ALL
+                SoundToggleType.NONE
             }
         }
         set(value) {
@@ -167,10 +167,11 @@ class SharedPrefs(val context: Context) : AutoCloseable {
     /// Reads the phone-side voice instruction setting from Flutter SharedPreferences.
     /// Returns the SoundToggleType matching the stored index.
     /// Defaults to ALL if not set.
+    /// Defaults to NONE (off) if not set.
     fun getFlutterVoiceInstructionType(): SoundToggleType {
         val key = "$keyPrefix$flutterVoiceInstructionIndexKey"
-        if (!sharedPreferences.contains(key)) return SoundToggleType.ALL
-        val index = sharedPreferences.getLong(key, 2).toInt()
+        if (!sharedPreferences.contains(key)) return SoundToggleType.NONE
+        val index = sharedPreferences.getLong(key, 0).toInt()
         return when (index) {
             0 -> SoundToggleType.NONE
             1 -> SoundToggleType.IMPORTANT

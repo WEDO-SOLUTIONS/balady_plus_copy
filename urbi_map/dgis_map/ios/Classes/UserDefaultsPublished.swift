@@ -75,10 +75,10 @@ class UserDefaultsPublished {
 
     /// Reads the phone-side voice instruction setting from Flutter SharedPreferences.
     /// Returns: 0 = none (sound off), 1 = important, 2 = all (sound on).
-    /// Defaults to 2 (all) if not set.
+    /// Defaults to 0 (off) if not set.
     func getFlutterVoiceInstructionIndex() -> Int {
         let hasKey = userDefaults.object(forKey: FlutterKeys.voiceInstructionIndex) != nil
-        return hasKey ? userDefaults.integer(forKey: FlutterKeys.voiceInstructionIndex) : 2
+        return hasKey ? userDefaults.integer(forKey: FlutterKeys.voiceInstructionIndex) : 0
     }
 }
 
