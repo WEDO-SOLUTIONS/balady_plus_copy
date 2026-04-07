@@ -158,6 +158,24 @@ class SharedPrefs(val context: Context) : AutoCloseable {
         private const val suggestBetterRoadKey = "auto.navigation.suggestBetterRoad"
 
         private const val volumeKey = "auto.volume"
+
+        // Flutter's voice instruction key (source of truth for phone-side setting)
+        // Values: 0 = none, 1 = important, 2 = all
+        private const val flutterVoiceInstructionIndexKey = "voice_instruction_index"
+    }
+
+    /// Reads the phone-side voice instruction setting from Flutter SharedPreferences.
+    /// Returns the SoundToggleType matching the stored index.
+    /// Defaults to ALL if not set.
+    fun getFlutterVoiceInstructionType(): SoundToggleType {
+        val key = "$keyPrefix$flutterVoiceInstructionIndexKey"
+        if (!sharedPreferences.contains(key)) return SoundToggleType.ALL
+        val index = sharedPreferences.getLong(key, 2).toInt()
+        return when (index) {
+            0 -> SoundToggleType.NONE
+            1 -> SoundToggleType.IMPORTANT
+            else -> SoundToggleType.ALL
+        }
     }
 
     override fun close() {

@@ -54,18 +54,22 @@ class SettingsScreen: NSObject {
             trafficControlModel.onClicked()
         }
         
-        // Restore sound state from SDK (reflects the phone-side setting)
-        // rather than from CarPlay's own UserDefaults which may be stale.
-        let currentCategories = navigationManager.soundNotificationSettings.enabledSoundCategories
-        isSoundEnabled = !currentCategories.isEmpty
-        // Persist the synced value so CarPlay button shows correctly
+        // Restore sound state from Flutter's SharedPreferences (the source of truth).
+        // Flutter saves voice_instruction_index: 0 = none, 1 = important, 2 = all.
+        // The SDK's NavigationManager resets to all-enabled on fresh launch,
+        // so we must read from persistent storage instead.
+        let voiceIndex = userDefaultsPublished.getFlutterVoiceInstructionIndex()
+        isSoundEnabled = voiceIndex != 0  // 0 = none (sound off)
+        let soundCategories = isSoundEnabled ? DashboardControlModel.allCategories : []
+        navigationManager.soundNotificationSettings.enabledSoundCategories = soundCategories
+        // Sync CarPlay's own key
         userDefaultsPublished.saveSoundEnabled(isSoundEnabled)
 
         // Restore parking state
         isParkingEnabled = userDefaultsPublished.getParkingEnabled()
         setParkingOn(isParkingEnabled)
     }
-    
+
     func createTemplate() -> CPTemplate {
         let trafficBtn = createTrafficButton()
         let soundBtn = createSoundButton()

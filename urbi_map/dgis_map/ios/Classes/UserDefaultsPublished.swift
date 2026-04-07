@@ -40,6 +40,13 @@ class UserDefaultsPublished {
         }
     }
     
+    // MARK: - Flutter SharedPreferences Keys
+    // Flutter stores sound settings with prefix "flutter."
+    private enum FlutterKeys {
+        // voice_instruction_index: 0 = none, 1 = important, 2 = all
+        static let voiceInstructionIndex = "flutter.voice_instruction_index"
+    }
+
     // MARK: - CarPlay Settings Save/Restore
     
     func saveParkingEnabled(_ enabled: Bool) {
@@ -64,6 +71,14 @@ class UserDefaultsPublished {
     
     func getTrafficEnabled() -> Bool {
         return userDefaults.bool(forKey: CarPlaySettingsKeys.trafficEnabled)
+    }
+
+    /// Reads the phone-side voice instruction setting from Flutter SharedPreferences.
+    /// Returns: 0 = none (sound off), 1 = important, 2 = all (sound on).
+    /// Defaults to 2 (all) if not set.
+    func getFlutterVoiceInstructionIndex() -> Int {
+        let hasKey = userDefaults.object(forKey: FlutterKeys.voiceInstructionIndex) != nil
+        return hasKey ? userDefaults.integer(forKey: FlutterKeys.voiceInstructionIndex) : 2
     }
 }
 
