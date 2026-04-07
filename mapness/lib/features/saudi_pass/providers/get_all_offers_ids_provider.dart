@@ -9,8 +9,9 @@ class GetAllOffersIds extends _$GetAllOffersIds {
   @override
   Future<List<OfferDetails>> build(List<String> ids) async {
     state = const AsyncLoading();
+    final uniqueIds = ids.toSet().toList();
     final offers = (await Future.wait(
-      ids.map((id) async {
+      uniqueIds.map((id) async {
         try {
           return await ref.watch(offerDetailsProvider(id).future);
         } catch (e, _) {

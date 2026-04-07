@@ -508,9 +508,11 @@ extension EntranceGeometry {
                 $0.toMessage()
             },
             entrancePolylines: self.entrancePolylines.map { polyline in
-                polyline.map {
-                    $0.toMessage()
-                }
+                PolylineGeometryMessage(
+                    points: polyline.map {
+                        $0.toMessage()
+                    }
+                )
             }
         )
     }

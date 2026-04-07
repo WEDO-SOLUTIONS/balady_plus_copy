@@ -14,6 +14,9 @@ class OfferFavorites extends _$OfferFavorites {
   OfferFavoritesState build(String offerId) => OfferFavoritesState.initial;
 
   void syncState({required bool isFavorite}) {
+    if (!ref.mounted) {
+      return;
+    }
     state = switch (isFavorite) {
       true => OfferFavoritesState.added,
       false => OfferFavoritesState.removed,
@@ -29,9 +32,13 @@ class OfferFavorites extends _$OfferFavorites {
   }
 
   Future<void> _sendRequest({required bool favorite}) async {
+    if (!ref.mounted) {
+      return;
+    }
     final repository = await ref.read(saudiPassRepositoryProvider.future);
     final position = ref.read(locationProvider);
     if (position == null) {
+      state = OfferFavoritesState.error;
       return;
     }
 
@@ -45,8 +52,14 @@ class OfferFavorites extends _$OfferFavorites {
           location: OfferLocation(latitude: position.latitude.toString(), longitude: position.longitude.toString()),
         ),
       );
+      if (!ref.mounted) {
+        return;
+      }
       state = favorite ? OfferFavoritesState.added : OfferFavoritesState.removed;
     } catch (_) {
+      if (!ref.mounted) {
+        return;
+      }
       state = OfferFavoritesState.error;
     }
   }
