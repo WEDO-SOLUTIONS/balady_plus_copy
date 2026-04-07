@@ -18,7 +18,6 @@ List<double> _utmToWgs84(double easting, double northing) {
 
   // WGS84 ellipsoid constants
   const double a = 6378137.0; // semi-major axis
-  const double f = 1 / 298.257223563; // flattening
   const double e = 0.0818191908426; // eccentricity
   const double e2 = e * e;
   const double e1sq = e2 / (1 - e2); // e'^2

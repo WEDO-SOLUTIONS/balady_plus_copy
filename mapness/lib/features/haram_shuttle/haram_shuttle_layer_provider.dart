@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart';
 import 'package:mapness/entities/makkah_buses/makkah_buses_model.dart';
 import 'package:mapness/features/haram_shuttle/haram_shuttle_layer_repository.dart';
 import 'package:mapness/features/haram_shuttle/haram_shuttle_layer_visible_provider.dart';
@@ -22,7 +21,6 @@ class HaramShuttleLayer extends _$HaramShuttleLayer {
     _isDisposed = false;
     ref
       ..onDispose(() => _isDisposed = true)
-      // Watch synchronous or separate providers before any async gap
       ..watch(
         mapObjectManagerProvider(
           named: mapOptions.name,
@@ -68,27 +66,10 @@ class HaramShuttleLayer extends _$HaramShuttleLayer {
   }
 
   Future<void> showHaramShuttle({List<MakkahBusesModel>? data}) async {
-    final haramShuttleData = data ?? state.value;
-    // If data not loaded yet, wait for the repository to provide it
-    final List<MakkahBusesModel> haramShuttle = (haramShuttleData == null || haramShuttleData.isEmpty)
-        ? await ref.read(haramShuttleLayerRepositoryProvider.future)
-        : haramShuttleData;
-    if (_isDisposed) return;
-    if (haramShuttle.isEmpty) {
-      debugPrint('HaramShuttle: No data to show');
+    final haramShuttle = data ?? state.value;
+    if (haramShuttle == null || haramShuttle.isEmpty) {
       return;
     }
-    debugPrint('HaramShuttle: Showing ${haramShuttle.length} routes');
-
-    final mapManagerFuture = ref.read(
-      mapObjectManagerProvider(
-        named: mapOptions.name,
-        layerId: mapOptions.layerId,
-      ).future,
-    );
-    final manager = await mapManagerFuture;
-    if (_isDisposed) return;
-
     final mapManager = ref.read(
       mapObjectManagerProvider(
         named: mapOptions.name,
@@ -97,9 +78,7 @@ class HaramShuttleLayer extends _$HaramShuttleLayer {
     );
 
     await mapManager.removeAllMarkers();
-    if (_isDisposed) return;
     await mapManager.removeAllPolyLines();
-    if (_isDisposed) return;
 
     final List<Polyline> polylines = [];
 
@@ -127,26 +106,20 @@ class HaramShuttleLayer extends _$HaramShuttleLayer {
         return GeoPointMessage(latitude: lat, longitude: lon);
       }).toList();
 
-      debugPrint(
-        'HaramShuttle: route ${bus.id ?? i} has ${geoPoints.length} points, first=${geoPoints.first.latitude},${geoPoints.first.longitude}',
-      );
-
       polylines.add(
         Polyline(
           id: 'haram_shuttle_${bus.id ?? i}',
           options: PolylineOptionsMessage(
             points: geoPoints,
-            width: 8,
-            color: 0xFFFF0000, // RED for debugging
-            zIndex: 100,
+            width: 5,
+            color: colorValue,
+            zIndex: 0,
           ),
         ),
       );
     }
 
     await mapManager.addPolyLines(polylines);
-    debugPrint('HaramShuttle: Added ${polylines.length} polylines to map');
-    if (_isDisposed) return;
     ref.read(haramShuttleLayerRepositoryProvider.notifier).showHaramShuttle();
   }
 
@@ -169,8 +142,6 @@ class HaramShuttleLayer extends _$HaramShuttleLayer {
     if (isHaramShuttleVisible) {
       await hideHaramShuttle();
     } else {
-      // Set visible flag first so build() will show data when ready
-      ref.read(haramShuttleLayerVisibleProvider.notifier).showHaramShuttle();
       await showHaramShuttle();
     }
   }

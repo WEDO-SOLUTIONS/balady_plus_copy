@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/hajj/hajj_rcmc_provider.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
+import 'package:mapness/features/haram_shuttle/haram_shuttle_layer_provider.dart';
+import 'package:mapness/features/haram_shuttle/haram_shuttle_layer_visible_provider.dart';
 import 'package:mapness/features/makkah_buses/makkah_buses_layer_provider.dart';
 import 'package:mapness/features/makkah_buses/makkah_buses_layer_visible_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
@@ -49,6 +51,8 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(metroLayerVisibleProvider.select((_) => null))
       ..watch(makkahBusesLayerProvider.select((_) => null))
       ..watch(makkahBusesLayerVisibleProvider.select((_) => null))
+      ..watch(haramShuttleLayerProvider.select((_) => null))
+      ..watch(haramShuttleLayerVisibleProvider.select((_) => null))
       ..watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).select((_) => null))
       ..watch(showMapOffersProvider.select((_) => null))
       ..watch(hajjRcmcProvider.select((_) => null));
