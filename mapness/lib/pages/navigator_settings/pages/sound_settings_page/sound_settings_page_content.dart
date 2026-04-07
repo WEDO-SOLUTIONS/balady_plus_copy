@@ -49,6 +49,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                   child: SegmentTabsButton(
+                    key: ValueKey('voice_instruction_${soundSettingsModel.voiceInstructionIndex}'),
                     tabsContent: [
                       TabsRowV2Content(title: l10n.segmentButtonOffTitle),
                       TabsRowV2Content(title: l10n.segmentButtonImportantTitle),

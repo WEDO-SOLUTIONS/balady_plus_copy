@@ -54,11 +54,13 @@ class SettingsScreen: NSObject {
             trafficControlModel.onClicked()
         }
         
-        // Restore sound state
-        isSoundEnabled = userDefaultsPublished.getSoundEnabled()
-        let soundCategories = isSoundEnabled ? DashboardControlModel.allCategories : []
-        navigationManager.soundNotificationSettings.enabledSoundCategories = soundCategories
-        
+        // Restore sound state from SDK (reflects the phone-side setting)
+        // rather than from CarPlay's own UserDefaults which may be stale.
+        let currentCategories = navigationManager.soundNotificationSettings.enabledSoundCategories
+        isSoundEnabled = !currentCategories.isEmpty
+        // Persist the synced value so CarPlay button shows correctly
+        userDefaultsPublished.saveSoundEnabled(isSoundEnabled)
+
         // Restore parking state
         isParkingEnabled = userDefaultsPublished.getParkingEnabled()
         setParkingOn(isParkingEnabled)

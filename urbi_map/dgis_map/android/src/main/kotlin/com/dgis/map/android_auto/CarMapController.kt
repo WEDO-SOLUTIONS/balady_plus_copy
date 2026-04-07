@@ -38,6 +38,7 @@ import ru.dgis.sdk.map.ZoomControlModel
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.setAttribute
 import ru.dgis.sdk.navigation.RouteBuildOptions
+import ru.dgis.sdk.navigation.SoundCategory
 import ru.dgis.sdk.navigation.getVoiceManager
 import ru.dgis.sdk.platform.Locale as SdkLocale
 import ru.dgis.sdk.platform.getLocaleManager
@@ -310,8 +311,20 @@ class CarMapController(
 
 
     private fun settingsInit() {
-        // Voice instructions
-        navigationHandler.toggleVoiceInstruction(sharedPrefs.voiceInstructionsValue)
+        // Voice instructions: read current state from SDK (reflects phone-side setting)
+        // rather than from Android Auto's own SharedPrefs which may be stale.
+        val currentCategories = DgisMapInitializer.getNavigationManager()
+            .soundNotificationSettings.enabledSoundCategories
+        val sdkSoundType = if (currentCategories.isEmpty()) {
+            SoundToggleType.NONE
+        } else if (!currentCategories.contains(SoundCategory.INSTRUCTIONS)) {
+            SoundToggleType.IMPORTANT
+        } else {
+            SoundToggleType.ALL
+        }
+        // Sync Android Auto's prefs with the SDK state
+        sharedPrefs.voiceInstructionsValue = sdkSoundType
+        navigationHandler.toggleVoiceInstruction(sdkSoundType)
 
         // Traffic
         val trafficStatus =
