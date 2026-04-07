@@ -20,7 +20,7 @@ class PoiLinesContainer extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
       padding: const EdgeInsets.all(Spacing.$4x),
       decoration: BoxDecoration(
-        color: Colors.green.withValues(alpha: .5),
+        color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.circular(Spacing.$4x),
       ),
       child: Column(
@@ -30,16 +30,16 @@ class PoiLinesContainer extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
             child: Row(
               children: [
-                const Icon(
-                  Icons.directions_bus_filled_sharp,
-                  color: Colors.green,
+                 Icon(
+                   model!.id=='makkah_bus'?Icons.directions_bus_filled_sharp:Icons.bus_alert,
+                  color: context.colors.foregroundDefault,
                   size: Spacing.$5x,
                 ),
                 Spacing.$1x.widthBox,
                 Text(
                   model!.label,
                   style: context.textStyles.bodyLargeMedium.copyWith(
-                    color: Colors.green,
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
               ],
