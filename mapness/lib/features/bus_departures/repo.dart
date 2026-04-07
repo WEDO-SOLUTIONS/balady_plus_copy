@@ -14,17 +14,20 @@ class BusDeparturesRepo extends _$BusDeparturesRepo {
   void build() {}
 
   Future<BusDeparturesResponse?> getDepartures(String poiId) async {
+    print('amr getDepartures poiId $poiId');
     try {
       final dio = await ref.read(busDeparturesDioProvider.future);
       final appLanguage = ref.read(appLanguageProvider);
       final response = await dio.get(
-        '$poiId/departures',
+        '$poiId/feed',
         options: Options(responseType: ResponseType.json),
         queryParameters: {
           'locale':appLanguage.languageCode
         }
       );
       final data = response.data;
+      print('amr data $data');
+
       if (data == null) {
         return null;
       }

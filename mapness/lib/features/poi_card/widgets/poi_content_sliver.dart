@@ -115,7 +115,7 @@ class PoiContentSliver extends ConsumerWidget {
     );
 
     final busDepartures = ref.watch(busDeparturesProvider(data.id!.objectId.toString()));
-    final departuresList = busDepartures.value?.data.routes;
+    final departuresList = busDepartures.value?.data.transitSystems.expand((ts) => ts.routes).toList();
     final workingHours = data.openingHours?.toWorkingHours();
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {

@@ -58,13 +58,6 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
             titleBuilder: (context) => Text.rich(
               TextSpan(
                 children: [
-                  TextSpan(
-                    text: widget.routeInfo.headsign,
-                    style: TextStyle(
-                      color: context.colors.foregroundDefault,
-                      fontSize: 16,
-                    ),
-                  ),
                   WidgetSpan(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x, horizontal: Spacing.$1x),
@@ -72,11 +65,18 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                         borderRadius: BorderRadius.circular(Spacing.$0_5x),
                         color: colorLine,
                       ),
-                      margin: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                      margin: const EdgeInsetsDirectional.only(end: Spacing.$1x),
                       child: Text(
                         widget.routeInfo.routeShortName,
                         style: TextStyle(color: textColorLine, fontSize: 12),
                       ),
+                    ),
+                  ),
+                  TextSpan(
+                    text: widget.routeInfo.headsign,
+                    style: TextStyle(
+                      color: context.colors.foregroundDefault,
+                      fontSize: 16,
                     ),
                   ),
                 ],
