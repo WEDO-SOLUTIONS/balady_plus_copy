@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/bus_departures/model.dart';
 
@@ -30,8 +31,8 @@ class PoiLinesContainer extends StatelessWidget {
             padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
             child: Row(
               children: [
-                 Icon(
-                   model!.id=='makkah_bus'?Icons.directions_bus_filled_sharp:Icons.bus_alert,
+                Icon(
+                   model!.id=='makkah_bus'?PlacesIcons.qibla:Icons.directions_bus_filled_sharp,
                   color: context.colors.foregroundDefault,
                   size: Spacing.$5x,
                 ),
@@ -48,7 +49,10 @@ class PoiLinesContainer extends StatelessWidget {
           Spacing.$4x.heightBox,
           ...List.generate(
             model!.routes.length,
-            (index) => PoiLinesMakkahBus(routeInfo: model!.routes[index]),
+            (index) => Padding(
+              padding: EdgeInsets.only(bottom: model!.routes.length-1== index? 0 : Spacing.$2x),
+              child: PoiLinesMakkahBus(routeInfo: model!.routes[index]),
+            ),
           ),
         ],
       ),

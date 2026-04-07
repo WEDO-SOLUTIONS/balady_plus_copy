@@ -79,6 +79,9 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.makkahBuses() =>
       const MapObjectManagerSettings._(name: 'makkah-buses', layerId: MapObjectLayers.defaultLayerId);
 
+  factory MapObjectManagerSettings.haramShuttle() =>
+      const MapObjectManagerSettings._(name: 'haram-shuttle', layerId: MapObjectLayers.defaultLayerId);
+
   const MapObjectManagerSettings.wrcEvent() : this._(name: 'wrc-event', layerId: MapObjectLayers.hajjLayerId);
 }
 

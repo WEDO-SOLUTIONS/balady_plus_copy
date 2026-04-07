@@ -25,8 +25,6 @@ class BusDeparturesRepo extends _$BusDeparturesRepo {
         }
       );
       final data = response.data;
-      print('amr data $data');
-
       if (data == null) {
         return null;
       }
