@@ -147,6 +147,14 @@ class CarMapController(
             startFreeroam()
         }
 
+        val location = locationSource.lastLocation
+        if (location != null) {
+            moveCamera(
+                point = GeoPoint(location.latitude, location.longitude),
+                tilt = 45.0
+            )
+        }
+
         setStyle()
         settingsInit()
     }
