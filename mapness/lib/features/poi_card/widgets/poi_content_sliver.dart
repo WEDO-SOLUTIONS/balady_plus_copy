@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +24,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_bus.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_container.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
@@ -30,6 +33,7 @@ import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
@@ -115,8 +119,16 @@ class PoiContentSliver extends ConsumerWidget {
     );
 
     final busDepartures = ref.watch(busDeparturesProvider(data.id!.objectId.toString()));
-    final departuresList = busDepartures.value?.data.transitSystems.expand((ts) => ts.routes).toList();
+    print('amr ');
+    final makkahDeparturesModel = busDepartures.value?.data.transitSystems.firstWhereOrNull(
+      (element) => element.id == 'makkah_bus',
+    );
+    final haramDeparturesModel = busDepartures.value?.data.transitSystems.firstWhereOrNull(
+      (element) => element.id == 'haram_shuttle',
+    );
     final workingHours = data.openingHours?.toWorkingHours();
+    print('amr makkahDeparturesList $makkahDeparturesModel');
+    print('amr makkahDeparturesList $haramDeparturesModel');
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
       await BssService.instance.sendEvent(
@@ -305,16 +317,8 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 )
                 .toList(),
-            if (departuresList != null)
-              Column(
-                children: List.generate(
-                  departuresList.length,
-                  (index) => Padding(
-                    padding: itemPadding,
-                    child: PoiLinesMakkahBus(routeInfo: departuresList[index]),
-                  ),
-                ),
-              ),
+            PoiLinesContainer(model: makkahDeparturesModel,),
+            PoiLinesContainer(model: haramDeparturesModel,),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(

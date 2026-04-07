@@ -19,7 +19,8 @@ class BusDeparturesRepo extends _$BusDeparturesRepo {
       final dio = await ref.read(busDeparturesDioProvider.future);
       final appLanguage = ref.read(appLanguageProvider);
       final response = await dio.get(
-        '$poiId/feed',
+        '30681456418586388/feed',
+        // '$poiId/feed',
         options: Options(responseType: ResponseType.json),
         queryParameters: {
           'locale':appLanguage.languageCode

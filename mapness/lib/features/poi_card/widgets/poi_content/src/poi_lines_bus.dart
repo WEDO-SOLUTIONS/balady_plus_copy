@@ -48,13 +48,8 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
       color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
-          expandIconColor: context.colors.foregroundMuted,
+          expandIconColor: colorLine,
           options: ContentRowOptions(
-            leadingIcon: Icon(
-              Icons.directions_bus_filled_sharp,
-              color: colorLine,
-              size: 24,
-            ),
             titleBuilder: (context) => Text.rich(
               TextSpan(
                 children: [

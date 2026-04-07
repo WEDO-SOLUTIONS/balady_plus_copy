@@ -13,8 +13,8 @@ Future<Dio> busDeparturesDio(Ref ref) async {
   // Base URLs in env usually look like "https://domain.com/api" or "/api/1.0/"
   // We need "https://domain.com/api/v1/mb/"
   // The appFeedbackApi field provides the clean api base: "https://urbi-lifestyle.momrah.gov.sa/api"
-  // final baseUrl = 'https://urbi-lifestyle-stg.momrah.gov.sa/api/v1/transit/';
-  final baseUrl = '${env.appFeedbackApi}/v1/transit/';
+  final baseUrl = 'https://urbi-lifestyle-stg.momrah.gov.sa/api/v1/transit/';
+  // final baseUrl = '${env.appFeedbackApi}/v1/transit/';
 
   final dio = ref.read(baseDioProvider);
   final appLanguage = ref.read(appLanguageProvider);
