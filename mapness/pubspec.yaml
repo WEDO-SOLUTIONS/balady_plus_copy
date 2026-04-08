@@ -31,6 +31,7 @@ dependencies:
   # Lightweight fast key-value database
   hive_ce_flutter: ^2.3.4
   flutter_svg: ^2.2.3
+  proj4dart: ^2.1.0
 
   # Map urbi SDK
   dgis_map:

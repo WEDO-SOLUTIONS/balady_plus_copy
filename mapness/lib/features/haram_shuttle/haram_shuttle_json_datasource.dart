@@ -1,75 +1,43 @@
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/entities/makkah_buses/makkah_buses_model.dart';
+import 'package:proj4dart/proj4dart.dart';
 
 double _toDouble(dynamic val) {
-  if (val is num) return val.toDouble();
-  if (val is String) return double.tryParse(val) ?? 0.0;
+  if (val is num) {
+    return val.toDouble();
+  }
+  if (val is String) {
+    return double.tryParse(val) ?? 0.0;
+  }
   return 0.0;
 }
 
-/// Convert UTM Zone 37N (EPSG:32637) coordinates to WGS84 (lon, lat).
-/// Returns [longitude, latitude].
-List<double> _utmToWgs84(double easting, double northing) {
-  const int zone = 37;
+final _wgs84 = Projection.get('EPSG:4326')!;
 
-  // WGS84 ellipsoid constants
-  const double a = 6378137.0; // semi-major axis
-  const double e = 0.0818191908426; // eccentricity
-  const double e2 = e * e;
-  const double e1sq = e2 / (1 - e2); // e'^2
+final Map<int, Projection> _utmCache = {};
 
-  const double k0 = 0.9996; // scale factor
-  const double falseEasting = 500000.0;
+Projection getUtmProjection(int zone) => _utmCache.putIfAbsent(
+  zone,
+  () {
+    final key = 'EPSG:326$zone';
+    // UTM zones are not pre-registered in proj4dart; define on first use
+    // (also needed inside compute isolates where the global registry is fresh).
+    Projection.add(
+      key,
+      '+proj=utm +zone=$zone +datum=WGS84 +units=m +no_defs +type=crs',
+    );
+    return Projection.get(key)!;
+  },
+);
 
-  final double x = easting - falseEasting;
-  // Makkah is in the northern hemisphere, so no false northing adjustment needed
-  final double y = northing;
-
-  final double m = y / k0;
-
-  final double mu = m / (a * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256));
-
-  final double e1 = (1 - sqrt(1 - e2)) / (1 + sqrt(1 - e2));
-
-  final double phi1 =
-      mu +
-      (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * sin(2 * mu) +
-      (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * sin(4 * mu) +
-      (151 * e1 * e1 * e1 / 96) * sin(6 * mu) +
-      (1097 * e1 * e1 * e1 * e1 / 512) * sin(8 * mu);
-
-  final double sinPhi1 = sin(phi1);
-  final double cosPhi1 = cos(phi1);
-  final double tanPhi1 = tan(phi1);
-
-  final double n1 = a / sqrt(1 - e2 * sinPhi1 * sinPhi1);
-  final double t1 = tanPhi1 * tanPhi1;
-  final double c1 = e1sq * cosPhi1 * cosPhi1;
-  final double r1 = a * (1 - e2) / pow(1 - e2 * sinPhi1 * sinPhi1, 1.5);
-  final double d = x / (n1 * k0);
-
-  final double lat =
-      phi1 -
-      (n1 * tanPhi1 / r1) *
-          (d * d / 2 -
-              (5 + 3 * t1 + 10 * c1 - 4 * c1 * c1 - 9 * e1sq) * d * d * d * d / 24 +
-              (61 + 90 * t1 + 298 * c1 + 45 * t1 * t1 - 252 * e1sq - 3 * c1 * c1) * d * d * d * d * d * d / 720);
-
-  final double lon0 = ((zone - 1) * 6 - 180 + 3) * pi / 180; // central meridian
-
-  final double lon =
-      lon0 +
-      (d -
-              (1 + 2 * t1 + c1) * d * d * d / 6 +
-              (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * e1sq + 24 * t1 * t1) * d * d * d * d * d / 120) /
-          cosPhi1;
-
-  // Convert radians to degrees
-  return [lon * 180 / pi, lat * 180 / pi];
+List<double> _utmToWgs84(double easting, double northing, {int zone = 37}) {
+  final result = getUtmProjection(zone).transform(
+    _wgs84,
+    Point(x: easting, y: northing),
+  );
+  return [result.x, result.y];
 }
 
 /// Check if coordinates are in UTM (large values) vs WGS84 (small degree values).
