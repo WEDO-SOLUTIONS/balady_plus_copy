@@ -3,75 +3,80 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/entities/makkah_buses/makkah_buses_model.dart';
-import 'package:mapness/features/makkah_buses/makkah_buses_layer_repository.dart';
-import 'package:mapness/features/makkah_buses/makkah_buses_layer_visible_provider.dart';
+import 'package:mapness/entities/makkah_buses/model.dart';
+import 'package:mapness/features/makkah_bus/repo.dart';
+import 'package:mapness/features/makkah_bus/visible_provider.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../lifestyle_layers/configs/layers_consts.dart';
 
-part 'makkah_buses_layer_provider.g.dart';
+part 'provider.g.dart';
 
 @riverpod
-class MakkahBusesLayer extends _$MakkahBusesLayer {
-  final mapOptions = MapObjectManagerSettings.makkahBuses();
+class MakkahBusLayer extends _$MakkahBusLayer {
+  final mapOptions = MapObjectManagerSettings.makkahBus();
 
   bool _isDisposed = false;
 
 
 
   @override
-  Future<List<MakkahBusesModel>> build() async {
+  Future<List<MakkahBusModel>> build() async {
     _isDisposed = false;
     ref..onDispose(() => _isDisposed = true)
-    // Watch synchronous or separate providers before any async gap
     ..watch(mapObjectManagerProvider(
       named: mapOptions.name,
       layerId: mapOptions.layerId,
     ));
 
-    final makkahBusesLayerJsonDatasource = await ref.watch(makkahBusesLayerRepositoryProvider.future);
-    if (_isDisposed) return makkahBusesLayerJsonDatasource;
+    final list = await ref.watch(makkahBusLayerRepoProvider.future);
+    if (_isDisposed) {
+      return list;
+    }
 
     bool isDrawn = false;
 
-    ref.listen(cameraPositionProvider, (prev, positon) {
-      if (_isDisposed) return;
-      final isShown = ref.read(makkahBusesLayerVisibleProvider);
+    ref..listen(cameraPositionProvider, (prev, position) {
+      if (_isDisposed) {
+        return;
+      }
+      final isShown = ref.read(makkahBusLayerVisibleProvider);
       if (isShown && !isDrawn) {
         isDrawn = true;
-        unawaited(showMakkahBuses());
+        unawaited(show());
       } else if (!isShown && isDrawn) {
         isDrawn = false;
-        unawaited(hideMakkahBuses());
+        unawaited(hide());
+      }
+    })
+
+    ..listen(makkahBusLayerVisibleProvider, (prev, isShown) {
+      if (_isDisposed) {
+        return;
+      }
+      if (isShown && !isDrawn) {
+        isDrawn = true;
+        unawaited(show());
+      } else if (!isShown && isDrawn) {
+        isDrawn = false;
+        unawaited(hide());
       }
     });
 
-    ref.listen(makkahBusesLayerVisibleProvider, (prev, isShown) {
-      if (_isDisposed) return;
-      if (isShown && !isDrawn) {
-        isDrawn = true;
-        unawaited(showMakkahBuses());
-      } else if (!isShown && isDrawn) {
-        isDrawn = false;
-        unawaited(hideMakkahBuses());
-      }
-    });
-
-    final isMakkahBusesShown = ref.read(makkahBusesLayerVisibleProvider);
-    if (isMakkahBusesShown) {
+    final isShown = ref.read(makkahBusLayerVisibleProvider);
+    if (isShown) {
       isDrawn = true;
-      unawaited(showMakkahBuses(data: makkahBusesLayerJsonDatasource));
+      unawaited(show(data: list));
     }
 
-    return makkahBusesLayerJsonDatasource;
+    return list;
   }
 
-  Future<void> showMakkahBuses({List<MakkahBusesModel>? data}) async {
-    final makkahBuses = data ?? state.value;
-    if (makkahBuses == null || makkahBuses.isEmpty) {
+  Future<void> show({List<MakkahBusModel>? data}) async {
+    final list = data ?? state.value;
+    if (list == null || list.isEmpty) {
       return;
     }
     final mapManager = ref.read(mapObjectManagerProvider(
@@ -84,8 +89,8 @@ class MakkahBusesLayer extends _$MakkahBusesLayer {
 
     final List<Polyline> polylines = [];
 
-    for (int i = 0; i < makkahBuses.length; i++) {
-      final bus = makkahBuses[i];
+    for (int i = 0; i < list.length; i++) {
+      final bus = list[i];
       final coordinates = bus.coordinates;
       final colorCode = bus.colorCode;
 
@@ -122,10 +127,10 @@ class MakkahBusesLayer extends _$MakkahBusesLayer {
     }
 
     await mapManager.addPolyLines(polylines);
-    ref.read(makkahBusesLayerRepositoryProvider.notifier).showMakkahBuses();
+    ref.read(makkahBusLayerRepoProvider.notifier).show();
   }
 
-  Future<void> hideMakkahBuses() async {
+  Future<void> hide() async {
     final mapManager = ref.read(mapObjectManagerProvider(
       named: mapOptions.name,
       layerId: mapOptions.layerId,
@@ -133,16 +138,18 @@ class MakkahBusesLayer extends _$MakkahBusesLayer {
     await mapManager.removeAllMarkers();
     await mapManager.removeAllPolyLines();
 
-    if (_isDisposed) return;
-    ref.read(makkahBusesLayerRepositoryProvider.notifier).hideMakkahBuses();
+    if (_isDisposed) {
+      return;
+    }
+    ref.read(makkahBusLayerRepoProvider.notifier).hide();
   }
 
-  Future<void> toggleMakkahBuses() async {
-    final isMakkahBusesVisible = ref.read(makkahBusesLayerVisibleProvider);
-    if (isMakkahBusesVisible) {
-      await hideMakkahBuses();
+  Future<void> toggle() async {
+    final isVisible = ref.read(makkahBusLayerVisibleProvider);
+    if (isVisible) {
+      await hide();
     } else {
-      await showMakkahBuses();
+      await show();
     }
   }
 }

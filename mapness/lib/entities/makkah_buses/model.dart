@@ -2,20 +2,20 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'makkah_buses_model.freezed.dart';
-part 'makkah_buses_model.g.dart';
+part 'model.freezed.dart';
+part 'model.g.dart';
 
 @freezed
-abstract class MakkahBusesModel with _$MakkahBusesModel {
+abstract class MakkahBusModel with _$MakkahBusModel {
   @JsonSerializable(explicitToJson: true)
-  const factory MakkahBusesModel({
+  const factory MakkahBusModel({
     final String? id,
     final String? nameArabic,
     final String? nameEnglish,
     final String? colorCode,
     final String? colorName,
     final List<List<double>>? coordinates, // [lon, lat] pairs
-  }) = _MakkahBusesModel;
+  }) = _MakkahBusModel;
 
-  factory MakkahBusesModel.fromJson(Map<String, dynamic> json) => _$MakkahBusesModelFromJson(json);
+  factory MakkahBusModel.fromJson(Map<String, dynamic> json) => _$MakkahBusModelFromJson(json);
 }

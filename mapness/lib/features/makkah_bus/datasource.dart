@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:mapness/entities/makkah_buses/makkah_buses_model.dart';
+import 'package:mapness/entities/makkah_buses/model.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 
 double _toDouble(dynamic val) {
@@ -12,8 +12,8 @@ double _toDouble(dynamic val) {
 }
 
 // compute function to parse json
-List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
-  final List<MakkahBusesModel> result = [];
+List<MakkahBusModel> _parse(String jsonInput) {
+  final List<MakkahBusModel> result = [];
   try {
     // ESRI format: top-level object with features array
     final Map<String, dynamic> json = jsonDecode(jsonInput);
@@ -44,7 +44,7 @@ List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
             }
           }
           if (lineCoordinates.isNotEmpty) {
-            result.add(MakkahBusesModel(
+            result.add(MakkahBusModel(
               id: id != null ? '${id}_$lineIndex' : null,
               nameArabic: nameArabic,
               nameEnglish: nameEnglish,
@@ -63,7 +63,7 @@ List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
         }
 
         if (coordinates.isNotEmpty) {
-          result.add(MakkahBusesModel(
+          result.add(MakkahBusModel(
             id: id,
             nameArabic: nameArabic,
             nameEnglish: nameEnglish,
@@ -80,11 +80,11 @@ List<MakkahBusesModel> parseMakkahBusesJson(String jsonInput) {
   return result;
 }
 
-class MakkahBusesJsonDatasource {
-  Future<List<MakkahBusesModel>> getMakkahBusesInfo() async {
+class MakkahBusJsonDatasource {
+  Future<List<MakkahBusModel>> getInfo() async {
     try{
-      final jsonOutput = await rootBundle.loadString(Assets.maps.makkahBuses.routes);
-      final result = await compute(parseMakkahBusesJson, jsonOutput);
+      final jsonOutput = await rootBundle.loadString(Assets.maps.buses.makkahBus);
+      final result = await compute(_parse, jsonOutput);
       return result;
     } catch (ex) {
       return [];

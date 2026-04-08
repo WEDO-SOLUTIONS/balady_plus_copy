@@ -20,10 +20,10 @@ import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
-import 'package:mapness/features/haram_shuttle/haram_shuttle_layer_provider.dart';
-import 'package:mapness/features/haram_shuttle/haram_shuttle_layer_repository.dart';
-import 'package:mapness/features/makkah_buses/makkah_buses_layer_provider.dart';
-import 'package:mapness/features/makkah_buses/makkah_buses_layer_repository.dart';
+import 'package:mapness/features/shuttle_bus/provider.dart';
+import 'package:mapness/features/shuttle_bus/repo.dart';
+import 'package:mapness/features/makkah_bus/provider.dart';
+import 'package:mapness/features/makkah_bus/repo.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -203,10 +203,10 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         toggleMetro();
         break;
-      case LayerType.makkahBuses:
+      case LayerType.makkahBus:
         toggleMakkahBuses();
         break;
-      case LayerType.haramShuttle:
+      case LayerType.shuttleBus:
         toggleHaramShuttle();
         break;
       // case LayerType.joy:
@@ -226,12 +226,12 @@ class LayersControls extends _$LayersControls {
     } else if (layerType case LayerType.metro) {
       ref.read(metroLayerRepositoryProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
-    } else if (layerType case LayerType.makkahBuses) {
-      ref.read(makkahBusesLayerRepositoryProvider.notifier).showMakkahBuses();
-      setSelection(selectedType: LayerType.makkahBuses);
-    } else if (layerType case LayerType.haramShuttle) {
-      ref.read(haramShuttleLayerRepositoryProvider.notifier).showHaramShuttle();
-      setSelection(selectedType: LayerType.haramShuttle);
+    } else if (layerType case LayerType.makkahBus) {
+      ref.read(makkahBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.makkahBus);
+    } else if (layerType case LayerType.shuttleBus) {
+      ref.read(shuttleBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.shuttleBus);
     }
   }
 
@@ -281,18 +281,18 @@ class LayersControls extends _$LayersControls {
   }
 
   void toggleMakkahBuses() {
-    ref.read(makkahBusesLayerProvider.notifier).toggleMakkahBuses();
-    if (state.selectedType != (LayerType.makkahBuses)) {
-      setSelection(selectedType: LayerType.makkahBuses);
+    ref.read(makkahBusLayerProvider.notifier).toggle();
+    if (state.selectedType != (LayerType.makkahBus)) {
+      setSelection(selectedType: LayerType.makkahBus);
     } else {
       setSelection();
     }
   }
 
   void toggleHaramShuttle() {
-    ref.read(haramShuttleLayerProvider.notifier).toggleHaramShuttle();
-    if (state.selectedType != (LayerType.haramShuttle)) {
-      setSelection(selectedType: LayerType.haramShuttle);
+    ref.read(shuttleBusLayerProvider.notifier).toggle();
+    if (state.selectedType != (LayerType.shuttleBus)) {
+      setSelection(selectedType: LayerType.shuttleBus);
     } else {
       setSelection();
     }
@@ -618,11 +618,11 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).toggleMetro();
         break;
-      case LayerType.makkahBuses:
-        await ref.read(makkahBusesLayerProvider.notifier).toggleMakkahBuses();
+      case LayerType.makkahBus:
+        await ref.read(makkahBusLayerProvider.notifier).toggle();
         break;
-      case LayerType.haramShuttle:
-        await ref.read(haramShuttleLayerProvider.notifier).toggleHaramShuttle();
+      case LayerType.shuttleBus:
+        await ref.read(shuttleBusLayerProvider.notifier).toggle();
         break;
     }
   }

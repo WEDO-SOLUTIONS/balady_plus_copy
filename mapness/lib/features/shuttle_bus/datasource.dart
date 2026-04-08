@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:mapness/entities/makkah_buses/makkah_buses_model.dart';
+import 'package:mapness/entities/makkah_buses/model.dart';
 import 'package:proj4dart/proj4dart.dart';
 
-double _toDouble(dynamic val) {
+double _toDouble(val) {
   if (val is num) {
     return val.toDouble();
   }
@@ -22,8 +22,6 @@ Projection getUtmProjection(int zone) => _utmCache.putIfAbsent(
   zone,
   () {
     final key = 'EPSG:326$zone';
-    // UTM zones are not pre-registered in proj4dart; define on first use
-    // (also needed inside compute isolates where the global registry is fresh).
     Projection.add(
       key,
       '+proj=utm +zone=$zone +datum=WGS84 +units=m +no_defs +type=crs',
@@ -55,7 +53,6 @@ bool _isUtmCoordinates(List<dynamic> rawCoords, String? geomType) {
     if (firstPoint != null && firstPoint.length >= 2) {
       final x = _toDouble(firstPoint[0]);
       final y = _toDouble(firstPoint[1]);
-      // UTM coordinates are typically > 100000, WGS84 lon/lat are < 360
       return x.abs() > 1000 || y.abs() > 1000;
     }
   } catch (_) {}
@@ -63,21 +60,21 @@ bool _isUtmCoordinates(List<dynamic> rawCoords, String? geomType) {
 }
 
 /// Convert a raw coordinate point, applying UTM→WGS84 if needed.
-List<double> _convertPoint(dynamic point, bool isUtm) {
-  if (point is! List<dynamic> || point.length < 2) return [];
+List<double> _convertPoint(point, bool isUtm) {
+  if (point is! List<dynamic> || point.length < 2) {
+    return [];
+  }
   final x = _toDouble(point[0]);
   final y = _toDouble(point[1]);
   if (isUtm) {
     return _utmToWgs84(x, y);
   }
-  return [x, y]; // already [lon, lat]
+  return [x, y];
 }
 
-// compute function to parse json
-List<MakkahBusesModel> parseHaramShuttleJson(String jsonInput) {
-  final List<MakkahBusesModel> result = [];
+List<MakkahBusModel> _parseJson(String jsonInput) {
+  final List<MakkahBusModel> result = [];
   try {
-    // ESRI format: top-level object with features array
     final Map<String, dynamic> json = jsonDecode(jsonInput);
     final features = json['features'] as List<dynamic>? ?? [];
 
@@ -110,7 +107,7 @@ List<MakkahBusesModel> parseHaramShuttleJson(String jsonInput) {
           }
           if (lineCoordinates.isNotEmpty) {
             result.add(
-              MakkahBusesModel(
+              MakkahBusModel(
                 id: id != null ? '${id}_$lineIndex' : null,
                 nameArabic: nameArabic,
                 nameEnglish: nameEnglish,
@@ -132,7 +129,7 @@ List<MakkahBusesModel> parseHaramShuttleJson(String jsonInput) {
 
         if (coordinates.isNotEmpty) {
           result.add(
-            MakkahBusesModel(
+            MakkahBusModel(
               id: id,
               nameArabic: nameArabic,
               nameEnglish: nameEnglish,
@@ -150,13 +147,13 @@ List<MakkahBusesModel> parseHaramShuttleJson(String jsonInput) {
   return result;
 }
 
-class HaramShuttleJsonDatasource {
-  static const _assetPath = 'packages/mapness/assets/maps/makkah_buses/haram_shuttle.geojson';
+class ShuttleBusJsonDatasource {
+  static const _assetPath = 'packages/mapness/assets/maps/buses/shuttle_bus.geojson';
 
-  Future<List<MakkahBusesModel>> getHaramShuttleInfo() async {
+  Future<List<MakkahBusModel>> getInfo() async {
     try {
       final jsonOutput = await rootBundle.loadString(_assetPath);
-      final result = await compute(parseHaramShuttleJson, jsonOutput);
+      final result = await compute(_parseJson, jsonOutput);
       return result;
     } catch (ex) {
       return [];

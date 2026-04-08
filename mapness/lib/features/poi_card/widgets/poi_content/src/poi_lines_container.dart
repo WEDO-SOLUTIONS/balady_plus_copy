@@ -9,8 +9,9 @@ import 'poi_lines_bus.dart';
 
 class PoiLinesContainer extends StatelessWidget {
   final TransitSystem? model;
+  final bool isShuttle;
 
-  const PoiLinesContainer({this.model, super.key});
+  const PoiLinesContainer({this.model,this.isShuttle=false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,7 @@ class PoiLinesContainer extends StatelessWidget {
             model!.routes.length,
             (index) => Padding(
               padding: EdgeInsets.only(bottom: model!.routes.length-1== index? 0 : Spacing.$2x),
-              child: PoiLinesMakkahBus(routeInfo: model!.routes[index]),
+              child: PoiLinesMakkahBus(routeInfo: model!.routes[index],isShuttle: isShuttle,),
             ),
           ),
         ],

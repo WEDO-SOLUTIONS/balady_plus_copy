@@ -128,7 +128,7 @@ class PoiContentSliver extends ConsumerWidget {
     );
     final workingHours = data.openingHours?.toWorkingHours();
     print('amr makkahDeparturesList $makkahDeparturesModel');
-    print('amr makkahDeparturesList $haramDeparturesModel');
+    print('amr haramDeparturesModel $haramDeparturesModel');
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
       await BssService.instance.sendEvent(
@@ -318,7 +318,7 @@ class PoiContentSliver extends ConsumerWidget {
                 )
                 .toList(),
             PoiLinesContainer(model: makkahDeparturesModel,),
-            PoiLinesContainer(model: haramDeparturesModel,),
+            PoiLinesContainer(model: haramDeparturesModel,isShuttle: true,),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(

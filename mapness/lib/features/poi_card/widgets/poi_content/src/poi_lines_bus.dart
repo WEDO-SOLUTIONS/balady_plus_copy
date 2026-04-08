@@ -12,8 +12,9 @@ import 'package:mapness/shared/providers/app_language.dart';
 
 class PoiLinesMakkahBus extends ConsumerStatefulWidget {
   final BusRoute routeInfo;
+  final bool isShuttle;
 
-  const PoiLinesMakkahBus({required this.routeInfo, super.key});
+  const PoiLinesMakkahBus({required this.routeInfo, this.isShuttle = false, super.key});
 
   @override
   ConsumerState<PoiLinesMakkahBus> createState() => _PoiLinesMakkahBusState();
@@ -53,20 +54,21 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
             titleBuilder: (context) => Text.rich(
               TextSpan(
                 children: [
-                  WidgetSpan(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x, horizontal: Spacing.$1x),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Spacing.$0_5x),
-                        color: colorLine,
-                      ),
-                      margin: const EdgeInsetsDirectional.only(end: Spacing.$1x),
-                      child: Text(
-                        widget.routeInfo.routeShortName,
-                        style: TextStyle(color: textColorLine, fontSize: 12),
+                  if (!widget.isShuttle)
+                    WidgetSpan(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x, horizontal: Spacing.$1x),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Spacing.$0_5x),
+                          color: colorLine,
+                        ),
+                        margin: const EdgeInsetsDirectional.only(end: Spacing.$1x),
+                        child: Text(
+                          widget.routeInfo.routeShortName,
+                          style: TextStyle(color: textColorLine, fontSize: 12),
+                        ),
                       ),
                     ),
-                  ),
                   TextSpan(
                     text: widget.routeInfo.headsign,
                     style: TextStyle(
