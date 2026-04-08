@@ -119,7 +119,6 @@ class PoiContentSliver extends ConsumerWidget {
     );
 
     final busDepartures = ref.watch(busDeparturesProvider(data.id!.objectId.toString()));
-    print('amr ');
     final makkahDeparturesModel = busDepartures.value?.data.transitSystems.firstWhereOrNull(
       (element) => element.id == 'makkah_bus',
     );
@@ -127,8 +126,6 @@ class PoiContentSliver extends ConsumerWidget {
       (element) => element.id == 'haram_shuttle',
     );
     final workingHours = data.openingHours?.toWorkingHours();
-    print('amr makkahDeparturesList $makkahDeparturesModel');
-    print('amr haramDeparturesModel $haramDeparturesModel');
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
       await BssService.instance.sendEvent(

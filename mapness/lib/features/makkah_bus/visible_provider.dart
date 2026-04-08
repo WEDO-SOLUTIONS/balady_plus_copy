@@ -7,11 +7,7 @@ class MakkahBusLayerVisible extends _$MakkahBusLayerVisible {
   @override
   bool build() => false;
 
-  void show() {
-    state = true;
-  }
+  void show() => state = true;
 
-  void hide() {
-    state = false;
-  }
+  void hide() => state = false;
 }

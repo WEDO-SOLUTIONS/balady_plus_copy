@@ -14,7 +14,7 @@ abstract class MakkahBusModel with _$MakkahBusModel {
     final String? nameEnglish,
     final String? colorCode,
     final String? colorName,
-    final List<List<double>>? coordinates, // [lon, lat] pairs
+    final List<List<double>>? coordinates,
   }) = _MakkahBusModel;
 
   factory MakkahBusModel.fromJson(Map<String, dynamic> json) => _$MakkahBusModelFromJson(json);

@@ -17,10 +17,10 @@ enum LayerType {
   ];
 
   static List<LayerType> get business => [
-    LayerType.invest,
-    LayerType.buildings,
-    LayerType.fencing,
-  ];
+        LayerType.invest,
+        LayerType.buildings,
+        LayerType.fencing,
+      ];
 }
 
 extension LayerTypeEx on LayerType {

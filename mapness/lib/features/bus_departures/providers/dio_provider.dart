@@ -9,12 +9,6 @@ part 'dio_provider.g.dart';
 @Riverpod(keepAlive: true)
 Future<Dio> busDeparturesDio(Ref ref) async {
   final env = await ref.read(dgisEnvironmentProvider.future);
-  
-  // Base URLs in env usually look like "https://domain.com/api" or "/api/1.0/"
-  // We need "https://domain.com/api/v1/mb/"
-  // The appFeedbackApi field provides the clean api base: "https://urbi-lifestyle.momrah.gov.sa/api"
-  // final baseUrl = 'https://urbi-lifestyle-stg.momrah.gov.sa/api/v1/transit/';
-  //todo: amr don't forget to remove this statid baseUrl
   final baseUrl = '${env.appFeedbackApi}/v1/transit/';
 
   final dio = ref.read(baseDioProvider);
