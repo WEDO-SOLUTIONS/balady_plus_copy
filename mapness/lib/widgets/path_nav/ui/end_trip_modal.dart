@@ -73,7 +73,10 @@ class EndTripModal extends HookWidget {
                   primaryLabel: context.l10n.yesEnd,
                   size: ButtonSize.large,
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  onTap: onEndTripPressed,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onEndTripPressed?.call();
+                  },
                 ),
               ),
               const SizedBox(height: Spacing.$3x),

@@ -411,6 +411,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
+    if (_navigationStarted) return;
     _navigationStarted = true;
     if (!ref.context.mounted) {
       return;

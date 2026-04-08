@@ -86,6 +86,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _isSwitchingToPedestrian = false;
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
+  bool _isEndingTrip = false;
 
   // Cache for indoor support check to avoid network delay on arrival
   bool? _cachedIndoorSupport;
@@ -488,6 +489,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
+    if (_isEndingTrip) return;
+    _isEndingTrip = true;
     final route = ref.read(etaRouteInfoProvider);
     final pathInfo = ref.read(pathNavEtaProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
