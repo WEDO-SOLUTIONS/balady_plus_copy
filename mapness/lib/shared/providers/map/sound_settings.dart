@@ -99,6 +99,7 @@ class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
   static const _promptsVolumeList = [10, 30, 60];
   StreamSubscription? _soundEventsSubscription;
+  StreamSubscription? _carPlaySoundSubscription;
 
   SoundToggleType get currentSoundToggleType => SoundToggleType.values[state.voiceInstructionIndex];
 
@@ -176,8 +177,14 @@ class SoundSettings extends _$SoundSettings {
     // Subscribe to sound events from CarPlay or Android Auto
     _subscribeToSoundEvents();
 
+    // Subscribe to CarPlay plugin-level method channel for sound changes.
+    // Unlike the view-specific EventChannel, this works on real CarPlay
+    // devices where the phone scene may be backgrounded.
+    _subscribeToCarPlaySoundChannel();
+
     ref.onDispose(() {
       _soundEventsSubscription?.cancel();
+      _carPlaySoundSubscription?.cancel();
     });
 
     return _defaultSoundSettings;
@@ -187,6 +194,14 @@ class SoundSettings extends _$SoundSettings {
     final dgisController = await ref.read(dgisControllerProvider.future);
     await _soundEventsSubscription?.cancel();
     _soundEventsSubscription = dgisController.soundOnEvents.listen(_handleSoundEvent);
+  }
+
+  void _subscribeToCarPlaySoundChannel() {
+    _carPlaySoundSubscription?.cancel();
+    _carPlaySoundSubscription = CarPlaySoundChannel.instance.soundChangedEvents.listen((isSoundEnabled) {
+      final index = SoundToggleType.values.indexOf(isSoundEnabled ? SoundToggleType.all : SoundToggleType.none);
+      toggleVoiceInstruction(currentVoiceInstruction: index);
+    });
   }
 
   Future<void> _handleSoundEvent(SoundOnEvent soundOn) async {
@@ -287,5 +302,20 @@ class SoundSettings extends _$SoundSettings {
     final dGisController = await ref.watch(dgisControllerProvider.future);
 
     await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[state.voiceInstructionIndex]);
+  }
+
+  /// Re-reads voice instruction index from SharedPreferences (after reload)
+  /// and applies it if it differs from the current in-memory state.
+  /// Call this when the app resumes from background so that changes
+  /// made by CarPlay/Android Auto (which write directly to UserDefaults)
+  /// are picked up by Flutter.
+  Future<void> syncFromPersistence() async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    // Reload picks up values written externally (e.g. by CarPlay native code)
+    await sharedPrefs.reload();
+    final persistedIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey) ?? 0;
+    if (persistedIndex != state.voiceInstructionIndex) {
+      await toggleVoiceInstruction(currentVoiceInstruction: persistedIndex);
+    }
   }
 }

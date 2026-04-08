@@ -80,6 +80,12 @@ class UserDefaultsPublished {
         let hasKey = userDefaults.object(forKey: FlutterKeys.voiceInstructionIndex) != nil
         return hasKey ? userDefaults.integer(forKey: FlutterKeys.voiceInstructionIndex) : 0
     }
+
+    /// Writes the voice instruction index to Flutter's SharedPreferences key
+    /// so that Flutter reads the correct value when it resumes from background.
+    func saveFlutterVoiceInstructionIndex(_ index: Int) {
+        userDefaults.set(index, forKey: FlutterKeys.voiceInstructionIndex)
+    }
 }
 
 extension UserDefaults {

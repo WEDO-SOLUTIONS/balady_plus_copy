@@ -111,6 +111,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       saveNavigationState();
     } else if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
+      // Re-sync sound settings from persistence in case CarPlay/Android Auto
+      // changed the setting while the phone app was backgrounded.
+      ref.read(soundSettingsProvider.notifier).syncFromPersistence();
     }
   }
 

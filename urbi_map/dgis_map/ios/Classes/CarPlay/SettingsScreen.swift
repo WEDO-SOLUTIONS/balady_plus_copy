@@ -1,6 +1,7 @@
 import CarPlay
 import DGis
 
+
 class SettingsScreen: NSObject {
     private class Events {
         static let soundOnStateChanged = "soundOnEvent"
@@ -189,15 +190,19 @@ class SettingsScreen: NSObject {
         // Change it on SDK side
         self.navigationManager.soundNotificationSettings.enabledSoundCategories = isSoundEnabled ? DashboardControlModel.allCategories : []
         
-        // Save the state
+        // Save the state to CarPlay's own key
         userDefaultsPublished.saveSoundEnabled(isSoundEnabled)
         
-        // Change it on Mobile UI side
-        self.eventChannel?.success([
-            "event": Events.soundOnStateChanged,
-            "value": isSoundEnabled
-        ])
-        
+        // Also persist to Flutter's SharedPreferences key so that
+        // Flutter reads the correct value when it resumes from background.
+        userDefaultsPublished.saveFlutterVoiceInstructionIndex(isSoundEnabled ? 2 : 0)
+
+        // Notify Flutter via the plugin-level method channel.
+        // Unlike the view-specific EventChannel, this channel is tied to the
+        // FlutterEngine and is always available — even when the phone scene
+        // is backgrounded on a real CarPlay device.
+        SwiftDgisMapPlugin.notifyCarPlaySoundChanged(isSoundEnabled: isSoundEnabled)
+
         // Change it on CarPlay side
         updateSoundButtonState()
     }
