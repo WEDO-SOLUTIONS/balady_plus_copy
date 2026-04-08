@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
+import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/extensions/camera_position_message_ext.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,20 +19,40 @@ class MapDimensionsControl extends _$MapDimensionsControl {
   @override
   MapDimensionsState build() {
     final cameraPoint = ref.watch(cameraPositionProvider);
+    final userLocation = ref.watch(locationProvider);
 
     if (cameraPoint == null) {
       return MapDimensionsState.hide;
     }
 
     if (!_didApplyInitial3D) {
+      // Wait until we have the user's actual GPS location before applying
+      // the initial 3D tilt so the camera centers on the user, not the
+      // default Kingdom Tower position.
+
       _didApplyInitial3D = true;
       Future.microtask(() {
-        ref.read(cameraPositionProvider.notifier).animateTo(
+        if (userLocation != null) {
+          ref.read(cameraPositionProvider.notifier).animateTo(
+            cameraPoint.copyWith(
+              point: GeoPointMessage(
+                latitude: userLocation.latitude,
+                longitude: userLocation.longitude,
+              ),
+              tilt: 90,
+              zoom: cameraPoint.zoom,
+            ),
+          );
+        }
+        else
+          {
+            ref.read(cameraPositionProvider.notifier).animateTo(
               cameraPoint.copyWith(
                 tilt: 90,
-                zoom: cameraPoint.zoom + 2,
+                zoom: cameraPoint.zoom,
               ),
             );
+          }
       });
       return MapDimensionsState.threeDimensional;
     }
