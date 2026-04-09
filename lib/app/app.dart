@@ -128,9 +128,7 @@ class AppWidgetState extends State<AppWidget> {
                   navigatorKey: NavigationService.navigatorKey,
                   theme: myLightTheme,
                   darkTheme: myDarkTheme,
-                  themeMode: themeController.isDarkMode
-                      ? ThemeMode.dark
-                      : ThemeMode.light,
+                  themeMode: themeController.themeMode,
                   builder: (context, child) {
                     final botToastBuilder = BotToastInit();
                     final easyLoadingBuilder = EasyLoading.init(

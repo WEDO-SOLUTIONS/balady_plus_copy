@@ -41,7 +41,19 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     bool? isUserLoggedInLifeStyle,
     bool? isUserLoggedInMunicipality,
     required bool isUserAccountBusiness,
+    bool forceRefresh = false,
   }) async {
+
+    //! To prevent the app to do duplicated loading state
+    //! If there is already a loading state stop the second loading state
+    if (state.isAppsGroupLoading == true || state.isFavLoading == true || state.isUnFavLoading == true || state.isSearching == true || state.isEntryPointsLoading == true) {
+      return;
+    }
+
+    if (!forceRefresh && state.allMiniApps.isNotEmpty) {
+      return;
+    }
+
     emit(
       state.copyWith(
         isFavLoading: true,
@@ -52,6 +64,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         isSearching: false,
         searchResults: const [],
         searchError: null,
+        
       ),
     );
 
@@ -146,6 +159,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
       isUserAccountBusiness: isUserAccountBusiness,
+      forceRefresh: true,
     );
 
     emit(state.copyWith(isRefreshing: false));
@@ -433,7 +447,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void clearSearch() {
-    emit(state.copyWith(searchResults: [], isSearching: false, searchError: null));
+    _searchDebounce?.cancel();
+    emit(state.copyWith(searchResults: [], isSearching: false, searchError: null, isAppsGroupLoading: false, isEntryPointsLoading: false, isFavLoading: false, isUnFavLoading: false, isRefreshing: false));
   }
 
   void setSortType(FilterOptionType? sortType) {

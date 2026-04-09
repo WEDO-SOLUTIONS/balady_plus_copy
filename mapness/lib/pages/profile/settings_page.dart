@@ -115,7 +115,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                           required onToggle,
                                           initial,
                                         }) => CupertinoSwitch(
-                                          value: theme == BaladyAppThemes.dark,
+                                          value: themeController.isDarkMode,
                                           onChanged: isMakkahTheme
                                               ? null // Disable the switch
                                               : (value) {
