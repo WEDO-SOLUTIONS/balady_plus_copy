@@ -22,6 +22,7 @@ class NeedLoginDialog extends StatelessWidget {
   List<Widget> textActions(BuildContext context) => [
     TextButton(
       onPressed: () {
+        //todo check if close mini app needed
         Navigator.of(context).pop();
         Navigator.of(context).pop();
       },
