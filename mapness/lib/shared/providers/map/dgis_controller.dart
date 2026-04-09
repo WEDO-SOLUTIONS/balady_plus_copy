@@ -88,7 +88,7 @@ class DgisController extends _$DgisController {
 
   /// Moves camera on Riyadh Tower
   Future<void> _setDefaultLocation(DgisMapController controller) async {
-    await controller.setCameraPosition(CameraPositionMessage(point: _kingdomTower, zoom: 17, tilt: 0, bearing: 0));
+    await controller.setCameraPosition(CameraPositionMessage(point: _kingdomTower, zoom: 17, tilt: 45, bearing: 0));
   }
 
   Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
