@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// ---------------------------------------------------------------------------
@@ -14,19 +15,30 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// ---------------------------------------------------------------------------
 class BaladyThemeNotifier extends ChangeNotifier {
   /// Key used to store the theme mode in SharedPreferences
-  static const String _darkModeKey = 'balady_dark_mode';
+  static const String _themeModeKey = 'balady_theme_mode';
+  // The default theme of the user's device.
+  ThemeMode _themeMode = ThemeMode.system;
 
-  /// Internal state for dark mode
-  bool _isDarkMode = false;
+  ThemeMode get themeMode => _themeMode;
 
-  /// Public getter to expose theme state safely
-  bool get isDarkMode => _isDarkMode;
+  // For backward compatibility or internal checks if needed
+  // ... inside BaladyThemeNotifier class
+
+  // Updated getter to correctly reflect the current active state
+  bool get isDarkMode {
+    if (_themeMode == ThemeMode.system) {
+      // Check the device's actual brightness
+      return WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+    }
+    return _themeMode == ThemeMode.dark;
+  }
 
   /// Constructor
   /// Automatically loads saved theme settings
   BaladyThemeNotifier() {
     _loadThemePreference();
   }
+
 
   /// -------------------------------------------------------------------------
   /// 🔄 Load Theme Preference
@@ -36,10 +48,41 @@ class BaladyThemeNotifier extends ChangeNotifier {
   Future<void> _loadThemePreference() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      _isDarkMode = prefs.getBool(_darkModeKey) ?? false;
+      final savedMode = prefs.getString(_themeModeKey);
+
+      if (savedMode != null) {
+        _themeMode = ThemeMode.values.firstWhere(
+              (e) => e.name == savedMode,
+          orElse: () => ThemeMode.system,
+        );
+      } else {
+        // Migration: check for the old boolean key
+        final oldDarkMode = prefs.getBool('balady_dark_mode');
+        if (oldDarkMode != null) {
+          _themeMode = oldDarkMode ? ThemeMode.dark : ThemeMode.light;
+          // Save it in the new format immediately
+          await prefs.setString(_themeModeKey, _themeMode.name);
+        } else {
+          _themeMode = ThemeMode.system;
+        }
+      }
       notifyListeners();
     } catch (error) {
       _logError('loading theme preference', error);
+    }
+  }
+
+  Future<void> updateThemeMode(ThemeMode mode) async {
+    if (_themeMode == mode) return;
+
+    _themeMode = mode;
+    notifyListeners();
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_themeModeKey, mode.name);
+    } catch (error) {
+      _logError('saving theme preference', error);
     }
   }
 
@@ -47,35 +90,30 @@ class BaladyThemeNotifier extends ChangeNotifier {
   /// 💾 Save Theme Preference
   /// -------------------------------------------------------------------------
   /// Persists the current theme mode locally.
-  Future<void> _saveThemePreference() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_darkModeKey, _isDarkMode);
-    } catch (error) {
-      _logError('saving theme preference', error);
-    }
-  }
+  // Future<void> _saveThemePreference() async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     await prefs.setBool(_darkModeKey, _isDarkMode);
+  //   } catch (error) {
+  //     _logError('saving theme preference', error);
+  //   }
+  // }
 
   /// -------------------------------------------------------------------------
   /// 🌗 Toggle Theme Mode
   /// -------------------------------------------------------------------------
   /// Updates the theme mode and persists the change.
   void toggleTheme(bool enableDarkMode) {
-    if (_isDarkMode == enableDarkMode) return;
-
-    _isDarkMode = enableDarkMode;
-    _saveThemePreference();
-    notifyListeners();
+    updateThemeMode(enableDarkMode ? ThemeMode.dark : ThemeMode.light);
   }
+
 
   /// -------------------------------------------------------------------------
   /// ♻️ Reset Theme Settings
   /// -------------------------------------------------------------------------
   /// Resets the theme mode to default (Light Mode).
   void resetTheme() {
-    _isDarkMode = false;
-    _saveThemePreference();
-    notifyListeners();
+    updateThemeMode(ThemeMode.system);
   }
 
   /// -------------------------------------------------------------------------

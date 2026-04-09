@@ -91,7 +91,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.visible,
                                             style: const TextStyle(
-                                              color: Color(0xFF1CA9A6),
+                                              color: Color(0xff155E75),
                                               fontWeight: FontWeight.w700,
                                               fontSize: 25,
                                               fontFamily:
@@ -106,10 +106,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             textAlign: TextAlign.center,
                                             overflow: TextOverflow.visible,
                                             style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurface
-                                                  .withAlpha(400),
+                                              color: Color(0xff155E75),
                                               fontWeight: FontWeight.w400,
                                               fontSize: 15,
                                               fontFamily:
@@ -224,6 +221,8 @@ class MiniAppsSearchPage extends StatelessWidget {
                                       ),
                                       child: IconButton(
                                         onPressed: () {
+                                          context.read<NewMiniAppLogicCubit>().clearSearch();
+
                                           Navigator.pop(context);
                                         },
                                         icon: Icon(
