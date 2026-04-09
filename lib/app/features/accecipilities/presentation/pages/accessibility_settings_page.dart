@@ -129,7 +129,6 @@ class _AccessibilitySettingsPageState
                                 }),
                               )),
                           options: ContentRowOptions(
-
                             leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
                             title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
