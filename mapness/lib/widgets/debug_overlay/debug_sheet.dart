@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/ai_summary/ui/ai_summary_preview_page.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -357,6 +358,31 @@ class _QuickActionsCard extends StatelessWidget {
                   );
                   logger.share();
                 },
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: Builder(
+                builder: (context) => DebugButton(
+                  label: 'AI Summary preview',
+                  icon: Icons.auto_awesome_outlined,
+                  onPressed: () {
+                    draggableController.animateTo(
+                      0.0,
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.linear,
+                    );
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const AiSummaryPreviewPage(),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
