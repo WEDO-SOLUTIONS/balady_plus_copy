@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
@@ -60,11 +61,13 @@ class DgisController extends _$DgisController {
     await controller.setAppearance(
       (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
     );
-    ref..listen(darkModeProvider, (previous, next) {
-      controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
-    })..listen(appLanguageProvider, (previous, next) {
-      controller.overrideLocales(next == Language.arabic ? ['ar-SA'] : ['en-SA']);
-    });
+    ref
+      ..listen(darkModeProvider, (previous, next) {
+        controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+      })
+      ..listen(appLanguageProvider, (previous, next) {
+        controller.overrideLocales(next == Language.arabic ? ['ar-SA'] : ['en-SA']);
+      });
 
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
@@ -88,7 +91,34 @@ class DgisController extends _$DgisController {
 
   /// Moves camera on Riyadh Tower
   Future<void> _setDefaultLocation(DgisMapController controller) async {
-    await controller.setCameraPosition(CameraPositionMessage(point: _kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+    await controller.setCameraPosition(CameraPositionMessage(point: _kingdomTower, zoom: 17, tilt: 0, bearing: 0));
+    await controller.moveCamera(
+      CameraPositionMessage(
+        point: getForwardPosition(_kingdomTower, 0),
+        zoom: 17,
+        tilt: 65,
+        bearing: 0,
+      ),
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  GeoPointMessage getForwardPosition(GeoPointMessage position, double bearing) {
+    const forward = 0.0005;
+    const side = 0.0002;
+
+    final forwardLat = forward * cos(bearing * pi / 180);
+    final forwardLng = forward * sin(bearing * pi / 180);
+
+    final sideAngle = (bearing - 90) * pi / 180;
+    final sideLat = side * cos(sideAngle);
+    final sideLng = side * sin(sideAngle);
+
+    final lat = position.latitude + forwardLat + sideLat;
+    final lng = position.longitude + forwardLng + sideLng;
+
+    return GeoPointMessage(latitude: lat, longitude: lng);
   }
 
   Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
