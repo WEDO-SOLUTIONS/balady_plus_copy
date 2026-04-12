@@ -19,7 +19,7 @@ class AiSummaryTokens {
   static const double cardBorderWidth = 1;
   static const double cardBorderRadius = 12;
   static const EdgeInsets cardPadding = EdgeInsets.all(16);
-  static const EdgeInsets cardOuterMargin = EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+  static const EdgeInsets cardOuterMargin = EdgeInsets.only(left: 16, right: 16, bottom: 12);
 
   // --- Header: sparkle icon + "AI SUMMARY" label + "BALADY AI" badge ---
   static const double headerSpacing = 8;
