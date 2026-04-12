@@ -49,7 +49,7 @@ class MapDimensionsControl extends _$MapDimensionsControl {
     if (newState == MapDimensionsState.threeDimensional) {
       _cameraMoveOperation = CancelableOperation.fromFuture(ref.read(cameraPositionProvider.notifier).animateTo(
             cameraPoint.copyWith(
-              tilt: 90,
+              tilt: 45,
             ),
           ));
     } else {
