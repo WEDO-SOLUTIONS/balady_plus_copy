@@ -29,6 +29,8 @@ enum LayerType {
     LayerType.traffic,
     LayerType.metro,
     LayerType.parkingLots,
+    LayerType.makkahBus,
+    LayerType.shuttleBus,
     LayerType.roadEvents,
     LayerType.favourites,
   ];

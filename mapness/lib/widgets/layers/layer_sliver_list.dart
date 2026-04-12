@@ -31,6 +31,10 @@ class LayerSliverList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    layerType.forEach((element) {
+      print('amr LayerSliverList $element');
+
+    },);
     final layersControl = ref.watch(layersControlsProvider.notifier);
     final mapDimensionsState = ref.watch(mapDimensionsControlProvider);
 

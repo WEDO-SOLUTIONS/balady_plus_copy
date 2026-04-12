@@ -41,6 +41,8 @@ extension LayerTypeExt on LayerType {
     LayerType.fencing => '',
     LayerType.favourites => Assets.imagesSvg.layers.favourites.keyName,
     LayerType.metro => Assets.imagesSvg.layers.metro.keyName,
+    LayerType.makkahBus => Assets.imagesSvg.layers.makkahBus.keyName,
+    LayerType.shuttleBus => Assets.imagesSvg.layers.shuttleBus.keyName,
     LayerType.parkingLots => Assets.imagesSvg.layers.parking.keyName,
     LayerType.traffic => Assets.imagesSvg.layers.traffic.keyName,
     LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
