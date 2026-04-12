@@ -100,9 +100,10 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
       _bottomSheetPreviousState = state;
 
       // Same rule as `_ContentState`: kick off the AI summary
-      // fetch the first time the sheet reaches expanded, including
-      // the initial transition (deep-link case).
-      if (state == PoiCardBottomSheetState.expanded) {
+      // fetch the first time the sheet leaves preview states
+      // (hidden / halfOpen). Both `open` and `expanded` show the
+      // detail content.
+      if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
         _maybeTriggerAiSummary();
       }
 
@@ -168,7 +169,9 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           return;
         }
         _aiSummaryTriggered = false;
-        if (_bottomSheetController.state == PoiCardBottomSheetState.expanded) {
+        final currentState = _bottomSheetController.state;
+        if (currentState == PoiCardBottomSheetState.open ||
+            currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })
