@@ -86,6 +86,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _isSwitchingToPedestrian = false;
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
+  bool _isEndingTrip = false;
 
   // Cache for indoor support check to avoid network delay on arrival
   bool? _cachedIndoorSupport;
@@ -491,26 +492,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
+    if (_isEndingTrip) return;
+    _isEndingTrip = true;
     final route = ref.read(etaRouteInfoProvider);
-    final pathInfo = ref.read(pathNavEtaProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-    final location = ref.read(cityByLocationProvider.notifier);
-    final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
-    final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
 
-    await ref.read(dgisControllerProvider).value?.hideRoutes();
+    unawaited(_sendNavigationCompletedAnalytics(route));
 
-    ref
-        .read(appAnalyticsProvider)
-        .navigationCompleted(
-      origin: route.startPoint?.analyticsLabel ?? '',
-      destination: route.endPoint?.analyticsLabel ?? '',
-      originCity: originCity.name,
-      destinationCity: destinationCity.name,
-      spentTime: pathInfo?.spentTime ?? Duration.zero,
-    );
-    await _stopActiveSharing();
-    await ref.read(cameraPaddingProvider.notifier).resetPadding();
+    await Future.wait([
+      ref.read(dgisControllerProvider).value?.hideRoutes() ?? Future.value(),
+      _stopActiveSharing(),
+      ref.read(cameraPaddingProvider.notifier).resetPadding(),
+    ]);
 
     if (_navigationState.value != PathNavState.finished) {
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingHalfway);
@@ -527,16 +520,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     } catch (_) {}
 
-    // Clear route state regardless of the finish source
     ref.read(currentRouteProvider.notifier).clearRoute();
 
-    // Remove route from the map for public transport
-    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
-      await ref.read(dgisControllerProvider).value?.hideRoutes();
-    }
+    await Future.wait([
+      if (widget.navType == RouteSearchOptionsMessage.publicTransport)
+        ref.read(dgisControllerProvider).value?.hideRoutes() ?? Future.value(),
+      clearNavigationState(),
+      ref.read(selectedMarkerProvider.notifier).removeAllMarkers(),
+    ]);
 
-    await clearNavigationState();
-    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
 
     final mapSettings = MapObjectManagerSettings.search();
@@ -553,6 +545,31 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     action?.call();
+  }
+
+  Future<void> _sendNavigationCompletedAnalytics(route) async {
+    try {
+      final pathInfo = ref.read(pathNavEtaProvider);
+      final location = ref.read(cityByLocationProvider.notifier);
+      final results = await Future.wait([
+        location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon),
+        location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon),
+      ]);
+      final originCity = results[0];
+      final destinationCity = results[1];
+
+      ref
+          .read(appAnalyticsProvider)
+          .navigationCompleted(
+            origin: route.startPoint?.analyticsLabel ?? '',
+            destination: route.endPoint?.analyticsLabel ?? '',
+            originCity: originCity.name,
+            destinationCity: destinationCity.name,
+            spentTime: pathInfo?.spentTime ?? Duration.zero,
+          );
+    } catch (_) {
+      // Analytics failure should not affect trip ending
+    }
   }
 
   // Show the route page after the trip is finished
@@ -754,7 +771,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _finishNavigation() async {
     _sendAnalitycs();
     _navigationState.value = PathNavState.finished;
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
     ref.read(layersControlsProvider.notifier).hideParking();
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);

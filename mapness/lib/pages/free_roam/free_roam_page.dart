@@ -162,86 +162,88 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
               });
             },
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const SizedBox(height: uikit.Spacing.$1_5x, width: double.maxFinite),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                child: ManeuverWidget(),
-              ),
-              const SizedBox(height: uikit.Spacing.$3x),
-              Expanded(
-                child: AnimatedOpacity(
-                  opacity: isControlsActive ? 1 : 0,
-                  duration: const Duration(milliseconds: 250),
-                  child: IgnorePointer(
-                    ignoring: !isControlsActive,
-                    child: GestureDetector(
-                      onTap: () {
-                        timer?.cancel();
-                        timer = null;
-                        wasSetActive = true;
-                        isControlsActive = true;
-                        startControlsDisapearTimer();
-                      },
-                      child: Padding(
-                        padding: padding,
-                        child: isPortrait
-                            ? const Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  TrafficParkingControl(),
-                                  SizedBox(height: uikit.Spacing.$2x),
-                                  DimensionControl(),
-                                  Spacer(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IndoorControl(),
-                                      ZoomControl(),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  CompassControl(),
-                                  SizedBox(height: uikit.Spacing.$2x),
-                                  FollowControl(),
-                                  SizedBox(height: uikit.Spacing.$3x),
-                                ],
-                              )
-                            : const Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Spacer(),
-                                      Padding(
-                                        padding: padding,
-                                        child: IndoorControl(),
-                                      ),
-                                      Spacer(flex: 3),
-                                    ],
-                                  ),
-                                ],
-                              ),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const SizedBox(height: uikit.Spacing.$1_5x, width: double.maxFinite),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                  child: ManeuverWidget(),
+                ),
+                const SizedBox(height: uikit.Spacing.$3x),
+                Expanded(
+                  child: AnimatedOpacity(
+                    opacity: isControlsActive ? 1 : 0,
+                    duration: const Duration(milliseconds: 250),
+                    child: IgnorePointer(
+                      ignoring: !isControlsActive,
+                      child: GestureDetector(
+                        onTap: () {
+                          timer?.cancel();
+                          timer = null;
+                          wasSetActive = true;
+                          isControlsActive = true;
+                          startControlsDisapearTimer();
+                        },
+                        child: Padding(
+                          padding: padding,
+                          child: isPortrait
+                              ? const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    TrafficParkingControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    DimensionControl(),
+                                    Spacer(),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        IndoorControl(),
+                                        ZoomControl(),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    CompassControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    FollowControl(),
+                                    SizedBox(height: uikit.Spacing.$3x),
+                                  ],
+                                )
+                              : const Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Spacer(),
+                                        Padding(
+                                          padding: padding,
+                                          child: IndoorControl(),
+                                        ),
+                                        Spacer(flex: 3),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Directionality(
-                textDirection: systemDirectionality,
-                child: Align(
-                  alignment: isPortrait ? AlignmentDirectional.center : AlignmentDirectional.bottomStart,
-                  child: RoadPanel(
-                    isLoading: isLoading,
-                    onSearch: isPortrait ? () => context.router.push(NaviSearchRoute()) : null,
-                    onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
-                    onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
+                Directionality(
+                  textDirection: systemDirectionality,
+                  child: Align(
+                    alignment: isPortrait ? AlignmentDirectional.center : AlignmentDirectional.bottomStart,
+                    child: RoadPanel(
+                      isLoading: isLoading,
+                      onSearch: isPortrait ? () => context.router.push(NaviSearchRoute()) : null,
+                      onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
+                      onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const ParkingBottomSheetPage(),
         ],

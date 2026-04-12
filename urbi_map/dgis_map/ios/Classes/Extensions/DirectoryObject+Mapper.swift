@@ -508,9 +508,11 @@ extension EntranceGeometry {
                 $0.toMessage()
             },
             entrancePolylines: self.entrancePolylines.map { polyline in
-                polyline.map {
-                    $0.toMessage()
-                }
+                PolylineGeometryMessage(
+                    points: polyline.map {
+                        $0.toMessage()
+                    }
+                )
             }
         )
     }
@@ -688,7 +690,7 @@ extension SearchHistoryItem {
                       id: directoryObject.id.map {
                           DgisObjectIdMessage(
                             objectId: Int64($0.objectId),
-                            entranceId: Int64(directoryObject.id?.entranceId ?? 0),
+                            entranceId: Int64(directoryObject.id?.entranceId ?? 0)
                           )
                       }
                   )

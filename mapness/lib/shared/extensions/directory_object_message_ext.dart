@@ -368,18 +368,11 @@ extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
         .toList();
 
     final json2 = json['entrancePolylines'] as List<dynamic>?;
-    final entrancePolylines = json2?.map<List<GeoPointMessage>>((polyline) {
-      final result = <GeoPointMessage>[];
-
-      final list = (polyline as List<dynamic>)
+    final entrancePolylines = json2?.map<PolylineGeometryMessage>((polyline) {
+      final points = (polyline as List<dynamic>)
           .map((point) => GeoPointMessageExtension.fromJson(point as Map<String, dynamic>))
           .toList();
-
-      for (final element in list) {
-        result.add(element);
-      }
-
-      return result;
+      return PolylineGeometryMessage(points: points);
     }).toList();
 
     return EntranceGeometryMessage(

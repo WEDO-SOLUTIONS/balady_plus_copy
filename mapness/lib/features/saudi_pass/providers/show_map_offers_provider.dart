@@ -151,9 +151,11 @@ class ShowMapOffers extends _$ShowMapOffers {
         );
       }
 
+      final uniqueOffers = <String, Offer>{};
       for (final offer in promotions.records) {
-        updatedState.add(offer);
+        uniqueOffers[offer.id] = offer;
       }
+      updatedState.addAll(uniqueOffers.values);
 
       state = updatedState;
     } catch (e) {

@@ -89,7 +89,7 @@ class MapDimensionsControl extends _$MapDimensionsControl {
             .read(cameraPositionProvider.notifier)
             .animateTo(
               cameraPoint.copyWith(
-                tilt: 90,
+                tilt: 45,
               ),
             ),
       );
