@@ -47,6 +47,7 @@ class BaseDashboardContent extends ConsumerWidget {
         Column(
           children: [
             const SizedBox(height: Spacing.$3x),
+            // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
               child: FeedbackBannerCardV2(
@@ -62,13 +63,8 @@ class BaseDashboardContent extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: Spacing.$6x),
-            StoriesWidget(
-              titleWidget: Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                child: DashboardTitle(context.l10n.whatIsNewInBalady),
-              ),
-            ),
-            const SizedBox(height: Spacing.$6x),
+
+            // 2. Quick Actions (إجراءات سريعة)
             DashboardTitle(context.l10n.quickActions),
             const SizedBox(height: Spacing.$4x),
             ScrollConfiguration(
@@ -128,11 +124,22 @@ class BaseDashboardContent extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: Spacing.$4x),
-            const DriveBackHomeCard(),
             const SizedBox(height: Spacing.$6x),
+
+            // 3. What's New (ماهو جديد بلدي)
+            StoriesWidget(
+              titleWidget: Padding(
+                padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                child: DashboardTitle(context.l10n.whatIsNewInBalady),
+              ),
+            ),
+            const SizedBox(height: Spacing.$6x),
+
+            // 4. Offers Row (تدلل)
             const DashboardOffersRow(),
             const SizedBox(height: Spacing.$6x),
+
+            // 5. Explore Nearby (استكشاف القريبة)
             if (!themeConfig.useThemedExploreBackground) ...[
               DashboardTitle(context.l10n.exploreNearby),
               const SizedBox(height: Spacing.$4x),
@@ -149,11 +156,11 @@ class BaseDashboardContent extends ConsumerWidget {
                   ),
                   image: themeConfig.exploreBackgroundImageBuilder != null
                       ? DecorationImage(
-                          image: themeConfig.exploreBackgroundImageBuilder!(),
-                          matchTextDirection: true,
-                          fit: BoxFit.cover,
-                          alignment: AlignmentDirectional.centerEnd,
-                        )
+                    image: themeConfig.exploreBackgroundImageBuilder!(),
+                    matchTextDirection: true,
+                    fit: BoxFit.cover,
+                    alignment: AlignmentDirectional.centerEnd,
+                  )
                       : null,
                 ),
                 child: Column(
@@ -165,6 +172,11 @@ class BaseDashboardContent extends ConsumerWidget {
                   ],
                 ),
               ),
+
+            // Drive Back Home Card (تم وضعه في الأسفل لأنه غير موجود في الترتيب الأساسي للصورة)
+            const SizedBox(height: Spacing.$6x),
+            const DriveBackHomeCard(),
+            const SizedBox(height: Spacing.$4x),
           ],
         ),
       ],

@@ -13,48 +13,110 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class DashboardOffersRow extends ConsumerWidget {
+class DashboardOffersRow extends ConsumerStatefulWidget {
   const DashboardOffersRow({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              context.router.push(OffersScreenViewRoute());
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              child: SvgPicture.asset(
-                'packages/mapness/assets/icons/svg/tadalal_logo_${context.isLTR ? "en" : "ar"}.svg',
-                height: 24,
+  ConsumerState<DashboardOffersRow> createState() => _DashboardOffersRowState();
+}
+
+class _DashboardOffersRowState extends ConsumerState<DashboardOffersRow> {
+  final ScrollController _scrollController = ScrollController();
+  int _currentPage = 0;
+  int _itemCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _itemCount = OffersGroupExtension.mainCategories.length;
+    _scrollController.addListener(_updatePage);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updatePage);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _updatePage() {
+    if (!_scrollController.hasClients) return;
+    const double itemWidth = 252 + 8; // width + spacing
+    final double scrollPosition = _scrollController.position.pixels;
+    final int page = (scrollPosition / itemWidth).round();
+    if (_currentPage != page && page >= 0 && page < _itemCount) {
+      setState(() {
+        _currentPage = page;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ref = this.ref;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            context.router.push(OffersScreenViewRoute());
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: SvgPicture.asset(
+              'packages/mapness/assets/icons/svg/tadalal_logo_${context.isLTR ? "en" : "ar"}.svg',
+              height: 24,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: _DashboardOffersCard.height,
+          child: ScrollConfiguration(
+            behavior: NoGlowingScrollBehavior(),
+            child: ListView.separated(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _itemCount,
+              itemBuilder: (_, i) {
+                final group = OffersGroupExtension.mainCategories[i];
+                return _DashboardOffersCard(
+                  offersGroup: group,
+                  onTap: () {
+                    context.router.push(OffersScreenViewRoute(offersGroup: group));
+                  },
+                );
+              },
+              separatorBuilder: (context, index) => Spacing.$2x.widthBox,
+            ),
+          ),
+        ),
+        const SizedBox(height: Spacing.$3x),
+        // Dots indicator
+        if (_itemCount > 1)
+          Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(
+                _itemCount,
+                    (index) => Container(
+                  margin: const EdgeInsets.symmetric(horizontal: Spacing.$1x),
+                  width: _currentPage == index ? 7.5 : 7.5,
+                  height: 7.5,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: _currentPage == index
+                        ? context.colors.staticBlack
+                        : context.colors.borderMuted,
+                  ),
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: _DashboardOffersCard.height,
-            child: ScrollConfiguration(
-              behavior: NoGlowingScrollBehavior(),
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: OffersGroupExtension.mainCategories.length,
-                itemBuilder: (_, i) {
-                  final group = OffersGroupExtension.mainCategories[i];
-                  return _DashboardOffersCard(
-                      offersGroup: group,
-                      onTap: () {
-                        context.router.push(OffersScreenViewRoute(offersGroup: group));
-                      });
-                },
-                separatorBuilder: (context, index) => Spacing.$2x.widthBox,
-              ),
-            ),
-          ),
-        ],
-      );
+      ],
+    );
+  }
 }
 
 class _DashboardOffersCard extends StatelessWidget {
@@ -69,89 +131,89 @@ class _DashboardOffersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-        child: SizedBox(
-          width: 252,
-          height: height,
-          child: GestureDetector(
-            onTap: onTap,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: offersGroup.color,
-                  begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-                  end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
-                ),
-              ),
-              child: Stack(
-                children: [
-                  Positioned.directional(
-                    textDirection: Directionality.of(context),
-                    bottom: 0,
-                    end: 0,
-                    child: SizedBox(
-                      height: 103,
-                      child: Transform(
-                        alignment: Alignment.center,
-                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
-                        child: Image.asset(
-                          offersGroup.imagePath,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              offersGroup.title(context.l10n),
-                              style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
-                            ),
-                            Padding(
-                              padding: const EdgeInsetsDirectional.only(end: 2),
-                              child: SizedBox(
-                                width: Spacing.$6x,
-                                height: Spacing.$6x,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                                    color: context.colorsV3.staticWhite.withOpacity(0.2),
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      SystemIcons.arrowRight,
-                                      color: context.colorsV3.staticWhite,
-                                      size: Spacing.$5x,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          width: 140,
-                          child: Text(
-                            offersGroup.description(context.l10n),
-                            style:
-                                context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+    child: SizedBox(
+      width: 252,
+      height: height,
+      child: GestureDetector(
+        onTap: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: offersGroup.color,
+              begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+              end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
             ),
           ),
+          child: Stack(
+            children: [
+              Positioned.directional(
+                textDirection: Directionality.of(context),
+                bottom: 0,
+                end: 0,
+                child: SizedBox(
+                  height: 103,
+                  child: Transform(
+                    alignment: Alignment.center,
+                    transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                    child: Image.asset(
+                      offersGroup.imagePath,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          offersGroup.title(context.l10n),
+                          style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
+                        ),
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(end: 2),
+                          child: SizedBox(
+                            width: Spacing.$6x,
+                            height: Spacing.$6x,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(Spacing.$1_5x),
+                                color: context.colorsV3.staticWhite.withOpacity(0.2),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  SystemIcons.arrowRight,
+                                  color: context.colorsV3.staticWhite,
+                                  size: Spacing.$5x,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      width: 140,
+                      child: Text(
+                        offersGroup.description(context.l10n),
+                        style:
+                        context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      );
+      ),
+    ),
+  );
 }
