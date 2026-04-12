@@ -17,6 +17,7 @@ import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
@@ -121,6 +122,12 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       AdvancedMetrics.instance.pauseMeasureBattery();
+    } else if (state == AppLifecycleState.resumed) {
+      // Re-sync sound settings from persistence.
+      // CarPlay writes directly to UserDefaults when the phone app is
+      // backgrounded, but Flutter's SharedPreferences cache doesn't see
+      // native writes until reload() is called.
+      ref.read(soundSettingsProvider.notifier).syncFromPersistence();
     }
 
     super.didChangeAppLifecycleState(state);

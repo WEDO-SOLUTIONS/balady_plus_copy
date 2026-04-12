@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.location.Location
 import android.util.DisplayMetrics
 import com.dgis.map.DgisMapInitializer
+import com.dgis.map.SoundUpdateNotifier
 import com.dgis.map.android_auto.settings.NotificationVolume
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
@@ -144,6 +145,14 @@ class CarMapController(
         val navigationState = getCurrentNavigationState()
         if (navigationState == NavigationState.DISABLED) {
             startFreeroam()
+        }
+
+        val location = locationSource.lastLocation
+        if (location != null) {
+            moveCamera(
+                point = GeoPoint(location.latitude, location.longitude),
+                tilt = 45.0
+            )
         }
 
         setStyle()
@@ -301,8 +310,12 @@ class CarMapController(
 
 
     private fun settingsInit() {
-        // Voice instructions
-        navigationHandler.toggleVoiceInstruction(sharedPrefs.voiceInstructionsValue)
+        // Voice instructions: read from Flutter's SharedPreferences (the source of truth).
+        // The SDK's NavigationManager resets to all-enabled on fresh launch,
+        // so we must read from persistent storage instead.
+        val flutterSoundType = sharedPrefs.getFlutterVoiceInstructionType()
+        sharedPrefs.voiceInstructionsValue = flutterSoundType
+        navigationHandler.toggleVoiceInstruction(flutterSoundType)
 
         // Traffic
         val trafficStatus =
@@ -329,6 +342,8 @@ class CarMapController(
         set(value) {
             sharedPrefs.voiceInstructionsValue = value
             navigationHandler.toggleVoiceInstruction(value)
+            // Notify Flutter so the phone-side state stays in sync
+            SoundUpdateNotifier.sendEvent(value)
         }
 
     // -- Traffic

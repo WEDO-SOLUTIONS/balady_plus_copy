@@ -49,6 +49,19 @@ class DgisCarPlayDashboardMapView: UIViewController {
         }
         myLocation()
         
+        let pos = map.camera.position
+        cancellables.insert(
+            map.camera.move(
+                point: pos.point,
+                zoom: pos.zoom,
+                tilt: Tilt(value: 45),
+                bearing: pos.bearing
+            ).sink(
+                receiveValue: { _ in },
+                failure: { _ in }
+            )
+        )
+        
         self.map = map
         mapView.translatesAutoresizingMaskIntoConstraints = false
         

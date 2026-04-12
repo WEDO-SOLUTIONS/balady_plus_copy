@@ -10,6 +10,9 @@ import io.flutter.FlutterInjector
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.FileNotFoundException
 import kotlin.math.round
@@ -54,7 +57,18 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
-    private val navigationManager = DgisMapInitializer.getNavigationManager()
+    private val navigationManager = DgisMapInitializer.getNavigationManager().also { navManager ->
+        // Apply persisted sound setting immediately, before any navigation starts.
+        // The SDK enables all sound categories by default. We read from Flutter's
+        // SharedPreferences and default to OFF if the key is not set.
+        val flutterPrefs = context.getSharedPreferences("FlutterSharedPreferences", android.content.Context.MODE_PRIVATE)
+        val key = "flutter.voice_instruction_index"
+        val voiceIndex = if (flutterPrefs.contains(key)) flutterPrefs.getLong(key, 0).toInt() else 0
+        if (voiceIndex == 0) {
+            navManager.soundNotificationSettings.enabledSoundCategories =
+                java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
+        }
+    }
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,
@@ -81,6 +95,8 @@ class DgisMapView(
 
     private val closables = mutableListOf<AutoCloseable>()
 
+    private var soundUpdateJob: kotlinx.coroutines.Job? = null
+
     private fun getCurrentLevelId(): LevelId? {
         return indoorControlHandler?.currentLevelId
     }
@@ -88,11 +104,25 @@ class DgisMapView(
     init {
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
+
+        // Listen for sound changes from Android Auto and forward them to Flutter
+        soundUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+            for (toggleType in SoundUpdateNotifier.events) {
+                val isSoundOn = toggleType != SoundToggleType.NONE
+                eventSink.success(
+                    mapOf(
+                        "event" to "soundOnEvent",
+                        "value" to isSoundOn,
+                    )
+                )
+            }
+        }
     }
 
     override fun getView() = mapView
 
     override fun dispose() {
+        soundUpdateJob?.cancel()
         map?.close()
         routeHandler?.close()
         zoomControlHandler?.close()

@@ -37,3 +37,4 @@ export 'src/events/zoom_control_events.dart' show ZoomControlType, ZoomControlEn
 export 'src/models.dart';
 export 'src/pigeons/messages.g.dart';
 export 'src/events/models/simple_map_object_model.dart';
+export 'src/control_handlers/carplay_sound_channel.dart' show CarPlaySoundChannel;

@@ -259,6 +259,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               Padding(
                 padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
                 child: SegmentTabsButton(
+                  key: ValueKey('voice_instruction_${soundSettingsModel.voiceInstructionIndex}'),
                   tabsContent: [
                     TabsRowV2Content(title: l10n.segmentButtonOffTitle),
                     TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
