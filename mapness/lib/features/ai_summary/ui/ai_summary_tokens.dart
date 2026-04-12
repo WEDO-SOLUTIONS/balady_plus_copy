@@ -10,10 +10,12 @@ class AiSummaryTokens {
   const AiSummaryTokens._();
 
   // --- Card container ---
+  // Pale lavender fill, barely visible tinted border — matches the
+  // reference mock in todo/ai_summary/Presentation-110426-105846.pdf.
   // placeholder, awaiting Figma
-  static const Color cardBackground = Color(0xFFF5F7FB);
+  static const Color cardBackground = Color(0xFFF3F2FB);
   // placeholder, awaiting Figma
-  static const Color cardBorder = Color(0xFFE3E7F1);
+  static const Color cardBorder = Color(0xFFE6E3F5);
   static const double cardBorderWidth = 1;
   static const double cardBorderRadius = 12;
   static const EdgeInsets cardPadding = EdgeInsets.all(16);
@@ -21,20 +23,24 @@ class AiSummaryTokens {
 
   // --- Header: sparkle icon + "AI SUMMARY" label + "BALADY AI" badge ---
   static const double headerSpacing = 8;
+  // Golden/yellow sparkle on the left of the header row.
   // placeholder, awaiting Figma
-  static const Color sparkleColor = Color(0xFF7B61FF);
+  static const Color sparkleColor = Color(0xFFF5B638);
   static const double sparkleSize = 18;
 
+  // "AI SUMMARY" label rendered in a muted navy/indigo tone to
+  // pair with the golden sparkle and purple BALADY AI badge.
   // placeholder, awaiting Figma
   static const TextStyle labelTextStyle = TextStyle(
     fontSize: 12,
-    fontWeight: FontWeight.w600,
-    letterSpacing: 1.2,
-    color: Color(0xFF6B7280),
+    fontWeight: FontWeight.w700,
+    letterSpacing: 1.1,
+    color: Color(0xFF3D5A9C),
   );
 
+  // Muted violet pill with white text for the "BALADY AI" badge.
   // placeholder, awaiting Figma
-  static const Color badgeBackground = Color(0xFF1F2937);
+  static const Color badgeBackground = Color(0xFF8B7DE6);
   static const Color badgeTextColor = Colors.white;
   static const EdgeInsets badgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 3);
   static const double badgeBorderRadius = 4;
