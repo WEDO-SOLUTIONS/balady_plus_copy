@@ -73,20 +73,20 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 24),
-        // if (showKaabaCard) ...[
-        //   KaabaVirtualJourneyCard(
-        //     onTap: () {
-        //       Metrics.logEventAdvanced(
-        //         MetricsConstants.kaabaTourKeys.cardTapped,
-        //         group: MetricsConstants.kaabaTourTag,
-        //         action: MetricAction.tap.name,
-        //         props: {'theme': themeMode.name},
-        //       );
-        //       context.router.push(const GaussianSplattingRoute());
-        //     },
-        //   ),
-        //   const SizedBox(height: Spacing.$4x),
-        // ],
+        if (showKaabaCard) ...[
+          KaabaVirtualJourneyCard(
+            onTap: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.kaabaTourKeys.cardTapped,
+                group: MetricsConstants.kaabaTourTag,
+                action: MetricAction.tap.name,
+                props: {'theme': themeMode.name},
+              );
+              context.router.push(const GaussianSplattingRoute());
+            },
+          ),
+          const SizedBox(height: Spacing.$4x),
+        ],
         DashboardTitle(context.l10n.quickActions),
         const SizedBox(height: Spacing.$4x),
         ScrollConfiguration(
