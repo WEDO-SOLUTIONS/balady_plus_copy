@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/features/ai_summary/ui/_preview_fixtures.dart';
+import 'package:mapness/features/ai_summary/domain/ai_summary.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_strings.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_tokens.dart';
 import 'package:mapness/features/ai_summary/ui/widgets/ai_summary_rating_bar.dart';
@@ -9,19 +9,19 @@ import 'package:shimmer/shimmer.dart';
 
 /// The AI Summary card as it appears inside the POI bottom
 /// sheet when the sheet is fully expanded. Presentation-only:
-/// takes a [PreviewAiSummary] fixture and renders it.
+/// takes a [AiSummary] fixture and renders it.
 ///
 /// Data wiring (Riverpod provider, cache, mock repository)
 /// lives in Phase 2+ and hooks in via a separate `AiSummarySection`
 /// wrapper — this widget stays as a pure presentation component
 /// so it can be previewed and visually iterated on in isolation.
 class AiSummaryCard extends StatelessWidget {
-  final PreviewAiSummary? summary;
+  final AiSummary? summary;
   final Language language;
   final bool _isSkeleton;
 
   const AiSummaryCard({
-    required PreviewAiSummary this.summary,
+    required AiSummary this.summary,
     required this.language,
     super.key,
   }) : _isSkeleton = false;
@@ -51,7 +51,7 @@ class AiSummaryCard extends StatelessWidget {
 }
 
 class _DataBody extends StatelessWidget {
-  final PreviewAiSummary summary;
+  final AiSummary summary;
   final Language language;
 
   const _DataBody({required this.summary, required this.language});
