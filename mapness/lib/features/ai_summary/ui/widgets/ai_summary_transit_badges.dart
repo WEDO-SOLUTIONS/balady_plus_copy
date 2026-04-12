@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/features/ai_summary/domain/transit_line.dart';
 import 'package:mapness/features/ai_summary/ui/_preview_fixtures.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_strings.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_tokens.dart';
@@ -14,7 +15,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 /// otherwise fully Arabic card creates a jarring mixed-language
 /// experience.
 class AiSummaryTransitBadges extends StatelessWidget {
-  final List<PreviewTransitLine> lines;
+  final List<TransitLine> lines;
   final Language language;
 
   const AiSummaryTransitBadges({
@@ -50,7 +51,7 @@ class AiSummaryTransitBadges extends StatelessWidget {
 }
 
 class _TransitLineBadge extends StatelessWidget {
-  final PreviewTransitLine line;
+  final TransitLine line;
   final bool showHeadsign;
 
   const _TransitLineBadge({required this.line, required this.showHeadsign});
