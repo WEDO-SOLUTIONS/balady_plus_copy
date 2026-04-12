@@ -69,6 +69,15 @@ class NavigationScreen(
 ) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener,
     LocaleChangeListener {
 
+    private val maneuverCardColor = CarColor.createCustom(
+        Color.parseColor("#448B47"),
+        Color.parseColor("#448B47")
+    )
+    private val betterRouteCloseButtonColor = CarColor.createCustom(
+        Color.parseColor("#17181B"),
+        Color.parseColor("#17181B")
+    )
+
     private val navigationManager: NavigationManager
     private val carNotificationManager: CarNotificationManager
     private val appManager: AppManager
@@ -220,7 +229,7 @@ class NavigationScreen(
 
         val mapActionStrip = buildMapActionStrip(isNavigation)
         val navigationTemplate = NavigationTemplate.Builder()
-        navigationTemplate.setBackgroundColor(CarColor.GREEN)
+        navigationTemplate.setBackgroundColor(maneuverCardColor)
         navigationTemplate.setActionStrip(actionStrip.build())
         navigationTemplate.setMapActionStrip(mapActionStrip)
         navigationTemplate.setPanModeListener(panModeListener)
@@ -523,6 +532,8 @@ class NavigationScreen(
         val closeAction =
             Action.Builder()
                 .setTitle(getString(R.string.better_route_alert_close_action))
+                .setFlags(Action.FLAG_DEFAULT)
+                .setBackgroundColor(betterRouteCloseButtonColor)
                 .setOnClickListener {
                     mapController.rejectBetterRoute()
                     appManager.dismissAlert(betterRouteAlertId)
@@ -530,6 +541,7 @@ class NavigationScreen(
         val chooseAction =
             Action.Builder()
                 .setTitle(getString(R.string.better_route_alert_choose_action))
+                .setFlags(Action.FLAG_PRIMARY)
                 .setBackgroundColor(CarColor.PRIMARY)
                 .setOnClickListener {
                     mapController.acceptBetterRoute()

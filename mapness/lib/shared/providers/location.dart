@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_contain/dto/location_point.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
@@ -121,8 +124,7 @@ class _Location extends _$Location {
     final router = ref.read(appRouterProvider);
     final serviceStatus = await perm.Permission.location.serviceStatus;
 
-    if (CommonFunctions.locationDialogShowed ||
-        router.isPathActive(routeLocation)) {
+    if (CommonFunctions.locationDialogShowed || router.isPathActive(routeLocation)) {
       return false;
     }
     try {
@@ -198,11 +200,7 @@ class _Location extends _$Location {
 
     if (status.isGranted) {
       final dgisController = await ref.read(dgisControllerProvider.future);
-      unawaited(
-        dgisController.onLocationPermissionGranted(
-          desiredAccuracy: DesiredAccuracyMessage.high,
-        ),
-      );
+      unawaited(dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
 
       CommonFunctions.locationDialogShowed = false;
       ref.invalidateSelf();
@@ -256,10 +254,7 @@ class _Location extends _$Location {
     final controller = await ref.read(dgisControllerProvider.future);
     final isLocationInsideKSA = await controller.contains(
       _saRect,
-      GeoPointMessage(
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude,
-      ),
+      GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
     );
     return isLocationInsideKSA
         ? userLocation
@@ -275,5 +270,37 @@ class _Location extends _$Location {
             speed: userLocation.speed,
             speedAccuracy: userLocation.speedAccuracy,
           );
+  }
+}
+
+/// This provider wraps basic [locationProvider] and rebuilds only when the value specified precision has actually changed
+/// DECIMAL PLACES   METERS
+/// 0                111 120
+/// 1                11 112
+/// 2                1 111.2
+/// 3                111.12
+/// 4                11.112
+/// 5                1.1112
+/// 6                0.11112
+/// 7                0.01111
+@riverpod
+class LocationWithPrecision extends _$LocationWithPrecision {
+  @override
+  LocationPoint? build({required int decimalPlaces}) {
+    final location = ref.watch(locationProvider);
+    debugPrint('LocationWithPrecision build: $location');
+    if (location == null) {
+      return null;
+    }
+
+    return LocationPoint(
+      latitude: _roundToPrecision(location.latitude, decimalPlaces),
+      longitude: _roundToPrecision(location.longitude, decimalPlaces),
+    );
+  }
+
+  double _roundToPrecision(double value, int decimalPlaces) {
+    final mod = pow(10, decimalPlaces).toDouble();
+    return (value * mod).round() / mod;
   }
 }

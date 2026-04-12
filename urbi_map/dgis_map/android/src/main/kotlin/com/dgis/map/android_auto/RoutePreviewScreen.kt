@@ -77,6 +77,7 @@ class RoutePreviewScreen(
     private val navigationAction by lazy {
         Action.Builder()
             .setTitle(getString(R.string.go_button))
+            .setFlags(Action.FLAG_PRIMARY)
             .setBackgroundColor(CarColor.PRIMARY)
             .setOnClickListener(::onNavigate)
             .build()
@@ -85,7 +86,8 @@ class RoutePreviewScreen(
     private val navigationActionInList by lazy {
         Action.Builder()
             .setTitle(getString(R.string.go_button))
-            .setBackgroundColor(CarColor.SECONDARY)
+            .setFlags(Action.FLAG_PRIMARY)
+            .setBackgroundColor(CarColor.PRIMARY)
             .setOnClickListener(::onNavigate)
             .build()
     }
@@ -272,4 +274,3 @@ private sealed class RoutePreviewScreenState {
     data class SingleRoute(val pane: Pane, val routesInfo: RouteEditorRoutesInfo) :
         RoutePreviewScreenState()
 }
-

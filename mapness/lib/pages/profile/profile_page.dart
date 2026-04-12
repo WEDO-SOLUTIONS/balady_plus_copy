@@ -26,7 +26,6 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
-import 'package:provider/provider.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -122,7 +121,7 @@ class ProfilePage extends HookConsumerWidget {
                                               ],
                                             ),
                                     ),
-                                    ContentRow(
+                                    ContentRowV2(
                                       onTap: () => context.router.push(const SettingsRoute()),
                                       trailing: trailing,
                                       leading: leadingIconBuilder(SystemIcons.settings),
@@ -162,20 +161,29 @@ class ProfilePage extends HookConsumerWidget {
                               ContentWrapper(
                                 color: context.colors.backgroundSurface1,
                                 children: [
-                                  ContentRow(
-                                    isDividerEnabled: true,
+                                  ContentRowV2(
                                     onTap: () => context.router.push(const HelpCenterRoute()),
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
-                                    text: ContentRowTextOptions(title: context.l10n.helpCenter),
+                                    isDividerEnabled: true,
+                                    options: ContentRowOptions(
+                                      dividerEnabled: true,
+                                      wrapperEnabled: true,
+                                      title: context.l10n.helpCenter,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
-                                  ContentRow(
+                                  ContentRowV2(
                                     onTap: () {
                                       context.router.push(const AboutBaladyRoute());
                                     },
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
-                                    text: ContentRowTextOptions(title: context.l10n.aboutApp),
+                                    options: ContentRowOptions(
+                                      wrapperEnabled: true,
+                                      title: context.l10n.aboutApp,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -280,7 +288,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 4 FAILED: NavigationService BlocProvider.of - $e');
         }
       }
-
+      
       // Method 5: Try reading from SharedPreferences (saved selection)
       if (selectedDelegate == null) {
         try {
@@ -294,7 +302,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 5 FAILED: SharedPreferences read - $e');
         }
       }
-
+      
       // Method 6: Last resort - sl<> (creates NEW instance - will be empty)
       if (selectedDelegate == null) {
         final cubit = sl<DelegatorsCubit>();
@@ -375,7 +383,7 @@ class ProfilePage extends HookConsumerWidget {
         print('  - has entityName: ${data.containsKey('entityName')}');
         print('  - has id: ${data.containsKey('id')}');
       }
-
+      
       String snackbarMessage;
       Color backgroundColor;
 

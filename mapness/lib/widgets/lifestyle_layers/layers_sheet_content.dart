@@ -19,10 +19,12 @@ class LayersSheetContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
-    // final layersControlsProviderNotifier = ref.watch(layersControlsProvider.notifier);
-
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        bottom: Spacing.$4x,
+      ),
       sliver: MultiSliver(
         children: [
           SliverToBoxAdapter(
@@ -51,6 +53,7 @@ class LayersSheetContent extends ConsumerWidget {
               ),
             ),
           ),
+
           // TODO(Ayat): BSA(1069) For now we hide the switches and present only the Lifestyle logic, we will come back to this later
           // SliverToBoxAdapter(
           //   child: Column(
@@ -73,10 +76,7 @@ class LayersSheetContent extends ConsumerWidget {
           // ),
           LayerSliverList(
             tapOnParkingLotsMenu: tapOnParkingLotsMenu,
-            layerType: switch (state.layersType) {
-              LayersType.lifestyle => layers_state.LayerType.lifestyle,
-              LayersType.business => layers_state.LayerType.business,
-            },
+            layerType: layers_state.LayerType.v1,
             layersState: state,
           ),
         ],

@@ -54,7 +54,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
@@ -274,16 +273,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    final stableBottomInset = InsetsUtils.platformAwareBottomInset(context, isLandscape: !isPortrait);
-    final topBarPadding = MediaQuery.viewPaddingOf(context).top;
+    const stableInset = uikit.Spacing.$3x;
 
     sheetController = useToggleSheetController(onClose: (_) {}, clipByHeader: true, resetContentScrollOnClosed: true)
-      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(topBarPadding));
+      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(stableInset));
+    final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
 
     void onSheetHeightChanged() {
       if (isPortrait) {
         final sheetHeight =
-            sheetController.componentSizes.header + uikit.Spacing.$3x + stableBottomInset + uikit.Spacing.$4x;
+            sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
@@ -306,10 +305,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     useEffect(() {
       sheetController.addListener(onSheetHeightChanged);
-      final bottomPadding = stableBottomInset;
 
       if (isPortrait) {
-        final bottomHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x;
+        final bottomHeight =
+            sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
         _bottomHeightNotifier.value = bottomHeight;
       }
 
@@ -339,7 +338,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           unawaited(_endTripAndShowHome());
         }
       })
-      ..listen(pathNavEtaProvider, (previous, next) async {
+      ..listen(pathNavEtaProvider, (previous, next) {
         if (next != null) {
           if (next.distanceEtaUnits != DistanceUnits.m) {
             return;
@@ -356,12 +355,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           // Fallback: finish pedestrian trip when very close to destination
           final shouldFinishByEta =
               widget.navType == RouteSearchOptionsMessage.pedestrian &&
-                  !_finishedByEta &&
-                  distance != null &&
-                  distance <= 5;
+              !_finishedByEta &&
+              distance != null &&
+              distance <= 5;
           if (shouldFinishByEta) {
             _finishedByEta = true;
-            await _finishNavigation();
+            _finishNavigation();
             if (mounted) {
               unawaited(_endTripAndShowHome());
             }
@@ -396,13 +395,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 listenable: sheetController,
                 builder: (context, _) => !sheetController.isClosed
                     ? GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-                    sheetController.close();
-                  },
-                  child: const SizedBox.expand(),
-                )
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+                          sheetController.close();
+                        },
+                        child: const SizedBox.expand(),
+                      )
                     : const SizedBox.shrink(),
               ),
             if (widget.navType == RouteSearchOptionsMessage.publicTransport && publicRoute != null)
