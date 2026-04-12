@@ -1805,6 +1805,7 @@ class CommonFunctions {
       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
       isUserAccountBusiness: isUserAccountBusiness,
+      forceRefresh: true,
     );
     // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
     // BlocProvider.of<DashboardBloc>(

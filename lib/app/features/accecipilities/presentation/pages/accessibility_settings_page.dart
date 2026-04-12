@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart' as p;
@@ -128,11 +129,7 @@ class _AccessibilitySettingsPageState
                                 }),
                               )),
                           options: ContentRowOptions(
-                            leadingIcon: AppIcons(
-                              iconData: Icons.record_voice_over_outlined,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
+                            leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
                             title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(

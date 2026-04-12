@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -170,12 +171,23 @@ class ProfilePage extends HookConsumerWidget {
                                     text: ContentRowTextOptions(title: context.l10n.helpCenter),
                                   ),
                                   ContentRow(
+                                    isDividerEnabled: true,
+
                                     onTap: () {
                                       context.router.push(const AboutBaladyRoute());
                                     },
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
+                                  ),
+                                  ContentRow(
+
+                                    onTap: () {
+                                      context.router.push(const PrivacyAndTermsOfUseRoute());
+                                    },
+                                    trailing: trailing,
+                                    leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg'),
+                                    text: ContentRowTextOptions(title: context.l10n.privacyAndTermsOfUse),
                                   ),
                                 ],
                               ),
