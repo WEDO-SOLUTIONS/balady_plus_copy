@@ -149,15 +149,11 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
   /// Mirrors `_ContentState._maybeTriggerAiSummary`.
   void _maybeTriggerAiSummary() {
     if (_aiSummaryTriggered) {
-      // ignore: avoid_print
-      print('[AiSummary][foundingDay] trigger skipped — already triggered');
       return;
     }
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
-    // ignore: avoid_print
-    print('[AiSummary][foundingDay] triggering load for poiId=$poiId, locale=${language.name}');
     ref.read(aiSummaryProvider(poiId, language).notifier).load();
   }
 
