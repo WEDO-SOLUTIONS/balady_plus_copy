@@ -690,7 +690,7 @@ extension SearchHistoryItem {
                       id: directoryObject.id.map {
                           DgisObjectIdMessage(
                             objectId: Int64($0.objectId),
-                            entranceId: Int64(directoryObject.id?.entranceId ?? 0),
+                            entranceId: Int64(directoryObject.id?.entranceId ?? 0)
                           )
                       }
                   )
