@@ -35,7 +35,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
 
     _layersController = ToggleSheetController(
       durationMultiplier: 2,
-      heightModel: ToggleSheetHeightModel.fraction(.4),
+      heightModel: ToggleSheetHeightModel.fraction(.6),
       onClose: (_) {
         if (_parkingLotsController.isClosed && mounted) {
           _closeRouteWithoutSheetPopScope();

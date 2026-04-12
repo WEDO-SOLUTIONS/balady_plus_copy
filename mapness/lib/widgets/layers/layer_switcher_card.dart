@@ -71,15 +71,16 @@ class LayerSwitcherCard extends ConsumerWidget {
         const SizedBox(height: Spacing.$1_5x),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              value.titleLocale(context.l10n),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: textStyles.bodySmallMedium.copyWith(
-                color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+            Flexible(
+              child: Text(
+                value.titleLocale(context.l10n),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: textStyles.bodySmallMedium.copyWith(
+                  color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                ),
               ),
             ),
             if (value == layers_state.LayerType.parkingLots) ...[

@@ -54,7 +54,14 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
             titleBuilder: (context) => Text.rich(
               TextSpan(
                 children: [
-                  if (!widget.isShuttle)
+                  if (widget.isShuttle)
+                    TextSpan(
+                      text: '${l10n.from}\t',
+                      style: TextStyle(
+                        color: context.colors.foregroundDefault,
+                        fontSize: 16,
+                      ),
+                    ),
                     WidgetSpan(
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x, horizontal: Spacing.$1x),
@@ -67,6 +74,14 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                           widget.routeInfo.routeShortName,
                           style: TextStyle(color: textColorLine, fontSize: 12),
                         ),
+                      ),
+                    ),
+                  if (widget.isShuttle)
+                    TextSpan(
+                      text: '${l10n.to}\n',
+                      style: TextStyle(
+                        color: context.colors.foregroundDefault,
+                        fontSize: 16,
                       ),
                     ),
                   TextSpan(
