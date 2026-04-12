@@ -38,9 +38,12 @@ class AiSummaryTokens {
     color: Color(0xFF3D5A9C),
   );
 
-  // Muted violet pill with white text for the "BALADY AI" badge.
+  // Muted violet pill with white text and a subtle left-to-right
+  // gradient for the "BALADY AI" badge.
   // placeholder, awaiting Figma
-  static const Color badgeBackground = Color(0xFF8B7DE6);
+  static const LinearGradient badgeGradient = LinearGradient(
+    colors: [Color(0xFFA293F0), Color(0xFF7968D9)],
+  );
   static const Color badgeTextColor = Colors.white;
   static const EdgeInsets badgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 3);
   static const double badgeBorderRadius = 4;
