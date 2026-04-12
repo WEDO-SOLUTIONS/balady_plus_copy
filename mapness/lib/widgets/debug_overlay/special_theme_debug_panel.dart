@@ -454,15 +454,15 @@ class _DebugTogglesCard extends ConsumerWidget {
           //   },
           //   gradient: _DebugColors.gradientBlue,
           // ),
-          // _ToggleRow(
-          //   label: 'Kaaba Virtual Tour',
-          //   value: pilgrimFeature,
-          //   onChanged: (v) {
-          //     _trackDebugToggle('kaabaTour', v);
-          //     ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
-          //   },
-          //   gradient: _DebugColors.gradientGreen,
-          // ),
+          _ToggleRow(
+            label: 'Pilgrim Feature',
+            value: pilgrimFeature,
+            onChanged: (v) {
+              _trackDebugToggle('pilgrim', v);
+              ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
+            },
+            gradient: _DebugColors.gradientGreen,
+          ),
           const SizedBox(height: 14),
           _LocationRefreshRow(),
         ],
