@@ -178,11 +178,15 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   /// in the [PoiCardBottomSheetState.expanded] state.
   void _maybeTriggerAiSummary() {
     if (_aiSummaryTriggered) {
+      // ignore: avoid_print
+      print('[AiSummary] trigger skipped — already triggered for this session');
       return;
     }
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
+    // ignore: avoid_print
+    print('[AiSummary] triggering load for poiId=$poiId, locale=${language.name}');
     ref.read(aiSummaryProvider(poiId, language).notifier).load();
   }
 

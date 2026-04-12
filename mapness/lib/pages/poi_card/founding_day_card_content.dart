@@ -25,6 +25,9 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
   late final PoiCardState? poiCardState = widget.poiCardState;
   PoiCardBottomSheetState? _bottomSheetPreviousState;
 
+  /// See `_ContentState._aiSummaryTriggered` for the rationale.
+  bool _aiSummaryTriggered = false;
+
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
       models: [
@@ -95,6 +98,14 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
         return;
       }
       _bottomSheetPreviousState = state;
+
+      // Same rule as `_ContentState`: kick off the AI summary
+      // fetch the first time the sheet reaches expanded, including
+      // the initial transition (deep-link case).
+      if (state == PoiCardBottomSheetState.expanded) {
+        _maybeTriggerAiSummary();
+      }
+
       if (!isInitial) {
         BssUIElementNames? uiElementName;
         switch (state) {
@@ -134,14 +145,39 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     super.dispose();
   }
 
+  /// Mirrors `_ContentState._maybeTriggerAiSummary`.
+  void _maybeTriggerAiSummary() {
+    if (_aiSummaryTriggered) {
+      // ignore: avoid_print
+      print('[AiSummary][foundingDay] trigger skipped — already triggered');
+      return;
+    }
+    _aiSummaryTriggered = true;
+    final language = ref.read(appLanguageProvider);
+    final poiId = widget.objectId.toString();
+    // ignore: avoid_print
+    print('[AiSummary][foundingDay] triggering load for poiId=$poiId, locale=${language.name}');
+    ref.read(aiSummaryProvider(poiId, language).notifier).load();
+  }
+
   @override
   Widget build(BuildContext context) {
-    /// has value
-    ref.listen(poiPhotoProvider(widget.objectId), (previous, next) {
-      if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
-        return;
-      }
-    });
+    ref
+      ..listen(appLanguageProvider, (previous, next) {
+        if (previous == next) {
+          return;
+        }
+        _aiSummaryTriggered = false;
+        if (_bottomSheetController.state == PoiCardBottomSheetState.expanded) {
+          _maybeTriggerAiSummary();
+        }
+      })
+      ..listen(poiPhotoProvider(widget.objectId), (previous, next) {
+        /// has value
+        if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
+          return;
+        }
+      });
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
