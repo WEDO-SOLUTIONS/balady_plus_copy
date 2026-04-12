@@ -119,11 +119,14 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       _bottomSheetPreviousState = state;
       _stateNotifier.value = state;
 
-      // Kick off the AI summary fetch as soon as the sheet is in
-      // the fully expanded state. Intentionally runs for the
-      // initial transition too, so the deep-link case (card
-      // opened directly in expanded state) is covered.
-      if (state == PoiCardBottomSheetState.expanded) {
+      // Kick off the AI summary fetch as soon as the sheet leaves
+      // the preview states (hidden / halfOpen) — i.e. when the
+      // card is visually "expanded" per the spec. The enum has
+      // two such states (open, expanded) because of the snapping
+      // ladder; either one shows the detail content, so both
+      // should trigger the request. Runs for the initial
+      // transition too, covering the deep-link case.
+      if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
         _maybeTriggerAiSummary();
       }
 
@@ -203,7 +206,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           return;
         }
         _aiSummaryTriggered = false;
-        if (_bottomSheetController.state == PoiCardBottomSheetState.expanded) {
+        final currentState = _bottomSheetController.state;
+        if (currentState == PoiCardBottomSheetState.open ||
+            currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })
