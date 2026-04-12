@@ -115,7 +115,7 @@ class _Header extends StatelessWidget {
           Container(
             padding: AiSummaryTokens.badgePadding,
             decoration: BoxDecoration(
-              color: AiSummaryTokens.badgeBackground,
+              gradient: AiSummaryTokens.badgeGradient,
               borderRadius: BorderRadius.circular(AiSummaryTokens.badgeBorderRadius),
             ),
             child: Text(strings.baladyBadge, style: AiSummaryTokens.badgeTextStyle),
