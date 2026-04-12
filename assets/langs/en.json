@@ -4834,5 +4834,18 @@
   "indivisual_account": "Individual Account",
   "no_business_access_title": "Business Access Unavailable",
   "no_business_access_message": "Your current account does not have access to business services. Please switch to an individual account to use these services.",
-  "switch_to_individual_account": "Switch to Individual Services"
+  "switch_to_individual_account": "Switch to Individual Services",
+
+
+
+  "privacyAndTermsTitle": "Privacy and Terms of Use",
+  "privacyIntroText": "The Balady App treats your personal data with the utmost care, safeguarding the confidentiality of your information through the application of approved controls and standards for data protection across secure systems. The App collects and uses data for the purposes of delivering high-quality services to all beneficiaries, including:",
+  "privacyBulletServices": "The provision, support, and improvement of services.",
+  "privacyBulletIdentity": "User identity verification.",
+  "privacyBulletRequests": "The processing of requests and complaints.",
+  "privacySaudiRegulationsText": "In accordance with applicable laws and regulations in the Kingdom of Saudi Arabia.",
+  "privacyUserResponsibilityText": "Users of the Balady App are required to review this Privacy and Confidentiality of Information notice and its updates on a regular basis. Please note that the App is not obligated to announce any updates made to this notice. Your continued use of the App constitutes your acknowledgement of and agreement to this notice and any ongoing amendments. You are solely responsible for the accuracy, completeness, and integrity of any data you share through the App.",
+  "privacyMoreDetailsText": "For more information, you can visit the",
+  "privacyBaladyPlatformText": "Balady Platform"
+
 }

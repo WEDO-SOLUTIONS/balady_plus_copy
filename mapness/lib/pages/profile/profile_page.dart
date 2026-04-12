@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -181,13 +182,12 @@ class ProfilePage extends HookConsumerWidget {
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
                                   ),
                                   ContentRow(
-
                                     onTap: () {
                                       context.router.push(const PrivacyAndTermsOfUseRoute());
                                     },
                                     trailing: trailing,
                                     leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg'),
-                                    text: ContentRowTextOptions(title: context.l10n.privacyAndTermsOfUse),
+                                    text: ContentRowTextOptions(title: "privacyAndTermsTitle".tr()),
                                   ),
                                 ],
                               ),
