@@ -1027,7 +1027,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.directionsMap.name) ==
         true) {
-      if (data != null && data is Map) {
+      if(data != null) {
+        data = jsonDecode(data);
+      }
+      if (data is Map) {
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "openDirectionsMap",
