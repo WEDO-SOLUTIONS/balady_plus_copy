@@ -21,6 +21,10 @@ import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
+import 'package:mapness/features/shuttle_bus/provider.dart';
+import 'package:mapness/features/shuttle_bus/repo.dart';
+import 'package:mapness/features/makkah_bus/provider.dart';
+import 'package:mapness/features/makkah_bus/repo.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -210,6 +214,12 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         toggleMetro();
         break;
+      case LayerType.makkahBus:
+        toggleMakkahBuses();
+        break;
+      case LayerType.shuttleBus:
+        toggleHaramShuttle();
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -227,6 +237,12 @@ class LayersControls extends _$LayersControls {
     } else if (layerType case LayerType.metro) {
       ref.read(metroLayerRepositoryProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
+    } else if (layerType case LayerType.makkahBus) {
+      ref.read(makkahBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.makkahBus);
+    } else if (layerType case LayerType.shuttleBus) {
+      ref.read(shuttleBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.shuttleBus);
     }
   }
 
@@ -270,6 +286,24 @@ class LayersControls extends _$LayersControls {
     ref.read(metroLayerProvider.notifier).toggleMetro();
     if (state.selectedType != (LayerType.metro)) {
       setSelection(selectedType: LayerType.metro);
+    } else {
+      setSelection();
+    }
+  }
+
+  void toggleMakkahBuses() {
+    ref.read(makkahBusLayerProvider.notifier).toggle();
+    if (state.selectedType != (LayerType.makkahBus)) {
+      setSelection(selectedType: LayerType.makkahBus);
+    } else {
+      setSelection();
+    }
+  }
+
+  void toggleHaramShuttle() {
+    ref.read(shuttleBusLayerProvider.notifier).toggle();
+    if (state.selectedType != (LayerType.shuttleBus)) {
+      setSelection(selectedType: LayerType.shuttleBus);
     } else {
       setSelection();
     }
@@ -595,7 +629,12 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).toggleMetro();
         break;
-
+      case LayerType.makkahBus:
+        await ref.read(makkahBusLayerProvider.notifier).toggle();
+        break;
+      case LayerType.shuttleBus:
+        await ref.read(shuttleBusLayerProvider.notifier).toggle();
+        break;
       case LayerType.traffic:
       case LayerType.three3D:
       case LayerType.roadEvents:

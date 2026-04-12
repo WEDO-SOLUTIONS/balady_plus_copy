@@ -9,6 +9,8 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension LayerTypeExt on LayerType {
   GISMapLayers? getGISLayerType() => switch (this) {
+    LayerType.makkahBus => null,
+    LayerType.shuttleBus => null,
     LayerType.invest => GISMapLayers.opportunities,
     LayerType.buildings => GISMapLayers.bsAimtithalBuildingsCertificateL,
     LayerType.fencing => GISMapLayers.bsWhiteParcelS,
@@ -27,6 +29,8 @@ extension LayerTypeExt on LayerType {
     LayerType.invest => GeneralIcons.invest,
     LayerType.buildings => GeneralIcons.buildings,
     LayerType.fencing => GeneralIcons.fence,
+    LayerType.makkahBus => PlacesIcons.qibla,
+    LayerType.shuttleBus => PlacesIcons.qibla,
     LayerType.parkingLots => TransportIcons.parkingEnable,
     LayerType.traffic || LayerType.three3D || LayerType.roadEvents => GeneralIcons.placeholder,
   };
@@ -49,6 +53,8 @@ extension LayerTypeExt on LayerType {
     LayerType.invest => l10n.investmentOpportunities,
     LayerType.buildings => l10n.compilanceBuildings,
     LayerType.fencing => l10n.fencingVacantLands,
+    LayerType.makkahBus => l10n.makkahBus,
+    LayerType.shuttleBus => l10n.shuttleBus,
     LayerType.parkingLots => l10n.layersParking,
     LayerType.traffic => l10n.layersTraffic,
     LayerType.three3D => l10n.threeDee,
