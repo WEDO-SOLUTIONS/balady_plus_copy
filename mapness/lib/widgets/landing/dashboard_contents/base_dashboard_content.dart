@@ -87,6 +87,7 @@ class BaseDashboardContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+
                     QuickActionButton(
                       text: context.l10n.sendLocation,
                       icon: General32Icons.locationAction,
@@ -95,7 +96,7 @@ class BaseDashboardContent extends ConsumerWidget {
                     const SizedBox(width: Spacing.$2x),
                     QuickActionButton(
                       text: context.l10n.freeRoam,
-                      icon: TransportIcons.locationDirectionNavigator,
+                      icon: TransportIcons.newlocationDirectionNavigator,
                       onTap: () => actions.openFreeRoam(context),
                     ),
                     const SizedBox(width: Spacing.$2x),
