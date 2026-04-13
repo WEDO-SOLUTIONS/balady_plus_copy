@@ -43,10 +43,10 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            final miniApp = state.unFavoriteApps[index];
+            final unFavApp = state.unFavoriteApps[index];
 
             return SizedBox(
-              key: ValueKey(miniApp.id),
+              key: ValueKey('unfav_${unFavApp.id}'),
               width: context.screenWidth,
               height: context.h(64),
               child: DecoratedBox(
@@ -67,14 +67,14 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                             iconHeight: context.h(37.73630905151367),
                             iconWidth: context.w(37.73630905151367),
                             isTextRemove: true,
-                            iconPath: miniApp.iconPath,
+                            iconPath: unFavApp.iconPath,
                             radius: 12.7,
                           ),
                           SizedBox(width: context.screenWidth * 0.02),
                           CustomSubHeadingText(
                             width: context.w(192),
                             height: context.h(30),
-                            text: miniApp.name,
+                            text: unFavApp.name,
                             fontWeight: FontWeight.w500,
                             fontSize: 15,
                           ),
@@ -83,7 +83,7 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                       CustomMiniAppSwitch(
                         isActive: false,
                         onChanged: (_) {
-                          context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(miniApp.id);
+                          context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(unFavApp.id);
                         },
                       ),
                     ],
