@@ -147,23 +147,30 @@ class _DashboardOffersCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              Positioned.directional(
-                textDirection: Directionality.of(context),
-                bottom: 0,
-                end: 0,
+              Positioned(
+                top: offersGroup.imagePosition.$1,
+                bottom: offersGroup.imagePosition.$2,
+                left: context.isLTR
+                    ? offersGroup.imagePosition.$3
+                    : offersGroup.imagePosition.$4,
+                right: context.isLTR
+                    ? offersGroup.imagePosition.$4
+                    : offersGroup.imagePosition.$3,
                 child: SizedBox(
                   height: 103,
+                  width: 120,
                   child: Transform(
                     alignment: Alignment.center,
-                    transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                    transform: (offersGroup.needsFlipInRtl && !context.isLTR)
+                        ? Matrix4.rotationY(pi)
+                        : Matrix4.identity(),
                     child: Image.asset(
                       offersGroup.imagePath,
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
-              ),
-              Padding(
+              ),              Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -175,7 +182,7 @@ class _DashboardOffersCard extends StatelessWidget {
                       children: [
                         Text(
                           offersGroup.title(context.l10n),
-                          style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
+                          style: context.textStyleV3.h3SemiBold.copyWith(color: Color(0xFF1E2A36)),
                         ),
                         Padding(
                           padding: const EdgeInsetsDirectional.only(end: 2),
@@ -185,7 +192,8 @@ class _DashboardOffersCard extends StatelessWidget {
                             child: DecoratedBox(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                                color: context.colorsV3.staticWhite.withOpacity(0.2),
+                                  color: Color(0xFF1B8354)
+                              //  color: context.colorsV3.staticWhite.withOpacity(0.2),
                               ),
                               child: Center(
                                 child: Icon(
@@ -204,7 +212,7 @@ class _DashboardOffersCard extends StatelessWidget {
                       child: Text(
                         offersGroup.description(context.l10n),
                         style:
-                        context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
+                        context.textStyleV3.captionLargeRegular.copyWith(color: Color(0xFF1E2A36)),
                       ),
                     ),
                   ],

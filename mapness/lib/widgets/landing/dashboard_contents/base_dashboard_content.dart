@@ -47,6 +47,14 @@ class BaseDashboardContent extends ConsumerWidget {
         Column(
           children: [
             const SizedBox(height: Spacing.$3x),
+            // 3. What's New (ماهو جديد بلدي)
+            StoriesWidget(
+              titleWidget: Padding(
+                padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                child: DashboardTitle(context.l10n.whatIsNewInBalady),
+              ),
+            ),
+            const SizedBox(height: Spacing.$6x),
             // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
@@ -126,14 +134,7 @@ class BaseDashboardContent extends ConsumerWidget {
             ),
             const SizedBox(height: Spacing.$6x),
 
-            // 3. What's New (ماهو جديد بلدي)
-            StoriesWidget(
-              titleWidget: Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                child: DashboardTitle(context.l10n.whatIsNewInBalady),
-              ),
-            ),
-            const SizedBox(height: Spacing.$6x),
+
 
             // 4. Offers Row (تدلل)
             const DashboardOffersRow(),

@@ -1,5 +1,7 @@
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum OffersGroup {
@@ -21,6 +23,7 @@ extension OffersGroupExtension on OffersGroup {
         OffersGroup.entertainment,
         OffersGroup.services,
       ];
+
 
   String title(AppLocalizations locale) => switch (this) {
         OffersGroup.eat => locale.tastyDeals,
@@ -57,32 +60,57 @@ extension OffersGroupExtension on OffersGroup {
 
   List<Color> get color => switch (this) {
         OffersGroup.eat => const [
-            Color(0xFFF19F2F),
-            Color(0xFFD6650E),
+            Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
         OffersGroup.shopping => const [
-            Color(0xFF343338),
-            Color(0xFF17171A),
+          Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
         OffersGroup.homeAndAuto => const [
-            Color(0xFF3B81B7),
-            Color(0xFF1B4890),
+          Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
         OffersGroup.beautyAndHealth => const [
-            Color(0xFF3DC4BA),
-            Color(0xFF04756D),
+          Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
         OffersGroup.entertainment => const [
-            Color(0xFFB180E8),
-            Color(0xFF7035AE),
+          Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
         OffersGroup.services => const [
-            Color(0xFF58A768),
-            Color(0xFF277035),
+          Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
         OffersGroup.others => const [
-            Color(0xFF19B4A8),
-            Color(0xFF9547E9),
+          Color(0xFFD9F7E6),
+          Color(0xFFD9F7E6),
           ],
       };
+
+
+
+// (top, bottom, start, end)
+  (double?, double?, double?, double?) get imagePosition => switch (this) {
+    OffersGroup.eat => (null, 6, null, -5),              // الطعام - في الأسفل
+    OffersGroup.shopping   => (null, 6, null, -10),
+    OffersGroup.homeAndAuto => (30, -5, 80, 0),
+    OffersGroup.beautyAndHealth  => (null, 6, null, 10),
+    OffersGroup.entertainment => (0, -10, null, -10),
+    OffersGroup.services => (null, 6, null, -20),
+    OffersGroup.others => (null, 6, null, -20),
+  };
+
+  bool get needsFlipInRtl => switch (this) {
+    OffersGroup.eat => false,
+    OffersGroup.shopping => false,
+    OffersGroup.homeAndAuto => false,
+    OffersGroup.beautyAndHealth => false,
+    OffersGroup.entertainment => false,
+    OffersGroup.services => false,
+    OffersGroup.others => false,
+  };
 }
+
+
