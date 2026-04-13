@@ -41,10 +41,10 @@ class FeedbackBannerCardV2 extends StatelessWidget {
           textDirection: Directionality.of(context),
           imageSizeCalculator: imageSizeCalculator,
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+            padding: const EdgeInsetsDirectional.only(end: Spacing.$4x,top:Spacing.$4x ),
             child: SizedBox(
-              width: Spacing.$6x,
-              height: Spacing.$6x,
+              width: Spacing.$8x,
+              height: Spacing.$8x,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Spacing.$1_5x),
@@ -52,7 +52,7 @@ class FeedbackBannerCardV2 extends StatelessWidget {
                 ),
                 child: Center(
                   child: Icon(
-                    SystemIcons.arrowRight,
+                    SystemIcons.arrowCornerRightLarge,
                     color: context.colors.staticWhite,
                     size: Spacing.$4x,
                   ),

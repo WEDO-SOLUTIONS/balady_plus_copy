@@ -189,7 +189,7 @@ class _DashboardOffersCard extends StatelessWidget {
                               ),
                               child: Center(
                                 child: Icon(
-                                  SystemIcons.arrowRight,
+                                  SystemIcons.arrowCornerRightSmall,
                                   color: context.colorsV3.staticWhite,
                                   size: Spacing.$5x,
                                 ),
