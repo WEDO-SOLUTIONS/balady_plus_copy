@@ -307,14 +307,6 @@ class CommonFunctions {
       path: path,
     );
   }
-  static void openMiniAppGroupId({required String groupId}) {
-      servicesNavigatorKey.currentState?.pushNamed(
-        '/group',
-        arguments: {
-          'groupId': groupId,
-        },
-      );
-  }
 
   static void openMiniAppGroupId({required String groupId}) {
     servicesNavigatorKey.currentState?.pushNamed(
