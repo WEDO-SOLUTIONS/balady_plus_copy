@@ -79,9 +79,6 @@ class SelectedPersonaCard extends StatelessWidget {
                     await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
                   } else {
                     CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
-
-                    context.read<DelegatorsCubit>().getDelegators();
-                    context.read<DelegatorsCubit>().getAgents();
                     await BottomSheetDialog.showDraggableSheet(
                       context,
                       dialogKeyName: DialogName.delegatorsDialog,

@@ -3,6 +3,7 @@ import 'package:balady_design_system/theme/app_theme.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart'
@@ -59,6 +60,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AccessibilityController()),
         // Add BaladyThemeNotifier to providers
         ChangeNotifierProvider(create: (_) => BaladyThemeNotifier()),
+        BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),

@@ -36,9 +36,6 @@ class GeneralErrorWidget extends StatelessWidget {
                       delegatorsState.selectedDelegate != null || delegatorsState.selectedAgent != null;
 
                   context.read<NewMiniAppLogicCubit>().loadMiniApps(
-                    isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
-                    isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-                    isUserAccountBusiness: isUserAccountBusiness,
                   );
                 },
                 style: ElevatedButton.styleFrom(

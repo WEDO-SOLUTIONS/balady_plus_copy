@@ -16,6 +16,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_respon
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/mini_apps_list_pages.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dgis_map/library.dart';
@@ -304,6 +305,13 @@ class CommonFunctions {
     sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
       serviceKey: serviceKey,
       path: path,
+    );
+  }
+
+  static void openMiniAppGroupId({required String groupId}) {
+    servicesNavigatorKey.currentState?.pushNamed(
+      '/group',
+      arguments: {'groupId': groupId},
     );
   }
 
@@ -1785,18 +1793,9 @@ class CommonFunctions {
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
 
-    // Get current business account status from DelegatorsCubit
-    final delegatorsState = sl<DelegatorsCubit>().state;
-    final isUserAccountBusiness =
-        delegatorsState.selectedDelegate != null ||
-        delegatorsState.selectedAgent != null;
 
-    // sl<HomeMiniAppsListCubit>().loadMiniApps();
-    await sl<NewMiniAppLogicCubit>().loadMiniApps(
-      isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
-      isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-      isUserAccountBusiness: isUserAccountBusiness,
-    );
+    // Trigger load only if not already loaded or in progress
+    await sl<NewMiniAppLogicCubit>().loadMiniApps(forceRefresh: true);
     // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
     // BlocProvider.of<DashboardBloc>(
     //         NavigationService.navigatorKey.currentContext!)
@@ -1999,8 +1998,7 @@ class CommonProperties {
   static List<String> allowedSHAFingerprints = [
     "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15",
     "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D",
-    "4B:A6:13:C4:D7:E8:B0:C7:6A:4F:FE:B7:88:CC:28:B8:10:EC:FA:51:5B:A5:07:CD:83:CF:24:ED:1D:15:62:30"
-
+    "4B:A6:13:C4:D7:E8:B0:C7:6A:4F:FE:B7:88:CC:28:B8:10:EC:FA:51:5B:A5:07:CD:83:CF:24:ED:1D:15:62:30",
   ];
 
   //static String get token =>

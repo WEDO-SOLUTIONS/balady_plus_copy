@@ -76,6 +76,19 @@ class NewMiniAppLogicState {
     );
   }
 
+  /// True when the cubit is in its very first state — [loadMiniApps] has not
+  /// been called yet. Treat this the same as [isFavLoading] in the UI so
+  /// shimmer widgets are shown on first open.
+  bool get isInitial =>
+      !isFavLoading &&
+      !isAppsGroupLoading &&
+      !isEntryPointsLoading &&
+      allMiniApps.isEmpty &&
+      appGroups.isEmpty &&
+      entryPoints.isEmpty &&
+      favError == null &&
+      entryPointsError == null;
+
   NewMiniAppLogicState copyWith({
     bool? isFavLoading,
     String? favError,

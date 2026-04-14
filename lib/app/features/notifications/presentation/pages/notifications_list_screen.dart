@@ -22,7 +22,6 @@ class NotificationsListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),
         BlocProvider(
           create: (_) {
             NotificationRepositoryImplementation filterRepository = sl();

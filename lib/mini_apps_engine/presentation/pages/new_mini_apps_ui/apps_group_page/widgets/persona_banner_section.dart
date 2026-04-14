@@ -33,15 +33,8 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
     bool isLoggedin = CommonProperties.isLoggedInMunicipality;
     return Consumer<BaladyThemeNotifier>(
       builder: (context, themeNotifier, child) {
-        return BlocProvider<DelegatorsCubit>(
-          create: (context) {
-            final cubit = GetIt.instance<DelegatorsCubit>();
-            // Apply account selection logic based on group type
-            if (isLoggedin) {
-              _applyAccountSelection(cubit);
-            }
-            return cubit;
-          },
+        return BlocProvider<DelegatorsCubit>.value(
+          value: GetIt.instance<DelegatorsCubit>(),
           child: Builder(
             builder: (context) {
               // Now we can access the DelegatorsCubit and pass it to DashboardBloc
@@ -71,18 +64,13 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                     },
                     child: BlocListener<DelegatorsCubit, DelegatorsState>(
                       listenWhen: (previous, current) {
-                        // Only trigger when transitioning from loading to no-data state for business groups
                         final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
                         if (!isBusinessGroup || !isLoggedin) return false;
 
-                        final wasLoading = previous.status == BlocRequestStatus.submissionGetLoading ||
-                            previous.agentStatus == BlocRequestStatus.submissionGetLoading ||
-                            previous.status == BlocRequestStatus.initial ||
-                            previous.agentStatus == BlocRequestStatus.initial;
-                        final isNotLoading = current.status != BlocRequestStatus.submissionGetLoading &&
-                            current.agentStatus != BlocRequestStatus.submissionGetLoading &&
-                            current.status != BlocRequestStatus.initial &&
-                            current.agentStatus != BlocRequestStatus.initial;
+                        final wasLoading = previous.accountStatus == DelegatorsAccountStatus.loading ||
+                            previous.accountStatus == DelegatorsAccountStatus.initial;
+                        final isNotLoading = current.accountStatus != DelegatorsAccountStatus.loading &&
+                            current.accountStatus != DelegatorsAccountStatus.initial;
                         final hasNoData = current.delegators.isEmpty && current.agents.isEmpty;
 
                         return wasLoading && isNotLoading && hasNoData;
@@ -108,10 +96,8 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                                 // For business groups, show loading while determining account selection
                                 if (isBusinessGroup && isLoggedin) {
                                   final isDataLoading =
-                                      state.status == BlocRequestStatus.submissionGetLoading ||
-                                          state.agentStatus == BlocRequestStatus.submissionGetLoading ||
-                                          state.status == BlocRequestStatus.initial ||
-                                          state.agentStatus == BlocRequestStatus.initial;
+                                      state.accountStatus == DelegatorsAccountStatus.loading ||
+                                          state.accountStatus == DelegatorsAccountStatus.initial;
 
                                   final hasNoData = state.delegators.isEmpty && state.agents.isEmpty;
                                   final hasDataButNoSelection =
@@ -153,9 +139,7 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                                   final isAccountSelectionReady = isBusinessGroup
                                       ? (delegatorsState.selectedDelegate != null ||
                                       delegatorsState.selectedAgent != null ||
-                                      (delegatorsState.delegators.isEmpty &&
-                                          delegatorsState.agents.isEmpty &&
-                                          delegatorsState.status == BlocRequestStatus.submissionGetSuccess))
+                                      delegatorsState.accountStatus == DelegatorsAccountStatus.normalAccount)
                                       : true; // Personal group is always ready
 
                                   // Initialize dashboard when account selection is ready
@@ -325,12 +309,6 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
         );
       },
     );
-  }
-
-  void _applyAccountSelection(DelegatorsCubit cubit) {
-    // Apply account selection logic immediately
-    print("DEBUG: Applying account selection for group: ${widget.groupId}");
-    AccountSelectionService.applyAccountSelectionForGroup(widget.groupId, cubit);
   }
 
   Widget _buildLoadingProfileCard() {

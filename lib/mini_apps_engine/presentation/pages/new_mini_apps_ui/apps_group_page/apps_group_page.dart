@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_plus/app/features/delegators/services/account_selection_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
@@ -28,9 +29,8 @@ import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {
   final String groupId;
-  final MiniApp? dashboard;
 
-  const AppsGroupPage({super.key, required this.groupId, this.dashboard});
+  const AppsGroupPage({super.key, required this.groupId});
 
   @override
   State<AppsGroupPage> createState() => _AppsGroupPageState();
@@ -307,7 +307,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                               PageRouteBuilder(
                                                 opaque: false,
                                                 barrierColor: Colors.transparent,
-                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id, dashboard: widget.dashboard ?? fetchedDashboard,),
+                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id),
                                               ),
                                             ),
                                           ),
@@ -450,7 +450,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         if (!isLoggedIn) {
           return SliverToBoxAdapter(child: NafathLoginWidget());
         } else {
-          return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard ?? fetchedDashboard,));
+          AccountSelectionService.applyAccountSelectionForGroup(widget.groupId);
+          return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId));
         }
       },
     );

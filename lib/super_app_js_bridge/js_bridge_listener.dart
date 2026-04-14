@@ -1380,12 +1380,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
         // Fetch delegators if not already loaded
         if (cubit.state.delegators.isEmpty) {
-          cubit.getDelegators();
+          cubit.loadData();
 
-          // Wait for delegators to load (max 10 seconds)
+          // Wait for data to load (max 10 seconds)
           int attempts = 0;
           while (attempts < 20 &&
-              cubit.state.status == BlocRequestStatus.submissionGetLoading) {
+              cubit.state.accountStatus == DelegatorsAccountStatus.loading) {
             await Future.delayed(const Duration(milliseconds: 500));
             attempts++;
           }
@@ -1460,13 +1460,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
         // Fetch agents if not already loaded
         if (cubit.state.agents.isEmpty) {
-          cubit.getAgents();
+          cubit.loadData();
 
-          // Wait for agents to load (max 10 seconds)
+          // Wait for data to load (max 10 seconds)
           int attempts = 0;
           while (attempts < 20 &&
-              cubit.state.agentStatus ==
-                  BlocRequestStatus.submissionGetLoading) {
+              cubit.state.accountStatus == DelegatorsAccountStatus.loading) {
             await Future.delayed(const Duration(milliseconds: 500));
             attempts++;
           }
