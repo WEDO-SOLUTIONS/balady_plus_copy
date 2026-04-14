@@ -50,19 +50,18 @@ class ParkingDetailsContent extends ConsumerWidget {
           ),
           const SizedBox(height: Spacing.$2x),
           const ContentWrapper(
-            children: [
+            color: Colors.transparent,
+            children:  [
               ParkingLotRow(
-                dividerEnabled: true,
                 type: ParkingFilter.all,
               ),
               ParkingLotRow(
                 type: ParkingFilter.free,
-                dividerEnabled: true,
               ),
               ParkingLotRow(type: ParkingFilter.paid),
             ],
           ),
-          const SizedBox(height: Spacing.$12x),
+          const SizedBox(height: Spacing.$9x),
         ]),
       ),
     );
