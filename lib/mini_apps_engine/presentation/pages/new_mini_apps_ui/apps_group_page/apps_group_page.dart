@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_plus/app/features/delegators/services/account_selection_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
@@ -449,6 +450,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         if (!isLoggedIn) {
           return SliverToBoxAdapter(child: NafathLoginWidget());
         } else {
+          AccountSelectionService.applyAccountSelectionForGroup(widget.groupId);
           return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId));
         }
       },

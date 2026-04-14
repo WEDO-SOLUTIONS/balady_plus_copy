@@ -1,8 +1,8 @@
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocRequestStatus;
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import 'package:get_it/get_it.dart';
 
 enum GroupType {
   personal, // 124a4dd1-7a7b-47f1-09eb-08de2cce6088
@@ -34,11 +34,11 @@ class AccountSelectionService {
   }
 
   /// Determines and applies the appropriate account selection for the given group
-  static Future<void> applyAccountSelectionForGroup(String groupId, DelegatorsCubit cubit) async {
+  static Future<void> applyAccountSelectionForGroup(String groupId) async {
     print("DEBUG: applyAccountSelectionForGroup called for groupId: $groupId");
     final groupType = getGroupType(groupId);
     print("DEBUG: Group type determined as: $groupType");
-
+    DelegatorsCubit cubit = GetIt.instance<DelegatorsCubit>();
     switch (groupType) {
       case GroupType.personal:
         print("DEBUG: Applying personal account selection");
@@ -92,32 +92,26 @@ class AccountSelectionService {
 
     // Check if we need to fetch fresh data
     final isDataStale =
-        cubit.state.status == BlocRequestStatus.initial || cubit.state.agentStatus == BlocRequestStatus.initial;
+        cubit.state.accountStatus == DelegatorsAccountStatus.initial;
 
     if (!hasExistingData || isDataStale) {
       print("DEBUG: Fetching fresh delegator/agent data");
-      // Fetch delegators and agents
-      cubit.getDelegators();
-      cubit.getAgents();
+      cubit.loadData();
 
-      // Wait for both API calls to complete by checking their status
+      // Wait for both API calls to complete
       int attempts = 0;
       while (attempts < 20) {
         await Future.delayed(const Duration(milliseconds: 300));
         attempts++;
 
-        final delegatorsLoaded =
-            cubit.state.status == BlocRequestStatus.submissionGetSuccess ||
-            cubit.state.status == BlocRequestStatus.submissionGetFailure;
-        final agentsLoaded =
-            cubit.state.agentStatus == BlocRequestStatus.submissionGetSuccess ||
-            cubit.state.agentStatus == BlocRequestStatus.submissionGetFailure;
+        final isDone = cubit.state.accountStatus != DelegatorsAccountStatus.loading &&
+            cubit.state.accountStatus != DelegatorsAccountStatus.initial;
 
         print(
-          "DEBUG: Attempt $attempts - Delegators loaded: $delegatorsLoaded (status: ${cubit.state.status}, ${cubit.state.delegators.length} items), Agents loaded: $agentsLoaded (status: ${cubit.state.agentStatus}, ${cubit.state.agents.length} items)",
+          "DEBUG: Attempt $attempts - accountStatus: ${cubit.state.accountStatus}, delegators: ${cubit.state.delegators.length}, agents: ${cubit.state.agents.length}",
         );
 
-        if (delegatorsLoaded && agentsLoaded) {
+        if (isDone) {
           print("DEBUG: Both API calls completed");
           break;
         }
@@ -136,44 +130,6 @@ class AccountSelectionService {
 
     // Apply selection from preferences or select first available
     await _applySelectionFromPreferences(cubit);
-  }
-
-  /// Checks if user has access to business group (has delegators or agents)
-  static Future<bool> hasBusinessAccess(DelegatorsCubit cubit) async {
-    print("DEBUG: Checking business access");
-
-    // Always try to fetch fresh data
-    cubit.getDelegators();
-    cubit.getAgents();
-
-    // Wait for both API calls to complete by checking their status
-    int attempts = 0;
-    while (attempts < 20) {
-      await Future.delayed(const Duration(milliseconds: 300));
-      attempts++;
-
-      final delegatorsLoaded =
-          cubit.state.status == BlocRequestStatus.submissionGetSuccess ||
-          cubit.state.status == BlocRequestStatus.submissionGetFailure;
-      final agentsLoaded =
-          cubit.state.agentStatus == BlocRequestStatus.submissionGetSuccess ||
-          cubit.state.agentStatus == BlocRequestStatus.submissionGetFailure;
-
-      print(
-        "DEBUG: Business access check attempt $attempts - Delegators loaded: $delegatorsLoaded, Agents loaded: $agentsLoaded",
-      );
-
-      if (delegatorsLoaded && agentsLoaded) {
-        break;
-      }
-    }
-
-    final hasAccess = cubit.state.delegators.isNotEmpty || cubit.state.agents.isNotEmpty;
-    print(
-      "DEBUG: Business access result: $hasAccess (${cubit.state.delegators.length} delegators, ${cubit.state.agents.length} agents)",
-    );
-
-    return hasAccess;
   }
 
   /// Quick check if user currently has business access (without fetching)
