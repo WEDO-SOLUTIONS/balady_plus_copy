@@ -30,6 +30,8 @@ import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
@@ -527,6 +529,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
 
+    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
     final mapSettings = MapObjectManagerSettings.search();
     final mapObjectProvider = ref.read(
       mapObjectManagerProvider(named: mapSettings.name, layerId: mapSettings.layerId).notifier,
