@@ -345,6 +345,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: AppThemeConfig(
           language: 'locale'.tr(),
           accessibilityModel: accessibility,
+          deviceType: Platform.isAndroid ? 'android' : 'ios',
           themeType: Theme.of(
             NavigationService.navigatorKey.currentContext!,
           ).brightness.name,
