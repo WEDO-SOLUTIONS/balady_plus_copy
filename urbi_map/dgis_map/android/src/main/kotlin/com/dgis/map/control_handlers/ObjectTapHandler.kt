@@ -95,6 +95,16 @@ class ObjectTapHandler(
                 onMarkerTap(tappedObject)
                 return
             }
+            is SimpleClusterObject -> {
+                val userData = tappedObject.userData
+
+                if (userData is MapObjectManagerMessage) {
+                    val clusterId = UUID.randomUUID().toString()
+                    this.clusters[clusterId] = tappedObject
+                    onClusterTap(userData.id, tappedObject, clusterId)
+                    return
+                }
+            }
             else ->
                     eventSink.error(
                             "ClassCastException",
