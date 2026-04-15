@@ -37,7 +37,9 @@ class FeedbackBannerCardV2 extends StatelessWidget {
           asset: path,
           title: title,
           subTitle: subtitle,
-          gradientColors: gradientColors,
+          ///todo fix colors
+          ///          gradientColors: gradientColors,
+          gradientColors: [context.colors.accentActive,context.colors.accentActive],
           textDirection: Directionality.of(context),
           imageSizeCalculator: imageSizeCalculator,
           child: Padding(
@@ -48,12 +50,14 @@ class FeedbackBannerCardV2 extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                  color: context.colors.staticWhite.withOpacity(0.2),
+                  ///todo fix colors
+                  // color: context.colors.staticBlack,
+                  color: context.colors.staticWhite,
                 ),
                 child: Center(
                   child: Icon(
                     SystemIcons.arrowCornerRightLarge,
-                    color: context.colors.staticWhite,
+                    color: context.colors.staticBlack,
                     size: Spacing.$4x,
                   ),
                 ),

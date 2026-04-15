@@ -107,7 +107,9 @@ class _DashboardOffersRowState extends ConsumerState<DashboardOffersRow> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4),
                     color: _currentPage == index
-                        ? context.colors.staticBlack
+                    ///todo must fix this with real color
+                    //? context.colors.staticBlack
+                        ? context.colors.accentDefault
                         : context.colors.borderMuted,
                   ),
                 ),

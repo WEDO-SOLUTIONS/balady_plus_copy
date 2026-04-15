@@ -78,7 +78,7 @@ class _ParkingManage extends _$ParkingManage {
         options: MarkerOptionsMessage(
           position: GeoPointWithElevationMessage(latitude: model.lat, longitude: model.lon, elevation: 1),
           icon: switch (theme) {
-            BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+            BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
             BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
             _ => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
           },
@@ -177,7 +177,7 @@ class _ParkingManage extends _$ParkingManage {
           icon: SaudiNationalDay.isNow()
               ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
               : switch (theme) {
-                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+                  BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
                   BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
                   _ => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
                 },
