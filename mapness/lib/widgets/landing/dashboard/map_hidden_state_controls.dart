@@ -314,7 +314,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                         ),
                         child: Center(
                           child: Icon(
-                            TransportIcons.locationDirectionNavigator,
+                            TransportIcons.newlocationDirectionNavigator,
                             size: iconSize,
                             color: context.colors.foregroundSoft,
                           ),
