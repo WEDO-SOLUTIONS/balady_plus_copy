@@ -146,6 +146,7 @@ class _DashboardOffersCard extends StatelessWidget {
             ),
           ),
           child: Stack(
+
             children: [
               Positioned(
                 top: offersGroup.imagePosition.$1,
@@ -161,7 +162,7 @@ class _DashboardOffersCard extends StatelessWidget {
                   width: 120,
                   child: Transform(
                     alignment: Alignment.center,
-                    transform: (offersGroup.needsFlipInRtl && !context.isLTR)
+                    transform: (context.isLTR)
                         ? Matrix4.rotationY(pi)
                         : Matrix4.identity(),
                     child: Image.asset(

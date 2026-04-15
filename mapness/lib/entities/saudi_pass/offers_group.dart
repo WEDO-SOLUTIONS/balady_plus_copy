@@ -91,26 +91,16 @@ extension OffersGroupExtension on OffersGroup {
 
 
 
-// (top, bottom, start, end)
   (double?, double?, double?, double?) get imagePosition => switch (this) {
-    OffersGroup.eat => (null, 6, null, -5),              // الطعام - في الأسفل
+    OffersGroup.eat => (null, 2, null, -10),
     OffersGroup.shopping   => (null, 6, null, -10),
     OffersGroup.homeAndAuto => (30, -5, 80, 0),
-    OffersGroup.beautyAndHealth  => (null, 6, null, 10),
-    OffersGroup.entertainment => (0, -10, null, -10),
-    OffersGroup.services => (null, 6, null, -20),
+    OffersGroup.beautyAndHealth  => (null, 0, null, 0),
+    OffersGroup.entertainment => (0, -10, null, 2),
+    OffersGroup.services => (null, -10, null, -5),
     OffersGroup.others => (null, 6, null, -20),
   };
 
-  bool get needsFlipInRtl => switch (this) {
-    OffersGroup.eat => false,
-    OffersGroup.shopping => false,
-    OffersGroup.homeAndAuto => false,
-    OffersGroup.beautyAndHealth => false,
-    OffersGroup.entertainment => false,
-    OffersGroup.services => false,
-    OffersGroup.others => false,
-  };
 }
 
 
