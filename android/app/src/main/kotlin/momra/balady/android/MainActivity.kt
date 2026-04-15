@@ -4,7 +4,6 @@ import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import com.dgis.FlutterProvider
 import com.dgis.map.android_auto.CarAppConnectionState
 import com.dgis.map.android_auto.MainAppScreenState
@@ -13,9 +12,12 @@ import com.dgis.map.android_auto.NavigationCarAppService
 import io.flutter.embedding.android.FlutterFragment
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
+import io.flutter.plugin.common.MethodChannel
+import com.ryanheise.audioservice.AudioServiceFragmentActivity
 
-class MainActivity : FlutterFragmentActivity() {
+class MainActivity : AudioServiceFragmentActivity() {
+    
+    // TEMPORARILY DISABLED: private var mediaSessionHandler: MediaSessionHandler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +51,8 @@ class MainActivity : FlutterFragmentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         MainAppScreenStateNotifier.setState(MainAppScreenState.DESTROYED)
+        
+        // Audio interruption handler removed
 
         if (NavigationCarAppService.connectionState == CarAppConnectionState.DISCONNECTED) {
             FlutterProvider.destroyFlutterEngine()
@@ -61,17 +65,19 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine)
+        // Don't register plugins here - they're already registered by FlutterFragmentActivity
+        // and FlutterProvider to avoid duplicate registration warnings
+        
+        // TEMPORARILY DISABLED: Set up MediaSession method channel
+        // val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "balady_media_session")
+        // mediaSessionHandler = MediaSessionHandler(this, channel)
+        // channel.setMethodCallHandler(mediaSessionHandler)
+        
+        // Native audio interruption removed for simplicity
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {
         return false
-    }
-
-    override fun createFlutterFragment(): FlutterFragment {
-        val flutterFragment = super.createFlutterFragment()
-        flutterFragment.arguments?.putBoolean("destroy_engine_with_fragment", false)
-        return flutterFragment
     }
 }
 

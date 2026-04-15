@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
+import 'package:balady_plus/app/core/utils/common_functions.dart' as balady_utils;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

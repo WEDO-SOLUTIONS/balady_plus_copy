@@ -6,8 +6,6 @@ import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:bot_toast/bot_toast.dart'
-    show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
-
+import 'package:mapness/features/stream_audio/ui/pages/stream_audio_screen.dart';
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart' show AppColor, AppConfig, RouteName;
@@ -142,7 +140,7 @@ class AppWidgetState extends State<AppWidget> {
 
                     return ColorFiltered(
                       colorFilter: grayscaleFilter,
-                      child: builtChild,
+                      child: StreamAudio(child: builtChild ?? const SizedBox.shrink()),,
                     );
                   },
                   navigatorObservers: [

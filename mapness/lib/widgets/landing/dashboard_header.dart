@@ -171,16 +171,17 @@ class DashboardHeader extends ConsumerWidget {
                 .read(advertMetricsProvider.notifier)
                 .sendEvent(AdvertMetricsKeys.exploreSearch);
 
-            // Here we clean the search query on tap on the search field
+            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+                    '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+                  );
+              context.router.push(SearchRoute(expansion: Expansion.expanded));// Here we clean the search query on tap on the search field
             // So the user can see the search history, not previous search results
-            ref
+            // Defer state modification to avoid mutations during frame rendering
+              WidgetsBinding.instance.addPostFrameCallback((_) {ref
                 .read(searchProvider(SearchScopeEnum.map.value).notifier)
                 .clear();
 
-            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
-                  '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-                );
-            context.router.push(SearchRoute(expansion: Expansion.expanded));
+            });
           },
           child: AbsorbPointer(
             child: BaladyTextInput.search(

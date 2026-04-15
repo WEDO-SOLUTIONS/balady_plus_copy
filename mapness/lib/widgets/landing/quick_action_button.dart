@@ -7,6 +7,7 @@ class QuickActionButton extends StatelessWidget {
   final String text;
   final String? mekkahText;
   final IconData icon;
+  final Widget? child;
   final VoidCallback onTap;
   final String? assetPath;
   final SpecialThemeMode? themeMode;
@@ -20,6 +21,7 @@ class QuickActionButton extends StatelessWidget {
     this.mekkahText,
     this.assetPath,
     this.themeMode,
+    this.child,
     super.key,
   });
 
@@ -48,7 +50,7 @@ class QuickActionButton extends StatelessWidget {
 
       // Keep default icon centered inside the button
       return Center(
-        child: Icon(
+        child: child ?? Icon(
           icon,
           size: Spacing.$6x + Spacing.$1x,
           color: colors.accentDefault,

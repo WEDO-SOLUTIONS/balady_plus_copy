@@ -13,7 +13,8 @@ object FlutterProvider {
     fun getFlutterEngine(context: Context): FlutterEngine {
         if (flutterEngine == null) {
             val dartVmArgs = null
-            val automaticallyRegisterPlugins = false
+            // Enable automatic plugin registration - this will register all Flutter plugins
+            val automaticallyRegisterPlugins = true
             flutterEngine = FlutterEngine(context, dartVmArgs, automaticallyRegisterPlugins)
             flutterEngine!!.navigationChannel.setInitialRoute("/")
             flutterEngine!!.dartExecutor.executeDartEntrypoint(
