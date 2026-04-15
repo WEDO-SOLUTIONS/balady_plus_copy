@@ -1,11 +1,10 @@
 // import 'dart:math' as math;
 import 'dart:ui';
-
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,7 +40,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
             title: Directionality.of(context) == TextDirection.rtl ? 'كتالوج الوسائط' : 'media catalog',
             colorEnabled: context.color.textAndIconsStatusAccent,
             leading: ActionModel(
-              onPressed: () => context.router.popForced(),
+              onPressed: () => context.router.pop(),
               icon: SystemIcons.arrowCornerLeftLarge,
             ),
           ),

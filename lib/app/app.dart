@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -140,7 +141,7 @@ class AppWidgetState extends State<AppWidget> {
 
                     return ColorFiltered(
                       colorFilter: grayscaleFilter,
-                      child: StreamAudio(child: builtChild ?? const SizedBox.shrink()),,
+                      child: StreamAudio(child: builtChild),
                     );
                   },
                   navigatorObservers: [

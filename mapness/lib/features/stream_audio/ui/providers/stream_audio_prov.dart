@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/features/stream_audio/data/datasource/channels_data_source.dart';
 import 'package:mapness/features/stream_audio/data/dto/channel_dto.dart';
 import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
 class StreamAudioProvider extends ChangeNotifier {
   final AudioService _audioService = AudioService();
@@ -46,7 +48,7 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   // Set the ref to listen to language changes and initialize coordinator
-  void setRef(Ref<StreamAudioProvider> ref) {
+  void setRef(Ref ref) {
     // Listen to language changes
     ref.listen<Language>(appLanguageProvider, (previous, next) {
       if (previous != null && previous != next) {
@@ -792,8 +794,8 @@ class StreamAudioProvider extends ChangeNotifier {
 // Provider definition
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
   (ref) {
-    final provider = StreamAudioProvider();
-    provider.setRef(ref);
+    final provider = StreamAudioProvider()
+    ..setRef(ref);
     return provider;
   },
 );
