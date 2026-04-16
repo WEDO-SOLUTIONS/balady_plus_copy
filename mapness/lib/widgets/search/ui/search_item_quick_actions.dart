@@ -75,6 +75,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
+        iconSize: 15,
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
@@ -96,6 +97,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ),
       ItemActionBar(
         icon: iconData,
+        iconSize: 15,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
         onPressed: () {
