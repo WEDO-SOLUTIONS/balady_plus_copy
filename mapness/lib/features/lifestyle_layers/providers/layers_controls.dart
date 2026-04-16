@@ -190,9 +190,9 @@ class LayersControls extends _$LayersControls {
       case LayerType.three3D:
         await toggle3D();
         break;
-      case LayerType.roadEvents:
-        await toggleRoadEvents();
-        break;
+      // case LayerType.roadEvents:
+      //   await toggleRoadEvents();
+      //   break;
       case LayerType.traffic:
         await toggleTraffic();
         break;
@@ -637,8 +637,8 @@ class LayersControls extends _$LayersControls {
         break;
       case LayerType.traffic:
       case LayerType.three3D:
-      case LayerType.roadEvents:
-        break;
+      // case LayerType.roadEvents:
+      //   break;
     }
   }
 
@@ -848,14 +848,14 @@ class LayersControls extends _$LayersControls {
     await ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions();
   }
 
-  Future<void> toggleRoadEvents() async {
-    if (state.selectedType != (LayerType.roadEvents)) {
-      ///TODO: implements road events here
-      setSelection(selectedType: LayerType.roadEvents);
-    } else {
-      setSelection();
-    }
-  }
+  // Future<void> toggleRoadEvents() async {
+  //   if (state.selectedType != (LayerType.roadEvents)) {
+  //     ///TODO: implements road events here
+  //     setSelection(selectedType: LayerType.roadEvents);
+  //   } else {
+  //     setSelection();
+  //   }
+  // }
 
   Future<void> toggleTraffic() async {
     final trafficState = ref.watch(trafficStateProvider);

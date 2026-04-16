@@ -19,8 +19,6 @@ class LayersSheetContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
-    print('amr ${state.layersType}');
-    print('amr ${state.layersPanelType}');
     return SliverPadding(
       padding: const EdgeInsets.only(
         left: Spacing.$4x,
