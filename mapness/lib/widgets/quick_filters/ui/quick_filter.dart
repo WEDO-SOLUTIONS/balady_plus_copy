@@ -33,7 +33,7 @@ class QuickFilter extends ConsumerWidget {
 
     final leadingIcon = item.icon != null
         ? ChipIconWidget(
-            ({color}) => Icon(item.icon, size: 24, color: color ?? iconColor),
+            ({color}) => Icon(item.icon, size: 18, color: color ?? iconColor),
           )
         : null;
     final label = item.title;
@@ -58,6 +58,7 @@ class QuickFilter extends ConsumerWidget {
                 width: 1,
               ),
             ),
+
             child: ChipsElement(
               colors: isHidden ? colors : null,
               onPressed: item.onTap,
@@ -67,6 +68,7 @@ class QuickFilter extends ConsumerWidget {
             ),
           );
         }
+
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7),

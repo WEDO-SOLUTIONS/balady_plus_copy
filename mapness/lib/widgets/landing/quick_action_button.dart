@@ -11,7 +11,7 @@ class QuickActionButton extends StatelessWidget {
   final String? assetPath;
   final SpecialThemeMode? themeMode;
 
-  static const buttonSize = 76.0;
+  static const buttonSize = 60.0;
 
   const QuickActionButton({
     required this.text,
@@ -50,7 +50,7 @@ class QuickActionButton extends StatelessWidget {
       return Center(
         child: Icon(
           icon,
-          size: Spacing.$6x + Spacing.$1x,
+          size: Spacing.$6x ,
           color: colors.accentDefault,
         ),
       );

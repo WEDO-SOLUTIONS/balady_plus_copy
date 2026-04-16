@@ -130,7 +130,7 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       Row(
                         children: List.generate(4, (index) => Expanded(
                             child: Container(
-                              height: 2,
+                              height: 1,
                               color: route.activeIndex == index
                                   ? accentColor
                                   :  isDark? null:const Color(0xffE5E7EB) ,
