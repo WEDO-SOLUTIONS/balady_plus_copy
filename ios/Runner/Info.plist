@@ -69,15 +69,16 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSAllowsArbitraryLoadsInWebContent</key>
-	<true/>
+
 	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true/>
+    </dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Play Videos</string>
+	<string>Play Videos, and we need access to play audio in the background</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>To Allow to Add Events to the calendar</string>
 	<key>NSCameraUsageDescription</key>
@@ -147,6 +148,7 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+	    <string>audio</string>
 		<string>location</string>
 		<string>fetch</string>
 		<string>remote-notification</string>

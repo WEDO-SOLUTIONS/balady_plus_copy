@@ -5,6 +5,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/arrow_dragger.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
@@ -14,6 +16,13 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
@@ -266,7 +275,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   void _scrollListenHandler() {
     footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
-    Future.delayed(Duration.zero, () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
       } else {

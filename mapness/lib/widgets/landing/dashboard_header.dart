@@ -134,6 +134,7 @@ class MapQuickFiltersDefault extends ConsumerWidget {
 
 class DashboardHeader extends ConsumerStatefulWidget {
   const DashboardHeader({super.key});
+
   @override
   DashboardHeaderState createState() => DashboardHeaderState();
 }

@@ -173,6 +173,7 @@ reports/
 /.env.stg
 /.env.dev
 /.env.urbiPre
+/.fvm/
 
 # Build runner
 **/*.gen.dart

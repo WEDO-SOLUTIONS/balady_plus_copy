@@ -33,6 +33,12 @@ dependencies:
   flutter_svg: ^2.2.3
   proj4dart: ^2.1.0
 
+  ## Audio
+  just_audio: ^0.9.46
+  just_audio_background: ^0.0.1-beta.17
+#  just_audio: ^0.10.5
+#  just_audio_background: ^0.0.1-beta.17
+
   # Map urbi SDK
   dgis_map:
     path: ../urbi_map/dgis_map
@@ -103,6 +109,7 @@ dependencies:
   app_links: ^7.0.0
   flutter_keyboard_visibility: 6.0.0
   infinite_scroll_pagination: ^5.1.1
+  audio_session: ^0.1.19
   another_transformer_page_view:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: 2.2.0
@@ -178,6 +185,7 @@ flutter:
     - assets/icons/svg/
     - assets/icons/svg/profile/
     - assets/icons/lottie/
+    - assets/icons/svg/audio/
     - assets/icons/svg/quick_filters/
     - assets/icons/svg/weather/
     - assets/icons/svg/layers/
@@ -199,6 +207,8 @@ flutter:
     - assets/images/
     - assets/images/makkah_quick_actions/
     - assets/images/ramadan_quick_actions/
+    - assets/images/audio_placeholders/
+    - assets/images/audio_placeholders/arriving_soon/
     - assets/images/saudi_pass/
     - assets/images_svg/
     - assets/images_svg/saudi_pass/
