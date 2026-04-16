@@ -50,24 +50,42 @@ class QuickFilter extends ConsumerWidget {
           if (leadingIcon == null) {
             return const SizedBox.shrink();
           }
-          return ChipsElement(
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(7),
+              border: Border.all(
+                color: context.colors.borderMuted,
+                width: 1,
+              ),
+            ),
+            child: ChipsElement(
+              colors: isHidden ? colors : null,
+              onPressed: item.onTap,
+              isSelected: item.selected,
+              type: chipsType,
+              options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
+            ),
+          );
+        }
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(7),
+            border: Border.all(
+              color: context.colors.borderMuted,
+              width: 1,
+            ),
+          ),
+          child: ChipsElement(
             colors: isHidden ? colors : null,
             onPressed: item.onTap,
             isSelected: item.selected,
             type: chipsType,
-            options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
-          );
-        }
-        return ChipsElement(
-          colors: isHidden ? colors : null,
-          onPressed: item.onTap,
-          isSelected: item.selected,
-          type: chipsType,
-          options: ChipsLabelOptions(
-            labelFirst: label,
-            leadingIcon: leadingIcon,
-            leadingIconColor: iconColor,
-            labelFirstColor: labelColor,
+            options: ChipsLabelOptions(
+              labelFirst: label,
+              leadingIcon: leadingIcon,
+              leadingIconColor: iconColor,
+              labelFirstColor: labelColor,
+            ),
           ),
         );
       },

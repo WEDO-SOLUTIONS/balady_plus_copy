@@ -67,7 +67,10 @@ class QuickActionButton extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
                 color: colors.backgroundSurface1,
-                boxShadow: Shadows.s,
+                border: Border.all(
+                  color:colors.borderSoft,
+                  width: 1,
+                ),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
