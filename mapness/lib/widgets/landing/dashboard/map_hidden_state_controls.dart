@@ -258,7 +258,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
 
     const startingPoint = 0;
     const progressOpacity = 0.2;
-    const iconSize = 24.0;
+    const iconSize = 18.0;
     const minHeight = 40.0;
     const maxHeight = 48.0;
     const minWidth = 52.0;

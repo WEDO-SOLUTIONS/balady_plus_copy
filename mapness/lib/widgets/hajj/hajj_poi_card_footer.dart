@@ -50,6 +50,7 @@ class HajjPoiCardFooter extends HookConsumerWidget {
           icon: TransportIcons.locationDirectionNavigator,
           buttonType: ButtonType.primary,
           label: context.l10n.poiCardDirections,
+          iconSize:20,
           innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
           onPressed: onTapCar,
         ),
@@ -57,6 +58,7 @@ class HajjPoiCardFooter extends HookConsumerWidget {
           ItemActionBar(
             icon: GeneralIcons.phoneLTR,
             buttonType: ButtonType.secondary,
+            iconSize:20,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
             onPressed: callPhone!,
           ),
