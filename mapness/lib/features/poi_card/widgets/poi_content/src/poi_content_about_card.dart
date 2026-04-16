@@ -42,6 +42,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
   @override
   void initState() {
     super.initState();
+    print('amr widget.isExpandable ${widget.isExpandable}');
     _animationController = AnimationController(vsync: this, duration: widget.animationDuration);
     _animation = Tween<double>(
       begin: 0,
@@ -118,11 +119,13 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
             subtitleOptions: ContentRowTextOption(
               builder: (context) => AnimatedBuilder(
                 animation: _animation,
-                builder: (context, child) => Stack(
+                builder: (context, child) {
+                  print('amr _animation.value ${_animation.value}');
+                  return Stack(
                   alignment: AlignmentDirectional.bottomStart,
                   children: [
                     SizedBox(
-                      height: widget.isExpandable
+                      height: widget.isExpandable && _animation.value!=1
                           ? _textHeight.heightTruncated +
                                 (_textHeight.height - _textHeight.heightTruncated) * _animation.value
                           : null,
@@ -154,7 +157,8 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                         ),
                       ),
                   ],
-                ),
+                );
+                },
               ),
             ),
           ),

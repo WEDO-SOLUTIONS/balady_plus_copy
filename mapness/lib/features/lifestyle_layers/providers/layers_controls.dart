@@ -20,6 +20,11 @@ import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
+import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
+import 'package:mapness/features/shuttle_bus/provider.dart';
+import 'package:mapness/features/shuttle_bus/repo.dart';
+import 'package:mapness/features/makkah_bus/provider.dart';
+import 'package:mapness/features/makkah_bus/repo.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -35,6 +40,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/traffic_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -181,6 +187,15 @@ class LayersControls extends _$LayersControls {
 
   Future<void> toggleLayers(LayerType value) async {
     switch (value) {
+      case LayerType.three3D:
+        await toggle3D();
+        break;
+      // case LayerType.roadEvents:
+      //   await toggleRoadEvents();
+      //   break;
+      case LayerType.traffic:
+        await toggleTraffic();
+        break;
       case LayerType.favourites:
         await toggleFavourites();
         break;
@@ -199,6 +214,12 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         toggleMetro();
         break;
+      case LayerType.makkahBus:
+        toggleMakkahBuses();
+        break;
+      case LayerType.shuttleBus:
+        toggleHaramShuttle();
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -216,6 +237,12 @@ class LayersControls extends _$LayersControls {
     } else if (layerType case LayerType.metro) {
       ref.read(metroLayerRepositoryProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
+    } else if (layerType case LayerType.makkahBus) {
+      ref.read(makkahBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.makkahBus);
+    } else if (layerType case LayerType.shuttleBus) {
+      ref.read(shuttleBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.shuttleBus);
     }
   }
 
@@ -259,6 +286,24 @@ class LayersControls extends _$LayersControls {
     ref.read(metroLayerProvider.notifier).toggleMetro();
     if (state.selectedType != (LayerType.metro)) {
       setSelection(selectedType: LayerType.metro);
+    } else {
+      setSelection();
+    }
+  }
+
+  void toggleMakkahBuses() {
+    ref.read(makkahBusLayerProvider.notifier).toggle();
+    if (state.selectedType != (LayerType.makkahBus)) {
+      setSelection(selectedType: LayerType.makkahBus);
+    } else {
+      setSelection();
+    }
+  }
+
+  void toggleHaramShuttle() {
+    ref.read(shuttleBusLayerProvider.notifier).toggle();
+    if (state.selectedType != (LayerType.shuttleBus)) {
+      setSelection(selectedType: LayerType.shuttleBus);
     } else {
       setSelection();
     }
@@ -466,6 +511,7 @@ class LayersControls extends _$LayersControls {
 
   // We need to store the previous layer to restore it when we go back
   LayerType? _previousLayer;
+
   void hideLayer(LayerType layer, {bool restorable = true}) {
     // Do not hide the same layer twice, it is already hidden
     if (layer == _previousLayer) {
@@ -549,7 +595,6 @@ class LayersControls extends _$LayersControls {
     if (currentState != null && currentState != value) {
       await _hidePreviousLayers(currentState);
     }
-
     await toggleLayers(value);
   }
 
@@ -584,6 +629,16 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).toggleMetro();
         break;
+      case LayerType.makkahBus:
+        await ref.read(makkahBusLayerProvider.notifier).toggle();
+        break;
+      case LayerType.shuttleBus:
+        await ref.read(shuttleBusLayerProvider.notifier).toggle();
+        break;
+      case LayerType.traffic:
+      case LayerType.three3D:
+      // case LayerType.roadEvents:
+      //   break;
     }
   }
 
@@ -787,5 +842,32 @@ class LayersControls extends _$LayersControls {
     await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
+  }
+
+  Future<void> toggle3D() async {
+    await ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions();
+  }
+
+  // Future<void> toggleRoadEvents() async {
+  //   if (state.selectedType != (LayerType.roadEvents)) {
+  //     ///TODO: implements road events here
+  //     setSelection(selectedType: LayerType.roadEvents);
+  //   } else {
+  //     setSelection();
+  //   }
+  // }
+
+  Future<void> toggleTraffic() async {
+    final trafficState = ref.watch(trafficStateProvider);
+    final trafficNotifier = ref.read(trafficStateProvider.notifier);
+    final isEnabled = trafficState.status == TrafficControlStatus.enabled;
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.trafficLightButton,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+    );
+    trafficNotifier.onTrafficTap();
+    hideLayer(LayerType.metro, restorable: false);
   }
 }

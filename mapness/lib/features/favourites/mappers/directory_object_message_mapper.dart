@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
 
 extension DirectoryObjectMessageExt on DirectoryObjectMessage {
@@ -23,4 +24,13 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
       ),
     );
   }
+
+  String pinTitle(AppLocalizations l10n) {
+    if (isDroppedPin) {
+      return l10n.droppedPin;
+    }
+    return title;
+  }
+
+  bool get isDroppedPin => fullAddressName?.streetAddress == title;
 }

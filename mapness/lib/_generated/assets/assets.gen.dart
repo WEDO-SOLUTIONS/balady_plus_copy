@@ -359,6 +359,9 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/inactive_star.svg
   SvgGenImage get inactiveStar => const SvgGenImage('assets/images_svg/inactive_star.svg');
 
+  /// Directory path: assets/images_svg/layers
+  $AssetsImagesSvgLayersGen get layers => const $AssetsImagesSvgLayersGen();
+
   /// File path: assets/images_svg/lost_location.svg
   SvgGenImage get lostLocation => const SvgGenImage('assets/images_svg/lost_location.svg');
 
@@ -408,6 +411,9 @@ class $AssetsImagesSvgGen {
 
 class $AssetsMapsGen {
   const $AssetsMapsGen();
+
+  /// Directory path: assets/maps/buses
+  $AssetsMapsBusesGen get buses => const $AssetsMapsBusesGen();
 
   /// Directory path: assets/maps/configs
   $AssetsMapsConfigsGen get configs => const $AssetsMapsConfigsGen();
@@ -1014,6 +1020,37 @@ class $AssetsImagesSaudiPassGen {
   List<AssetGenImage> get values => [basket, books, car, clock, hearts, others, plane];
 }
 
+class $AssetsImagesSvgLayersGen {
+  const $AssetsImagesSvgLayersGen();
+
+  /// File path: assets/images_svg/layers/3D.svg
+  SvgGenImage get a3D => const SvgGenImage('assets/images_svg/layers/3D.svg');
+
+  /// File path: assets/images_svg/layers/favourites.svg
+  SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
+
+  /// File path: assets/images_svg/layers/makkah_bus.svg
+  SvgGenImage get makkahBus => const SvgGenImage('assets/images_svg/layers/makkah_bus.svg');
+
+  /// File path: assets/images_svg/layers/metro.svg
+  SvgGenImage get metro => const SvgGenImage('assets/images_svg/layers/metro.svg');
+
+  /// File path: assets/images_svg/layers/parking.svg
+  SvgGenImage get parking => const SvgGenImage('assets/images_svg/layers/parking.svg');
+
+  /// File path: assets/images_svg/layers/road_events.svg
+  SvgGenImage get roadEvents => const SvgGenImage('assets/images_svg/layers/road_events.svg');
+
+  /// File path: assets/images_svg/layers/shuttle_bus.svg
+  SvgGenImage get shuttleBus => const SvgGenImage('assets/images_svg/layers/shuttle_bus.svg');
+
+  /// File path: assets/images_svg/layers/traffic.svg
+  SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [a3D, favourites, makkahBus, metro, parking, roadEvents, shuttleBus, traffic];
+}
+
 class $AssetsImagesSvgSaudiPassGen {
   const $AssetsImagesSvgSaudiPassGen();
 
@@ -1037,6 +1074,19 @@ class $AssetsImagesSvgSaudiPassGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [auto, cart, food, health, plane, service];
+}
+
+class $AssetsMapsBusesGen {
+  const $AssetsMapsBusesGen();
+
+  /// File path: assets/maps/buses/makkah_bus.geojson
+  String get makkahBus => 'packages/mapness/assets/maps/buses/makkah_bus.geojson';
+
+  /// File path: assets/maps/buses/shuttle_bus.geojson
+  String get shuttleBus => 'packages/mapness/assets/maps/buses/shuttle_bus.geojson';
+
+  /// List of all assets
+  List<String> get values => [makkahBus, shuttleBus];
 }
 
 class $AssetsMapsConfigsGen {

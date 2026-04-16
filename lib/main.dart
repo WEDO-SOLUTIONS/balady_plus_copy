@@ -12,7 +12,11 @@ import './app/app.dart';
 import './env.dart';
 
 void main() async {
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemNavigationBarColor: Color(0x00000000),
+    systemNavigationBarDividerColor: Color(0x00000000),
+  ));
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
