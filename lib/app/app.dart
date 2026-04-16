@@ -137,11 +137,22 @@ class AppWidgetState extends State<AppWidget> {
                     );
                     final builtChild = easyLoadingBuilder(context, child);
 
-                    if (grayscaleFilter == null) return builtChild;
+                    // [BUG FIX]: The old code accidentally excluded the StreamAudio wrapper when grayscale was disabled:
+                    // if (grayscaleFilter == null) return builtChild;
+                    // return ColorFiltered(
+                    //   colorFilter: grayscaleFilter,
+                    //   child: StreamAudio(child: builtChild),
+                    // );
+                    
+                    // [NEW CODE]: We first wrap builtChild with StreamAudio so the floating audio player
+                    // is always present in the widget tree, regardless of the grayscale filter.
+                    final streamAudioChild = StreamAudio(child: builtChild);
+
+                    if (grayscaleFilter == null) return streamAudioChild;
 
                     return ColorFiltered(
                       colorFilter: grayscaleFilter,
-                      child: StreamAudio(child: builtChild),
+                      child: streamAudioChild,
                     );
                   },
                   navigatorObservers: [
