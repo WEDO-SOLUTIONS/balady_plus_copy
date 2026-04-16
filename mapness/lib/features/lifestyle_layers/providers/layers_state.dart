@@ -8,8 +8,8 @@ enum LayerType {
   shuttleBus,
   fencing,
   traffic,
-  three3D,
-  roadEvents;
+  three3D;
+  // roadEvents;
 
   static List<LayerType> get lifestyle => [
         LayerType.favourites,
@@ -31,7 +31,7 @@ enum LayerType {
     LayerType.parkingLots,
     LayerType.makkahBus,
     LayerType.shuttleBus,
-    LayerType.roadEvents,
+    // LayerType.roadEvents,
     LayerType.favourites,
   ];
 }

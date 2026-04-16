@@ -34,27 +34,30 @@ class ParkingLotRow extends ConsumerWidget {
     );
 
     final isSelected = type == state.parkingFilter;
-    return ContentRow(
-      onTap: () async {
-        await parkingDetailsNotifier.setParkingFilter(type);
-        if (ref.read(activeLayerProvider) != LayerType.parkingLots) {
-          await layersControls.enableParking();
-        }
-      },
-      options: ContentRowOptions(
-        dividerEnabled: dividerEnabled,
-        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-        leadingIcon: type.icon().icon(
-          color: isSelected ? selectedColor : context.colors.foregroundSoft,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.$1x),
+      child: ContentRow(
+        onTap: () async {
+          await parkingDetailsNotifier.setParkingFilter(type);
+          if (ref.read(activeLayerProvider) != LayerType.parkingLots) {
+            await layersControls.enableParking();
+          }
+        },
+        options: ContentRowOptions(
+          dividerEnabled: dividerEnabled,
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+          leadingIcon: type.icon().icon(
+            color: isSelected ? selectedColor : context.colors.foregroundSoft,
+          ),
+          wrapperEnabled: true,
+          title: type.title(context.l10n),
+          titleStyle: textStyle,
+          actionWidget: isSelected
+              ? ContentRowActionOptions(
+                  actionIcon: General16Icons.checkmarkLTR.icon(),
+                )
+              : null,
         ),
-        wrapperEnabled: true,
-        title: type.title(context.l10n),
-        titleStyle: textStyle,
-        actionWidget: isSelected
-            ? ContentRowActionOptions(
-                actionIcon: General16Icons.checkmarkLTR.icon(),
-              )
-            : null,
       ),
     );
   }

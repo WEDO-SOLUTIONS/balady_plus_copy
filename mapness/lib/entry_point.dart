@@ -348,6 +348,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
+    if (!mounted) return;
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -366,6 +367,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarkerFoundingDay(WidgetRef ref) async {
+    if (!mounted) return;
     final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(foundingDayUrbiProvider.notifier);

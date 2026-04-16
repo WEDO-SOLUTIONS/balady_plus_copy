@@ -195,6 +195,17 @@ class ObjectTapHandler {
         case is Marker:
             self.onMarkerTap(tappedObject as! Marker)
             return
+        case let cluster as SimpleClusterObject:
+            if let id = cluster.userData as? MapObjectManagerMessage {
+                let clusterId = UUID().uuidString
+                self.clusters[clusterId] = cluster
+                eventChannel.success([
+                    "event": Events.onClusterTap,
+                    "id": id.id,
+                    "cluster": cluster.toMap(id: clusterId)
+                ] as [String : Any])
+            }
+            return
         default:
             self.eventChannel.error(code: Events.objectTapError)
         }

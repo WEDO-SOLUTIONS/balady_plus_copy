@@ -10,6 +10,7 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
@@ -80,6 +81,9 @@ class RoutingMapControls extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const LayersControl(),
+                      const SizedBox(height: uikit.Spacing.$2x),
+                      const DimensionControl(),
+                      const SizedBox(height: uikit.Spacing.$2x),
                       const Spacer(),
                       const CompassControl(),
                       uikit.Spacing.$2x.heightBox,

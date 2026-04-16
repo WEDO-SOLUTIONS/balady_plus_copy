@@ -9,18 +9,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'device_info_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DeviceInfo extends _$DeviceInfo {
   @override
   Future<AppFeedbackContext> build() async {
     final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    // Read all ref-dependent values BEFORE any async gap to avoid
+    // "Cannot use Ref after disposal" errors.
+    final languageState = ref.read(appLanguageProvider);
+    final authFuture = ref.read(authProvider.future);
     final deviceInfo = DeviceInfoPlugin();
     final androidInfo = isAndroid ? await deviceInfo.androidInfo : null;
     final mobileOs = isAndroid ? AppFeedbackMobileOs.android : AppFeedbackMobileOs.ios;
     final version = await _getAppVersion();
-    final language = ref.read(appLanguageProvider) == Language.arabic ? AppFeedbackLocale.ar : AppFeedbackLocale.en;
+    final language = languageState == Language.arabic ? AppFeedbackLocale.ar : AppFeedbackLocale.en;
 
-    final auth = await ref.read(authProvider.future);
+    final auth = await authFuture;
     final deviceId = await _getUniqDeviceString(defaultTargetPlatform, androidInfo: androidInfo);
 
     return AppFeedbackContext(

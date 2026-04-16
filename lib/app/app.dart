@@ -16,6 +16,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:provider/provider.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
@@ -33,7 +34,11 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Color(0x00000000),
+      systemNavigationBarDividerColor: Color(0x00000000),
+    ));
 
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
@@ -118,46 +123,50 @@ class AppWidgetState extends State<AppWidget> {
               textDirection: translator.activeLanguageCode == "ar"
                   ? TextDirection.rtl
                   : TextDirection.ltr,
-              child: MediaQuery(
-                data: MediaQuery.of(
-                  context,
-                ).copyWith(textScaler: TextScaler.linear(controller.textScale)),
-                child: MaterialApp(
-                  title: 'appNameWord'.tr(),
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: NavigationService.navigatorKey,
-                  theme: myLightTheme,
-                  darkTheme: myDarkTheme,
-                  themeMode: themeController.isDarkMode
-                      ? ThemeMode.dark
-                      : ThemeMode.light,
-                  builder: (context, child) {
-                    final botToastBuilder = BotToastInit();
-                    final easyLoadingBuilder = EasyLoading.init(
-                      builder: botToastBuilder,
-                    );
-                    final builtChild = easyLoadingBuilder(context, child);
+              child: Consumer2<BaladyThemeNotifier, SpecialThemeMode?>(
+                  builder: (context, themeController, specialThemeMode, child) {
+                    final bool isMakkahTheme =
+                        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
+                    return MediaQuery(
+                    data: MediaQuery.of(
+                      context,
+                    ).copyWith(textScaler: TextScaler.linear(controller.textScale)),
+                    child: MaterialApp(
+                      title: 'appNameWord'.tr(),
+                      debugShowCheckedModeBanner: false,
+                      navigatorKey: NavigationService.navigatorKey,
+                      theme: myLightTheme,
+                      darkTheme: myDarkTheme,
+                      themeMode:  (themeController.isDarkMode && !isMakkahTheme) ? ThemeMode.dark : ThemeMode.light,
+                      builder: (context, child) {
+                        final botToastBuilder = BotToastInit();
+                        final easyLoadingBuilder = EasyLoading.init(
+                          builder: botToastBuilder,
+                        );
+                        final builtChild = easyLoadingBuilder(context, child);
 
-                    if (grayscaleFilter == null) return builtChild;
+                        if (grayscaleFilter == null) return builtChild;
 
-                    return ColorFiltered(
-                      colorFilter: grayscaleFilter,
-                      child: builtChild,
-                    );
-                  },
-                  navigatorObservers: [
-                    SentryNavigatorObserver(),
-                    BotToastNavigatorObserver(),
-                    FlutterUxcamNavigatorObserver(),
-                    MapnessRouteObserver(),
-                  ],
-                  localizationsDelegates: translator.delegates.toList()
-                    ..add(CountryLocalizations.delegate),
-                  locale: translator.activeLocale,
-                  supportedLocales: translator.locals(),
-                  initialRoute: RouteName.bottomNavigation,
-                  routes: Routes.routes(),
-                ),
+                        return ColorFiltered(
+                          colorFilter: grayscaleFilter,
+                          child: builtChild,
+                        );
+                      },
+                      navigatorObservers: [
+                        SentryNavigatorObserver(),
+                        BotToastNavigatorObserver(),
+                        FlutterUxcamNavigatorObserver(),
+                        MapnessRouteObserver(),
+                      ],
+                      localizationsDelegates: translator.delegates.toList()
+                        ..add(CountryLocalizations.delegate),
+                      locale: translator.activeLocale,
+                      supportedLocales: translator.locals(),
+                      initialRoute: RouteName.bottomNavigation,
+                      routes: Routes.routes(),
+                    ),
+                  );
+                }
               ),
             );
           },

@@ -6,6 +6,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/makkah_buses/model.dart';
 import 'package:mapness/features/makkah_bus/repo.dart';
 import 'package:mapness/features/makkah_bus/visible_provider.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -84,6 +85,9 @@ class MakkahBusLayer extends _$MakkahBusLayer {
       layerId: mapOptions.layerId,
     ).notifier);
 
+    final darkMode = await ref.read(darkModeProvider.future);
+    final isDarkMode = darkMode.isDark;
+
     await mapManager.removeAllMarkers();
     await mapManager.removeAllPolyLines();
 
@@ -120,6 +124,8 @@ class MakkahBusLayer extends _$MakkahBusLayer {
             points: geoPoints,
             width: 5,
             color: colorValue,
+            borderWidth: 2,
+            borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
             zIndex: 0,
           ),
         ),
