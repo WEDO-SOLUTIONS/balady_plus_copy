@@ -33,10 +33,11 @@ class ProfileImage extends _$ProfileImage {
 
   @override
   Future<UserProfileData> build() async {
-    status = await Permission.photos.status;
-
+    Permission.photos.status.then((val) {
+      status = val;
+    });
     if (CommonProperties.isLoggedIn && !_isUpdated) {
-      await _updateImageFromBackend();
+      _updateImageFromBackend().ignore();
     }
 
     return UserProfileData(imageBase64: _imageBase64OnDevice ?? '');

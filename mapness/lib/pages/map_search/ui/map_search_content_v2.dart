@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -14,6 +15,7 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
@@ -26,8 +28,13 @@ import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
   final ScrollController bottomSheetContentScrollController;
+  final bool showMoreQuickFilters;
+  final ValueChanged<bool>? onMoreQuickFiltersChanged;
+
   const MapSearchContent({
     required this.bottomSheetContentScrollController,
+    this.showMoreQuickFilters = false,
+    this.onMoreQuickFiltersChanged,
     super.key,
   });
 
@@ -252,25 +259,41 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         final hasFavourites = favourites.hasValue && favourites.requireValue.items.isNotEmpty;
 
         final history = ref.watch(searchHistoryProvider(scope.value));
+        final shouldShowHistoryAndFavorites = !widget.showMoreQuickFilters;
 
         return SafeArea(
           top: false,
           child: Column(
             children: [
-              NaviQuickFilter(onFilterSelected: (q) => ref.read(searchProvider(scope.value).notifier).searchByText(q)),
-              if (hasFavourites)
+              NaviQuickFilter(
+                showMoreView: widget.showMoreQuickFilters,
+                onMoreTap: () => widget.onMoreQuickFiltersChanged?.call(true),
+                onFilterSelected: (q) {
+                  widget.onMoreQuickFiltersChanged?.call(false);
+                  ref.read(searchProvider(scope.value).notifier).searchByText(q);
+                  ref
+                      .read(urbiAnalyticsProvider)
+                      .track(
+                        '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
+                      );
+                  ref
+                      .read(searchHistoryProvider(scope.value).notifier)
+                      .put(SearchHistoryItem.fromQuery(query: q).toMessage());
+                },
+              ),
+              if (shouldShowHistoryAndFavorites && hasFavourites)
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
                   child: const NaviFindInFav(),
                 ),
-              if (history.isEmpty) const SizedBox(height: Spacing.$4x),
-              const MapSearchHistory(),
+              if (shouldShowHistoryAndFavorites && history.isEmpty) const SizedBox(height: Spacing.$4x),
+              if (shouldShowHistoryAndFavorites) const MapSearchHistory(),
             ],
           ),
         );
       },
       loading: () => SizedBox(
-        height: height * .8,
+        height: height * .4,
         child: const Center(
           child: Loading(
             orientation: Axis.vertical,

@@ -31,6 +31,7 @@ dependencies:
   # Lightweight fast key-value database
   hive_ce_flutter: ^2.3.4
   flutter_svg: ^2.2.3
+  proj4dart: ^2.1.0
 
   # Map urbi SDK
   dgis_map:
@@ -40,7 +41,7 @@ dependencies:
     path: ..
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.10
+    version: 5.0.11
 
   sheetify: ^1.1.3
   smooth_corner: ^1.1.1
@@ -147,6 +148,7 @@ dependencies:
   visibility_detector: ^0.4.0+2
   thermal: ^1.1.12
   battery_plus: ^7.0.0
+  dart_suncalc: ^0.2.1
 
 dev_dependencies:
   flutter_test:
@@ -200,7 +202,9 @@ flutter:
     - assets/images/saudi_pass/
     - assets/images_svg/
     - assets/images_svg/saudi_pass/
+    - assets/images_svg/layers/
     - assets/maps/configs/
+    - assets/maps/buses/
     - packages/map_styles/src/styles.2gis
     - packages/map_styles/src/styles_saudi_day.2gis
   fonts:

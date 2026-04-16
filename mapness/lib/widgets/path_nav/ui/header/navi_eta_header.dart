@@ -1,10 +1,12 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
@@ -20,7 +22,9 @@ import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'finished_state_title.dart';
+
 part 'paused_state_title.dart';
+
 part 'running_state_title.dart';
 
 class EtaHeader extends HookConsumerWidget {
@@ -101,7 +105,8 @@ class EtaHeader extends HookConsumerWidget {
                 padding: const EdgeInsets.only(top: Spacing.$1x, right: Spacing.$3x, left: Spacing.$3x),
                 child: Column(
                   children: [
-                    const SizedBox(height: Spacing.$2x),
+                    const Dragger(),
+                    const SizedBox(height: Spacing.$1x),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: state != PathNavState.finished

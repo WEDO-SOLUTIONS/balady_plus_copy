@@ -12,7 +12,6 @@ import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
-import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 import 'package:sheetify/sheetify.dart';
@@ -107,8 +106,6 @@ class _NaviSearchSheetControlsState extends ConsumerState<NaviSearchSheetControl
                                     const TrafficControl(),
                                     const SizedBox(height: uikit.Spacing.$2x),
                                     const DimensionControl(),
-                                    const Spacer(),
-                                    const ZoomControl(),
                                     const Spacer(),
                                     const CompassControl(),
                                     const SizedBox(height: uikit.Spacing.$2x),

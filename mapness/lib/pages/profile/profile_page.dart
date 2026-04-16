@@ -28,7 +28,6 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
-import 'package:provider/provider.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -124,7 +123,7 @@ class ProfilePage extends HookConsumerWidget {
                                               ],
                                             ),
                                     ),
-                                    ContentRow(
+                                    ContentRowV2(
                                       onTap: () => context.router.push(const SettingsRoute()),
                                       trailing: trailing,
                                       leading: leadingIconBuilder(SystemIcons.settings),
@@ -164,22 +163,32 @@ class ProfilePage extends HookConsumerWidget {
                               ContentWrapper(
                                 color: context.colors.backgroundSurface1,
                                 children: [
-                                  ContentRow(
+                                  ContentRowV2(
                                     isDividerEnabled: true,
                                     onTap: () => context.router.push(const HelpCenterRoute()),
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                     text: ContentRowTextOptions(title: context.l10n.helpCenter),
+                                    options: ContentRowOptions(
+                                      dividerEnabled: true,
+                                      wrapperEnabled: true,
+                                      title: context.l10n.helpCenter,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
-                                  ContentRow(
+                                  ContentRowV2(
                                     isDividerEnabled: true,
-
                                     onTap: () {
                                       context.router.push(const AboutBaladyRoute());
                                     },
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
+                                    options: ContentRowOptions(
+                                      wrapperEnabled: true,
+                                      title: context.l10n.aboutApp,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
                                   ContentRow(
                                     onTap: () {

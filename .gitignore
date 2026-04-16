@@ -146,7 +146,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/app/build
-/android/app/.cxx
+**/.cxx/
+/android/app/.cxx/
 
 # temporal
 urbi_map/dgis_map/ios/_DELETE_ME_

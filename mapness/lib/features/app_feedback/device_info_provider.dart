@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,24 +14,17 @@ class DeviceInfo extends _$DeviceInfo {
   @override
   Future<AppFeedbackContext> build() async {
     final isAndroid = defaultTargetPlatform == TargetPlatform.android;
-
+    // Read all ref-dependent values BEFORE any async gap to avoid
+    // "Cannot use Ref after disposal" errors.
     final languageState = ref.read(appLanguageProvider);
     final authFuture = ref.read(authProvider.future);
-
     final deviceInfo = DeviceInfoPlugin();
     final androidInfo = isAndroid ? await deviceInfo.androidInfo : null;
-
-    if (androidInfo != null) {
-      InsetsUtils.androidSdkInt = androidInfo.version.sdkInt;
-    }
-
     final mobileOs = isAndroid ? AppFeedbackMobileOs.android : AppFeedbackMobileOs.ios;
     final version = await _getAppVersion();
-
     final language = languageState == Language.arabic ? AppFeedbackLocale.ar : AppFeedbackLocale.en;
 
     final auth = await authFuture;
-
     final deviceId = await _getUniqDeviceString(defaultTargetPlatform, androidInfo: androidInfo);
 
     return AppFeedbackContext(

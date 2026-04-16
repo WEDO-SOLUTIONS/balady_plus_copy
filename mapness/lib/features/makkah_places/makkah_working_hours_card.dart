@@ -167,9 +167,10 @@ class MakkahWorkingHoursCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final saudiWeekday = saudiTimeNow().weekday;
 
     String formatOpenClose(Iterable<Hours> hours) =>
-        hours.isNotEmpty ? '${hours.first.from.formatHHmm}-${hours.last.till.formatHHmm}' : '';
+        hours.map((h) => '${h.from.formatHHmm}-${h.till.formatHHmm}').join(',');
 
     String formatBreaks(Iterable<Hours> breakHours) =>
         breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(',');
@@ -177,13 +178,13 @@ class MakkahWorkingHoursCard extends StatelessWidget {
     String todayWorkingHours() {
       final hours = workingHours.isOpen24x7
           ? l10n.twentyFourSeven
-          : formatOpenClose(workingHours.todayHours(DateTime.now().weekday));
+          : formatOpenClose(workingHours.todayHoursForDisplay(saudiWeekday));
       final todayOrDaily = workingHours.isSameEveryDay ? l10n.daily : l10n.today;
       return '$todayOrDaily $hours';
     }
 
     String? todayBreaks() {
-      final breaks = workingHours.todayBreaks(DateTime.now().weekday);
+      final breaks = workingHours.todayBreaksForDisplay(saudiWeekday);
       if (breaks.isNotEmpty) {
         final hours = formatBreaks(breaks);
         return l10n.breakHour(hours);
@@ -211,9 +212,9 @@ class MakkahWorkingHoursCard extends StatelessWidget {
     ];
 
     final weekWorkingHoursWidgets = weekDays.map((weekday) {
-      final periods = workingHours.todayHours(weekday);
+      final periods = workingHours.todayHoursForDisplay(weekday);
       final workHours = periods.isEmpty ? l10n.weekend : formatOpenClose(periods);
-      final breakHours = formatBreaks(workingHours.todayBreaks(weekday));
+      final breakHours = formatBreaks(workingHours.todayBreaksForDisplay(weekday));
 
       return _WorkTimeItemWidget(
         dayTitle: weekday.weekDayName(l10n).toCapitalized(),

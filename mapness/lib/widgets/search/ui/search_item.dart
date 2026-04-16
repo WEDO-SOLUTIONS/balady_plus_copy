@@ -21,8 +21,10 @@ import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
+import 'package:mapness/widgets/search/ui/working_hours.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
+import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 const prefixMapping = {
@@ -87,9 +89,15 @@ class SearchItem extends ConsumerWidget {
     }
 
     final workingHours = result.openingHours?.toWorkingHours();
-    final now = DateTime.now();
-    final closedStatus = workingHours?.closedStatus(now, context.l10n) ?? '';
-    final closedStatusColors = workingHours?.colors(now, context.colors);
+    final soonThreshold = ref
+        .watch(workingHoursSoonThresholdProvider)
+        .maybeWhen(
+          data: (value) => value,
+          orElse: () => kDefaultWorkingHoursSoonThreshold,
+        );
+    final now = saudiTimeNow();
+    final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
+    final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
 
     return VisibilityDetector(
       key: Key('searchResult: ${result.id?.objectId}'),
