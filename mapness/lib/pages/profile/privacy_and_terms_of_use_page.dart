@@ -36,7 +36,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: Text(
-              context.l10n.privacyAndTermsOfUse,
+              context.l10n.termAndConditions,
             style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: fontFamily),
           ),
           centerTitle: true,

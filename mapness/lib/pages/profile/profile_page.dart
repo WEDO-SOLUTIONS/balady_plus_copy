@@ -187,7 +187,7 @@ class ProfilePage extends HookConsumerWidget {
                                     },
                                     trailing: trailing,
                                     leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg'),
-                                    text: ContentRowTextOptions(title: context.l10n.privacyAndTermsOfUse),
+                                    text: ContentRowTextOptions(title: context.l10n.termAndConditions),
                                   ),
                                 ],
                               ),
