@@ -278,7 +278,7 @@ class EntranceGeometryMessage {
   EntranceGeometryMessage(this.entrancePoints, this.entrancePolylines);
 
   final List<GeoPointMessage> entrancePoints;
-  final List<List<GeoPointMessage>> entrancePolylines;
+  final List<PolylineGeometryMessage> entrancePolylines;
 }
 
 class EntranceInfoMessage {
@@ -853,7 +853,7 @@ class MarkerMessage {
 class PolygonOptionsMessage {
   PolygonOptionsMessage({required this.contours, this.color, this.strokeWidth, this.strokeColor});
 
-  final List<List<GeoPointMessage>> contours;
+  final List<PolylineGeometryMessage> contours;
   final int? color;
   final double? strokeWidth;
   final int? strokeColor;

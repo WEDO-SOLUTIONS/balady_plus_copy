@@ -754,7 +754,7 @@ class LayersControls extends _$LayersControls {
                 strokeWidth: 2,
                 strokeColor: e.strokeColor,
                 color: e.color,
-                contours: [e.paths],
+                contours: [PolylineGeometryMessage(points: e.paths)],
               ),
               onTap: () => _showEsriCard(e),
             ),

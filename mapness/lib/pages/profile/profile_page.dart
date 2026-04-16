@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -15,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -170,12 +172,22 @@ class ProfilePage extends HookConsumerWidget {
                                     text: ContentRowTextOptions(title: context.l10n.helpCenter),
                                   ),
                                   ContentRow(
+                                    isDividerEnabled: true,
+
                                     onTap: () {
                                       context.router.push(const AboutBaladyRoute());
                                     },
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
+                                  ),
+                                  ContentRow(
+                                    onTap: () {
+                                      context.router.push(const PrivacyAndTermsOfUseRoute());
+                                    },
+                                    trailing: trailing,
+                                    leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg'),
+                                    text: ContentRowTextOptions(title: "privacyAndTermsTitle".tr()),
                                   ),
                                 ],
                               ),
@@ -220,12 +232,13 @@ class ProfilePage extends HookConsumerWidget {
     );
   }
 
+  // ignore: unused_element
   void _testSelectedDelegator(BuildContext context) {
     try {
       DelegatorEntity? selectedDelegate;
       DelegatorsCubit? foundCubit;
       String? savedDelegatorId;
-      
+
       // Method 1: Try context.read
       try {
         foundCubit = context.read<DelegatorsCubit>();
@@ -235,7 +248,7 @@ class ProfilePage extends HookConsumerWidget {
       } catch (e) {
         print('❌ Method 1 FAILED: context.read - $e');
       }
-      
+
       // Method 2: Try BlocProvider.of
       if (selectedDelegate == null) {
         try {
@@ -247,7 +260,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 2 FAILED: BlocProvider.of - $e');
         }
       }
-      
+
       // Method 3: Try NavigationService context
       if (selectedDelegate == null) {
         try {
@@ -264,7 +277,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 3 FAILED: NavigationService context.read - $e');
         }
       }
-      
+
       // Method 4: Try BlocProvider.of with NavigationService context
       if (selectedDelegate == null) {
         try {
@@ -279,7 +292,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 4 FAILED: NavigationService BlocProvider.of - $e');
         }
       }
-      
+
       // Method 5: Try reading from SharedPreferences (saved selection)
       if (selectedDelegate == null) {
         try {
@@ -293,7 +306,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 5 FAILED: SharedPreferences read - $e');
         }
       }
-      
+
       // Method 6: Last resort - sl<> (creates NEW instance - will be empty)
       if (selectedDelegate == null) {
         final cubit = sl<DelegatorsCubit>();
@@ -303,11 +316,13 @@ class ProfilePage extends HookConsumerWidget {
         print('   Selected delegate: ${selectedDelegate?.entityName ?? 'NULL'}');
         print('   ⚠️ WARNING: This is a NEW instance, selection is in a DIFFERENT instance!');
       }
-      
+
       // Debug: Print final state information
       print('🔍 FINAL Delegator Selection Debug:');
       print('  - Selected delegate from cubit: ${selectedDelegate?.entityName ?? 'NULL'}');
-      print('  - Selected delegate CR/UNN: ${selectedDelegate?.crNumber ?? selectedDelegate?.unifiedNationalNumber ?? 'NULL'}');
+      print(
+        '  - Selected delegate CR/UNN: ${selectedDelegate?.crNumber ?? selectedDelegate?.unifiedNationalNumber ?? 'NULL'}',
+      );
       print('  - Saved delegator ID from SharedPrefs: ${savedDelegatorId ?? 'NULL'}');
       if (foundCubit != null) {
         print('  - Found cubit instance: ${foundCubit.hashCode}');
@@ -318,11 +333,11 @@ class ProfilePage extends HookConsumerWidget {
       Map<String, dynamic>? responseData;
       // Get saved delegator ID if not already retrieved
       savedDelegatorId ??= sharedPrefs.getSelectedDelegatorId();
-      
+
       print('🔍 Creating response data:');
       print('  - selectedDelegate: ${selectedDelegate?.entityName ?? 'NULL'}');
       print('  - savedDelegatorId: $savedDelegatorId');
-      
+
       if (selectedDelegate != null) {
         responseData = {
           'crNumber': selectedDelegate.crNumber,
@@ -358,21 +373,21 @@ class ProfilePage extends HookConsumerWidget {
 
       final jsonResponse = jsonEncode(mockResponse);
       final responseMap = jsonDecode(jsonResponse);
-      
+
       final code = responseMap['code'];
       final data = responseMap['data'];
       final message = responseMap['message'];
-      
+
       print('🔍 Response parsing:');
       print('  - code: $code');
       print('  - data: $data');
       print('  - data type: ${data.runtimeType}');
       if (data != null) {
         print('  - data keys: ${(data as Map).keys.toList()}');
-        print('  - has entityName: ${(data as Map).containsKey('entityName')}');
-        print('  - has id: ${(data as Map).containsKey('id')}');
+        print('  - has entityName: ${data.containsKey('entityName')}');
+        print('  - has id: ${data.containsKey('id')}');
       }
-      
+
       String snackbarMessage;
       Color backgroundColor;
 
@@ -380,7 +395,8 @@ class ProfilePage extends HookConsumerWidget {
         if (data != null) {
           if (data['entityName'] != null) {
             // Full entity data available
-            snackbarMessage = "✅ JS Bridge Response - Delegator Found:\n"
+            snackbarMessage =
+                "✅ JS Bridge Response - Delegator Found:\n"
                 "Entity Name: ${data['entityName']}\n"
                 "Role: ${data['roleName'] ?? 'N/A'}\n"
                 "CR/UNN: ${data['crNumber'] ?? data['unifiedNationalNumber'] ?? 'N/A'}\n"
@@ -389,7 +405,8 @@ class ProfilePage extends HookConsumerWidget {
             print('✅ Showing full entity data snackbar');
           } else if (data['id'] != null) {
             // Only ID available from SharedPreferences
-            snackbarMessage = "✅ JS Bridge Response - Delegator ID Found:\n"
+            snackbarMessage =
+                "✅ JS Bridge Response - Delegator ID Found:\n"
                 "Saved Delegator ID: ${data['id']}\n"
                 "✅ Selection exists in SharedPreferences\n"
                 "⚠️ Full entity data not accessible from ProfilePage\n"
@@ -399,7 +416,8 @@ class ProfilePage extends HookConsumerWidget {
             print('✅ Showing ID-only snackbar with ID: ${data['id']}');
           } else {
             // Data exists but doesn't match expected format
-            snackbarMessage = "⚠️ JS Bridge Response - Unexpected data format\n"
+            snackbarMessage =
+                "⚠️ JS Bridge Response - Unexpected data format\n"
                 "Code: $code\n"
                 "Data exists but format unexpected\n"
                 "Data keys: ${(data as Map).keys.join(', ')}";
@@ -407,7 +425,8 @@ class ProfilePage extends HookConsumerWidget {
             print('⚠️ Showing unexpected format snackbar');
           }
         } else {
-          snackbarMessage = "⚠️ JS Bridge Response - No delegator selected\n"
+          snackbarMessage =
+              "⚠️ JS Bridge Response - No delegator selected\n"
               "Code: $code\n"
               "Selected delegate is NULL\n"
               "No selection found in SharedPreferences either";
@@ -427,7 +446,6 @@ class ProfilePage extends HookConsumerWidget {
           backgroundColor: backgroundColor,
         ),
       );
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -439,12 +457,13 @@ class ProfilePage extends HookConsumerWidget {
     }
   }
 
+  // ignore: unused_element
   void _testSelectedAgent(BuildContext context) {
     try {
       AgentEntity? selectedAgent;
       DelegatorsCubit? foundCubit;
       String? savedAgentId;
-      
+
       // Method 1: Try context.read
       try {
         foundCubit = context.read<DelegatorsCubit>();
@@ -454,7 +473,7 @@ class ProfilePage extends HookConsumerWidget {
       } catch (e) {
         print('❌ Method 1 FAILED: context.read - $e');
       }
-      
+
       // Method 2: Try BlocProvider.of
       if (selectedAgent == null) {
         try {
@@ -466,7 +485,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 2 FAILED: BlocProvider.of - $e');
         }
       }
-      
+
       // Method 3: Try NavigationService context
       if (selectedAgent == null) {
         try {
@@ -483,7 +502,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 3 FAILED: NavigationService context.read - $e');
         }
       }
-      
+
       // Method 4: Try BlocProvider.of with NavigationService context
       if (selectedAgent == null) {
         try {
@@ -498,7 +517,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 4 FAILED: NavigationService BlocProvider.of - $e');
         }
       }
-      
+
       // Method 5: Try reading from SharedPreferences (saved selection)
       if (selectedAgent == null) {
         try {
@@ -512,7 +531,7 @@ class ProfilePage extends HookConsumerWidget {
           print('❌ Method 5 FAILED: SharedPreferences read - $e');
         }
       }
-      
+
       // Method 6: Last resort - sl<> (creates NEW instance - will be empty)
       if (selectedAgent == null) {
         final cubit = sl<DelegatorsCubit>();
@@ -522,7 +541,7 @@ class ProfilePage extends HookConsumerWidget {
         print('   Selected agent: ${selectedAgent?.agentName ?? 'NULL'}');
         print('   ⚠️ WARNING: This is a NEW instance, selection is in a DIFFERENT instance!');
       }
-      
+
       // Debug: Print final state information
       print('🔍 FINAL Agent Selection Debug:');
       print('  - Selected agent from cubit: ${selectedAgent?.agentName ?? 'NULL'}');
@@ -537,7 +556,7 @@ class ProfilePage extends HookConsumerWidget {
       Map<String, dynamic>? responseData;
       // Get saved agent ID if not already retrieved
       savedAgentId ??= sharedPrefs.getSelectedAgentId();
-      
+
       if (selectedAgent != null) {
         responseData = {
           'requestId': selectedAgent.requestId,
@@ -589,7 +608,8 @@ class ProfilePage extends HookConsumerWidget {
         if (data != null) {
           if (data['agentName'] != null) {
             // Full entity data available
-            snackbarMessage = "✅ JS Bridge Response - Agent Found:\n"
+            snackbarMessage =
+                "✅ JS Bridge Response - Agent Found:\n"
                 "Agent Name: ${data['agentName']}\n"
                 "Grantor Name: ${data['grantorName'] ?? 'N/A'}\n"
                 "Agency Number: ${data['agencyNumber'] ?? 'N/A'}\n"
@@ -597,7 +617,8 @@ class ProfilePage extends HookConsumerWidget {
             backgroundColor = Colors.green;
           } else if (data['agencyNumber'] != null) {
             // Only ID available from SharedPreferences
-            snackbarMessage = "⚠️ JS Bridge Response - Agent ID Found:\n"
+            snackbarMessage =
+                "⚠️ JS Bridge Response - Agent ID Found:\n"
                 "Saved Agency Number: ${data['agencyNumber']}\n"
                 "⚠️ Full entity data not accessible\n"
                 "Selection exists in SharedPreferences\n"
@@ -605,13 +626,15 @@ class ProfilePage extends HookConsumerWidget {
             backgroundColor = Colors.orange;
           } else {
             // Data exists but doesn't match expected format
-            snackbarMessage = "⚠️ JS Bridge Response - Unexpected data format\n"
+            snackbarMessage =
+                "⚠️ JS Bridge Response - Unexpected data format\n"
                 "Code: $code\n"
                 "Data exists but format unexpected";
             backgroundColor = Colors.orange;
           }
         } else {
-          snackbarMessage = "⚠️ JS Bridge Response - No agent selected\n"
+          snackbarMessage =
+              "⚠️ JS Bridge Response - No agent selected\n"
               "Code: $code\n"
               "Selected agent is NULL\n"
               "No selection found in SharedPreferences either";
@@ -629,7 +652,6 @@ class ProfilePage extends HookConsumerWidget {
           backgroundColor: backgroundColor,
         ),
       );
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

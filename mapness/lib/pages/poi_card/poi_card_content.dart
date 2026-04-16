@@ -188,36 +188,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       dgisObjectId: widget.data.id!,
     );
 
-    // Get user's current location to use as startPoint for route calculation
-    final userLocation = ref.watch(locationProvider);
-    RouteSearchPoint? startPoint;
-    if (userLocation != null) {
-      startPoint = RouteSearchPoint(
-        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
-        dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
-      );
-    }
-
-    // Invalidate the provider when location becomes available to force recalculation
-    ref.listen<Position?>(locationProvider, (previous, next) {
-      if (previous == null && next != null) {
-        // Location just became available, create new startPoint and invalidate
-        final newStartPoint = RouteSearchPoint(
-          coordinates: GeoPointMessage(latitude: next.latitude, longitude: next.longitude),
-          dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
-        );
-        ref.invalidate(
-          briefRouteInfoProvider(
-            finishPoint: finishPoint,
-            navType: RouteSearchOptionsMessage.car,
-            startPoint: newStartPoint,
-          ),
-        );
-      }
-    });
-
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
+      briefRouteInfoV2Provider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car),
     );
 
     final brief = briefInfo?.firstOrNull;

@@ -49,6 +49,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
     private var mapFactory: IMapFactory?
 
+
     init(
         dgisSdk sdk: Container,
         frame: CGRect,
@@ -67,7 +68,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             messenger: registrar.messenger(),
             completion: onEventChannelReady
         )
-        
+
+
         let messenger = ProxyBinaryMessenger(with: registrar.messenger(), channelSuffix: "map_\(viewId)")
 
         MapApiSetup.setUp(binaryMessenger: messenger, api: self)

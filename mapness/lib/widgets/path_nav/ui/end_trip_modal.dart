@@ -38,6 +38,7 @@ class EndTripModal extends HookWidget {
             backgroundColor: context.colors.backgroundSurface1,
             safeAreaColor: context.colors.backgroundSurface1,
             dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface1),
+            useSafeArea: false,
             scrollController: bottomsheetController,
             barrierColorDelegate: barrierColorDelegate,
             content: [
@@ -72,7 +73,10 @@ class EndTripModal extends HookWidget {
                   primaryLabel: context.l10n.yesEnd,
                   size: ButtonSize.large,
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  onTap: onEndTripPressed,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onEndTripPressed?.call();
+                  },
                 ),
               ),
               const SizedBox(height: Spacing.$3x),

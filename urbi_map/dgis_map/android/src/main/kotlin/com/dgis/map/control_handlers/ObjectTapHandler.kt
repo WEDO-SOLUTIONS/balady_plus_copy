@@ -497,7 +497,7 @@ class ObjectTapHandler(
                         contours =
                                 polygon.options.contours.map { contour ->
                                     // TODO: fix force unwrap
-                                    contour.map { it.toGeoPoint() }
+                                    contour.points.map { it.toGeoPoint() }
                                 },
                         color = polygon.options.color?.let { Color(argb = it.toInt()) } ?: Color(),
                         strokeWidth =

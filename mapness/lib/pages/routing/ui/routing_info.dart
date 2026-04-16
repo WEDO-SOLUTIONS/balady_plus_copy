@@ -411,35 +411,30 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
+    if (_navigationStarted) return;
     _navigationStarted = true;
     if (!ref.context.mounted) {
+      _navigationStarted = false;
       return;
     }
 
-    // Stop current navigation if it's active before starting a new one
-    // This prevents route duplication on the map
-    if (_lockedNavType != null) {
-      await ref.read(dgisControllerProvider).value?.stopNavigation();
-    }
+    try {
+      // Stop current navigation if it's active before starting a new one
+      // This prevents route duplication on the map
+      if (_lockedNavType != null) {
+        await ref.read(dgisControllerProvider).value?.stopNavigation();
+      }
 
-    final mapSetting = MapObjectManagerSettings.search();
-    final markerSettings = MapObjectManagerSettings.selectedMarker();
-    final intermediateStopsSetting = MapObjectManagerSettings.intermediateStops();
-    final location = ref.read(cityByLocationProvider.notifier);
-    final originCity = await location.getCityByLatLng(
-      lat: widget.pointsWithLabel.first.value?.latitude,
-      lng: widget.pointsWithLabel.first.value?.longitude,
-    );
-    final destinationCity = await location.getCityByLatLng(
-      lat: widget.pointsWithLabel.lastOrNull?.value?.latitude,
-      lng: widget.pointsWithLabel.lastOrNull?.value?.longitude,
-    );
+      final mapSetting = MapObjectManagerSettings.search();
+      final markerSettings = MapObjectManagerSettings.selectedMarker();
+      final intermediateStopsSetting = MapObjectManagerSettings.intermediateStops();
 
-    for (final settings in [mapSetting, markerSettings, intermediateStopsSetting]) {
-      await ref
-          .read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier)
-          .removeAllMarkers();
-    }
+      await Future.wait([
+        for (final settings in [mapSetting, markerSettings, intermediateStopsSetting])
+          ref
+              .read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier)
+              .removeAllMarkers(),
+      ]);
 
     ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
 
@@ -455,16 +450,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         .read(advertMetricsProvider.notifier)
         .sendEvent(AdvertMetricsKeys.journeyStartedUnique, isUniquePerSession: true);
 
-    ref
-        .read(appAnalyticsProvider)
-        .navigationStarted(
-          originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
-          destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
-          originCity: originCity.name,
-          destinationCity: destinationCity.name,
-          estimateTime: route.duration,
-          estimateDistance: route.distance,
-        );
+      unawaited(_sendNavigationStartedAnalytics(route, navigatingType));
 
     unawaited(
       ref
@@ -472,19 +458,56 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
     );
 
-    await ref
-        .read(currentRouteProvider.notifier)
-        .setNavigationState(CurrentRouteState(points: widget.pointsWithLabel, navType: navigatingType, route: route));
-    ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
+      await ref
+          .read(currentRouteProvider.notifier)
+          .setNavigationState(CurrentRouteState(points: widget.pointsWithLabel, navType: navigatingType, route: route));
+      ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
 
-    await context.router.pushAndPopUntil(
-      PathNavRoute(
-        navType: navigatingType,
-        isHomeOrWork: widget.isHomeOrWork,
-        initAction: PathNavPageInitAction.startNavigation,
-      ),
-      predicate: (route) => route.settings.name == BottomMenuRoute.name,
-    );
+      await context.router.pushAndPopUntil(
+        PathNavRoute(
+          navType: navigatingType,
+          isHomeOrWork: widget.isHomeOrWork,
+          initAction: PathNavPageInitAction.startNavigation,
+        ),
+        predicate: (route) => route.settings.name == BottomMenuRoute.name,
+      );
+    } catch (_) {
+      _navigationStarted = false;
+      rethrow;
+    }
+  }
+
+  /// Sends analytics with city names resolved via geocoding.
+  /// Runs as fire-and-forget to avoid blocking navigation start.
+  Future<void> _sendNavigationStartedAnalytics(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
+    try {
+      final location = ref.read(cityByLocationProvider.notifier);
+      final results = await Future.wait([
+        location.getCityByLatLng(
+          lat: widget.pointsWithLabel.first.value?.latitude,
+          lng: widget.pointsWithLabel.first.value?.longitude,
+        ),
+        location.getCityByLatLng(
+          lat: widget.pointsWithLabel.lastOrNull?.value?.latitude,
+          lng: widget.pointsWithLabel.lastOrNull?.value?.longitude,
+        ),
+      ]);
+      final originCity = results[0];
+      final destinationCity = results[1];
+
+      ref
+          .read(appAnalyticsProvider)
+          .navigationStarted(
+            originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
+            destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
+            originCity: originCity.name,
+            destinationCity: destinationCity.name,
+            estimateTime: route.duration,
+            estimateDistance: route.distance,
+          );
+    } catch (_) {
+      // Analytics failure should not affect navigation
+    }
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {

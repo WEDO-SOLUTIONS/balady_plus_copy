@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter_insider/flutter_insider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -15,6 +16,10 @@ part 'location.g.dart';
 
 final locationProvider = _locationProvider;
 
+bool _insiderGeofenceStarted = false;
+
+/// WARNING: the returned [Position] is always an object not equal to the previous one because it has [timestamp]
+/// field. You might need to [select()] from this provider only when lat and long have really changed
 @Riverpod(keepAlive: true)
 class _Location extends _$Location {
   final _saRect = GeoRectMessage(
@@ -55,22 +60,23 @@ class _Location extends _$Location {
         }
       } else if (isHMS) {
         try {
-          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen((event) async {
-            state = await _getLocation(
-              Position(
-                longitude: event.longitude!,
-                latitude: event.latitude!,
-                timestamp: DateTime.now(),
-                accuracy: event.horizontalAccuracyMeters ?? 0,
-                altitude: event.altitude ?? 0,
-                altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
-                heading: event.bearing ?? 0,
-                headingAccuracy: event.bearingAccuracyDegrees ?? 0,
-                speed: event.speed ?? 0,
-                speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
-              ),
-            );
-          });
+          final locationSubscription = CommonFunctions.listenToHMSStream()
+              ?.listen((event) async {
+                state = await _getLocation(
+                  Position(
+                    longitude: event.longitude!,
+                    latitude: event.latitude!,
+                    timestamp: DateTime.now(),
+                    accuracy: event.horizontalAccuracyMeters ?? 0,
+                    altitude: event.altitude ?? 0,
+                    altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
+                    heading: event.bearing ?? 0,
+                    headingAccuracy: event.bearingAccuracyDegrees ?? 0,
+                    speed: event.speed ?? 0,
+                    speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
+                  ),
+                );
+              });
           if (locationSubscription != null) {
             ref.onDispose(locationSubscription.cancel);
           }
@@ -83,18 +89,47 @@ class _Location extends _$Location {
     return null;
   }
 
-  Future<bool> checkLocationPermission({String? routeOnClose, bool showGiveAccessSheet = true}) async {
+  Future<void> _startInsiderGeofenceIfNeeded() async {
+    if (_insiderGeofenceStarted) return;
+    _insiderGeofenceStarted = true;
+
+    // IMPORTANT:
+    // permission_handler "location" == whileInUse on iOS.
+    // For geofence background you need ALWAYS.
+    // So we verify with Geolocator's permission state:
+    final geoPerm = await Geolocator.checkPermission();
+    if (geoPerm != LocationPermission.always) {
+      _insiderGeofenceStarted =
+          false; // allow retry later if user upgrades to Always
+      return;
+    }
+
+    await FlutterInsider.Instance.enableLocationCollection(true);
+
+    if (Platform.isIOS) {
+      await FlutterInsider.Instance.setAllowsBackgroundLocationUpdates(true);
+    }
+
+    await FlutterInsider.Instance.startTrackingGeofence();
+  }
+
+  Future<bool> checkLocationPermission({
+    String? routeOnClose,
+    bool showGiveAccessSheet = true,
+  }) async {
     const routeLocation = '/request_location';
     final router = ref.read(appRouterProvider);
     final serviceStatus = await perm.Permission.location.serviceStatus;
 
-    if (CommonFunctions.locationDialogShowed || router.isPathActive(routeLocation)) {
+    if (CommonFunctions.locationDialogShowed ||
+        router.isPathActive(routeLocation)) {
       return false;
     }
     try {
       if (serviceStatus != perm.ServiceStatus.disabled) {
         final status = await perm.Permission.location.request();
         if (status == perm.PermissionStatus.granted) {
+          unawaited(_startInsiderGeofenceIfNeeded());
           if (state == null) {
             final isGmsAvailable = await CommonFunctions.isGmsAvailable();
             final isHuawei = await CommonFunctions.isHuaweiDevice();
@@ -163,7 +198,11 @@ class _Location extends _$Location {
 
     if (status.isGranted) {
       final dgisController = await ref.read(dgisControllerProvider.future);
-      unawaited(dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
+      unawaited(
+        dgisController.onLocationPermissionGranted(
+          desiredAccuracy: DesiredAccuracyMessage.high,
+        ),
+      );
 
       CommonFunctions.locationDialogShowed = false;
       ref.invalidateSelf();
@@ -217,7 +256,10 @@ class _Location extends _$Location {
     final controller = await ref.read(dgisControllerProvider.future);
     final isLocationInsideKSA = await controller.contains(
       _saRect,
-      GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
+      GeoPointMessage(
+        latitude: userLocation.latitude,
+        longitude: userLocation.longitude,
+      ),
     );
     return isLocationInsideKSA
         ? userLocation

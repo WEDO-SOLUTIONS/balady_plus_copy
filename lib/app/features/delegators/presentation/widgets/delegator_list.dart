@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppFontWeight, BlocRequestStatus, CommonFunctions, CommonProperties;
+    show AppFontWeight, CommonFunctions, CommonProperties;
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetWithActions, CustomTextWidget, CustomVerticalSpace, ShimmerEffectWidget;
@@ -96,16 +96,9 @@ class _DelegatorListState extends State<DelegatorList> {
   }
 
   bool _shouldShowNoAccessMessage(DelegatorsState state) {
-    // Show no access message if:
-    // 1. This is a business group
-    // 2. User has no delegators or agents
-    // 3. Not currently loading
     return widget.groupId != null &&
         AccountSelectionService.isBusinessGroup(widget.groupId!) &&
-        state.delegators.isEmpty &&
-        state.agents.isEmpty &&
-        state.status != BlocRequestStatus.submissionGetLoading &&
-        state.agentStatus != BlocRequestStatus.submissionGetLoading;
+        state.accountStatus == DelegatorsAccountStatus.normalAccount;
   }
 
   bool _isBusinessGroup() {
@@ -198,16 +191,16 @@ class DelegatorsBody extends StatelessWidget {
                 groupId: groupId,
               ),
             ),
-            if (state.status == BlocRequestStatus.submissionGetLoading)
+            if (state.accountStatus == DelegatorsAccountStatus.loading)
               ...List.generate(
                 5,
                 (_) =>
                     Container(height: 80, margin: const EdgeInsets.only(top: 16), child: const ShimmerEffectWidget()),
               ),
-            if (state.status == BlocRequestStatus.submissionGetFailure)
+            if (state.accountStatus == DelegatorsAccountStatus.failed)
               ReloadWidget(
                 onTab: () {
-                  delegatorsCubit.getDelegators();
+                  delegatorsCubit.loadData();
                 },
               ),
           ],
@@ -238,16 +231,16 @@ class AgentsBody extends StatelessWidget {
                 groupId: groupId,
               ),
             ),
-            if (state.agentStatus == BlocRequestStatus.submissionGetLoading)
+            if (state.accountStatus == DelegatorsAccountStatus.loading)
               ...List.generate(
                 5,
                 (_) =>
                     Container(height: 80, margin: const EdgeInsets.only(top: 16), child: const ShimmerEffectWidget()),
               ),
-            if (state.agentStatus == BlocRequestStatus.submissionGetFailure)
+            if (state.accountStatus == DelegatorsAccountStatus.failed)
               ReloadWidget(
                 onTab: () {
-                  delegatorsCubit.getAgents();
+                  delegatorsCubit.loadData();
                 },
               ),
           ],

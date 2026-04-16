@@ -40,7 +40,8 @@ class ProfilePreferencesPage extends ConsumerWidget {
     }
 
     ref.listen(setProfilePreferencesProvider, (prev, next) {
-      if (next == SetProfilePreferencesState.setSuccess) {
+      if (next == SetProfilePreferencesState.setSuccess ||
+          next == SetProfilePreferencesState.resetSuccess) {
         popWithPreferences();
       }
     });

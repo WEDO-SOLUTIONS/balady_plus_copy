@@ -59,7 +59,13 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
             eventChannel: FlutterCarPlaySceneDelegate.eventChannel,
             hostFlutterApi: hostFlutterApi
         )
-        mainScreen.startFreeRoam()
+        let navigationManager = DgisMapInitializer.shared.getNavigationManager()
+        let navState = navigationManager.uiModel.state
+        let isNavigationActive = navState == .navigation || navState == .routeSearch
+        // enable free roam when Car Play connects only if the app is not in navigation mode as it will break navigation otherwise
+        if (!isNavigationActive) {
+            mainScreen.startFreeRoam()
+        }
         let mapTemplate = mainScreen.createTemplate()
         
         let carPlayFixOn = templateApplicationScene.carWindow.screen.nativeBounds.width == 800
@@ -85,6 +91,13 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         FlutterCarPlaySceneDelegate.mainScreen = nil
         FlutterCarPlaySceneDelegate.map = nil
         Self.delegate?.onConnectionStateChanged(connected: false)
+        
+        // disable free roam when Car Play disconnects because the opened app may pick up the stale
+        // free roam state after disconnecting from Car Play and restart
+        let navigationManager = DgisMapInitializer.shared.getNavigationManager()
+        if (navigationManager.uiModel.isFreeRoam) {
+            navigationManager.stop()
+        }
     }
     
     static func toggleSounds(toggleType: SoundToggleType) {

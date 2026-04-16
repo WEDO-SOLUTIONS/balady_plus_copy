@@ -257,7 +257,9 @@ fun EntranceGeometry.toMessage(): EntranceGeometryMessage {
     return EntranceGeometryMessage(
             entrancePoints = this.entrancePoints.map { it.toMessage() },
             entrancePolylines =
-                    this.entrancePolylines.map { polyline -> polyline.map { it.toMessage() } }
+                    this.entrancePolylines.map { polyline ->
+                        PolylineGeometryMessage(points = polyline.map { it.toMessage() })
+                    }
     )
 }
 

@@ -100,6 +100,19 @@ class DgisCarPlayMapView: UIViewController {
 
         myLocation()
         
+        let pos = map.camera.position
+        cancellables.insert(
+            map.camera.move(
+                point: pos.point,
+                zoom: pos.zoom,
+                tilt: Tilt(value: 45),
+                bearing: pos.bearing
+            ).sink(
+                receiveValue: { _ in },
+                failure: { _ in }
+            )
+        )
+        
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         self.view.addSubview(mapView)
@@ -184,6 +197,8 @@ class DgisCarPlayMapView: UIViewController {
             return
         }
         
+        let tilt = position.tilt.value > 5 ? position.tilt : Tilt(value: 45)
+        
         let navigationManager = DgisMapInitializer.shared.getNavigationManager()
         let navigationState = navigationManager.uiModel.state
         if navigationState == .navigation || navigationState == .routeSearch {
@@ -191,7 +206,7 @@ class DgisCarPlayMapView: UIViewController {
                 camera.move(
                     point: myLocation.value,
                     zoom: Self.defaultCameraZoom,
-                    tilt: position.tilt,
+                    tilt: tilt,
                     bearing: position.bearing
                 ).sink(
                     receiveValue: { _ in
@@ -207,7 +222,7 @@ class DgisCarPlayMapView: UIViewController {
             camera.move(
                 point: myLocation.value,
                 zoom: Self.defaultCameraZoom,
-                tilt: position.tilt,
+                tilt: tilt,
                 bearing: position.bearing
             ).sink(
                 receiveValue: { _ in },

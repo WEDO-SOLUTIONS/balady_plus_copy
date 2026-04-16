@@ -16,8 +16,6 @@ class ActionShowFilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<DelegatorsCubit>().getDelegators();
-    context.read<DelegatorsCubit>().getAgents();
     NotificationsListCubit cubit = context.watch<NotificationsListCubit>();
 
     return IconButton(
@@ -30,8 +28,7 @@ class ActionShowFilterWidget extends StatelessWidget {
             builder: (ctx) => NeedLoginDialog(
               onSuccessLogin: (bool? isSuccess) {
                 if (isSuccess ?? false) {
-                  context.read<DelegatorsCubit>().getDelegators();
-                  context.read<DelegatorsCubit>().getAgents();
+                  context.read<DelegatorsCubit>().loadData();
                   showDialogParsona( cubit, context);
                 }
               },

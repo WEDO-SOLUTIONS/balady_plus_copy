@@ -22,6 +22,6 @@ class DelegatorsInjection {
     );
 
     //! Cubit
-    sl.registerFactory(() => DelegatorsCubit(sl(), sl()));
+    sl.registerLazySingleton(() => DelegatorsCubit(sl(), sl()));
   }
 }

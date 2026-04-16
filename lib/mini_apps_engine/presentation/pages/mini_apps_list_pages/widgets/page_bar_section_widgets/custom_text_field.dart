@@ -78,7 +78,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
     Color textColor = Theme.of(context).colorScheme.onSurface;
     Color hintColor = Theme.of(context).disabledColor;
 
-    return SizedBox(
+    final content = SizedBox(
       width: width ?? 700,
       height: height,
       child: Padding(
@@ -141,6 +141,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
               hintText: hintText,
               hintStyle: TextStyle(
                 color: hintColor,
+                fontFamily: GeneralKey.appFontType,
                 fontSize: hintTextSize ?? 15,
               ),
               prefixIcon: icon,
@@ -153,6 +154,15 @@ class MiniAppsCustomTextField extends StatelessWidget {
         ),
       ),
     );
+
+    if (onTap != null && isEnabled == false) {
+      return GestureDetector(
+        onTap: onTap,
+        behavior: HitTestBehavior.opaque,
+        child: content,
+      );
+    }
+    return content;
   }
 
   Widget? _buildSuffix(BuildContext context) {

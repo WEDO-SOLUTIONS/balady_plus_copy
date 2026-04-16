@@ -42,12 +42,12 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
-      compose true
-   }
+        compose true
+    }
 
-   composeOptions {
-      kotlinCompilerExtensionVersion = "1.5.2"
-   }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
+    }
 
 
     kotlinOptions {
@@ -67,11 +67,12 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [
-                //     'appAuthRedirectScheme': 'com.momra.balady',
-                'appAuthRedirectScheme': 'com.balady'
+                partner: "baladyapp"
         ]
-        manifestPlaceholders = [partner:"baladyapp"]
-        manifestPlaceholders = [partner:"baladyappuat"]
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'com.balady',
+                partner                : "baladyappuat"
+        ]
     }
     signingConfigs {
         release {
@@ -91,6 +92,7 @@ android {
 
     buildTypes {
         release {
+            shrinkResources false
             minifyEnabled true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -127,6 +129,10 @@ android {
         abortOnError false
     }
 
+    lint {
+        checkReleaseBuilds false
+    }
+
 }
 
 flutter {
@@ -150,3 +156,11 @@ dependencies {
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
+
+// أضف هذا الجزء هنا في النهاية تماماً
+configurations.all {
+    resolutionStrategy {
+        // هذا السطر يمنع التضارب بين مكتبات هواوي المختلفة
+        force 'com.huawei.hms:common:6.10.0.300'
+    }
+}

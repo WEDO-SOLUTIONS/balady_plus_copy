@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
@@ -101,14 +102,14 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
             padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
             child: SingleChildScrollView(
               child: ABRoute(
-                stopByTitle: context.l10n.stopBy,
+                stopByTitle: context.l10n.addStop,
                 items: pointsModels,
                 startPointSubtitle: context.l10n.startPosition,
                 arrivalPointSubtitle: context.l10n.placeOfArrival,
                 onReorder: _onReorder,
                 onTap: _onTap,
                 onDeletePressed: _onDeletePressed,
-                onAddPointPressed: _onAddPointPressed(context),
+                onAddPointPressed: _onAddPointPressed(context.colors),
               ),
             ),
           ),
@@ -139,7 +140,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     }
   }
 
-  VoidCallback? _onAddPointPressed(BuildContext context) {
+  VoidCallback? _onAddPointPressed(AppColorsThemeV3 colors) {
     if (intermediatePointCount >= 10) {
       return null;
     }
@@ -150,7 +151,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     }
 
     return () => _selectPoint(
-      affixIcon: BaladyInputAffixIcon(icon: icon, iconColor: context.colors.extra01Default),
+      affixIcon: BaladyInputAffixIcon(icon: icon, iconColor: colors.extra01Default),
     );
   }
 

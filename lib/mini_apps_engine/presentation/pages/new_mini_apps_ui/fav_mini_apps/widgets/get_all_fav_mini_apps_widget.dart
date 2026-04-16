@@ -16,6 +16,10 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+      buildWhen: (previous, current) =>
+          previous.favoriteApps != current.favoriteApps ||
+          previous.isFavLoading != current.isFavLoading ||
+          previous.favError != current.favError,
       builder: (context, state) {
         if (state.isFavLoading) {
           return const FavPageShimmerLoadingWidget();
@@ -23,118 +27,102 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
 
         if (state.favError != null) {
           return Center(
-            child: Text(
-              state.favError!,
-              style: const TextStyle(color: Colors.red),
-            ),
+            child: Text(state.favError!, style: const TextStyle(color: Colors.red)),
           );
         }
 
-        return ReorderableListView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: state.favoriteApps.length,
-          // --- ADD THIS SECTION ---
-          proxyDecorator: (Widget child, int index, Animation<double> animation) {
-            return AnimatedBuilder(
-              animation: animation,
-              builder: (BuildContext context, Widget? child) {
-                return Material(
-                  // This makes the "proxy" container transparent
-                  color: Colors.transparent,
-                  // Set elevation to 0 to remove the default shadow if you want it flat
-                  elevation: 0,
-                  child: child,
-                );
-              },
-              child: child,
-            );
-          },
-          // -------------------------
-          onReorder: (oldIndex, newIndex) {
-            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(
-              oldIndex,
-              newIndex,
-            );
-          },
-          itemBuilder: (context, index) {
-            final favApp = state.favoriteApps[index];
-            return Padding(
-              key: Key(favApp.id),
-              padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
-              child: SizedBox(
-                width: context.screenWidth,
-                height: context.h(64),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    // Use your theme colors here to ensure it looks right in both modes
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withAlpha(15),
+        if (state.favoriteApps.isEmpty) {
+          return const SizedBox();
+        }
+
+        final itemHeight = context.h(64) + context.screenHeight * 0.01;
+        final listHeight = itemHeight * state.favoriteApps.length;
+
+
+        return SizedBox(
+          height: listHeight,
+          child: ReorderableListView.builder(
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: state.favoriteApps.length,
+            proxyDecorator: (Widget child, int index, Animation<double> animation) {
+              return AnimatedBuilder(
+                animation: animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Material(color: Colors.transparent, elevation: 0, child: child);
+                },
+                child: child,
+              );
+            },
+            onReorder: (oldIndex, newIndex) {
+              context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(oldIndex, newIndex);
+            },
+            itemBuilder: (context, index) {
+              final favApp = state.favoriteApps[index];
+
+              return Padding(
+                key: ValueKey('fav_${favApp.id}'),
+                padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
+                child: SizedBox(
+                  width: context.screenWidth,
+                  height: context.h(64),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(15)),
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.screenWidth * 0.01,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            AppsGroupMiniAppsCardWidgets(
-                              width: context.w(48.09228515625),
-                              height: context.h(48.09228515625),
-                              iconHeight: context.h(37.73630905151367),
-                              iconWidth: context.w(37.73630905151367),
-                              isTextRemove: true,
-                              iconPath: favApp.iconPath,
-                              radius: 12.7,
-                            ),
-                            SizedBox(width: context.screenWidth * 0.02),
-                            CustomSubHeadingText(
-                              width: context.w(192),
-                              height: context.h(30),
-                              text: favApp.name,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            CustomMiniAppSwitch(
-                              isActive: true,
-                              onChanged: (_) {
-                                context
-                                    .read<NewMiniAppLogicCubit>()
-                                    .toggleFavoriteLocal(favApp.id);
-                              },
-                            ),
-                            Icon(
-                              Icons.drag_indicator_rounded,
-                              color:
-                                  Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface.withAlpha(90)
-                                  : Theme.of(context).hoverColor,
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                      ],
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              AppsGroupMiniAppsCardWidgets(
+                                width: context.w(48.09228515625),
+                                height: context.h(48.09228515625),
+                                iconHeight: context.h(37.73630905151367),
+                                iconWidth: context.w(37.73630905151367),
+                                isTextRemove: true,
+                                iconPath: favApp.iconPath,
+                                radius: 12.7,
+                              ),
+                              SizedBox(width: context.screenWidth * 0.02),
+                              CustomSubHeadingText(
+                                width: context.w(192),
+                                height: context.h(30),
+                                text: favApp.name,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              CustomMiniAppSwitch(
+                                isActive: true,
+                                onChanged: (_) {
+                                  context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
+                                },
+                              ),
+                              Icon(
+                                Icons.drag_indicator_rounded,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Theme.of(context).colorScheme.onSurface.withAlpha(90)
+                                    : Theme.of(context).hoverColor,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
     );

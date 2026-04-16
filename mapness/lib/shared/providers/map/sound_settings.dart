@@ -55,7 +55,7 @@ class SoundSettingsModel {
     required this.englishUnInstalledVoices,
     required this.arabicInstalledVoices,
     required this.arabicUnInstalledVoices,
-    this.voiceInstructionIndex = 2,
+    this.voiceInstructionIndex = 0,
     this.muffleOtherSounds = false,
     this.promptsVolumeIndex = 2,
     this.backgroundNavigation = true,
@@ -99,6 +99,7 @@ class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
   static const _promptsVolumeList = [10, 30, 60];
   StreamSubscription? _soundEventsSubscription;
+  StreamSubscription? _carPlaySoundSubscription;
 
   SoundToggleType get currentSoundToggleType => SoundToggleType.values[state.voiceInstructionIndex];
 
@@ -126,7 +127,7 @@ class SoundSettings extends _$SoundSettings {
     final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
     final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
     final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
-    const prefsBackgroundNavigation = false;
+    final prefsBackgroundNavigation = sharedPrefs.getBool(MapnessConstants.backgroundNavigationPrefsKey);
     final prefsRoadCameras = sharedPrefs.getBool(MapnessConstants.roadCamerasPrefsKey);
     final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 
@@ -163,16 +164,27 @@ class SoundSettings extends _$SoundSettings {
     );
 
     toggleVoiceInstruction(currentVoiceInstruction: _defaultSoundSettings.voiceInstructionIndex);
-    toggleOverSpeeding(overSpeeding: _defaultSoundSettings.overSpeeding);
-    toggleRoadCameras(roadCameras: _defaultSoundSettings.roadCameras);
+    // Only apply overSpeeding/roadCameras if voice instruction is not NONE.
+    // When voice is NONE, all sound categories are cleared — re-applying these
+    // would add categories back and re-enable partial sound output.
+    if (_soundToggleTypesList[_defaultSoundSettings.voiceInstructionIndex] != SoundToggleType.none) {
+      toggleOverSpeeding(overSpeeding: _defaultSoundSettings.overSpeeding);
+      toggleRoadCameras(roadCameras: _defaultSoundSettings.roadCameras);
+    }
     toggleNavigatorVolume(currentPromptVolumeIndex: _defaultSoundSettings.promptsVolumeIndex);
     toggleBackgroundNavigation(backgroundNavigation: _defaultSoundSettings.backgroundNavigation);
 
     // Subscribe to sound events from CarPlay or Android Auto
     _subscribeToSoundEvents();
 
+    // Subscribe to CarPlay plugin-level method channel for sound changes.
+    // Unlike the view-specific EventChannel, this works on real CarPlay
+    // devices where the phone scene may be backgrounded.
+    _subscribeToCarPlaySoundChannel();
+
     ref.onDispose(() {
       _soundEventsSubscription?.cancel();
+      _carPlaySoundSubscription?.cancel();
     });
 
     return _defaultSoundSettings;
@@ -184,10 +196,21 @@ class SoundSettings extends _$SoundSettings {
     _soundEventsSubscription = dgisController.soundOnEvents.listen(_handleSoundEvent);
   }
 
+  void _subscribeToCarPlaySoundChannel() {
+    _carPlaySoundSubscription?.cancel();
+    _carPlaySoundSubscription = CarPlaySoundChannel.instance.soundChangedEvents.listen((isSoundEnabled) {
+      final index = SoundToggleType.values.indexOf(isSoundEnabled ? SoundToggleType.all : SoundToggleType.none);
+      toggleVoiceInstruction(currentVoiceInstruction: index);
+    });
+  }
+
   Future<void> _handleSoundEvent(SoundOnEvent soundOn) async {
     final index = SoundToggleType.values.indexOf(soundOn.value ? SoundToggleType.all : SoundToggleType.none);
-    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, index);
-    state = state.copyWith(voiceInstructionIndex: index);
+    // Sync sound state with the phone-side SDK components (NavigationHandler/DashboardControlModel).
+    // CarPlay/Android Auto already set the NavigationManager's enabledSoundCategories directly,
+    // but we must also propagate via toggleVoiceInstruction so the phone-side DashboardControlModel
+    // stays in sync — otherwise toggleOverSpeeding/toggleRoadCameras can re-enable categories.
+    await toggleVoiceInstruction(currentVoiceInstruction: index);
   }
 
   Future<void> toggleRoadCameras({required bool roadCameras}) async {
@@ -222,8 +245,21 @@ class SoundSettings extends _$SoundSettings {
 
   Future<void> toggleVoiceInstruction({required int currentVoiceInstruction}) async {
     final dGisController = await ref.watch(dgisControllerProvider.future);
+    final toggleType = _soundToggleTypesList[currentVoiceInstruction];
 
-    await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[currentVoiceInstruction]);
+    await dGisController.toggleVoiceInstruction(toggleType: toggleType);
+
+    // When voice is set to NONE, ensure overSpeeding and roadCameras are also
+    // disabled on the SDK side. Otherwise their categories remain enabled and
+    // partial sound output continues even though voice instruction is NONE.
+    // When voice is re-enabled, restore overSpeeding and roadCameras settings.
+    if (toggleType == SoundToggleType.none) {
+      await dGisController.toggleOverSpeeding(overSpeeding: false);
+      await dGisController.toggleRoadCameras(roadCameras: false);
+    } else {
+      await dGisController.toggleOverSpeeding(overSpeeding: state.overSpeeding);
+      await dGisController.toggleRoadCameras(roadCameras: state.roadCameras);
+    }
 
     await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, currentVoiceInstruction);
 
@@ -266,5 +302,20 @@ class SoundSettings extends _$SoundSettings {
     final dGisController = await ref.watch(dgisControllerProvider.future);
 
     await dGisController.toggleVoiceInstruction(toggleType: _soundToggleTypesList[state.voiceInstructionIndex]);
+  }
+
+  /// Re-reads voice instruction index from SharedPreferences (after reload)
+  /// and applies it if it differs from the current in-memory state.
+  /// Call this when the app resumes from background so that changes
+  /// made by CarPlay/Android Auto (which write directly to UserDefaults)
+  /// are picked up by Flutter.
+  Future<void> syncFromPersistence() async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    // Reload picks up values written externally (e.g. by CarPlay native code)
+    await sharedPrefs.reload();
+    final persistedIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey) ?? 0;
+    if (persistedIndex != state.voiceInstructionIndex) {
+      await toggleVoiceInstruction(currentVoiceInstruction: persistedIndex);
+    }
   }
 }

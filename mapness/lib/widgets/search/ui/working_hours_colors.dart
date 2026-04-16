@@ -6,6 +6,9 @@ import 'package:mapness/widgets/search/ui/working_hours.dart';
 extension WorkingHoursColorsExt on WorkingHours {
   // https://www.figma.com/design/QtMRUfAFquj1dQD9bQKiD9/POI-card-3.0?node-id=5178-28623&t=oKFYwNNfRSJi3qyU-4
   ({Color text, Color background})? colors(DateTime dateTime, AppColorsThemeV3 colors) {
+    if (isClosed(dateTime)) {
+      return (text: colors.errorOnContainer, background: colors.errorContainerDefault);
+    }
     if (isBreak(dateTime)) {
       return (text: colors.errorOnContainer, background: colors.errorContainerDefault);
     }
