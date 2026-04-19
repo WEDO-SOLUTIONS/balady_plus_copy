@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/entities/makkah_buses/model.dart';
-import 'package:mapness/shared/utils/polyline_simplifier.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 
 double _toDouble(dynamic val) {
@@ -45,19 +44,12 @@ List<MakkahBusModel> _parse(String jsonInput) {
             }
           }
           if (lineCoordinates.isNotEmpty) {
-            // Simplify to reduce excessive point density from ESRI export.
-            // epsilon ~0.00002 deg ≈ 2 m — removes sub-pixel zigzag artifacts
-            // while keeping the route visually accurate.
-            final simplified = PolylineSimplifier.simplify(
-              lineCoordinates,
-              epsilon: 0.00002,
-            );
             result.add(MakkahBusModel(
               id: id != null ? '${id}_$lineIndex' : null,
               nameArabic: nameArabic,
               nameEnglish: nameEnglish,
               colorCode: colorCode,
-              coordinates: simplified,
+              coordinates: lineCoordinates,
             ));
             lineIndex++;
           }
@@ -71,16 +63,12 @@ List<MakkahBusModel> _parse(String jsonInput) {
         }
 
         if (coordinates.isNotEmpty) {
-          final simplified = PolylineSimplifier.simplify(
-            coordinates,
-            epsilon: 0.00002,
-          );
           result.add(MakkahBusModel(
             id: id,
             nameArabic: nameArabic,
             nameEnglish: nameEnglish,
             colorCode: colorCode,
-            coordinates: simplified,
+            coordinates: coordinates,
           ));
         }
       }
