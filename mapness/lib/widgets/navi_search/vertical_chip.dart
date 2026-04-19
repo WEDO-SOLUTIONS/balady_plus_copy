@@ -19,12 +19,12 @@ class VerticalChip extends StatelessWidget {
       height: height??70,
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x, vertical: Spacing.$3x),
       decoration: BoxDecoration(
-        color: context.colors.accentSecondaryContainerSoft.withOpacity(.05),
+        color: context.colors.accentDefault.withOpacity(.09),
         borderRadius: BorderRadius.circular(RadiusBorder.m),
       ),
       child: Column(
         children: [
-          Icon(icon, size: 18, color: context.colors.accentSecondaryDefault),
+          Icon(icon, size: 18, color: context.colors.accentDefault),
           const SizedBox(height: Spacing.$1x),
           Text(
             title,

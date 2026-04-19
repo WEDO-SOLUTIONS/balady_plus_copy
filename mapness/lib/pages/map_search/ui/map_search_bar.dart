@@ -234,20 +234,47 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             _safeFocusAction(_focusNode.requestFocus);
           },
           hintText: context.l10n.searchPlaceOrAddress,
-          fillColor: context.colors.neutralContainerDefault,
+          fillColor: context.colors.staticWhite,
           hintColor: context.colors.foregroundSoft,
           textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
-      option: widget.showLeadingBackButton
-          ? null
-          : widget.isCloseButton
-          ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
-          : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
+      // option: widget.showLeadingBackButton
+      //     ? null
+      //     : widget.isCloseButton
+      //     ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
+      //     : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
     );
 
+    final borderedSearchField = Container(
+      decoration: BoxDecoration(
+        color: context.colors.staticWhite,
+        border: Border.all(
+          color: context.colors.borderSoft,
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(RadiusBorder.xxl),
+        child: searchField,
+      ),
+    );
     if (!widget.showLeadingBackButton) {
-      return searchField;
+      return Row(
+        children: [
+          Expanded(child: borderedSearchField),
+          const SizedBox(width: Spacing.$3x),
+          GestureDetector(
+            onTap: () => _onBackPressed(searcher),
+            child: Text(
+              context.l10n.cancel,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.accentDefault,
+              ),
+            ),
+          ),
+        ],
+      );
     }
 
     return Row(
@@ -261,8 +288,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         ),
         const SizedBox(width: Spacing.$3x),
-        Expanded(child: searchField),
-      ],
+        Expanded(child: borderedSearchField),      ],
     );
   }
 
