@@ -67,7 +67,8 @@ extension WorkingHoursStrings on WorkingHours {
       value: opensAt,
       appLocalizations: appLocalizations,
     );
-    return '${appLocalizations.closedUntil} $dayPrefix${opensAt.formatHHmm}'.trim();
+
+    return '$dayPrefix${opensAt.formatHHmm}'.trim();
   }
 
   String _dayPrefix({
@@ -76,12 +77,12 @@ extension WorkingHoursStrings on WorkingHours {
     required AppLocalizations appLocalizations,
   }) {
     if (_isSameDate(now, value)) {
-      return '';
+      return appLocalizations.closedUntil;
     }
     if (_isTomorrowDate(now, value)) {
-      return '${appLocalizations.tomorrow} ';
+      return '${appLocalizations.closedUntilOnly} ${appLocalizations.tomorrow} ';
     }
-    return '${value.weekday.weekDayNameShort(appLocalizations)} ';
+    return '${appLocalizations.closedUntil} ${value.weekday.weekDayNameShort(appLocalizations)} ';
   }
 }
 
