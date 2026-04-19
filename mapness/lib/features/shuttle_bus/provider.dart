@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/entities/makkah_buses/model.dart';
+import 'package:mapness/shared/providers/dark_mode.dart' show darkModeProvider;
 import 'repo.dart';
 import 'visible_provider.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -83,6 +85,8 @@ class ShuttleBusLayer extends _$ShuttleBusLayer {
       ).notifier,
     );
 
+    final darkMode = await ref.read(darkModeProvider.future);
+    final isDarkMode = darkMode.isDark;
     await mapManager.removeAllMarkers();
     await mapManager.removeAllPolyLines();
 
@@ -120,6 +124,8 @@ class ShuttleBusLayer extends _$ShuttleBusLayer {
             width: 5,
             color: colorValue,
             zIndex: 0,
+            borderWidth: 2,
+            borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
           ),
         ),
       );
