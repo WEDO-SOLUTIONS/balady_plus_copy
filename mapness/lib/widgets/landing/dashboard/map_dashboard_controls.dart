@@ -1,8 +1,8 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
@@ -31,13 +31,13 @@ class MapDashboardControls extends ConsumerWidget {
     final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
     final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
 
-    final isArabic = CommonFunctions.isAppAR;
+    final uiDirection = ref.watch(uiDirectionProvider);
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Column(
         children: [
           Directionality(
-            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+            textDirection: uiDirection,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
               child: Column(
