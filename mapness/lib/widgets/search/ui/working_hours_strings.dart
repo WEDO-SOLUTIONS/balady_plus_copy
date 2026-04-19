@@ -29,7 +29,7 @@ extension WorkingHoursStrings on WorkingHours {
           return _buildClosesInHoursAndMinutesStatus(remaining, appLocalizations);
         }
         if (remaining.inMinutes > 1) {
-          return '${appLocalizations.closesIn}${remaining.inMinutes} ${appLocalizations.minutes}';
+          return '${appLocalizations.closesIn}${remaining.inMinutes} ${appLocalizations.minutesShort}';
         }
         return appLocalizations.closed;
       case WorkingHoursStatusType.closed:
