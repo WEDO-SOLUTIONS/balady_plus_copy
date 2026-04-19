@@ -61,7 +61,7 @@ class BaseDashboardContent extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.$3x),
+             const SizedBox(height: Spacing.$6x),
             // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
@@ -77,14 +77,13 @@ class BaseDashboardContent extends ConsumerWidget {
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
               ),
             ),
-            const SizedBox(height: Spacing.$6x),
-
-            StoriesWidget(
-              titleWidget: Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                child: DashboardTitle(context.l10n.whatIsNewInBalady),
-              ),
-            ),
+            //
+            // StoriesWidget(
+            //   titleWidget: Padding(
+            //     padding: const EdgeInsets.only(bottom: Spacing.$3x),
+            //     child: DashboardTitle(context.l10n.whatIsNewInBalady),
+            //   ),
+            // ),
             const SizedBox(height: Spacing.$6x),
 
             // 2. Quick Actions (إجراءات سريعة)

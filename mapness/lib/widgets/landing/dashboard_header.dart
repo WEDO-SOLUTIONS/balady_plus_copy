@@ -203,15 +203,26 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
 
           context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text));
         },
-        child: AbsorbPointer(
-          child: BaladyTextInput.search(
-            controller: ctrl,
-            inputState: BaladyInputState.readOnly,
-            config: BaladyInputConfig(
-              hintText: context.l10n.searchPlaceOrAddress,
-              fillColor: context.colors.backgroundSurface2,
-              hintColor: context.colors.foregroundSoft,
-              textStyle: context.textStyles.bodySmallRegular,
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.colors.staticWhite,
+            border: Border.all(
+              color: context.colors.borderSoft,
+              width: 1,
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.xxl),
+            child: AbsorbPointer(
+              child: BaladyTextInput.search(
+                inputState: BaladyInputState.readOnly,
+                config: BaladyInputConfig(
+                  hintText: context.l10n.searchPlaceOrAddress,
+                  fillColor: context.colors.staticWhite,
+                  hintColor: context.colors.foregroundSoft,
+                  textStyle: context.textStyles.bodySmallRegular,
+                ),
+              ),
             ),
           ),
         ),
