@@ -12,7 +12,7 @@ class QuickActionButton extends StatelessWidget {
   final String? assetPath;
   final SpecialThemeMode? themeMode;
 
-  static const buttonSize = 76.0;
+  static const buttonSize = 60.0;
 
   const QuickActionButton({
     required this.text,
@@ -52,7 +52,7 @@ class QuickActionButton extends StatelessWidget {
       return Center(
         child: child ?? Icon(
           icon,
-          size: Spacing.$6x + Spacing.$1x,
+          size: Spacing.$6x ,
           color: colors.accentDefault,
         ),
       );
@@ -69,7 +69,10 @@ class QuickActionButton extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
                 color: colors.backgroundSurface1,
-                boxShadow: Shadows.s,
+                border: Border.all(
+                  color:colors.borderSoft,
+                  width: 1,
+                ),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),

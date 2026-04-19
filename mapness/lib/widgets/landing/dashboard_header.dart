@@ -114,7 +114,7 @@ class MapQuickFiltersDefault extends ConsumerWidget {
       customFilters: [
         FilterItemConfig(
           filterType: FilterType.custom,
-          icon: TransportIcons.locationDirectionNavigator,
+          icon: TransportIcons.newlocationDirectionNavigator,
           onTap: () async {
             final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
             if (isAllowed) {

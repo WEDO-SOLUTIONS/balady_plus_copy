@@ -51,9 +51,9 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
           height: 123,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: context.colors.backgroundSurface5,
-              borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              boxShadow: Shadows.s,
+              // color: context.colors.backgroundSurface5,
+              // borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              // boxShadow: Shadows.s,
               image: DecorationImage(
                 image: activeCityEvent.getDriveHomeBackground(isDark: isDark),
                 matchTextDirection: true,
@@ -82,17 +82,17 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                 Align(
                   alignment: AlignmentDirectional.topStart,
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
+                    padding: const EdgeInsetsDirectional.only(top: 20.0, start: 22.0),
                     child: RichText(
                       text: TextSpan(
                         text: context.l10n.driveBack,
-                        style: context.textStyles.h3Medium.copyWith(
+                        style: context.textStyles.h3SemiBold.copyWith(
                           color: activeCityEvent?.textColor(context.colors) ?? context.colors.foregroundDefault,
                         ),
                         children: [
                           TextSpan(
                             text: '\n${context.l10n.homeQuestionMark}',
-                            style: context.textStyles.h3Medium.copyWith(color: context.colors.accentDefault),
+                            style: context.textStyles.h3SemiBold.copyWith(color: context.colors.accentDefault),
                           ),
                         ],
                       ),

@@ -22,7 +22,7 @@ class VerticalChip extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(icon, size: 24, color: context.colors.accentSecondaryDefault),
+          Icon(icon, size: 18, color: context.colors.accentSecondaryDefault),
           const SizedBox(height: Spacing.$1x),
           Text(
             title,

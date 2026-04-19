@@ -354,7 +354,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
     icon: switch (context.read<ThemeController>().currentTheme) {
-      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
+      BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
       BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
       BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewFoundingDay.icDefault.keyName.markerIcon(),
       _ => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),
