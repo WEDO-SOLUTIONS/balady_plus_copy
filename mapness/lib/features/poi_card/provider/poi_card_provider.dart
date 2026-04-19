@@ -19,6 +19,7 @@ import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -107,11 +108,23 @@ class PoiCardProvider extends _$PoiCardProvider {
 
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     final cachedData = await loadCacheData(poiBox, poiCardStateKey);
-
     if (cachedData != null) {
-      unawaited(_loadOffers(cachedData.gisObjectIdMessage, cachedData.organizations));
+      ref.read(
+        pointOfInterestProvider(
+          DgisObjectId(objectId: objectId, entranceId: 0),
+          closestPoint,
+          theme,
+        ).future,
+      )
+        .then((poi) {
+        if (poi != null) {
+          _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
+        }
+      });
+
       return cachedData;
-    } else {
+    }
+    else {
       final poiFuture = ref
           .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
           .timeout(const Duration(minutes: 10));
@@ -125,13 +138,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       final organizations = results[2] as OrganizationsMessage?;
 
       if (poi != null) {
-        ref.read(
-          paddingConfigProvider(
-            poi.markerPosition,
-            closestPoint,
-            cameraConfig,
-          ),
-        );
+        _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
       }
 
       final tradeLicense = poi?.tradeLicense;
@@ -192,6 +199,39 @@ class PoiCardProvider extends _$PoiCardProvider {
       logger.log('Error fetching organizations data', logLevel: MapnessLogLevel.critical);
       return null;
     }
+  }
+
+  /// Directly animate camera to the POI location.
+  /// We call cameraPositionProvider (which is keepAlive) directly instead of going
+  /// through paddingConfigProvider (which is auto-dispose and can be disposed
+  /// before its async camera animation completes on first navigation).
+  void _animateCameraToPoi(
+    GeoPointWithElevationMessage? markerPosition,
+    LatLng? closestPoint,
+    PoiCameraConfig? cameraConfig,
+  ) {
+    final position = closestPoint ??
+        (markerPosition == null
+            ? null
+            : LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude));
+
+    if (position == null) {
+      return;
+    }
+
+    final markerPoint = GeoPointMessage(latitude: position.latitude, longitude: position.longitude);
+    final zoom = cameraConfig?.zoom ?? 16.0;
+
+    unawaited(
+      ref.read(cameraPositionProvider.notifier).animateTo(
+        CameraPositionMessage(
+          point: markerPoint,
+          zoom: zoom,
+          tilt: cameraConfig?.tilt ?? 0,
+          bearing: cameraConfig?.bearing ?? 0,
+        ),
+      ),
+    );
   }
 
   Future<void> _loadOffers(DirectoryObjectMessage? poi, OrganizationsMessage? organizations) async {
