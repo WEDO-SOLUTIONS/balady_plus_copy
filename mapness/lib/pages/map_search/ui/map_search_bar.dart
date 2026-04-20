@@ -251,6 +251,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
     final borderedSearchField = Container(
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
         color: isDark?context.colors.staticBlack: context.colors.staticWhite,
         border: Border.all(
           color: context.colors.borderSoft,

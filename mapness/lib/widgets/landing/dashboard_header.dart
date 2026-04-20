@@ -214,9 +214,10 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
         },
         child: Container(
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
             color: isDark?context.colors.staticBlack: context.colors.staticWhite,
             border: Border.all(
-              color: context.colors.borderSoft,
+              color: context.colors.borderDefault,
               width: 1,
             ),
           ),
