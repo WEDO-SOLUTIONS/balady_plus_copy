@@ -67,12 +67,10 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [
-                partner: "baladyapp"
-        ]
-        manifestPlaceholders = [
+                partner: "baladyapp",
                 'appAuthRedirectScheme': 'com.balady',
-                partner                : "baladyappuat"
         ]
+
     }
     signingConfigs {
         release {
