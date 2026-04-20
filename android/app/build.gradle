@@ -66,13 +66,11 @@ android {
         targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [
-                partner: "baladyapp"
-        ]
-        manifestPlaceholders = [
-                'appAuthRedirectScheme': 'com.balady',
-                partner                : "baladyappuat"
-        ]
+        // manifestPlaceholders = [
+        //         partner: "baladyappuat",
+        //         'appAuthRedirectScheme': 'com.balady',
+        // ]
+
     }
     signingConfigs {
         release {
@@ -109,7 +107,10 @@ android {
         stg {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
-            android.defaultConfig.versionCode
+            manifestPlaceholders = [
+                    partner: "baladyappuat",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
 //            versionNameSuffix ".stg"
 //            applicationIdSuffix ".stg"
 //            applicationId  "com.balady.balady_app"
@@ -117,10 +118,18 @@ android {
         prod {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
+            manifestPlaceholders = [
+                    partner: "baladyapp",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
         pre {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
+            manifestPlaceholders = [
+                    partner: "baladyappuat",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
     }
 
