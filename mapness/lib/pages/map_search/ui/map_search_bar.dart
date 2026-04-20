@@ -17,6 +17,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
@@ -158,6 +159,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   }
 
   Widget _buildSearchRow(BuildContext context, SearchScope scope, Search searcher) {
+    late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
     // Always keep BaladySearch under Expanded — never swap between "bare" vs Row+Expanded.
     // Otherwise toggling showLeadingBackButton disposes the text field; if uikit disposes the
     // passed controller, our State still owns a dead controller and crashes next sync.
@@ -234,7 +237,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             _safeFocusAction(_focusNode.requestFocus);
           },
           hintText: context.l10n.searchPlaceOrAddress,
-          fillColor: context.colors.staticWhite,
+          fillColor: isDark?context.colors.staticBlack: context.colors.staticWhite,
           hintColor: context.colors.foregroundSoft,
           textStyle: context.textStyles.bodySmallRegular,
         ),
@@ -248,7 +251,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
     final borderedSearchField = Container(
       decoration: BoxDecoration(
-        color: context.colors.staticWhite,
+        color: isDark?context.colors.staticBlack: context.colors.staticWhite,
         border: Border.all(
           color: context.colors.borderSoft,
           width: 1,

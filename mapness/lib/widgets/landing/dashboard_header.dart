@@ -18,6 +18,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -30,6 +31,8 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final TickerProvider _vsync;
 
   static const headerHeight = 24.0;
+
+
 
   DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
@@ -53,6 +56,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
+
   @override
   double get maxExtent => headerHeight + QuickFilters.defaultHeight;
 
@@ -74,6 +78,7 @@ class _DashboardMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$2x * 2;
+
     final remainingSpaceForQuickFilters = max(
       0.0,
       heightOfQuickFilters - shrinkOffset,
@@ -104,6 +109,7 @@ class _DashboardMenu extends ConsumerWidget {
 
 class MapQuickFiltersDefault extends ConsumerWidget {
   final bool forMap;
+
   const MapQuickFiltersDefault({this.forMap = false, super.key});
 
   @override
@@ -141,6 +147,7 @@ class DashboardHeader extends ConsumerStatefulWidget {
 
 class DashboardHeaderState extends ConsumerState<DashboardHeader> {
   final _scope = SearchScopeEnum.map.value;
+
   final TextEditingController ctrl = TextEditingController();
 
   @override
@@ -151,6 +158,8 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
 
   @override
   Widget build(BuildContext context) {
+    late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
     ref.listen<SearchState>(
       searchProvider(_scope),
       (previous, next) {
@@ -205,7 +214,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: context.colors.staticWhite,
+            color: isDark?context.colors.staticBlack: context.colors.staticWhite,
             border: Border.all(
               color: context.colors.borderSoft,
               width: 1,
@@ -218,7 +227,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
                 inputState: BaladyInputState.readOnly,
                 config: BaladyInputConfig(
                   hintText: context.l10n.searchPlaceOrAddress,
-                  fillColor: context.colors.staticWhite,
+                  fillColor:isDark?context.colors.staticBlack: context.colors.staticWhite,
                   hintColor: context.colors.foregroundSoft,
                   textStyle: context.textStyles.bodySmallRegular,
                 ),

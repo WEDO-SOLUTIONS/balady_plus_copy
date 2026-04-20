@@ -23,10 +23,10 @@ class MoreFilterChip extends StatelessWidget {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            color: context.colors.accentSecondaryContainerSoft.withOpacity(.05),
-            borderRadius: BorderRadius.circular(56),
+            color: context.colors.accentDefault.withOpacity(.09),
+            borderRadius: BorderRadius.circular(RadiusBorder.m),
           ),
-          child: Icon(icon, size: 24, color: context.colors.accentSecondaryDefault),
+          child: Icon(icon, size: 24, color: context.colors.accentDefault),
         ),
         const SizedBox(height: Spacing.$2x),
         Text(
