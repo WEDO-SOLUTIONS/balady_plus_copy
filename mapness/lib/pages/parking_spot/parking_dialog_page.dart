@@ -85,6 +85,7 @@ class ParkingDialogPage extends HookConsumerWidget {
             onTap: onCancelTab,
           ),
         ),
+        const SizedBox(height: Spacing.$3x),
       ],
     );
   }

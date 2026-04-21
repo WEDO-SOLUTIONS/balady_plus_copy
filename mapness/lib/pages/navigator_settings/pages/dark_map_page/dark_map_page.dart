@@ -19,7 +19,7 @@ class DarkMapPage extends StatelessWidget {
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar.iconAndText(
         systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
-        title: context.l10n.darkMap,
+        title: context.l10n.darkMode,
         textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
       ),

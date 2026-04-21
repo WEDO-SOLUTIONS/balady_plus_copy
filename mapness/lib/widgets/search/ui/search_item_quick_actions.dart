@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -20,6 +21,8 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
+
+import '../../../features/special_themes/core/special_theme_mode.dart';
 
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 
@@ -68,12 +71,15 @@ class SearchItemQuickActions extends HookConsumerWidget {
         .toList()
         .firstOrNull;
     final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+    final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final bool isBaseTheme = specialThemeMode == SpecialThemeMode.base || specialThemeMode == SpecialThemeMode.base;
     final colorScheme = isFoundingDay ? ButtonColorScheme.accent : ButtonColorScheme.accentSecondary;
-
     final actions = [
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
+        border:isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+        borderRadius: 4,
         colorScheme: colorScheme,
         iconSize: 15,
         label: context.l10n.poiCardDirections,
@@ -93,11 +99,14 @@ class SearchItemQuickActions extends HookConsumerWidget {
             ),
             ref,
           );
-        },
+        }
       ),
+
       ItemActionBar(
         icon: iconData,
         iconSize: 15,
+        border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+        borderRadius: 4,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
         onPressed: () {
@@ -124,6 +133,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
           icon: SystemIcons.share,
+          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
@@ -134,6 +145,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: GeneralIcons.phoneLTR,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           onPressed: () {
             BssService.instance.trackCallTap(directoryObject, phoneNumber);
             poiActions.callPhone(phoneNumber);
@@ -144,6 +157,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: GeneralIcons.web,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
             poiActions.launch(website);
@@ -154,6 +169,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
+          border:isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
             poiActions.launch(socialMedia.link);

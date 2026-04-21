@@ -3,6 +3,7 @@ import 'dart:convert';
 // ignore: depend_on_referenced_packages
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/gis_response_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/utils_exports.dart' show LocalStorageKey;
@@ -242,6 +243,32 @@ class SharedPrefs {
   Future<void> clearSelectedAccounts() async {
     await _sharedPreferences?.remove('selected_delegator_id');
     await _sharedPreferences?.remove('selected_agent_id');
+  }
+
+  // Channel ordering methods
+  Future<void> saveChannelOrder(Map<String, int> channelOrder) async {
+    if (channelOrder.isNotEmpty) {
+      await _sharedPreferences?.setString(
+          LocalStorageKey.channelOrder, json.encode(channelOrder));
+    } else {
+      await _sharedPreferences?.remove(LocalStorageKey.channelOrder);
+    }
+  }
+
+
+  Map<String, int>? getChannelOrder() {
+    String? channelOrderString =
+    _sharedPreferences?.getString(LocalStorageKey.channelOrder);
+    if (channelOrderString != null) {
+      try {
+        Map<String, dynamic> decodedMap = json.decode(channelOrderString);
+        return decodedMap.map((key, value) => MapEntry(key, value as int));
+      } catch (e) {
+        debugPrint('Error decoding channel order: $e');
+        return null;
+      }
+    }
+    return null;
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -27,7 +28,6 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
-import 'package:provider/provider.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -123,7 +123,7 @@ class ProfilePage extends HookConsumerWidget {
                                               ],
                                             ),
                                     ),
-                                    ContentRow(
+                                    ContentRowV2(
                                       onTap: () => context.router.push(const SettingsRoute()),
                                       trailing: trailing,
                                       leading: leadingIconBuilder(SystemIcons.settings),
@@ -163,31 +163,40 @@ class ProfilePage extends HookConsumerWidget {
                               ContentWrapper(
                                 color: context.colors.backgroundSurface1,
                                 children: [
-                                  ContentRow(
+                                  ContentRowV2(
                                     isDividerEnabled: true,
                                     onTap: () => context.router.push(const HelpCenterRoute()),
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                     text: ContentRowTextOptions(title: context.l10n.helpCenter),
+                                    options: ContentRowOptions(
+                                      dividerEnabled: true,
+                                      wrapperEnabled: true,
+                                      title: context.l10n.helpCenter,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
-                                  ContentRow(
+                                  ContentRowV2(
                                     isDividerEnabled: true,
-
                                     onTap: () {
                                       context.router.push(const AboutBaladyRoute());
                                     },
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
+                                    options: ContentRowOptions(
+                                      wrapperEnabled: true,
+                                      title: context.l10n.aboutApp,
+                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                                    ),
                                   ),
                                   ContentRow(
-
                                     onTap: () {
                                       context.router.push(const PrivacyAndTermsOfUseRoute());
                                     },
                                     trailing: trailing,
-                                    leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg'),
-                                    text: ContentRowTextOptions(title: context.l10n.termAndConditions),
+                                    leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg',color: context.colors.accentDefault,),
+                                    text: ContentRowTextOptions(title: "privacyAndTermsTitle".tr()),
                                   ),
                                 ],
                               ),

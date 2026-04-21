@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.3+502
+version: 3.30.3+507
 # version: 3.12.23+433
 
 environment:
@@ -120,6 +120,9 @@ dependencies:
 
   webview_flutter: ^4.13.1
   flutter_inappwebview: ^6.1.5
+  ## Audio
+  just_audio: ^0.9.46
+  just_audio_background: ^0.0.1-beta.17
 
   version: ^3.0.2
   #google_maps_flutter: ^2.5.3
@@ -151,6 +154,7 @@ dependencies:
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
   app_settings: ^7.0.0
+  linkable: ^3.0.0
   flutter_hms_gms_availability:
     git:
       url: https://github.com/vant3ch/flutter_hms_gms_availability
@@ -197,7 +201,7 @@ dependencies:
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.0.3
+    version: ^1.0.9
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -255,6 +259,7 @@ flutter:
   shaders:
     - shaders/radar.frag
   assets:
+    - assets/mock/mini_apps_response.json
     - assets/
     - assets/icons/svg/
     - assets/icons/makkah/

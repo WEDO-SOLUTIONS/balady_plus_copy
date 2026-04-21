@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -30,6 +32,8 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   static const headerHeight = 24.0;
 
+
+
   DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
   @override
@@ -42,8 +46,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$4x;
-    final currentHeaderExtent =
-        minExtent + max(0.0, heightOfQuickFilters - shrinkOffset);
+    final currentHeaderExtent = minExtent + max(0.0, heightOfQuickFilters - shrinkOffset);
 
     return FlexibleSpaceBar.createSettings(
       minExtent: minExtent,
@@ -53,6 +56,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
+
   @override
   double get maxExtent => headerHeight + QuickFilters.defaultHeight;
 
@@ -60,8 +64,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => headerHeight - Spacing.$4x - Spacing.$2x;
 
   @override
-  FloatingHeaderSnapConfiguration? get snapConfiguration =>
-      FloatingHeaderSnapConfiguration();
+  FloatingHeaderSnapConfiguration? get snapConfiguration => FloatingHeaderSnapConfiguration();
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
@@ -75,19 +78,18 @@ class _DashboardMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$2x * 2;
+
     final remainingSpaceForQuickFilters = max(
       0.0,
       heightOfQuickFilters - shrinkOffset,
     );
-    final quickFilterSizeProportion =
-        remainingSpaceForQuickFilters / heightOfQuickFilters;
+    final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
 
     final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
-    final backgroundColor =
-        themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
+    final backgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
 
     return ColoredBox(
       color: backgroundColor,
@@ -97,28 +99,7 @@ class _DashboardMenu extends ConsumerWidget {
           opacity: quickFilterSizeProportion,
           child: SizedOverflowBox(
             size: Size(double.infinity, remainingSpaceForQuickFilters),
-            child: SizedBox(
-              height: QuickFilters.defaultHeight,
-              child: MapQuickFilters(
-                customFilters: [
-                  FilterItemConfig(
-                    filterType: FilterType.custom,
-                    icon: TransportIcons.newlocationDirectionNavigator,
-                    onTap: () async {
-                      final isAllowed = await ref
-                          .read(locationProvider.notifier)
-                          .checkLocationPermission();
-                      if (isAllowed) {
-                        ref.read(advertMetricsProvider.notifier).sendEvent(
-                              AdvertMetricsKeys.exploreLandingEngagement,
-                            );
-                        await context.router.push(const FreeRoamRoute());
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
+            child: const MapQuickFiltersDefault(),
           ),
         ),
       ),
@@ -126,70 +107,131 @@ class _DashboardMenu extends ConsumerWidget {
   }
 }
 
-class DashboardHeader extends ConsumerWidget {
+class MapQuickFiltersDefault extends ConsumerWidget {
+  final bool forMap;
+
+  const MapQuickFiltersDefault({this.forMap = false, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => SizedBox(
+    height: QuickFilters.defaultHeight,
+    child: MapQuickFilters(
+      forMap: forMap,
+      customFilters: [
+        FilterItemConfig(
+          filterType: FilterType.custom,
+          icon: TransportIcons.newlocationDirectionNavigator,
+          onTap: () async {
+            final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+            if (isAllowed) {
+              ref
+                  .read(advertMetricsProvider.notifier)
+                  .sendEvent(
+                    AdvertMetricsKeys.exploreLandingEngagement,
+                  );
+              await context.router.push(const FreeRoamRoute());
+            }
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+class DashboardHeader extends ConsumerStatefulWidget {
   const DashboardHeader({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  DashboardHeaderState createState() => DashboardHeaderState();
+}
+
+class DashboardHeaderState extends ConsumerState<DashboardHeader> {
+  final _scope = SearchScopeEnum.map.value;
+
+  final TextEditingController ctrl = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    ctrl.text = ref.read(searchProvider(_scope)).searchText;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
+    ref.listen<SearchState>(
+      searchProvider(_scope),
+      (previous, next) {
+        ctrl.value = ctrl.value.copyWith(
+          text: next.searchText,
+          selection: TextSelection.fromPosition(
+            TextPosition(offset: next.searchText.length),
+          ),
+        );
+      },
+    );
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
     final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
-    final headerBackgroundColor =
-        themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
-    final bool isMekkahTheme =
-        specialThemeMode == SpecialThemeMode.mekkahBase ||
-            specialThemeMode == SpecialThemeMode.ramadan;
-    final searchFillColor = isMekkahTheme
-        ? const Color(0xFFEEE7DE)
-        : context.colors.neutralContainerDefault;
+    final headerBackgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(color: headerBackgroundColor),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: Spacing.$4x,
-          right: Spacing.$4x,
-          bottom: Spacing.$2x,
-        ),
-        child: GestureDetector(
-          onTap: () {
-            Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys.searchField,
-              action: MetricAction.tap.name,
-              group: MetricsConstants.exploreTag,
-            );
-            BssService.instance.sendEvent(
-              const BssRequest(
-                eventType: BSSEventType.action,
-                actionType: BSSActionType.tap,
-                uiElement: BssUIElement(name: BssUIElementNames.searchField),
-              ),
-            );
+      decoration: BoxDecoration(
+        boxShadow: Shadows.s,
+        borderRadius: BorderRadius.circular(RadiusBorder.m),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.searchField,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+          BssService.instance.sendEvent(
+            const BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(name: BssUIElementNames.searchField),
+            ),
+          );
 
-            ref
-                .read(advertMetricsProvider.notifier)
-                .sendEvent(AdvertMetricsKeys.exploreSearch);
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
-            // Here we clean the search query on tap on the search field
-            // So the user can see the search history, not previous search results
-            ref
-                .read(searchProvider(SearchScopeEnum.map.value).notifier)
-                .clear();
+          // Here we clean the search query on tap on the search field
+          // So the user can see the search history, not previous search results
+          final text = ref.read(searchProvider(_scope)).searchText;
+          ref.read(searchProvider(_scope).notifier).clear();
 
-            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
-                  '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-                );
-            context.router.push(SearchRoute(expansion: Expansion.expanded));
-          },
-          child: AbsorbPointer(
-            child: BaladyTextInput.search(
-              inputState: BaladyInputState.readOnly,
-              config: BaladyInputConfig(
-                hintText: context.l10n.searchPlaceOrAddress,
-                fillColor: searchFillColor,
-                hintColor: context.colors.foregroundSoft,
-                textStyle: context.textStyles.bodySmallRegular,
+          ref
+              .read(urbiAnalyticsProvider.notifier)
+              .trackWithPrint(
+                '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+              );
+
+          context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text));
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+            border: Border.all(
+              color: context.colors.borderDefault,
+              width: 1,
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.xxl),
+            child: AbsorbPointer(
+              child: BaladyTextInput.search(
+                inputState: BaladyInputState.readOnly,
+                config: BaladyInputConfig(
+                  hintText: context.l10n.searchPlaceOrAddress,
+                  fillColor:isDark?context.colors.staticBlack: context.colors.staticWhite,
+                  hintColor: context.colors.foregroundSoft,
+                  textStyle: context.textStyles.bodySmallRegular,
+                ),
               ),
             ),
           ),

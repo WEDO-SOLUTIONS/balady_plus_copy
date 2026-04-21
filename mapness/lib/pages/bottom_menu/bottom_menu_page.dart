@@ -28,7 +28,6 @@ class BottomMenuPage extends ConsumerStatefulWidget {
 }
 
 class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProviderStateMixin {
-  late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
   late final landingController = MultiStateSheetController<ThreeStateSheet>(
     initialState: ThreeStateSheet.open,
@@ -93,6 +92,8 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
       }
     },
     builder: (_, tabsRouter, route) {
+      late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
       final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
       final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
       final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
@@ -133,7 +134,7 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                               height: 1,
                               color: route.activeIndex == index
                                   ? accentColor
-                                  :  isDark? null:const Color(0xffE5E7EB) ,
+                                  :  isDark? Colors.black: const Color(0xffE5E7EB) ,
                             ),
                           )),
                       ),

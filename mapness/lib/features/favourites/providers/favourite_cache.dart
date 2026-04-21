@@ -141,9 +141,9 @@ class _FavouriteCache extends _$FavouriteCache {
     final work = oldDataState.work;
     final home = oldDataState.home;
 
-    oldItems.removeWhere((element) => items.any((e) => e.id == element.id));
+    final filteredItems = oldItems.where((element) => !items.any((e) => e.id == element.id)).toList();
 
-    final newState = FavouritesState(items: oldItems, work: work, home: home);
+    final newState = FavouritesState(items: filteredItems, work: work, home: home);
 
     await _updateState(newState);
 
@@ -157,10 +157,21 @@ class _FavouriteCache extends _$FavouriteCache {
   Future<void> _addToDeletionSync(List<FavouriteItem> items) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     final deleteSync =
-        (await favoritesBox.get(_keyDeleteSync, defaultValue: []) as List<dynamic>).cast<FavoriteCacheItem>()
+        (await favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+            .cast<FavoriteCacheItem>()
           ..addAll(items.map((e) => e.toHive()));
 
     await favoritesBox.put(_keyDeleteSync, deleteSync);
+  }
+
+  Future<void> _addToAddSync(FavouriteItem item) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final addSync =
+        (await favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+            .cast<FavoriteCacheItem>()
+          ..add(item.toHive());
+
+    await favoritesBox.put(_keyAddSync, addSync);
   }
 
   Future<void> setHome(FavouriteItem item) async {
@@ -224,11 +235,10 @@ class _FavouriteCache extends _$FavouriteCache {
   Future<void> _addItem(FavouriteItem item, FavouritesState state) async {
     await _updateState(state);
 
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     try {
       await _addItemsRequest(items: [item], workId: state.work?.id, homeId: state.home?.id);
     } on Exception catch (_) {
-      await favoritesBox.put(_keyAddSync, item.toHive());
+      await _addToAddSync(item);
     }
   }
 
@@ -246,26 +256,28 @@ class _FavouriteCache extends _$FavouriteCache {
     final homeId = cache?.home?.toDomain().id;
 
     try {
-      final deleteSync = (await favoritesBox.get(_keyDeleteSync, defaultValue: []) as List<dynamic>)
-          .cast<FavoriteCacheItem>();
+      final deleteSync =
+          (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+              .cast<FavoriteCacheItem>();
 
       if (deleteSync.isNotEmpty) {
         await _deleteRequest(items: deleteSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
         await favoritesBox.delete(_keyDeleteSync);
       }
-    } on Exception catch (_) {
+    } on Object catch (_) {
       logger.log('Delete sync failed', logLevel: MapnessLogLevel.critical);
     }
 
     try {
-      final addSync = (await favoritesBox.get(_keyAddSync, defaultValue: []) as List<dynamic>)
-          .cast<FavoriteCacheItem>();
+      final addSync =
+          (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+              .cast<FavoriteCacheItem>();
 
       if (addSync.isNotEmpty) {
         await _addItemsRequest(items: addSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
         await favoritesBox.delete(_keyAddSync);
       }
-    } on Exception catch (_) {
+    } on Object catch (_) {
       logger.log('Add sync failed', logLevel: MapnessLogLevel.critical);
     }
   }
@@ -313,10 +325,18 @@ class _FavouriteCache extends _$FavouriteCache {
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
       await _updateState(newState);
     } on DioException catch (e) {
-      logger.log(
-        proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString(),
-        logLevel: MapnessLogLevel.critical,
-      );
+      if (e.response?.data != null) {
+        logger.log(
+          proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString(),
+          logLevel: MapnessLogLevel.critical,
+        );
+      } else {
+        logger.log(
+          'Add favourites request failed: ${e.message}',
+          logLevel: MapnessLogLevel.critical,
+        );
+      }
+      rethrow;
     }
     await mixpanel?.track('Favorites: addItems');
   }

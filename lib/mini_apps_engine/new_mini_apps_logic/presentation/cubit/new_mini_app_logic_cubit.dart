@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_bottom_sheet.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -38,14 +40,13 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   //! Get mini apps ...
   Future<void> loadMiniApps({
     bool showLoading = true,
-    bool? isUserLoggedInLifeStyle,
-    bool? isUserLoggedInMunicipality,
-    required bool isUserAccountBusiness,
     bool forceRefresh = false,
   }) async {
 
-    //! To prevent the app to do duplicated loading state
-    //! If there is already a loading state stop the second loading state
+    print("Future<void> loadMiniApps({");
+    //! Always block concurrent calls — even forceRefresh must wait until the
+    //! current load finishes. This prevents the double-load that happens when
+    //! `authenticated` and `unAuthenticatedState` both fire on first open.
     if (state.isAppsGroupLoading == true || state.isFavLoading == true || state.isUnFavLoading == true || state.isSearching == true || state.isEntryPointsLoading == true) {
       return;
     }
@@ -64,14 +65,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         isSearching: false,
         searchResults: const [],
         searchError: null,
-        
+
       ),
     );
 
-    final isLoggedInLifestyle = isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
-    final isLoggedInMunicipality = isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
-    final userAccountBusiness = isUserAccountBusiness;
-
+    final isLoggedInLifestyle = CommonProperties.isLoggedIn;
+    final isLoggedInMunicipality = CommonProperties.isLoggedInMunicipality;
     final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality);
 
     result.fold(
@@ -87,6 +86,16 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         );
       },
       (final data) async {
+        final delegatorsCubit = sl<DelegatorsCubit>();
+
+        if (isLoggedInMunicipality) {
+          // Trigger load only if not already loaded or in progress
+          if (delegatorsCubit.state.accountStatus == DelegatorsAccountStatus.initial) {
+            await delegatorsCubit.loadData();
+          }
+        }
+
+        final userAccountBusiness = delegatorsCubit.state.isUserAccountBusiness;
         // ---------------------------
         // ✅ 1) Filter apps (business rules)
         // ---------------------------
@@ -149,16 +158,13 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   //! pull to refresh mini apps UI.
-  Future<void> refreshMiniApps({required bool isUserAccountBusiness}) async {
+  Future<void> refreshMiniApps() async {
     if (state.isRefreshing) return;
 
     emit(state.copyWith(isRefreshing: true, favError: null, entryPointsError: null, searchError: null));
 
     await loadMiniApps(
       showLoading: false,
-      isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
-      isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-      isUserAccountBusiness: isUserAccountBusiness,
       forceRefresh: true,
     );
 

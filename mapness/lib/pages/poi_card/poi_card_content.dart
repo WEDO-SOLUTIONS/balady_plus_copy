@@ -322,7 +322,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   title:
                       widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
-                      widget.data.title,
+                      widget.data.pinTitle(l10n),
                   subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
@@ -366,7 +366,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   parkingInfo: widget.data.parkingInfo,
                   poiCardState: poiCardState,
                   tabController: _tabController,
-                  data: widget.data,
+                  data: poiCardState?.gisObjectIdMessage ?? widget.data,
                   onTapClose: () async {
                     await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
                     await closePoiCard(context, ref);

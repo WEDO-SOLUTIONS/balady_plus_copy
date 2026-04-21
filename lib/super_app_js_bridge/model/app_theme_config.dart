@@ -6,6 +6,7 @@ import '../../app/features/accecipilities/AccessibilitySettings.dart';
 
 class AppThemeConfig implements BaseData {
   final String language;
+  final String deviceType;
   final String themeType;
   final ColorSchemeModel? colorSchemeLight;
   final ColorSchemeModel? colorSchemeDark;
@@ -14,6 +15,7 @@ class AppThemeConfig implements BaseData {
   AppThemeConfig({
     required this.language,
     required this.themeType,
+    required this.deviceType,
     required this.colorSchemeLight,
     required this.colorSchemeDark,
     required this.accessibilityModel
@@ -26,6 +28,7 @@ class AppThemeConfig implements BaseData {
     return {
       'language': language,
       'themeType': themeType,
+      'deviceType': deviceType,
       'colorSchemeLight': colorSchemeLight?.toJson(),
       'colorSchemeDark': colorSchemeDark?.toJson(),
       'accessibility': accessibilityModel?.toJson(),

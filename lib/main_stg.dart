@@ -1,5 +1,6 @@
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -12,9 +13,11 @@ import 'package:flutter/material.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
-
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
       await setupMapness(EnvType.stg);

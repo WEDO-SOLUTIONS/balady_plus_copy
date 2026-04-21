@@ -29,8 +29,15 @@ import 'package:provider/provider.dart';
 
 class NaviSearchContent extends ConsumerStatefulWidget {
   final ScrollController bottomSheetContentScrollController;
+  final bool showMoreQuickFilters;
+  final ValueChanged<bool>? onMoreQuickFiltersChanged;
 
-  const NaviSearchContent({required this.bottomSheetContentScrollController, super.key});
+  const NaviSearchContent({
+    required this.bottomSheetContentScrollController,
+    this.showMoreQuickFilters = false,
+    this.onMoreQuickFiltersChanged,
+    super.key,
+  });
 
   @override
   ConsumerState<NaviSearchContent> createState() => _MapSearchContentState();
@@ -127,55 +134,64 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
         top: false,
         child: Column(
           children: [
-            NaviQuickFilter(onFilterSelected: (q) => ref.read(searchProvider(scope.value).notifier).searchByText(q)),
-            const SizedBox(height: Spacing.$4x),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              child: ContentWrapper(
-                color: context.colors.backgroundSurface1,
-                children: [
-                  ContentRow(
-                    isDividerEnabled: true,
-                    leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
-                    text: ContentRowTextOptions(title: context.l10n.selectOnTheMap),
-                    trailing: ContentRowTextTrailingOptions(
-                      icon: SystemIcons.arrowCornerRightSmall,
-                      iconColor: context.colors.foregroundMuted,
-                    ),
-                    onTap: () => _specifyOnTheMap(context),
-                  ),
-                  ContentRow(
-                    isDividerEnabled: true,
-                    leading: Icon(
-                      Directionality.of(context) == TextDirection.ltr
-                          ? TransportIcons.locationLTR
-                          : TransportIcons.locationRTL,
-                      color: context.colors.accentDefault,
-                      size: 22,
-                    ),
-                    text: ContentRowTextOptions(title: context.l10n.yourLocation),
-                    trailing: ContentRowTextTrailingOptions(
-                      icon: SystemIcons.arrowCornerRightSmall,
-                      iconColor: context.colors.foregroundMuted,
-                    ),
-                    onTap: () => _onYourLocationTap(context, ref),
-                  ),
-                  ContentRow(
-                    leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
-                    text: ContentRowTextOptions(title: context.l10n.findInFav),
-                    trailing: ContentRowTextTrailingOptions(
-                      icon: SystemIcons.arrowCornerRightSmall,
-                      iconColor: context.colors.foregroundMuted,
-                    ),
-                    onTap: () => ref
-                        .read(authMethodsProvider.notifier)
-                        .authAndOpen(context, callback: () => context.router.push(const NaviFavoritesRoute())),
-                  ),
-                ],
-              ),
+            NaviQuickFilter(
+              showMoreView: widget.showMoreQuickFilters,
+              onMoreTap: () => widget.onMoreQuickFiltersChanged?.call(true),
+              onFilterSelected: (q) {
+                widget.onMoreQuickFiltersChanged?.call(false);
+                ref.read(searchProvider(scope.value).notifier).searchByText(q);
+              },
             ),
-            const SizedBox(height: Spacing.$3x),
-            const NaviSearchHistory(),
+            if (!widget.showMoreQuickFilters) ...[
+              const SizedBox(height: Spacing.$4x),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: ContentWrapper(
+                  color: context.colors.backgroundSurface1,
+                  children: [
+                    ContentRow(
+                      isDividerEnabled: true,
+                      leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
+                      text: ContentRowTextOptions(title: context.l10n.selectOnTheMap),
+                      trailing: ContentRowTextTrailingOptions(
+                        icon: SystemIcons.arrowCornerRightSmall,
+                        iconColor: context.colors.foregroundMuted,
+                      ),
+                      onTap: () => _specifyOnTheMap(context),
+                    ),
+                    ContentRow(
+                      isDividerEnabled: true,
+                      leading: Icon(
+                        Directionality.of(context) == TextDirection.ltr
+                            ? TransportIcons.locationLTR
+                            : TransportIcons.locationRTL,
+                        color: context.colors.accentDefault,
+                        size: 22,
+                      ),
+                      text: ContentRowTextOptions(title: context.l10n.yourLocation),
+                      trailing: ContentRowTextTrailingOptions(
+                        icon: SystemIcons.arrowCornerRightSmall,
+                        iconColor: context.colors.foregroundMuted,
+                      ),
+                      onTap: () => _onYourLocationTap(context, ref),
+                    ),
+                    ContentRow(
+                      leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
+                      text: ContentRowTextOptions(title: context.l10n.findInFav),
+                      trailing: ContentRowTextTrailingOptions(
+                        icon: SystemIcons.arrowCornerRightSmall,
+                        iconColor: context.colors.foregroundMuted,
+                      ),
+                      onTap: () => ref
+                          .read(authMethodsProvider.notifier)
+                          .authAndOpen(context, callback: () => context.router.push(const NaviFavoritesRoute())),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: Spacing.$3x),
+              const NaviSearchHistory(),
+            ],
           ],
         ),
       ),

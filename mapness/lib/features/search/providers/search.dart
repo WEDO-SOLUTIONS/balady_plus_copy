@@ -310,9 +310,7 @@ class Search extends _$Search {
   Future<void> searchByText(String query, {bool isGoogle = false}) async {
     try {
       await _searchOperation?.cancel();
-      if (state is! SearchStateSuggest) {
-        state = SearchStateLoading(searchText: query);
-      }
+      state = SearchStateLoading(searchText: query); // for loading only Suggests use (state is! SearchStateSuggest)
       await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
@@ -586,9 +584,11 @@ class Search extends _$Search {
 
     final requiredVisiblePlaces = min(_minVisibleQuickFilterPlaces, points.length);
     final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+    final visiblePlacesCount = visibleRect == null
+        ? 0
+        : points.where((point) => _isInsideVisibleRect(point, visibleRect)).length;
 
     if (visibleRect != null) {
-      final visiblePlacesCount = points.where((point) => _isInsideVisibleRect(point, visibleRect)).length;
       if (visiblePlacesCount >= requiredVisiblePlaces) {
         return;
       }
@@ -602,8 +602,9 @@ class Search extends _$Search {
     await ref
         .read(cameraPositionProvider.notifier)
         .animateToGeoPoints(
-          points.take(requiredVisiblePlaces).toList(),
+          points.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
           options: _quickFilterCameraOptions(),
+          keepCameraPositionPoint: true,
         );
   }
 

@@ -17,8 +17,10 @@ import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
+import 'package:mapness/widgets/search/ui/working_hours.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
+import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
 import 'package:sheetify/sheetify.dart' hide DraggerContainer;
 
 class PoiHeader extends ConsumerWidget {
@@ -75,9 +77,15 @@ class PoiHeader extends ConsumerWidget {
 
     // Header info
     final workingHours = data?.openingHours?.toWorkingHours();
-    final now = DateTime.now();
-    final closedStatus = workingHours?.closedStatus(now, context.l10n) ?? '';
-    final closedStatusColors = workingHours?.colors(now, context.colors);
+    final soonThreshold = ref
+        .watch(workingHoursSoonThresholdProvider)
+        .maybeWhen(
+          data: (value) => value,
+          orElse: () => kDefaultWorkingHoursSoonThreshold,
+        );
+    final now = saudiTimeNow();
+    final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
+    final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
 
     return HeaderInfoWrapper(
       text: closedStatus,

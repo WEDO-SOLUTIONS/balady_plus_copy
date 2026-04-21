@@ -52,8 +52,7 @@ import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/search/providers/search_region.dart'
-    show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -104,12 +103,10 @@ import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart
 import 'features/wrc/wrc.dart';
 import 'package:provider/provider.dart' as p;
 
-
 Mixpanel? mixpanel;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
-  static final MapnessRouteObserver _instance =
-      MapnessRouteObserver._internal();
+  static final MapnessRouteObserver _instance = MapnessRouteObserver._internal();
 
   factory MapnessRouteObserver() => _instance;
 
@@ -127,9 +124,7 @@ class MapnessProviderScope extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, child) {
           final language = ref.watch(appLanguageProvider);
-          final localizations = language == Language.arabic
-              ? AppLocalizationsAr()
-              : AppLocalizationsEn();
+          final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
           // Initialize Saudi National Day provider to start the timer
           ref
             ..watch(saudiNationalDayProvider)
@@ -145,7 +140,6 @@ class MapnessProviderScope extends StatelessWidget {
           return provider.MultiProvider(
             providers: [
               provider.ChangeNotifierProvider(create: (_) => ThemeController()),
-              provider.ChangeNotifierProvider(create: (_) => BaladyThemeNotifier()),
               provider.Provider<AppLocalizations>.value(value: localizations),
             ],
             child: child,
@@ -227,13 +221,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> checkConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.mobile)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.mobile.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.mobile.name);
     } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.wifi.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.wifi.name);
     }
   }
 
@@ -261,12 +251,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> restoreState() async {
-    final state = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateKey);
-    final type = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateTypeKey);
+    final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
     if (state != null) {
       final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -281,10 +267,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ),
               );
         } else {
-          _locationListener = ref.listenManual<Position?>(locationProvider, (
-            _,
-            next,
-          ) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
               ref
@@ -317,9 +300,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               .read(appRouterProvider)
               .push(
                 PathNavRoute(
-                  navType:
-                      navStateMessage.routeSearchOptions ??
-                      RouteSearchOptionsMessage.car,
+                  navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                   initAction: null,
                 ),
               );
@@ -334,9 +315,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   .read(appRouterProvider)
                   .push(
                     PathNavRoute(
-                      navType:
-                          navStateMessage.routeSearchOptions ??
-                          RouteSearchOptionsMessage.car,
+                      navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                       initAction: null,
                     ),
                   );
@@ -348,6 +327,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
+    if (!mounted) return;
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -366,6 +346,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarkerFoundingDay(WidgetRef ref) async {
+    if (!mounted) return;
     final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(foundingDayUrbiProvider.notifier);
@@ -418,6 +399,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
       await themeController.setTheme(theme);
     }
+
+    if (mounted) {
+      final baladyTheme = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
+      final mapMode = ref.read(darkModeProvider).value?.currentMapMode;
+
+      if (mapMode == DarkMapStateEnum.asInASystem) {
+        baladyTheme.resetTheme();
+      } else if (mapMode == DarkMapStateEnum.alwaysEnabled) {
+        baladyTheme.updateThemeMode(ThemeMode.dark);
+      } else if (mapMode == DarkMapStateEnum.off) {
+        baladyTheme.updateThemeMode(ThemeMode.light);
+      } else {
+        baladyTheme.updateThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
+      }
+    }
   }
 
   @override
@@ -436,19 +432,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // Track theme changes for analytics
     ref
       ..listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
-        if(next == SpecialThemeMode.mekkahBase)
-          {
-            ref
-                .read(darkModeProvider.notifier)
-                .changeDarkModeState(
-              DarkMapStateEnum.off,
-            );
-            final themeController = p.Provider.of<BaladyThemeNotifier>(context,listen: false);
-            if(themeController.isDarkMode)
-              {
-                themeController.toggleTheme(false);
-              }
+        if (next == SpecialThemeMode.mekkahBase) {
+          ref
+              .read(darkModeProvider.notifier)
+              .changeDarkModeState(
+                DarkMapStateEnum.off,
+              );
+          final themeController = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
+          if (themeController.isDarkMode) {
+            themeController.toggleTheme(false);
           }
+        }
 
         if (prev == next) {
           return;
@@ -532,22 +526,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         child: Consumer(
           builder: (context, ref, child) {
             return MaterialApp.router(
-              routerConfig: ref
-                  .read(appRouterProvider)
-                  .config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
+              routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],
                 useMaterial3: false,
                 extensions: <ThemeExtension<dynamic>>[
-                  if (language == Language.arabic)
-                    ThemeTextStyles.arabic()
-                  else
-                    ThemeTextStyles.english(),
-                  if (language == Language.arabic)
-                    ThemeTextStylesV3.frutiger()
-                  else
-                    ThemeTextStylesV3.golos(),
+                  if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                  if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(
@@ -563,7 +549,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               ),
               builder: (context, child) => child != null
                   ? LoadingOverlay(
-                      child: ToastOverlay(child: GlobalScopes(child: child)),
+                      child: ToastOverlay(
+                        child: GlobalScopes(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: child,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     )
                   : const SizedBox.shrink(),
               locale: language.locale,
@@ -602,24 +598,35 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> initMixpanel() async {
-    logger.log('Initializing Mixpanel...');
-    mixpanel = await Mixpanel.init(
-      '2d045d85e25087812e92c62b84d6fbc3',
-      trackAutomaticEvents: true,
-    );
-    mixpanel?.setLoggingEnabled(true);
-    logger.log('Mixpanel initialized successfully');
+    try {
+      logger.log('Initializing Mixpanel...');
+      mixpanel = await Mixpanel.init(
+        '2d045d85e25087812e92c62b84d6fbc3',
+        trackAutomaticEvents: true,
+      );
+      mixpanel?.setLoggingEnabled(true);
+      logger.log('Mixpanel initialized successfully');
+    } catch (e, stackTrace) {
+      logger.log('Error initializing Mixpanel: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    }
 
-    final config = FlutterUxConfig(
-      enableAdvancedGestureRecognition: true,
-      enableCrashHandling: true,
-      enableMultiSessionRecord: true,
-      enableNetworkLogging: true,
-      userAppKey: '2w1otnta9bvvhzo',
-      enableAutomaticScreenNameTagging: false,
-    );
-    await FlutterUxcam.startWithConfiguration(config);
-    logger.log('UXCam started with configuration');
+    try {
+      final config = FlutterUxConfig(
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: '2w1otnta9bvvhzo',
+        enableAutomaticScreenNameTagging: false,
+      );
+      await FlutterUxcam.startWithConfiguration(config);
+      logger.log('UXCam started with configuration');
+    } catch (e, stackTrace) {
+      logger.log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      // Continue without UXCam - it's not critical for app functionality
+    }
   }
 
   Future<void> initDeepLinks() async {
@@ -645,11 +652,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
       final isNavPage = currentRouteName == PathNavRoute.name;
-      final navigation =
-          event == NavigationEvent.navigation ||
-          event == NavigationEvent.routeSearch;
-      final routeSearchOptions =
-          (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
+      final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
       final isFreeroam = navigation && routeSearchOptions == null;
       if (navigation && !isFreeroam && !isNavPage) {
         await ref
@@ -778,12 +782,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
-      await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8),
+      await _delayIfFirstRun(
+        isFirstRun: isFirstRun,
+        duration: const Duration(seconds: 8),
       );
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty &&
-        serviceKey != '/poi-map' &&
-        serviceKey.startsWith('/app')) {
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
       String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
@@ -795,8 +799,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         serviceKey: serviceKey.replaceAll('/app/', ''),
         path: subPath,
       );
-    } else if (url.toString().isNotEmpty &&
-        !url.toString().contains('insiderbaladyapp')) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -854,9 +857,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // if we come from stories we must close them for nice user experience
     if (eventHandled && areStoriesOpen && router.canPop()) {
       await router.topMostRouter().maybePop();
-      ref
-          .read(bottomSheetControllerProvider.notifier).state.controller
-          ?.setState(ThreeStateSheet.hidden);
+      ref.read(bottomSheetControllerProvider.notifier).state.controller?.setState(ThreeStateSheet.hidden);
     }
   }
 
@@ -867,9 +868,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
-      await ref
-          .read(layersControlsProvider.notifier)
-          .enableParking(isFromDeepLink: true);
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
     });
   }
 
@@ -914,7 +913,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _openSnapSend() async {
-    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event,
+    CommonFunctions.sendUXCamEvent(
+      UXCamEvents.SnapAndSend_Open_From_Home_Event,
     );
     CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(
@@ -928,14 +928,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       (element) => element.name == filter,
     );
     unawaited(
-      ref
-          .read(urbiAnalyticsProvider)
-          .track('quickFilterSearch', properties: {'filter': quickFilter.name}),
+      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': quickFilter.name}),
     );
     ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.exploreSearch);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
     final language = ref.read(appLanguageProvider);
 
@@ -957,9 +953,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(searchProvider(SearchScopeEnum.map.value).notifier)
-          .quickSearch(quickFilter);
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
     });
   }
 
@@ -1100,8 +1094,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       twinsUrl,
       queryParameters: {
         BaldayDeeplink.keyKey: BaldayDeeplink.momrahTwinsKey,
-        BaldayDeeplink.momrahPartnerCodeKey:
-            BaldayDeeplink.momrahPartnerCodeValue,
+        BaldayDeeplink.momrahPartnerCodeKey: BaldayDeeplink.momrahPartnerCodeValue,
         BaldayDeeplink.momrahPartnerCodeId: momrahId,
       },
     );
@@ -1179,9 +1172,7 @@ Future<void> enableInsiderGeofenceAfterConsent() async {
     return;
   }
 
-  final isOk =
-      perm == LocationPermission.always ||
-      perm == LocationPermission.whileInUse;
+  final isOk = perm == LocationPermission.always || perm == LocationPermission.whileInUse;
   if (!isOk) {
     return;
   }
@@ -1201,25 +1192,71 @@ Future<void> runMapnessApp(
   FutureOr<void> Function() main,
 ) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initHive();
 
-  final hostFlutterApi = _HostFlutterApi();
-  HostFlutterApi.setUp(hostFlutterApi);
+  try {
+    print('runMapnessApp: Starting initialization...');
+    await initHive();
+    print('runMapnessApp: Hive initialized');
 
-  await AppConfigLoader.init(envType);
-  await hostFlutterApi.appRunCompleter.future;
+    final hostFlutterApi = _HostFlutterApi();
+    HostFlutterApi.setUp(hostFlutterApi);
+    print('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
 
-  await main();
+    await AppConfigLoader.init(envType);
+    print('runMapnessApp: AppConfigLoader initialized');
+
+    // Add timeout to prevent infinite waiting
+    await hostFlutterApi.appRunCompleter.future.timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        print('runMapnessApp: WARNING - Timeout waiting for runMain() from native side');
+        // Complete manually if timeout occurs (this might indicate the native side already called it)
+        if (!hostFlutterApi.appRunCompleter.isCompleted) {
+          hostFlutterApi.appRunCompleter.complete();
+        }
+      },
+    );
+    print('runMapnessApp: runMain() received, proceeding to main()');
+
+    await main();
+    print('runMapnessApp: main() completed');
+  } catch (e, stackTrace) {
+    print('runMapnessApp: ERROR - $e');
+    print('runMapnessApp: StackTrace - $stackTrace');
+    try {
+      logger.log('Error in runMapnessApp: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    } catch (_) {
+      // Logger might not be initialized yet
+    }
+    rethrow;
+  }
 }
 
 Future<void> initHive() async {
-  await Hive.initFlutter();
-  Hive
-    ..registerAdapter(SearchHistoryItemAdapter())
-    ..registerAdapter(FavoriteCacheItemAdapter())
-    ..registerAdapter(HiveCoordinatesAdapter())
-    ..registerAdapter(HiveFavouriteItemEntityAdapter())
-    ..registerAdapter(FavoriteCacheStateAdapter());
+  try {
+    print('initHive: Starting Hive initialization...');
+    await Hive.initFlutter();
+    print('initHive: Hive.initFlutter() completed');
+    Hive
+      ..registerAdapter(SearchHistoryItemAdapter())
+      ..registerAdapter(FavoriteCacheItemAdapter())
+      ..registerAdapter(HiveCoordinatesAdapter())
+      ..registerAdapter(HiveFavouriteItemEntityAdapter())
+      ..registerAdapter(FavoriteCacheStateAdapter());
+    print('initHive: All adapters registered');
+  } catch (e, stackTrace) {
+    print('initHive: ERROR - $e');
+    print('initHive: StackTrace - $stackTrace');
+    try {
+      logger.log('Error initializing Hive: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    } catch (_) {
+      // Logger might not be initialized yet
+    }
+    // Re-throw to prevent app from continuing with broken Hive
+    rethrow;
+  }
 }
 
 class _HostFlutterApi extends HostFlutterApi {
@@ -1236,8 +1273,14 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void runMain() {
+    print('_HostFlutterApi.runMain() called from native side');
     isAppRun = true;
-    appRunCompleter.complete();
+    if (!appRunCompleter.isCompleted) {
+      appRunCompleter.complete();
+      print('_HostFlutterApi.runMain() - completer completed');
+    } else {
+      print('_HostFlutterApi.runMain() - completer already completed');
+    }
   }
 
   @override

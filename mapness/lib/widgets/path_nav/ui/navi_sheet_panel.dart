@@ -20,7 +20,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
@@ -75,35 +74,33 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
 }
 
 class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
-  late final shapeDelegate = ToggleSheetDelegateFunction<ShapeBorder?>(
-    function: (controller) => SmoothRectangleBorder(
+  final shapeDelegate = ToggleSheetDelegate.func(
+    (controller) => SmoothRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: const Radius.circular(RadiusBorder.xl),
         bottom: Radius.circular(RadiusBorder.xl * controller.interpolation),
       ),
     ),
   );
-  late final paddingDelegate = ToggleSheetDelegateFunction<EdgeInsets?>(
-    function: (controller) {
-      final padding =
-          InsetsUtils.platformAwareBottomInset(context, isLandscape: widget.isLandscape) +
-          InsetsUtils.stableBottomInset(context, isLandscape: widget.isLandscape);
 
-      return EdgeInsets.only(
-        bottom: (padding + Spacing.$3x) * (controller.interpolation),
-        left: Spacing.$4x * controller.interpolation,
-        right: Spacing.$4x * controller.interpolation,
-      );
-    },
-  );
-  late final barrierDelegate = ToggleSheetDelegateFunction<Color?>(
-    function: (controller) {
-      if (widget.isLandscape) {
-        return null;
-      }
-      return AppColor.black.withOpacity(0.4 * (1 - controller.interpolation));
-    },
-  );
+  late final barrierDelegate = ToggleSheetDelegate.func((controller) {
+    if (widget.isLandscape) {
+      return null;
+    }
+    return AppColor.black.withOpacity(0.4 * (1 - controller.interpolation));
+  });
+
+  late final paddingDelegate = ToggleSheetDelegate.func((controller) {
+    final padding = MediaQuery.paddingOf(context);
+    const stableInset = Spacing.$3x;
+    final bottom = padding.bottom == 0 ? stableInset : padding.bottom;
+    final left = widget.isLandscape ? stableInset : 0;
+    return EdgeInsets.only(
+      bottom: (bottom + Spacing.$3x) * controller.interpolation,
+      left: left + (Spacing.$4x * controller.interpolation),
+      right: Spacing.$4x * controller.interpolation,
+    );
+  });
 
   @override
   void initState() {
@@ -138,14 +135,16 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
         : _voiceInstructionTypeTitle;
     final hasIntermediateRoutePoints = (currentRoute?.points.length ?? 0) > 2;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: widget.isLandscape ? NaviSheetPanel.landscapeWidth : double.infinity,
-      ),
+    final mediaQueryPadding = MediaQuery.paddingOf(context);
+    final left = mediaQueryPadding.left;
+    final right = mediaQueryPadding.right;
+    final width = NaviSheetPanel.landscapeWidth + left + right;
+
+    return SizedBox(
+      width: widget.isLandscape ? width : double.infinity,
       child: ToggleSheet(
         key: ValueKey(widget.isLandscape),
         dragger: null,
-        useSafeArea: false,
         shouldPop: (controller) {
           ref.read(pathNavMessageProvider.notifier).stopNavigation();
           ref.read(dgisControllerProvider).value?.stopNavigation();
@@ -187,12 +186,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             isSwitchingToFoot: widget.isSwitchingToFoot,
           ),
         ),
-        contentPadding: EdgeInsets.fromLTRB(
-          Spacing.$3x,
-          Spacing.$4x,
-          Spacing.$3x,
-          Spacing.$4x + InsetsUtils.platformAwareBottomInset(context, isLandscape: widget.isLandscape),
-        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$4x),
         content: [
           // hide share button for multilocation route because sharing is broken for such routes
           if (!hasIntermediateRoutePoints) ...[

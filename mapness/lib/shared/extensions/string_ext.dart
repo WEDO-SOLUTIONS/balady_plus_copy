@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 extension StringExt on String {
   // Replaces all localazy '\n' with new lines character
   String get multilines => replaceAll(r'\n', '\n');
@@ -131,5 +133,15 @@ extension StringNullableExt on String? {
     // Regular expression for checking Arabic characters
     final arabicRegex = RegExp(r'[\u0600-\u06FF\u0750-\u077F]');
     return arabicRegex.hasMatch(text);
+  }
+}
+
+extension HexColor on String {
+  Color? toColor() {
+    final intValue = int.tryParse(this, radix: 16);
+    if (intValue != null) {
+      return Color(0xFF000000 + intValue);
+    }
+    return null;
   }
 }

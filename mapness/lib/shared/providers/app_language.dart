@@ -76,16 +76,17 @@ class AppLanguage extends _$AppLanguage {
     final sharedPrefs = ref.read(sharedPrefsProvider);
 
     final language = Language.fromString(sharedPrefs.getString(_prefsKey));
-    // Because the 3d party code use context, we need wait for the context to be available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(
-        NavigationService.navigatorKey.currentContext == null
-            // wait for 5 seconds to get the context
-            ? const Duration(seconds: 5)
-            : Duration.zero,
-        () => CommonFunctions.changeLanguage(lang: language.baladyCompat),
-      );
-    });
+    // to fix performance issue on app start
+    // // Because the 3d party code use context, we need wait for the context to be available
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   Future.delayed(
+    //     NavigationService.navigatorKey.currentContext == null
+    //         // wait for 5 seconds to get the context
+    //         ? const Duration(seconds: 5)
+    //         : Duration.zero,
+    //     () => CommonFunctions.changeLanguage(lang: language.baladyCompat),
+    //   );
+    // });
 
     return language;
   }
