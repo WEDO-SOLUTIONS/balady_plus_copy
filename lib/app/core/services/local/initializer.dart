@@ -21,7 +21,6 @@ class Initializer {
     await registerDeviceDetails();
     await registerPackageDetails();
 
-    await localizationInit();
 
     // await sentryInit();
   }
@@ -80,16 +79,6 @@ class Initializer {
     );
     await sl.unregister<PackageDetails>();
     sl.registerLazySingleton(() => details);
-  }
-
-  static Future<void> localizationInit() async {
-    await translator.init(
-      // localeType: LocalizationDefaultType.device, // based on device language
-      // localeType: LocalizationDefaultType.asDefined, // based on first element at languageList
-      localeType: LocalizationDefaultType.asDefined,
-      languagesList: AppConfig.defaultAppLanguage.languages,
-      assetsDirectory: AppConfig.appLanguagesPath,
-    );
   }
 
   static Future<void> sentryInit() async {
