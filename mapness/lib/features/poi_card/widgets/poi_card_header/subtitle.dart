@@ -46,7 +46,7 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
                 children: [
                   Assets.icons.svg.icMetroMarker.svg(
                     colorFilter: ColorFilter.mode(
-                      Color(e?.color ?? context.colorsV3.foregroundDefault.value),
+                      Color(e?.color ?? context.colorsV3.foregroundSoft.value),
                       BlendMode.srcIn,
                     ),
                   ),
