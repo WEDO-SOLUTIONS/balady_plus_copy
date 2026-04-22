@@ -89,7 +89,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     });
     refreshAPIGeeToken();
     // Restore authentication state on app startup (non-blocking)
-    unawaited(_restoreAuthState());
+   // unawaited(_restoreAuthState());
   }
 
   /// Restore authentication state from storage when app starts
