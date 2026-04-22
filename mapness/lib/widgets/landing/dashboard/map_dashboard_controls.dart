@@ -90,18 +90,28 @@ class MapDashboardControls extends ConsumerWidget {
               children: [
                 const SizedBox(height: uikit.Spacing.$2x),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Row(
-                      children: [
-                        const WeatherControl(),
-                        uikit.Spacing.$1_5x.heightBox,
-                        const ParkingControl(),
-                      ],
+                    Expanded(
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const WeatherControl(),
+                            uikit.Spacing.$1_5x.heightBox,
+                            const ParkingControl(),
+                          ],
+                        ),
+                      ),
                     ),
                     const EtaSharingControl(),
-                    const FollowControl(),
+                    const Expanded(
+                      child: Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: FollowControl(),
+                      ),
+                    ),
                   ],
                 ),
                 if (!isNationalDay) uikit.Spacing.$4x.heightBox,
