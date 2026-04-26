@@ -85,7 +85,7 @@ class PoiLinesMetro extends StatelessWidget {
   Widget build(BuildContext context) {
     final _platformsInfo = _getPlatformsInfo();
 
-    final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colorsV3.foregroundSoft.value);
+    final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colors.foregroundDefault.value);
 
     return ContentWrapper(
       color: context.colors.backgroundSurface1,
