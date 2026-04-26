@@ -32,6 +32,7 @@ class AudioService extends ChangeNotifier {
   bool _isDucked = false;
   bool _isNavigationDucking = false;
   bool _wasPlayingBeforeNavigationDuck = false;
+  Timer? _navigationDuckingFailsafeTimer;
 
   String? _currentStreamUrl;
   String? _currentChannelId;
@@ -883,13 +884,28 @@ class AudioService extends ChangeNotifier {
       _wasPlayingBeforeNavigationDuck = _isPlaying;
       _isNavigationDucking = true;
 
+      // If native forgets to call restoreAudio (it happens in real devices),
+      // ensure we don't stay paused forever.
+      _navigationDuckingFailsafeTimer?.cancel();
+      _navigationDuckingFailsafeTimer = Timer(const Duration(seconds: 10), () {
+        if (_isNavigationDucking) {
+          debugPrint('AudioService: ⏱️ restoreAudio timeout - auto restoring stream audio');
+          // Best-effort; ignore returned future in timer callback.
+          // The restore method itself checks flags and will no-op if not needed.
+          // ignore: discarded_futures
+          _handleRestoreAudio(<String, dynamic>{});
+        }
+      });
+
+      // Use our own pause() so state + listeners stay consistent.
       if (_isPlaying) {
-        await _player!.pause();
+        await pause();
+      } else {
+        syncState();
+        notifyListeners();
       }
 
       debugPrint('AudioService: ✅ Stream audio paused for navigation');
-      syncState();
-      notifyListeners();
     } catch (e) {
       debugPrint('AudioService: ❌ Failed to pause for navigation: $e');
     }
@@ -906,8 +922,12 @@ class AudioService extends ChangeNotifier {
 
     try {
       _isNavigationDucking = false;
+      _navigationDuckingFailsafeTimer?.cancel();
+      _navigationDuckingFailsafeTimer = null;
 
-      if (_wasPlayingBeforeNavigationDuck && _expectsToBePlaying) {
+      // Resume even if _expectsToBePlaying got flipped elsewhere.
+      if (_wasPlayingBeforeNavigationDuck) {
+        _expectsToBePlaying = true;
         await _player!.play();
       }
       _wasPlayingBeforeNavigationDuck = false;
