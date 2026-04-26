@@ -9,6 +9,8 @@ import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 
 class StreamAudioProvider extends ChangeNotifier {
   final AudioService _audioService = AudioService();
@@ -26,6 +28,11 @@ class StreamAudioProvider extends ChangeNotifier {
   bool isInWeb = false;
   bool _isLoadingChannels = false;
   bool _isSelectingChannel = false; // Track when we're actively selecting a channel
+
+  // Error toast deduplication
+  bool _prevHasError = false;
+  String? _lastShownErrorMessage;
+  DateTime? _lastShownErrorAt;
 
   // Request deduplication
   Future<void>? _currentChannelsRequest;
@@ -130,10 +137,78 @@ class StreamAudioProvider extends ChangeNotifier {
           }
         }
         notifyListeners();
+
+        // Show user-friendly network toast for common stream failures.
+        _maybeShowNetworkErrorToast();
       }
     } catch (e) {
+      _maybeShowNetworkErrorToast();
+
       debugPrint('StreamAudioProvider: Error in _onAudioServiceChanged: $e');
     }
+  }
+
+  bool _isNetworkPlaybackError(String? message) {
+    if (message == null || message.isEmpty) return false;
+    final m = message.toLowerCase();
+
+    // Common just_audio/ExoPlayer transport errors presented as "Source error".
+    if (m.contains('source error')) return true;
+
+    // iOS/AVFoundation style errors that bubble up through just_audio.
+    // Example: "failed to start play back (-1008) resource unavailable"
+    if (m.contains('(-1008)')) return true;
+    if (m.contains('resource unavailable')) return true;
+    if (m.contains('failed to start playback')) return true;
+    if (m.contains('failed to start play back')) return true;
+
+    // Generic network keywords we often see in thrown exceptions.
+    if (m.contains('socketexception')) return true;
+    if (m.contains('timeoutexception')) return true;
+    if (m.contains('connection') && m.contains('failed')) return true;
+    if (m.contains('network')) return true;
+    if (m.contains('no internet')) return true;
+    if (m.contains('handshakeexception')) return true;
+
+    return false;
+  }
+
+  void _maybeShowNetworkErrorToast() {
+    final hasErrorNow = _audioService.hasError;
+    final message = _audioService.errorMessage;
+
+    // Trigger only on edge: false -> true, so we don't spam.
+    final becameError = !_prevHasError && hasErrorNow;
+    _prevHasError = hasErrorNow;
+    if (!becameError) return;
+
+    if (!_isNetworkPlaybackError(message)) return;
+
+    // If playback fails due to network/timeout, pause the player so the UI
+    // doesn't look like it's still playing while audio is broken.
+    unawaited(_audioService.pause());
+
+    // Dedupe repeated identical messages (e.g., auto retry / repeated listener triggers).
+    final now = DateTime.now();
+    final recentlyShown = _lastShownErrorAt != null && now.difference(_lastShownErrorAt!) < const Duration(seconds: 4);
+    if (recentlyShown && _lastShownErrorMessage == message) return;
+    _lastShownErrorMessage = message;
+    _lastShownErrorAt = now;
+
+    final ctx = rootNavigatorKey.currentContext;
+    if (ctx == null || !ctx.mounted) return;
+
+    ToastOverlay.of(ctx).showNoInternet(
+      onRetry: () {
+        // Retry the currently selected channel if any; otherwise just reload channels.
+        final channel = _selectedChannel;
+        if (channel != null) {
+          unawaited(selectChannel(channel));
+        } else {
+          unawaited(getChannels(forceRefresh: true));
+        }
+      },
+    );
   }
 
   bool get isContextualMessageVisible => _isContextualMessageVisible;
