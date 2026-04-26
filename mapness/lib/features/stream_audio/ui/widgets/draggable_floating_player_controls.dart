@@ -523,16 +523,21 @@ class _ContentState extends ConsumerState<Content> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(width: 12),
               // Play/Pause button
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   final audioProvider = ref.read(streamAudioProvider);
                   await audioProvider.togglePlayPause();
                 },
-                child: _buildPlayPauseIcon(provider),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  color: Colors.transparent,
+                  alignment: Alignment.center,
+                  child: _buildPlayPauseIcon(provider),
+                ),
               ),
-              const SizedBox(width: 12),
               // Forward button
               Transform.flip(
                 flipX: Directionality.of(context) == TextDirection.rtl,
@@ -540,12 +545,19 @@ class _ContentState extends ConsumerState<Content> {
                   opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
                   duration: const Duration(milliseconds: 200),
                   child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
-                    child: SvgPicture.asset(
-                      Assets.icons.svg.audio.seekForward.keyName,
-                      width: 14,
-                      height: 14,
-                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      color: Colors.transparent,
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        Assets.icons.svg.audio.seekForward.keyName,
+                        width: 14,
+                        height: 14,
+                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      ),
                     ),
                   ),
                 ),
