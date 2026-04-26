@@ -4806,7 +4806,7 @@
   "incorrect_username_password": "The username or password is incorrect",
   "quick_apps": "Quick Apps,",
   "one_place": "One Place",
-  "search2": "Search",
+  "search2": "Search here",
   "my_favorite_apps": "My Favorite Apps ⭐",
   "most_used_apps": "Most Used Apps",
   "add2": "Add",
@@ -4846,6 +4846,9 @@
   "privacySaudiRegulationsText": "In accordance with applicable laws and regulations in the Kingdom of Saudi Arabia.",
   "privacyUserResponsibilityText": "Users of the Balady App are required to review this Privacy and Confidentiality of Information notice and its updates on a regular basis. Please note that the App is not obligated to announce any updates made to this notice. Your continued use of the App constitutes your acknowledgement of and agreement to this notice and any ongoing amendments. You are solely responsible for the accuracy, completeness, and integrity of any data you share through the App.",
   "privacyMoreDetailsText": "For more information, you can visit the",
-  "privacyBaladyPlatformText": "Balady Platform"
+  "privacyBaladyPlatformText": "Balady Platform",
+
+  "favorite_services_title": "My Favorite Services",
+  "favorite_services_subtitle": "You can add your favorite services for easy access"
 
 }

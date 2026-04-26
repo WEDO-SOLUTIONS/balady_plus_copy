@@ -184,24 +184,9 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                       ),
                                     );
                                   },
-                                  isEnabled: false,
                                   isReadOnly: true,
                                   height: context.h(48),
                                   keyboardType: TextInputType.text,
-                                  backgroundColor: Colors.transparent,
-                                  suffixString: Text(
-                                    "search2".tr(),
-                                    style: TextStyle(
-                                      color: Theme.of(context).disabledColor,
-                                      fontFamily: GeneralKey.appFontType,
-                                    ),
-                                  ),
-                                  suffixIcon: SvgPicture.asset(
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? IconPath.searchSVG2
-                                        : IconPath.searchSVG,
-                                  ),
                                 ),
 
                           Padding(

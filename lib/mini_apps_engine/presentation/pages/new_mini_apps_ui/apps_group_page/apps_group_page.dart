@@ -81,11 +81,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       if (cubit.state.isAppsGroupLoading) {
         return const Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFF1CA9A6),
-            ),
-          ),
+          body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
         );
       }
 
@@ -96,11 +92,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       });
       return const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF1CA9A6),
-          ),
-        ),
+        body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
       );
     }
 
@@ -225,21 +217,17 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                         ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
                                         : null,
                                     suffixIcon: value.text.isEmpty
-                                        ? SvgPicture.asset(
-                                      Theme.of(context).brightness == Brightness.dark
-                                          ? IconPath.searchSVG2
-                                          : IconPath.searchSVG,
-                                    )
+                                        ? null
                                         : IconButton(
-                                      onPressed: () {
-                                        controller.clear();
-                                        context.read<NewMiniAppLogicCubit>().searchMiniApp(
-                                          '',
-                                          source: appGroup!.apps,
-                                        );
-                                      },
-                                      icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
-                                    ),
+                                            onPressed: () {
+                                              controller.clear();
+                                              context.read<NewMiniAppLogicCubit>().searchMiniApp(
+                                                '',
+                                                source: appGroup!.apps,
+                                              );
+                                            },
+                                            icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
+                                          ),
                                     onChanged: (query) {
                                       context.read<NewMiniAppLogicCubit>().searchMiniApp(query, source: appGroup!.apps);
                                     },
@@ -323,6 +311,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                       itemDelay: const Duration(milliseconds: 200),
                                       children: [
                                         AppsGroupMiniAppsCardWidgets(
+                                          isActive: false,
                                           title: miniApp.name,
                                           iconPath: miniApp.iconPath,
                                           onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
@@ -334,7 +323,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 16,
                                     mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                    childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
+                                    childAspectRatio:
+                                        (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
+                                          0.52,
+                                          0.78,
+                                        ),
                                   ),
                                 ),
                                 // Add bottom spacing so the gradient overlay doesn't hide last items
@@ -379,6 +372,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 delegate: SliverChildBuilderDelegate((context, index) {
                                   final miniApp = sortedResults[index];
                                   return AppsGroupMiniAppsCardWidgets(
+                                    isActive: false,
                                     title: miniApp.name,
                                     iconPath: miniApp.iconPath,
                                     onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
@@ -388,7 +382,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                  childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
+                                  childAspectRatio:
+                                      (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
+                                        0.52,
+                                        0.78,
+                                      ),
                                 ),
                               ),
                               SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
@@ -413,16 +411,16 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                     end: Alignment.bottomCenter,
                     colors: Theme.of(context).brightness == Brightness.dark
                         ? [
-                      // replaced with Color.fromRGBO to avoid withOpacity deprecation
-                      const Color.fromRGBO(0, 0, 0, 0.0),
-                      const Color.fromRGBO(0, 0, 0, 0.6),
-                      const Color.fromRGBO(0, 0, 0, 1.0),
-                    ]
+                            // replaced with Color.fromRGBO to avoid withOpacity deprecation
+                            const Color.fromRGBO(0, 0, 0, 0.0),
+                            const Color.fromRGBO(0, 0, 0, 0.6),
+                            const Color.fromRGBO(0, 0, 0, 1.0),
+                          ]
                         : [
-                      const Color.fromRGBO(255, 255, 255, 0.0),
-                      const Color.fromRGBO(255, 255, 255, 0.6),
-                      const Color.fromRGBO(255, 255, 255, 1.0),
-                    ],
+                            const Color.fromRGBO(255, 255, 255, 0.0),
+                            const Color.fromRGBO(255, 255, 255, 0.6),
+                            const Color.fromRGBO(255, 255, 255, 1.0),
+                          ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
                 ),
@@ -457,4 +455,3 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
     );
   }
 }
-
