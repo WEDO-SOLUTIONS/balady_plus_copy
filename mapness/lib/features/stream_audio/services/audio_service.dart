@@ -20,6 +20,7 @@ class AudioService extends ChangeNotifier {
   StreamSubscription<PlayerState>? _playerStateSubscription;
   StreamSubscription<PlaybackEvent>? _playbackEventSubscription;
   StreamSubscription<AudioInterruptionEvent>? _audioInterruptionSubscription;
+  StreamSubscription<SequenceState?>? _sequenceStateSubscription;
 
   Timer? _reconnectionTimer;
   Timer? _dismissalCheckTimer; // Periodic check for dismissal
@@ -318,6 +319,28 @@ class AudioService extends ChangeNotifier {
     // Cancel existing subscriptions
     await _playerStateSubscription?.cancel();
     await _playbackEventSubscription?.cancel();
+    await _sequenceStateSubscription?.cancel();
+
+    // Listen to sequence state changes to detect track changes from lock screen
+    _sequenceStateSubscription = _player!.sequenceStateStream.listen((state) {
+      if (state?.currentSource?.tag is MediaItem) {
+        final mediaItem = state!.currentSource!.tag as MediaItem;
+        if (_currentChannelId != mediaItem.id) {
+          debugPrint('AudioService: 🎵 Track changed via lock screen/controls to: ${mediaItem.id}');
+          _currentChannelId = mediaItem.id;
+          _currentTitle = mediaItem.title;
+          _currentArtist = mediaItem.artist;
+          _currentArtUri = mediaItem.artUri?.toString();
+          
+          if (state.currentSource is UriAudioSource) {
+            _currentStreamUrl = (state.currentSource as UriAudioSource).uri.toString();
+          }
+          
+          syncState();
+          notifyListeners();
+        }
+      }
+    });
 
     // Listen to player state changes
     _playerStateSubscription = _player!.playerStateStream.listen(
@@ -432,6 +455,8 @@ class AudioService extends ChangeNotifier {
     String? title,
     String? programName,
     String? artUri,
+    List<Map<String, dynamic>>? playlist,
+    int? initialIndex,
   }) async {
     debugPrint('AudioService: 🎵 playStream called - URL: $url, Channel: $channelId');
 
@@ -463,7 +488,7 @@ class AudioService extends ChangeNotifier {
 
       debugPrint('AudioService: Setting audio source...');
 
-      await _playLiveStream();
+      await _playLiveStream(playlist: playlist, initialIndex: initialIndex);
 
       // Notify iOS that MBC is now active
       await _notifyIOSMBCActive();
@@ -475,7 +500,7 @@ class AudioService extends ChangeNotifier {
     }
   }
 
-  Future<void> _playLiveStream() async {
+  Future<void> _playLiveStream({List<Map<String, dynamic>>? playlist, int? initialIndex}) async {
     if (_player == null || _currentStreamUrl == null) return;
 
     try {
@@ -484,19 +509,38 @@ class AudioService extends ChangeNotifier {
       // Mark that we're starting playback to prevent false dismissal detection
       _isStartingPlayback = true;
 
-      // Set the audio source with metadata
-      final audioSource = AudioSource.uri(
-        Uri.parse(_currentStreamUrl!),
-        tag: MediaItem(
-          id: _currentChannelId ?? 'unknown',
-          title: _currentTitle ?? 'Live Radio',
-          artist: _currentArtist ?? 'Live Stream',
-          artUri: _currentArtUri != null ? Uri.parse(_currentArtUri!) : null,
-          // isLive: true,
-        ),
-      );
+      if (playlist != null && playlist.isNotEmpty) {
+        final children = playlist.map((item) {
+          return AudioSource.uri(
+            Uri.parse(item['url'] as String),
+            tag: MediaItem(
+              id: item['id'] as String,
+              title: item['title'] as String? ?? 'Live Radio',
+              artist: item['programName'] as String? ?? 'Live Stream',
+              artUri: item['artUri'] != null ? Uri.parse(item['artUri'] as String) : null,
+            ),
+          );
+        }).toList();
 
-      await _player!.setAudioSource(audioSource);
+        final source = ConcatenatingAudioSource(
+          useLazyPreparation: true,
+          children: children,
+        );
+        
+        await _player!.setAudioSource(source, initialIndex: initialIndex ?? 0);
+      } else {
+        // Set the audio source with metadata
+        final audioSource = AudioSource.uri(
+          Uri.parse(_currentStreamUrl!),
+          tag: MediaItem(
+            id: _currentChannelId ?? 'unknown',
+            title: _currentTitle ?? 'Live Radio',
+            artist: _currentArtist ?? 'Live Stream',
+            artUri: _currentArtUri != null ? Uri.parse(_currentArtUri!) : null,
+          ),
+        );
+        await _player!.setAudioSource(audioSource);
+      }
 
       debugPrint('AudioService: Audio source set, starting playback...');
       await _player!.play();
@@ -731,10 +775,12 @@ class AudioService extends ChangeNotifier {
     await _playerStateSubscription?.cancel();
     await _playbackEventSubscription?.cancel();
     await _audioInterruptionSubscription?.cancel();
+    await _sequenceStateSubscription?.cancel();
 
     _playerStateSubscription = null;
     _playbackEventSubscription = null;
     _audioInterruptionSubscription = null;
+    _sequenceStateSubscription = null;
 
     // Stop and dispose player
     if (_globalPlayer != null) {

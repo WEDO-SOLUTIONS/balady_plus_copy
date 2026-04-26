@@ -118,6 +118,17 @@ class StreamAudioProvider extends ChangeNotifier {
     try {
       // Only notify if not disposed
       if (!_isExited) {
+        // Sync selected channel if it changed from lockscreen
+        final currentId = _audioService.currentChannelId;
+        if (currentId != null && _selectedChannel?.id?.toString() != currentId) {
+          final newChannel = filteredChannels.cast<FilteredChannel?>().firstWhere(
+            (c) => c?.id?.toString() == currentId,
+            orElse: () => null,
+          );
+          if (newChannel != null) {
+            _selectedChannel = newChannel;
+          }
+        }
         notifyListeners();
       }
     } catch (e) {
@@ -417,12 +428,24 @@ class StreamAudioProvider extends ChangeNotifier {
       _isExited = false;
       setFloatingPlayerVisibility(true); // Show floating player when selecting a channel
 
+      final playlistArgs = filteredChannels.map((c) => {
+        'url': c.streamUrl ?? '',
+        'id': c.id?.toString() ?? '',
+        'title': c.name,
+        'programName': c.currentPlayedProgram?.name,
+        'artUri': c.logo,
+      }).toList();
+      
+      final initialIndex = filteredChannels.indexWhere((c) => c.id == channel.id);
+
       await _audioService.playStream(
         url: channel.streamUrl!,
         channelId: channel.id.toString(),
         title: channel.name,
         programName: channel.currentPlayedProgram?.name,
         artUri: channel.logo, // Add artwork URL if available
+        playlist: playlistArgs,
+        initialIndex: initialIndex >= 0 ? initialIndex : 0,
       );
 
       // Stream audio is now active
@@ -494,12 +517,24 @@ class StreamAudioProvider extends ChangeNotifier {
     setFloatingPlayerVisibility(true); // Show floating player when playing
 
     try {
+      final playlistArgs = filteredChannels.map((c) => {
+        'url': c.streamUrl ?? '',
+        'id': c.id?.toString() ?? '',
+        'title': c.name,
+        'programName': c.currentPlayedProgram?.name,
+        'artUri': c.logo,
+      }).toList();
+      
+      final initialIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+
       await _audioService.playStream(
         url: _selectedChannel!.streamUrl!,
         channelId: _selectedChannel!.id!.toString(),
         title: _selectedChannel!.name,
         programName: _selectedChannel!.currentPlayedProgram?.name,
         artUri: _selectedChannel!.logo, // Add artwork URL if available
+        playlist: playlistArgs,
+        initialIndex: initialIndex >= 0 ? initialIndex : 0,
       );
 
       // Stream audio is now active
