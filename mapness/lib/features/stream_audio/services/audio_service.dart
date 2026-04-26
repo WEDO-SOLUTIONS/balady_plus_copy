@@ -49,7 +49,7 @@ class AudioService extends ChangeNotifier {
   bool _isStoppingInternally = false; // Track if stop() was called internally
   bool _isHandlingDismissal = false; // Prevent multiple dismissal handling
   bool _isStartingPlayback = false; // Track when we're actively starting playback
-  static const Duration _startPlaybackTimeout = Duration(seconds: 60);
+  static const Duration _startPlaybackTimeout = Duration(seconds: 60); //timeout after one min
 
   // Callback for notification dismissal
   VoidCallback? _onNotificationDismissed;
