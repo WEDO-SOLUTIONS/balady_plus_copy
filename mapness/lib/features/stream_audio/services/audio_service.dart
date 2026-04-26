@@ -30,7 +30,7 @@ class AudioService extends ChangeNotifier {
   bool _isInterrupted = false;
   bool _isDucked = false;
   bool _isNavigationDucking = false;
-  double _originalVolume = 1.0;
+  bool _wasPlayingBeforeNavigationDuck = false;
 
   String? _currentStreamUrl;
   String? _currentChannelId;
@@ -119,7 +119,7 @@ class AudioService extends ChangeNotifier {
       }
 
       // Configure audio session first
-      // await _configureAudioSession();
+      await _configureAudioSession();
 
       // Initialize background service if not already done
       if (!_backgroundInitialized) {
@@ -816,28 +816,36 @@ class AudioService extends ChangeNotifier {
 
   /// Duck audio for navigation voice
   Future<void> _handleDuckAudio(dynamic arguments) async {
-    if (_player == null || !_isPlaying) {
+    if (_player == null) {
       debugPrint('AudioService: 🦆 Duck request ignored - player not active');
       return;
     }
 
-    final Map<String, dynamic> args = arguments as Map<String, dynamic>;
-    final double targetVolume = args['volume']?.toDouble() ?? 0.3;
-
-    debugPrint('AudioService: 🦆 Ducking audio to volume $targetVolume');
+    // Requested behavior: pause the "first sound" while navigation speaks,
+    // then resume after navigation finishes.
+    //
+    // We keep the method names (duck/restore) for compatibility with native iOS,
+    // but the effect is "pause/resume" rather than only lowering volume.
+    debugPrint('AudioService: 🦆 Navigation started - pausing stream audio');
 
     try {
-      // Store original volume
-      _originalVolume = _player!.volume;
+      if (_isNavigationDucking) {
+        // Already in navigation-duck state, ignore duplicate requests.
+        return;
+      }
+
+      _wasPlayingBeforeNavigationDuck = _isPlaying;
       _isNavigationDucking = true;
 
-      // Gradually reduce volume
-      await _player!.setVolume(targetVolume);
+      if (_isPlaying) {
+        await _player!.pause();
+      }
 
-      debugPrint('AudioService: ✅ Audio ducked successfully');
+      debugPrint('AudioService: ✅ Stream audio paused for navigation');
+      syncState();
       notifyListeners();
     } catch (e) {
-      debugPrint('AudioService: ❌ Failed to duck audio: $e');
+      debugPrint('AudioService: ❌ Failed to pause for navigation: $e');
     }
   }
 
@@ -848,21 +856,21 @@ class AudioService extends ChangeNotifier {
       return;
     }
 
-    final Map<String, dynamic> args = arguments as Map<String, dynamic>;
-    final double targetVolume = args['volume']?.toDouble() ?? _originalVolume;
-
-    debugPrint('AudioService: 🔊 Restoring audio to volume $targetVolume');
+    debugPrint('AudioService: 🔊 Navigation finished - restoring stream audio');
 
     try {
       _isNavigationDucking = false;
 
-      // Gradually restore volume
-      await _player!.setVolume(targetVolume);
+      if (_wasPlayingBeforeNavigationDuck && _expectsToBePlaying) {
+        await _player!.play();
+      }
+      _wasPlayingBeforeNavigationDuck = false;
 
-      debugPrint('AudioService: ✅ Audio restored successfully');
+      debugPrint('AudioService: ✅ Stream audio restored after navigation');
+      syncState();
       notifyListeners();
     } catch (e) {
-      debugPrint('AudioService: ❌ Failed to restore audio: $e');
+      debugPrint('AudioService: ❌ Failed to restore after navigation: $e');
     }
   }
 
