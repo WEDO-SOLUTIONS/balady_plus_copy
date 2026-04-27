@@ -453,7 +453,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
+                              Directionality.of(context) == TextDirection.rtl
+                                  ? 'لم يتم اكتشاف اتصال بالإنترنت ، يرجى التحقق منه والمحاولة مرة أخرى..'
+                                  : 'No internet connection detected, please check it and try again.',
                               style: const TextStyle(
                                 color: Colors.red,
                                 fontSize: 12,
