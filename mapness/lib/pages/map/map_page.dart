@@ -8,7 +8,6 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/first_start.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
@@ -27,7 +26,6 @@ class MapPage extends ConsumerStatefulWidget {
 class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   final int _keyIndex = 0;
   bool _needRefresh = false;
-  bool _isMapReady = false;
 
   @override
   void initState() {
@@ -78,8 +76,6 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
       ).notifier,
     );
 
-    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
-
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -92,11 +88,6 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
             androidUseExpensive: true,
             onMapCreated: (controller) async {
               await dgisController.onMapCreated(controller);
-              if (mounted) {
-                setState(() {
-                  _isMapReady = true;
-                });
-              }
               Future.delayed(const Duration(seconds: 3), () {
                 if (!mounted) return;
                 ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
@@ -104,13 +95,6 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
             },
           ),
         ),
-        // Themed overlay to prevent light-mode flash while native map initialises
-        if (!_isMapReady)
-          Positioned.fill(
-            child: ColoredBox(
-              color: isDark ? const Color(0xFF121212) : const Color(0xFFE8E4DB),
-            ),
-          ),
         const AutoRouter(),
       ],
     );
