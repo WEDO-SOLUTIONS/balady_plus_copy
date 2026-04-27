@@ -220,7 +220,8 @@ class PoiCardProvider extends _$PoiCardProvider {
     }
 
     final markerPoint = GeoPointMessage(latitude: position.latitude, longitude: position.longitude);
-    final zoom = cameraConfig?.zoom ?? 16.0;
+    final currentZoom = ref.read(cameraPositionProvider)?.zoom;
+    final zoom = cameraConfig?.zoom ?? currentZoom ?? 16.0;
 
     unawaited(
       ref.read(cameraPositionProvider.notifier).animateTo(
