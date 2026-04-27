@@ -102,23 +102,40 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   Future<void> toggleEntrances(DirectoryObjectMessage data, VoidCallback callBack, LatLng? closestPoint) async {
+    final entranceIds = data.entrances.map((e) => e.id).toList();
+    if (entranceIds.isEmpty) {
+      return;
+    }
+
+    final highlightController = ref.read(highlightProvider.notifier);
+    final currentHighlights = ref.read(highlightProvider);
+
+    final entranceKeys = entranceIds.map((id) => id.entranceId).toSet();
+    final entrancesAreShown = currentHighlights.any(
+      (h) => entranceKeys.contains(h.entranceId),
+    );
+
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.entrances,
       group: MetricsConstants.poiTag,
       action: MetricAction.tap.toString(),
-      props: {'poi_id': data.id?.objectId, 'show_entrances': true},
+      props: {'poi_id': data.id?.objectId, 'show_entrances': !entrancesAreShown},
     );
 
-    final highlightController = ref.watch(highlightProvider.notifier);
-
-    for (final entrance in data.entrances) {
-      await highlightController.addHighlight(entrance.id);
+    if (entrancesAreShown) {
+      for (final id in entranceIds) {
+        await highlightController.removeHighlight(id);
+      }
+    } else {
+      for (final id in entranceIds) {
+        await highlightController.addHighlight(id);
+      }
+      await _animateToEntrance(
+        data.entrances.map((e) => e.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
+        closestPoint,
+      );
     }
 
-    await _animateToEntrance(
-      data.entrances.map((e) => e.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
-      closestPoint,
-    );
     callBack.call();
   }
 
