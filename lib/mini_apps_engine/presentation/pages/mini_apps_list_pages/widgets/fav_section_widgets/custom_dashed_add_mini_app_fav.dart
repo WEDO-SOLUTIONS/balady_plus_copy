@@ -27,52 +27,67 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
+    final gap = (4.0 * textScale).clamp(0.0, 10.0);
+    final gapHeight = (context.screenHeight * 0.02) + gap;
+
     return Column(
       children: [
         GestureDetector(
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => BlocProvider.value(
-                  value: context.read<NewMiniAppLogicCubit>(),
-                  child: const AddFavMiniApps(),
-                ),
+                builder: (_) =>
+                    BlocProvider.value(value: context.read<NewMiniAppLogicCubit>(), child: const AddFavMiniApps()),
               ),
             );
           },
           child: SizedBox(
-            width: width ?? context.w(53.95),
-            height: height ?? context.h(53.95),
+            width: width ?? context.w(60),
+            height: height ?? context.h(60),
             child: DottedBorder(
-              options: RectDottedBorderOptions(
-                // radius: const Radius.circular(16),
-                // borderType: BorderType.RRect,
-                color: const Color(0XFF809AA4),
-                strokeWidth: 2,
-                dashPattern: const [2.2084856033325195, 2.2084856033325195],
+              // 1. CHANGE THIS CLASS TO RoundedRectDottedBorderOptions
+              options: RoundedRectDottedBorderOptions(
+                radius: const Radius.circular(16), // Now you can add the radius!
+                borderPadding: EdgeInsets.zero,
+                padding: const EdgeInsets.all(2),
+                strokeWidth: 2.5,
+                color: Theme.of(context).primaryColor,
+                gradient: null,
+                dashPattern: const <double>[4, 5],
+                stackFit: StackFit.loose,
+                strokeCap: StrokeCap.round,
               ),
+              // 2. Wrap the icon in a Container to give it that faint light-green background
               child: Center(
-                child: Icon(
-                  Icons.add,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  size: 30,
+                child: SizedBox(
+                  width: context.w(44),
+                  height: context.h(44),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onPrimaryFixed, // The light background
+                      borderRadius: BorderRadius.circular(16), // Match the radius above
+                    ),
+                    child: Center(child: Icon(Icons.add, color: Theme.of(context).primaryColor, size: 30)),
+                  ),
                 ),
               ),
             ),
           ),
         ),
+        SizedBox(height: gapHeight),
         SizedBox(
           width: context.screenWidth * 0.15,
           height: context.screenHeight * 0.04,
           child: Center(
             child: Text(
-              text ?? "add2".tr(),
+              text ?? "أضف للمفضلة".tr(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 14,
                 height: 14.43 / 13,
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 fontFamily: GeneralKey.appFontType,
                 // color:  Color(0xFF1E2A36),
                 leadingDistribution: TextLeadingDistribution.even,
