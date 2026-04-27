@@ -77,7 +77,7 @@ extension WorkingHoursStrings on WorkingHours {
     required AppLocalizations appLocalizations,
   }) {
     if (_isSameDate(now, value)) {
-      return appLocalizations.closedUntil;
+      return '${appLocalizations.closedUntil} ';
     }
     if (_isTomorrowDate(now, value)) {
       return '${appLocalizations.closedUntilOnly} ${appLocalizations.tomorrow} ';
