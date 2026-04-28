@@ -120,8 +120,14 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         [],
   );
 
+  /// Whether this POI's polygon should be highlighted on the map when selected.
+  ///
+  /// Suppressed when the catalog tags the object with any non-broad-area type
+  /// (e.g. `[admDivCity, attraction]` for the Haram zone, Riyadh, Diriyah).
+  /// In those cases the SDK would highlight the entire admin-division polygon
+  /// — wildly larger than what the user actually tapped — so we opt out.
   bool get hasHighlightableType {
-    final hasBroadAreaType = types.any(
+    final hasAnyHighlightableSpecificType = types.any(
       (e) => switch (e.type) {
         ObjectTypeMessage.admDiv ||
         ObjectTypeMessage.admDivCity ||
@@ -138,7 +144,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         _ => true,
       },
     );
-    if (hasBroadAreaType) {
+    if (hasAnyHighlightableSpecificType) {
       return false;
     }
     return types.isNotEmpty;
