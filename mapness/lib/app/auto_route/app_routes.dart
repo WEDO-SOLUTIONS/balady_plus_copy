@@ -64,9 +64,14 @@ class AppRouter extends RootStackRouter {
               page: PathNavRoute.page,
               fullscreenDialog: true,
             ),
-            AppRoute(
+            // BE-153: replaced default slide-from-bottom transition with a
+            // fade so the search sheet appears in-place (matches Google Maps).
+            CustomRoute(
               path: 'search',
               page: SearchRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              durationInMilliseconds: 200,
+              reverseDurationInMilliseconds: 200,
             ),
             AppRoute(
               path: 'navi_search',
