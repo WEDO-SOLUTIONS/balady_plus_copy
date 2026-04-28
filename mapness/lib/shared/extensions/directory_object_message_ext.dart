@@ -134,8 +134,8 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         ObjectTypeMessage.admDivRegion ||
         ObjectTypeMessage.admDivSettlement ||
         ObjectTypeMessage.road ||
-        ObjectTypeMessage.street => true,
-        _ => false,
+        ObjectTypeMessage.street => false,
+        _ => true,
       },
     );
     if (hasBroadAreaType) {
