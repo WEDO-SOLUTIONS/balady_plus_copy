@@ -31,13 +31,16 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
         .replaceAll('ص', 'AM')
         .replaceAll('م', 'PM')
         .trim());
-    final departureDateTime = DateTime(
+    var departureDateTime = DateTime(
       now.year,
       now.month,
       now.day,
       parsedTime.hour,
       parsedTime.minute,
     );
+    if (departureDateTime.isBefore(now)) {
+      departureDateTime = departureDateTime.add(const Duration(days: 1));
+    }
     final difference = departureDateTime.difference(now);
     return difference.inMinutes;
   }
