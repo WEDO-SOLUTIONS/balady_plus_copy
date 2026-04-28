@@ -32,5 +32,10 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     return title;
   }
 
-  bool get isDroppedPin => fullAddressName?.streetAddress == title;
+  bool get isDroppedPin {
+    if (title.trim().isEmpty) {
+      return true;
+    }
+    return fullAddressName?.streetAddress == title;
+  }
 }
