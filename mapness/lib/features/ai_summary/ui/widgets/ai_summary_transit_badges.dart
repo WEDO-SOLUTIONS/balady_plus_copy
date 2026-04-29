@@ -17,10 +17,12 @@ import 'package:mapness/shared/providers/app_language.dart';
 class AiSummaryTransitBadges extends StatelessWidget {
   final List<TransitLine> lines;
   final Language language;
+  final AiSummaryPalette palette;
 
   const AiSummaryTransitBadges({
     required this.lines,
     required this.language,
+    required this.palette,
     super.key,
   });
 
@@ -35,7 +37,7 @@ class AiSummaryTransitBadges extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(strings.availableLines, style: AiSummaryTokens.transitSectionLabelStyle),
+        Text(strings.availableLines, style: palette.transitSectionLabelStyle),
         const SizedBox(height: AiSummaryTokens.transitBadgeGap),
         Wrap(
           spacing: AiSummaryTokens.transitBadgeGap,
