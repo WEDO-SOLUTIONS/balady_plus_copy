@@ -40,7 +40,7 @@ class AiSummaryNotifier extends _$AiSummaryNotifier {
 
     state = const AsyncValue.loading();
     try {
-      final repo = ref.read(aiSummaryRepositoryProvider);
+      final repo = await ref.read(aiSummaryRepositoryProvider.future);
       final summary = await repo.fetchSummary(poiId, locale);
       if (summary != null) {
         await cache.put(poiId, locale, summary);

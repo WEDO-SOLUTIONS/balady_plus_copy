@@ -3,7 +3,9 @@ class MapnessConstants {
   static const mapLayerName = 'common-marker-layer';
   static const appStoreId = 'id1522185123';
   static const poiDataBoxName = 'poiDataBoxName';
-  static const aiSummaryCacheBoxName = 'aiSummaryCacheBoxName';
+  // v2 — bumped when swapping from mock to real backend so any
+  // device with cached mock fixtures starts fresh on next launch.
+  static const aiSummaryCacheBoxName = 'aiSummaryCacheBoxName_v2';
   static const navigatorStateKey = 'navigatorState';
   static const navigatorStateTypeKey = 'navigatorStateType';
   static const voiceInstructionIndexPrefsKey = 'voice_instruction_index';

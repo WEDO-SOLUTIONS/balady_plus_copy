@@ -1,46 +1,115 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/ai_summary/data/ai_summary_repository.dart';
 import 'package:mapness/features/ai_summary/domain/ai_summary.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
-/// Real network-backed [AiSummaryRepository] — **skeleton only**.
+/// Network-backed [AiSummaryRepository] hitting the Momrah AI
+/// Summary endpoint.
 ///
-/// Currently throws [UnimplementedError] on every call. To be
-/// filled in once the backend team confirms the following open
-/// questions (see Slack thread in #balady-mobile):
+/// The endpoint sits on a sibling path (`/1.0/`) instead of the
+/// usual `/api/1.0/`, so [dio] is expected to be pre-configured
+/// with the correct base URL by the DI provider.
 ///
-/// 1. **Host & path**: confirmed Apigee host? Full path?
-/// 2. **HTTP method**: spec says `POST`, confirm? Body shape?
-/// 3. **Response shape**: JSON envelope? Streaming (SSE, NDJSON)
-///    or regular `application/json`? If streaming, how is the
-///    end signalled?
-/// 4. **Auth**: same SSO bearer as the rest of the balady API,
-///    or separate flow?
-/// 5. **Locale header**: `Accept-Language: ar-SA` per the spec,
-///    or reuse `X-Locale` / `X-Language` that `dgis_http_network`
-///    already sets?
-/// 6. **Rating & transit lines**: included in the AI Summary
-///    response alongside the description, or do we pull them
-///    from the existing POI detail endpoint?
-/// 7. **"Insufficient data" signal**: 204 No Content, empty body,
-///    JSON flag like `{"available": false}`, or error code?
-/// 8. **Error shape**: how are upstream LLM timeouts / rate
-///    limits / POI-not-found surfaced?
+/// Response shape (200 OK):
 ///
-/// Until answered, the swap from [MockAiSummaryRepository] stays
-/// blocked at the DI provider. Once unblocked, replace the body
-/// of [fetchSummary] with a Dio call and map the response to
-/// [AiSummary.fromJson].
+/// ```json
+/// {
+///   "description": "...",
+///   "metadata": { "rating": 3.2, "ratingCount": 435, ... },
+///   "cached": true
+/// }
+/// ```
+///
+/// `transitLines` is intentionally never populated — the upstream
+/// response does not include any transit data, so the field stays
+/// `null` and the UI renders without the badges row.
+///
+/// Behaviour:
+/// * 200 → mapped to [AiSummary] (description + optional rating).
+/// * 404 → treated as "insufficient data" → returns `null` so the
+///   section is hidden.
+/// * any other failure → rethrown for the notifier layer to catch.
 class HttpAiSummaryRepository implements AiSummaryRepository {
-  const HttpAiSummaryRepository();
+  final Dio _dio;
+
+  const HttpAiSummaryRepository(this._dio);
 
   @override
-  Future<AiSummary?> fetchSummary(String poiId, Language locale) {
-    throw UnimplementedError(
-      'HttpAiSummaryRepository is not yet implemented. '
-      'Waiting on backend team for endpoint confirmation '
-      '(host, method, response shape, auth). '
-      'See Slack thread in #balady-mobile and the docstring '
-      'in this class for the list of open questions.',
+  Future<AiSummary?> fetchSummary(String poiId, Language locale) async {
+    final body = <String, dynamic>{
+      'syncode': poiId,
+      'locale': locale.languageCode,
+      'stream': false,
+    };
+
+    if (kDebugMode) {
+      debugPrint('[AiSummaryDebug] POST ai-summary/$poiId locale=${locale.languageCode}');
+    }
+
+    try {
+      final response = await _dio.post<Map<String, dynamic>>(
+        'ai-summary/$poiId',
+        data: body,
+        options: Options(
+          headers: {
+            'Accept-Language': locale == Language.arabic ? 'ar-SA' : 'en-SA',
+          },
+        ),
+      );
+
+      final data = response.data;
+      if (data == null) {
+        if (kDebugMode) {
+          debugPrint('[AiSummaryDebug] empty body for $poiId — treating as null');
+        }
+        return null;
+      }
+      final summary = _mapResponse(data);
+      if (kDebugMode) {
+        debugPrint(
+          '[AiSummaryDebug] ok $poiId — desc=${summary.description.length}ch '
+          'rating=${summary.rating} count=${summary.reviewCount}',
+        );
+      }
+      return summary;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        if (kDebugMode) {
+          debugPrint('[AiSummaryDebug] 404 for $poiId — insufficient data');
+        }
+        return null;
+      }
+      logger.log(
+        'AI Summary HTTP error for $poiId: ${e.response?.statusCode} ${e.message}',
+        logLevel: MapnessLogLevel.error,
+      );
+      rethrow;
+    }
+  }
+
+  AiSummary _mapResponse(Map<String, dynamic> json) {
+    final description = (json['description'] as String?)?.trim() ?? '';
+    final metadata = json['metadata'] as Map<String, dynamic>?;
+
+    double? rating;
+    int? reviewCount;
+    if (metadata != null) {
+      final r = metadata['rating'];
+      if (r is num) {
+        rating = r.toDouble();
+      }
+      final c = metadata['ratingCount'];
+      if (c is num) {
+        reviewCount = c.toInt();
+      }
+    }
+
+    return AiSummary(
+      description: description,
+      rating: rating,
+      reviewCount: reviewCount,
     );
   }
 }
