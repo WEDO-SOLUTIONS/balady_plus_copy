@@ -204,6 +204,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (mapStyle != null) {
         _updateMapStyle(mapStyle);
       }
+
+      // Sync BaladyThemeNotifier with the persisted darkModeProvider state
+      // so the outer Apps/Profile shells follow the same toggle as Mapness.
+      final initialDark = (await ref.read(darkModeProvider.future)).isDark;
+      if (mounted) {
+        _themeChanged(isDark: initialDark);
+      }
     });
 
     // call the openAppLink when user click on notification have deep link
@@ -386,7 +393,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _themeChanged({bool isDark = false}) async {
     final themeController = context.read<ThemeController>();
+    final baladyTheme = context.read<BaladyThemeNotifier>();
     final specialThemeMode = ref.read(specialThemeModeProvider);
+    debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
+    baladyTheme.toggleTheme(isDark);
     if (isDark) {
       await themeController.setTheme(BaladyAppThemes.dark);
     } else {
