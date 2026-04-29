@@ -25,17 +25,17 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     );
   }
 
-  String pinTitle(AppLocalizations l10n) {
-    if (isDroppedPin) {
+
+  String pinTitle(AppLocalizations l10n,String subtitle) {
+    if (isDroppedPin(subtitle)) {
       return l10n.droppedPin;
     }
     return title;
   }
 
-  bool get isDroppedPin {
-    if (title.trim().isEmpty) {
-      return true;
-    }
-    return fullAddressName?.streetAddress == title;
+  bool  isDroppedPin(String? subtitle) {
+
+    final isDrop = title.contains('- $subtitle');
+    return (fullAddressName?.streetAddress == title) || isDrop;
   }
 }

@@ -86,7 +86,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final isAddressUsedAsTitle =
       (fullStreetAddress != null && fullStreetAddress == markerTitle) ||
       (shortStreetAddress != null && shortStreetAddress == markerTitle);
-  final showPinLabel = markerTitle.isNotEmpty && !directoryObject.isDroppedPin && !isAddressUsedAsTitle;
+  final showPinLabel = markerTitle.isNotEmpty && !directoryObject.isDroppedPin(directoryObject.subtitle) && !isAddressUsedAsTitle;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(

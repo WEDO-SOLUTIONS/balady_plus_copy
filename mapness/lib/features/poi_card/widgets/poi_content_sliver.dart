@@ -215,7 +215,7 @@ class PoiContentSliver extends ConsumerWidget {
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            if (data.isDroppedPin)
+            if (data.isDroppedPin(data.subtitle))
               Padding(
                 padding: itemPadding,
                 child: PoiContentFeedbackCard(
