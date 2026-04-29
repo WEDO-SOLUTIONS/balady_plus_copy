@@ -15,7 +15,6 @@ import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
-import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -108,15 +107,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.watch(highlightProvider.notifier);
   await highlightController.removeAll();
-
-  // BSA-3544 — log the catalog types of every tapped POI so we can verify
-  // whether highlight should be suppressed. Safe to remove once data team
-  // confirms which types Riyadh / Diriyah / Haram zone are returned with.
-  logger.log(
-    'BSA-3544 tap | objectId=${objectId.objectId} | title="${directoryObject.title}" | '
-    'types=${directoryObject.types.map((t) => t.type.name).toList()} | '
-    'hasHighlightableType=${directoryObject.hasHighlightableType}',
-  );
 
   if (directoryObject.hasHighlightableType) {
     await highlightController.addHighlight(objectId.toMessage());
