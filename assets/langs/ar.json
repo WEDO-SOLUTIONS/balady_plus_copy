@@ -4583,11 +4583,11 @@
   "one_place": "مكان واحد",
   "search2": "ابحث هنا",
   "my_favorite_apps": "تطبيقاتي المفضلة ⭐",
-  "most_used_apps": "التطبيقات الأكثر إستخداماً",
+  "most_used_apps": "الخدمات الأكثر إستخداماً",
   "add2": "أضف",
   "no_favorite_apps": "لا توجد تطبيقات مفضلة",
   "all_apps": "جميع التطبيقات",
-  "my_favorite_apps2": "تطبيقاتي المفضلة",
+  "my_favorite_apps2": "خدماتي المفضلة",
   "you_can_add_your_favorite_apps_for_easy_access": "يمكنك إضافة تطبيقاتك المفضلة لسهولة الوصول اليها",
   "search_for_mini_app": "ابحث عن التطبيقات المصغرة",
   "search_by_name_or_description": "ابحث بالاسم أو بالوصف الخاص بالتطبيق",
@@ -4619,5 +4619,8 @@
   "privacyBaladyPlatformText": "منصة بلدي",
 
   "favorite_services_title": "خدماتي المفضلة",
-  "favorite_services_subtitle": "يمكنك إضافة خدماتك المفضلة لسهولة الوصول اليها"
+  "favorite_services_subtitle": "يمكنك إضافة خدماتك المفضلة لسهولة الوصول اليها",
+  "compliance_map":"خريطة الامتثال",
+  "building_compliance_question":"هل المبنى الخاص بك ممتثل؟",
+  "add_to_fav":"أضف للمفضلة"
 }

@@ -43,34 +43,21 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   }
 
   Future<bool> _showExitConfirmationDialog() async {
-    Widget title = Text(
-      "closeService".tr(),
-      style: const TextStyle(fontSize: 16, fontFamily: GeneralKey.appFontType),
-    );
+    Widget title = Text("closeService".tr(), style: const TextStyle(fontSize: 16, fontFamily: GeneralKey.appFontType));
     List<Widget> actions = [
       TextButton(
         onPressed: () => Navigator.of(context).pop(false),
-        child: Text(
-          "cancel".tr(),
-          style: TextStyle(fontFamily: GeneralKey.appFontType),
-        ),
+        child: Text("cancel".tr(), style: TextStyle(fontFamily: GeneralKey.appFontType)),
       ),
       TextButton(
         onPressed: () => Navigator.of(context).pop(true),
         child: Text(
           "yes".tr(),
-          style: const TextStyle(
-            color: Colors.red,
-            fontFamily: GeneralKey.appFontType,
-          ),
+          style: const TextStyle(color: Colors.red, fontFamily: GeneralKey.appFontType),
         ),
       ),
     ];
-    return await ShowDialogOnWebView.showAlertDialog<bool>(
-          context: context,
-          title: title,
-          actions: (_) => actions,
-        ) ??
+    return await ShowDialogOnWebView.showAlertDialog<bool>(context: context, title: title, actions: (_) => actions) ??
         false;
   }
 
@@ -83,9 +70,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.navigatorKey.currentState?.pushNamed(
-                RouteName.chatbot,
-              );
+              NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
             }
           },
         ),
@@ -118,24 +103,25 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
           appBar: AppBar(
             title: Text(
-              data.name ?? " ",
+              data.name,
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: GeneralKey.appFontType),
             ),
             actions: [
               IconButton(
-                icon: Icon(Icons.close,color: Theme.of(context).colorScheme.onSurface,),
+                icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface),
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
-                  if (shouldExit && context.mounted)
-                   {
-                  // Show floating player when mini app is closed
-                  final audioProvider = ref.read(streamAudioProvider);
-                  audioProvider.setInWeb(false);
-                  audioProvider.setFloatingPlayerVisibility(true); Navigator.of(context).pop();
-                }
-              },),
+                  if (shouldExit && context.mounted) {
+                    // Show floating player when mini app is closed
+                    final audioProvider = ref.read(streamAudioProvider);
+                    audioProvider.setInWeb(false);
+                    audioProvider.setFloatingPlayerVisibility(true);
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
             ],
             leading: SizedBox.shrink(),
           ),
@@ -174,67 +160,49 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                         // Loader background
                         Container(
                           child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/newload.gif",
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.contain,
-                          ),
-                          const SizedBox(height: 16),
-                          if (state is MiniAppsEngineLoadingState)
-                            state.progress.isEmpty
-                                ? const SizedBox()
-                                : Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: SizedBox(
-                                      height: 10,
-                                      child: LinearProgressIndicator(
-                                        value:
-                                            (double.parse(state.progress) /
-                                            100),
-                                        backgroundColor: Theme.of(
-                                          context,
-                                        ).disabledColor,
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                              AppColor.primary900Light,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset("assets/images/newload.gif", width: 120, height: 120, fit: BoxFit.contain),
+                                const SizedBox(height: 16),
+                                if (state is MiniAppsEngineLoadingState)
+                                  state.progress.isEmpty
+                                      ? const SizedBox()
+                                      : Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: SizedBox(
+                                            height: 10,
+                                            child: LinearProgressIndicator(
+                                              value: (double.parse(state.progress) / 100),
+                                              backgroundColor: Theme.of(context).disabledColor,
+                                              valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
                                             ),
-                                      ),
-                                    ),
-                                  ),
-                          const SizedBox(height: 16),
-                          Text(
-                            "loading".tr(),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                const SizedBox(height: 16),
+                                Text("loading".tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // WebMiniAppsScreen
-                  content,
-                  // Error / reload overlay
-                  if (state is FailedDownloadState ||
-                      state is MiniAppsEngineErrorState)
-                    Center(
-                      child: ReloadWidget(
-                        errorMessage: "errors_server_error_1".tr(),
-                        onTab: () {
-                          BlocProvider.of<MiniAppsEngineBloc>(
-                            contextBloc,
-                          ).add(DownloadMiniAppsEngineEvent(miniApp: data));
-                        },
-                      ),
-                    ),
-                ],
-              );
-            },),
+                        ),
+                        // WebMiniAppsScreen
+                        content,
+                        // Error / reload overlay
+                        if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
+                          Center(
+                            child: ReloadWidget(
+                              errorMessage: "errors_server_error_1".tr(),
+                              onTab: () {
+                                BlocProvider.of<MiniAppsEngineBloc>(
+                                  contextBloc,
+                                ).add(DownloadMiniAppsEngineEvent(miniApp: data));
+                              },
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ),
             ],
           ),

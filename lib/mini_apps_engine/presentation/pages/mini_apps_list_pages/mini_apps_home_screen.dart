@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
@@ -13,7 +14,6 @@ import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cu
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_larg_more_apps.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/fav_section_widgets/custom_dashed_add_mini_app_fav.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/fav_section_widgets/custom_mini_apps_card.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_dashed_line_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
@@ -75,7 +75,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
       appBar: AppBar(
         elevation: 1,
         title: CustomSubHeadingText(
-          text: "التطبيقات".tr(),
+          text: "AppsTitle".tr(),
           width: context.screenWidth,
           isTextCenter: true,
           fontSize: 24,
@@ -122,7 +122,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
 
                           SizedBox(height: context.h(14)),
 
-                          // ── Search bar ───────────────────────────────────
+                          //! ── Search bar ───────────────────────────────────
                           state.isFavLoading ||
                                   state.isUnFavLoading ||
                                   state.isAppsGroupLoading ||
@@ -135,7 +135,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                       PageRouteBuilder(
                                         opaque: false,
                                         barrierColor: Colors.transparent,
-                                        pageBuilder: (_, __, ___) => const MiniAppsSearchPage(),
+                                        pageBuilder: (_, _, _) => const MiniAppsSearchPage(),
                                       ),
                                     );
                                   },
@@ -154,7 +154,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                               children: [
                                 SizedBox(height: context.screenHeight * 0.02),
 
-                                // ── Favourites section ───────────────────
+                                //! ── Favourites section ───────────────────
                                 BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                                   buildWhen: (previous, current) =>
                                       previous.isFavLoading != current.isFavLoading ||
@@ -172,7 +172,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  "خدماتي المفضلة".tr(),
+                                                  "my_favorite_apps2".tr(),
                                                   style: TextStyle(
                                                     fontSize: 18,
                                                     fontWeight: FontWeight.w700,
@@ -193,7 +193,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                         PageRouteBuilder(
                                                           opaque: false,
                                                           barrierColor: Colors.transparent,
-                                                          pageBuilder: (_, __, ___) => const MiniAppsSearchPage(),
+                                                          pageBuilder: (_, _, _) => const MiniAppsSearchPage(),
                                                         ),
                                                       );
                                                     },
@@ -201,7 +201,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                     btnTextColor: Theme.of(context).primaryColor,
                                                     btnTextWeight: AppFontWeight.regular,
                                                     btnTextSize: 14,
-                                                    text: "عرض الكل".tr(),
+                                                    text: "view_all".tr(),
                                                   ),
                                                 ),
                                               ],
@@ -302,8 +302,63 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                     context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
                                                   }
                                                 },
-                                                child: Image.asset(
-                                                  "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}",
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadiusGeometry.circular(11.19),
+                                                  child: Stack(
+                                                    children: [
+                                                      Image.asset("assets/icons/png/momtathel.png"),
+                                                      Padding(
+                                                        padding: EdgeInsetsGeometry.all(10),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          children: [
+                                                            SizedBox(
+                                                              width: context.w(45),
+                                                              height: context.h(24),
+                                                              child: DecoratedBox(
+                                                                decoration: BoxDecoration(
+                                                                  color: Color(0XffFFFAEB),
+                                                                  borderRadius: BorderRadius.circular(50),
+                                                                ),
+                                                                child: Center(
+                                                                  child: Text(
+                                                                    "new".tr(),
+                                                                    style: TextStyle(
+                                                                      color: Color(0xff93370D),
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w700,
+                                                                      fontFamily: GeneralKey.appFontType,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              "compliance_map".tr(),
+                                                              textAlign: TextAlign.start,
+                                                              style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 14,
+                                                                fontWeight: FontWeight.w700,
+                                                                fontFamily: GeneralKey.appFontType,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              "building_compliance_question".tr(),
+                                                              textAlign: TextAlign.start,
+                                                              style: TextStyle(
+                                                                color: Colors.white,
+                                                                fontSize: 13,
+                                                                fontWeight: FontWeight.w400,
+                                                                fontFamily: GeneralKey.appFontType,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -316,7 +371,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
 
                                 SizedBox(height: context.screenHeight * 0.02),
 
-                                // ── Most used / entry points section ─────
+                                //! ── Most used / entry points section ─────
                                 BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                                   buildWhen: (previous, current) =>
                                       previous.isEntryPointsLoading != current.isEntryPointsLoading ||
@@ -346,79 +401,111 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                 if (apps.isEmpty) {
                                                   return const SizedBox.shrink();
                                                 }
-                                                final title = CommonFunctions.isAppAR ? section.arName : section.enName;
-                                                final textScale = MediaQuery.of(context).textScaler.scale(1.0);
-                                                const lines = 3;
-                                                final maxTitleHeightForScale = (56.0 * textScale + 20).clamp(
-                                                  70.0,
-                                                  115.0,
-                                                );
-                                                final minHeightForLines = (13.0 * 1.4 * lines * textScale + 10).clamp(
-                                                  36.0,
-                                                  maxTitleHeightForScale,
-                                                );
-                                                final defaultTitleHeight = (context.h(45) * textScale).clamp(
-                                                  minHeightForLines,
-                                                  maxTitleHeightForScale,
-                                                );
-                                                final gap = (4.0 * textScale).clamp(4.0, 10.0);
-                                                final rowHeight = context.h(104) + context.h(gap) + defaultTitleHeight;
 
                                                 return Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      title,
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      textAlign: CommonFunctions.isAppAR
-                                                          ? TextAlign.right
-                                                          : TextAlign.left,
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight: FontWeight.w700,
-                                                        fontFamily: GeneralKey.appFontType,
-                                                        color: Theme.of(context).brightness == Brightness.dark
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                      ),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          "most_used_apps".tr(),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          textAlign: CommonFunctions.isAppAR
+                                                              ? TextAlign.right
+                                                              : TextAlign.left,
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight: FontWeight.w600,
+                                                            fontFamily: GeneralKey.appFontType,
+                                                            color: Theme.of(context).brightness == Brightness.dark
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                          ),
+                                                        ),
+                                                        const Spacer(),
+                                                        Padding(
+                                                          padding: CommonFunctions.isAppAR
+                                                              ? const EdgeInsets.only(left: 10)
+                                                              : const EdgeInsets.only(right: 10),
+                                                          child: CustomTextButtonWidget(
+                                                            onPressed: () {
+                                                              Navigator.of(context).push(
+                                                                PageRouteBuilder(
+                                                                  opaque: false,
+                                                                  barrierColor: Colors.transparent,
+                                                                  pageBuilder: (_, _, _) => const MiniAppsSearchPage(),
+                                                                ),
+                                                              );
+                                                            },
+                                                            // fontSize: 14,
+                                                            btnTextColor: Theme.of(context).primaryColor,
+                                                            btnTextWeight: AppFontWeight.regular,
+                                                            btnTextSize: 14,
+                                                            text: "view_all".tr(),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    SizedBox(height: context.screenHeight * 0.01),
-                                                    SizedBox(height: context.screenHeight * 0.01),
+                                                    SizedBox(height: context.screenHeight * 0.02),
                                                     SizedBox(
-                                                      height: rowHeight,
+                                                      height: context.h(64),
                                                       width: context.screenWidth,
                                                       child: ListView.separated(
                                                         scrollDirection: Axis.horizontal,
                                                         separatorBuilder: (context, i) =>
-                                                            SizedBox(width: context.screenWidth * 0.02),
-                                                        padding: const EdgeInsets.all(2),
+                                                            SizedBox(width: context.screenWidth * 0.00),
                                                         itemCount: apps.length,
                                                         itemBuilder: (context, appIndex) {
                                                           final miniApp = apps[appIndex];
-                                                          return CustomMiniAppsCard(
-                                                            borderRadius: BorderRadius.circular(28),
-                                                            width: context.h(104),
-                                                            height: context.h(104),
-                                                            iconHeight: context.h(64),
-                                                            iconWidth: context.w(64),
-                                                            titlesWidth: context.screenWidth / 3.8,
-                                                            maxLines: 3,
-                                                            maxFontSize: 20,
-                                                            minFontSize: 8,
-                                                            withCardEffect: true,
-                                                            text: miniApp.name,
-                                                            miniAppIcon: miniApp.iconPath,
-                                                            onTap: () {
-                                                              context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
-                                                            },
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(16.0),
-                                                              child: CustomNetworkImageWidget(
-                                                                miniApp.iconPath,
-                                                                isVerifyingKey: true,
-                                                                imageWidth: context.w(30),
-                                                                imageHeight: context.h(30),
+                                                          return SizedBox(
+                                                            width: context.w(177),
+                                                            child: GestureDetector(
+                                                              onTap: () {
+                                                                context.read<NewMiniAppLogicCubit>().openMiniApp(
+                                                                  miniApp,
+                                                                );
+                                                              },
+                                                              child: Card(
+                                                                child: Row(
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.all(5),
+                                                                      child: SizedBox(
+                                                                        width: context.w(48),
+                                                                        height: context.h(48),
+                                                                        child: DecoratedBox(
+                                                                          decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(8),
+                                                                            color: Theme.of(context).primaryColorLight,
+                                                                          ),
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.all(4),
+                                                                            child: CustomNetworkImageWidget(
+                                                                              miniApp.iconPath,
+                                                                              isVerifyingKey: true,
+                                                                              imageWidth: context.w(40),
+                                                                              imageHeight: context.h(40),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: context.screenWidth * 0.27,
+                                                                      child: AutoSizeText(
+                                                                        miniApp.name,
+                                                                        maxLines: 2,
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                        style: const TextStyle(
+                                                                          fontFamily: GeneralKey.appFontType,
+                                                                          fontWeight: FontWeight.w500,
+                                                                          fontSize: 14,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
                                                           );
@@ -437,63 +524,94 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                 ),
 
                                 SizedBox(height: context.screenHeight * 0.02),
-                                const CustomDashedLineWidget(),
-                                SizedBox(height: context.screenHeight * 0.02),
 
-                                // ── App groups grid section ──────────────
-                                BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-                                  buildWhen: (previous, current) =>
-                                      previous.isAppsGroupLoading != current.isAppsGroupLoading ||
-                                      previous.isInitial != current.isInitial ||
-                                      previous.appGroups != current.appGroups,
-                                  builder: (context, state) {
-                                    if (state.isAppsGroupLoading || state.isInitial) {
-                                      return const AppsGroupSectionShimmerWidget();
-                                    }
-                                    final regularGroups = state.appGroups;
-                                    return StaggeredAppear(
-                                      children: [
-                                        Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            GridView.builder(
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: regularGroups.length,
-                                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 2,
-                                                mainAxisSpacing: context.screenHeight * 0.02,
-                                                crossAxisSpacing: context.screenWidth * 0.04,
-                                                childAspectRatio: 0.8,
+                                //! ── App groups grid section ──────────────
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "all_apps".tr(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: GeneralKey.appFontType,
+                                        color: Theme.of(context).brightness == Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+
+                                    SizedBox(height: context.screenHeight * 0.02),
+
+                                    Padding(
+                                      padding: CommonFunctions.isAppAR
+                                          ? const EdgeInsets.only(left: 10)
+                                          : const EdgeInsets.only(right: 10),
+                                      child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+                                        buildWhen: (previous, current) =>
+                                            previous.isAppsGroupLoading != current.isAppsGroupLoading ||
+                                            previous.isInitial != current.isInitial ||
+                                            previous.appGroups != current.appGroups,
+                                        builder: (context, state) {
+                                          if (state.isAppsGroupLoading || state.isInitial) {
+                                            return const AppsGroupSectionShimmerWidget();
+                                          }
+                                          final regularGroups = state.appGroups;
+                                          return StaggeredAppear(
+                                            children: [
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  GridView.builder(
+                                                    itemCount: regularGroups.length,
+                                                    shrinkWrap:
+                                                        true, // 1. Allows GridView to size itself to its children
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(), // 2. Prevents double-scrolling if inside another list
+                                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                      crossAxisCount: 3,
+                                                      mainAxisExtent: context.h(
+                                                        98,
+                                                      ), // 3. Forces the EXACT height of the card
+                                                      crossAxisSpacing: 8, // Optional: Spacing between columns
+                                                      mainAxisSpacing: 8, // Optional: Spacing between rows
+                                                    ),
+                                                    itemBuilder: (context, index) {
+                                                      final appGroup = regularGroups[index];
+                                                      final groupName = CommonFunctions.isAppAR
+                                                          ? appGroup.nameAr
+                                                          : appGroup.nameEn;
+                                                      return CustomLargMoreApps(
+                                                        categoryIconPath: appGroup.apps.first.iconPath,
+                                                        categoryName: groupName,
+                                                        withCardEffect: true,
+                                                        text: groupName,
+                                                        apps: appGroup.apps,
+                                                        totalAppCount: appGroup.appCount,
+                                                        onTap: () {
+                                                          Navigator.of(context).push(
+                                                            PageRouteBuilder(
+                                                              opaque: false,
+                                                              barrierColor: Colors.transparent,
+                                                              pageBuilder: (_, _, _) =>
+                                                                  AppsGroupPage(groupId: appGroup.id),
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ],
                                               ),
-                                              itemBuilder: (context, index) {
-                                                final appGroup = regularGroups[index];
-                                                final groupName = CommonFunctions.isAppAR
-                                                    ? appGroup.nameAr
-                                                    : appGroup.nameEn;
-                                                return CustomLargMoreApps(
-                                                  withCardEffect: true,
-                                                  text: groupName,
-                                                  apps: appGroup.apps,
-                                                  totalAppCount: appGroup.appCount,
-                                                  onTap: () {
-                                                    Navigator.of(context).push(
-                                                      PageRouteBuilder(
-                                                        opaque: false,
-                                                        barrierColor: Colors.transparent,
-                                                        pageBuilder: (_, __, ___) =>
-                                                            AppsGroupPage(groupId: appGroup.id),
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  },
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

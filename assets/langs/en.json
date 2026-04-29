@@ -4808,12 +4808,12 @@
   "one_place": "One Place",
   "search2": "Search here",
   "my_favorite_apps": "My Favorite Apps ⭐",
-  "most_used_apps": "Most Used Apps",
+  "most_used_apps": "Most used services",
   "add2": "Add",
 
   "no_favorite_apps":"No favorite apps",
   "all_apps":"All apps",
-  "my_favorite_apps2":"My favorite apps",
+  "my_favorite_apps2":"My favorite services",
   "you_can_add_your_favorite_apps_for_easy_access":"You can add your favorite apps for easy access",
 
   "search_for_mini_app": "Search for mini app",
@@ -4849,6 +4849,9 @@
   "privacyBaladyPlatformText": "Balady Platform",
 
   "favorite_services_title": "My Favorite Services",
-  "favorite_services_subtitle": "You can add your favorite services for easy access"
+  "favorite_services_subtitle": "You can add your favorite services for easy access",
+  "compliance_map":"compliance map",
+  "building_compliance_question":"Is your building compliant?",
+  "add_to_fav":"Add to favorite"
 
 }

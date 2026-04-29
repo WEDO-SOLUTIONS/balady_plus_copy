@@ -81,7 +81,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
           height: context.screenHeight * 0.04,
           child: Center(
             child: Text(
-              text ?? "أضف للمفضلة".tr(),
+              text ?? "add_to_fav".tr(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

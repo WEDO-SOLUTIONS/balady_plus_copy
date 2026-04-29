@@ -17,7 +17,6 @@ class MiniAppsCustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final double? horizontalPadding;
-  final bool? autoFocus;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? validator;
   final double? hintTextSize;
@@ -54,7 +53,6 @@ class MiniAppsCustomTextField extends StatelessWidget {
     this.height,
     this.width,
     this.horizontalPadding,
-    this.autoFocus,
     this.validator,
     this.onChanged,
     this.hintTextSize,

@@ -90,23 +90,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
             padding: context.isRTL
                 ? EdgeInsets.only(right: context.screenWidth * 0.02, bottom: 10)
                 : EdgeInsets.only(left: context.screenWidth * 0.02, bottom: 10),
-            child: SizedBox(
-              height: 10,
-              width: 10,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.onSurface.withAlpha(10),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(context.isRTL ? Icons.east : Icons.west),
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-              ),
-            ),
+            child: const CustomMiniAppsBackButton(),
           ),
         ),
         body: SafeArea(
@@ -216,6 +200,33 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomMiniAppsBackButton extends StatelessWidget {
+  final double? height;
+  final double? width;
+  const CustomMiniAppsBackButton({super.key, this.height, this.width});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: height ?? 10,
+      width: width ?? 10,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.onSurface.withAlpha(10),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(context.isRTL ? Icons.east : Icons.west),
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );

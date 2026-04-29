@@ -1,28 +1,52 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
-import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/add_fav_mini_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class MiniAppsSearchPage extends StatelessWidget {
+class MiniAppsSearchPage extends StatefulWidget {
   const MiniAppsSearchPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = TextEditingController();
+  State<MiniAppsSearchPage> createState() => _MiniAppsSearchPageState();
+}
 
+class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
+  late final TextEditingController _controller;
+  Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query, BuildContext context) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider<NewMiniAppLogicCubit>.value(
       value: sl<NewMiniAppLogicCubit>(),
       child: SafeArea(
@@ -46,7 +70,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                 ),
               ),
               PopScope(
-                onPopInvokedWithResult: (_, __) {
+                onPopInvokedWithResult: (_, _) {
                   context.read<NewMiniAppLogicCubit>().clearSearch();
                 },
                 child: Container(
@@ -68,11 +92,11 @@ class MiniAppsSearchPage extends StatelessWidget {
                     child: SafeArea(
                       child: Column(
                         children: [
-                          //! Main content - takes available space and scrolls
+                          //! Main content
                           Expanded(
                             child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                               builder: (context, state) {
-                                if (controller.text.isEmpty && state.searchResults.isEmpty && !state.isSearching) {
+                                if (_controller.text.isEmpty && state.searchResults.isEmpty && !state.isSearching) {
                                   //! Intro section
                                   return Center(
                                     child: Padding(
@@ -84,7 +108,6 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             "search_for_mini_app".tr(),
                                             maxLines: 2,
                                             textAlign: TextAlign.center,
-                                            overflow: TextOverflow.visible,
                                             style: const TextStyle(
                                               color: Color(0xff155E75),
                                               fontWeight: FontWeight.w700,
@@ -97,8 +120,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             "search_by_name_or_description".tr(),
                                             maxLines: 2,
                                             textAlign: TextAlign.center,
-                                            overflow: TextOverflow.visible,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               color: Color(0xff155E75),
                                               fontWeight: FontWeight.w400,
                                               fontSize: 15,
@@ -112,7 +134,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                 } else if (state.isSearching) {
                                   //! Loading section
                                   return const MiniAppsShimmerLoadingWidget();
-                                } else if (controller.text.isNotEmpty &&
+                                } else if (_controller.text.isNotEmpty &&
                                     state.searchResults.isEmpty &&
                                     !state.isSearching) {
                                   //! No results section
@@ -131,125 +153,75 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     ),
                                   );
                                 } else {
-                                  //! Results section - FIXED SCROLLING ISSUE
-                                  return SingleChildScrollView(
+                                  return GridView.builder(
                                     padding: const EdgeInsets.only(bottom: 120),
-                                    child: StaggeredAppear(
-                                      initialDelay: const Duration(milliseconds: 200),
-                                      itemDuration: const Duration(milliseconds: 450),
-                                      itemDelay: const Duration(milliseconds: 130),
-                                      children: [
-                                        GridView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 3,
-                                            crossAxisSpacing: 16,
-                                            mainAxisSpacing:
-                                                16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                            childAspectRatio:
-                                                (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5))
-                                                    .clamp(0.52, 0.78),
+                                    physics: const BouncingScrollPhysics(),
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing:
+                                          16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
+                                      childAspectRatio:
+                                          (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
+                                            0.52,
+                                            0.78,
                                           ),
-                                          itemCount: state.searchResults.length,
-                                          itemBuilder: (context, index) {
-                                            final miniApp = state.searchResults[index];
-                                            return AppsGroupMiniAppsCardWidgets(
-                                              isActive: false,
-                                              title: miniApp.name,
-                                              iconPath: miniApp.iconPath,
-                                              onTap: () {
-                                                context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
-                                              },
-                                            );
-                                          },
-                                        ),
-                                      ],
                                     ),
+                                    itemCount: state.searchResults.length,
+                                    itemBuilder: (context, index) {
+                                      final miniApp = state.searchResults[index];
+                                      return AppsGroupMiniAppsCardWidgets(
+                                        isActive: false,
+                                        title: miniApp.name,
+                                        iconPath: miniApp.iconPath,
+                                        onTap: () {
+                                          context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp);
+                                        },
+                                      );
+                                    },
                                   );
                                 }
                               },
                             ),
                           ),
 
-                          //! Search field - fixed at bottom
+                          //! Search field
                           AnimatedPadding(
-                            duration: const Duration(milliseconds: 180),
+                            duration: const Duration(milliseconds: 80),
                             curve: Curves.easeOut,
                             padding: EdgeInsets.only(
-                              bottom: (MediaQuery.viewInsetsOf(context).bottom - 50).clamp(0, double.infinity),
+                              bottom: (MediaQuery.viewInsetsOf(context).bottom - 90).clamp(0, double.infinity),
                             ),
-                            child: SizedBox(
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: context.w(49),
-                                    height: context.h(49),
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.surface,
-                                        borderRadius: BorderRadius.circular(100),
-                                        border: Border.all(color: Theme.of(context).cardColor, width: 1),
-                                      ),
-                                      child: IconButton(
-                                        onPressed: () {
-                                          context.read<NewMiniAppLogicCubit>().clearSearch();
-
-                                          Navigator.pop(context);
-                                        },
-                                        icon: Icon(
-                                          Icons.arrow_back,
-                                          color: Theme.of(context).colorScheme.onSurface.withAlpha(400),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ValueListenableBuilder<TextEditingValue>(
-                                    valueListenable: controller,
-                                    builder: (context, value, child) {
-                                      return MiniAppsCustomTextField(
-                                        width: context.screenWidth * 0.78,
-                                        height: context.screenHeight * 0.06,
-                                        // suffixPadding: hasText
-                                        //     ? const EdgeInsets.symmetric(
-                                        //         horizontal: 8,
-                                        //       )
-                                        //     : const EdgeInsets.symmetric(
-                                        //         horizontal: 20,
-                                        //       ),
-                                        autoFocus: true,
-                                        autofocus: true,
-                                        controller: controller,
-                                        onTap: () {},
-                                        keyboardType: TextInputType.text,
-                                        isReadOnly: false,
-
-                                        suffixIcon: value.text.isEmpty
-                                            ? SvgPicture.asset(
-                                                colorFilter: ColorFilter.mode(
-                                                  Theme.of(context).colorScheme.onSurface,
-                                                  BlendMode.srcIn,
-                                                ),
-                                                IconPath.searchSVG,
-                                              )
-                                            : IconButton(
-                                                onPressed: () {
-                                                  controller.clear();
-                                                  context.read<NewMiniAppLogicCubit>().searchMiniApp('');
-                                                },
-                                                icon: Icon(
-                                                  Icons.close_rounded,
-                                                  color: Theme.of(context).colorScheme.onSurface,
-                                                ),
-                                              ),
-                                        onChanged: (query) {
-                                          context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                            child: Row(
+                              children: [
+                                CustomMiniAppsBackButton(
+                                  height: context.screenHeight * 0.054,
+                                  width: context.screenWidth * 0.13,
+                                ),
+                                ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: _controller,
+                                  builder: (context, value, child) {
+                                    return MiniAppsCustomTextField(
+                                      width: context.screenWidth * 0.79,
+                                      autofocus: true,
+                                      controller: _controller,
+                                      onTap: () {},
+                                      keyboardType: TextInputType.text,
+                                      isReadOnly: false,
+                                      suffixIcon: value.text.isEmpty
+                                          ? null
+                                          : IconButton(
+                                              onPressed: () {
+                                                _controller.clear();
+                                                context.read<NewMiniAppLogicCubit>().searchMiniApp('');
+                                              },
+                                              icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
+                                            ),
+                                      onChanged: (query) => _onSearchChanged(query, context),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ],
