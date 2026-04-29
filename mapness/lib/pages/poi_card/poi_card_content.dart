@@ -322,7 +322,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   title:
                       widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
-                      widget.data.pinTitle(l10n,widget.data.subtitle),
+                      widget.data.pinTitle(l10n),
                   subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
