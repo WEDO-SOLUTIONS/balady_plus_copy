@@ -1,19 +1,51 @@
+import 'package:dio/dio.dart';
 import 'package:mapness/features/ai_summary/data/ai_summary_repository.dart';
-import 'package:mapness/features/ai_summary/data/mock_ai_summary_repository.dart';
+import 'package:mapness/features/ai_summary/data/http_ai_summary_repository.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 part 'ai_summary_repository_provider.g.dart';
 
+/// Auth key for the Momrah AI Summary endpoint.
+///
+/// Hardcoded alongside other dev/build configuration that lives
+/// in the bundle-id / 2gis-key commits at the top of the branch.
+/// Move to [EnvironmentConfig] once the backend team issues
+/// per-environment keys.
+const _aiSummaryAuthKey = '28ed92f1-de4b-4060-b159-2dc19e9b8bf5';
+
 /// Dependency-injection seam for the [AiSummaryRepository].
 ///
-/// Currently returns [MockAiSummaryRepository] so the rest of
-/// the feature (notifier, UI) can be built and smoke-tested
-/// against deterministic fixtures while the backend endpoint
-/// is still being specified.
-///
-/// When the real endpoint is live, swap the return statement
-/// to `HttpAiSummaryRepository()` (see the
-/// `http_ai_summary_repository.dart` docstring for the list of
-/// backend answers needed before that swap is safe).
+/// Builds a dedicated [Dio] pointed at the AI Summary endpoint:
+/// the host is taken from the active environment, but the path
+/// prefix is `/1.0/` (sibling of the regular `/api/1.0/` API).
 @Riverpod(keepAlive: true)
-AiSummaryRepository aiSummaryRepository(Ref ref) => const MockAiSummaryRepository();
+Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
+  final env = await ref.watch(dgisEnvironmentProvider.future);
+  final origin = Uri.parse(env.url).origin;
+
+  const timeout = Duration(seconds: 30);
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: '$origin/1.0/',
+      connectTimeout: timeout,
+      sendTimeout: timeout,
+      receiveTimeout: timeout,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'x-auth-key': _aiSummaryAuthKey,
+      },
+    ),
+  );
+  if (logger is TalkerMapnessLogger) {
+    dio.interceptors.add(
+      TalkerDioLogger(talker: (logger as TalkerMapnessLogger).talker),
+    );
+  }
+  return HttpAiSummaryRepository(dio);
+}
