@@ -17,11 +17,13 @@ class AiSummaryRatingBar extends StatelessWidget {
   final double rating;
   final int reviewCount;
   final Language language;
+  final AiSummaryPalette palette;
 
   const AiSummaryRatingBar({
     required this.rating,
     required this.reviewCount,
     required this.language,
+    required this.palette,
     super.key,
   });
 
@@ -34,17 +36,17 @@ class AiSummaryRatingBar extends StatelessWidget {
       children: [
         Directionality(
           textDirection: TextDirection.ltr,
-          child: _StarRow(rating: rating),
+          child: _StarRow(rating: rating, palette: palette),
         ),
         const SizedBox(width: AiSummaryTokens.ratingStarToValueSpacing),
         Text(
           rating.toStringAsFixed(1),
-          style: AiSummaryTokens.ratingValueStyle,
+          style: palette.ratingValueStyle,
         ),
         const SizedBox(width: AiSummaryTokens.ratingValueToCountSpacing),
         Text(
           '(${strings.reviews(reviewCount)})',
-          style: AiSummaryTokens.ratingCountStyle,
+          style: palette.ratingCountStyle,
         ),
       ],
     );
@@ -53,8 +55,9 @@ class AiSummaryRatingBar extends StatelessWidget {
 
 class _StarRow extends StatelessWidget {
   final double rating;
+  final AiSummaryPalette palette;
 
-  const _StarRow({required this.rating});
+  const _StarRow({required this.rating, required this.palette});
 
   @override
   Widget build(BuildContext context) {
@@ -74,23 +77,23 @@ class _StarRow extends StatelessWidget {
     // rating >= i + 1, half-filled if rating >= i + 0.5, otherwise empty.
     final threshold = index + 1;
     if (rating >= threshold) {
-      return const Icon(
+      return Icon(
         Icons.star,
         size: AiSummaryTokens.ratingStarSize,
-        color: AiSummaryTokens.ratingStarFilled,
+        color: palette.ratingStarFilled,
       );
     }
     if (rating >= threshold - 0.5) {
-      return const Icon(
+      return Icon(
         Icons.star_half,
         size: AiSummaryTokens.ratingStarSize,
-        color: AiSummaryTokens.ratingStarFilled,
+        color: palette.ratingStarFilled,
       );
     }
-    return const Icon(
+    return Icon(
       Icons.star_border,
       size: AiSummaryTokens.ratingStarSize,
-      color: AiSummaryTokens.ratingStarEmpty,
+      color: palette.ratingStarEmpty,
     );
   }
 }
