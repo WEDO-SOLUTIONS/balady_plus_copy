@@ -140,32 +140,34 @@ class _SkeletonBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Header stays visible (it's static, no reason to hide it)
-    // while only the generated content area is skeletoned.
+    // Header is rendered statically outside the shimmer wrapper —
+    // only the description placeholders animate while loading.
     final strings = AiSummaryStrings(language);
 
-    return Shimmer.fromColors(
-      baseColor: palette.shimmerBase,
-      highlightColor: palette.shimmerHighlight,
-      // Shimmer is painted over the placeholder blocks only;
-      // the header is wrapped in an opacity shortcut so it also
-      // feels part of the loading state without us re-building it.
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _Header(strings: strings, palette: palette),
-          const SizedBox(height: AiSummaryTokens.skeletonLineGap * 1.5),
-          _SkeletonLine(widthFactor: 1.0, color: palette.shimmerBase),
-          const SizedBox(height: AiSummaryTokens.skeletonLineGap),
-          _SkeletonLine(widthFactor: 0.96, color: palette.shimmerBase),
-          const SizedBox(height: AiSummaryTokens.skeletonLineGap),
-          _SkeletonLine(widthFactor: 0.88, color: palette.shimmerBase),
-          const SizedBox(height: AiSummaryTokens.skeletonLineGap),
-          _SkeletonLine(widthFactor: 0.6, color: palette.shimmerBase),
-          const SizedBox(height: AiSummaryTokens.skeletonLineGap * 2),
-          _SkeletonLine(widthFactor: 0.45, height: 14, color: palette.shimmerBase),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _Header(strings: strings, palette: palette),
+        Shimmer.fromColors(
+          baseColor: palette.shimmerBase,
+          highlightColor: palette.shimmerHighlight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: AiSummaryTokens.skeletonLineGap * 1.5),
+              _SkeletonLine(widthFactor: 1.0, color: palette.shimmerBase),
+              const SizedBox(height: AiSummaryTokens.skeletonLineGap),
+              _SkeletonLine(widthFactor: 0.96, color: palette.shimmerBase),
+              const SizedBox(height: AiSummaryTokens.skeletonLineGap),
+              _SkeletonLine(widthFactor: 0.88, color: palette.shimmerBase),
+              const SizedBox(height: AiSummaryTokens.skeletonLineGap),
+              _SkeletonLine(widthFactor: 0.6, color: palette.shimmerBase),
+              const SizedBox(height: AiSummaryTokens.skeletonLineGap * 2),
+              _SkeletonLine(widthFactor: 0.45, height: 14, color: palette.shimmerBase),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
