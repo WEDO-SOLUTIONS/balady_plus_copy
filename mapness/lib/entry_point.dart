@@ -432,17 +432,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // Track theme changes for analytics
     ref
       ..listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
-        if (next == SpecialThemeMode.mekkahBase) {
-          ref
-              .read(darkModeProvider.notifier)
-              .changeDarkModeState(
-                DarkMapStateEnum.off,
-              );
-          final themeController = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
-          if (themeController.isDarkMode) {
-            themeController.toggleTheme(false);
-          }
-        }
+        debugPrint('[DarkThemeDebug] specialThemeMode transition prev=$prev next=$next');
 
         if (prev == next) {
           return;
