@@ -11,6 +11,7 @@ Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {
   ref.read(regularPoiActiveProvider.notifier).setActive(false);
 
   ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+  ref.read(highlightProvider.notifier).removeAll();
 
   final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 

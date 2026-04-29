@@ -36,6 +36,7 @@ class MoreFilterChip extends StatelessWidget {
           textAlign: TextAlign.center,
           style: context.textStyles.bodySmallRegular.copyWith(
             color: context.colors.foregroundDefault,
+            fontSize: 12,
             height: 1.25,
           ),
         ),

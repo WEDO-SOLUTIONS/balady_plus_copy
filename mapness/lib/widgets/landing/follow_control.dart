@@ -19,15 +19,10 @@ class FollowControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controlsVisible = ref.watch(navigationControlsVisibilityProvider);
     final isLTR = ref.watch(appLanguageProvider) != Language.arabic;
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
     final hasGPS = ref.watch(pathNavMessageProvider)?.state != PathNavMessageState.gpsConnectionLost;
-
-    if (!controlsVisible) {
-      return const SizedBox.shrink();
-    }
 
     final iconColor = followState.type == LocationFollowType.off
         ? context.colors.foregroundDefault

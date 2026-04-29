@@ -251,7 +251,13 @@ class _Location extends _$Location {
     if (userLocation == null) {
       return null;
     }
-    final controller = await ref.read(dgisControllerProvider.future);
+
+    final controllerAsync = ref.read(dgisControllerProvider);
+    final controller = controllerAsync.value;
+    if (controller == null) {
+      return userLocation;
+    }
+
     final isLocationInsideKSA = await controller.contains(
       _saRect,
       GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),

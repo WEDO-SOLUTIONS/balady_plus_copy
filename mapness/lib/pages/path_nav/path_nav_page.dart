@@ -287,7 +287,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     void onSheetHeightChanged() {
       if (isPortrait) {
         final sheetHeight =
-            sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
@@ -313,7 +313,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
       if (isPortrait) {
         final bottomHeight =
-            sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
         _bottomHeightNotifier.value = bottomHeight;
       }
 

@@ -169,7 +169,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       if (remainingMinutes <= 45) {
         var title = '';
         if (remainingMinutes > 1) {
-          title = '${context.l10n.closesIn.trim()} $remainingMinutes ${context.l10n.minutes}';
+          title = '${context.l10n.closesIn.trim()} $remainingMinutes ${context.l10n.minutesShort}';
         } else {
           title = context.l10n.closed;
         }
