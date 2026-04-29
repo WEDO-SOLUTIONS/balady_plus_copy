@@ -36,7 +36,12 @@ class DashboardThemeConfig {
   final ImageSizeCalculator? imageSizeCalculator;
 }
 
-DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventType? activeEvent) {
+DashboardThemeConfig dashboardThemeConfigFor(
+  SpecialThemeMode mode,
+  CityEventType? activeEvent, {
+  bool isDark = false,
+}) {
+  debugPrint('[DarkThemeDebug] dashboardThemeConfigFor mode=$mode isDark=$isDark');
   switch (mode) {
     case SpecialThemeMode.nationalDay:
       return DashboardThemeConfig(
@@ -58,14 +63,15 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
         useTopHeaderOffset: true,
         offsetOutsideWidgetByTopHeader: true,
         feedbackBannerAssetPath: Assets.images.feedbackDashboard.keyName,
-        feedbackBannerGradient: const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
+        feedbackBannerGradient: isDark
+            ? const [Color(0xFF14706D), Color(0xFF0D4F4B)]
+            : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
-        exploreBackgroundGradient: const [
-          Colors.transparent,
-          Colors.transparent,
-        ],
+        exploreBackgroundGradient: isDark
+            ? const [Colors.transparent, Color(0xFF0F1716)]
+            : const [Colors.transparent, Colors.transparent],
         exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
-        backgroundColor: const Color(0xFFFAF5EE),
+        backgroundColor: isDark ? const Color(0xFF131A19) : const Color(0xFFFAF5EE),
       );
 
     case SpecialThemeMode.ramadan:
@@ -73,14 +79,15 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
         useTopHeaderOffset: true,
         offsetOutsideWidgetByTopHeader: true,
         feedbackBannerAssetPath: Assets.images.feedbackDashboard.keyName,
-        feedbackBannerGradient: const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
+        feedbackBannerGradient: isDark
+            ? const [Color(0xFF14706D), Color(0xFF0D4F4B)]
+            : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
-        exploreBackgroundGradient: const [
-          Colors.transparent,
-          Colors.transparent,
-        ],
+        exploreBackgroundGradient: isDark
+            ? const [Colors.transparent, Color(0xFF0F1716)]
+            : const [Colors.transparent, Colors.transparent],
         exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
-        backgroundColor: const Color(0xFFFAF5EE),
+        backgroundColor: isDark ? const Color(0xFF131A19) : const Color(0xFFFAF5EE),
       );
 
     case SpecialThemeMode.base:
