@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:mapness/features/ai_summary/data/ai_summary_repository.dart';
 import 'package:mapness/features/ai_summary/data/http_ai_summary_repository.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,20 +17,31 @@ part 'ai_summary_repository_provider.g.dart';
 /// per-environment keys.
 const _aiSummaryAuthKey = '28ed92f1-de4b-4060-b159-2dc19e9b8bf5';
 
+/// Pinned AI Summary host.
+///
+/// Today only the Momrah staging cluster has the endpoint deployed:
+/// * prod (`urbi-lifestyle.momrah.gov.sa`) returns nginx 404 for
+///   any path under `/1.0/ai-summary/`.
+/// * dev (`momrah-balady-dev.iaas.urbi-sa.com`) responds, but its
+///   catalog is empty for the prod-shape syncodes the app sees.
+///
+/// The hardcoded auth key above is staging-issued, so coupling the
+/// host to it here keeps the wiring consistent. Switch to a
+/// per-environment URL once the backend team rolls the endpoint
+/// out to prod.
+const _aiSummaryBaseUrl = 'https://urbi-lifestyle-stg.momrah.gov.sa/1.0/';
+
 /// Dependency-injection seam for the [AiSummaryRepository].
 ///
-/// Builds a dedicated [Dio] pointed at the AI Summary endpoint:
-/// the host is taken from the active environment, but the path
-/// prefix is `/1.0/` (sibling of the regular `/api/1.0/` API).
+/// Builds a dedicated [Dio] pinned to the Momrah staging AI
+/// Summary host (see [_aiSummaryBaseUrl] for why), independent of
+/// the active app environment.
 @Riverpod(keepAlive: true)
 Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
-  final env = await ref.watch(dgisEnvironmentProvider.future);
-  final origin = Uri.parse(env.url).origin;
-
   const timeout = Duration(seconds: 30);
   final dio = Dio(
     BaseOptions(
-      baseUrl: '$origin/1.0/',
+      baseUrl: _aiSummaryBaseUrl,
       connectTimeout: timeout,
       sendTimeout: timeout,
       receiveTimeout: timeout,
