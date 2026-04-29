@@ -50,6 +50,14 @@ class AiSummaryNotifier extends _$AiSummaryNotifier {
       logger.log('AI Summary fetch failed: $e', logLevel: MapnessLogLevel.error);
       // Fall back to any stored cached value (offline scenario);
       // otherwise surface as "no data" so the section is hidden.
+      //
+      // Covers 429 (rate-limit) and 5xx the same way: a previously
+      // cached summary keeps showing on transient failure, and a
+      // first-time POI silently hides the section. There is no
+      // auto-retry — the next load fires only when the consumer
+      // re-triggers (POI reopened) or the cache TTL flushes, so
+      // under sustained backend pressure expect a "section absent"
+      // UX rather than a spinner-forever.
       final fallback = cache.get(poiId, locale);
       state = AsyncValue.data(fallback);
     }
