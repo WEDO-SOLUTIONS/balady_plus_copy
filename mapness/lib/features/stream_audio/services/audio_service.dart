@@ -216,7 +216,16 @@ class AudioService extends ChangeNotifier {
       // Configure for proper lock screen controls and interruption handling
       await _audioSession!.configure(const AudioSessionConfiguration(
         avAudioSessionCategory: AVAudioSessionCategory.playback,
-        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.allowBluetooth,
+        // iOS: allow navigation voice prompts to coexist with radio playback.
+        // - mixWithOthers: don't fully stop other audio when another session activates
+        // - interruptSpokenAudioAndMixWithOthers: improves coexistence with spoken guidance
+        // We still handle duck/pause via our native coordination bridge as a fallback.
+        // Note: This must stay `const`. We use raw bitmask values from `audio_session`
+        // (`AVAudioSessionCategoryOptions` in `audio_session/lib/src/darwin.dart`):
+        // - mixWithOthers: 0x1
+        // - interruptSpokenAudioAndMixWithOthers: 0x11
+        // - allowBluetooth: 0x4
+        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions(0x1 | 0x11 | 0x4),
         avAudioSessionMode: AVAudioSessionMode.defaultMode,
         avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
         avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
@@ -365,13 +374,16 @@ class AudioService extends ChangeNotifier {
               'isStoppingInternally: $_isStoppingInternally, '
               'isStartingPlayback: $_isStartingPlayback');
 
-          if (!_isStoppingInternally && !_isStartingPlayback) {
+          final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
+          if (!_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
             debugPrint('AudioService: 🚫 Notification dismissed - player stopped unexpectedly');
             _handleNotificationDismissed();
           } else {
             debugPrint('AudioService: ⏸️ Ignoring dismissal - '
                 'isStoppingInternally: $_isStoppingInternally, '
-                'isStartingPlayback: $_isStartingPlayback');
+                'isStartingPlayback: $_isStartingPlayback, '
+                'isInterrupted: $_isInterrupted, '
+                'isNavigationDucking: $_isNavigationDucking');
           }
         }
 
@@ -398,7 +410,8 @@ class AudioService extends ChangeNotifier {
         final isStopped =
             event.processingState == ProcessingState.idle || event.processingState == ProcessingState.completed;
 
-        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback) {
+        final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
+        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
           debugPrint('AudioService: 🚫 Notification dismissed detected in playback event stream');
           _handleNotificationDismissed();
         }
@@ -419,7 +432,7 @@ class AudioService extends ChangeNotifier {
   void _startDismissalCheckTimer() {
     _dismissalCheckTimer?.cancel();
     _dismissalCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (!_expectsToBePlaying || _isStoppingInternally || _isStartingPlayback) {
+      if (!_expectsToBePlaying || _isStoppingInternally || _isStartingPlayback || _isInterrupted || _isNavigationDucking) {
         return; // Don't check if we don't expect to be playing or are stopping/starting
       }
 
@@ -741,6 +754,13 @@ class AudioService extends ChangeNotifier {
     // Don't check if we're actively starting playback
     if (_isStartingPlayback) {
       debugPrint('AudioService: 🔍 Skipping dismissal check - actively starting playback');
+      return false;
+    }
+
+    // iOS can temporarily pause/stop our audio session while navigation voice speaks
+    // (or while we are in navigation-duck mode). That should NOT be treated as a dismissal.
+    if (_isInterrupted || _isNavigationDucking) {
+      debugPrint('AudioService: 🔍 Skipping dismissal check - interrupted/ducking (isInterrupted: $_isInterrupted, isNavigationDucking: $_isNavigationDucking)');
       return false;
     }
 
