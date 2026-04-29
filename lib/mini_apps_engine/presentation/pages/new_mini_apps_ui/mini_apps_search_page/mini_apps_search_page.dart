@@ -40,7 +40,7 @@ class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
 
   void _onSearchChanged(String query, BuildContext context) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(const Duration(milliseconds: 300), () {
       context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
     });
   }
@@ -187,10 +187,15 @@ class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
 
                           //! Search field
                           AnimatedPadding(
-                            duration: const Duration(milliseconds: 80),
+                            duration: const Duration(milliseconds: 250),
                             curve: Curves.easeOut,
                             padding: EdgeInsets.only(
-                              bottom: (MediaQuery.viewInsetsOf(context).bottom - 90).clamp(0, double.infinity),
+                              bottom: (MediaQuery.viewInsetsOf(context).bottom > 0)
+                                  ? (MediaQuery.viewInsetsOf(context).bottom -
+                                            MediaQuery.paddingOf(context).bottom -
+                                            (context.screenHeight * 0.02))
+                                        .clamp(0.0, double.infinity)
+                                  : 0.0,
                             ),
                             child: Row(
                               children: [
