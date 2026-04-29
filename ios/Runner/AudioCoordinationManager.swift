@@ -11,13 +11,41 @@ import Foundation
 /// and fall back to interruption begin/end events.
 final class AudioCoordinationManager {
     private let channel: FlutterMethodChannel
+    private var isMbcActive: Bool = false
 
     init(messenger: FlutterBinaryMessenger) {
         self.channel = FlutterMethodChannel(
             name: "com.balady.audio_coordination",
             binaryMessenger: messenger
         )
+        registerFlutterToNativeHandlers()
         startObserving()
+    }
+
+    private func registerFlutterToNativeHandlers() {
+        // Flutter calls into this channel to indicate MBC playback state.
+        // If we don't handle these calls, Flutter will throw MissingPluginException.
+        channel.setMethodCallHandler { [weak self] call, result in
+            guard let self else {
+                result(FlutterError(
+                    code: "AudioCoordinationManagerDeallocated",
+                    message: "AudioCoordinationManager was deallocated",
+                    details: nil
+                ))
+                return
+            }
+
+            switch call.method {
+            case "notifyMBCActive":
+                self.isMbcActive = true
+                result(nil)
+            case "notifyMBCInactive":
+                self.isMbcActive = false
+                result(nil)
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        }
     }
 
     private func startObserving() {
@@ -48,10 +76,14 @@ final class AudioCoordinationManager {
             let type = AVAudioSession.SilenceSecondaryAudioHintType(rawValue: rawType)
         else { return }
 
+        // If MBC isn't playing, don't spam Flutter with duck/restore.
+        guard isMbcActive else { return }
+
         switch type {
         case .begin:
             DispatchQueue.main.async {
-                self.channel.invokeMethod("duckAudio", arguments: ["volume": 0.0])
+                // Keep radio playing; just duck volume during spoken guidance.
+                self.channel.invokeMethod("duckAudio", arguments: ["volume": 0.2])
             }
         case .end:
             DispatchQueue.main.async {

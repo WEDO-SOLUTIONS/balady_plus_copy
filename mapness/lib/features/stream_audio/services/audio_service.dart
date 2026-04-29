@@ -24,6 +24,7 @@ class AudioService extends ChangeNotifier {
 
   Timer? _reconnectionTimer;
   Timer? _dismissalCheckTimer; // Periodic check for dismissal
+  Timer? _iosDismissalDebounceTimer;
   AudioSession? _audioSession;
   MethodChannel? _audioCoordinationChannel;
 
@@ -31,8 +32,8 @@ class AudioService extends ChangeNotifier {
   bool _isInterrupted = false;
   bool _isDucked = false;
   bool _isNavigationDucking = false;
-  bool _wasPlayingBeforeNavigationDuck = false;
   Timer? _navigationDuckingFailsafeTimer;
+  double? _preNavigationDuckVolume;
 
   String? _currentStreamUrl;
   String? _currentChannelId;
@@ -50,6 +51,72 @@ class AudioService extends ChangeNotifier {
   bool _isHandlingDismissal = false; // Prevent multiple dismissal handling
   bool _isStartingPlayback = false; // Track when we're actively starting playback
   static const Duration _startPlaybackTimeout = Duration(seconds: 60); //timeout after one min
+  static const Duration _iosUnexpectedStopDebounce = Duration(milliseconds: 1200);
+  static const Duration _iosResumeRetryDelay = Duration(milliseconds: 350);
+
+  Future<void> _ensureStreamPlayingAfterVoice({required String reason}) async {
+    if (!Platform.isIOS) return;
+    if (_player == null) return;
+    if (!_expectsToBePlaying) return;
+    if (_currentStreamUrl == null) return;
+    if (_isStoppingInternally) return;
+
+    // If we are intentionally paused for navigation voice, wait for restore/end.
+    if (_isNavigationDucking) return;
+
+    try {
+      final st = _player!.playerState;
+      final isStopped = !st.playing &&
+          (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
+
+      if (!isStopped) {
+        // Already playing or buffering/loading.
+        return;
+      }
+
+      debugPrint('AudioService: 🔁 iOS ensure-playing ($reason) - re-preparing stream source');
+      _expectsToBePlaying = true;
+
+      // Re-prepare the source; on iOS the player can drop to idle after interruptions.
+      await _playLiveStream();
+    } catch (e) {
+      debugPrint('AudioService: ❌ iOS ensure-playing failed ($reason): $e');
+    }
+  }
+
+  void _maybeHandleUnexpectedStop(String source) {
+    if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) return;
+    if (_isInterrupted || _isNavigationDucking) return;
+
+    // iOS sometimes reports the player as idle before we receive the AVAudioSession
+    // interruption/secondary-audio hint. Debounce to avoid flipping state too early.
+    if (Platform.isIOS) {
+      _iosDismissalDebounceTimer?.cancel();
+      _iosDismissalDebounceTimer = Timer(_iosUnexpectedStopDebounce, () {
+        if (_player == null) {
+          if (_currentChannelId != null && _expectsToBePlaying && !_isInterrupted && !_isNavigationDucking) {
+            debugPrint('AudioService: 🚫 Notification dismissed (debounced/$source) - player is null');
+            _handleNotificationDismissed();
+          }
+          return;
+        }
+
+        final st = _player!.playerState;
+        final isStopped = !st.playing &&
+            (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
+        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !_isInterrupted && !_isNavigationDucking) {
+          debugPrint('AudioService: 🚫 Notification dismissed (debounced/$source) - player stopped unexpectedly');
+          _handleNotificationDismissed();
+        } else {
+          debugPrint('AudioService: ⏸️ Debounced stop resolved (source: $source)');
+        }
+      });
+      return;
+    }
+
+    debugPrint('AudioService: 🚫 Notification dismissed ($source) - player stopped unexpectedly');
+    _handleNotificationDismissed();
+  }
 
   // Callback for notification dismissal
   VoidCallback? _onNotificationDismissed;
@@ -320,6 +387,15 @@ class AudioService extends ChangeNotifier {
       resume();
     }
 
+    // iOS: even if we weren't "playing" at interruption begin (e.g. we were duck-paused),
+    // the system can still leave the player in `idle`. Best-effort recovery.
+    if (Platform.isIOS && _expectsToBePlaying) {
+      Future<void>.delayed(_iosResumeRetryDelay, () {
+        // ignore: discarded_futures
+        _ensureStreamPlayingAfterVoice(reason: 'audio_session_interruptionEnded');
+      });
+    }
+
     syncState();
     notifyListeners();
   }
@@ -376,8 +452,7 @@ class AudioService extends ChangeNotifier {
 
           final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
           if (!_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
-            debugPrint('AudioService: 🚫 Notification dismissed - player stopped unexpectedly');
-            _handleNotificationDismissed();
+            _maybeHandleUnexpectedStop('playerStateStream');
           } else {
             debugPrint('AudioService: ⏸️ Ignoring dismissal - '
                 'isStoppingInternally: $_isStoppingInternally, '
@@ -412,8 +487,7 @@ class AudioService extends ChangeNotifier {
 
         final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
         if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
-          debugPrint('AudioService: 🚫 Notification dismissed detected in playback event stream');
-          _handleNotificationDismissed();
+          _maybeHandleUnexpectedStop('playbackEventStream');
         }
       },
       onError: (error) {
@@ -439,7 +513,7 @@ class AudioService extends ChangeNotifier {
       if (_player == null) {
         if (_currentChannelId != null) {
           debugPrint('AudioService: 🔍 Periodic check - Player is null but we expect to be playing');
-          _handleNotificationDismissed();
+          _maybeHandleUnexpectedStop('periodicTimer(playerNull)');
         }
         return;
       }
@@ -453,7 +527,7 @@ class AudioService extends ChangeNotifier {
         debugPrint('AudioService: 🔍 State - playing: ${state.playing}, processingState: ${state.processingState}');
         debugPrint(
             'AudioService: 🔍 Flags - expectsToBePlaying: $_expectsToBePlaying, isStoppingInternally: $_isStoppingInternally, isStartingPlayback: $_isStartingPlayback');
-        _handleNotificationDismissed();
+        _maybeHandleUnexpectedStop('periodicTimer');
       }
     });
   }
@@ -768,7 +842,7 @@ class AudioService extends ChangeNotifier {
       // If we expect to be playing but player is null, it was likely dismissed
       if (_expectsToBePlaying && _currentChannelId != null) {
         debugPrint('AudioService: 🔍 Player was dismissed - player is null but we expect to be playing');
-        _handleNotificationDismissed();
+        _maybeHandleUnexpectedStop('checkIfPlayerWasDismissed(playerNull)');
         return true;
       }
       return false;
@@ -781,7 +855,7 @@ class AudioService extends ChangeNotifier {
     // If we expect to be playing but player is stopped and we didn't stop it internally
     if (_expectsToBePlaying && isStopped && !_isStoppingInternally) {
       debugPrint('AudioService: 🔍 Player was dismissed - stopped unexpectedly');
-      _handleNotificationDismissed();
+      _maybeHandleUnexpectedStop('checkIfPlayerWasDismissed');
       return true;
     }
 
@@ -892,12 +966,9 @@ class AudioService extends ChangeNotifier {
       return;
     }
 
-    // Requested behavior: pause the "first sound" while navigation speaks,
-    // then resume after navigation finishes.
-    //
-    // We keep the method names (duck/restore) for compatibility with native iOS,
-    // but the effect is "pause/resume" rather than only lowering volume.
-    debugPrint('AudioService: 🦆 Navigation started - pausing stream audio');
+    // Desired behavior: keep radio playing, but lower its volume while navigation speaks,
+    // then restore volume after navigation finishes.
+    debugPrint('AudioService: 🦆 Navigation started - ducking stream audio volume');
 
     try {
       if (_isNavigationDucking) {
@@ -905,8 +976,16 @@ class AudioService extends ChangeNotifier {
         return;
       }
 
-      _wasPlayingBeforeNavigationDuck = _isPlaying;
       _isNavigationDucking = true;
+
+      final targetVolume = switch (arguments) {
+        {'volume': final num v} => v.toDouble(),
+        _ => 0.2,
+      };
+
+      // Store current volume so we can restore exactly.
+      _preNavigationDuckVolume ??= _player!.volume;
+      await _player!.setVolume(targetVolume.clamp(0.0, 1.0));
 
       // If native forgets to call restoreAudio (it happens in real devices),
       // ensure we don't stay paused forever.
@@ -921,17 +1000,11 @@ class AudioService extends ChangeNotifier {
         }
       });
 
-      // Use our own pause() so state + listeners stay consistent.
-      if (_isPlaying) {
-        await pause();
-      } else {
-        syncState();
-        notifyListeners();
-      }
-
-      debugPrint('AudioService: ✅ Stream audio paused for navigation');
+      debugPrint('AudioService: ✅ Stream audio volume ducked for navigation (target: $targetVolume)');
+      syncState();
+      notifyListeners();
     } catch (e) {
-      debugPrint('AudioService: ❌ Failed to pause for navigation: $e');
+      debugPrint('AudioService: ❌ Failed to duck for navigation: $e');
     }
   }
 
@@ -949,14 +1022,16 @@ class AudioService extends ChangeNotifier {
       _navigationDuckingFailsafeTimer?.cancel();
       _navigationDuckingFailsafeTimer = null;
 
-      // Resume even if _expectsToBePlaying got flipped elsewhere.
-      if (_wasPlayingBeforeNavigationDuck) {
-        _expectsToBePlaying = true;
-        await _player!.play();
-      }
-      _wasPlayingBeforeNavigationDuck = false;
+      final restoreVolume = _preNavigationDuckVolume ?? 1.0;
+      _preNavigationDuckVolume = null;
+      await _player!.setVolume(restoreVolume.clamp(0.0, 1.0));
+      // iOS: some prompts leave the player idle; ensure the stream is actually running.
+      Future<void>.delayed(_iosResumeRetryDelay, () {
+        // ignore: discarded_futures
+        _ensureStreamPlayingAfterVoice(reason: 'restoreAudio');
+      });
 
-      debugPrint('AudioService: ✅ Stream audio restored after navigation');
+      debugPrint('AudioService: ✅ Stream audio volume restored after navigation (volume: $restoreVolume)');
       syncState();
       notifyListeners();
     } catch (e) {
@@ -979,9 +1054,18 @@ class AudioService extends ChangeNotifier {
   void _handleAudioInterruptionEnded() {
     debugPrint('AudioService: ▶️ iOS audio interruption ended');
 
-    if (_wasPlayingBeforeInterruption && _expectsToBePlaying) {
-      _isInterrupted = false;
-      resume();
+    _isInterrupted = false;
+
+    if (_expectsToBePlaying) {
+      if (_wasPlayingBeforeInterruption) {
+        resume();
+      }
+
+      // Best-effort: if we ended up idle, re-prepare and restart.
+      Future<void>.delayed(_iosResumeRetryDelay, () {
+        // ignore: discarded_futures
+        _ensureStreamPlayingAfterVoice(reason: 'iosChannel_interruptionEnded');
+      });
     }
   }
 
