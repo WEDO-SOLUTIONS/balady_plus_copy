@@ -320,7 +320,7 @@ class SsoUserInfo extends Equatable {
       nationality: getValue('nationality'),
       tnm: getValue('tnm'),
       loginType: loginType,
-      isEmailVerified: json['isEmailVerified'] == true || json['isVerified'] == true,
+      isEmailVerified: json['isEmailVerified'] == true,
       isEmailEditable: json['isEmailEditable'] ?? true,
       isSSOLocked: json['isSSOLocked'] ?? false,
     );

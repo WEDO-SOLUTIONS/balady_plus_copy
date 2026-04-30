@@ -41,14 +41,16 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   String? _firstNameError;
   String? _lastNameError;
   String? _emailError;
-  String? _selectedGender;
-  DateTime? _selectedDob;
+
+  // OTP user fields
   String _activeEmail = '';
   String? _pendingEmail;
   String _initialFirstName = '';
   String _initialLastName = '';
-  String _initialDob = '';
-  String? _initialGender;
+
+  // Store all current data for complete update
+  String _currentFirstName = '';
+  String _currentLastName = '';
 
   @override
   void initState() {
@@ -63,19 +65,50 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     final userInfo = widget.userInfo;
     final language = ref.read(appLanguageProvider);
 
-    _firstNameController.text = userInfo.getLocalizedFirstName(language);
-    _lastNameController.text = userInfo.getLocalizedLastName(language);
+    _currentFirstName = userInfo.getLocalizedFirstName(language);
+    _currentLastName = userInfo.getLocalizedLastName(language);
+
+    _firstNameController.text = _currentFirstName;
+    _lastNameController.text = _currentLastName;
     _activeEmail = userInfo.mail?.trim() ?? '';
     _emailController.text = _activeEmail;
     _isEmailVerified = userInfo.isEmailVerified;
-    _selectedGender = _parseGender(userInfo.sex);
-    _selectedDob = _parseDob(userInfo.dob);
+
+    _initialFirstName = _currentFirstName;
+    _initialLastName = _currentLastName;
     _pendingEmail = null;
-    _initialFirstName = _firstNameController.text.trim();
-    _initialLastName = _lastNameController.text.trim();
-    _initialDob = userInfo.dob?.trim() ?? '';
-    _initialGender = _selectedGender;
     _otpFailureCount = 0;
+    _errorText = null;
+
+    print('📱 Loaded user data - Email: $_activeEmail, isEmailVerified: $_isEmailVerified');
+  }
+
+  /// ✅ جلب أحدث البيانات من API وتحديث الـ UI
+  Future<void> _fetchLatestUserInfo() async {
+    try {
+      final userInfoJson = await _service.getUserInfo();
+      final freshUserInfo = SsoUserInfo.fromJson(userInfoJson);
+      final language = ref.read(appLanguageProvider);
+
+      print('🔄 Fetched fresh user info - Email: ${freshUserInfo.mail}, isEmailVerified: ${freshUserInfo.isEmailVerified}');
+
+      setState(() {
+        _currentFirstName = freshUserInfo.getLocalizedFirstName(language);
+        _currentLastName = freshUserInfo.getLocalizedLastName(language);
+        _firstNameController.text = _currentFirstName;
+        _lastNameController.text = _currentLastName;
+        _activeEmail = freshUserInfo.mail?.trim() ?? '';
+        _emailController.text = _activeEmail;
+        _isEmailVerified = freshUserInfo.isEmailVerified;
+        _initialFirstName = _currentFirstName;
+        _initialLastName = _currentLastName;
+      });
+
+      // تحديث الـ provider أيضاً
+      await ref.read(authProvider.notifier).forceUpdate();
+    } catch (e) {
+      print('❌ Failed to fetch fresh user info: $e');
+    }
   }
 
   @override
@@ -86,37 +119,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     super.dispose();
   }
 
-  bool get _isSsoLocked => widget.userInfo.isSSOLocked;
-  bool get _isEmailEditable => widget.userInfo.isEmailEditable;
-  bool get _canEditProfile => !_isSsoLocked;
-  bool get _canEditEmail => _isEmailEditable && !_isSsoLocked;
-
-  String? _parseGender(String? rawGender) {
-    if (rawGender == null || rawGender.isEmpty) return null;
-    final normalized = rawGender.trim().toLowerCase();
-    if (normalized == '1' || normalized == 'm' || normalized == 'male') return 'M';
-    if (normalized == '2' || normalized == 'f' || normalized == 'female') return 'F';
-    return null;
-  }
-
-  DateTime? _parseDob(String? rawDob) {
-    if (rawDob == null || rawDob.trim().isEmpty) return null;
-    final chunks = rawDob.trim().split('/');
-    if (chunks.length != 3) return null;
-    final day = int.tryParse(chunks[0]);
-    final month = int.tryParse(chunks[1]);
-    final year = int.tryParse(chunks[2]);
-    if (day == null || month == null || year == null) return null;
-    return DateTime.tryParse('$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}');
-  }
-
-  String _formatDob(DateTime? dob) {
-    if (dob == null) return 'account_dob_placeholder'.tr();
-    final dd = dob.day.toString().padLeft(2, '0');
-    final mm = dob.month.toString().padLeft(2, '0');
-    final yyyy = dob.year.toString();
-    return '$dd/$mm/$yyyy';
-  }
+  bool get _isSsoUser => widget.userInfo.loginType == SsoLoginType.nationalId;
+  bool get _isOtpUser => widget.userInfo.loginType == SsoLoginType.otp;
+  bool get _canEditProfile => _isOtpUser;
+  bool get _canEditEmail => _isOtpUser && widget.userInfo.isEmailEditable;
 
   bool _validateForm() {
     final firstName = _firstNameController.text.trim();
@@ -142,7 +148,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       isValid = false;
     }
 
-    if (email.isNotEmpty && !_isValidEmail(email)) {
+    if (_isOtpUser && email.isNotEmpty && !_isValidEmail(email)) {
       _emailError = 'account_error_email_format'.tr();
       isValid = false;
     }
@@ -158,25 +164,11 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   Future<void> _save() async {
     if (!_validateForm()) return;
 
-    final firstName = _firstNameController.text.trim();
-    final lastName = _lastNameController.text.trim();
-    final nextDob = _formatDob(_selectedDob) == 'account_dob_placeholder'.tr() ? '' : _formatDob(_selectedDob);
-    final nextGender = _selectedGender;
+    final newFirstName = _firstNameController.text.trim();
+    final newLastName = _lastNameController.text.trim();
     final newEmail = _emailController.text.trim();
     final emailChanged = newEmail != _activeEmail;
-
-    // ✅ إرسال جميع البيانات، وليس فقط التي تغيرت
-    final allProfileData = <String, dynamic>{
-      'firstname': firstName,
-      'lastname': lastName,
-      'dob': nextDob,
-      'gender': nextGender == 'M' ? '1' : nextGender == 'F' ? '2' : '',
-    };
-
-    // ✅ تأكد من إرسال الإيميل إذا كان متاحاً للتعديل
-    if (_canEditEmail && newEmail.isNotEmpty) {
-      allProfileData['email'] = newEmail;
-    }
+    final nameChanged = newFirstName != _currentFirstName || newLastName != _currentLastName;
 
     setState(() {
       _isLoading = true;
@@ -184,18 +176,42 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     });
 
     try {
-      // ✅ إرسال جميع البيانات إلى الـ API
-      await _service.updateUserProfile(changes: allProfileData);
+      // ✅ If name changed OR email changed, send ALL data
+      if ((nameChanged && _canEditProfile) || (emailChanged && _canEditEmail)) {
+        final completeProfileData = <String, dynamic>{
+          'firstname': newFirstName,
+          'lastname': newLastName,
+        };
 
-      // تحديث القيم المحفوظة
-      _initialFirstName = firstName;
-      _initialLastName = lastName;
-      _initialDob = nextDob;
-      _initialGender = nextGender;
-      _activeEmail = newEmail;
-      _emailController.text = newEmail;
+        // Include current email if not changing, or new email if changing
+        if (!emailChanged) {
+          completeProfileData['email'] = _activeEmail;
+        }
 
-      // ✅ إذا تغير الإيميل، نبدأ عملية التحقق
+        await _service.updateUserProfile(changes: completeProfileData);
+
+        await _fetchLatestUserInfo();
+
+        setState(() {
+          _currentFirstName = newFirstName;
+          _currentLastName = newLastName;
+          _initialFirstName = newFirstName;
+          _initialLastName = newLastName;
+
+          if (!emailChanged) {
+            _activeEmail = newEmail;
+            _emailController.text = _activeEmail;
+          }
+        });
+
+        if (mounted && !emailChanged) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('account_save_success'.tr())),
+          );
+        }
+      }
+
+      // ✅ Handle email change with OTP (without saving email yet)
       if (emailChanged && newEmail.isNotEmpty && _canEditEmail) {
         final sessionId = await _service.sendVerificationEmail(newEmail);
         setState(() {
@@ -204,33 +220,73 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           _pendingEmail = newEmail;
           _isEmailVerified = false;
           _errorText = null;
+          _isLoading = false;
         });
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('account_save_success'.tr())),
+            SnackBar(content: Text('verification_code_sent'.tr())),
           );
         }
 
-        // ✅ Show OTP Bottom Sheet
         _showOtpBottomSheet();
+      } else if (!emailChanged && nameChanged) {
+        setState(() => _isLoading = false);
       } else {
-        await _refreshUserInfo();
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('account_save_success'.tr())),
-          );
-        }
+        setState(() => _isLoading = false);
       }
     } on DioException catch (e) {
       _handleDioError(e);
+      setState(() => _isLoading = false);
     } catch (e) {
       setState(() => _errorText = 'account_error_save_failed'.tr());
-    } finally {
       setState(() => _isLoading = false);
     }
   }
-  /// ✅ Show OTP Bottom Sheet
+  Future<void> _updateEmailAfterVerification() async {
+    setState(() {
+      _isLoading = true;
+      _errorText = null;
+    });
+
+    try {
+      // ✅ Get current name values
+      final currentFirstName = _firstNameController.text.trim();
+      final currentLastName = _lastNameController.text.trim();
+
+      // ✅ Send ALL data together (email + first name + last name)
+      final completeProfileData = <String, dynamic>{
+        'firstname': currentFirstName,
+        'lastname': currentLastName,
+        'email': _pendingEmail,
+      };
+
+      await _service.updateUserProfile(changes: completeProfileData);
+
+      await _fetchLatestUserInfo();
+
+      setState(() {
+        _activeEmail = _pendingEmail ?? _activeEmail;
+        _emailController.text = _activeEmail;
+        _isEmailVerified = true;
+        _pendingEmail = null;
+        _currentFirstName = currentFirstName;
+        _currentLastName = currentLastName;
+        _initialFirstName = currentFirstName;
+        _initialLastName = currentLastName;
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('account_email_verified_success'.tr())),
+        );
+      }
+    } catch (e) {
+      setState(() => _errorText = 'account_error_save_failed'.tr());
+      setState(() => _isLoading = false);
+    }
+  }
   void _showOtpBottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -248,7 +304,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         resendAttemptsLeft: _resendAttemptsLeft,
       ),
     ).then((_) {
-      // إذا تم إغلاق الـ bottom sheet بدون تحقق
       if (_otpPending && mounted) {
         _cancelOtpVerification();
       }
@@ -267,31 +322,11 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     });
 
     try {
-      final ok = await _service.verifyEmail(
-        sessionId: _sessionId!,
-        otp: otp,
-      );
+      final ok = await _service.verifyEmail(sessionId: _sessionId!, otp: otp);
 
       if (ok) {
-        setState(() {
-          _otpPending = false;
-          _isEmailVerified = true;
-          _activeEmail = _pendingEmail ?? _activeEmail;
-          _emailController.text = _activeEmail;
-          _pendingEmail = null;
-          _sessionId = null;
-          _otpFailureCount = 0;
-          _isLoading = false;
-        });
-
-        await _refreshUserInfo();
-
-        if (mounted) {
-          Navigator.of(context).pop(); // Close bottom sheet
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('account_email_verified_success'.tr())),
-          );
-        }
+        if (mounted) Navigator.of(context).pop();
+        await _updateEmailAfterVerification();
       } else {
         setState(() => _otpFailureCount++);
         if (mounted) {
@@ -381,12 +416,12 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       _emailController.text = _activeEmail;
       _isEmailVerified = widget.userInfo.isEmailVerified;
     });
-    _loadUserData();
   }
 
   Future<void> _refreshUserInfo() async {
     try {
       await ref.read(authProvider.notifier).forceUpdate();
+      _loadUserData();
     } catch (e) {
       if (kDebugMode) print('Failed to refresh user info: $e');
     }
@@ -406,6 +441,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   Widget build(BuildContext context) {
     final language = ref.read(appLanguageProvider);
     final userInfo = widget.userInfo;
+    final isSso = _isSsoUser;
+    final isOtp = _isOtpUser;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -427,58 +464,158 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           ContentWrapper(
             color: context.colors.backgroundSurface1,
             children: [
-              _buildEditableField(
-                controller: _firstNameController,
-                label: 'account_first_name'.tr(),
-                hintText: 'account_first_name_hint'.tr(),
-                isEnabled: _canEditProfile,
-                errorText: _firstNameError,
-                maxLength: _nameMaxLength,
-              ),
+              // First Name
+              if (isOtp && _canEditProfile)
+                _buildEditableField(
+                  controller: _firstNameController,
+                  label: 'account_first_name'.tr(),
+                  hintText: 'account_first_name_hint'.tr(),
+                  isEnabled: true,
+                  errorText: _firstNameError,
+                  maxLength: _nameMaxLength,
+                )
+              else
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.getLocalizedFirstName(language),
+                    subtitle: 'account_first_name'.tr(),
+                  ),
+                ),
 
-              _buildEditableField(
-                controller: _lastNameController,
-                label: 'account_last_name'.tr(),
-                hintText: 'account_last_name_hint'.tr(),
-                isEnabled: _canEditProfile,
-                errorText: _lastNameError,
-                maxLength: _nameMaxLength,
-              ),
+              // Last Name
+              if (isOtp && _canEditProfile)
+                _buildEditableField(
+                  controller: _lastNameController,
+                  label: 'account_last_name'.tr(),
+                  hintText: 'account_last_name_hint'.tr(),
+                  isEnabled: true,
+                  errorText: _lastNameError,
+                  maxLength: _nameMaxLength,
+                )
+              else
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.getLocalizedLastName(language),
+                    subtitle: 'account_last_name'.tr(),
+                  ),
+                ),
 
-              _buildGenderAndDobRow(),
+              // Gender (SSO only - read-only)
+              if (isSso && userInfo.sex != null && userInfo.sex!.isNotEmpty)
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.getGender(),
+                    subtitle: 'account_gender'.tr(),
+                  ),
+                ),
 
-              _buildEditableField(
-                controller: _emailController,
-                label: 'account_email'.tr(),
-                hintText: 'emailFieldHint'.tr(),
-                keyboardType: TextInputType.emailAddress,
-                isEnabled: _canEditEmail,
-                errorText: _emailError,
-              ),
+              // Date of Birth (SSO only - read-only)
+              if (isSso && userInfo.dob != null && userInfo.dob!.isNotEmpty)
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.dob!,
+                    subtitle: 'date_of_birth'.tr(),
+                  ),
+                ),
 
-              // Email Verification Status
-              if (!_isSsoLocked)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _isEmailVerified
+              // Email with verification icon
+              if (isOtp && _canEditEmail)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildEditableField(
+                      controller: _emailController,
+                      label: 'account_email'.tr(),
+                      hintText: 'emailFieldHint'.tr(),
+                      keyboardType: TextInputType.emailAddress,
+                      isEnabled: true,
+                      errorText: _emailError,
+                    ),
+                    if (!_otpPending)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: Row(
+                          children: [
+                            Icon(
+                              _isEmailVerified ? Icons.check_circle : Icons.warning_amber_rounded,
+                              color: _isEmailVerified ? Colors.green : Colors.orange,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _isEmailVerified
+                                  ? 'account_email_verified'.tr()
+                                  : 'account_email_not_verified'.tr(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: _isEmailVerified ? Colors.green[700] : Colors.orange[700],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                )
+              else
+                Row(
+                  children: [
+                    Expanded(
+                      child: ContentRow(
+                        options: ContentRowOptions(
+                          dividerEnabled: true,
+                          title: userInfo.mail ?? '',
+                          subtitle: 'account_email'.tr(),
+                        ),
+                      ),
+                    ),
+                    if (isOtp)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16,),
+                        child: Tooltip(
+                          message: _isEmailVerified
                               ? 'account_email_verified'.tr()
                               : 'account_email_not_verified'.tr(),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: _isEmailVerified ? Colors.green[700] : Colors.orange[700],
+                          child: Icon(
+                            _isEmailVerified ? Icons.check_circle : Icons.warning_amber_rounded,
+                            color: _isEmailVerified ? Colors.green : Colors.orange,
+                            size: 20,
                           ),
                         ),
                       ),
-                      Icon(
-                        _isEmailVerified ? Icons.check_circle : Icons.warning_amber_rounded,
-                        color: _isEmailVerified ? Colors.green : Colors.orange,
-                        size: 18,
-                      ),
-                    ],
+                  ],
+                ),
+
+              // Arabic Full Name (SSO only)
+              if (isSso && userInfo.arName != null && userInfo.arName!.isNotEmpty)
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.arName!,
+                    subtitle: 'Arabic Full Name',
+                  ),
+                ),
+
+              // English Full Name (SSO only)
+              if (isSso && userInfo.enName != null && userInfo.enName!.isNotEmpty)
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.enName!,
+                    subtitle: 'English Full Name',
+                  ),
+                ),
+
+              // Nationality (SSO only)
+              if (isSso && userInfo.nationality != null && userInfo.nationality!.isNotEmpty)
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: false,
+                    title: userInfo.nationality!,
+                    subtitle: 'Nationality',
                   ),
                 ),
 
@@ -488,10 +625,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Text(_errorText!, style: const TextStyle(fontSize: 12, color: Colors.red)),
                 ),
-              SizedBox(height: MediaQuery.of(context).size.shortestSide-150,),
 
-              // Save Button
-              if (_canEditProfile)
+              // Save Button (OTP only)
+              if (isOtp && !_otpPending)
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: SizedBox(
@@ -542,7 +678,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                     ? 'account_error_name_max'.tr()
                     : null;
               });
-            } else if (label == 'account_email'.tr()) {
+            } else if (label == 'account_email'.tr() && _isOtpUser) {
               final email = controller.text.trim();
               setState(() {
                 _emailError = email.isNotEmpty && !_isValidEmail(email)
@@ -593,159 +729,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       ],
     ),
   );
-
-  Widget _buildGenderAndDobRow() {
-    final canEdit = _canEditProfile;
-    final selected = _selectedGender;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('account_gender'.tr(), style: const TextStyle(fontSize: 12, color: Colors.black87)),
-                const SizedBox(height: 4),
-                DecoratedBox(
-                  decoration: BoxDecoration(color: const Color(0xFFF4F4F4), borderRadius: BorderRadius.circular(8)),
-                  child: Row(
-                    children: [
-                      _buildGenderChip(
-                        label: 'M',
-                        isSelected: selected == 'M',
-                        onTap: canEdit ? () => setState(() => _selectedGender = 'M') : null,
-                      ),
-                      _buildGenderChip(
-                        label: 'F',
-                        isSelected: selected == 'F',
-                        onTap: canEdit ? () => setState(() => _selectedGender = 'F') : null,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('date_of_birth'.tr(), style: const TextStyle(fontSize: 12, color: Colors.black87)),
-                const SizedBox(height: 4),
-                InkWell(
-                  onTap: canEdit ? _showDatePickerSheet : null,
-                  borderRadius: BorderRadius.circular(8),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(color: const Color(0xFFF4F4F4), borderRadius: BorderRadius.circular(8)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _formatDob(_selectedDob),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: _selectedDob == null ? Colors.grey[500] : Colors.black87,
-                              ),
-                            ),
-                          ),
-                          Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey[600]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGenderChip({
-    required String label,
-    required bool isSelected,
-    required VoidCallback? onTap,
-  }) => Expanded(
-    child: InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        margin: const EdgeInsets.all(4),
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: isSelected ? Colors.grey.shade400 : Colors.transparent),
-        ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.w600, color: onTap == null ? Colors.grey[500] : Colors.black87),
-        ),
-      ),
-    ),
-  );
-
-  Future<void> _showDatePickerSheet() async {
-    final initialDate = _selectedDob ?? DateTime(1990, 1, 1);
-    DateTime tempDate = initialDate;
-
-    await showModalBottomSheet<void>(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (context) => SafeArea(
-        child: SizedBox(
-          height: 300,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  children: [
-                    Text('choose_date'.tr(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-                    const Spacer(),
-                    IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(Icons.close)),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: CupertinoDatePicker(
-                  mode: CupertinoDatePickerMode.date,
-                  maximumDate: DateTime.now(),
-                  minimumDate: DateTime(1900),
-                  initialDateTime: initialDate,
-                  onDateTimeChanged: (value) => tempDate = value,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() => _selectedDob = tempDate);
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('done'.tr()),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
-/// ✅ OTP Bottom Sheet Widget
+/// OTP Bottom Sheet Widget
 class OtpBottomSheetWidget extends StatefulWidget {
   final String pendingEmail;
   final Function(String) onVerify;
@@ -810,7 +796,6 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle
           Center(
             child: Container(
               width: 40,
@@ -822,13 +807,11 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
             ),
           ),
           const SizedBox(height: 20),
-          // Title
           Text(
             'account_enter_code_from_email'.tr(),
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
-          // Description
           Text(
             'account_verify_email_instruction'.tr(),
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
@@ -839,7 +822,6 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
             style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 24),
-          // OTP Input (Styled like design)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(4, (index) {
@@ -864,7 +846,6 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
               );
             }),
           ),
-          // Hidden TextField for OTP input
           const SizedBox(height: 8),
           Opacity(
             opacity: 0,
@@ -880,7 +861,6 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
               decoration: const InputDecoration(border: InputBorder.none),
             ),
           ),
-          // Resend attempts info
           if (_showResend && widget.resendAttemptsLeft > 0)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
@@ -890,7 +870,6 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
               ),
             ),
           const SizedBox(height: 16),
-          // Confirm Button
           SizedBox(
             width: double.infinity,
             child: FilledButton(
@@ -907,7 +886,6 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
             ),
           ),
           const SizedBox(height: 12),
-          // Resend Button (shown only after failure)
           if (_showResend)
             SizedBox(
               width: double.infinity,
