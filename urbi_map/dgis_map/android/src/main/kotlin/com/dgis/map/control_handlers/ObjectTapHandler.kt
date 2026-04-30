@@ -2,6 +2,7 @@ package com.dgis.map.control_handlers
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.util.Size
 import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
@@ -90,9 +91,11 @@ class ObjectTapHandler(
         //            else -> eventSink.error("ClassCastException", "tapped object class is not
         // supported", null)
         //        }
+        // Markers now require long-press (handled in objectLongTapListener) per
+        // dynamic-POI iter4 UX. Short taps on markers fall through silently.
         when (val tappedObject = roi.item.item) {
             is Marker -> {
-                onMarkerTap(tappedObject)
+                Log.d("DynamicPoiDebug.Android", "short tap on Marker — ignored, long-press required")
                 return
             }
             is SimpleClusterObject -> {
@@ -115,6 +118,11 @@ class ObjectTapHandler(
     }
     fun objectLongTapListener(roi: RenderedObjectInfo) {
         when (val tappedObject = roi.item.item) {
+            is Marker -> {
+                Log.d("DynamicPoiDebug.Android", "object long-press hit Marker")
+                onMarkerTap(tappedObject)
+                return
+            }
             is Polygon -> {
                 val userData = tappedObject.userData
 
@@ -376,7 +384,15 @@ class ObjectTapHandler(
         options.animatedAppearance?.let { animatedAppearance ->
             markers[id]?.first?.animatedAppearance = animatedAppearance
         }
-        options.isVisible?.let { isVisible -> markers[id]?.first?.isVisible = isVisible }
+        options.isVisible?.let { isVisible ->
+            if (id.startsWith("dynamic_poi_")) {
+                Log.d(
+                    "DynamicPoiDebug.Android",
+                    "setMarkerOptions id=$id isVisible=$isVisible found=${markers[id] != null}"
+                )
+            }
+            markers[id]?.first?.isVisible = isVisible
+        }
     }
 
     fun addMarkers(
