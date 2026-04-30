@@ -69,7 +69,10 @@ class SearchItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String subtitle = result.subtitle;
+    String subtitle =(result.id?.objectId == 70030077050725730
+        ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
+        : (result.subtitle == 'تسوية' ? 'نطاق' : result.subtitle));
+    // String subtitle = result.subtitle;
     List<String> photosUrls = [];
     List<Item> photoItems = [];
 
