@@ -7,7 +7,18 @@ class CustomMiniAppsIconButton extends StatelessWidget {
   final Color? backgroundColor;
   final Color? iconColor;
   final IconData? icon;
-  const CustomMiniAppsIconButton({super.key, this.height, this.width, this.backgroundColor, this.iconColor, this.icon});
+  final Color? borderColor;
+  final void Function()? onPressed;
+  const CustomMiniAppsIconButton({
+    super.key,
+    this.height,
+    this.width,
+    this.backgroundColor,
+    this.iconColor,
+    this.icon,
+    this.borderColor,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +29,14 @@ class CustomMiniAppsIconButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor ?? Theme.of(context).colorScheme.onSurface.withAlpha(10),
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: borderColor ?? Colors.transparent, width: 1),
         ),
         child: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed:
+              onPressed ??
+              () {
+                Navigator.pop(context);
+              },
           icon: Icon(context.isRTL ? icon ?? Icons.east : icon ?? Icons.west),
           color: iconColor ?? (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black),
         ),
