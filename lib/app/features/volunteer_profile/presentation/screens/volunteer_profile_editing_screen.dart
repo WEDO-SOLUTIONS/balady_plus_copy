@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -79,38 +80,41 @@ class _VolunteerProfileEditingScreenState
         );
         return true; // Allow pop
       },
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Theme.of(context).colorScheme.onSurface,
+      child: Theme(
+        data: Theme.of(NavigationService.navigatorKey.currentState!.context),
+        child: Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            elevation: 0,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+              onPressed: () {
+                VolunteerPresentationMode.cancelEditMode(
+                  context,
+                  widget.volunteerProfileBloc,
+                  originalValues!,
+                );
+                Navigator.of(context).pop();
+              },
             ),
-            onPressed: () {
-              VolunteerPresentationMode.cancelEditMode(
-                context,
-                widget.volunteerProfileBloc,
-                originalValues!,
-              );
-              Navigator.of(context).pop();
-            },
-          ),
-          title: Text(
-            'volunteer_edit_info_title'.tr(),
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+            title: Text(
+              'volunteer_edit_info_title'.tr(),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
+            centerTitle: true,
           ),
-          centerTitle: true,
-        ),
-        body: BlocProvider.value(
-          value: widget.volunteerProfileBloc,
-          child: const VolunteerPresentationMode(isEditMode: true),
+          body: BlocProvider.value(
+            value: widget.volunteerProfileBloc,
+            child: const VolunteerPresentationMode(isEditMode: true),
+          ),
         ),
       ),
     );
