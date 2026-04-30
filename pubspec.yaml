@@ -210,12 +210,12 @@ dependencies:
 
   ############################################################
   balady_design_system:
-     path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
+#     path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
     #  hosted: https://baladyapp-unpub.urbi.ae/
     #  version: 0.0.3
-  #      git:
-  #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
-  #        ref: main
+      git:
+        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
+        ref: feature/apply-new-theme
   #    path: /Users/abdelrahmanismail/StudioProjects/balady_design_system
 
 
