@@ -38,7 +38,6 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
         final itemHeight = context.h(64) + context.screenHeight * 0.01;
         final listHeight = itemHeight * state.favoriteApps.length;
 
-
         return SizedBox(
           height: listHeight,
           child: ReorderableListView.builder(
@@ -62,61 +61,55 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
 
               return Padding(
                 key: ValueKey('fav_${favApp.id}'),
-                padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
+                padding: EdgeInsets.only(bottom: context.screenHeight * 0.00),
                 child: SizedBox(
                   width: context.screenWidth,
-                  height: context.h(64),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(15)),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              AppsGroupMiniAppsCardWidgets(
-                                width: context.w(48.09228515625),
-                                height: context.h(48.09228515625),
-                                iconHeight: context.h(37.73630905151367),
-                                iconWidth: context.w(37.73630905151367),
-                                isTextRemove: true,
-                                iconPath: favApp.iconPath,
-                                radius: 12.7,
-                              ),
-                              SizedBox(width: context.screenWidth * 0.02),
-                              CustomSubHeadingText(
-                                width: context.w(192),
-                                height: context.h(30),
-                                text: favApp.name,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              CustomMiniAppSwitch(
-                                isActive: true,
-                                onChanged: (_) {
-                                  context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
-                                },
-                              ),
-                              Icon(
-                                Icons.drag_indicator_rounded,
-                                color: Theme.of(context).brightness == Brightness.dark
-                                    ? Theme.of(context).colorScheme.onSurface.withAlpha(90)
-                                    : Theme.of(context).hoverColor,
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  height: context.h(70),
+                  child: Card(
+                    child: Row(
+                      children: [
+                        Row(
+                          children: [
+                            AppsGroupMiniAppsCardWidgets(
+                              isActive: true,
+                              width: context.w(48.09228515625),
+                              height: context.h(48.09228515625),
+                              iconHeight: context.h(37.73630905151367),
+                              iconWidth: context.w(37.73630905151367),
+                              isTextRemove: true,
+                              iconPath: favApp.iconPath,
+                              radius: 8,
+                            ),
+                            CustomSubHeadingText(
+                              isTextCenter: false,
+                              maxLines: 2,
+                              autoSizeMaxFont: 15,
+                              autoSizeMinFont: 9,
+
+                              width: context.w(192),
+                              height: context.h(30),
+                              text: favApp.name,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Row(
+                          children: [
+                            CustomMiniAppSwitch(
+                              isActive: true,
+                              onChanged: (_) {
+                                context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
+                              },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              child: Icon(Icons.drag_handle_rounded, color: Color(0XFF9DA4AE), size: 20),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),

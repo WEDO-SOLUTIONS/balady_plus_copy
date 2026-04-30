@@ -236,18 +236,17 @@ packages:
   balady_design_system:
     dependency: transitive
     description:
-      name: balady_design_system
-      sha256: "333c3f95cad805f817fd5a41c9e907fa7a7ad6000877788376d5b682b8918848"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
-    version: "0.0.3"
+      path: "/Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system"
+      relative: false
+    source: path
+    version: "0.0.6"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+504"
+    version: "3.30.3+508"
   balady_uikit:
     dependency: "direct main"
     description:

@@ -1,10 +1,12 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+// import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/delegators/services/account_selection_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -22,9 +24,9 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+// import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {
@@ -81,11 +83,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       if (cubit.state.isAppsGroupLoading) {
         return const Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFF1CA9A6),
-            ),
-          ),
+          body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
         );
       }
 
@@ -96,11 +94,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       });
       return const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF1CA9A6),
-          ),
-        ),
+        body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
       );
     }
 
@@ -109,7 +103,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: PopScope(
-        onPopInvokedWithResult: (_, __) {
+        onPopInvokedWithResult: (_, _) {
           context.read<NewMiniAppLogicCubit>().clearSearch();
         },
         child: Stack(
@@ -215,7 +209,6 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     suffixPadding: value.text.isNotEmpty
                                         ? EdgeInsets.symmetric(horizontal: context.screenWidth * 0.02)
                                         : EdgeInsets.symmetric(horizontal: context.screenWidth * 0.04),
-                                    autoFocus: false,
                                     autofocus: false,
                                     controller: controller,
                                     onTap: null,
@@ -225,21 +218,17 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                         ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
                                         : null,
                                     suffixIcon: value.text.isEmpty
-                                        ? SvgPicture.asset(
-                                      Theme.of(context).brightness == Brightness.dark
-                                          ? IconPath.searchSVG2
-                                          : IconPath.searchSVG,
-                                    )
+                                        ? null
                                         : IconButton(
-                                      onPressed: () {
-                                        controller.clear();
-                                        context.read<NewMiniAppLogicCubit>().searchMiniApp(
-                                          '',
-                                          source: appGroup!.apps,
-                                        );
-                                      },
-                                      icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
-                                    ),
+                                            onPressed: () {
+                                              controller.clear();
+                                              context.read<NewMiniAppLogicCubit>().searchMiniApp(
+                                                '',
+                                                source: appGroup!.apps,
+                                              );
+                                            },
+                                            icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
+                                          ),
                                     onChanged: (query) {
                                       context.read<NewMiniAppLogicCubit>().searchMiniApp(query, source: appGroup!.apps);
                                     },
@@ -307,7 +296,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                               PageRouteBuilder(
                                                 opaque: false,
                                                 barrierColor: Colors.transparent,
-                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id),
+                                                pageBuilder: (_, _, _) => AppsGroupPage(groupId: categoryGroup.id),
                                               ),
                                             ),
                                           ),
@@ -322,11 +311,63 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                       itemDuration: const Duration(milliseconds: 150),
                                       itemDelay: const Duration(milliseconds: 200),
                                       children: [
+                                        GestureDetector(
+                                          onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
+                                          child: SizedBox(
+                                            width: context.w(100),
+                                            height: context.h(100),
+                                            child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      color: Theme.of(context).primaryColorLight,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: CustomNetworkImageWidget(
+                                                        miniApp.iconPath,
+                                                        isVerifyingKey: true,
+                                                        imageFit: BoxFit.contain,
+                                                        imageWidth: context.w(51),
+                                                        imageHeight: context.h(51),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // SizedBox(height: context.screenHeight * 0.02),
+                                                  SizedBox(
+                                                    width: context.screenWidth * 0.25,
+                                                    height: context.screenHeight * 0.02,
+                                                    child: AutoSizeText(
+                                                      maxLines: 3,
+                                                      maxFontSize: 14,
+                                                      minFontSize: 10,
+                                                      miniApp.name,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.center, // Good practice for grid items
+                                                      style: const TextStyle(
+                                                        fontFamily: GeneralKey.appFontType,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        /*
                                         AppsGroupMiniAppsCardWidgets(
+                                          isActive: false,
                                           title: miniApp.name,
                                           iconPath: miniApp.iconPath,
                                           onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
                                         ),
+                                        */
                                       ],
                                     );
                                   }, childCount: totalCount),
@@ -334,7 +375,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 16,
                                     mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                    childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
+                                    childAspectRatio:
+                                        (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
+                                          0.52,
+                                          0.78,
+                                        ),
                                   ),
                                 ),
                                 // Add bottom spacing so the gradient overlay doesn't hide last items
@@ -379,6 +424,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 delegate: SliverChildBuilderDelegate((context, index) {
                                   final miniApp = sortedResults[index];
                                   return AppsGroupMiniAppsCardWidgets(
+                                    isActive: false,
                                     title: miniApp.name,
                                     iconPath: miniApp.iconPath,
                                     onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
@@ -388,7 +434,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16 * MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5),
-                                  childAspectRatio: (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(0.52, 0.78),
+                                  childAspectRatio:
+                                      (0.72 / MediaQuery.of(context).textScaler.scale(1.0).clamp(1.0, 1.5)).clamp(
+                                        0.52,
+                                        0.78,
+                                      ),
                                 ),
                               ),
                               SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
@@ -413,16 +463,16 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                     end: Alignment.bottomCenter,
                     colors: Theme.of(context).brightness == Brightness.dark
                         ? [
-                      // replaced with Color.fromRGBO to avoid withOpacity deprecation
-                      const Color.fromRGBO(0, 0, 0, 0.0),
-                      const Color.fromRGBO(0, 0, 0, 0.6),
-                      const Color.fromRGBO(0, 0, 0, 1.0),
-                    ]
+                            // replaced with Color.fromRGBO to avoid withOpacity deprecation
+                            const Color.fromRGBO(0, 0, 0, 0.0),
+                            const Color.fromRGBO(0, 0, 0, 0.6),
+                            const Color.fromRGBO(0, 0, 0, 1.0),
+                          ]
                         : [
-                      const Color.fromRGBO(255, 255, 255, 0.0),
-                      const Color.fromRGBO(255, 255, 255, 0.6),
-                      const Color.fromRGBO(255, 255, 255, 1.0),
-                    ],
+                            const Color.fromRGBO(255, 255, 255, 0.0),
+                            const Color.fromRGBO(255, 255, 255, 0.6),
+                            const Color.fromRGBO(255, 255, 255, 1.0),
+                          ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
                 ),
@@ -457,4 +507,3 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
     );
   }
 }
-
