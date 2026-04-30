@@ -49,7 +49,11 @@ class _LandscapeLayout extends StatelessWidget {
                 builder: (context, isVisible, child) => AnimatedOpacity(
                   opacity: isVisible ? 1 : 0,
                   duration: const Duration(milliseconds: 250),
-                  child: IgnorePointer(ignoring: !isVisible, child: const RadioContextualButton()),
+                  child: IgnorePointer(ignoring: !isVisible,
+                    // TODO: MBC - Uncomment for next release
+                    // child: const RadioContextualButton(),
+                    child: const SizedBox.shrink(),
+                  ),
                 ),
               ),
               const SizedBox(height: 60)],

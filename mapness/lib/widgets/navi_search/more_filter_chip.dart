@@ -17,16 +17,18 @@ class MoreFilterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
     onTap: onTap,
-    child: SizedBox(
-      child: Container(
+    child: Container(
+        width: 56,
+        height: 56,
         decoration: BoxDecoration(
-          color: context.colors.accentDefault.withOpacity(.09),
+          color: context.colors.accentSecondaryContainerSoft.withOpacity(.05),
+          borderRadius: BorderRadius.circular(56),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: context.colors.accentDefault),
-            const SizedBox(height: Spacing.$1x),
+            Icon(icon, size: 24, color: context.colors.accentSecondaryDefault),
+            const SizedBox(height: Spacing.$2x),
             Text(
               title,
               maxLines: 2,
@@ -34,11 +36,12 @@ class MoreFilterChip extends StatelessWidget {
               textAlign: TextAlign.center,
               style: context.textStyles.bodySmallRegular.copyWith(
                 color: context.colors.foregroundDefault,
+                fontSize: 12,
+                height: 1.25,
               ),
             ),
           ],
         ),
-      ),
     )
   );
 }

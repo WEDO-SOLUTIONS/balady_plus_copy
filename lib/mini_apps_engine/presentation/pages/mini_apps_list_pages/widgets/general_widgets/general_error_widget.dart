@@ -1,5 +1,3 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -31,12 +29,11 @@ class GeneralErrorWidget extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Get current business account status from DelegatorsCubit
-                  final delegatorsState = context.read<DelegatorsCubit>().state;
-                  final isUserAccountBusiness =
-                      delegatorsState.selectedDelegate != null || delegatorsState.selectedAgent != null;
+                  // final delegatorsState = context.read<DelegatorsCubit>().state;
+                  // final isUserAccountBusiness =
+                  //     delegatorsState.selectedDelegate != null || delegatorsState.selectedAgent != null;
 
-                  context.read<NewMiniAppLogicCubit>().loadMiniApps(
-                  );
+                  context.read<NewMiniAppLogicCubit>().loadMiniApps();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: context.colors.accentDefault,

@@ -40,7 +40,7 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
             (entry) => entry.value != null
                 ? FeedbackFieldPayloadDto(
                     id: entry.key,
-                    value: entry.value,
+                    value: entry.key == 'business_owner' ? false : entry.value,
                   )
                 : null,
           )

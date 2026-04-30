@@ -1,7 +1,7 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -47,7 +47,7 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
   @override
   Widget build(BuildContext context) {
     // Workaround to fix issue: https://github.com/google/flutter.widgets/issues/192
-    final isArabic = CommonFunctions.isAppAR;
+    final isArabic = ref.watch(uiDirectionProvider) == TextDirection.rtl;
 
     return SizedBox(
       height: widget.height,

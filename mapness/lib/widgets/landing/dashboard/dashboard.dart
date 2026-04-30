@@ -54,9 +54,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   late FreeRoamStartState freeRoamState;
 
   StatefulSheetDelegateFunction<double, ThreeStateSheet> _buildOutsideOpacityDelegate(bool isMakkahTheme) {
-    // Makkah theme: start fading earlier (0.33) and fade faster (multiplier 15)
-    // Other themes: start fading at 0.4 with multiplier 9
-    final threshold = isMakkahTheme ? 0.33 : 0.4;
+    const threshold = 0.4;
     final fadeMultiplier = isMakkahTheme ? 15.0 : 9.0;
 
     return StatefulSheetDelegateFunction<double, ThreeStateSheet>(

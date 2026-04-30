@@ -79,29 +79,35 @@ class AudioPlayerBanner extends ConsumerWidget {
                   children: [
                     // Play/Pause button
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () async {
                         final audioProvider = ref.read(streamAudioProvider);
                         await audioProvider.togglePlayPause();
                       },
-                      child: provider.isLoading
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      child: Container(
+                        width: 48,
+                        height: 56,
+                        color: Colors.transparent,
+                        alignment: Alignment.center,
+                        child: provider.isLoading
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : SvgPicture.asset(
+                                provider.isPlaying
+                                    ? Assets.icons.svg.audio.pause.keyName
+                                    : Assets.icons.svg.audio.resume.keyName,
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                               ),
-                            )
-                          : SvgPicture.asset(
-                              provider.isPlaying
-                                  ? Assets.icons.svg.audio.pause.keyName
-                                  : Assets.icons.svg.audio.resume.keyName,
-                              width: 16,
-                              height: 16,
-                              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                            ),
+                      ),
                     ),
-                    const SizedBox(width: 12),
                     // Forward button
                     Transform.flip(
                       flipX: Directionality.of(context) == TextDirection.rtl,
@@ -109,24 +115,34 @@ class AudioPlayerBanner extends ConsumerWidget {
                         opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
                         duration: const Duration(milliseconds: 200),
                         child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onTap: !provider.canGoToNextChannel
                               ? null
                               : () => ref.read(streamAudioProvider).goToNextChannel(),
-                          child: SvgPicture.asset(
-                            Assets.icons.svg.audio.seekForward.keyName,
-                            width: 14,
-                            height: 14,
-                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                          child: Container(
+                            width: 48,
+                            height: 56,
+                            color: Colors.transparent,
+                            alignment: Alignment.center,
+                            child: SvgPicture.asset(
+                              Assets.icons.svg.audio.seekForward.keyName,
+                              width: 14,
+                              height: 14,
+                              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
                     // Close button
                     GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: onClose,
                       child: Container(
-                        padding: const EdgeInsets.all(4),
+                        width: 48,
+                        height: 56,
+                        color: Colors.transparent,
+                        alignment: Alignment.center,
                         child: Icon(
                           Icons.close,
                           color: Colors.white.withOpacity(0.8),

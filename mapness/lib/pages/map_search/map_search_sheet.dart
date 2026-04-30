@@ -206,12 +206,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          Listener(
-            behavior: HitTestBehavior.translucent,
-            onPointerDown: (_) {
-              _unfocusSearchField();
-              _collapseBottomSheet();
-            },
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onLongPress: _onMapAreaLongPress,
+            ),
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
@@ -422,8 +421,18 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     context.router.pop();
   }
 
-  void _collapseBottomSheet() {
-    _multiStateSheetController.setState(ThreeStateSheet.hidden);
+  void _onMapAreaLongPress() {
+    if (!mounted) {
+      return;
+    }
+    _unfocusSearchField();
+    ref.read(searchProvider(_scope).notifier).clear();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _removeAllMarkersAndPop();
+    });
   }
 
   void _setShowMoreQuickFilters(bool value) {

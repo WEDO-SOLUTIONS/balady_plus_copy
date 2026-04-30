@@ -95,7 +95,8 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const RadioContextualButton(),
+                                              // TODO: MBC - Uncomment for next release
+                                              // const RadioContextualButton(),
                                               const SizedBox(height: 10),
                                               ValueListenableBuilder(
                                                   valueListenable:

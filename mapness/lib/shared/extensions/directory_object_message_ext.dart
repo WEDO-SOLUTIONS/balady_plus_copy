@@ -120,23 +120,29 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         [],
   );
 
-  bool get hasHighlightableType => types.any(
-    (e) => switch (e.type) {
-      ObjectTypeMessage.admDiv ||
-      ObjectTypeMessage.admDivCity ||
-      ObjectTypeMessage.admDivCountry ||
-      ObjectTypeMessage.admDivDistrict ||
-      ObjectTypeMessage.admDivDistrictArea ||
-      ObjectTypeMessage.admDivDivision ||
-      ObjectTypeMessage.admDivLivingArea ||
-      ObjectTypeMessage.admDivPlace ||
-      ObjectTypeMessage.admDivRegion ||
-      ObjectTypeMessage.admDivSettlement ||
-      ObjectTypeMessage.road ||
-      ObjectTypeMessage.street => false,
-      _ => true,
-    },
-  );
+  bool get hasHighlightableType {
+    final hasBroadAreaType = types.any(
+      (e) => switch (e.type) {
+        ObjectTypeMessage.admDiv ||
+        ObjectTypeMessage.admDivCity ||
+        ObjectTypeMessage.admDivCountry ||
+        ObjectTypeMessage.admDivDistrict ||
+        ObjectTypeMessage.admDivDistrictArea ||
+        ObjectTypeMessage.admDivDivision ||
+        ObjectTypeMessage.admDivLivingArea ||
+        ObjectTypeMessage.admDivPlace ||
+        ObjectTypeMessage.admDivRegion ||
+        ObjectTypeMessage.admDivSettlement ||
+        ObjectTypeMessage.road ||
+        ObjectTypeMessage.street => true,
+        _ => false,
+      },
+    );
+    if (hasBroadAreaType) {
+      return false;
+    }
+    return types.isNotEmpty;
+  }
 }
 
 extension TradeLicenseMessageExt on TradeLicenseMessage {
