@@ -41,7 +41,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
             ),
           ),
           centerTitle: true,
-          leading: BackButton(color: theme.primaryColor),
+          leading: BackButton(color: context.colors.accentDefault),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -106,7 +106,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
                         child: Text(
                           "privacyBaladyPlatformText".tr(),
                           style: bodyStyle.copyWith(
-                            color: theme.primaryColor,
+                            color: context.colors.accentDefault,
                             fontWeight: FontWeight.bold,
                             fontFamily: fontFamily,
                             decoration: TextDecoration.underline,
@@ -135,7 +135,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SvgPicture.asset(iconPath, height: 20),
+            SvgPicture.asset(iconPath, height: 20, colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn)),
             const SizedBox(width: 12),
             Expanded(
               child: Text(

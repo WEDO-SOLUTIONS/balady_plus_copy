@@ -1,9 +1,11 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -37,6 +39,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final objectId = directoryObject.id?.objectId;
+    final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
+    final isDGAlight = context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     ref.watch(favouriteCacheProvider).value;
     final provider = ref.watch(favouriteCacheProvider.notifier);
@@ -82,6 +86,9 @@ class SearchItemQuickActions extends HookConsumerWidget {
         borderRadius: 4,
         colorScheme: colorScheme,
         iconSize: 15,
+        bgColor: context.colors.staticTiffany,
+        labelColor: context.colors.accentSecondaryOnAccentSecondary,
+        iconColor: context.colors.accentSecondaryOnAccentSecondary,
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
@@ -105,6 +112,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: iconData,
         iconSize: 15,
+        bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
         border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
         borderRadius: 4,
         buttonType: ButtonType.secondary,
@@ -132,6 +140,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         },
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: SystemIcons.share,
           border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
           borderRadius: 4,
@@ -142,6 +151,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ),
       if (phoneNumber != null)
         ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: GeneralIcons.phoneLTR,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
@@ -154,6 +164,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         ),
       if (website != null)
         ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: GeneralIcons.web,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
@@ -166,6 +177,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         ),
       if (website == null && socialMedia != null)
         ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,

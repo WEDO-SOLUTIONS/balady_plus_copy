@@ -140,7 +140,7 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       ),
 
                       BottomNavigationBar(
-                        backgroundColor: Colors.transparent,
+                        backgroundColor: context.colors.backgroundSurface2,
                         elevation: 0,
                         type: BottomNavigationBarType.fixed,
                         selectedLabelStyle: TextStyle(

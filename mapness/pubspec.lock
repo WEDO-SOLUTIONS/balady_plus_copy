@@ -247,14 +247,13 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+504"
+    version: "3.30.3+508"
   balady_uikit:
     dependency: "direct main"
     description:
-      name: balady_uikit
-      sha256: "1f1bbfc9667dc5c00944301b2e0ec6e709bed1580bf7070db681c67c09118d3b"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
+      path: "../../balady_uikit"
+      relative: true
+    source: path
     version: "5.0.11"
   battery_plus:
     dependency: "direct main"
@@ -2653,6 +2652,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.8"
+  sdga_design_system:
+    dependency: transitive
+    description:
+      name: sdga_design_system
+      sha256: "8b7c320ace05ad0489a4318aeb1f1ee2ae61867db4d315c0c5061adcd4557138"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  sdga_icons:
+    dependency: transitive
+    description:
+      name: sdga_icons
+      sha256: "2bbd7468749d10c9d3f0304fd9465a0e7c8a92d0b27dc4c8466b6c928c35bf59"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   sentry:
     dependency: transitive
     description:
