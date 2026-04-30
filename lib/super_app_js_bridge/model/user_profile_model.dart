@@ -1,4 +1,5 @@
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
+import 'package:flutter/material.dart';
 
 class UserProfileModel implements BaseData {
   String email;
@@ -20,13 +21,15 @@ class UserProfileModel implements BaseData {
     String rawPhone = json['phone'] as String;
     String formattedPhone = rawPhone;
 
-    //* Check if the number starts with 9665 and convert it to 05
-    if (formattedPhone.startsWith('966')) {
-      formattedPhone = '0${formattedPhone.substring(3)}'; //* Drops '966' and adds '0'
+    //* Check if the number starts with 00966, +966, or 966 and convert it to 05
+    //* Order matters: check longer prefixes first to avoid false matches
+    if (formattedPhone.startsWith('00966')) {
+      formattedPhone = '0${formattedPhone.substring(5)}'; //* Drops '00966' and adds '0'
     } else if (formattedPhone.startsWith('+966')) {
       formattedPhone = '0${formattedPhone.substring(4)}'; //* Drops '+966' and adds '0'
+    } else if (formattedPhone.startsWith('966')) {
+      formattedPhone = '0${formattedPhone.substring(3)}'; //* Drops '966' and adds '0'
     }
-    //! .....
 
     return UserProfileModel(
       email: json['email'] as String,
