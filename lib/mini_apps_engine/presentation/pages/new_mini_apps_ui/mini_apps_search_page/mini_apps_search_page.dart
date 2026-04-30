@@ -8,8 +8,8 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/_shared/widgets/custom_mini_app_icon_button_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/add_fav_mini_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -187,21 +187,22 @@ class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
 
                           //! Search field
                           AnimatedPadding(
-                            duration: const Duration(milliseconds: 250),
+                            duration: const Duration(milliseconds: 50),
                             curve: Curves.easeOut,
                             padding: EdgeInsets.only(
                               bottom: (MediaQuery.viewInsetsOf(context).bottom > 0)
                                   ? (MediaQuery.viewInsetsOf(context).bottom -
                                             MediaQuery.paddingOf(context).bottom -
-                                            (context.screenHeight * 0.02))
+                                            (context.screenHeight * 0.06))
                                         .clamp(0.0, double.infinity)
                                   : 0.0,
                             ),
                             child: Row(
                               children: [
-                                CustomMiniAppsBackButton(
-                                  height: context.screenHeight * 0.054,
+                                CustomMiniAppsIconButton(
+                                  height: context.screenHeight * 0.063,
                                   width: context.screenWidth * 0.13,
+                                  backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
                                 ),
                                 ValueListenableBuilder<TextEditingValue>(
                                   valueListenable: _controller,

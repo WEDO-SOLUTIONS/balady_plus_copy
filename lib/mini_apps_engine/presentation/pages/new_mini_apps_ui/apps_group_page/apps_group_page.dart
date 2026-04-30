@@ -1,10 +1,12 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 // import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/delegators/services/account_selection_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -309,12 +311,63 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                       itemDuration: const Duration(milliseconds: 150),
                                       itemDelay: const Duration(milliseconds: 200),
                                       children: [
+                                        GestureDetector(
+                                          onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
+                                          child: SizedBox(
+                                            width: context.w(100),
+                                            height: context.h(100),
+                                            child: Card(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  DecoratedBox(
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.rectangle,
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      color: Theme.of(context).primaryColorLight,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: CustomNetworkImageWidget(
+                                                        miniApp.iconPath,
+                                                        isVerifyingKey: true,
+                                                        imageFit: BoxFit.contain,
+                                                        imageWidth: context.w(51),
+                                                        imageHeight: context.h(51),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // SizedBox(height: context.screenHeight * 0.02),
+                                                  SizedBox(
+                                                    width: context.screenWidth * 0.25,
+                                                    height: context.screenHeight * 0.02,
+                                                    child: AutoSizeText(
+                                                      maxLines: 3,
+                                                      maxFontSize: 14,
+                                                      minFontSize: 10,
+                                                      miniApp.name,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.center, // Good practice for grid items
+                                                      style: const TextStyle(
+                                                        fontFamily: GeneralKey.appFontType,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        /*
                                         AppsGroupMiniAppsCardWidgets(
                                           isActive: false,
                                           title: miniApp.name,
                                           iconPath: miniApp.iconPath,
                                           onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
                                         ),
+                                        */
                                       ],
                                     );
                                   }, childCount: totalCount),

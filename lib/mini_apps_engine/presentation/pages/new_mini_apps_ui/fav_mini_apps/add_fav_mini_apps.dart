@@ -4,6 +4,7 @@ import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/an
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/_shared/widgets/custom_mini_app_icon_button_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/get_all_fav_mini_apps_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/get_all_unFav_mini_apps_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/widgets/search_mini_apps_results_list.dart';
@@ -66,7 +67,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                         fontFamily: GeneralKey.appFontType,
                       ),
                     ),
@@ -76,7 +77,9 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 12,
-                        color: Theme.of(context).colorScheme.onSurface.withAlpha(120),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white.withAlpha(120)
+                            : Colors.black.withAlpha(120),
                         fontFamily: GeneralKey.appFontType,
                       ),
                     ),
@@ -90,7 +93,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
             padding: context.isRTL
                 ? EdgeInsets.only(right: context.screenWidth * 0.02, bottom: 10)
                 : EdgeInsets.only(left: context.screenWidth * 0.02, bottom: 10),
-            child: const CustomMiniAppsBackButton(),
+            child: const CustomMiniAppsIconButton(),
           ),
         ),
         body: SafeArea(
@@ -200,33 +203,6 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CustomMiniAppsBackButton extends StatelessWidget {
-  final double? height;
-  final double? width;
-  const CustomMiniAppsBackButton({super.key, this.height, this.width});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: height ?? 10,
-      width: width ?? 10,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurface.withAlpha(10),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(context.isRTL ? Icons.east : Icons.west),
-          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
