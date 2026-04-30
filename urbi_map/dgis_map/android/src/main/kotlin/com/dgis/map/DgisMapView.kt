@@ -75,6 +75,7 @@ class DgisMapView(
                 navigationManager = navigationManager,
                 eventSink = eventSink,
                 map = map!!,
+                appContext = context,
         )
     }
     private val packagesHandler by unsafeLazy {

@@ -69,7 +69,7 @@ class ToastOverlayState extends State<ToastOverlay> {
     bool? isDismissible,
     bool isClosable = false,
     bool isFlipped = false,
-    Duration displayDuration = const Duration(seconds: 3),
+    Duration displayDuration = const Duration(seconds: 10),
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) {
     _overlayEntry?.remove();
