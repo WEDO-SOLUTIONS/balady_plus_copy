@@ -43,6 +43,7 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
+import 'package:mapness/features/dynamic_poi/dynamic_poi_layer_provider.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -134,6 +135,8 @@ class MapnessProviderScope extends StatelessWidget {
             ..watch(activeCityEventProvider)
             // Initialize Makkah places layer provider
             ..watch(makkahPlacesLayerProvider)
+            // Initialize Dynamic POI layer (Momrah dynamic-markers backend)
+            ..watch(dynamicPoiLayerProvider)
             // Initialize WRC provider to listen remote config
             ..watch(wRCProvider);
 

@@ -38,6 +38,11 @@ class MapObjectManagerSettings {
     layerId: MapObjectLayers.defaultLayerId,
   );
 
+  factory MapObjectManagerSettings.dynamicPoi() => const MapObjectManagerSettings._(
+    name: 'dynamic-poi',
+    layerId: MapObjectLayers.defaultLayerId,
+  );
+
   factory MapObjectManagerSettings.esri() =>
       const MapObjectManagerSettings._(name: 'esri_markers', layerId: MapObjectLayers.defaultLayerId);
 
@@ -176,6 +181,15 @@ class MapObjectManager extends _$MapObjectManager {
 
   Future<void> removeAllPolygons() async {
     await ref.read(dgisControllerProvider).value?.removeAllPolygons(fromManager: await future);
+  }
+
+  Future<void> removePolygonById(String polygonId) async {
+    final manager = await future;
+    try {
+      await ref.read(dgisControllerProvider).value?.removePolygon(polygonId, fromManager: manager);
+    } catch (ex, _) {
+      logger.log('Error removing polygon: ${ex.toString()}');
+    }
   }
 
   Future<void> removeAll() async {

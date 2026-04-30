@@ -121,6 +121,10 @@ class ObjectTapHandler {
             let tappedObject = objectInfo.item.item
 
             switch tappedObject {
+            case is Marker:
+                NSLog("[DynamicPoiDebug.iOS] object long-press hit Marker")
+                self.onMarkerTap(tappedObject as! Marker)
+                return
             case let polygon as Polygon:
                 if let id = polygon.userData as? PolygonId {
                     eventChannel.success([
@@ -190,10 +194,14 @@ class ObjectTapHandler {
 
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
         let tappedObject = objectInfo.item.item
-        
+
+        // Markers now require long-press (handled in objectLongTapListener) per
+        // dynamic-POI iter4 UX. Short taps on markers fall through silently
+        // instead of opening the POI card. Other object types are handled in
+        // their respective tap streams.
         switch tappedObject {
         case is Marker:
-            self.onMarkerTap(tappedObject as! Marker)
+            NSLog("[DynamicPoiDebug.iOS] short tap on Marker — ignored, long-press required")
             return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
@@ -324,7 +332,17 @@ class ObjectTapHandler {
         )
         
         do {
-            return try Marker(options: options)
+            let createdMarker = try Marker(options: options)
+            // Honor isVisible at construction time. Android already does this
+            // (`visible = (marker.options.isVisible ?: true)`); the iOS pigeon
+            // constructor does not accept an isVisible argument, so apply it
+            // immediately after creation. Without this, dynamic-POI markers
+            // briefly flash visible at low zoom before the post-add visibility
+            // sweep can hide them.
+            if let isVisible = marker.options.isVisible {
+                createdMarker.isVisible = isVisible
+            }
+            return createdMarker
         } catch {
             completion(
                 Result.failure(
@@ -335,10 +353,10 @@ class ObjectTapHandler {
                 ))
             )
         }
-        
+
         return nil
     }
-    
+
     func addMarker(_ marker: MarkerMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let markerObject = mapMarker(marker, completion: completion) else {
             return
@@ -402,6 +420,9 @@ class ObjectTapHandler {
             self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
         }
         if let isVisible = options.isVisible {
+            if id.hasPrefix("dynamic_poi_") {
+                NSLog("[DynamicPoiDebug.iOS] setMarkerOptions id=\(id) isVisible=\(isVisible) found=\(self.markers[id] != nil)")
+            }
             self.markers[id]?.0.isVisible = isVisible
         }
     }
