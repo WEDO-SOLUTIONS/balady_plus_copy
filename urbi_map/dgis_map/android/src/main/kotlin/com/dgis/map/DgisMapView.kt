@@ -527,6 +527,7 @@ class DgisMapView(
                         routeHandler = routeHandler,
                         eventSink = eventSink,
                         sdkContext = sdkContext,
+                        androidContext = context,
                         api = FlutterMapApi(binaryMessenger)
                 )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)
