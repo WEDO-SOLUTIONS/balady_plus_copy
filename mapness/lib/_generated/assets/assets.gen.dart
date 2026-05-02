@@ -463,6 +463,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/dark_car_active.svg
   SvgGenImage get darkCarActive => const SvgGenImage('assets/icons/svg/dark_car_active.svg');
 
+  /// Directory path: assets/icons/svg/dynamic_poi
+  $AssetsIconsSvgDynamicPoiGen get dynamicPoi => const $AssetsIconsSvgDynamicPoiGen();
+
   /// File path: assets/icons/svg/founding_day_profile.svg
   SvgGenImage get foundingDayProfile => const SvgGenImage('assets/icons/svg/founding_day_profile.svg');
 
@@ -1146,6 +1149,100 @@ class $AssetsIconsSvgAudioGen {
     seekBackward,
     seekForward,
     waves,
+  ];
+}
+
+class $AssetsIconsSvgDynamicPoiGen {
+  const $AssetsIconsSvgDynamicPoiGen();
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900001_medical_help.svg
+  SvgGenImage get rubric900001MedicalHelp =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900001_medical_help.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900002_lost_and_found.svg
+  SvgGenImage get rubric900002LostAndFound =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900002_lost_and_found.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900003_hajj_support.svg
+  SvgGenImage get rubric900003HajjSupport =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900003_hajj_support.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900004_kiosk_and_pos.svg
+  SvgGenImage get rubric900004KioskAndPos =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900004_kiosk_and_pos.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900005_additional_category.svg
+  SvgGenImage get rubric900005AdditionalCategory =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900005_additional_category.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900006_stair.svg
+  SvgGenImage get rubric900006Stair => const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900006_stair.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900007_service.svg
+  SvgGenImage get rubric900007Service => const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900007_service.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900008_gate.svg
+  SvgGenImage get rubric900008Gate => const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900008_gate.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900009_prayer_hall.svg
+  SvgGenImage get rubric900009PrayerHall =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900009_prayer_hall.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900010_landmark.svg
+  SvgGenImage get rubric900010Landmark => const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900010_landmark.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900011_luggage_storage.svg
+  SvgGenImage get rubric900011LuggageStorage =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900011_luggage_storage.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900012_wheelchairs_carts_center.svg
+  SvgGenImage get rubric900012WheelchairsCartsCenter =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900012_wheelchairs_carts_center.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900013_prayer_area_for_disabled.svg
+  SvgGenImage get rubric900013PrayerAreaForDisabled =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900013_prayer_area_for_disabled.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900014_emergency_assembly_point.svg
+  SvgGenImage get rubric900014EmergencyAssemblyPoint =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900014_emergency_assembly_point.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900015_restricted_zone.svg
+  SvgGenImage get rubric900015RestrictedZone =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900015_restricted_zone.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900016_volunteer_point.svg
+  SvgGenImage get rubric900016VolunteerPoint =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900016_volunteer_point.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900017_free_wifi_station.svg
+  SvgGenImage get rubric900017FreeWifiStation =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900017_free_wifi_station.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/rubric_900018_pilgrim_camp.svg
+  SvgGenImage get rubric900018PilgrimCamp =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/rubric_900018_pilgrim_camp.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+    rubric900001MedicalHelp,
+    rubric900002LostAndFound,
+    rubric900003HajjSupport,
+    rubric900004KioskAndPos,
+    rubric900005AdditionalCategory,
+    rubric900006Stair,
+    rubric900007Service,
+    rubric900008Gate,
+    rubric900009PrayerHall,
+    rubric900010Landmark,
+    rubric900011LuggageStorage,
+    rubric900012WheelchairsCartsCenter,
+    rubric900013PrayerAreaForDisabled,
+    rubric900014EmergencyAssemblyPoint,
+    rubric900015RestrictedZone,
+    rubric900016VolunteerPoint,
+    rubric900017FreeWifiStation,
+    rubric900018PilgrimCamp,
   ];
 }
 

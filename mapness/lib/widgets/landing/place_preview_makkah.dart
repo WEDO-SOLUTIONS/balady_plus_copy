@@ -23,6 +23,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -243,6 +244,10 @@ class _PlaceCardMakkah extends ConsumerWidget {
           )
         : null;
 
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final overlayPeak = isDark
+        ? MakkahPoiConstants.darkPreviewCardOverlayColor
+        : MakkahPoiConstants.previewCardOverlayColor;
     return ClipRRect(
       borderRadius: BorderRadius.circular(RadiusBorder.xl),
       child: Stack(
@@ -256,14 +261,14 @@ class _PlaceCardMakkah extends ConsumerWidget {
               children: [
                 ShaderMask(
                   blendMode: BlendMode.srcATop,
-                  shaderCallback: (bounds) => const LinearGradient(
+                  shaderCallback: (bounds) => LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color(0x006E5945), // 0% alpha - transparent overlay at top
-                      Color(0xFF6E5945), // 100% alpha - full overlay at bottom
+                      overlayPeak.withOpacity(0),
+                      overlayPeak,
                     ],
-                    stops: [0.0, 0.96],
+                    stops: const [0.0, 0.96],
                   ).createShader(bounds),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints.expand(),
@@ -442,6 +447,11 @@ class _TravelTimeChip extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final chipBg = isDark
+        ? MakkahPoiConstants.darkMutedSlate
+        : context.colors.staticWhite.withOpacity(0.9);
+    final chipFg = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF4A3016);
     // Show two separate chips
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -450,7 +460,7 @@ class _TravelTimeChip extends ConsumerWidget {
         if (hasDuration)
           DecoratedBox(
             decoration: BoxDecoration(
-              color: context.colors.staticWhite.withOpacity(0.9),
+              color: chipBg,
               borderRadius: BorderRadius.circular(RadiusBorder.full),
             ),
             child: Padding(
@@ -467,14 +477,14 @@ class _TravelTimeChip extends ConsumerWidget {
                     child: Icon(
                       useWalkIcon ? Icons.directions_walk : Icons.directions_car,
                       size: 14,
-                      color: const Color(0xFF4A3016),
+                      color: chipFg,
                     ),
                   ),
                   const SizedBox(width: 4),
                   Text(
                     durationText!,
                     style: context.textStyles.bodySmallRegular.copyWith(
-                      color: const Color(0xFF4A3016),
+                      color: chipFg,
                       fontSize: 11,
                     ),
                   ),
@@ -488,7 +498,7 @@ class _TravelTimeChip extends ConsumerWidget {
         if (hasGeneralTag)
           DecoratedBox(
             decoration: BoxDecoration(
-              color: context.colors.staticWhite.withOpacity(0.9),
+              color: chipBg,
               borderRadius: BorderRadius.circular(RadiusBorder.full),
             ),
             child: Padding(
@@ -499,7 +509,7 @@ class _TravelTimeChip extends ConsumerWidget {
               child: Text(
                 generalTag!,
                 style: context.textStyles.bodySmallRegular.copyWith(
-                  color: const Color(0xFF4A3016),
+                  color: chipFg,
                   fontSize: 11,
                 ),
               ),

@@ -10,6 +10,7 @@ import 'package:mapness/features/special_themes/core/places_activation_config.da
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
@@ -40,14 +41,18 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
   final DashboardThemeConfig themeConfig;
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
-  /// Returns the asset path prefix for quick action icons based on theme mode.
-  String get _quickActionAssetPrefix {
-    return themeMode == SpecialThemeMode.ramadan
-        ? 'assets/images/ramadan_quick_actions'
+  /// Returns the asset path prefix for quick action icons based on theme mode + dark.
+  String _quickActionAssetPrefix({required bool isDark}) {
+    if (themeMode == SpecialThemeMode.ramadan) {
+      return 'assets/images/ramadan_quick_actions';
+    }
+    return isDark
+        ? 'assets/images/makkah_quick_actions/dark'
         : 'assets/images/makkah_quick_actions';
   }
 
-  String _getAssetPath(String fileName) => '$_quickActionAssetPrefix/$fileName';
+  String _getAssetPath(String fileName, {required bool isDark}) =>
+      '${_quickActionAssetPrefix(isDark: isDark)}/$fileName';
 
   /// Checks if the Kaaba virtual journey card should be shown.
   /// All conditions (enabled, location, date) are already handled by showPilgrimFeatureProvider.
@@ -60,6 +65,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
     final actions = DashboardActions(ref, bottomSheetController: bottomSheetController);
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
     final showKaabaCard = _shouldShowKaabaCard(pilgrimFeature);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
     return Column(
       children: [
@@ -104,7 +110,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.roadEvent,
                   icon: General32Icons.eventsFilled,
-                  assetPath: _getAssetPath('road_event.png'),
+                  assetPath: _getAssetPath('road_event.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: actions.openRoadEvent,
                 ),
@@ -112,7 +118,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.sendLocation,
                   icon: General32Icons.locationAction,
-                  assetPath: _getAssetPath('send_location.png'),
+                  assetPath: _getAssetPath('send_location.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: () => actions.openMyLocation(context),
                 ),
@@ -120,7 +126,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.freeRoam,
                   icon: TransportIcons.locationDirectionNavigator,
-                  assetPath: _getAssetPath('free_roam.png'),
+                  assetPath: _getAssetPath('free_roam.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: () => actions.openFreeRoam(context),
                 ),
@@ -128,7 +134,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.parkingAction,
                   icon: General32Icons.parkingAction,
-                  assetPath: _getAssetPath('parking.png'),
+                  assetPath: _getAssetPath('parking.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: actions.openParking,
                 ),
@@ -218,7 +224,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.snapAndSendAction,
                   icon: General32Icons.snapAndSendAction,
-                  assetPath: _getAssetPath('snap_and_send.png'),
+                  assetPath: _getAssetPath('snap_and_send.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: actions.openSnapAndSend,
                 ),
@@ -226,7 +232,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.qibla,
                   icon: General32Icons.qiblaAction,
-                  assetPath: _getAssetPath('qibla.png'),
+                  assetPath: _getAssetPath('qibla.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: () => actions.openQibla(context),
                 ),
@@ -234,7 +240,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.quaranAction,
                   icon: General32Icons.quaranAction,
-                  assetPath: _getAssetPath('quaran.png'),
+                  assetPath: _getAssetPath('quaran.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: actions.openQuran,
                 ),
@@ -242,7 +248,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 QuickActionButton(
                   text: context.l10n.athkarAction,
                   icon: General32Icons.athkarAction,
-                  assetPath: _getAssetPath('athkar.png'),
+                  assetPath: _getAssetPath('athkar.png', isDark: isDark),
                   themeMode: themeMode,
                   onTap: actions.openAthkar,
                 ),
