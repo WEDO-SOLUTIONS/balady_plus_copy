@@ -18,6 +18,7 @@ class _MakkahPoiColors {
   final Color directionsButtonForeground;
   final Color actionButtonBackground;
   final Color actionButtonIconColor;
+  final bool isDark;
 
   const _MakkahPoiColors({
     required this.cardBackground,
@@ -33,6 +34,7 @@ class _MakkahPoiColors {
     required this.directionsButtonForeground,
     required this.actionButtonBackground,
     required this.actionButtonIconColor,
+    this.isDark = false,
   });
 }
 
@@ -57,6 +59,7 @@ _MakkahPoiColors _resolveMakkahPoiColors(
         directionsButtonForeground: MakkahPoiConstants.darkPrimaryTextColor,
         actionButtonBackground: MakkahPoiConstants.darkSheet,
         actionButtonIconColor: MakkahPoiConstants.darkPrimaryTextColor,
+        isDark: true,
       );
     }
     return const _MakkahPoiColors(
