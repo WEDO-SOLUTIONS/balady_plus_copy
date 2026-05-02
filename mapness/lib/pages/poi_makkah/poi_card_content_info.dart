@@ -11,15 +11,33 @@ class _MakkahNearbySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final isArabic = Directionality.of(context) == TextDirection.rtl;
 
+    final decoration = colors.isDark
+        // Dark Makkah: Figma `1412:36565` ("image 12") composites the grayscale
+        // Islamic-pattern asset over `darkSheet` via soft-light @ 0.20. The same
+        // grayscale source ships in-bundle as `ribbon_pattern_dark.png` (md5
+        // matches `image-12-dark-pattern.png` from the Figma export). Approximate
+        // soft-light by laying the asset at low opacity over a `darkSheet` fill.
+        ? BoxDecoration(
+            color: MakkahPoiConstants.darkSheet,
+            image: const DecorationImage(
+              image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
+              matchTextDirection: true,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.bottomCenter,
+              opacity: 0.20,
+            ),
+          )
+        : const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/themes/makkah/places_makkah.png'),
+              matchTextDirection: true,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.bottomCenter,
+            ),
+          );
+
     return DecoratedBox(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/themes/makkah/places_makkah.png'),
-          matchTextDirection: true,
-          fit: BoxFit.fitWidth,
-          alignment: Alignment.bottomCenter,
-        ),
-      ),
+      decoration: decoration,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
