@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
@@ -227,20 +228,44 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
     MakkahPlace place,
     SpecialThemeMode mode,
   ) {
-    // Try to use local SVG icon for this place
+    // Lookup key: prefer place_id; fall back to dgis_id when place_id is empty
+    // (e.g. Al Masjid Al Haram has empty place_id and only a dgis_id).
     final placeId = place.placeId;
-    if (placeId != null && placeId.isNotEmpty) {
+    final dgisId = place.dgisId;
+    final lookupKey = (placeId != null && placeId.isNotEmpty)
+        ? placeId
+        : (dgisId != null && dgisId.isNotEmpty ? dgisId : null);
+
+    if (lookupKey != null) {
       final iconsDir = MakkahPoiConstants.getMarkerIconsDirectory(
         isRamadan: mode == SpecialThemeMode.ramadan,
       );
-      final localSvgPath = '$iconsDir/$placeId.svg';
-      return SvgMarkerIcon(
-        svgPath: localSvgPath,
-        width: MakkahPoiConstants.markerIconWidth,
+      // Pick extension from marker_image_url so .png entries
+      // (e.g. Al Masjid Al Haram) resolve to the bundled .png.
+      final markerUrl = place.markerImageUrl?.toLowerCase() ?? '';
+      final isPng = markerUrl.endsWith('.png');
+      final ext = isPng ? 'png' : 'svg';
+      final localPath = '$iconsDir/$lookupKey.$ext';
+      debugPrint(
+        '[MakkahPinDebug] resolveIcon pid=$placeId dgis=$dgisId '
+        'key=$lookupKey ext=$ext path=$localPath',
       );
+      return isPng
+          ? PngMarkerIcon(
+              pngPath: localPath,
+              width: MakkahPoiConstants.markerIconWidth,
+            )
+          : SvgMarkerIcon(
+              svgPath: localPath,
+              width: MakkahPoiConstants.markerIconWidth,
+            );
     }
 
-    // Fallback to local asset if no placeId
+    // Fallback only when neither place_id nor dgis_id is present.
+    debugPrint(
+      '[MakkahPinDebug] resolveIcon FALLBACK pid=$placeId dgis=$dgisId '
+      'title=${place.titleEn}',
+    );
     return 'assets/images/themes/makkah/makkah_places.png'.resolvedMarkerIcon(
       size: MakkahPoiConstants.markerIconWidth,
     );
