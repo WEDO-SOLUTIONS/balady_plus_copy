@@ -26,7 +26,7 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: const Color(0xFFD19D3F),
+              color: colors.iconBackground,
               borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
             ),
             child: Center(
@@ -58,7 +58,7 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
                   Text(
                     displaySubtitle,
                     style: context.textStyles.bodySmallRegular.copyWith(
-                      color: const Color(0xFF806E5C),
+                      color: colors.secondaryTextColor,
                       fontSize: 14,
                     ),
                   ),
@@ -189,7 +189,7 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD19D3F),
+                    color: widget.colors.iconBackground,
                     borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
                   ),
                   child: Center(
@@ -221,7 +221,7 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
                         Text(
                           displaySubtitle,
                           style: context.textStyles.bodySmallRegular.copyWith(
-                            color: const Color(0xFF806E5C),
+                            color: widget.colors.secondaryTextColor,
                             fontSize: 14,
                           ),
                         ),
@@ -322,7 +322,7 @@ class _MakkahWorkTimeRow extends StatelessWidget {
                       Text(
                         breakHours!,
                         style: context.textStyles.bodySmallRegular.copyWith(
-                          color: const Color(0xFF806E5C),
+                          color: colors.secondaryTextColor,
                           fontSize: 14,
                         ),
                       ),
@@ -366,7 +366,7 @@ class _MakkahWorkHoursHintTile extends StatelessWidget {
             'assets/icons/makkah/info.svg',
             width: 20,
             height: 20,
-            colorFilter: const ColorFilter.mode(Color(0xFFD19D3F), BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(colors.iconBackground, BlendMode.srcIn),
           ),
           const SizedBox(width: 10),
           Expanded(

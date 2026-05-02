@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 
 class QuickActionButton extends ConsumerWidget {
@@ -63,6 +64,9 @@ class QuickActionButton extends ConsumerWidget {
       );
     }
 
+    final tileColor = isMekkahTheme && isDark
+        ? MakkahPoiConstants.darkSheet
+        : colors.backgroundSurface1;
     return Column(
       children: [
         InkWell(
@@ -73,8 +77,8 @@ class QuickActionButton extends ConsumerWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                color: colors.backgroundSurface1,
-                boxShadow: Shadows.s,
+                color: tileColor,
+                boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),

@@ -68,10 +68,12 @@ DashboardThemeConfig dashboardThemeConfigFor(
             : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
         exploreBackgroundGradient: isDark
-            ? const [Colors.transparent, Color(0xFF0F1716)]
+            ? const [Colors.transparent, Color(0xFF00141C)]
             : const [Colors.transparent, Colors.transparent],
-        exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
-        backgroundColor: isDark ? const Color(0xFF131A19) : const Color(0xFFFAF5EE),
+        exploreBackgroundImageBuilder: isDark
+            ? null
+            : () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
+        backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
       );
 
     case SpecialThemeMode.ramadan:
@@ -84,10 +86,12 @@ DashboardThemeConfig dashboardThemeConfigFor(
             : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
         exploreBackgroundGradient: isDark
-            ? const [Colors.transparent, Color(0xFF0F1716)]
+            ? const [Colors.transparent, Color(0xFF00141C)]
             : const [Colors.transparent, Colors.transparent],
-        exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
-        backgroundColor: isDark ? const Color(0xFF131A19) : const Color(0xFFFAF5EE),
+        exploreBackgroundImageBuilder: isDark
+            ? null
+            : () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
+        backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
       );
 
     case SpecialThemeMode.base:

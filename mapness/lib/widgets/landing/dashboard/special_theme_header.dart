@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -17,7 +19,7 @@ import 'package:sheetify/sheetify.dart';
 /// Used by [MapHiddenStateControls] to render event-specific UI above
 /// the quick search bar, without hard-coding per-event logic there.
 
-class SpecialThemeHeader extends StatelessWidget {
+class SpecialThemeHeader extends ConsumerWidget {
   const SpecialThemeHeader({
     required this.mode,
     required this.controller,
@@ -30,8 +32,9 @@ class SpecialThemeHeader extends StatelessWidget {
   final AnimationController fireworksController;
 
   @override
-  Widget build(BuildContext context) {
-    final banner = _buildBanner(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final banner = _buildBanner(context, isDark: isDark);
     final flag = _buildFlag();
 
     if (banner == null && flag == null) {
@@ -45,36 +48,60 @@ class SpecialThemeHeader extends StatelessWidget {
     );
   }
 
-  Widget? _buildBanner(BuildContext context) {
+  Widget? _buildBanner(BuildContext context, {required bool isDark}) {
     final bool hasBanner =
         mode == SpecialThemeMode.nationalDay || mode == SpecialThemeMode.mekkahBase || mode == SpecialThemeMode.ramadan;
     if (!hasBanner) return null;
 
     final BoxDecoration bannerDecoration;
     if (mode == SpecialThemeMode.mekkahBase) {
-      bannerDecoration = BoxDecoration(
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(RadiusBorder.xl),
-        ),
-        gradient: const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            Color(0xFFD19D3F),
-            Color(0xFF9D6808),
-            Color(0xFFFFCA69),
-            Color(0xFFD19D3F),
-            Color(0xFFD19D3F),
-          ],
-          stops: [0.03, 0.19, 0.33, 0.46, 1.0],
-        ),
-        image: const DecorationImage(
-          image: AssetImage('assets/images/themes/makkah/qiblah_header.png'),
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-          opacity: 0.5,
-        ),
-      );
+      if (isDark) {
+        bannerDecoration = BoxDecoration(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(RadiusBorder.xl),
+          ),
+          gradient: const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              MakkahPoiConstants.darkAccentTeal,
+              Color(0xFF007B73),
+              Color(0xFF00232F),
+            ],
+            stops: [0.0, 0.53, 1.0],
+          ),
+          image: const DecorationImage(
+            image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            opacity: 0.2,
+          ),
+        );
+      } else {
+        bannerDecoration = BoxDecoration(
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(RadiusBorder.xl),
+          ),
+          gradient: const LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Color(0xFFD19D3F),
+              Color(0xFF9D6808),
+              Color(0xFFFFCA69),
+              Color(0xFFD19D3F),
+              Color(0xFFD19D3F),
+            ],
+            stops: [0.03, 0.19, 0.33, 0.46, 1.0],
+          ),
+          image: const DecorationImage(
+            image: AssetImage('assets/images/themes/makkah/qiblah_header.png'),
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            opacity: 0.5,
+          ),
+        );
+      }
     } else if (mode == SpecialThemeMode.ramadan) {
       bannerDecoration = BoxDecoration(
         borderRadius: const BorderRadius.vertical(

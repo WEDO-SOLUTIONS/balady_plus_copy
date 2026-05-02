@@ -207,6 +207,7 @@ flutter:
     - assets/icons/svg/dynamic_poi/
     - assets/images/
     - assets/images/makkah_quick_actions/
+    - assets/images/makkah_quick_actions/dark/
     - assets/images/ramadan_quick_actions/
     - assets/images/audio_placeholders/
     - assets/images/audio_placeholders/arriving_soon/

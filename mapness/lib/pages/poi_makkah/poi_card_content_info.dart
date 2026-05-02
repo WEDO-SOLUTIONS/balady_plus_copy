@@ -1,8 +1,9 @@
 part of 'poi_makkah_widget_page.dart';
 
 class _MakkahNearbySection extends StatelessWidget {
-  const _MakkahNearbySection({this.excludeDgisId, this.excludePlaceId});
+  const _MakkahNearbySection({required this.colors, this.excludeDgisId, this.excludePlaceId});
 
+  final _MakkahPoiColors colors;
   final String? excludeDgisId;
   final String? excludePlaceId;
 
@@ -26,7 +27,10 @@ class _MakkahNearbySection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: Container(
               height: 400,
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
+              decoration: BoxDecoration(
+                color: colors.contentCardBackground,
+                borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              ),
               padding: const EdgeInsets.only(top: Spacing.$4x),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +39,7 @@ class _MakkahNearbySection extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                     child: Text(
                       context.l10n.placesToVisitNearYou,
-                      style: context.textStyles.bodyLargeSemiBold.copyWith(color: const Color(0xFF4A3016)),
+                      style: context.textStyles.bodyLargeSemiBold.copyWith(color: colors.titleColor),
                     ),
                   ),
                   const SizedBox(height: Spacing.$4x),
@@ -126,6 +130,7 @@ class _MakkahPoiInfoSliverPlaceholder extends ConsumerWidget {
               Padding(
                 padding: EdgeInsets.zero,
                 child: _MakkahNearbySection(
+                  colors: colors,
                   excludeDgisId: makkahPlace?.dgisId ?? objectId.toString(),
                   excludePlaceId: makkahPlace?.placeId,
                 ),
@@ -255,7 +260,7 @@ class _MakkahOpenHoursCard extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: const Color(0xFFD19D3F),
+              color: colors.iconBackground,
               borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
             ),
             child: Center(
@@ -286,7 +291,10 @@ class _MakkahOpenHoursCard extends StatelessWidget {
                   const SizedBox(height: Spacing.$0_5x),
                   Text(
                     displaySubtitle,
-                    style: context.textStyles.bodySmallRegular.copyWith(color: const Color(0xFF806E5C), fontSize: 14),
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: colors.secondaryTextColor,
+                      fontSize: 14,
+                    ),
                   ),
                 ],
               ],
@@ -345,7 +353,7 @@ class _MakkahAddressCard extends StatelessWidget {
                 Text(
                   title,
                   style: context.textStyles.bodyLargeSemiBold.copyWith(
-                    color: const Color(0xFF4A3016),
+                    color: colors.titleColor,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -354,7 +362,7 @@ class _MakkahAddressCard extends StatelessWidget {
                 Text(
                   address,
                   style: context.textStyles.bodySmallRegular.copyWith(
-                    color: const Color(0xFF806E5C),
+                    color: colors.secondaryTextColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                   ),
@@ -387,9 +395,17 @@ class _MakkahFeatureTile extends StatelessWidget {
   Widget build(BuildContext context) {
     const iconSize = 28.0;
     final effectiveIconUrl = (iconUrl ?? '').trim();
-    final icon = _MakkahFeatureTileIcon(svgAsset: svgAsset, iconUrl: effectiveIconUrl, size: iconSize);
+    final icon = _MakkahFeatureTileIcon(
+      svgAsset: svgAsset,
+      iconUrl: effectiveIconUrl,
+      size: iconSize,
+      assetTint: colors.iconBackground,
+    );
     return Container(
-      decoration: BoxDecoration(color: const Color(0xFFFAF5EE), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+        color: colors.featureTileBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -436,12 +452,18 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
   final String svgAsset;
   final String iconUrl;
   final double size;
+  final Color assetTint;
 
-  const _MakkahFeatureTileIcon({required this.svgAsset, required this.iconUrl, required this.size});
+  const _MakkahFeatureTileIcon({
+    required this.svgAsset,
+    required this.iconUrl,
+    required this.size,
+    required this.assetTint,
+  });
 
   @override
   Widget build(BuildContext context) {
-    const effectiveAssetColor = Color(0xFFD19D3F);
+    final effectiveAssetColor = assetTint;
     if (iconUrl.isNotEmpty) {
       final lower = iconUrl.toLowerCase();
       if (lower.endsWith('.svg')) {
@@ -455,7 +477,7 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
             svgAsset,
             width: size,
             height: size,
-            colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
             matchTextDirection: true,
           ),
         );
@@ -470,14 +492,14 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
           svgAsset,
           width: size,
           height: size,
-          colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
           matchTextDirection: true,
         ),
         errorWidget: (_, __, ___) => SvgPicture.asset(
           svgAsset,
           width: size,
           height: size,
-          colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
           matchTextDirection: true,
         ),
       );
@@ -487,7 +509,7 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
       svgAsset,
       width: size,
       height: size,
-      colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
       matchTextDirection: true,
     );
   }
