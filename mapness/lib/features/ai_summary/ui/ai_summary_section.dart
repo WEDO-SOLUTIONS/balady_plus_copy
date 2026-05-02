@@ -30,6 +30,13 @@ class AiSummarySection extends ConsumerWidget {
     final language = ref.watch(appLanguageProvider);
     final state = ref.watch(aiSummaryProvider(poiId, language));
 
+    final stateLabel = state.when(
+      data: (summary) => summary == null ? 'data(null)' : 'data(${summary.description.length}ch)',
+      loading: () => 'loading',
+      error: (e, _) => 'error($e)',
+    );
+    debugPrint('[AiSummaryDebug] section.build poi=$poiId locale=${language.languageCode} state=$stateLabel');
+
     return state.when(
       data: (summary) => summary == null
           ? const SizedBox.shrink()
