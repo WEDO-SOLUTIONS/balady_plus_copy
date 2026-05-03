@@ -83,7 +83,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                     TextSpan(
                       text: '${l10n.to}\n',
                       style: context.textStyles.bodyLargeMedium.copyWith(
-                        color: textColorLine,
+                        color: context.colors.foregroundDefault,
                         fontSize: 14,
                       ),
                     ),
