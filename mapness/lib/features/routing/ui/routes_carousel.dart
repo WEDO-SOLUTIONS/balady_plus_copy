@@ -146,7 +146,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
     final startPointEta = startPointExists
         ? startPoint!.etaPoint
-        : EtaRoutePoint(lat: location!.latitude, lon: location.longitude, label: startPoint?.label);
+        : EtaRoutePoint(lat: location?.latitude, lon: location?.longitude, label: startPoint?.label);
     final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
     final finishPointEta = finishPointExists
         ? finishPoint!.etaPoint

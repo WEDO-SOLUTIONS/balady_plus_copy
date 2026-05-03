@@ -47,28 +47,42 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                 Expanded(
                   child: ValueListenableBuilder(
                       valueListenable: widget.showControls,
-                      builder: (context, isVisible, child) => AnimatedOpacity(
-                            opacity: isVisible ? 1 : 0,
-                            duration: const Duration(milliseconds: 250),
-                            child: IgnorePointer(
-                              ignoring: !isVisible,
-                              child: GestureDetector(
-                                onTap: widget.onUserActivity,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: const TrafficParkingControl(
-                                          trafficVisible: false),
+                      builder: (context, isVisible, child) => GestureDetector(
+                            onTap: widget.onUserActivity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                AnimatedOpacity(
+                                  opacity: isVisible ? 1 : 0,
+                                  duration: const Duration(milliseconds: 250),
+                                  child: IgnorePointer(
+                                    ignoring: !isVisible,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: widget.padding,
+                                          child: const TrafficParkingControl(
+                                              trafficVisible: false),
+                                        ),
+                                        const SizedBox(
+                                            height: uikit.Spacing.$2x),
+                                        Padding(
+                                          padding: widget.padding,
+                                          child: const DimensionControl(),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: uikit.Spacing.$2x),
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: const DimensionControl(),
-                                    ),
-                                    const Spacer(),
-                                    Padding(
+                                  ),
+                                ),
+                                const Spacer(),
+                                AnimatedOpacity(
+                                  opacity: isVisible ? 1 : 0,
+                                  duration: const Duration(milliseconds: 250),
+                                  child: IgnorePointer(
+                                    ignoring: !isVisible,
+                                    child: Padding(
                                       padding: widget.padding,
                                       child: Row(
                                         mainAxisAlignment:
@@ -78,20 +92,24 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                               RouteSearchOptionsMessage
                                                   .pedestrian)
                                             const IndoorControl()
-                                          else
-                                            const SizedBox.shrink(),
-                                          const ZoomControl(),
                                         ],
                                       ),
                                     ),
-                                    const Spacer(),
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Column(
+                                  ),
+                                ),
+                                const Spacer(),
+                                Padding(
+                                  padding: widget.padding,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      AnimatedOpacity(
+                                        opacity: isVisible ? 1 : 0,
+                                        duration:
+                                            const Duration(milliseconds: 250),
+                                        child: IgnorePointer(
+                                          ignoring: !isVisible,
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
@@ -119,20 +137,32 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                                   }),
                                             ],
                                           ),
-                                          const Spacer(),
-                                          Column(
-                                            children: [
-                                              widget.compassControlWidget,
-                                              uikit.Spacing.$2x.heightBox,
-                                              widget.pathNavFollowControlWidget,
-                                            ],
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Column(
+                                        children: [
+                                          AnimatedOpacity(
+                                            opacity: isVisible ? 1 : 0,
+                                            duration: const Duration(
+                                                milliseconds: 250),
+                                            child: IgnorePointer(
+                                              ignoring: !isVisible,
+                                              child: Column(
+                                                children: [
+                                                  widget.compassControlWidget,
+                                                  uikit.Spacing.$2x.heightBox,
+                                                ],
+                                              ),
+                                            ),
                                           ),
+                                          widget.pathNavFollowControlWidget,
                                         ],
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           )),
                 ),
