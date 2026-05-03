@@ -61,25 +61,42 @@ class _LandscapeLayout extends StatelessWidget {
             ),
             ValueListenableBuilder(
               valueListenable: showControls,
-              builder: (context, isVisible, child) => AnimatedOpacity(
-                opacity: isVisible ? 1 : 0,
-                duration: const Duration(milliseconds: 250),
-                child: IgnorePointer(
-                  ignoring: !isVisible,
-                  child: GestureDetector(
-                    onTap: onUserActivity,
-                    child: Column(
-                      children: [
-                        const TrafficParkingControl(parkingVisible: false),
-                        const SizedBox(height: uikit.Spacing.$2x),
-                        const DimensionControl(),
-                        const Spacer(),
-                        compassControlWidget,
-                        uikit.Spacing.$2x.heightBox,
-                        pathNavFollowControlWidget,
-                      ],
+              builder: (context, isVisible, child) => GestureDetector(
+                onTap: onUserActivity,
+                child: Column(
+                  children: [
+                    AnimatedOpacity(
+                      opacity: isVisible ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: IgnorePointer(
+                        ignoring: !isVisible,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const TrafficParkingControl(parkingVisible: false),
+                            const SizedBox(height: uikit.Spacing.$2x),
+                            const DimensionControl(),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const Spacer(),
+                    AnimatedOpacity(
+                      opacity: isVisible ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: IgnorePointer(
+                        ignoring: !isVisible,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            compassControlWidget,
+                            uikit.Spacing.$2x.heightBox,
+                          ],
+                        ),
+                      ),
+                    ),
+                    pathNavFollowControlWidget,
+                  ],
                 ),
               ),
             ),
