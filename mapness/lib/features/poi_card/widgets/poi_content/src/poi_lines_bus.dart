@@ -59,10 +59,10 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                 children: [
                   if (widget.isShuttle)
                     TextSpan(
-                      text: '${l10n.from}\t\t\t',
+                      text: '${l10n.from}\t\t',
                       style: context.textStyles.bodyLargeMedium.copyWith(
                         color: context.colors.foregroundDefault,
-                        fontSize: 12,
+                        fontSize: 16,
                       ),
                     ),
                   WidgetSpan(
