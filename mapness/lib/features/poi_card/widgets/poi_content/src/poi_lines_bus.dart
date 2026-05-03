@@ -21,16 +21,12 @@ class PoiLinesMakkahBus extends ConsumerStatefulWidget {
 }
 
 class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
-
   int getMinutesFromDepartureTime(String departureTime) {
     final appLanguage = ref.read(appLanguageProvider);
     final format = DateFormat('hh:mm a');
     final now = DateTime.now();
 
-    final parsedTime = format.parse(departureTime
-        .replaceAll('ص', 'AM')
-        .replaceAll('م', 'PM')
-        .trim());
+    final parsedTime = format.parse(departureTime.replaceAll('ص', 'AM').replaceAll('م', 'PM').trim());
     var departureDateTime = DateTime(
       now.year,
       now.month,
@@ -63,10 +59,10 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                 children: [
                   if (widget.isShuttle)
                     TextSpan(
-                      text: '${l10n.from}\t',
-                      style: TextStyle(
+                      text: '${l10n.from}\t\t\t',
+                      style: context.textStyles.bodyLargeMedium.copyWith(
                         color: context.colors.foregroundDefault,
-                        fontSize: 16,
+                        fontSize: 12,
                       ),
                     ),
                   WidgetSpan(
@@ -79,23 +75,23 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                       margin: const EdgeInsetsDirectional.only(end: Spacing.$1x),
                       child: Text(
                         widget.routeInfo.routeShortName,
-                        style: TextStyle(color: textColorLine, fontSize: 12),
+                        style: context.textStyles.bodyLargeMedium.copyWith(color: textColorLine, fontSize: 12),
                       ),
                     ),
                   ),
                   if (widget.isShuttle)
                     TextSpan(
                       text: '${l10n.to}\n',
-                      style: TextStyle(
-                        color: context.colors.foregroundDefault,
-                        fontSize: 16,
+                      style: context.textStyles.bodyLargeMedium.copyWith(
+                        color: textColorLine,
+                        fontSize: 14,
                       ),
                     ),
                   TextSpan(
                     text: widget.routeInfo.headsign,
-                    style: TextStyle(
+                    style: context.textStyles.bodyLargeMedium.copyWith(
                       color: context.colors.foregroundDefault,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ],
