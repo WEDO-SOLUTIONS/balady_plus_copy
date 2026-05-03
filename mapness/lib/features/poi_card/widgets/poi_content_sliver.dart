@@ -291,7 +291,7 @@ class PoiContentSliver extends ConsumerWidget {
               else if(about!=null)
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentAboutCard(data: about!),
+                  child: PoiContentAboutCard(data: about),
                 ),
             if (workingHours != null) //
               Padding(
