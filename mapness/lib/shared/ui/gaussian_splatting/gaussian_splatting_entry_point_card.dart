@@ -9,6 +9,10 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
   final String buttonText;
   final List<Color> gradientColors;
   final VoidCallback? onTap;
+  final Color? titleColor;
+  final Color? subtitleColor;
+  final Color? ctaBackground;
+  final Color? ctaTextColor;
 
   const GaussianSplattingEntryPointCard({
     required this.path,
@@ -17,6 +21,10 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
     this.subtitle,
     this.buttonText = 'Start virtual tour',
     this.onTap,
+    this.titleColor,
+    this.subtitleColor,
+    this.ctaBackground,
+    this.ctaTextColor,
     super.key,
   });
 
@@ -49,7 +57,7 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
                             child: Text(
                               title,
                               style: context.textStyles.h3SemiBold.copyWith(
-                                color: const Color(0xFF4A3016),
+                                color: titleColor ?? const Color(0xFF4A3016),
                               ),
                             ),
                           ),
@@ -60,7 +68,7 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
                               child: Text(
                                 subtitle!,
                                 style: context.textStyles.h3SemiBold.copyWith(
-                                  color: const Color(0xFF4A3016),
+                                  color: subtitleColor ?? const Color(0xFF4A3016),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w400,
                                   height: 16 / 13,
@@ -77,7 +85,7 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
                                 vertical: Spacing.$1_5x,
                               ),
                               decoration: BoxDecoration(
-                                color: context.colors.staticWhite,
+                                color: ctaBackground ?? context.colors.staticWhite,
                                 borderRadius: BorderRadius.circular(
                                   Spacing.$2x,
                                 ),
@@ -85,7 +93,7 @@ class GaussianSplattingEntryPointCard extends StatelessWidget {
                               child: Text(
                                 buttonText,
                                 style: context.textStyles.h3SemiBold.copyWith(
-                                  color: const Color(0xFFC56846),
+                                  color: ctaTextColor ?? const Color(0xFFC56846),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
                                   height: 16 / 13,

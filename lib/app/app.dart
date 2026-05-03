@@ -16,7 +16,6 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:provider/provider.dart';
 import 'package:mapness/features/stream_audio/ui/pages/stream_audio_screen.dart';
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
@@ -124,10 +123,8 @@ class AppWidgetState extends State<AppWidget> {
               textDirection: translator.activeLanguageCode == "ar"
                   ? TextDirection.rtl
                   : TextDirection.ltr,
-              child: Consumer2<BaladyThemeNotifier, SpecialThemeMode?>(
-                  builder: (context, themeController, specialThemeMode, child) {
-                    final bool isMakkahTheme =
-                        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
+              child: Consumer<BaladyThemeNotifier>(
+                  builder: (context, themeController, child) {
                     return MediaQuery(
                     data: MediaQuery.of(
                       context,
@@ -138,7 +135,7 @@ class AppWidgetState extends State<AppWidget> {
                       navigatorKey: NavigationService.navigatorKey,
                       theme: myLightTheme,
                       darkTheme: myDarkTheme,
-                      themeMode:  (themeController.isDarkMode && !isMakkahTheme) ? ThemeMode.dark : ThemeMode.light,
+                      themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
                       builder: (context, child) {
                         final botToastBuilder = BotToastInit();
                         final easyLoadingBuilder = EasyLoading.init(
