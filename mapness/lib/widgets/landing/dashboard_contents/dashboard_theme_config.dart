@@ -21,6 +21,7 @@ class DashboardThemeConfig {
     this.backgroundColor,
     this.exploreBackgroundImageBuilder,
     this.imageSizeCalculator,
+    this.searchHintColor,
   });
 
   final bool useTopHeaderOffset;
@@ -34,6 +35,8 @@ class DashboardThemeConfig {
   final ImageProviderBuilder? exploreBackgroundImageBuilder;
   final Color? backgroundColor;
   final ImageSizeCalculator? imageSizeCalculator;
+
+  final Color? searchHintColor;
 }
 
 DashboardThemeConfig dashboardThemeConfigFor(
@@ -74,6 +77,7 @@ DashboardThemeConfig dashboardThemeConfigFor(
             ? null
             : () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
         backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
+        searchHintColor: isDark ? const Color.fromRGBO(255, 255, 255, 0.8 * 255) : null,
       );
 
     case SpecialThemeMode.ramadan:

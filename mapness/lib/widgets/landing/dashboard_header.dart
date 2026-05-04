@@ -169,6 +169,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
     final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final headerBackgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
+    final headerHintColor = themeConfig.searchHintColor ?? context.colors.backgroundSurface2;
 
     return Container(
       width: double.infinity,
@@ -213,7 +214,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
             config: BaladyInputConfig(
               hintText: context.l10n.searchPlaceOrAddress,
               fillColor: context.colors.backgroundSurface2,
-              hintColor: context.colors.foregroundSoft,
+              hintColor: headerHintColor,
               textStyle: context.textStyles.bodySmallRegular,
             ),
           ),
