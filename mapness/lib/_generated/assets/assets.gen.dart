@@ -146,6 +146,22 @@ class $AssetsImagesGen {
   /// File path: assets/images/founding_day_national_museum.png
   AssetGenImage get foundingDayNationalMuseum => const AssetGenImage('assets/images/founding_day_national_museum.png');
 
+  /// File path: assets/images/gaussian_splatting_entry_point_dark_ar.png
+  AssetGenImage get gaussianSplattingEntryPointDarkAr =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_ar.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_dark_en.png
+  AssetGenImage get gaussianSplattingEntryPointDarkEn =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_en.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_light_ar.png
+  AssetGenImage get gaussianSplattingEntryPointLightAr =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_ar.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_ligth_en.png
+  AssetGenImage get gaussianSplattingEntryPointLigthEn =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_ligth_en.png');
+
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
 
@@ -262,6 +278,10 @@ class $AssetsImagesGen {
     foundingDayHistoricalDirYiyah,
     foundingDayLogo,
     foundingDayNationalMuseum,
+    gaussianSplattingEntryPointDarkAr,
+    gaussianSplattingEntryPointDarkEn,
+    gaussianSplattingEntryPointLightAr,
+    gaussianSplattingEntryPointLigthEn,
     icArrowFeedback,
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,
