@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/ai_summary/domain/ai_summary.dart';
@@ -32,8 +33,8 @@ class AiSummaryCard extends ConsumerWidget {
   const AiSummaryCard.skeleton({
     required this.language,
     super.key,
-  })  : summary = null,
-        _isSkeleton = true;
+  }) : summary = null,
+       _isSkeleton = true;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,9 +44,10 @@ class AiSummaryCard extends ConsumerWidget {
       margin: AiSummaryTokens.cardOuterMargin,
       padding: AiSummaryTokens.cardPadding,
       decoration: BoxDecoration(
-        color: palette.cardBackground,
-        border: Border.all(color: palette.cardBorder),
+        color: context.colors.backgroundSurface1,
+        // border: palette.cardBorder == Colors.transparent ? null : Border.all(color: palette.cardBorder),
         borderRadius: BorderRadius.circular(AiSummaryTokens.cardBorderRadius),
+        // boxShadow: palette.cardShadow,
       ),
       child: _isSkeleton
           ? _SkeletonBody(language: language, palette: palette)
@@ -111,25 +113,30 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        children: [
-          Icon(
-            Icons.auto_awesome,
-            size: AiSummaryTokens.sparkleSize,
-            color: palette.sparkleColor,
-          ),
-          const SizedBox(width: AiSummaryTokens.headerSpacing),
-          Text(strings.label, style: palette.labelTextStyle),
-          const SizedBox(width: AiSummaryTokens.headerSpacing),
-          Container(
-            padding: AiSummaryTokens.badgePadding,
-            decoration: BoxDecoration(
-              gradient: AiSummaryTokens.badgeGradient,
-              borderRadius: BorderRadius.circular(AiSummaryTokens.badgeBorderRadius),
+    children: [
+      Text(strings.label, style: palette.labelTextStyle),
+      const SizedBox(width: AiSummaryTokens.headerSpacing),
+      Container(
+        padding: AiSummaryTokens.badgePadding,
+        decoration: BoxDecoration(
+          gradient: palette.badgeGradient,
+          borderRadius: BorderRadius.circular(AiSummaryTokens.badgeBorderRadius),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.auto_awesome,
+              size: AiSummaryTokens.sparkleSize,
+              color: palette.sparkleColor,
             ),
-            child: Text(strings.baladyBadge, style: AiSummaryTokens.badgeTextStyle),
-          ),
-        ],
-      );
+            const SizedBox(width: AiSummaryTokens.badgeIconToTextSpacing),
+            Text(strings.baladyBadge, style: palette.badgeTextStyle),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 class _SkeletonBody extends StatelessWidget {
@@ -185,13 +192,13 @@ class _SkeletonLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FractionallySizedBox(
-        widthFactor: widthFactor,
-        child: Container(
-          height: height,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(AiSummaryTokens.skeletonLineRadius),
-          ),
-        ),
-      );
+    widthFactor: widthFactor,
+    child: Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(AiSummaryTokens.skeletonLineRadius),
+      ),
+    ),
+  );
 }

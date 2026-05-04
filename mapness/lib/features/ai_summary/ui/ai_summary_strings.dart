@@ -20,9 +20,9 @@ class AiSummaryStrings {
 
   const AiSummaryStrings(this.language);
 
-  String get label => language.isArabic ? 'وصف مُنشأ بالذكاء الاصطناعي' : 'AI SUMMARY';
+  String get label => language.isArabic ? 'وصف مُنشأ بالذكاء الاصطناعي' : 'AI Summary';
 
-  String get baladyBadge => language.isArabic ? 'بلدي+ الذكاء الاصطناعي' : 'BALADY AI';
+  String get baladyBadge => language.isArabic ? 'بلدي+ الذكاء الاصطناعي' : 'Balady AI';
 
   String get poweredBy => language.isArabic
       ? 'بدعم من بلدي+ الذكاء الاصطناعي · بناءً على مصادر موثوقة'
