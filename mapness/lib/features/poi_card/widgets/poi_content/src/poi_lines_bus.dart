@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,24 @@ class PoiLinesMakkahBus extends ConsumerStatefulWidget {
 }
 
 class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   int getMinutesFromDepartureTime(String departureTime) {
     final appLanguage = ref.read(appLanguageProvider);
     final format = DateFormat('hh:mm a');
@@ -47,7 +66,12 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
     final colorLine = widget.routeInfo.routeColor.toColor() ?? context.colorsV3.foregroundDefault;
     final textColorLine = widget.routeInfo.routeTextColor.toColor() ?? context.colorsV3.foregroundDefault;
     final l10n = context.l10n;
-    final trips = widget.routeInfo.trips;
+    final trips = widget.routeInfo.trips.where((trip) {
+      final inMinutes = getMinutesFromDepartureTime(
+        trip.departureTimeUpdate ?? trip.departureTime,
+      );
+      return inMinutes < 1380;
+    }).toList();
     return ContentWrapper(
       color: context.colors.backgroundSurface5,
       children: [
