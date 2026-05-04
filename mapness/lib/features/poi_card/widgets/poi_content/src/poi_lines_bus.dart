@@ -27,7 +27,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (mounted) {
         setState(() {});
       }
@@ -70,8 +70,6 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
       final inMinutes = getMinutesFromDepartureTime(
         trip.departureTimeUpdate ?? trip.departureTime,
       );
-      // Trips that already passed today are pushed to tomorrow (+24h) by getMinutesFromDepartureTime.
-      // We filter them out by checking if they are more than 23 hours away (1380 minutes).
       return inMinutes < 1380;
     }).toList();
     return ContentWrapper(
