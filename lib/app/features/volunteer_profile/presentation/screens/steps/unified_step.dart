@@ -18,6 +18,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
   late TextEditingController _phoneController;
   String? _selectedRegionId;
   String? _selectedCityId;
+
   @override
   void initState() {
     super.initState();
@@ -214,7 +215,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                 helperStyle: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
-                hintText: 'region'.tr(),
+                hint: Text('region'.tr()),
                 hintStyle: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
@@ -269,7 +270,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                   ? null
                   : _selectedCityId,
               decoration: InputDecoration(
-                hintText: 'city'.tr(),
+                hint: Text('city'.tr()),
                 hintStyle: TextStyle(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
@@ -333,7 +334,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                   ? null
                   : state.educationalQualificationId,
               decoration: InputDecoration(
-                hintText: 'choose'.tr(),
+                hint: Text('choose'.tr()),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -398,7 +399,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
               dropdownColor: Theme.of(context).cardColor,
               initialValue: state.volunteeringWorkFieldId,
               decoration: InputDecoration(
-                hintText: 'choose'.tr(),
+                hint: Text('choose'.tr()),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),

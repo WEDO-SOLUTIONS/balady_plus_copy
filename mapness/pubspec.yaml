@@ -164,7 +164,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   # a tool for running code generators
   flutter_gen_runner:
-  build_runner: ^2.10.3
+  build_runner: 2.13.1
   # the code generator
   riverpod_generator: ^4.0.0+1
   # riverpod_lint makes it easier to work with Riverpod

@@ -1190,13 +1190,19 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                   initialValue: selectedValue?.isEmpty == true
                       ? null
                       : selectedValue,
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,
                     ),
+                    hintStyle: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w200,
+                    )
                   ),
+
                   items: items
                       .map(
                         (item) => DropdownMenuItem<String>(
