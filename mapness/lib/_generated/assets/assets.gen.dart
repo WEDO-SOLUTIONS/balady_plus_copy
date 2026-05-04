@@ -63,6 +63,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
 
+  /// File path: assets/images/dashboard_bg_pattern.png
+  AssetGenImage get dashboardBgPattern => const AssetGenImage('assets/images/dashboard_bg_pattern.png');
+
   /// File path: assets/images/driveHomeArrowFoundingDay.png
   AssetGenImage get driveHomeArrowFoundingDay => const AssetGenImage('assets/images/driveHomeArrowFoundingDay.png');
 
@@ -234,6 +237,7 @@ class $AssetsImagesGen {
     cityExpertSaudiDay,
     cityscapeGlobal,
     darkMapPreview,
+    dashboardBgPattern,
     driveHomeArrowFoundingDay,
     driveHomeArrow,
     driveHomeArrowSaudiday,
@@ -921,6 +925,9 @@ class $AssetsImagesMakkahQuickActionsGen {
 
   /// File path: assets/images/makkah_quick_actions/athkar.png
   AssetGenImage get athkar => const AssetGenImage('assets/images/makkah_quick_actions/athkar.png');
+
+  /// Directory path: assets/images/makkah_quick_actions/dark
+  $AssetsImagesMakkahQuickActionsDarkGen get dark => const $AssetsImagesMakkahQuickActionsDarkGen();
 
   /// File path: assets/images/makkah_quick_actions/free_roam.png
   AssetGenImage get freeRoam => const AssetGenImage('assets/images/makkah_quick_actions/free_roam.png');
@@ -2279,6 +2286,37 @@ class $AssetsImagesAudioPlaceholdersArrivingSoonGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [appleCarPlay, baladyContent, mbcVideoNews, onDemand, speedAlerts];
+}
+
+class $AssetsImagesMakkahQuickActionsDarkGen {
+  const $AssetsImagesMakkahQuickActionsDarkGen();
+
+  /// File path: assets/images/makkah_quick_actions/dark/athkar.png
+  AssetGenImage get athkar => const AssetGenImage('assets/images/makkah_quick_actions/dark/athkar.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/free_roam.png
+  AssetGenImage get freeRoam => const AssetGenImage('assets/images/makkah_quick_actions/dark/free_roam.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/parking.png
+  AssetGenImage get parking => const AssetGenImage('assets/images/makkah_quick_actions/dark/parking.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/qibla.png
+  AssetGenImage get qibla => const AssetGenImage('assets/images/makkah_quick_actions/dark/qibla.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/quaran.png
+  AssetGenImage get quaran => const AssetGenImage('assets/images/makkah_quick_actions/dark/quaran.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/road_event.png
+  AssetGenImage get roadEvent => const AssetGenImage('assets/images/makkah_quick_actions/dark/road_event.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/send_location.png
+  AssetGenImage get sendLocation => const AssetGenImage('assets/images/makkah_quick_actions/dark/send_location.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/snap_and_send.png
+  AssetGenImage get snapAndSend => const AssetGenImage('assets/images/makkah_quick_actions/dark/snap_and_send.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [athkar, freeRoam, parking, qibla, quaran, roadEvent, sendLocation, snapAndSend];
 }
 
 class $AssetsIconsSvgPlacesBigNewDarkGen {

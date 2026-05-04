@@ -8,6 +8,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -46,9 +47,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
     if (themeMode == SpecialThemeMode.ramadan) {
       return 'assets/images/ramadan_quick_actions';
     }
-    return isDark
-        ? 'assets/images/makkah_quick_actions/dark'
-        : 'assets/images/makkah_quick_actions';
+    return isDark ? 'assets/images/makkah_quick_actions/dark' : 'assets/images/makkah_quick_actions';
   }
 
   String _getAssetPath(String fileName, {required bool isDark}) =>
@@ -66,6 +65,10 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
     final showKaabaCard = _shouldShowKaabaCard(pilgrimFeature);
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
+    final overlayPeak = isDark
+        ? MakkahPoiConstants.darkPreviewCardOverlayColor
+        : MakkahPoiConstants.previewCardOverlayColor;
 
     return Column(
       children: [
@@ -286,12 +289,10 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
         ],
         if (themeConfig.useThemedExploreBackground)
           DecoratedBox(
+            // Light Makkah keeps its full-bleed `places_makkah.png` background
+            // here; dark Makkah relies on the Stack layers below (pattern +
+            // gradient overlay), so no decoration is needed for that variant.
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: themeConfig.exploreBackgroundGradient,
-              ),
               image: themeConfig.exploreBackgroundImageBuilder != null
                   ? DecorationImage(
                       image: themeConfig.exploreBackgroundImageBuilder!(),
@@ -301,14 +302,62 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                     )
                   : null,
             ),
-            child: Column(
-              children: [
-                DashboardTitle(context.l10n.exploreNearby),
-                const SizedBox(height: Spacing.$4x),
-                const PlacePreviewMakkah(),
-                const SizedBox(height: Spacing.$6x),
-              ],
-            ),
+            child:
+                // Layer 1 (back): explore content. Stays at the bottom of the
+                // stack so the gradient + pattern overlays sit on top of it.
+                Column(
+                  children: [
+                    DashboardTitle(context.l10n.exploreNearby),
+                    Stack(
+                      children: [
+                        // pattern
+                        if (themeConfig.exploreBackgroundImageBuilder == null)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            height: 132,
+                            child: IgnorePointer(
+                              child: Image(
+                                image: Assets.images.dashboardBgPattern.provider(),
+                                fit: BoxFit.fitHeight,
+                                repeat: ImageRepeat.repeatX,
+                                alignment: Alignment.bottomCenter,
+                              ),
+                            ),
+                          ),
+
+                        // gradient
+                        if (themeConfig.exploreBackgroundImageBuilder == null)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    stops: const [0.5, 1.0],
+                                    colors: [
+                                      Colors.transparent,
+                                      const Color(0xFF31CDC2).withOpacity(0.74),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        // body
+                        const Column(
+                          children: [
+                            SizedBox(height: Spacing.$4x),
+                            PlacePreviewMakkah(),
+                            SizedBox(height: Spacing.$6x),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
           ),
       ],
     );
