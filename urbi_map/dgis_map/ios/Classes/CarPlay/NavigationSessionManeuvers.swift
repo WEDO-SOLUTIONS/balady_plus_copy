@@ -177,8 +177,11 @@ class NavigationSessionManeuvers {
             instructionEntry.point.distance.millimeters.millimeters)
 
         if let iconName = mapIconName(instruction.extraInstructionInfo) {
-            cpManeuver.symbolImage = UIImage(named: iconName)!
-            cpManeuver.dashboardSymbolImage = UIImage(named: iconName)!
+            let raw = UIImage(named: iconName)!
+            let desiredSize = CGSize(width: 15, height: 15)
+            let resized = raw.resized(to: desiredSize).withRenderingMode(.alwaysOriginal)
+            cpManeuver.symbolImage = resized
+            cpManeuver.dashboardSymbolImage = resized
         }
 
         return cpManeuver
@@ -344,3 +347,21 @@ extension RouteInfo {
         )
     }
 }
+
+extension UIImage {
+    /// Return a new UIImage scaled to `size` (points). Uses renderer so it respects scale.
+    func resized(to size: CGSize, opaque: Bool = false) -> UIImage {
+        let format = UIGraphicsImageRendererFormat.default()
+        format.opaque = opaque
+        format.scale = self.scale
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        let img = renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+        return img
+    }
+}
+
+
+
+
