@@ -32,15 +32,18 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
         : Colors.black.withOpacity(0.06);
 
     // Dimensions
-    final double iconWidth = context.w(53.95);
-    final double iconHeight = context.h(53.95);
-    final double titlesWidth = context.w(55.21214294433594);
-    final double titlesHeight = context.h(29.814556121826172);
+    final double iconWidth = context.screenWidth * 0.14;
+    final double iconHeight = context.screenWidth * 0.14;
+    final double titlesWidth = iconWidth;
+    final double titlesHeight = context.h(30);
 
     Widget buildShimmerItem(BuildContext context, bool isDashedAdd) {
-      return Column(
-        children: [
-          Shimmer.fromColors(
+      return Container(
+        width: iconWidth,
+        margin: const EdgeInsets.symmetric(horizontal: 2.0),
+        child: Column(
+          children: [
+            Shimmer.fromColors(
             baseColor: baseColor,
             highlightColor: highlightColor,
             child: Container(
@@ -48,7 +51,7 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
               height: iconHeight,
               decoration: BoxDecoration(
                 color: surface,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: isDashedAdd
                       ? (isDark
@@ -72,7 +75,7 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
                         height: iconHeight * 0.46,
                         decoration: BoxDecoration(
                           color: placeholder,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: isDark
                                 ? Colors.white.withOpacity(0.06)
@@ -96,12 +99,13 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
               height: titlesHeight * 0.5,
               decoration: BoxDecoration(
                 color: placeholder,
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: borderColor, width: 1),
               ),
             ),
           ),
         ],
+      )
       );
     }
 
@@ -117,7 +121,7 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
             height: context.h(33),
             decoration: BoxDecoration(
               color: surface,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(color: borderColor, width: 1),
               boxShadow: [
                 BoxShadow(
@@ -137,16 +141,17 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
           children: [
             buildShimmerItem(context, true),
             SizedBox(width: context.screenWidth * 0.04),
-            SizedBox(
-              height: context.screenHeight * 0.13,
-              width: context.screenWidth * 0.70,
-              child: ListView.separated(
-                separatorBuilder: (context, index) =>
-                    SizedBox(width: context.screenWidth * 0.03),
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemBuilder: (context, index) =>
-                    buildShimmerItem(context, false),
+            Expanded(
+              child: SizedBox(
+                height: iconHeight + titlesHeight + context.h(20),
+                child: ListView.separated(
+                  separatorBuilder: (context, index) =>
+                      SizedBox(width: context.screenWidth * 0.03),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 10,
+                  itemBuilder: (context, index) =>
+                      buildShimmerItem(context, false),
+                ),
               ),
             ),
           ],

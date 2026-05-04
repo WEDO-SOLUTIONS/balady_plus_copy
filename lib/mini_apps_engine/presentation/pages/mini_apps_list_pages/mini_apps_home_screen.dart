@@ -6,7 +6,6 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
@@ -21,14 +20,14 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_fav_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_most_used_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_search_bar_shimmer_loading_widget.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/momtathel_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/overlay_blur_circle.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/page_bar_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/apps_group_page.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/add_fav_mini_apps.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
 /// The main home screen for mini apps. Extracted from [HomeMiniAppsListPages]
@@ -54,7 +53,6 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
       }
     } else {
       authenticationBloc.stream.listen((state) {
-        print("state : $state");
         if (state is UnAuthenticatedState) {
           if (miniAppsCubit.state.isInitial) {
             miniAppsCubit.loadMiniApps();
@@ -62,11 +60,6 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
         }
       });
     }
-    print("refreshHomePage : sl<NewMiniAppLogicCubit>().loadMiniApps(forceRefresh: true);");
-    print("refreshHomePage : ${sl<DelegatorsCubit>().state.accountStatus}");
-    print("refreshHomePage : ${authenticationBloc.state is AuthenticationUnknownState}");
-    print("refreshHomePage : ${authenticationBloc.state is UnAuthenticatedState}");
-    print("object : super.initState();");
   }
 
   @override
@@ -88,6 +81,12 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
           const Positioned(top: 0, child: OverlayBlurCircle()),
           BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
             builder: (context, state) {
+              final bool isLoading =
+                  state.isFavLoading ||
+                  state.isUnFavLoading ||
+                  state.isAppsGroupLoading ||
+                  state.isEntryPointsLoading ||
+                  state.isInitial;
               final hasError = state.entryPointsError != null && state.favError != null;
 
               if (hasError) {
@@ -95,7 +94,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
               }
 
               return RefreshIndicator(
-                color: const Color(0xFF1CA9A6),
+                color: Theme.of(context).primaryColor,
                 onRefresh: () async {
                   return context.read<NewMiniAppLogicCubit>().refreshMiniApps();
                 },
@@ -107,27 +106,11 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // ── Page bar / header ────────────────────────────
-                          BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-                            buildWhen: (previous, current) =>
-                                previous.isFavLoading != current.isFavLoading ||
-                                previous.isInitial != current.isInitial,
-                            builder: (context, state) {
-                              if (state.isFavLoading || state.isInitial) {
-                                return const PageBarShimmerLoadingWidget();
-                              }
-                              return SizedBox();
-                            },
-                          ),
-
+                          // ── Page bar / header (no real UI placeholder, omitted from shimmer) ──
                           SizedBox(height: context.h(14)),
 
                           //! ── Search bar ───────────────────────────────────
-                          state.isFavLoading ||
-                                  state.isUnFavLoading ||
-                                  state.isAppsGroupLoading ||
-                                  state.isEntryPointsLoading ||
-                                  state.isInitial
+                          isLoading
                               ? MiniAppsSearchTextFieldShimmer()
                               : MiniAppsCustomTextField(
                                   onTap: () {
@@ -162,7 +145,14 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                       previous.favoriteApps != current.favoriteApps,
                                   builder: (context, state) {
                                     if (state.isFavLoading || state.isInitial) {
-                                      return const MiniAppsFavSectionShimmerWidget();
+                                      return Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const MiniAppsFavSectionShimmerWidget(),
+                                          SizedBox(height: context.screenHeight * 0.02),
+                                          const MomtathelCardShimmer(), // <-- Added here so it shows during loading!
+                                        ],
+                                      );
                                     }
                                     return StaggeredAppear(
                                       children: [
@@ -190,10 +180,11 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                   child: CustomTextButtonWidget(
                                                     onPressed: () {
                                                       Navigator.of(context).push(
-                                                        PageRouteBuilder(
-                                                          opaque: false,
-                                                          barrierColor: Colors.transparent,
-                                                          pageBuilder: (_, _, _) => const MiniAppsSearchPage(),
+                                                        MaterialPageRoute(
+                                                          builder: (_) => BlocProvider.value(
+                                                            value: context.read<NewMiniAppLogicCubit>(),
+                                                            child: const AddFavMiniApps(),
+                                                          ),
                                                         ),
                                                       );
                                                     },
@@ -282,6 +273,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                 ),
                                               ],
                                             ),
+                                            //! Momtahel map section .....
                                             SizedBox(height: context.screenHeight * 0.02),
                                             Padding(
                                               padding: EdgeInsets.only(
@@ -423,7 +415,8 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                 : Colors.black,
                                                           ),
                                                         ),
-                                                        const Spacer(),
+                                                        // const Spacer(),
+                                                        /*
                                                         Padding(
                                                           padding: CommonFunctions.isAppAR
                                                               ? const EdgeInsets.only(left: 10)
@@ -445,9 +438,10 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                             text: "view_all".tr(),
                                                           ),
                                                         ),
+                                                        */
                                                       ],
                                                     ),
-                                                    SizedBox(height: context.screenHeight * 0.02),
+                                                    SizedBox(height: context.screenHeight * 0.01),
                                                     SizedBox(
                                                       height: context.h(64),
                                                       width: context.screenWidth,
@@ -526,41 +520,39 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                 SizedBox(height: context.screenHeight * 0.02),
 
                                 //! ── App groups grid section ──────────────
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "all_apps".tr(),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        fontFamily: GeneralKey.appFontType,
-                                        color: Theme.of(context).brightness == Brightness.dark
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                    ),
-
-                                    SizedBox(height: context.screenHeight * 0.01),
-
-                                    Padding(
-                                      padding: CommonFunctions.isAppAR
-                                          ? const EdgeInsets.only(left: 10)
-                                          : const EdgeInsets.only(right: 10),
-                                      child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-                                        buildWhen: (previous, current) =>
-                                            previous.isAppsGroupLoading != current.isAppsGroupLoading ||
-                                            previous.isInitial != current.isInitial ||
-                                            previous.appGroups != current.appGroups,
-                                        builder: (context, state) {
-                                          if (state.isAppsGroupLoading || state.isInitial) {
-                                            return const AppsGroupSectionShimmerWidget();
-                                          }
-                                          final regularGroups = state.appGroups;
-                                          return StaggeredAppear(
+                                BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+                                  buildWhen: (previous, current) =>
+                                      previous.isAppsGroupLoading != current.isAppsGroupLoading ||
+                                      previous.isInitial != current.isInitial ||
+                                      previous.appGroups != current.appGroups,
+                                  builder: (context, state) {
+                                    if (state.isAppsGroupLoading || state.isInitial) {
+                                      return const AppsGroupSectionShimmerWidget();
+                                    }
+                                    final regularGroups = state.appGroups;
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "all_apps".tr(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: GeneralKey.appFontType,
+                                            color: Theme.of(context).brightness == Brightness.dark
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                        SizedBox(height: context.screenHeight * 0.01),
+                                        Padding(
+                                          padding: CommonFunctions.isAppAR
+                                              ? const EdgeInsets.only(left: 10)
+                                              : const EdgeInsets.only(right: 10),
+                                          child: StaggeredAppear(
                                             children: [
                                               GridView.builder(
                                                 itemCount: regularGroups.length,
@@ -600,11 +592,11 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                 },
                                               ),
                                             ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ],
                             ),
