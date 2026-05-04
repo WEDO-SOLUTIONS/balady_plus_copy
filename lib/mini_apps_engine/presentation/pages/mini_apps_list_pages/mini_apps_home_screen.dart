@@ -544,7 +544,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                       ),
                                     ),
 
-                                    SizedBox(height: context.screenHeight * 0.02),
+                                    SizedBox(height: context.screenHeight * 0.01),
 
                                     Padding(
                                       padding: CommonFunctions.isAppAR
@@ -562,49 +562,42 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                           final regularGroups = state.appGroups;
                                           return StaggeredAppear(
                                             children: [
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  GridView.builder(
-                                                    itemCount: regularGroups.length,
-                                                    shrinkWrap:
-                                                        true, // 1. Allows GridView to size itself to its children
-                                                    physics:
-                                                        const NeverScrollableScrollPhysics(), // 2. Prevents double-scrolling if inside another list
-                                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                                      crossAxisCount: 3,
-                                                      mainAxisExtent: context.h(
-                                                        98,
-                                                      ), // 3. Forces the EXACT height of the card
-                                                      crossAxisSpacing: 8, // Optional: Spacing between columns
-                                                      mainAxisSpacing: 8, // Optional: Spacing between rows
-                                                    ),
-                                                    itemBuilder: (context, index) {
-                                                      final appGroup = regularGroups[index];
-                                                      final groupName = CommonFunctions.isAppAR
-                                                          ? appGroup.nameAr
-                                                          : appGroup.nameEn;
-                                                      return CustomLargMoreApps(
-                                                        categoryIconPath: appGroup.apps.first.iconPath,
-                                                        categoryName: groupName,
-                                                        withCardEffect: true,
-                                                        text: groupName,
-                                                        apps: appGroup.apps,
-                                                        totalAppCount: appGroup.appCount,
-                                                        onTap: () {
-                                                          Navigator.of(context).push(
-                                                            PageRouteBuilder(
-                                                              opaque: false,
-                                                              barrierColor: Colors.transparent,
-                                                              pageBuilder: (_, _, _) =>
-                                                                  AppsGroupPage(groupId: appGroup.id),
-                                                            ),
-                                                          );
-                                                        },
+                                              GridView.builder(
+                                                itemCount: regularGroups.length,
+                                                shrinkWrap: true, // 1. Allows GridView to size itself to its children
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(), // 2. Prevents double-scrolling if inside another list
+                                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                                  crossAxisCount: 3,
+                                                  mainAxisExtent: context.h(
+                                                    98,
+                                                  ), // 3. Forces the EXACT height of the card
+                                                  crossAxisSpacing: 8, // Optional: Spacing between columns
+                                                  mainAxisSpacing: 8, // Optional: Spacing between rows
+                                                ),
+                                                itemBuilder: (context, index) {
+                                                  final appGroup = regularGroups[index];
+                                                  final groupName = CommonFunctions.isAppAR
+                                                      ? appGroup.nameAr
+                                                      : appGroup.nameEn;
+                                                  return CustomLargMoreApps(
+                                                    categoryIconPath: appGroup.apps.first.iconPath,
+                                                    categoryName: groupName,
+                                                    withCardEffect: true,
+                                                    text: groupName,
+                                                    apps: appGroup.apps,
+                                                    totalAppCount: appGroup.appCount,
+                                                    onTap: () {
+                                                      Navigator.of(context).push(
+                                                        PageRouteBuilder(
+                                                          opaque: false,
+                                                          barrierColor: Colors.transparent,
+                                                          pageBuilder: (_, _, _) => AppsGroupPage(groupId: appGroup.id),
+                                                        ),
                                                       );
                                                     },
-                                                  ),
-                                                ],
+                                                  );
+                                                },
                                               ),
                                             ],
                                           );
