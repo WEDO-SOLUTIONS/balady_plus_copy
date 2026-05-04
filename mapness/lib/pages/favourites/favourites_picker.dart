@@ -21,18 +21,14 @@ class FavouritesPickerPage extends ConsumerWidget {
     if (asyncState.isLoading) {
       return Material(
         color: context.colors.backgroundSurface1,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: context.colors.accentDefault,
-          ),
-        ),
+        child: Center(child: CircularProgressIndicator(color: context.colors.accentDefault)),
       );
     }
     if (asyncState.hasError) {
       return ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
         onRetry: () => ref.invalidate(favouriteCacheProvider),
-        onClose: (_) => context.router.popForced(),
+        onClose: (_) => context.router.pop(),
       );
     }
     final state = asyncState.requireValue;
@@ -43,11 +39,9 @@ class FavouritesPickerPage extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ColoredBox(
-            color: Colors.white,
+            color: context.colors.backgroundSurface1,
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: SafeArea(
                 bottom: false,
                 child: Stack(
@@ -58,8 +52,8 @@ class FavouritesPickerPage extends ConsumerWidget {
                         child: Text(
                           context.l10n.favourites,
                           style: Theme.of(context).extension<ThemeTextStyles>()!.footNoteBold.copyWith(
-                                color: context.colors.foregroundDefault,
-                              ),
+                            color: context.colors.foregroundDefault,
+                          ),
                         ),
                       ),
                     ),
@@ -68,15 +62,12 @@ class FavouritesPickerPage extends ConsumerWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          context.router.popForced();
+                          context.router.pop();
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
                           padding: const EdgeInsets.all(8),
-                          child: Icon(
-                            SystemIcons.arrowCornerLeftLarge,
-                            color: context.colors.foregroundDefault,
-                          ),
+                          child: Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
                         ),
                       ),
                     ),
@@ -91,24 +82,15 @@ class FavouritesPickerPage extends ConsumerWidget {
                 color: context.colors.backgroundSurface1,
                 child: state.items.isEmpty
                     ? Padding(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 63,
-                        ),
+                        padding: const EdgeInsets.only(left: 16, right: 16, top: 63),
                         child: EmptyResultWidget(
                           text: context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                         ),
                       )
                     :
-
-                    /// items
-                    ListView.separated(
-                        padding: const EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 16,
-                        ),
+                      /// items
+                      ListView.separated(
+                        padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                         itemCount: state.items.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 8),
                         itemBuilder: (_, index) {
@@ -116,11 +98,12 @@ class FavouritesPickerPage extends ConsumerWidget {
 
                           /// item
                           return Padding(
-                            padding:
-                                index == (state.items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
+                            padding: index == (state.items.length - 1)
+                                ? const EdgeInsets.only(bottom: 8)
+                                : EdgeInsets.zero,
                             child: FavouriteItemWidget(
                               key: ValueKey(item.id),
-                              onTap: () => context.router.popForced(item),
+                              onTap: () => context.router.pop(item),
                               isEditing: false,
                               isDeletable: false,
                               isLongPressEnabled: false,

@@ -95,6 +95,26 @@ class ObjectTapHandler(
                 onMarkerTap(tappedObject)
                 return
             }
+            is SimpleClusterObject -> {
+                val userData = tappedObject.userData
+
+                if (userData is MapObjectManagerMessage) {
+                    val clusterId = UUID.randomUUID().toString()
+                    this.clusters[clusterId] = tappedObject
+                    onClusterTap(userData.id, tappedObject, clusterId)
+                    return
+                }
+            }
+            else ->
+                    eventSink.error(
+                            "ClassCastException",
+                            "No suitable handler for tapped object: " + tappedObject.javaClass,
+                            null,
+                    )
+        }
+    }
+    fun objectLongTapListener(roi: RenderedObjectInfo) {
+        when (val tappedObject = roi.item.item) {
             is Polygon -> {
                 val userData = tappedObject.userData
 
@@ -428,7 +448,7 @@ class ObjectTapHandler(
         val manager =
                 MapObjectManager.withGeneralization(
                         map = this.map,
-                        logicalPixel = LogicalPixel(value = 70f),
+                        logicalPixel = LogicalPixel(value = 100f),
                         maxZoom = Zoom(value = 18f),
                         layerId = layerId,
                 )
@@ -497,7 +517,7 @@ class ObjectTapHandler(
                         contours =
                                 polygon.options.contours.map { contour ->
                                     // TODO: fix force unwrap
-                                    contour.map { it.toGeoPoint() }
+                                    contour.points.map { it.toGeoPoint() }
                                 },
                         color = polygon.options.color?.let { Color(argb = it.toInt()) } ?: Color(),
                         strokeWidth =
@@ -859,6 +879,31 @@ class ObjectTapHandler(
         )
     }
 
+    fun calcPositionForGeoPoints(
+            points: List<GeoPointMessage>,
+            options: CalcPositionOptionsMessage,
+            callback: (Result<CameraPositionMessage>) -> Unit
+    ) {
+        if (points.isEmpty()) {
+            val pos = map.camera.position
+            callback(Result.success(CameraPositionMessage(
+                point = GeoPointMessage(pos.point.latitude.value, pos.point.longitude.value),
+                zoom = pos.zoom.value.toDouble(),
+                tilt = pos.tilt.value.toDouble(),
+                bearing = pos.bearing.value
+            )))
+            return
+        }
+
+        val objects: List<SimpleMapObject> = if (points.size > 1) {
+            listOf(Polyline(PolylineOptions(points = points.map { it.toGeoPoint() })))
+        } else {
+            listOf(Circle(CircleOptions(position = points.first().toGeoPoint(), radius = Meter(500f))))
+        }
+
+        calcPositionForObjects(objects = objects, options = options, callback = callback)
+    }
+
     fun calcPositionForPoints(
         area: GeometryMessage,
         options: CalcPositionOptionsMessage,
@@ -1076,6 +1121,7 @@ class ObjectTapHandler(
                                                                             .id.toMessage(),
                                                             closestMapPoint =
                                                                     it.closestMapPoint.toMessage(),
+                                                            levelId = it.item.levelId?.value?.toLong(),
                                                     )
                                                 }
                                                 .toList()

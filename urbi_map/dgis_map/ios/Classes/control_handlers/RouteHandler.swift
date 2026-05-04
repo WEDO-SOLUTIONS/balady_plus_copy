@@ -11,49 +11,55 @@ class RouteHandler {
     private var publicTransportHandler: PublicTransportHandler?
     private let trafficRouter: TrafficRouter
     private let navigationHandler: NavigationHandler
-    
+    private let indoorControlHandler: IndoorControlHandler?
+
     private let locationService: LocationService
     private let map: Map
     private let eventChannel: DgisStreamHandler
-    
+
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     private(set) var options: RouteSearchOptions?
     private(set) var finishPoint: RouteSearchPoint?
-    
+
     var selectedRoute: TrafficRoute? {
         get {
             guard let routeIndex = self.routeEditor.activeRouteIndex?.value else {
                 return nil
             }
-            
+
             return self.routeEditor.routesInfo.routes[Int(routeIndex)]
         }
     }
-    
+
     init(
         map: Map,
         sdk: Container,
         eventChannel: DgisStreamHandler,
-        navigationHandler: NavigationHandler
+        navigationHandler: NavigationHandler,
+        indoorControlHandler: IndoorControlHandler? = nil
     ) {
         let context = try! sdk.context
-        
+
         self.locationService = try! sdk.locationService
         self.map = map
         self.eventChannel = eventChannel
         self.navigationHandler = navigationHandler
+        self.indoorControlHandler = indoorControlHandler
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
             context: context, routeEditor: self.routeEditor,
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
-        
+
         self.trafficRouter = TrafficRouter.init(context: context)
-        
+
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
+
         
+        /// Since future versions of the SDK will not support `sink`, we have to use `sinkOnMainThread`. More: https://docs.2gis.com/en/ios/sdk/examples/base#data-channels
+        /// TODO: It is necessary to consider error handling for this method. See BSA-3348 issue
         cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
             if case .publicTransport = self?.options {
                 self?.publicTransportHandler?.onRoutesChanged()
@@ -66,11 +72,15 @@ class RouteHandler {
             }
             self?.onActiveRouteChanged(index)
         })
-        
+
         self.map.addSource(source: routeEditorSource)
-        
+
     }
-    
+
+    private func getCurrentLevelId() -> LevelId? {
+        return indoorControlHandler?.currentLevelId
+    }
+
     func cancel() {
         cancelable.forEach { $0.cancel() }
         moveCameraCancellable?.cancel()
@@ -96,58 +106,56 @@ class RouteHandler {
     func setShowOnlyActiveRoute(_ visible: Bool) {
         self.routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: visible)
     }
+
+    private func createRouteSearchPoint(_ point: RouteEditorRoutePointMessage) -> RouteSearchPoint {
+        return RouteSearchPoint(
+            coordinates: GeoPoint(
+                latitude: point.point.latitude,
+                longitude: point.point.longitude
+            ),
+            objectId: DgisObjectId(
+                objectId: UInt64(point.objectId?.objectId ?? 0),
+                entranceId: UInt64(point.objectId?.entranceId ?? 0)
+            ),
+            levelId: point.levelId.map {
+                LevelId(value: UInt64($0))
+            }
+        )
+    }
     
     func setRouteParams(_ params: RouteEditorRouteParamsMessage) {
         let startPoint: RouteSearchPoint? = {
             if let pStartPoint = params.startPoint {
+                return createRouteSearchPoint(pStartPoint)
+            } else if let lastLocation = self.locationService.lastLocation?.coordinates {
                 return RouteSearchPoint(
                     coordinates: GeoPoint(
-                        latitude: pStartPoint.point.latitude,
-                        longitude: pStartPoint.point.longitude
+                        latitude: lastLocation.value.latitude,
+                        longitude: lastLocation.value.longitude
                     ),
-                    objectId: DgisObjectId(
-                        objectId: UInt64(pStartPoint.objectId?.objectId ?? 0),
-                        entranceId: UInt64(pStartPoint.objectId?.entranceId ?? 0)
-                    ),
-                    levelId: pStartPoint.levelId.map {
-                        LevelId(value: UInt64($0))
-                    }
+                    levelId: getCurrentLevelId()
                 )
-            } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.value.latitude,
-                    longitude: lastLocation.value.longitude
-                ))
             }
-            
+
             return nil
         }()
-        
+
         let finishPoint: RouteSearchPoint? = {
             if let pFinishPoint = params.finishPoint {
+                return createRouteSearchPoint(pFinishPoint)
+            } else if let lastLocation = self.locationService.lastLocation?.coordinates {
                 return RouteSearchPoint(
                     coordinates: GeoPoint(
-                        latitude: pFinishPoint.point.latitude,
-                        longitude: pFinishPoint.point.longitude
+                        latitude: lastLocation.value.latitude,
+                        longitude: lastLocation.value.longitude
                     ),
-                    objectId: DgisObjectId(
-                        objectId: UInt64(pFinishPoint.objectId?.objectId ?? 0),
-                        entranceId: UInt64(pFinishPoint.objectId?.entranceId ?? 0)
-                    ),
-                    levelId: pFinishPoint.levelId.map {
-                        LevelId(value: UInt64($0))
-                    }
+                    levelId: getCurrentLevelId()
                 )
-            } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.value.latitude,
-                    longitude: lastLocation.value.longitude
-                ))
             }
-            
+
             return nil
         }()
-        
+
         guard let startPoint = startPoint, let finishPoint = finishPoint else {
             return
         }
@@ -157,11 +165,13 @@ class RouteHandler {
         
         self.finishPoint = finishPoint
         
+        let intermediatePoints = params.intermediatePoints?.map { createRouteSearchPoint($0)}
+
         let routeEditorParams = RouteEditorRouteParams(
             startPoint: startPoint,
             finishPoint: finishPoint,
             routeSearchOptions: routeSearchOptions,
-            intermediatePoints: []
+            intermediatePoints: intermediatePoints ?? []
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
         
@@ -312,10 +322,13 @@ class RouteHandler {
         if let startPoint {
             startSearchPoint = startPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-            startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.value.latitude,
-                longitude: lastLocation.value.longitude
-            ))
+            startSearchPoint = RouteSearchPoint(
+                coordinates: GeoPoint(
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
+                ),
+                levelId: getCurrentLevelId()
+            )
         } else {
             completion(
                 Result.failure(
@@ -331,10 +344,13 @@ class RouteHandler {
         if let finishPoint {
             finishSearchPoint = finishPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-            finishSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.value.latitude,
-                longitude: lastLocation.value.longitude
-            ))
+            finishSearchPoint = RouteSearchPoint(
+                coordinates: GeoPoint(
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
+                ),
+                levelId: getCurrentLevelId()
+            )
         } else {
             completion(
                 Result.failure(
@@ -393,12 +409,14 @@ class RouteHandler {
         startPoint: RouteSearchPoint,
         finishPoint: RouteSearchPoint,
         routeSearchOptions: RouteSearchOptions,
+        intermediatePoints: [RouteSearchPoint]?,
         completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void
     ) {
         let routesFuture = trafficRouter.findRoute(
             startPoint: startPoint,
             finishPoint: finishPoint,
-            routeSearchOptions: routeSearchOptions
+            routeSearchOptions: routeSearchOptions,
+            intermediatePoints: intermediatePoints ?? []
         )
         
         self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in

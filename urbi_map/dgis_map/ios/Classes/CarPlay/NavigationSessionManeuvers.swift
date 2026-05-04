@@ -5,14 +5,17 @@ class NavigationSessionManeuvers {
     private let model: Model
     private let mapTemplate: CPMapTemplate
     private var navigationSession: CPNavigationSession?
+    private let eventChannel: DgisStreamHandler?
 
     init(
         model: Model,
-        mapTemplate: CPMapTemplate
+        mapTemplate: CPMapTemplate,
+        eventChannel: DgisStreamHandler?
     ) {
         self.model = model
         self.mapTemplate = mapTemplate
-    }
+        self.eventChannel = eventChannel
+}
 
     private var routePositionChannelCancellable: Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
@@ -58,12 +61,26 @@ class NavigationSessionManeuvers {
         routePositionChannelCancellable = model.routePositionChannel
             .sinkOnMainThread {
                 [self] routePosition in
+                updateRouteDetails()
                 updateTripEstimates(navigationSession)
                 guard let routePosition else { return }
                 updateNextManeuver(
                     with: routePosition, navigationSession, routeInfo
                 )
             }
+    }
+    
+    private func updateRouteDetails() {
+        guard let duration = self.model.duration, let distance = self.model.distance else {
+            return
+        }
+
+        eventChannel?.success([
+            "event": DashboardControlModel.Events.dashboardEvent,
+            "duration": Int(duration),
+            "distance": distance.value / 1000.0,
+            "arrivalTime": DashboardControlModel.dateFormatter.string(from: Date().addingTimeInterval(duration))
+        ])
     }
 
     func finish() {

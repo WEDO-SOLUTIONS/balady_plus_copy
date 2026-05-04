@@ -1,9 +1,11 @@
 import 'dart:async';
 
-import 'package:balady_uikit/components.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -13,18 +15,26 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/widgets/navi_search/navi_find_in_fav.dart';
+import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
   final ScrollController bottomSheetContentScrollController;
+  final bool showMoreQuickFilters;
+  final ValueChanged<bool>? onMoreQuickFiltersChanged;
+
   const MapSearchContent({
     required this.bottomSheetContentScrollController,
+    this.showMoreQuickFilters = false,
+    this.onMoreQuickFiltersChanged,
     super.key,
   });
 
@@ -38,52 +48,52 @@ class MapSearchContent extends ConsumerStatefulWidget {
   }) {
     final BssRequest? request = switch (searchState) {
       SearchStateHistory() => BssRequest(
-          eventType: BSSEventType.action,
-          actionType: BSSActionType.scroll,
-          uiElement: const BssUIElement(
-            name: BssUIElementNames.historyList,
-            ownerName: BssUIElementNames.directorySearchScreen,
-          ),
-          payload: BssPayload(
-            searchRequest: BssSearchRequest(text: searchState.searchText),
-            historyList: BssHistoryList(
-              size: historyListSize,
-            ),
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.scroll,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.historyList,
+          ownerName: BssUIElementNames.directorySearchScreen,
+        ),
+        payload: BssPayload(
+          searchRequest: BssSearchRequest(text: searchState.searchText),
+          historyList: BssHistoryList(
+            size: historyListSize,
           ),
         ),
+      ),
       SearchStateError() => null,
       SearchStateEmpty() => null,
       SearchStateLoading() => null,
       SearchStateSuggest() => BssRequest(
-          eventType: BSSEventType.action,
-          actionType: BSSActionType.scroll,
-          uiElement: const BssUIElement(
-            name: BssUIElementNames.suggestList,
-            ownerName: BssUIElementNames.directorySearchScreen,
-          ),
-          payload: BssPayload(
-            searchRequest: BssSearchRequest(text: searchState.searchText),
-            suggestList: BssSuggestList(
-              size: searchState.suggest.suggests.length,
-            ),
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.scroll,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.suggestList,
+          ownerName: BssUIElementNames.directorySearchScreen,
+        ),
+        payload: BssPayload(
+          searchRequest: BssSearchRequest(text: searchState.searchText),
+          suggestList: BssSuggestList(
+            size: searchState.suggest.suggests.length,
           ),
         ),
+      ),
       SearchStateResults() => BssRequest(
-          eventType: BSSEventType.action,
-          actionType: BSSActionType.scroll,
-          uiElement: const BssUIElement(
-            name: BssUIElementNames.searchResultList,
-            ownerName: BssUIElementNames.directorySearchScreen,
-          ),
-          payload: BssPayload(
-            searchRequest: BssSearchRequest(text: searchState.searchText),
-            searchResultList: BssSearchResultList(
-              size: searchState.results.itemMarkerInfos?.length ?? 0,
-              searchType: searchState.results.searchResultType.toBss(),
-              firstResultClass: searchState.results.searchResultType.toBss(),
-            ),
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.scroll,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.searchResultList,
+          ownerName: BssUIElementNames.directorySearchScreen,
+        ),
+        payload: BssPayload(
+          searchRequest: BssSearchRequest(text: searchState.searchText),
+          searchResultList: BssSearchResultList(
+            size: searchState.results.itemMarkerInfos?.length ?? 0,
+            searchType: searchState.results.searchResultType.toBss(),
+            firstResultClass: searchState.results.searchResultType.toBss(),
           ),
         ),
+      ),
     };
     if (request != null) {
       sendEvent(request);
@@ -178,12 +188,14 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                 ),
               ),
             );
-            ref.read(urbiAnalyticsProvider).track(
-              'searchFailed',
-              properties: {
-                'text': newState.searchText,
-              },
-            );
+            ref
+                .read(urbiAnalyticsProvider)
+                .track(
+                  'searchFailed',
+                  properties: {
+                    'text': newState.searchText,
+                  },
+                );
           } else if (newState is SearchStateHistory) {
             final history = ref.read(searchHistoryProvider(scope.value));
             BssService.instance.sendEvent(
@@ -242,12 +254,46 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         top: false,
         child: MapSearchEmpty(),
       ),
-      history: () => const SafeArea(
-        top: false,
-        child: MapSearchHistory(),
-      ),
+      history: () {
+        final favourites = ref.watch(favouriteCacheProvider);
+        final hasFavourites = favourites.hasValue && favourites.requireValue.items.isNotEmpty;
+
+        final history = ref.watch(searchHistoryProvider(scope.value));
+        final shouldShowHistoryAndFavorites = !widget.showMoreQuickFilters;
+
+        return SafeArea(
+          top: false,
+          child: Column(
+            children: [
+              NaviQuickFilter(
+                showMoreView: widget.showMoreQuickFilters,
+                onMoreTap: () => widget.onMoreQuickFiltersChanged?.call(true),
+                onFilterSelected: (q) {
+                  widget.onMoreQuickFiltersChanged?.call(false);
+                  ref.read(searchProvider(scope.value).notifier).searchByText(q);
+                  ref
+                      .read(urbiAnalyticsProvider)
+                      .track(
+                        '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
+                      );
+                  ref
+                      .read(searchHistoryProvider(scope.value).notifier)
+                      .put(SearchHistoryItem.fromQuery(query: q).toMessage());
+                },
+              ),
+              if (shouldShowHistoryAndFavorites && hasFavourites)
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+                  child: const NaviFindInFav(),
+                ),
+              if (shouldShowHistoryAndFavorites && history.isEmpty) const SizedBox(height: Spacing.$4x),
+              if (shouldShowHistoryAndFavorites) const MapSearchHistory(),
+            ],
+          ),
+        );
+      },
       loading: () => SizedBox(
-        height: height * .8,
+        height: height * .4,
         child: const Center(
           child: Loading(
             orientation: Axis.vertical,

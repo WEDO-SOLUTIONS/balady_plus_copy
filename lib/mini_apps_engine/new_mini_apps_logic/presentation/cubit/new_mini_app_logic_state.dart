@@ -1,6 +1,6 @@
 part of 'new_mini_app_logic_cubit.dart';
 
-class NewMiniAppLogicState  {
+class NewMiniAppLogicState {
   //! Loading
   final bool isFavLoading;
   final bool isUnFavLoading;
@@ -27,6 +27,9 @@ class NewMiniAppLogicState  {
   final String? searchError;
   final String? entryPointsError;
 
+  //! Sort
+  final FilterOptionType? selectedSortType;
+
   NewMiniAppLogicState({
     required this.isFavLoading,
     required this.favError,
@@ -46,6 +49,7 @@ class NewMiniAppLogicState  {
     required this.entryPoints,
     required this.isRefreshing,
     required this.reachLimitNumber,
+    this.selectedSortType,
   });
 
   factory NewMiniAppLogicState.initial() {
@@ -68,8 +72,22 @@ class NewMiniAppLogicState  {
       entryPoints: const [],
       isRefreshing: false,
       reachLimitNumber: 0,
+      selectedSortType: FilterOptionType.ServiceDateAscending,
     );
   }
+
+  /// True when the cubit is in its very first state — [loadMiniApps] has not
+  /// been called yet. Treat this the same as [isFavLoading] in the UI so
+  /// shimmer widgets are shown on first open.
+  bool get isInitial =>
+      !isFavLoading &&
+      !isAppsGroupLoading &&
+      !isEntryPointsLoading &&
+      allMiniApps.isEmpty &&
+      appGroups.isEmpty &&
+      entryPoints.isEmpty &&
+      favError == null &&
+      entryPointsError == null;
 
   NewMiniAppLogicState copyWith({
     bool? isFavLoading,
@@ -91,6 +109,7 @@ class NewMiniAppLogicState  {
     MiniApp? miniApp,
     bool? isRefreshing,
     int? reachLimitNumber,
+    FilterOptionType? selectedSortType,
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,
@@ -111,6 +130,7 @@ class NewMiniAppLogicState  {
       entryPoints: entryPoints ?? this.entryPoints,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       reachLimitNumber: reachLimitNumber ?? this.reachLimitNumber,
+      selectedSortType: selectedSortType ?? this.selectedSortType,
     );
   }
   // @override

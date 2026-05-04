@@ -7,7 +7,13 @@ class GetNewMiniAppsLogicUseCase {
 
   GetNewMiniAppsLogicUseCase(this.repository);
 
-  Future<Either<Exception, NewMiniAppsLogicEntity>> call() {
-    return repository.getMiniApps();
+  Future<Either<Exception, NewMiniAppsLogicEntity>> call(
+    final bool isLoggedInLifestyle,
+    final bool isLoggedInMunicipality,
+  ) {
+    return repository.getMiniApps(
+      isLoggedInLifestyle,
+      isLoggedInMunicipality,
+    );
   }
 }

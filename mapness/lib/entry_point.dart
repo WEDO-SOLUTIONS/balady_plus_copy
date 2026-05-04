@@ -1,17 +1,20 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
+import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -24,7 +27,7 @@ import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -32,21 +35,24 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/search/providers/search_region.dart'
-    show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -54,6 +60,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
+import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -67,10 +74,13 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/car_connection.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -86,15 +96,17 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
-import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
+import 'features/special_themes/core/special_theme_mode.dart';
+import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'features/wrc/wrc.dart';
+import 'package:provider/provider.dart' as p;
 
 Mixpanel? mixpanel;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
-  static final MapnessRouteObserver _instance =
-      MapnessRouteObserver._internal();
+  static final MapnessRouteObserver _instance = MapnessRouteObserver._internal();
 
   factory MapnessRouteObserver() => _instance;
 
@@ -102,48 +114,45 @@ class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
 }
 
 class MapnessProviderScope extends StatelessWidget {
-  const MapnessProviderScope({
-    required this.child,
-    super.key,
-  });
+  const MapnessProviderScope({required this.child, super.key});
 
   final Widget child;
 
   @override
   Widget build(BuildContext context) => ProviderScope(
-        child: EagerInitWidget(
-          child: Consumer(
-            builder: (context, ref, child) {
-              final language = ref.watch(appLanguageProvider);
-              final localizations = language == Language.arabic
-                  ? AppLocalizationsAr()
-                  : AppLocalizationsEn();
-              // Initialize Saudi National Day provider to start the timer
-              ref
-                ..watch(saudiNationalDayProvider)
-                // Initialize Cityscape provider to listen remote config
-                ..watch(cityscapeProvider);
+    child: EagerInitWidget(
+      child: Consumer(
+        builder: (context, ref, child) {
+          final language = ref.watch(appLanguageProvider);
+          final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
+          // Initialize Saudi National Day provider to start the timer
+          ref
+            ..watch(saudiNationalDayProvider)
+            // Initialize Cityscape provider to listen remote config
+            ..watch(cityscapeProvider)
+            ..watch(foundingDayUrbiProvider)
+            ..watch(activeCityEventProvider)
+            // Initialize Makkah places layer provider
+            ..watch(makkahPlacesLayerProvider)
+            // Initialize WRC provider to listen remote config
+            ..watch(wRCProvider);
 
-              return provider.MultiProvider(
-                providers: [
-                  provider.Provider<AppLocalizations>.value(
-                    value: localizations,
-                  ),
-                ],
-                child: child,
-              );
-            },
+          return provider.MultiProvider(
+            providers: [
+              provider.ChangeNotifierProvider(create: (_) => ThemeController()),
+              provider.Provider<AppLocalizations>.value(value: localizations),
+            ],
             child: child,
-          ),
-        ),
-      );
+          );
+        },
+        child: child,
+      ),
+    ),
+  );
 }
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
-  const MapnessEntryPoint({
-    required this.mapCreated,
-    super.key,
-  });
+  const MapnessEntryPoint({required this.mapCreated, super.key});
 
   final void Function(DgisMapController) mapCreated;
 
@@ -166,9 +175,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
     listenNavigationEvents();
     checkConnection();
-    if (!Platform.isIOS) {
-      PersistentSafeAreaBottom.startObserving();
-    }
+    PersistentSafeAreaBottom.startObserving();
     ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -183,24 +190,30 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // Initialization of BSS and Search Region singleton services
       await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
+      unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
-      await AdvancedMetrics.instance
-          .sendPreviousSessionBatteryUsage(track: track);
+      await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(
+        track: track,
+      );
       await AdvancedMetrics.instance.startMeasureBattery();
       await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
+      await ref.read(foundingDayUrbiProvider.notifier).initializeGlobalMarker();
+      final mapStyle = ref.read(activeCityEventProvider)?.stylePath;
+
+      if (mapStyle != null) {
+        _updateMapStyle(mapStyle);
+      }
     });
 
     // call the openAppLink when user click on notification have deep link
-    FirebaseMessaging.instance.getInitialMessage().then(
-      (RemoteMessage? message) {
-        if (message != null && message.data.containsKey('url')) {
-          final url = message.data['url'];
-          openAppLink(url);
-          return;
-        }
-      },
-    );
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null && message.data.containsKey('url')) {
+        final url = message.data['url'];
+        openAppLink(url);
+        return;
+      }
+    });
 
     initInsider();
   }
@@ -208,21 +221,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> checkConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.mobile)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.mobile.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.mobile.name);
     } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.wifi.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.wifi.name);
     }
   }
 
   @override
   void dispose() {
-    if (!Platform.isIOS) {
-      PersistentSafeAreaBottom.stopObserving();
-    }
+    PersistentSafeAreaBottom.stopObserving();
     _linkSubscription?.cancel();
     _locationListener?.close();
     _navigationEventsListener?.cancel();
@@ -244,29 +251,28 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> restoreState() async {
-    final state = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateKey);
-    final type = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateTypeKey);
+    final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
     if (state != null) {
       final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
-          ref.read(appRouterProvider).push(
+          ref
+              .read(appRouterProvider)
+              .push(
                 PathNavRoute(
                   navType: routeSearchOptions,
                   initAction: PathNavPageInitAction.restoreFromState,
                 ),
               );
         } else {
-          _locationListener =
-              ref.listenManual<Position?>(locationProvider, (_, next) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              ref.read(appRouterProvider).push(
+              ref
+                  .read(appRouterProvider)
+                  .push(
                     PathNavRoute(
                       navType: RouteSearchOptionsMessageExt.fromString(type),
                       initAction: null,
@@ -279,7 +285,49 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _updateGlobalMarker(WidgetRef ref) async {
+  Future<void> checkNavigationState() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    final navStateMessage = await controller.getCurrentNavigationState();
+    final isCarConnected = await ref.read(carConnectionProvider.future);
+
+    if (navStateMessage.state == NavigationState.navigation &&
+        navStateMessage.routeSearchOptions != null &&
+        isCarConnected) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref
+              .read(appRouterProvider)
+              .push(
+                PathNavRoute(
+                  navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                  initAction: null,
+                ),
+              );
+        } else {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (
+            _,
+            next,
+          ) {
+            if (next != null) {
+              _locationListener?.close();
+              ref
+                  .read(appRouterProvider)
+                  .push(
+                    PathNavRoute(
+                      navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                      initAction: null,
+                    ),
+                  );
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
+    if (!mounted) return;
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -291,20 +339,167 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateMapStyle(String mapStyle) async {
+    final dgisController = ref.read(dgisControllerProvider);
+    final dgisControllerValue = dgisController.value;
+    dgisControllerValue?.loadStyles(mapStyle);
+  }
+
+  Future<void> _updateGlobalMarkerFoundingDay(WidgetRef ref) async {
+    if (!mounted) return;
+    final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(foundingDayUrbiProvider.notifier);
+
+    if (isFoundingDayToday && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
+  Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    if (wrcEnabled) {
+      await notifier.showAllMarkers();
+    } else {
+      await notifier.hideAllMarkers();
+    }
+  }
+
+  Future<void> _updateSpecificMarkerWRC(
+    WidgetRef ref,
+    Marker? previousMarker,
+    Marker? marker,
+  ) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    // hide previous marker if there was one
+    if (previousMarker != null) {
+      await notifier.showSpecificMarker(previousMarker);
+    }
+
+    // show new marker if there is one
+    if (marker != null) {
+      await notifier.hideSpecificMarker(marker);
+    }
+  }
+
+  Future<void> _themeChanged({bool isDark = false}) async {
+    final themeController = context.read<ThemeController>();
+    final specialThemeMode = ref.read(specialThemeModeProvider);
+    if (isDark) {
+      await themeController.setTheme(BaladyAppThemes.dark);
+    } else {
+      final theme = switch (specialThemeMode) {
+        SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
+        SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
+        SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
+        _ => BaladyAppThemes.light,
+      };
+
+      await themeController.setTheme(theme);
+    }
+
+    if (mounted) {
+      final baladyTheme = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
+      final mapMode = ref.read(darkModeProvider).value?.currentMapMode;
+
+      if (mapMode == DarkMapStateEnum.asInASystem) {
+        baladyTheme.resetTheme();
+      } else if (mapMode == DarkMapStateEnum.alwaysEnabled) {
+        baladyTheme.updateThemeMode(ThemeMode.dark);
+      } else if (mapMode == DarkMapStateEnum.off) {
+        baladyTheme.updateThemeMode(ThemeMode.light);
+      } else {
+        baladyTheme.updateThemeMode(isDark ? ThemeMode.dark : ThemeMode.light);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ref.listen(darkModeProvider, (prev, next) async {
+      _themeChanged(isDark: next.value?.isDark == true);
+    });
+
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
-    ref.listen<bool>(cityscapeProvider, (prev, next) {
-      _updateGlobalMarker(ref);
-    });
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
+    final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final baladyTheme = context.watch<BaladyThemeNotifier>();
 
-    ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
-      _updateGlobalMarker(ref);
-    });
-
+    // Track theme changes for analytics
     ref
+      ..listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
+        if (next == SpecialThemeMode.mekkahBase) {
+          ref
+              .read(darkModeProvider.notifier)
+              .changeDarkModeState(
+                DarkMapStateEnum.off,
+              );
+          final themeController = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
+          if (themeController.isDarkMode) {
+            themeController.toggleTheme(false);
+          }
+        }
+
+        if (prev == next) {
+          return;
+        }
+
+        // Track theme deactivation
+        if (prev != null && prev != SpecialThemeMode.base) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.themesKeys.themeDeactivated,
+            group: MetricsConstants.themesTag,
+            props: {'theme': prev.name},
+          );
+        }
+
+        // Track theme activation
+        if (next != SpecialThemeMode.base) {
+          Metrics.logEventAdvanced(
+            MetricsConstants.themesKeys.themeActivated,
+            group: MetricsConstants.themesTag,
+            props: {'theme': next.name},
+          );
+        }
+        final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+        _themeChanged(isDark: isDark);
+      })
+      ..listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
+        if (next == null || prev?.zoom == next.zoom) {
+          return;
+        }
+        _updateGlobalMarkerCityscape(ref);
+        _updateGlobalMarkerFoundingDay(ref);
+      })
+      ..listen<CityEventType?>(activeCityEventProvider, (prev, next) {
+        if (prev == next) {
+          return;
+        }
+        final prevStyle = prev?.stylePath;
+        final nextStyle = next.stylePath;
+        if (prevStyle != nextStyle) {
+          _updateMapStyle(nextStyle);
+        }
+      })
+      // listen cityscapeProvider and selectedMarkerProvider for other updates
+      ..listen<bool>(cityscapeProvider, (prev, next) {
+        _updateGlobalMarkerCityscape(ref);
+      })
+      ..listen<bool>(foundingDayUrbiProvider, (prev, next) {
+        _updateGlobalMarkerFoundingDay(ref);
+      })
+      ..listen<bool>(wRCProvider, (prev, next) {
+        _updateAllMarkersWRC(ref, next);
+      })
+      ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
+        _updateGlobalMarkerCityscape(ref);
+        _updateGlobalMarkerFoundingDay(ref);
+        _updateSpecificMarkerWRC(ref, prev, next);
+      })
       // listen for changes in car connection state. But do not rebuild widget
       ..listen(carEnableFreeRoamProvider, (previous, next) {})
       // listen for changes in debug state provider to show/hide the debug overlay
@@ -316,9 +511,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         _debugOverlay = OverlayEntry(
           builder: (context) => Theme(
             data: Theme.of(context),
-            child: const ProviderScope(
-              child: DebugOverlay(),
-            ),
+            child: const ProviderScope(child: DebugOverlay()),
           ),
         );
         Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
@@ -326,36 +519,30 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     return DefaultTextHeightBehavior(
       textHeightBehavior: const TextHeightBehavior(
-          leadingDistribution: TextLeadingDistribution.even),
+        leadingDistribution: TextLeadingDistribution.even,
+      ),
       child: Directionality(
         textDirection: direction,
         child: Consumer(
           builder: (context, ref, child) {
             return MaterialApp.router(
-              routerConfig: ref.read(appRouterProvider).config(
-                    navigatorObservers: () => [
-                      RoutesObserver(ref: ref),
-                    ],
-                  ),
+              routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],
                 useMaterial3: false,
                 extensions: <ThemeExtension<dynamic>>[
-                  if (language == Language.arabic)
-                    ThemeTextStyles.arabic()
-                  else
-                    ThemeTextStyles.english(),
-                  if (language == Language.arabic)
-                    ThemeTextStylesV3.frutiger()
-                  else
-                    ThemeTextStylesV3.golos(),
+                  if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                  if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(
-                    themes: isNationalDay
-                        ? BaladyAppThemes.saudiDay
-                        : BaladyAppThemes.light,
+                    themes: switch (specialThemeMode) {
+                      SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
+                      SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
+                      SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
+                      _ => BaladyAppThemes.light,
+                    },
                   ),
                   AppStaticColorsThemeExt.palette(),
                 ],
@@ -364,7 +551,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   ? LoadingOverlay(
                       child: ToastOverlay(
                         child: GlobalScopes(
-                          child: child,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: child,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )
@@ -384,43 +577,56 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final controller = await ref.read(dgisControllerProvider.future);
 
     try {
-      await controller
-          .setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+      await controller.setCameraPositionPoint(
+        CameraPositionPointMessage(x: 0.5, y: 0.5),
+      );
     } catch (ex) {
-      logger.log('Error setting camera position point: $ex',
-          logLevel: MapnessLogLevel.error);
+      logger.log(
+        'Error setting camera position point: $ex',
+        logLevel: MapnessLogLevel.error,
+      );
     }
   }
 
   Future<void> clearCache() async {
-    final controller = await ref.read(dgisControllerProvider.future);
-    await controller.stopNavigation();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
-    final poiBox =
-        await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
+    final poiBox = await ref.read(
+      hiveProvider(MapnessConstants.poiDataBoxName).future,
+    );
     await poiBox.clear();
   }
 
   Future<void> initMixpanel() async {
-    logger.log('Initializing Mixpanel...');
-    mixpanel = await Mixpanel.init(
-      '2d045d85e25087812e92c62b84d6fbc3',
-      trackAutomaticEvents: true,
-    );
-    mixpanel?.setLoggingEnabled(true);
-    logger.log('Mixpanel initialized successfully');
+    try {
+      logger.log('Initializing Mixpanel...');
+      mixpanel = await Mixpanel.init(
+        '2d045d85e25087812e92c62b84d6fbc3',
+        trackAutomaticEvents: true,
+      );
+      mixpanel?.setLoggingEnabled(true);
+      logger.log('Mixpanel initialized successfully');
+    } catch (e, stackTrace) {
+      logger.log('Error initializing Mixpanel: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    }
 
-    final config = FlutterUxConfig(
-      enableAdvancedGestureRecognition: true,
-      enableCrashHandling: true,
-      enableMultiSessionRecord: true,
-      enableNetworkLogging: true,
-      userAppKey: '2w1otnta9bvvhzo',
-      enableAutomaticScreenNameTagging: false,
-    );
-    await FlutterUxcam.startWithConfiguration(config);
-    logger.log('UXCam started with configuration');
+    try {
+      final config = FlutterUxConfig(
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: '2w1otnta9bvvhzo',
+        enableAutomaticScreenNameTagging: false,
+      );
+      await FlutterUxcam.startWithConfiguration(config);
+      logger.log('UXCam started with configuration');
+    } catch (e, stackTrace) {
+      logger.log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      // Continue without UXCam - it's not critical for app functionality
+    }
   }
 
   Future<void> initDeepLinks() async {
@@ -438,20 +644,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _navigationEventsListener =
-        dgisController.navigationEvents.listen((event) async {
+    _navigationEventsListener = dgisController.navigationEvents.listen((
+      event,
+    ) async {
       final segments = ref.read(appRouterProvider).currentSegments;
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
       final isNavPage = currentRouteName == PathNavRoute.name;
-      final navigation = event == NavigationEvent.navigation ||
-          event == NavigationEvent.routeSearch;
-      final routeSearchOptions =
-          (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
+      final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
       final isFreeroam = navigation && routeSearchOptions == null;
       if (navigation && !isFreeroam && !isNavPage) {
-        await ref.read(appRouterProvider).pushAndPopUntil(
+        await ref
+            .read(appRouterProvider)
+            .pushAndPopUntil(
               PathNavRoute(
                 navType: routeSearchOptions ?? RouteSearchOptionsMessage.car,
                 initAction: null,
@@ -462,9 +669,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
-  Future<void> _delayIfFirstRun(
-      {required bool isFirstRun,
-      Duration duration = const Duration(milliseconds: 300)}) async {
+  Future<void> _delayIfFirstRun({
+    required bool isFirstRun,
+    Duration duration = const Duration(milliseconds: 300),
+  }) async {
     // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
     if (isFirstRun) {
       await Future.delayed(duration);
@@ -474,10 +682,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   // implement insider deep link for ios
 
   Future initInsider() async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations",
-        (int type, dynamic data) {
+    await FlutterInsider.Instance.init('baladyapp', 'group.movingViolations', (
+      int type,
+      data,
+    ) {
       switch (type) {
         case InsiderCallbackAction.NOTIFICATION_OPEN:
           // if(Platform.isIOS) {
@@ -493,7 +705,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
           break;
         default:
-          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          print('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
           break;
       }
     });
@@ -571,12 +783,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
       await _delayIfFirstRun(
-          isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
+        isFirstRun: isFirstRun,
+        duration: const Duration(seconds: 8),
+      );
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty &&
-        serviceKey != '/poi-map' &&
-        serviceKey.startsWith('/app')) {
-      var subPath;
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+      String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
       } else if (path != null) {
@@ -587,8 +799,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         serviceKey: serviceKey.replaceAll('/app/', ''),
         path: subPath,
       );
-    } else if (url.toString().isNotEmpty &&
-        !url.toString().contains('insiderbaladyapp')) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -600,6 +811,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openQuickFilter(filter!);
       } else if (url.path == '/quickFeedback') {
         await router.push(QuickFeedbackRoute());
+      } else if (url.path == '/search') {
+        await router.push(SearchRoute());
       } else if (url.path == '/freeRoam') {
         await _freeRoam();
       } else if (url.path == '/qibla') {
@@ -612,13 +825,39 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openQuran();
       } else if (url.path == '/snapSend') {
         await _openSnapSend();
+      } else if (url.path == '/miniApps') {
+        if (params['groupId'] != null) {
+          CommonFunctions.openMiniAppGroupId(
+            groupId: params['groupId'].toString(),
+          );
+        } else if (params['key'] != null) {
+          CommonFunctions.openMiniApp(serviceKey: params['key'].toString());
+        }
+        await router.push(MapnessServicesRoute());
       } else if (url.path == '/parking') {
         _openParking();
-      } else if (url.path == '/register') {
-        await _openRegisterPage();
       } else {
-        await router.pushNamed(url.toString());
+        await router.pushPath(url.toString());
       }
+    }
+  }
+
+  Future<void> _handleCityEvent(String cityEventName) async {
+    var eventHandled = true;
+    // check here for other city events if they come up in the future
+    switch (cityEventName) {
+      case WRC.deeplinkEventValue:
+        await ref.read(wRCProvider.notifier).moveCameraToEventArea();
+      default:
+        eventHandled = false;
+    }
+
+    final AppRouter router = await ref.read(appRouterProvider);
+    final areStoriesOpen = ref.read(storiesOpenStateProvider);
+    // if we come from stories we must close them for nice user experience
+    if (eventHandled && areStoriesOpen && router.canPop()) {
+      await router.topMostRouter().maybePop();
+      ref.read(bottomSheetControllerProvider.notifier).state.controller?.setState(ThreeStateSheet.hidden);
     }
   }
 
@@ -629,9 +868,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
-      await ref
-          .read(layersControlsProvider.notifier)
-          .enableParking(isFromDeepLink: true);
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
     });
   }
 
@@ -666,19 +903,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
-    CommonFunctions.openMiniApp(serviceKey: "Quran");
+    CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
-    CommonFunctions.openMiniApp(serviceKey: "Athkar");
+    CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(
-        UXCamEvents.SnapAndSend_Open_From_Home_Event);
-    CommonFunctions.openMiniApp(serviceKey: "snapandsend");
+      UXCamEvents.SnapAndSend_Open_From_Home_Event,
+    );
+    CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(
     //   RouteName.vDAllTypesScreen,
     // );
@@ -689,16 +927,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final quickFilter = QuickFilter.values.firstWhere(
       (element) => element.name == filter,
     );
-    unawaited(ref.read(urbiAnalyticsProvider).track(
-      'quickFilterSearch',
-      properties: {
-        'filter': quickFilter.name,
-      },
-    ));
+    unawaited(
+      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': quickFilter.name}),
+    );
     ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.exploreSearch);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
     final language = ref.read(appLanguageProvider);
 
@@ -720,9 +953,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(searchProvider(SearchScopeEnum.map.value).notifier)
-          .quickSearch(quickFilter);
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
     });
   }
 
@@ -738,16 +969,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     ref.read(storiesOpenStateProvider.notifier).open();
 
-    await router.push(StoriesRoute(
-      type: StoryTypes.network,
-      initialStoryId: id,
-      onClose: ref.read(storiesOpenStateProvider.notifier).close,
-    ));
+    await router.push(
+      StoriesRoute(
+        type: StoryTypes.network,
+        initialStoryId: id,
+        onClose: ref.read(storiesOpenStateProvider.notifier).close,
+      ),
+    );
   }
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
     final appRouter = ref.watch(appRouterProvider);
-    final storeParkingData = await ref.read(parkingManageProvider.future);
+    final storeParkingData = await ref.read(
+      parkingManageProvider(theme: context.read<ThemeController>().currentTheme).future,
+    );
     final isParkingPoi = dgisObjectId == parkingObjectId;
 
     if (isParkingPoi && storeParkingData == null) {
@@ -759,10 +994,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     await appRouter.replaceOrPush(
       route: PoiCardWidgetRoute(
-        objectId: DgisObjectIdMessage(
-          objectId: dgisObjectId,
-          entranceId: 0,
-        ),
+        objectId: DgisObjectIdMessage(objectId: dgisObjectId, entranceId: 0),
         closestPoint: location,
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
@@ -797,10 +1029,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         (data['meta'] as Map<String, dynamic>)['code'] == 404) {
       // Dgis object id -2 is used to open map with provided coordinates not with poi id
       final appRouter = ref.watch(appRouterProvider);
-      await appRouter.push(DeeplinkRoute(
-        closestPoint: LatLng(latitude: latitude, longitude: longitude),
-        cameraConfig: const PoiCameraConfig(zoom: 17),
-      ));
+      await appRouter.push(
+        DeeplinkRoute(
+          closestPoint: LatLng(latitude: latitude, longitude: longitude),
+          cameraConfig: const PoiCameraConfig(zoom: 17),
+        ),
+      );
     }
 
     if (!data.containsKey('result')) {
@@ -827,22 +1061,27 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       return;
     }
 
-    await ref.watch(appRouterProvider).replaceOrPush(
-      route: PoiCardWidgetRoute(
-        objectId: DgisObjectIdMessage(
-          objectId: dgisId,
-          entranceId: 0,
-        ),
-        cameraConfig: const PoiCameraConfig(zoom: 17),
-      ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
-    );
+    await ref
+        .watch(appRouterProvider)
+        .replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: DgisObjectIdMessage(objectId: dgisId, entranceId: 0),
+            cameraConfig: const PoiCameraConfig(zoom: 17),
+          ),
+          toCompareRoutes: [PoiCardWidgetRoute.page],
+        );
   }
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    ref.watch(appRouterProvider).push(DeeplinkRoute(
-        closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
+    ref
+        .watch(appRouterProvider)
+        .push(
+          DeeplinkRoute(
+            closestPoint: latLng,
+            cameraConfig: const PoiCameraConfig(zoom: 17),
+          ),
+        );
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
@@ -851,12 +1090,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final twinsUrl = BaldayDeeplink.twinsUrl(env.twinsApi);
 
-    final twinsResponse = await dio.get(twinsUrl, queryParameters: {
-      BaldayDeeplink.keyKey: BaldayDeeplink.momrahTwinsKey,
-      BaldayDeeplink.momrahPartnerCodeKey:
-          BaldayDeeplink.momrahPartnerCodeValue,
-      BaldayDeeplink.momrahPartnerCodeId: momrahId,
-    });
+    final twinsResponse = await dio.get(
+      twinsUrl,
+      queryParameters: {
+        BaldayDeeplink.keyKey: BaldayDeeplink.momrahTwinsKey,
+        BaldayDeeplink.momrahPartnerCodeKey: BaldayDeeplink.momrahPartnerCodeValue,
+        BaldayDeeplink.momrahPartnerCodeId: momrahId,
+      },
+    );
     final data = twinsResponse.data as Map<String, dynamic>;
 
     if (!data.containsKey('result')) {
@@ -894,20 +1135,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
 
     final appRouter = ref.watch(appRouterProvider);
-    await appRouter.push(PoiCardWidgetRoute(
-      objectId: DgisObjectIdMessage(
-        objectId: dgisId,
-        entranceId: 0,
+    await appRouter.push(
+      PoiCardWidgetRoute(
+        objectId: DgisObjectIdMessage(objectId: dgisId, entranceId: 0),
+        cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      cameraConfig: const PoiCameraConfig(zoom: 17),
-    ));
+    );
   }
 }
 
 Future<void> setupMapness(EnvType envType) async {
   final vendorConfigLocal = await AppConfigLoader.getAppConfig();
-  final vendorConfigContentMessage =
-      VendorConfigContentMessage(content: vendorConfigLocal);
+  final vendorConfigContentMessage = VendorConfigContentMessage(
+    content: vendorConfigLocal,
+  );
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
@@ -918,28 +1159,104 @@ Future<void> setupMapness(EnvType envType) async {
   );
 }
 
+Future<void> enableInsiderGeofenceAfterConsent() async {
+  //! Ensure OS permissions
+  final locationEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!locationEnabled) return;
+
+  LocationPermission perm = await Geolocator.checkPermission();
+  if (perm == LocationPermission.denied) {
+    perm = await Geolocator.requestPermission();
+  }
+  if (perm == LocationPermission.deniedForever) {
+    return;
+  }
+
+  final isOk = perm == LocationPermission.always || perm == LocationPermission.whileInUse;
+  if (!isOk) {
+    return;
+  }
+
+  //! Set Insider location
+  await FlutterInsider.Instance.enableLocationCollection(true);
+
+  //! IOS background switch
+  await FlutterInsider.Instance.setAllowsBackgroundLocationUpdates(true);
+
+  //! Start geofence
+  await FlutterInsider.Instance.startTrackingGeofence();
+}
+
 Future<void> runMapnessApp(
-    EnvType envType, FutureOr<void> Function() main) async {
+  EnvType envType,
+  FutureOr<void> Function() main,
+) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initHive();
 
-  final hostFlutterApi = _HostFlutterApi();
-  HostFlutterApi.setUp(hostFlutterApi);
+  try {
+    print('runMapnessApp: Starting initialization...');
+    await initHive();
+    print('runMapnessApp: Hive initialized');
 
-  await AppConfigLoader.init(envType);
-  await hostFlutterApi.appRunCompleter.future;
+    final hostFlutterApi = _HostFlutterApi();
+    HostFlutterApi.setUp(hostFlutterApi);
+    print('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
 
-  await main();
+    await AppConfigLoader.init(envType);
+    print('runMapnessApp: AppConfigLoader initialized');
+
+    // Add timeout to prevent infinite waiting
+    await hostFlutterApi.appRunCompleter.future.timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        print('runMapnessApp: WARNING - Timeout waiting for runMain() from native side');
+        // Complete manually if timeout occurs (this might indicate the native side already called it)
+        if (!hostFlutterApi.appRunCompleter.isCompleted) {
+          hostFlutterApi.appRunCompleter.complete();
+        }
+      },
+    );
+    print('runMapnessApp: runMain() received, proceeding to main()');
+
+    await main();
+    print('runMapnessApp: main() completed');
+  } catch (e, stackTrace) {
+    print('runMapnessApp: ERROR - $e');
+    print('runMapnessApp: StackTrace - $stackTrace');
+    try {
+      logger.log('Error in runMapnessApp: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    } catch (_) {
+      // Logger might not be initialized yet
+    }
+    rethrow;
+  }
 }
 
 Future<void> initHive() async {
-  await Hive.initFlutter();
-  Hive
-    ..registerAdapter(SearchHistoryItemAdapter())
-    ..registerAdapter(FavoriteCacheItemAdapter())
-    ..registerAdapter(HiveCoordinatesAdapter())
-    ..registerAdapter(HiveFavouriteItemEntityAdapter())
-    ..registerAdapter(FavoriteCacheStateAdapter());
+  try {
+    print('initHive: Starting Hive initialization...');
+    await Hive.initFlutter();
+    print('initHive: Hive.initFlutter() completed');
+    Hive
+      ..registerAdapter(SearchHistoryItemAdapter())
+      ..registerAdapter(FavoriteCacheItemAdapter())
+      ..registerAdapter(HiveCoordinatesAdapter())
+      ..registerAdapter(HiveFavouriteItemEntityAdapter())
+      ..registerAdapter(FavoriteCacheStateAdapter());
+    print('initHive: All adapters registered');
+  } catch (e, stackTrace) {
+    print('initHive: ERROR - $e');
+    print('initHive: StackTrace - $stackTrace');
+    try {
+      logger.log('Error initializing Hive: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    } catch (_) {
+      // Logger might not be initialized yet
+    }
+    // Re-throw to prevent app from continuing with broken Hive
+    rethrow;
+  }
 }
 
 class _HostFlutterApi extends HostFlutterApi {
@@ -951,13 +1268,19 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override
   void runMain() {
+    print('_HostFlutterApi.runMain() called from native side');
     isAppRun = true;
-    appRunCompleter.complete();
+    if (!appRunCompleter.isCompleted) {
+      appRunCompleter.complete();
+      print('_HostFlutterApi.runMain() - completer completed');
+    } else {
+      print('_HostFlutterApi.runMain() - completer already completed');
+    }
   }
 
   @override

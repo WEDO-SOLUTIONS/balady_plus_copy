@@ -12,8 +12,7 @@ class _IwishFeedback extends _$IwishFeedback {
 
   void updateComment(String? comment) => data = data.copyWith(comment: comment);
 
-  void updateMood(IwishFeedbackMoodType? mood) =>
-      data = data.copyWith(mood: mood);
+  void updateMood(IwishFeedbackMoodType? mood) => data = data.copyWith(mood: mood);
 
   void toggleTag(String tagId) {
     final tags = state.requireValue.tags;
@@ -28,21 +27,17 @@ class _IwishFeedback extends _$IwishFeedback {
 
   @override
   Future<IwishFeedbackEntity> build(String iwishId) async => IwishFeedbackEntity(
-      tags: {},
-      comment: null,
-      mood: null,
-    );
+        tags: {},
+        comment: null,
+        mood: null,
+      );
 
   Future<void> submitFeedback() async {
     final oldState = state;
     state = const AsyncLoading();
-    final isSuccess = await ref
-        .read(iwishEntityProvider(iwishId).notifier)
-        .submitFeedback(data);
-    state = isSuccess
-        ? oldState
-        : AsyncError('error when send feedback', StackTrace.current);
+    final isSuccess = await ref.read(iwishEntityProvider(iwishId).notifier).submitFeedback(data);
+    state = isSuccess ? oldState : AsyncError('error when send feedback', StackTrace.current);
   }
 }
 
-const iwishFeedbackProvider = _iwishFeedbackProvider;
+final iwishFeedbackProvider = _iwishFeedbackProvider;

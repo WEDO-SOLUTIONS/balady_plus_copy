@@ -19,11 +19,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
   final int? objectId;
   final FeedbackCategoryEntity category;
 
-  const FeedbackPage({
-    required this.category,
-    this.objectId,
-    super.key,
-  });
+  const FeedbackPage({required this.category, this.objectId, super.key});
 
   @override
   ConsumerState<FeedbackPage> createState() => _FeedbackPageState();
@@ -38,10 +34,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     FeedbackTextType.email: FormBuilderValidators.email(checkNullOrEmpty: false),
     FeedbackTextType.phone: FormBuilderValidators.compose([
       FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
-      FormBuilderValidators.minLength(
-        PhoneNumberFormatter.arabicPhoneNumberMinLength,
-        checkNullOrEmpty: false,
-      ),
+      FormBuilderValidators.minLength(PhoneNumberFormatter.arabicPhoneNumberMinLength, checkNullOrEmpty: false),
     ]),
     FeedbackTextType.url: FormBuilderValidators.url(checkNullOrEmpty: false),
   };
@@ -70,14 +63,14 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
           onSend: () => _collectForm(objectId: widget.objectId, categoryId: category.id),
           child: child!,
         ),
-        child: FeedbackFormWidget(fields: category.fields),
+        child: FeedbackFormWidget(fields: category.fields, objectId: widget.objectId),
       ),
     );
   }
 
   void _collectForm({required String categoryId, int? objectId}) {
     if (widget.objectId != null) {
-      context.router.popForced();
+      context.router.pop();
     }
     final formState = _formKey.currentState;
     if (formState == null) {
@@ -102,21 +95,22 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     ref.read(submitFeedbackPayloadProvider(payloadId).notifier)
       // pass data
-      ..collectForm(
-        objectId: objectId,
-        categoryId: categoryId,
-        fields: fields,
-      )
+      ..collectForm(objectId: objectId, categoryId: categoryId, fields: fields)
       // guarantee that provider would be alive after navigation.
       // probably for thousands of filled form within this time window
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
 
+    /// If the feedback was sent from POI page, we replace the current route
+    /// with the FeedbackSentPage to avoid poping back from the POI page and deleting the marker.
+    if (context.router.stack.any((r) => r.name?.toLowerCase() == 'poi')) {
+      context.router.replace(FeedbackSentRoute(payloadId: payloadId));
+      return;
+    }
+
     context.router.pushAndPopUntil(
-      FeedbackSentRoute(
-        payloadId: payloadId,
-      ),
-      predicate: (route) => route.settings.name == BottomMenuRoute.name,
+      FeedbackSentRoute(payloadId: payloadId),
+      predicate: (route) => route.settings.name == BottomMenuRoute.name || route.settings.name == PathNavRoute.name,
     );
   }
 

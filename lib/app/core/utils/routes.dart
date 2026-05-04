@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/material.dart'
         RouteSettings,
         Scaffold,
         Widget;
-import 'package:get_it/get_it.dart';
 import '../../../super_app_js_bridge/camera/camera_page.dart';
 import '../../core/utils/utils_exports.dart' show RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';

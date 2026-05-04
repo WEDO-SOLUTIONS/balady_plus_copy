@@ -7,7 +7,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_exports.dart';
 
 class ReadHomeCard extends StatelessWidget {
-  const ReadHomeCard({Key? key}) : super(key: key);
+  const ReadHomeCard({super.key});
 
   @override
   Widget build(BuildContext context) {

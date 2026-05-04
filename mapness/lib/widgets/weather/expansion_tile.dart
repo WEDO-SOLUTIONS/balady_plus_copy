@@ -5,6 +5,8 @@
 //ignore_for_file: prefer_asserts_with_message
 //ignore_for_file: always_put_control_body_on_new_line
 
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 const Duration _kExpand = Duration(milliseconds: 200);
@@ -130,9 +132,7 @@ class ExpansionTileController {
       return result._tileController;
     }
     throw FlutterError.fromParts(<DiagnosticsNode>[
-      ErrorSummary(
-        'ExpansionTileController.of() called with a context that does not contain a ExpansionTile.',
-      ),
+      ErrorSummary('ExpansionTileController.of() called with a context that does not contain a ExpansionTile.'),
       ErrorDescription(
         'No ExpansionTile ancestor could be found starting from the context that was passed to ExpansionTileController.of(). '
         'This usually happens when the context provided is from the same StatefulWidget as that '
@@ -241,10 +241,10 @@ class CustomExpansionTile extends StatefulWidget {
     this.controlAffinity,
     this.controller,
   }) : assert(
-          expandedCrossAxisAlignment != CrossAxisAlignment.baseline,
-          'CrossAxisAlignment.baseline is not supported since the expanded children '
-          'are aligned in a column, not a row. Try to use another constant.',
-        );
+         expandedCrossAxisAlignment != CrossAxisAlignment.baseline,
+         'CrossAxisAlignment.baseline is not supported since the expanded children '
+         'are aligned in a column, not a row. Try to use another constant.',
+       );
 
   /// A widget to display before the title.
   ///
@@ -562,9 +562,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
   }
 
   // Platform or null affinity defaults to trailing.
-  ListTileControlAffinity _effectiveAffinity(
-    ListTileControlAffinity? affinity,
-  ) {
+  ListTileControlAffinity _effectiveAffinity(ListTileControlAffinity? affinity) {
     switch (affinity ?? ListTileControlAffinity.trailing) {
       case ListTileControlAffinity.leading:
         return ListTileControlAffinity.leading;
@@ -576,10 +574,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
 
   Widget? _buildIcon(BuildContext context) {
     if (!widget.hasIcon) return null;
-    return RotationTransition(
-      turns: _iconTurns,
-      child: const Icon(Icons.expand_more),
-    );
+    return RotationTransition(turns: _iconTurns, child: const Icon(Icons.expand_more));
   }
 
   Widget? _buildLeadingIcon(BuildContext context) {
@@ -598,12 +593,14 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
 
   Widget _buildChildren(BuildContext context, Widget? child) {
     final expansionTileTheme = ExpansionTileTheme.of(context);
-    final expansionTileBorder = _border.value ??
+    final expansionTileBorder =
+        _border.value ??
         const Border(
           top: BorderSide(color: Colors.transparent),
           bottom: BorderSide(color: Colors.transparent),
         );
     final clipBehavior = widget.clipBehavior ?? expansionTileTheme.clipBehavior ?? Clip.none;
+    final closed = !_isExpanded && _animationController.isDismissed;
 
     return Container(
       clipBehavior: clipBehavior,
@@ -621,7 +618,17 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
               onTap: _handleTap,
               contentPadding: widget.tilePadding ?? expansionTileTheme.tilePadding,
               leading: widget.leading ?? _buildLeadingIcon(context),
-              title: widget.title,
+              title: Row(
+                children: [
+                  Expanded(child: widget.title),
+                  const SizedBox(width: Spacing.$1x),
+                  Icon(
+                    closed ? Icons.keyboard_arrow_down_rounded : Icons.keyboard_arrow_up_rounded,
+                    size: 24,
+                    color: context.colors.foregroundMuted,
+                  ),
+                ],
+              ),
               subtitle: widget.subtitle,
               trailing: widget.trailing ?? _buildTrailingIcon(context),
             ),
@@ -644,13 +651,15 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> with SingleTi
     final expansionTileTheme = ExpansionTileTheme.of(context);
     final defaults = theme.useMaterial3 ? _ExpansionTileDefaultsM3(context) : _ExpansionTileDefaultsM2(context);
     _borderTween
-      ..begin = widget.collapsedShape ??
+      ..begin =
+          widget.collapsedShape ??
           expansionTileTheme.collapsedShape ??
           const Border(
             top: BorderSide(color: Colors.transparent),
             bottom: BorderSide(color: Colors.transparent),
           )
-      ..end = widget.shape ??
+      ..end =
+          widget.shape ??
           expansionTileTheme.collapsedShape ??
           Border(
             top: BorderSide(color: theme.dividerColor),

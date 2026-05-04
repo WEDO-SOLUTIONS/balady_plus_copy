@@ -1,7 +1,30 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.*
-import ru.dgis.sdk.directory.*
+
+import com.dgis.map.android_auto.makeAddressString
+import com.dgis.map.map_api.CameraPositionMessage
+import com.dgis.map.map_api.DgisObjectIdMessage
+import com.dgis.map.map_api.DynamicFilterMessage
+import com.dgis.map.map_api.FlagFilterMessage
+import com.dgis.map.map_api.FloorInfoMessage
+import com.dgis.map.map_api.ItemMarkerInfoMessage
+import com.dgis.map.map_api.PageIdMessage
+import com.dgis.map.map_api.PageMessage
+import com.dgis.map.map_api.RangeFilterMessage
+import com.dgis.map.map_api.SearchHistoryDirectoryObjectMessage
+import com.dgis.map.map_api.SearchResultMessage
+import com.dgis.map.map_api.SearchResultTypeMessage
+import com.dgis.map.map_api.UiMarkerInfoMessage
+import ru.dgis.sdk.directory.DynamicFilter
+import ru.dgis.sdk.directory.FlagFilter
+import ru.dgis.sdk.directory.FloorInfo
+import ru.dgis.sdk.directory.ItemMarkerInfo
+import ru.dgis.sdk.directory.Page
+import ru.dgis.sdk.directory.RangeFilter
+import ru.dgis.sdk.directory.SearchHistoryItem
+import ru.dgis.sdk.directory.SearchResult
+import ru.dgis.sdk.directory.SearchResultType
+import ru.dgis.sdk.directory.UIMarkerInfo
 import ru.dgis.sdk.map.Camera
 import ru.dgis.sdk.map.calcPosition
 
@@ -26,7 +49,7 @@ fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarke
 }
 fun UIMarkerInfo.toMessage(): UiMarkerInfoMessage {
     return UiMarkerInfoMessage(
-        objectId = objectId?.toMessage(),
+        objectId = objectId.toMessage(),
         label = label
     )
 }
@@ -82,5 +105,27 @@ fun DynamicFilter.toMessage(): DynamicFilterMessage {
     return DynamicFilterMessage(
         flagFilter = this.asFlagFilter?.toMessage(),
         rangeFilter = this.asRangeFilter?.toMessage()
+    )
+}
+
+fun SearchHistoryItem.toMessage(): SearchHistoryDirectoryObjectMessage {
+    return match(
+        directoryObject = { directoryObject ->
+            SearchHistoryDirectoryObjectMessage(
+                title = directoryObject.title,
+                address = directoryObject.makeAddressString(),
+                id = directoryObject.id?.let {
+                    DgisObjectIdMessage(
+                        objectId = it.objectId,
+                        entranceId = it.entranceId,
+                    )
+                }
+            )
+        },
+        searchQuery = { searchQuery ->
+            SearchHistoryDirectoryObjectMessage(
+                title = searchQuery.title, address = searchQuery.subtitle,
+            )
+        },
     )
 }

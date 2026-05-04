@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
@@ -43,7 +44,9 @@ abstract class OffersFiltersView implements Listenable {
 
   void tapType();
 
-  void tapCategory();
+  void tapShowAllCategories();
+
+  void reset();
 
   bool get isSortHighlighted;
 
@@ -56,6 +59,8 @@ abstract class OffersFiltersView implements Listenable {
   FilterView get categoryFilterView;
 
   AsyncIterable<OfferView> get asyncIterableOffers;
+
+  Set<lookups_body.SubCategory> get subCategories;
 
   Set<lookups_body.Category> get categories;
 
@@ -84,6 +89,8 @@ abstract class OfferView implements Listenable {
   bool get isByDateRed;
 
   String get branchName;
+
+  String? get distance;
 
   ({String url, Map<String, String> headers}) get logo;
 

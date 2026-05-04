@@ -46,7 +46,7 @@ class StoryFrameTexts {
             final text = l10n.saudiDayTitle;
             final match = RegExp(r'[,\u060C]').firstMatch(text);
             final separator = match?.group(0) ?? '';
-            final firstPart = text.split(RegExp(r'[,\u060C]')).firstOrNull??'';
+            final firstPart = text.split(RegExp(r'[,\u060C]')).firstOrNull ?? '';
             return '$firstPart$separator';
           }(),
         _ => 'No title',

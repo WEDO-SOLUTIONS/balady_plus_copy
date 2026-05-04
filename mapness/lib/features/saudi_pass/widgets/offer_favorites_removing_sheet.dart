@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:sheetify/toggle_sheet/toggle_sheet.dart';
+import 'package:sheetify/sheetify.dart';
 
 class OfferFavoritesRemovingSheet extends HookWidget {
   final String title;
@@ -24,10 +24,11 @@ class OfferFavoritesRemovingSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomSheetController = useToggleSheetController(
-      onClose: (_) => Navigator.of(context).pop(),
-    );
+    final bottomSheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
     return ToggleSheet(
+      dragger: DraggerContainer(draggerColor: context.colors.backgroundSurface5),
+      backgroundColor: context.colors.backgroundSurface2,
+      safeAreaColor: context.colors.backgroundSurface2,
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -42,23 +43,22 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                       children: [
                         Text(
                           title,
-                          style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+                          style: context.textStyleV3.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
                         ),
                         Spacing.$1x.heightBox,
                         Text(
                           description,
-                          style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                          style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                         ),
                       ],
                     ),
                   ),
                   Spacing.$3x.widthBox,
                   AppButton(
-                    buttonColorScheme: ButtonColorScheme.secondary,
+                    buttonColorScheme: ButtonColorScheme.neutral,
                     size: ButtonSize.small,
                     onTap: () => bottomSheetController.close(),
                     primaryIcon: SystemIcons.close,
-                    iconColor: context.colorsV3.neutralOnContainer,
                   ),
                 ],
               ),
@@ -68,6 +68,8 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                   Expanded(
                     child: AppButton(
                       primaryLabel: cancel,
+                      buttonType: ButtonType.secondary,
+                      size: ButtonSize.large,
                       buttonColorScheme: ButtonColorScheme.secondary,
                       onTap: bottomSheetController.close,
                     ),
@@ -76,7 +78,8 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                   Expanded(
                     child: AppButton(
                       primaryLabel: remove,
-                      buttonColorScheme: ButtonColorScheme.primary,
+                      size: ButtonSize.large,
+                      buttonColorScheme: ButtonColorScheme.secondary,
                       onTap: () {
                         onRemove();
                         bottomSheetController.close();
@@ -88,7 +91,7 @@ class OfferFavoritesRemovingSheet extends HookWidget {
               Spacing.$2x.heightBox,
             ],
           ),
-        )
+        ),
       ],
       scrollController: bottomSheetController,
     );

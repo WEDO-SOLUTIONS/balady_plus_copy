@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
@@ -10,6 +11,7 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -47,6 +49,10 @@ class Search extends _$Search {
 
   /// Google search rubric id
   static const googleSearchRubricId = 900913;
+  static const _minVisibleQuickFilterPlaces = 3;
+  static const _quickFilterExtraHorizontalPadding = 32.0;
+  static const _quickFilterExtraTopPadding = 24.0;
+  static const _quickFilterExtraBottomPadding = 140.0;
 
   SearchType? _previousType;
   SearchResultMessage? _result;
@@ -122,8 +128,12 @@ class Search extends _$Search {
 
       state = SearchStateLoading(searchText: query);
 
-      final searchRect =
-          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final searchRect = ref
+          .read(dgisControllerProvider.notifier)
+          .visibleRectSubject
+          .valueOrNull
+          ?.visibleRect
+          .geoRectMessage();
       final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
@@ -174,8 +184,12 @@ class Search extends _$Search {
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
 
-      final searchRect =
-          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final searchRect = ref
+          .read(dgisControllerProvider.notifier)
+          .visibleRectSubject
+          .valueOrNull
+          ?.visibleRect
+          .geoRectMessage();
       final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
@@ -221,8 +235,11 @@ class Search extends _$Search {
     _searchInThisAreaMetric();
   }
 
-  Future<void> quickSearch(QuickFilter quickSearch,
-      {List<GeoPointMessage>? spatialRestriction, bool isGoogle = false}) async {
+  Future<void> quickSearch(
+    QuickFilter quickSearch, {
+    List<GeoPointMessage>? spatialRestriction,
+    bool isGoogle = false,
+  }) async {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
@@ -237,8 +254,12 @@ class Search extends _$Search {
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
       _isGoogleSearch = isGoogle;
-      final searchRect =
-          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final searchRect = ref
+          .read(dgisControllerProvider.notifier)
+          .visibleRectSubject
+          .valueOrNull
+          ?.visibleRect
+          .geoRectMessage();
 
       // -- Analytics
       AdvancedMetrics.instance.startSearchResponse(
@@ -268,7 +289,7 @@ class Search extends _$Search {
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
-      await _animateToRepresentativeArea(results: results);
+      await _ensureQuickFilterPlacesAreVisible(results: results);
 
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
@@ -289,16 +310,18 @@ class Search extends _$Search {
   Future<void> searchByText(String query, {bool isGoogle = false}) async {
     try {
       await _searchOperation?.cancel();
-      if (state is! SearchStateSuggest) {
-        state = SearchStateLoading(searchText: query);
-      }
+      state = SearchStateLoading(searchText: query); // for loading only Suggests use (state is! SearchStateSuggest)
       await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
       _previousQuery = query;
       _isGoogleSearch = isGoogle;
-      final searchRect =
-          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final searchRect = ref
+          .read(dgisControllerProvider.notifier)
+          .visibleRectSubject
+          .valueOrNull
+          ?.visibleRect
+          .geoRectMessage();
       // -- Analytics
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
@@ -372,8 +395,12 @@ class Search extends _$Search {
       _previousSearchQueryMessage = query;
       _isGoogleSearch = false;
 
-      final searchRect =
-          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final searchRect = ref
+          .read(dgisControllerProvider.notifier)
+          .visibleRectSubject
+          .valueOrNull
+          ?.visibleRect
+          .geoRectMessage();
       // -- Analytics
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
@@ -424,17 +451,20 @@ class Search extends _$Search {
   /// Method that starts search in the visible area
   void searchInThisArea(String scope) {
     _isSearchInThisArea = true;
-    ref.read(urbiAnalyticsProvider).track(
-      MapnessConstants.analyticsSearchInThisAreaPressed,
-      properties: {
-        'status': _searchInThisAreaStarted,
-      },
-    );
+    ref
+        .read(urbiAnalyticsProvider)
+        .track(
+          MapnessConstants.analyticsSearchInThisAreaPressed,
+          properties: {
+            'status': _searchInThisAreaStarted,
+          },
+        );
     // We need it to track request in logs and look on it.
     // Why do we use print for this: see `Future<void> runMapnessApp`
 
     logger.log(
-        '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
+      '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted',
+    );
 
     ref.read(searchInRectProvider(scope).notifier).searchInThisAreaSwitch(value: true);
     switch (_previousType) {
@@ -471,8 +501,9 @@ class Search extends _$Search {
       state = SearchStateLoading(searchText: previousQuery);
       await searchByText(previousQuery, isGoogle: true);
     } else if (_previousType == SearchType.quickSearch && _previousQuickSearch != null) {
-      state =
-          SearchStateLoading(searchText: _previousQuickSearch!.query[ref.read(appLanguageProvider).languageCode] ?? '');
+      state = SearchStateLoading(
+        searchText: _previousQuickSearch!.query[ref.read(appLanguageProvider).languageCode] ?? '',
+      );
       await quickSearch(_previousQuickSearch!, isGoogle: true);
     }
   }
@@ -489,12 +520,14 @@ class Search extends _$Search {
     _isSearchInThisArea = false;
     final isSuccess = state is! SearchStateError;
     final status = isSuccess ? _searchInThisAreaSuccess : _searchInThisAreaError;
-    ref.read(urbiAnalyticsProvider).track(
-      MapnessConstants.analyticsSearchInThisAreaPressed,
-      properties: {
-        'status': status,
-      },
-    );
+    ref
+        .read(urbiAnalyticsProvider)
+        .track(
+          MapnessConstants.analyticsSearchInThisAreaPressed,
+          properties: {
+            'status': status,
+          },
+        );
     // We need it to track request in logs and look on it.
     logger.log(
       '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $status',
@@ -532,20 +565,90 @@ class Search extends _$Search {
     required SearchResultMessage results,
   }) async {
     if (results.representativeArea != null) {
-      final _mediaQuery = ref.read(mediaQueryInfoProvider);
-      final devicePixelRatio = _mediaQuery?.devicePixelRatio ?? 1.0;
-      await ref.read(cameraPositionProvider.notifier).animateToRepresentativeArea(
+      await ref
+          .read(cameraPositionProvider.notifier)
+          .animateToRepresentativeArea(
             results.representativeArea!,
-            options: CalcPositionOptionsMessage(
-              screenArea: CameraSetPaddingMessage(
-                leftPadding: (devicePixelRatio * (_mediaQuery?.padding.left ?? 0)).toInt(),
-                rightPadding: (devicePixelRatio * (_mediaQuery?.padding.right ?? 0)).toInt(),
-                topPadding: (devicePixelRatio * (_mediaQuery?.padding.top ?? 0)).toInt(),
-                bottomPadding: (devicePixelRatio * (_mediaQuery?.padding.bottom ?? 0)).toInt(),
-              ),
-            ),
+            options: _quickFilterCameraOptions(),
           );
     }
+  }
+
+  Future<void> _ensureQuickFilterPlacesAreVisible({
+    required SearchResultMessage results,
+  }) async {
+    final points = _uniqueResultPoints(results);
+    if (points.isEmpty) {
+      return;
+    }
+
+    final requiredVisiblePlaces = min(_minVisibleQuickFilterPlaces, points.length);
+    final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+    final visiblePlacesCount = visibleRect == null
+        ? 0
+        : points.where((point) => _isInsideVisibleRect(point, visibleRect)).length;
+
+    if (visibleRect != null) {
+      if (visiblePlacesCount >= requiredVisiblePlaces) {
+        return;
+      }
+    }
+
+    if (results.representativeArea != null && points.length > 1) {
+      await _animateToRepresentativeArea(results: results);
+      return;
+    }
+
+    await ref
+        .read(cameraPositionProvider.notifier)
+        .animateToGeoPoints(
+          points.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
+          options: _quickFilterCameraOptions(),
+          keepCameraPositionPoint: true,
+        );
+  }
+
+  List<GeoPointMessage> _uniqueResultPoints(SearchResultMessage results) {
+    final markerInfos = results.itemMarkerInfos;
+    if (markerInfos == null) {
+      return const [];
+    }
+
+    final uniquePoints = <GeoPointMessage>[];
+    final uniqueCoordinates = <String>{};
+
+    for (final markerInfo in markerInfos) {
+      final point = markerInfo.geoPoint.geoPoint;
+      final coordinateKey = '${point.latitude}:${point.longitude}';
+      if (uniqueCoordinates.add(coordinateKey)) {
+        uniquePoints.add(point);
+      }
+    }
+
+    return uniquePoints;
+  }
+
+  bool _isInsideVisibleRect(GeoPointMessage point, VisibleRect visibleRect) =>
+      point.latitude <= visibleRect.northEastLat &&
+      point.latitude >= visibleRect.southWestLat &&
+      point.longitude >= visibleRect.southWestLon &&
+      point.longitude <= visibleRect.northEastLon;
+
+  CalcPositionOptionsMessage _quickFilterCameraOptions() {
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+    final devicePixelRatio = mediaQuery?.devicePixelRatio ?? 1.0;
+
+    return CalcPositionOptionsMessage(
+      screenArea: CameraSetPaddingMessage(
+        leftPadding: (devicePixelRatio * ((mediaQuery?.padding.left ?? 0) + _quickFilterExtraHorizontalPadding))
+            .toInt(),
+        rightPadding: (devicePixelRatio * ((mediaQuery?.padding.right ?? 0) + _quickFilterExtraHorizontalPadding))
+            .toInt(),
+        topPadding: (devicePixelRatio * ((mediaQuery?.padding.top ?? 0) + _quickFilterExtraTopPadding)).toInt(),
+        bottomPadding: (devicePixelRatio * ((mediaQuery?.padding.bottom ?? 0) + _quickFilterExtraBottomPadding))
+            .toInt(),
+      ),
+    );
   }
 
   Future<void> _setUpLocale(String query) async {

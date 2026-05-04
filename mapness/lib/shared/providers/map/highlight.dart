@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'highlight.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Highlight extends _$Highlight {
   @override
   List<DgisObjectIdMessage> build() => [];
@@ -18,7 +18,7 @@ class Highlight extends _$Highlight {
   }
 
   bool _containsObjectWithId(int objectId) => state.any((element) => element.entranceId == objectId);
-  
+
   Future<void> removeHighlight(DgisObjectIdMessage objectId) async {
     state = state.whereNot((element) => element == objectId).toList();
     await ref.read(dgisControllerProvider).value?.setHighlighted(state);

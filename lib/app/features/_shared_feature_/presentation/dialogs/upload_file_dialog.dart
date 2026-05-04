@@ -122,11 +122,9 @@ class UploadFileDialog extends StatelessWidget {
     var file = await FilePicker.platform.pickFiles(
       type: fileType,
       allowMultiple: false,
-      allowedExtensions: allowedExtensions != null
-          ? allowedExtensions
-          : fileType == FileType.custom
+      allowedExtensions: allowedExtensions ?? (fileType == FileType.custom
               ? ['jpg', 'pdf', 'jpeg', 'png']
-              : null,
+              : null),
     );
     try {
       if (file != null && file.files.isNotEmpty) {

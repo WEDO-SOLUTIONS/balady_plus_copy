@@ -2,7 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 
-abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implements SelectionDialogView<S> {
+abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier
+    implements SelectionDialogView<S> {
   SelectionDialogViewNotifier({
     required this.all,
     required Set<T> selected,
@@ -16,9 +17,11 @@ abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implemen
   final void Function(Set<T> updates) selectionDialogApply;
 
   @override
-  late final Iterable<SelectionView<S>> selectionViews = all.map((it) => createSelectionView(it, selected)).toList();
+  late final Iterable<SelectionView<S>> selectionViews =
+      all.map((it) => createSelectionView(it, selected)).toList();
 
-  final SelectionView<S> Function(T object, Set<T> selected) createSelectionView;
+  final SelectionView<S> Function(T object, Set<T> selected)
+      createSelectionView;
 
   @override
   void tapReset() {
@@ -29,14 +32,15 @@ abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implemen
   @override
   void tapSave(BuildContext context) {
     selectionDialogApply(selected);
-    context.router.popForced();
+    context.router.pop();
   }
 
   @override
-  void tapCross(BuildContext context) => context.router.popForced();
+  void tapCross(BuildContext context) => context.router.pop();
 }
 
-abstract class BaseSelectionView<T, S> extends ChangeNotifier implements SelectionView<S> {
+abstract class BaseSelectionView<T, S> extends ChangeNotifier
+    implements SelectionView<S> {
   final Set<T> selected;
   final T object;
 

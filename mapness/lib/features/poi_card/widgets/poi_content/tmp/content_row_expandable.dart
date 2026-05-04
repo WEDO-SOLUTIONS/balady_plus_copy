@@ -44,75 +44,71 @@ class _ContentRowExpandableTmpState extends State<ContentRowExpandableTmp> {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: widget.margin,
-        child: Stack(
-          alignment: AlignmentDirectional.topEnd,
-          children: [
-            Padding(
-              padding: widget.padding,
-              child: ExpansionWidget(
-                duration: const Duration(milliseconds: 100),
-                titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) {
-                  _toggleFunction ??= toggleFunction;
-                  return ContentRow(
-                    text: const ContentRowTextOptions(title: ''),
-                    trailing: ContentRowCustomTrailingOptions(
-                      builder: (context) => CupertinoButton(
-                        onPressed: toggleFunction,
-                        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-                        minSize: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            if (widget.count != null)
-                              Text(
-                                widget.count.toString(),
-                                style: context.textStyles.bodySmallSemiBold.copyWith(
-                                  color: context.colors.foregroundMuted,
-                                ),
-                              ),
-                            if (widget.trailing != null) widget.trailing!,
-                            Transform.rotate(
-                              angle: pi * animationValue,
-                              child: Icon(
-                                SystemIcons.arrowCornerDownSmall,
-                                size: AppSizes.xxs,
-                                color: widget.expandIconColor,
-                              ),
-                            ),
-                          ],
+    padding: widget.margin,
+    child: Stack(
+      alignment: AlignmentDirectional.topEnd,
+      children: [
+        Padding(
+          padding: widget.padding,
+          child: ExpansionWidget(
+            duration: const Duration(milliseconds: 100),
+            titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) {
+              _toggleFunction ??= toggleFunction;
+              return ContentRow(
+                text: const ContentRowTextOptions(title: ''),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => CupertinoButton(
+                    onPressed: toggleFunction,
+                    padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                    minSize: 0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (widget.count != null)
+                          Text(
+                            widget.count.toString(),
+                            style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
+                          ),
+                        if (widget.trailing != null) widget.trailing!,
+                        Transform.rotate(
+                          angle: pi * animationValue,
+                          child: Icon(
+                            SystemIcons.arrowCornerDownSmall,
+                            size: AppSizes.xxs,
+                            color: widget.expandIconColor,
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-                content: Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(RadiusBorder.baseSharp),
+                      ],
                     ),
                   ),
-                  child: widget.content,
                 ),
+              );
+            },
+            content: Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(RadiusBorder.baseSharp)),
               ),
+              child: widget.content,
             ),
-            Padding(
-              // padding + text + icon + padding
-              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x + Spacing.$2x + AppSizes.xxs + Spacing.$4x),
-              child: ContentRow(
-                supportTitleRTL: widget.supportTitleRTL,
-                onTap: () {
-                  if (widget.onTitleTapExpand) {
-                    _toggleFunction?.call();
-                  }
-                  widget.onTitleTap?.call();
-                },
-                leading: widget.leading,
-                text: widget.text,
-              ),
-            ),
-          ],
+          ),
         ),
-      );
+        Padding(
+          // padding + text + icon + padding
+          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x + Spacing.$2x + AppSizes.xxs + Spacing.$4x),
+          child: ContentRow(
+            supportTitleRTL: widget.supportTitleRTL,
+            onTap: () {
+              if (widget.onTitleTapExpand) {
+                _toggleFunction?.call();
+              }
+              widget.onTitleTap?.call();
+            },
+            leading: widget.leading,
+            text: widget.text,
+          ),
+        ),
+      ],
+    ),
+  );
 }

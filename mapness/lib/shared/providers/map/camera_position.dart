@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/extensions/camera_position_message_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -95,6 +96,37 @@ class CameraPosition extends _$CameraPosition {
     await dgisController.value!.animateToRepresentativeArea(
       area,
       options ?? CalcPositionOptionsMessage(),
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
+  Future<void> animateToGeoPoints(
+    List<GeoPointMessage> points, {
+    CalcPositionOptionsMessage? options,
+    bool keepCameraPositionPoint = false,
+  }) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    final calculatedPosition = await dgisController.value!.calcPositionForGeoPoints(
+      points,
+      options ?? CalcPositionOptionsMessage(),
+    );
+
+    final CameraPositionMessage position;
+    if (keepCameraPositionPoint) {
+      final camPosition = await dgisController.value!.getCameraPosition();
+      // HACK: we zoom out because the points may stay out of screen after replacing position
+      position = calculatedPosition.copyWith(
+        point: camPosition.point,
+        zoom: calculatedPosition.zoom - 2,
+      );
+    } else {
+      position = calculatedPosition;
+    }
+
+    await dgisController.value!.moveCamera(
+      position,
       0.3,
       CameraAnimationTypeMessage.linear,
     );

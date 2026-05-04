@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -8,7 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:provider/provider.dart';
 
 class FavouritesSearchResults extends ConsumerWidget {
   const FavouritesSearchResults({
@@ -24,64 +28,74 @@ class FavouritesSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scope = context.read<SearchScope>();
+    final searcher = ref.watch(searchProvider(scope.value).notifier);
     final contentColor = context.colors.backgroundSurface1;
 
     final items = results.firstPage?.items;
     final length = items?.length ?? 0;
 
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
-        bottom: Spacing.$4x,
-      ),
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        color: contentColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-          child: ListView.builder(
-            controller: ScrollController(),
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            itemCount: length,
-            itemBuilder: (context, index) {
-              final item = items![index];
-
-              return ContentRow(
-                backgroundColor: context.colors.backgroundSurface4,
-                isDividerEnabled: index != length - 1,
-                onTap: () async => onSearchTap(ref, context, item),
-                leading: GeneralIcons.location.icon(
-                  color: context.colors.accentActive,
-                ),
-                text: ContentRowTextOptions(
-                  title: item.title,
-                  subtitle: item.makeAddress(),
-                  subtitleExtra: item.workStatus!.desc,
-                ),
-              );
-            },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$1_5x),
+          child: Text(
+            'Suggested searches',
+            style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x, top: Spacing.$3x),
+          child: Material(
+            clipBehavior: Clip.antiAlias,
+            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+            color: contentColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+              child: ListView.builder(
+                controller: ScrollController(),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: length,
+                itemBuilder: (context, index) {
+                  final item = items![index];
+
+                  return ContentRow(
+                    backgroundColor: context.colors.backgroundSurface1,
+                    isDividerEnabled: index != length - 1,
+                    onTap: () async {
+                      FocusScope.of(context).unfocus();
+                      searcher.clear();
+                      await onSearchTap(ref, context, item);
+                    },
+                    leading: GeneralIcons.location.icon(color: context.colors.accentActive),
+                    text: ContentRowTextOptions(
+                      title: item.title,
+                      subtitle: item.makeAddress(),
+                      subtitleExtra: item.workStatus!.desc,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   Future<void> onSearchTap(WidgetRef ref, BuildContext context, DirectoryObjectMessage item) async {
     final favItem = item.mapToFavourite();
     final repo = ref.read(favouriteCacheProvider.notifier);
-    unawaited(
-      switch (markerType) {
-        FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
-        FavouriteItemMarkerType.home => repo.setHome(favItem),
-        FavouriteItemMarkerType.work => repo.setWork(favItem),
-      },
-    );
+    unawaited(switch (markerType) {
+      FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
+      FavouriteItemMarkerType.home => repo.setHome(favItem),
+      FavouriteItemMarkerType.work => repo.setWork(favItem),
+    });
     if (context.mounted && context.router.canPop()) {
-      context.router.popForced();
+      context.router.pop();
     }
   }
 }

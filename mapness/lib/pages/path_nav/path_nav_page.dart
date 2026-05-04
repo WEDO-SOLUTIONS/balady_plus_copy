@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,10 +28,15 @@ import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/stream_audio/services/audio_service.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -38,6 +44,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/lib/common_functions.dart' as cf;
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -56,6 +63,8 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -69,12 +78,7 @@ class PathNavPage extends StatefulHookConsumerWidget {
   final PathNavPageInitAction? initAction;
   final bool isHomeOrWork;
 
-  const PathNavPage({
-    required this.navType,
-    required this.initAction,
-    this.isHomeOrWork = false,
-    super.key,
-  });
+  const PathNavPage({required this.navType, required this.initAction, this.isHomeOrWork = false, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => PathNavPageState();
@@ -82,12 +86,21 @@ class PathNavPage extends StatefulHookConsumerWidget {
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
   final panelKey = GlobalKey();
+  bool _isSwitchingToPedestrian = false;
+  bool _finishedByEta = false;
+  bool _arrivalToastShown = false;
+  bool _isEndingTrip = false;
+
+  // Cache for indoor support check to avoid network delay on arrival
+  bool? _cachedIndoorSupport;
+
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(uikit.Spacing.$3x);
   final _navigationState = ValueNotifier(PathNavState.running);
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   final isControlsActive = ValueNotifier(true);
+  final isSwitchingToFoot = ValueNotifier(false);
 
   late StreamSubscription? _naviEventsListener;
   bool wasSetActive = true;
@@ -102,6 +115,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       saveNavigationState();
     } else if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
+      // Re-sync sound settings from persistence in case CarPlay/Android Auto
+      // changed the setting while the phone app was backgrounded.
+      ref.read(soundSettingsProvider.notifier).syncFromPersistence();
     }
   }
 
@@ -164,10 +180,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.removeObserver(this);
     _naviEventsListener?.cancel();
@@ -176,6 +189,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _navigationState.dispose();
     timer?.cancel();
     WakelockPlus.disable();
+    isSwitchingToFoot.dispose();
     super.dispose();
   }
 
@@ -190,17 +204,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> restoreNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final state = base64.decode(
-      ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!,
-    );
+    final state = base64.decode(ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!);
     try {
-      await dgisController.restoreNavigationState(
-        state,
-        NavigationConstants.navigationSpeedRangeZooms,
-      );
+      await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
     } catch (e) {
       await clearNavigationState();
-      context.router.popForced();
+      context.router.pop();
     }
   }
 
@@ -209,18 +218,57 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateTypeKey);
   }
 
+  Future<void> isNavigationUser() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final isNavUser = sharedPrefs.getBool('isNavigationUser') ?? false;
+    if (!isNavUser) {
+      ref.read(appAnalyticsProvider).isNavigationUser(isNavUser: true);
+      await sharedPrefs.setBool('isNavigationUser', true);
+    }
+  }
+
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     if (widget.initAction == PathNavPageInitAction.restoreFromState) {
       await restoreNavigationState();
+      // After restore, move camera close without forcing follow to avoid zoom flicker
+      await _moveCameraToUser(followAfter: false);
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
-      await dgisController.startNavigation(
-        NavigationConstants.navigationSpeedRangeZooms,
-      );
+      unawaited(isNavigationUser());
+      // Ensure any in-app stream audio is paused while navigation is active.
+      // iOS doesn't reliably provide per-instruction callbacks from the SDK,
+      // so we pause at navigation start and resume when the trip ends.
+      unawaited(AudioService().pause());
+      await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       await _moveCameraToUser();
       await saveNavigationState();
+    }
+
+    if (widget.navType == RouteSearchOptionsMessage.car) {
+      unawaited(_prefetchIndoorInfo());
+    }
+  }
+
+  Future<void> _prefetchIndoorInfo() async {
+    try {
+      final finishPoint = ref.read(currentNavigationDestinationProvider);
+      final dgisController = await ref.read(dgisControllerProvider.future);
+
+      if (finishPoint?.dgisObjectId != null) {
+        final objectInfo = await dgisController.searchByObjectId(finishPoint!.dgisObjectId!);
+        final hasLevels = objectInfo.buildingLevels?.levels.isNotEmpty ?? false;
+        final hasExplicitLevel = finishPoint.levelId != null || objectInfo.levelId != null;
+
+        if (mounted) {
+          setState(() {
+            _cachedIndoorSupport = hasLevels || hasExplicitLevel;
+          });
+        }
+      }
+    } catch (e) {
+      // Ignore errors during prefetch, we will fallback to normal check if needed
     }
   }
 
@@ -236,25 +284,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+    const stableInset = uikit.Spacing.$3x;
 
-    sheetController = useToggleSheetController(
-      onClose: (_) {},
-      clipByHeader: true,
-      resetContentScrollOnClosed: true,
-    )..updateHeightModel(
-        isPortrait ? null : ToggleSheetHeightModel.offset(uikit.Spacing.$3x),
-      );
+    sheetController = useToggleSheetController(onClose: (_) {}, clipByHeader: true, resetContentScrollOnClosed: true)
+      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(stableInset));
+    final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
 
     void onSheetHeightChanged() {
       if (isPortrait) {
-        final padding = MediaQuery.paddingOf(context).bottom;
-
-        final sheetHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + padding + uikit.Spacing.$4x;
+        final sheetHeight =
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
           _setPaddingToCamera(_bottomHeightNotifier.value);
         }
+        return;
       }
     }
 
@@ -271,8 +316,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     useEffect(() {
       sheetController.addListener(onSheetHeightChanged);
-      final padding = MediaQuery.paddingOf(context).bottom;
-      _bottomHeightNotifier.value = sheetController.sheetHeight + uikit.Spacing.$3x + padding + uikit.Spacing.$4x;
+
+      if (isPortrait) {
+        final bottomHeight =
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+        _bottomHeightNotifier.value = bottomHeight;
+      }
+
       return () => sheetController.removeListener(onSheetHeightChanged);
     }, []);
 
@@ -285,37 +335,49 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref
       ..listen(
         betterRouteProvider,
-        (_, next) => next == null
+            (_, next) => next == null
             ? _betterRouteDurationProfit.value = null
             : _betterRouteDurationProfit.value = next.durationProfit,
       )
       ..listen(carConnectionProvider, (_, next) {
-        final connected = next.valueOrNull ?? false;
-        final shouldEndTrip = connected &&
-            widget.navType != RouteSearchOptionsMessage.car &&
-            _navigationState.value != PathNavState.finished;
+        final connected = next.value ?? false;
+        final shouldEndTrip =
+            connected &&
+                widget.navType != RouteSearchOptionsMessage.car &&
+                _navigationState.value != PathNavState.finished;
         if (shouldEndTrip) {
-          _endTripAndShowHome();
+          unawaited(_endTripAndShowHome());
         }
       })
-      ..listen(
-        pathNavEtaProvider,
-        (previous, next) {
-          if (next != null) {
-            if (next.distanceEtaUnits != DistanceUnits.m) {
-              return;
-            }
-            final distance = double.tryParse(next.distanceEta);
-            final navParkingEnabled = ref.read(navigatorAutoEnableParkingProvider);
-            final activeLayer = ref.read(activeLayerProvider);
-            final distanceLessThen500Meters = distance != null && distance <= 500;
-            final parkingTurnedOn = activeLayer == LayerType.parkingLots;
-            if (distanceLessThen500Meters && navParkingEnabled == true && !parkingTurnedOn) {
-              ref.read(layersControlsProvider.notifier).enableParking();
+      ..listen(pathNavEtaProvider, (previous, next) {
+        if (next != null) {
+          if (next.distanceEtaUnits != DistanceUnits.m) {
+            return;
+          }
+          final distance = double.tryParse(next.distanceEta);
+          final navParkingEnabled = ref.read(navigatorAutoEnableParkingProvider);
+          final activeLayer = ref.read(activeLayerProvider);
+          final distanceLessThen500Meters = distance != null && distance <= 500;
+          final parkingTurnedOn = activeLayer == LayerType.parkingLots;
+          if (distanceLessThen500Meters && navParkingEnabled == true && !parkingTurnedOn) {
+            ref.read(layersControlsProvider.notifier).enableParking();
+          }
+
+          // Fallback: finish pedestrian trip when very close to destination
+          final shouldFinishByEta =
+              widget.navType == RouteSearchOptionsMessage.pedestrian &&
+              !_finishedByEta &&
+              distance != null &&
+              distance <= 5;
+          if (shouldFinishByEta) {
+            _finishedByEta = true;
+            _finishNavigation();
+            if (mounted) {
+              unawaited(_endTripAndShowHome());
             }
           }
-        },
-      );
+        }
+      });
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
@@ -354,52 +416,46 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     : const SizedBox.shrink(),
               ),
             if (widget.navType == RouteSearchOptionsMessage.publicTransport && publicRoute != null)
-              Builder(builder: (context) {
-                final startPoint = ref.read(etaRouteInfoProvider).startPoint;
-                final destination = ref.read(etaRouteInfoProvider).endPoint;
-                if (startPoint == null || destination == null) {
-                  return const SizedBox.shrink();
-                }
-                return RouteDetailsPage(
-                  type: RouteDetailsSheetType.driving,
-                  startPoint: RouteParamsPointWithLabel(
-                    label: startPoint.label ?? '',
-                    value: RouteParamsPoint(
-                      latitude: startPoint.lat ?? 0,
-                      longitude: startPoint.lon ?? 0,
+              Builder(
+                builder: (context) {
+                  final startPoint = ref.read(etaRouteInfoProvider).startPoint;
+                  final destination = ref.read(etaRouteInfoProvider).endPoint;
+                  if (startPoint == null || destination == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return RouteDetailsPage(
+                    type: RouteDetailsSheetType.driving,
+                    startPoint: RouteParamsPointWithLabel(
+                      label: startPoint.label ?? '',
+                      value: RouteParamsPoint(latitude: startPoint.lat ?? 0, longitude: startPoint.lon ?? 0),
                     ),
-                  ),
-                  destination: RouteParamsPointWithLabel(
-                    label: destination.label ?? '',
-                    value: RouteParamsPoint(
-                      latitude: destination.lat ?? 0,
-                      longitude: destination.lon ?? 0,
+                    destination: RouteParamsPointWithLabel(
+                      label: destination.label ?? '',
+                      value: RouteParamsPoint(latitude: destination.lat ?? 0, longitude: destination.lon ?? 0),
                     ),
-                  ),
-                  publicTransportRoutes: [publicRoute],
-                  onPressed: () async {
-                    // Remove route from the map for public transport
-                    await ref.read(dgisControllerProvider).value?.hideRoutes();
-                    await _endTripAndShowFeedback(context);
-                  },
-                  onClose: () async {
-                    await ref.read(dgisControllerProvider).value?.hideRoutes();
-                    await _endTripAndShowHome();
-                  },
-                  buttonLabel: context.l10n.endTrip,
-                );
-              }),
+                    publicTransportRoutes: [publicRoute],
+                    onPressed: () async {
+                      // Remove route from the map for public transport
+                      await ref.read(dgisControllerProvider).value?.hideRoutes();
+                      await _endTripAndShowFeedback(context);
+                    },
+                    onClose: () async {
+                      await ref.read(dgisControllerProvider).value?.hideRoutes();
+                      await _endTripAndShowHome();
+                    },
+                    buttonLabel: context.l10n.endTrip,
+                  );
+                },
+              ),
             if (widget.navType != RouteSearchOptionsMessage.publicTransport)
               PathNavWrapper(
                 isPortrait: isPortrait,
                 indoorControl: widget.navType == RouteSearchOptionsMessage.pedestrian
-                    ? const Padding(
-                        padding: padding,
-                        child: IndoorControl(),
-                      )
+                    ? const Padding(padding: padding, child: IndoorControl())
                     : null,
                 child: NaviSheetPanel(
                   key: panelKey,
+                  isSwitchingToFoot: isSwitchingToFoot,
                   navType: widget.navType,
                   navigationState: _navigationState,
                   onShowRoutePressed: _onShowRoutePressed,
@@ -443,47 +499,53 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
+    if (_isEndingTrip) return;
+    _isEndingTrip = true;
     final route = ref.read(etaRouteInfoProvider);
-    final pathInfo = ref.read(pathNavEtaProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-    final location = ref.read(cityByLocationProvider.notifier);
-    final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
-    final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
 
-    ref.read(appAnalyticsProvider).navigationCompleted(
-          origin: route.startPoint?.analyticsLabel ?? '',
-          destination: route.endPoint?.analyticsLabel ?? '',
-          originCity: originCity.name,
-          destinationCity: destinationCity.name,
-          spentTime: pathInfo?.spentTime ?? Duration.zero,
-        );
-    await _stopActiveSharing();
-    await ref.read(cameraPaddingProvider.notifier).resetPadding();
+    unawaited(_sendNavigationCompletedAnalytics(route));
+
+    await Future.wait([
+      ref.read(dgisControllerProvider).value?.hideRoutes() ?? Future.value(),
+      _stopActiveSharing(),
+      ref.read(cameraPaddingProvider.notifier).resetPadding(),
+    ]);
 
     if (_navigationState.value != PathNavState.finished) {
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingHalfway);
-      ref.read(advertMetricsProvider.notifier).sendEvent(
-            AdvertMetricsKeys.journeyHalfwayUnique,
-            isUniquePerSession: true,
-          );
+      ref
+          .read(advertMetricsProvider.notifier)
+          .sendEvent(AdvertMetricsKeys.journeyHalfwayUnique, isUniquePerSession: true);
+    }
+
+    // Always stop navigation to ensure engine is fully terminated
+    try {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
+    } catch (_) {}
+    try {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
-    }
+    } catch (_) {}
 
-    // Remove route from the map for public transport
-    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
-      await ref.read(dgisControllerProvider).value?.hideRoutes();
-    }
+    // Restore in-app stream audio after navigation stops.
+    unawaited(AudioService().resume());
 
-    await clearNavigationState();
-    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+    ref.read(currentRouteProvider.notifier).clearRoute();
+
+    await Future.wait([
+      if (widget.navType == RouteSearchOptionsMessage.publicTransport)
+        ref.read(dgisControllerProvider).value?.hideRoutes() ?? Future.value(),
+      clearNavigationState(),
+      ref.read(selectedMarkerProvider.notifier).removeAllMarkers(),
+    ]);
+
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
 
+    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
     final mapSettings = MapObjectManagerSettings.search();
-    final mapObjectProvider = ref.read(mapObjectManagerProvider(
-      named: mapSettings.name,
-      layerId: mapSettings.layerId,
-    ).notifier);
+    final mapObjectProvider = ref.read(
+      mapObjectManagerProvider(named: mapSettings.name, layerId: mapSettings.layerId).notifier,
+    );
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
@@ -496,6 +558,31 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     action?.call();
   }
 
+  Future<void> _sendNavigationCompletedAnalytics(route) async {
+    try {
+      final pathInfo = ref.read(pathNavEtaProvider);
+      final location = ref.read(cityByLocationProvider.notifier);
+      final results = await Future.wait([
+        location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon),
+        location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon),
+      ]);
+      final originCity = results[0];
+      final destinationCity = results[1];
+
+      ref
+          .read(appAnalyticsProvider)
+          .navigationCompleted(
+            origin: route.startPoint?.analyticsLabel ?? '',
+            destination: route.endPoint?.analyticsLabel ?? '',
+            originCity: originCity.name,
+            destinationCity: destinationCity.name,
+            spentTime: pathInfo?.spentTime ?? Duration.zero,
+          );
+    } catch (_) {
+      // Analytics failure should not affect trip ending
+    }
+  }
+
   // Show the route page after the trip is finished
   Future<void> _endTripAndBuildAnotherRoute() async {
     Metrics.logEventAdvanced(
@@ -504,11 +591,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       action: MetricAction.tap.toString(),
     );
 
-    await _endTrip(action: () {
-      if (context.mounted) {
-        context.router.navigate(const RoutingPointsRoute());
-      }
-    });
+    await _endTrip(
+      action: () {
+        if (context.mounted) {
+          context.router.navigate(const RoutingPointsRoute());
+        }
+      },
+    );
   }
 
   // Show the home page after the trip is finished
@@ -520,11 +609,24 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
-    await _endTrip(action: () {
-      if (mounted) {
-        context.router.popUntilRouteWithName(BottomMenuRoute.name);
-      }
-    });
+    await _endTrip(
+      action: () {
+        if (mounted) {
+          context.router.popUntilRouteWithName(BottomMenuRoute.name);
+        }
+      },
+    );
+
+    // After returning home, show "You arrived" toast once
+    if (!_arrivalToastShown) {
+      _arrivalToastShown = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final toastCtx = rootNavigatorKey.currentContext ?? context;
+        if (toastCtx.mounted) {
+          ToastOverlay.of(toastCtx).show(title: context.l10n.youArrived);
+        }
+      });
+    }
   }
 
   // Show the feedback page after the trip is finished manually
@@ -551,7 +653,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
+    final parkingManage =
+        ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value == null;
     final position = ref.read(locationProvider);
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
@@ -575,7 +678,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             },
           ),
         ],
-        icon: ToastIconAsset(Assets.icons.svg.icParkingSpot.keyName),
+        icon: ToastIconAsset(switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
+          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          _ => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+        }),
       );
     }
 
@@ -631,6 +738,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.value = null;
     _navigationState.value = PathNavState.paused;
     await ref.read(cameraPositionProvider.notifier).animateToRoute();
+    await ref.read(dgisControllerProvider).value?.showRoutes();
   }
 
   // Continue the trip after the pause state
@@ -639,49 +747,207 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final dgisController = await ref.read(dgisControllerProvider.future);
     await _moveCameraToUser();
     await dgisController.followNavigation();
+    await dgisController.hideRoutes();
   }
 
   // Notify the listeners about the end of the trip
-  void _naviEvent(NavigationEvent event) {
-    if (event == NavigationEvent.finished) {
-      ref.read(urbiAnalyticsProvider).track('tripCompleted');
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
-      ref.read(advertMetricsProvider.notifier).sendEvent(
-            AdvertMetricsKeys.journeyCompleteUnique,
-            isUniquePerSession: true,
-          );
-      _navigationState.value = PathNavState.finished;
-      ref.read(layersControlsProvider.notifier).hideParking();
-      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-      sheetController.close();
+  void _naviEvent(NavigationEvent event) async {
+    switch (event) {
+      case NavigationEvent.navigation:
+      case NavigationEvent.routeSearch:
+        break;
+      case NavigationEvent.disabled:
+        if (_isSwitchingToPedestrian) {
+          return;
+        }
+        if (context.mounted && _navigationState.value != PathNavState.finished) {
+          unawaited(_endTripAndShowHome());
+        }
+        break;
+      case NavigationEvent.finished:
+        if (widget.navType == RouteSearchOptionsMessage.car) {
+          _isSwitchingToPedestrian = true;
+          _checkAndSwitchToPedestrian();
+          return;
+        }
+        // If pedestrian navigation finished, ensure trip ends and navigate home
+        await _finishNavigation();
+        if (mounted) {
+          unawaited(_endTripAndShowHome());
+        }
+        break;
+    }
+  }
 
-      unawaited(clearNavigationState());
-      unawaited(_stopActiveSharing());
-    } else if (event == NavigationEvent.disabled) {
-      if (context.mounted && _navigationState.value != PathNavState.finished) {
-        _endTripAndShowHome();
+  Future<void> _finishNavigation() async {
+    // iOS: DGis "arrival" voice can stop in-app radio. Capture current state so we can
+    // restore it after the voice finishes (best-effort, delayed).
+    final streamAudioWasPlayingBeforeFinish = ref.read(streamAudioProvider).isEffectivelyPlaying;
+
+    _sendAnalitycs();
+    _navigationState.value = PathNavState.finished;
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    ref.read(layersControlsProvider.notifier).hideParking();
+    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+    ref.read(currentRouteProvider.notifier).clearRoute();
+    sheetController.close();
+    unawaited(clearNavigationState());
+    unawaited(_stopActiveSharing());
+
+    // Restore in-app stream audio when navigation finishes normally.
+    // We delay because the DGis arrival prompt is played around this time on iOS.
+    if (streamAudioWasPlayingBeforeFinish) {
+      unawaited(
+        Future<void>.delayed(const Duration(seconds: 4), () async {
+          if (!mounted) return;
+          final streamAudio = ref.read(streamAudioProvider);
+          if (!streamAudio.isEffectivelyPlaying && !streamAudio.isLoading) {
+            await ref.read(streamAudioProvider).togglePlayPause();
+          }
+        }),
+      );
+    }
+  }
+
+  void _sendAnalitycs() {
+    ref.read(urbiAnalyticsProvider).track('tripCompleted');
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(
+      AdvertMetricsKeys.navigationRoutingCompleted,
+    );
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(
+      AdvertMetricsKeys.journeyCompleteUnique,
+      isUniquePerSession: true,
+    );
+  }
+
+  Future<void> _checkAndSwitchToPedestrian() async {
+    isSwitchingToFoot.value = true;
+    try {
+      final finishPoint = ref.read(currentNavigationDestinationProvider);
+      final location = ref.read(locationProvider);
+      final dgisController = ref.read(dgisControllerProvider).value;
+
+      if (finishPoint == null || location == null || dgisController == null) {
+        await _finishNavigation();
+        if (mounted) {
+          await _endTripAndShowHome();
+        }
+        return;
+      }
+      final distance = cf.CommonFunctions.distance(
+        location.latitude,
+        location.longitude,
+        finishPoint.geoPoint.latitude,
+        finishPoint.geoPoint.longitude,
+      );
+
+      // If distance > 20 meters, check for indoor support (switch to pedestrian)
+      if (distance > 0.02) {
+        bool supportsIndoor = false;
+        // Check if we have objectId to fetch building info
+        if (finishPoint.dgisObjectId != null) {
+          try {
+            if (_cachedIndoorSupport != null) {
+              supportsIndoor = _cachedIndoorSupport!;
+            } else {
+              final objectInfo = await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
+
+              // Check for building levels (indoor map support)
+              if (objectInfo.buildingLevels != null && (objectInfo.buildingLevels?.levels.isNotEmpty ?? false)) {
+                supportsIndoor = true;
+              }
+
+              // Fallback: update supportsIndoor if levelId is explicitly set in destination
+              if (finishPoint.levelId != null || objectInfo.levelId != null) {
+                supportsIndoor = true;
+              }
+            }
+          } catch (e) {
+            logger.log('Error fetching object info for pedestrian switch: $e', logLevel: MapnessLogLevel.error);
+          }
+        }
+
+        if (supportsIndoor) {
+          // Switch to pedestrian
+          final startPoint = RouteParamsPoint(latitude: location.latitude, longitude: location.longitude);
+          final points = [startPoint, finishPoint];
+          final intermediatePoints = points.getIntermediatePoints();
+
+          ref.read(
+            routesProvider(
+              startPoint: startPoint,
+              finishPoint: finishPoint,
+              navType: RouteSearchOptionsMessage.pedestrian,
+              intermediatePoints: intermediatePoints,
+              showOnlyActiveRoute: true,
+            ),
+          );
+
+          // Navigate to new navigation session
+          if (mounted) {
+            // Start navigation on the newly calculated route
+            await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
+
+            // Save the navigation state so it can be restored on the new page
+            final state = await dgisController.saveNavigationState();
+            await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
+            await ref
+                .read(sharedPrefsProvider)
+                .setString(MapnessConstants.navigatorStateTypeKey, RouteSearchOptionsMessage.pedestrian.name);
+
+            // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
+
+            // Replace current page with pedestrian navigation
+            // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
+            isSwitchingToFoot.value = false;
+            await context.router.replace(
+              PathNavRoute(
+                navType: RouteSearchOptionsMessage.pedestrian,
+                isHomeOrWork: widget.isHomeOrWork,
+                initAction: PathNavPageInitAction.restoreFromState,
+              ),
+            );
+            return;
+          }
+        }
+      }
+      _isSwitchingToPedestrian = false;
+      await _finishNavigation();
+      if (mounted) {
+        await _endTripAndShowHome();
+      }
+    } finally {
+      if (mounted) {
+        isSwitchingToFoot.value = false;
       }
     }
   }
 
-  Future<void> _moveCameraToUser() async {
+  Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
-
-    await dgisController.startFollowNavigation();
 
     if (position != null) {
       if (_isLocationAccuracyAcceptable(position.latitude, position.longitude)) {
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: 17.5,
+            zoom: targetZoom,
             tilt: 0,
             bearing: 0,
           ),
         );
       }
+    }
+
+    if (followAfter) {
+      await dgisController.startFollowNavigation();
     }
   }
 
@@ -689,12 +955,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _isLocationAccuracyAcceptable(double latitude, double longitude) {
     final routeStartPoint = ref.read(etaRouteInfoProvider).startPoint;
     if (routeStartPoint != null) {
-      final distance = CommonFunctions.calculateDistance(
-        latitude,
-        longitude,
-        routeStartPoint.lat,
-        routeStartPoint.lon,
-      );
+      final distance = CommonFunctions.calculateDistance(latitude, longitude, routeStartPoint.lat, routeStartPoint.lon);
 
       // If the calculated distance is more than 100 meters, the calculation error is too big
       if (distance > 70) {
@@ -711,11 +972,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       case Orientation.portrait:
         {
           final pixelSize = MediaQuery.of(context).devicePixelRatio;
-          ref.read(cameraPaddingProvider.notifier).setPadding(
-                CameraSetPaddingMessage(
-                  bottomPadding: (pixelSize * padding).floor(),
-                ),
-              );
+          ref
+              .read(cameraPaddingProvider.notifier)
+              .setPadding(CameraSetPaddingMessage(bottomPadding: (pixelSize * padding).floor()));
         }
       case Orientation.landscape:
         ref.read(cameraPaddingProvider.notifier).setPadding(CameraSetPaddingMessage());
@@ -726,6 +985,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.value = null;
     final dgisController = await ref.read(dgisControllerProvider.future);
     await dgisController.betterRouteResponse(BetterRouteResponseMessage.accept);
+
+    // Keep running-navigation map state consistent after accepting better route:
+    // route overlays (with time indicators) must be hidden in follow mode.
+    if (_navigationState.value == PathNavState.running) {
+      await dgisController.followNavigation();
+      await dgisController.hideRoutes();
+    }
   }
 
   Future<void> _rejectBetterRoute(BuildContext context) async {
@@ -744,10 +1010,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> _onSearchPressed(BuildContext context) async {
     final mapSettings = MapObjectManagerSettings.search();
-    final mapObjectProvider = ref.read(mapObjectManagerProvider(
-      named: mapSettings.name,
-      layerId: mapSettings.layerId,
-    ).notifier);
+    final mapObjectProvider = ref.read(
+      mapObjectManagerProvider(named: mapSettings.name, layerId: mapSettings.layerId).notifier,
+    );
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
     await context.router.push(NaviSearchRoute(isPathNavScreen: true));

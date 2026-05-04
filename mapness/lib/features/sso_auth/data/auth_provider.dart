@@ -31,7 +31,15 @@ class Auth extends _$Auth {
     Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
     await ref.read(profileImageProvider.notifier).clear();
-    await ref.read(favouriteCacheProvider.notifier).clear();
+
+    /// Urbi Tame Need Fix It
+    try {
+      await ref.read(favouriteCacheProvider.notifier).clear();
+      // Avoid auth<->favourites circular dependency during logout.
+      ref.invalidate(favouriteCacheProvider);
+    } catch (e) {
+      print(e.toString());
+    }
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logOut');
@@ -64,7 +72,7 @@ class Auth extends _$Auth {
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
       // TODO: When authorized send it to [authorizedNotifier]
-      final previousUserInfo = state.valueOrNull;
+      final previousUserInfo = state.value;
       final newUserInfo = event.userInfo;
 
       // Check if authorization state changed

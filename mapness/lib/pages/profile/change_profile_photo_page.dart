@@ -25,6 +25,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     final isPermanentlyDenied = ref.read(profileImageProvider.notifier).status == PermissionStatus.permanentlyDenied;
 
     return Material(
+      color: context.colors.backgroundSurface1,
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(RadiusBorder.xl),
         topRight: Radius.circular(RadiusBorder.xl),
@@ -32,49 +33,45 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(Spacing.$1_5x),
-            child: SheetDragger(),
-          ),
+          const Padding(padding: EdgeInsets.all(Spacing.$1_5x), child: SheetDragger()),
           ContentRow(
             options: ContentRowOptions(
               title: context.l10n.profilePhoto,
-              titleStyle: context.textStyle.heading2.copyWith(
-                color: context.colors.foregroundDefault,
-              ),
+              titleStyle: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
-                onTap: context.router.popForced,
+                onTap: context.router.pop,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
-              ContentRow(
-                onTap: () async {
-                  if (isPermanentlyDenied) {
-                    // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
-                    // permissions"
-                    context.router.popForced(true);
-                  } else {
-                    await updateAvatar(ref, context);
-                    context.router.popForced();
-                  }
-                },
-                options: ContentRowOptions(
-                  leadingIcon: SvgPicture.asset(
-                    Assets.icons.svg.photoGallery.keyName,
-                    colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
-                  ),
-                  title: context.l10n.change_avatar,
-                  titleStyle: context.textStyle.text.copyWith(
-                    color: context.colors.foregroundDefault,
+            child: ContentWrapper(
+              color: context.colors.backgroundSurface1,
+              children: [
+                ContentRow(
+                  onTap: () async {
+                    if (isPermanentlyDenied) {
+                      // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
+                      // permissions"
+                      context.router.pop(true);
+                    } else {
+                      await updateAvatar(ref, context);
+                      context.router.pop();
+                    }
+                  },
+                  options: ContentRowOptions(
+                    leadingIcon: SvgPicture.asset(
+                      Assets.icons.svg.photoGallery.keyName,
+                      colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+                    ),
+                    title: context.l10n.change_avatar,
+                    titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                   ),
                 ),
-              ),
-            ]),
+              ],
+            ),
           ),
           const SizedBox(height: Spacing.$8x),
         ],
@@ -99,13 +96,9 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    final Uint8List? croppedBytes = await context.pushRoute(
-      ImageEditorRoute(image: bytes),
-    );
+    final Uint8List? croppedBytes = await context.pushRoute(ImageEditorRoute(image: bytes));
     if (croppedBytes != null) {
-      unawaited(
-        ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes),
-      );
+      unawaited(ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes));
     }
   }
 }

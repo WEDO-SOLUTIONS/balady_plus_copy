@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
+import 'package:mapness/features/saudi_pass/widgets/reset_save_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/small_chip_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -34,16 +35,14 @@ class SelectionDialogViewWidget<T> extends HookWidget {
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: backgroundColor ?? context.colors.backgroundSurface2,
-      safeAreaColor: context.colors.backgroundSurface2,
-      outside: GestureDetector(
-        onTap: context.router.popForced,
-      ),
+      safeAreaColor: backgroundColor ?? context.colors.backgroundSurface2,
+      outside: GestureDetector(onTap: context.router.pop),
       header: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: context.textStyleV3.h2SemiBold),
+            Text(title, style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault)),
             CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
           ],
         ),
@@ -68,38 +67,6 @@ class SelectionDialogViewWidget<T> extends HookWidget {
   }
 }
 
-class ResetSaveWidget extends StatelessWidget {
-  final ResetSaveView resetSaveView;
-
-  const ResetSaveWidget(this.resetSaveView, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final resetButton = BaladyAppButton(
-      primaryLabel: context.l10n.saudiPassDialogReset,
-      onTap: resetSaveView.tapReset,
-      size: BaladyButtonSize.large,
-      buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-      buttonType: BaladyButtonType.secondary,
-    );
-
-    final saveButton = BaladyAppButton(
-      primaryLabel: context.l10n.saudiPassDialogSave,
-      onTap: () => resetSaveView.tapSave(context),
-      size: BaladyButtonSize.large,
-      buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-    );
-
-    return Row(
-      children: [
-        Expanded(child: resetButton),
-        const SizedBox(width: Spacing.$2x),
-        Expanded(child: saveButton),
-      ],
-    );
-  }
-}
-
 class WrapLayout extends StatelessWidget {
   final Iterable<SelectionView<String>> selectionViews;
 
@@ -107,10 +74,10 @@ class WrapLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Wrap(
-        spacing: Spacing.$2x,
-        runSpacing: Spacing.$2x,
-        children: selectionViews.map(StringItemViewWidget.new).toList(),
-      );
+    spacing: Spacing.$2x,
+    runSpacing: Spacing.$2x,
+    children: selectionViews.map(StringItemViewWidget.new).toList(),
+  );
 }
 
 class ContentRowLayout extends StatelessWidget {
@@ -120,18 +87,18 @@ class ContentRowLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
-        child: Column(
-          children: selectionViews
-              .mapIndexed(
-                (index, view) => ListenableBuilder(
-                  listenable: Listenable.merge(selectionViews),
-                  builder: (_, __) => SortingItemViewWidget(view, hasDivider: index < selectionViews.length - 1),
-                ),
-              )
-              .toList(),
-        ),
-      );
+    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
+    child: Column(
+      children: selectionViews
+          .mapIndexed(
+            (index, view) => ListenableBuilder(
+              listenable: Listenable.merge(selectionViews),
+              builder: (_, __) => SortingItemViewWidget(view, hasDivider: index < selectionViews.length - 1),
+            ),
+          )
+          .toList(),
+    ),
+  );
 }
 
 class StringItemViewWidget extends StatelessWidget {
@@ -141,13 +108,10 @@ class StringItemViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-        listenable: view,
-        builder: (context, _) => SmallChipWidget(
-          title: view.title,
-          isHighlighted: view.isHighlighted,
-          onTap: () => view.onTap(context),
-        ),
-      );
+    listenable: view,
+    builder: (context, _) =>
+        SmallChipWidget(title: view.title, isHighlighted: view.isHighlighted, onTap: () => view.onTap(context)),
+  );
 }
 
 class SortingItemViewWidget extends StatelessWidget {
@@ -164,18 +128,19 @@ class SortingItemViewWidget extends StatelessWidget {
       listenable: view,
       builder: (context, _) => SizedBox(
         height: AppSizes.l,
-        child: ContentRowV2(
+        child: ContentRow(
           leading: nothing,
+          pressedOpacity: null,
           text: ContentRowTextOptions(
             title: switch (view.title) {
               Sorting.byRecency => context.l10n.saudiPassSortingByRecency,
-              Sorting.byRating => context.l10n.saudiPassSortingByRating
+              Sorting.byRating => context.l10n.saudiPassSortingByRating,
             },
           ),
           onTap: () => view.onTap(context),
           isDividerEnabled: hasDivider,
           supportTitleRTL: true,
-          backgroundColor: context.colorsV3.backgroundSurface1,
+          backgroundColor: context.colors.backgroundSurface1,
           trailing: ContentRowCustomTrailingOptions(
             builder: (context) => view.isHighlighted
                 ? const Padding(

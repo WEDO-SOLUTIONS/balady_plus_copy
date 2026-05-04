@@ -19,9 +19,7 @@ import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class FeedbackAddressSuggester extends ConsumerStatefulWidget {
-  const FeedbackAddressSuggester({
-    super.key,
-  });
+  const FeedbackAddressSuggester({super.key});
 
   @override
   ConsumerState<FeedbackAddressSuggester> createState() => _FeedbackAddressSuggesterState();
@@ -39,12 +37,11 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
   void initState() {
     super.initState();
     _dgisSheetController = ToggleSheetController(
-        heightModel: ToggleSheetHeightModel.fraction(
-          .98,
-        ),
-        onClose: (_) {
-          ref.read(appRouterProvider).back();
-        });
+      heightModel: ToggleSheetHeightModel.offset(0),
+      onClose: (_) {
+        ref.read(appRouterProvider).back();
+      },
+    );
 
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
   }
@@ -58,35 +55,33 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
 
   @override
   Widget build(BuildContext context) => SearchScope(
-        named: SearchScopeEnum.feedback,
-        child: NotificationListener<ScrollNotification>(
-          onNotification: _onNotification,
-          child: ToggleSheet(
-            key: const ValueKey('FEEDBACK SEARCH SHEET'),
-            physics: const BouncingScrollPhysics(),
-            scrollController: _dgisSheetController,
-            backgroundColor: context.colors.backgroundSurface4,
-            safeAreaColor: context.colors.backgroundSurface4,
-            dragger: const SheetDragger(),
-            header: ColoredBox(
-              color: context.colors.backgroundSurface1,
-              child: const Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: FeedbackAddressSearchBar(),
-                  ),
-                  SizedBox(height: Spacing.$4x),
-                ],
+    named: SearchScopeEnum.feedback,
+    child: NotificationListener<ScrollNotification>(
+      onNotification: _onNotification,
+      child: ToggleSheet(
+        key: const ValueKey('FEEDBACK SEARCH SHEET'),
+        physics: const BouncingScrollPhysics(),
+        scrollController: _dgisSheetController,
+        barrierColorDelegate: ToggleSheetDelegate.value(context.colors.screenOverlayDimming40),
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface1),
+        header: ColoredBox(
+          color: context.colors.backgroundSurface1,
+          child: const Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: FeedbackAddressSearchBar(),
               ),
-            ),
-            sliver: FeedbackAddressContent(
-              showMyLocation: false,
-              scrollController: _dgisSheetController,
-            ),
+              SizedBox(height: Spacing.$4x),
+            ],
           ),
         ),
-      );
+        sliver: FeedbackAddressContent(showMyLocation: false, scrollController: _dgisSheetController),
+      ),
+    ),
+  );
 
   void _unFocusOnScroll() {
     if (kbVisibilityController.isVisible) {

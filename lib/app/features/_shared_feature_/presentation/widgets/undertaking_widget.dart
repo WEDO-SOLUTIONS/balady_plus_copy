@@ -39,7 +39,7 @@ class UndertakingWidget extends StatelessWidget {
               const SizedBox(width: 4),
               CustomTextWidget(
                 "pledges".tr(),
-                fontSize: 15,
+                fontSize: 16,
                 fontColor: AppColor.blackModern600Light,
                 fontWeight: AppFontWeight.bold,
               ),

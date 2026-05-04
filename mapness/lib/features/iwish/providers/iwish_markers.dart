@@ -13,8 +13,7 @@ part 'iwish_markers.g.dart';
 const iwishMarkerPrefix = 'iwish-marker-';
 
 @riverpod
-Future<List<IwishMarker>> _iwishMarkersNetwork(
-    AutoDisposeFutureProviderRef<List<IwishMarker>> ref) async {
+Future<List<IwishMarker>> _iwishMarkersNetwork(Ref ref) async {
   final dio = await ref.read(dGisNetworkProvider.future);
 
   final raw = await dio.get('iwish');
@@ -56,10 +55,8 @@ class _IwishMarkers extends _$IwishMarkers {
     final markers = await ref.watch(_iwishMarkersNetworkProvider.future);
     return markers
         .map(
-          (stateMarker) => stateMarker.toMarker(
-            isSelected: selectedMarkerId == stateMarker.id,
-            onMarkerTap: _onMarkerTap,
-          ),
+          (stateMarker) =>
+              stateMarker.toMarker(isSelected: selectedMarkerId == stateMarker.id, onMarkerTap: _onMarkerTap),
         )
         .toList();
   }

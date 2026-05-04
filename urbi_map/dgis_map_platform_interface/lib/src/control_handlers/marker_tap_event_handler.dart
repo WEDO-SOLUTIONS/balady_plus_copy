@@ -6,11 +6,9 @@ import 'package:dgis_map_platform_interface/src/events/models/lat_lng.dart';
 class MarkerTapEventHandler {
   MarkerTapEventHandler();
 
-  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
-      _markerTapController.stream;
+  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents => _markerTapController.stream;
 
-  final _markerTapController =
-      StreamController<MarkerWithPhotoTapEvent>.broadcast();
+  final _markerTapController = StreamController<MarkerWithPhotoTapEvent>.broadcast();
 
   void markerWithPhotoTapEvent(Map<dynamic, dynamic> map) {
     final photoDataMap = map["photoData"];

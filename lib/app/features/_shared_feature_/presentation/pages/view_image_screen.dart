@@ -5,7 +5,7 @@ import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/constants.dart';
 
 class ViewAPIGEEImageScreen extends StatefulWidget {
-  const ViewAPIGEEImageScreen({Key? key}) : super(key: key);
+  const ViewAPIGEEImageScreen({super.key});
 
   @override
   State<ViewAPIGEEImageScreen> createState() => _ViewAPIGEEImageScreenState();
@@ -33,7 +33,7 @@ class _ViewAPIGEEImageScreenState extends State<ViewAPIGEEImageScreen> {
               margin: EdgeInsetsDirectional.only(
                   top: MediaQuery.of(context).padding.top + 5, start: 12),
               child: Image.asset(
-                Constants.imgPath + 'exit@3x.png',
+                '${Constants.imgPath}exit@3x.png',
                 height: 38,
                 width: 38,
               ),

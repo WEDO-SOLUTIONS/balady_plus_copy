@@ -33,28 +33,29 @@ class AppFeedbackSheet extends HookConsumerWidget {
       return;
     }
     showCupertinoDialog(
-        context: context,
-        builder: (ctx) => CupertinoAlertDialog(
-              title: Text(context.l10n.appFeedbackUnsavedChanges),
-              content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
-              actions: [
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  child: Text(context.l10n.appFeedbackStay),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: true,
-                  child: Text(context.l10n.appFeedbackLeave),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    context.router.popForced();
-                  },
-                ),
-              ],
-            ));
+      context: context,
+      builder: (ctx) => CupertinoAlertDialog(
+        title: Text(context.l10n.appFeedbackUnsavedChanges),
+        content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text(context.l10n.appFeedbackStay),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: Text(context.l10n.appFeedbackLeave),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              context.router.pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   static const _sheetPadding = EdgeInsets.only(top: Spacing.$6x);
@@ -70,7 +71,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
       final isInitial = ref.read(sendFeedbackProvider) == AppFeedbackState.initial;
 
       if (feedbackCanpop || !isInitial) {
-        context.router.popForced();
+        context.router.pop();
       } else {
         controller.open();
         _showConfirmDialog(context);
@@ -95,20 +96,20 @@ class AppFeedbackSheet extends HookConsumerWidget {
         content: [
           switch (sendFeedbackState) {
             AppFeedbackState.initial => AppFeedbackMain(
-                initialRating: initialRating,
-                onNeedPopConfirm: () => source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
-              ),
+              initialRating: initialRating,
+              onNeedPopConfirm: source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
+            ),
             AppFeedbackState.loading => const AppFeedbackLoading(),
             AppFeedbackState.success => const Padding(
-                padding: _sheetPadding,
-                child: AppFeedbackSuccess(),
-              ),
+              padding: _sheetPadding,
+              child: AppFeedbackSuccess(),
+            ),
             AppFeedbackState.error => Padding(
-                padding: _sheetPadding,
-                child: AppFeedbackError(
-                  onRetry: ref.read(sendFeedbackProvider.notifier).retry,
-                ),
+              padding: _sheetPadding,
+              child: AppFeedbackError(
+                onRetry: ref.read(sendFeedbackProvider.notifier).retry,
               ),
+            ),
           },
         ],
       ),

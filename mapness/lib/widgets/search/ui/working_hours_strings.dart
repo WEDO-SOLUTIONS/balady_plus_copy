@@ -2,37 +2,92 @@ import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
 
+DateTime saudiTimeNow() => DateTime.now();
+
 extension WorkingHoursStrings on WorkingHours {
-  // referenced https://urbi-team.youtrack.cloud/issue/BSA-2556
-  String closedStatus(DateTime now, AppLocalizations appLocalizations) {
-    if (isTemporaryClosed) {
-      return appLocalizations.temporarilyClosed;
+  String closedStatus(
+    DateTime now,
+    AppLocalizations appLocalizations, {
+    Duration soonThreshold = kDefaultWorkingHoursSoonThreshold,
+  }) {
+    final currentStatus = statusType(now, soonThreshold: soonThreshold);
+
+    switch (currentStatus) {
+      case WorkingHoursStatusType.hidden:
+        return '';
+      case WorkingHoursStatusType.open24Hours:
+        return appLocalizations.open24Hours;
+      case WorkingHoursStatusType.open:
+        final closesAt = closeDateTime(now);
+        if (closesAt == null) {
+          return '';
+        }
+        return '${appLocalizations.openUntil} ${closesAt.formatHHmm}';
+      case WorkingHoursStatusType.openSoon:
+        final remaining = closesIn(now);
+        final prefix = isBreakUpcoming(now) ? appLocalizations.breakIn : appLocalizations.closesIn;
+        if (remaining > const Duration(hours: 1)) {
+          return _buildRemainingHoursAndMinutesStatus(prefix, remaining, appLocalizations);
+        }
+        if (remaining.inMinutes > 1) {
+          return '${prefix.trim()} ${remaining.inMinutes} ${appLocalizations.minutesShort}';
+        }
+        return appLocalizations.closed;
+      case WorkingHoursStatusType.closed:
+      case WorkingHoursStatusType.closedSoon:
+        return _buildClosedUntilStatus(
+          now: now,
+          appLocalizations: appLocalizations,
+        );
+    }
+  }
+
+  String _buildRemainingHoursAndMinutesStatus(
+    String prefix,
+    Duration remaining,
+    AppLocalizations appLocalizations,
+  ) {
+    final hours = remaining.inHours;
+    final minutes = remaining.inMinutes.remainder(60);
+
+    if (minutes == 0) {
+      return '${prefix.trim()} $hours ${appLocalizations.hoursShort}';
     }
 
-    if (isClosed(now)) {
-      final nextOpen = this.nextOpen(now);
-      if (isBreak(now)) {
-        return '${appLocalizations.breakUntil} ${nextOpen.hoursAndMinutes.formatHHmm}';
-      }
+    return '${prefix.trim()} $hours ${appLocalizations.hoursShort} '
+        '$minutes ${appLocalizations.minutesShort}';
+  }
 
-      if (isToday(now, nextOpen)) {
-        return '${appLocalizations.closedUntill} ${nextOpen.hoursAndMinutes.formatHHmm}';
-      } else if (isTomorrow(now, nextOpen)) {
-        return '${appLocalizations.closedUntill} ${appLocalizations.tomorrow} ${nextOpen.hoursAndMinutes.formatHHmm}';
-      } else {
-        final weekDay = nextOpen.inDays.weekDayNameShort(appLocalizations);
-        return '${appLocalizations.closedUntill} $weekDay ${nextOpen.hoursAndMinutes.formatHHmm}';
-      }
+  String _buildClosedUntilStatus({
+    required DateTime now,
+    required AppLocalizations appLocalizations,
+  }) {
+    final opensAt = nextOpenDateTime(now);
+    if (opensAt == null) {
+      return appLocalizations.closed;
     }
 
-    final closesIn = this.closesIn(now);
+    final dayPrefix = _dayPrefix(
+      now: now,
+      value: opensAt,
+      appLocalizations: appLocalizations,
+    );
 
-    if (closesIn <= const Duration(minutes: 30)) {
-      return '${appLocalizations.closesIn}${closesIn.inMinutes} ${appLocalizations.minutes}';
+    return '$dayPrefix${opensAt.formatHHmm}'.trim();
+  }
+
+  String _dayPrefix({
+    required DateTime now,
+    required DateTime value,
+    required AppLocalizations appLocalizations,
+  }) {
+    if (_isSameDate(now, value)) {
+      return '${appLocalizations.closedUntil} ';
     }
-
-    // Mean Working now, but this function is only for closed status
-    return '';
+    if (_isTomorrowDate(now, value)) {
+      return '${appLocalizations.closedUntilOnly} ${appLocalizations.tomorrow} ';
+    }
+    return '${appLocalizations.closedUntil} ${value.weekday.weekDayNameShort(appLocalizations)} ';
   }
 }
 
@@ -41,4 +96,19 @@ extension DurationFormatExt on Duration {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     return '${twoDigits(inHours)}:${twoDigits(inMinutes.remainder(60))}';
   }
+}
+
+extension DateTimeFormatExt on DateTime {
+  String get formatHHmm {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    return '${twoDigits(hour)}:${twoDigits(minute)}';
+  }
+}
+
+bool _isSameDate(DateTime first, DateTime second) =>
+    first.year == second.year && first.month == second.month && first.day == second.day;
+
+bool _isTomorrowDate(DateTime now, DateTime other) {
+  final tomorrow = DateTime(now.year, now.month, now.day).add(const Duration(days: 1));
+  return tomorrow.year == other.year && tomorrow.month == other.month && tomorrow.day == other.day;
 }

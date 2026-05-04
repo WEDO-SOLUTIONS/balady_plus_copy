@@ -1,4 +1,5 @@
 import 'package:dgis_map_platform_interface/library.dart';
+import 'package:flutter/material.dart';
 
 abstract class TapEvent {
   const TapEvent();
@@ -55,9 +56,9 @@ class ObjectTapEvent extends TapEvent {
 /// [sendDgisMyLocationEvent] send event to Flutter app
 /// Android: WIP
 class MyLocationTapEvent extends TapEvent {
-
   /// Constructor
   const MyLocationTapEvent(this.latLng);
+
   /// Event name
   static const name = "onMyLocationTap";
 
@@ -85,18 +86,42 @@ class RoadEventTapEvent extends TapEvent {
   final LatLng latLng;
 }
 
+/// DgisObjectId model
+@immutable
 class DgisObjectId {
+  /// Constructor
   const DgisObjectId({
     required this.objectId,
     required this.entranceId,
   });
 
+  /// Dgis object id
   final int objectId;
+  /// Entrance id
   final int entranceId;
 
+  /// Convert DgisObjectId to DgisObjectIdMessage
   DgisObjectIdMessage toMessage() {
     return DgisObjectIdMessage(objectId: objectId, entranceId: entranceId);
   }
+
+  @override
+  int get hashCode => objectId.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is DgisObjectId && other.objectId == objectId;
+  }
+}
+
+/// Extension for DgisObjectIdMessage
+extension DgisObjectIdMessageExt on DgisObjectIdMessage {
+  /// Convert DgisObjectIdMessage to DgisObjectId
+  DgisObjectId toObjectId() => DgisObjectId(objectId: objectId, entranceId: entranceId);
 }
 
 /// Tap on IO layer

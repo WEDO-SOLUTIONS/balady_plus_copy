@@ -5,11 +5,12 @@ import 'package:mapness/features/saudi_pass/async_iterable/async_iterable_listin
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_view_decoration_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_view_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/set_preferences_placeholder_widget.dart';
 
 class OffersListWidget extends StatefulWidget {
   final AsyncIterable<OfferView> asyncIterableOffers;
-
-  const OffersListWidget(this.asyncIterableOffers, {super.key});
+  final VoidCallback? onResetFilters;
+  const OffersListWidget(this.asyncIterableOffers, {super.key, this.onResetFilters});
 
   @override
   State<OffersListWidget> createState() => _OffersListWidgetState();
@@ -32,45 +33,45 @@ class _OffersListWidgetState extends State<OffersListWidget> {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-        listenable: offers,
-        builder: (context, _) {
-          if (offers.isEmpty) {
-            return const SizedBox.shrink();
-          }
+    listenable: offers,
+    builder: (context, _) {
+      if (offers.isEmpty) {
+        return EmptyOffersWidget(action: widget.onResetFilters ?? () {});
+      }
 
-          return LayoutBuilder(
-            builder: (context, listConstraints) => ListView.separated(
-              key: ObjectKey(widget.asyncIterableOffers),
-              itemCount: offers.length,
-              separatorBuilder: (context, _) => const SizedBox(height: Spacing.$3x),
-              itemBuilder: (_, index) => FutureBuilder(
-                future: offers.hasElement(index),
-                builder: (_, s) => ConstraintsTransformBox(
-                  constraintsTransform: (constraints) {
-                    final noLoadedItems = index == 0 && widget.asyncIterableOffers.length == 0;
-                    return noLoadedItems ? listConstraints : constraints;
-                  },
-                  child: Builder(
-                    builder: (context) {
-                      if (s.hasData) {
-                        if (s.requireData) {
-                          return OfferViewWidget(offers.elementAt(index));
-                        } else {
-                          return Text('index:$index has no Element');
-                        }
-                      }
+      return LayoutBuilder(
+        builder: (context, listConstraints) => ListView.separated(
+          key: ObjectKey(widget.asyncIterableOffers),
+          itemCount: offers.length,
+          separatorBuilder: (context, _) => const SizedBox(height: Spacing.$3x),
+          itemBuilder: (_, index) => FutureBuilder(
+            future: offers.hasElement(index),
+            builder: (_, s) => ConstraintsTransformBox(
+              constraintsTransform: (constraints) {
+                final noLoadedItems = index == 0 && widget.asyncIterableOffers.length == 0;
+                return noLoadedItems ? listConstraints : constraints;
+              },
+              child: Builder(
+                builder: (context) {
+                  if (s.hasData) {
+                    if (s.requireData) {
+                      return OfferViewWidget(offers.elementAt(index));
+                    } else {
+                      return Text('index:$index has no Element');
+                    }
+                  }
 
-                      if (offers.isPageStart(index)) {
-                        return const Center(child: Loading(size: LoaderSize.large));
-                      } else {
-                        return const OfferViewDecorationWidget();
-                      }
-                    },
-                  ),
-                ),
+                  if (offers.isPageStart(index)) {
+                    return const Center(child: Loading(size: LoaderSize.large));
+                  } else {
+                    return const OfferViewDecorationWidget();
+                  }
+                },
               ),
             ),
-          );
-        },
+          ),
+        ),
       );
+    },
+  );
 }

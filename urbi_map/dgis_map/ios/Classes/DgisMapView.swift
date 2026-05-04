@@ -49,6 +49,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
     private var mapFactory: IMapFactory?
 
+
     init(
         dgisSdk sdk: Container,
         frame: CGRect,
@@ -67,7 +68,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             messenger: registrar.messenger(),
             completion: onEventChannelReady
         )
-        
+
+
         let messenger = ProxyBinaryMessenger(with: registrar.messenger(), channelSuffix: "map_\(viewId)")
 
         MapApiSetup.setUp(binaryMessenger: messenger, api: self)
@@ -126,11 +128,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map,
             sdk: self.sdk,
             eventChannel: eventChannel,
-            navigationHandler: navigationHandler!
+            navigationHandler: navigationHandler!,
+            indoorControlHandler: indoorControlHandler
         )
         
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
+            searchHistory: SearchHistory(context: try! sdk.context),
             map: map,
             sdkContext: self.sdk
         )
@@ -211,6 +215,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func moveCameraToActiveRoute(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
       self.routeHandler?.moveCameraToActiveRouteIndex(UInt64(index))
          completion(Result.success(()))
+    }
+    
+    func setActiveRouteIndex(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.routeHandler?.setActiveRouteIndex(UInt64(index))
+        completion(Result.success(()))
     }
     
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
@@ -393,6 +402,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func calcPositionForPolylines(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
+    }
+
+    func calcPositionForGeoPoints(points: [GeoPointMessage], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
+        self.objectTapHandler?.calcPosition(points: points, options: options, completion: completion)
     }
 
     func animateToRepresentativeArea(area: GeometryMessage, options: CalcPositionOptionsMessage, duration: Double, animationType: CameraAnimationTypeMessage,  completion: @escaping (Result<Void, any Error>) -> Void) {
@@ -934,7 +947,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         mapView.addObjectTappedCallback(callback: MapObjectTappedCallback(
             callback: objectTapHandler.objectTapListener(_:)))
-        
+
+
+        mapView.addObjectLongPressCallback(callback: MapObjectTappedCallback(
+            callback: objectTapHandler.objectLongTapListener(_:)))
+
+
         self.objectTapHandler = objectTapHandler
     }
     
@@ -1129,7 +1147,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
 
-    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
+    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage,
+                   intermediatePoints: [RouteSearchPointMessage]?, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
         let routeSearchOptions = navType.toRouteSearchOptions()
         
         let startSearchPoint = startPoint.toRouteSearchPoint()
@@ -1139,6 +1158,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             startPoint: startSearchPoint,
             finishPoint: finishSearchPoint,
             routeSearchOptions: routeSearchOptions,
+            intermediatePoints: intermediatePoints?.map { $0.toRouteSearchPoint() },
             completion: completion
         )
     }
@@ -1224,17 +1244,52 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
 
     func muteOtherSounds( mute: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
+        // This method is called from Flutter without a duration parameter (Pigeon: `muteOtherSounds(bool)`).
+        // Instead of "mute", we implement a short "duck then restore" behavior:
+        // - mute=true  -> set policy to .duck, then auto-restore to .ignore after a few seconds
+        // - mute=false -> restore immediately and cancel any pending restore
+        //
+        // This reduces other audio volume briefly for guidance, then returns to normal.
+        struct DuckingState {
+            static var restoreWorkItem: DispatchWorkItem?
+            static let duckDurationSeconds: TimeInterval = 3.0
+        }
+
         do {
+            // Cancel any previously scheduled restore to avoid races.
+            DuckingState.restoreWorkItem?.cancel()
+            DuckingState.restoreWorkItem = nil
+
             if mute {
                 try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.duck
-               } else {
-                   try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
-               }
-                completion(Result.success(()))
-           } catch {
-               completion(
-                Result.failure(FlutterError(code: "ERROR_SETTING_AUDIO_POLICY", message: "Failed to set audio focus policy", details: error.localizedDescription)))
-           }
+
+                let workItem = DispatchWorkItem { [weak self] in
+                    guard let self else { return }
+                    do {
+                        try self.sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
+                    } catch {
+                        // Best-effort restore; nothing to return to Flutter at this point.
+                        NSLog("DgisMapView: Failed to restore audio focus policy: %@", error.localizedDescription)
+                    }
+                }
+                DuckingState.restoreWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + DuckingState.duckDurationSeconds, execute: workItem)
+            } else {
+                try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
+            }
+
+            completion(Result.success(()))
+        } catch {
+            completion(
+                Result.failure(
+                    FlutterError(
+                        code: "ERROR_SETTING_AUDIO_POLICY",
+                        message: "Failed to set audio focus policy",
+                        details: error.localizedDescription
+                    )
+                )
+            )
+        }
     }
     
     func voicePlayWelcome(id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
@@ -1252,6 +1307,107 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             mapFactory?.energyConsumption.maxFps = nil
         }
         
+        completion(Result.success(()))
+    }
+    
+    func getSearchHistoryItems(completion: @escaping (Result<[SearchHistoryDirectoryObjectMessage], any Error>) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        Task {
+               do {
+                   let result = try await searchHandler.getSearchHistoryItems()
+                   completion(Result.success(result))
+               } catch {
+                   completion(
+                       Result.failure(FlutterError(code: "SEARCH_HISTORY_ERROR", message: "Failed to get search history items", details: error.localizedDescription)))
+               }
+           }
+    }
+
+    
+    func addSearchHistoryItem(item: SearchHistoryDirectoryObjectMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let objectId = item.id?.objectId else {
+            searchHandler?.addQuerySearchHistoryItem(queryText: item.title)
+            return completion(Result.success(()))
+        }
+
+        let entranceId = item.id?.entranceId ?? 0
+        guard let searchHandler = self.searchHandler else {
+            return completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+        }
+        
+        Task {
+               do {
+                   let directoryObject = try await searchHandler.searchByDirectoryObjectIdSync(objectId: DgisObjectId(objectId: UInt64(objectId), entranceId: UInt64(entranceId)))
+                   if (directoryObject == nil) {
+                       completion(
+                           Result.failure(
+                            FlutterError(
+                                code: "SEARCH_HISTORY_ERROR",
+                                message: "Failed to get directory object of id",
+                                details: "objectId: \(objectId), entranceId: \(entranceId)"
+                            )
+                           )
+                       )
+                       return
+                   }
+                   searchHandler.addDirectoryObjectSearchHistoryItem(directoryObject: directoryObject!)
+                   completion(Result.success(()))
+               } catch {
+                   completion(
+                       Result.failure(FlutterError(code: "SEARCH_HISTORY_ERROR", message: "Failed to add search history items", details: error.localizedDescription)))
+               }
+           }
+    }
+    
+    func removeSearchHistoryItem(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        Task {
+               do {
+                   let items = try await searchHandler.getRawSearchHistoryItems()
+                   searchHandler.removeSearchHistoryItem(item: items[Int(index)])
+                   completion(Result.success(()))
+               } catch {
+                   completion(
+                       Result.failure(FlutterError(code: "SEARCH_HISTORY_ERROR", message: "Failed to get search history items", details: error.localizedDescription)))
+               }
+           }
+    }
+    
+    func clearSearchHistoryItems(completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Search Handler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        searchHandler.clearSearchHistory()
         completion(Result.success(()))
     }
 }

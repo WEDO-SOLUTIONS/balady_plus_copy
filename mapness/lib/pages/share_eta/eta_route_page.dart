@@ -16,7 +16,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/widgets/landing/zoom_control.dart';
 
 @RoutePage()
 class EtaRoutePage extends ConsumerStatefulWidget {
@@ -90,7 +89,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
         if (code == EtaErrorStatusCodes.endConnection &&
             [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
-          context.router.popForced();
+          context.router.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
@@ -99,9 +98,10 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
             return;
           }
           ToastOverlay.of(rootNavigatorKey.currentContext!).show(
-              title: context.l10n.restoringConnection,
-              isDismissible: false,
-              displayDuration: const Duration(seconds: 30));
+            title: context.l10n.restoringConnection,
+            isDismissible: false,
+            displayDuration: const Duration(seconds: 30),
+          );
           _etaExpiredTimer = Timer(const Duration(seconds: 30), () async {
             _etaExpiredTimer?.cancel();
             _etaExpiredTimer = null;
@@ -110,7 +110,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
             ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
             if (context.mounted) {
-              context.router.popForced();
+              context.router.pop();
             }
 
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -136,16 +136,6 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            const Spacer(),
-            const Padding(
-              padding: EdgeInsets.all(Spacing.$4x),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ZoomControl(),
-                ],
-              ),
-            ),
             const Spacer(),
             Align(
               alignment: Alignment.bottomCenter,

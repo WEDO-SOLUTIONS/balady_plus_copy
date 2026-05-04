@@ -32,29 +32,31 @@ class NaviSearchHistory extends ConsumerWidget {
       contentColor: context.colors.backgroundSurface1,
       // TODO: Implement BSS for it
       onTap: (item, index, historyList) async {
-        if (item.objectId != null) {
+        if (item.id?.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
           try {
             await dgisController.searchByObjectId(
               DgisObjectIdMessage(
-                objectId: int.tryParse(item.objectId ?? '') ?? 0,
-                entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+                objectId: item.id?.objectId ?? 0,
+                entranceId: item.id?.entranceId ?? 0,
               ),
             );
 
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.object,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {'objectId': item.objectId});
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.object,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {'objectId': item.id?.objectId},
+            );
 
-            if (item.objectId == null) {
+            if (item.id?.objectId == null) {
               return;
             }
 
             await context.router.replaceOrPush(
               route: PoiCardWidgetRoute(
                 objectId: DgisObjectIdMessage(
-                  objectId: int.parse(item.objectId!),
+                  objectId: item.id!.objectId,
                   entranceId: 0,
                 ),
                 cameraConfig: const PoiCameraConfig(zoom: 18),
@@ -65,12 +67,12 @@ class NaviSearchHistory extends ConsumerWidget {
             final result = await context.router.push(
               ErrorSheetDialogRoute(
                 buttonLabel: context.l10n.tryAgain,
-                onRetry: () => context.router.popForced(true),
-                onClose: (_) => context.router.popForced(true),
-                onBarrierTap: () => context.router.popForced(true),
+                onRetry: () => context.router.pop(true),
+                onClose: (_) => context.router.pop(true),
+                onBarrierTap: () => context.router.pop(true),
               ),
             );
-            await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);
+            await ref.read(searchHistoryProvider(scope.value).notifier).delete(index);
 
             if (result != null && result as bool) {
               await ref.read(searchProvider(scope.value).notifier).fetchSuggest(item.title);
@@ -79,8 +81,9 @@ class NaviSearchHistory extends ConsumerWidget {
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
-        final bssHistoryHandlingType =
-            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
+        final bssHistoryHandlingType = item.id?.objectId != null
+            ? BssHistoryHandlingType.openRecord
+            : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.action,

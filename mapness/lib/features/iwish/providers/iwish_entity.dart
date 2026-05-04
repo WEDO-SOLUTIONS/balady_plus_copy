@@ -5,8 +5,10 @@ import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_entity.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
@@ -24,11 +26,11 @@ class _IwishEntity extends _$IwishEntity {
   }
 
   Future<bool> submitFeedback(IwishFeedbackEntity feedback) async {
-    Metrics.logEvent('IwishFeedbackEntity/submitFeedback', object: runtimeType, extras: {
-      'feedback': feedback.mood.toString(),
-      'tags': feedback.tags.toString(),
-      'comment': feedback.comment,
-    });
+    Metrics.logEvent(
+      'IwishFeedbackEntity/submitFeedback',
+      object: runtimeType,
+      extras: {'feedback': feedback.mood.toString(), 'tags': feedback.tags.toString(), 'comment': feedback.comment},
+    );
     mixpanel?.timeEvent('IwishFeedbackEntity: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
@@ -38,10 +40,7 @@ class _IwishEntity extends _$IwishEntity {
     );
 
     try {
-      final raw = await dio.post(
-        '/iwish/$iwishId/feedback',
-        data: request.writeToBuffer(),
-      );
+      final raw = await dio.post('/iwish/$iwishId/feedback', data: request.writeToBuffer());
       final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>);
       state = AsyncData(response.object.toDomain());
       return true;
@@ -64,15 +63,13 @@ class _IwishEntity extends _$IwishEntity {
     final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
     final point = response.location.point;
     logger.log('${response.toProto3Json()}');
-
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
     await ref.read(selectedMarkerProvider.notifier).showMarker(
           Markers.pinMarker(
-            GeoPointWithElevationMessage(
-              latitude: point.latitude,
-              longitude: point.longitude,
-              elevation: 1,
-            ),
+            GeoPointWithElevationMessage(latitude: point.latitude, longitude: point.longitude, elevation: 1),
             id: iwishPinId,
+            activeCityEvent: ref.read(activeCityEventProvider),
+            isDark: isDark,
           ),
         );
     ref.onDispose(() async {
@@ -84,4 +81,4 @@ class _IwishEntity extends _$IwishEntity {
   }
 }
 
-const iwishEntityProvider = _iwishEntityProvider;
+final iwishEntityProvider = _iwishEntityProvider;

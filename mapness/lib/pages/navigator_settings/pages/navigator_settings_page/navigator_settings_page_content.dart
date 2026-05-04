@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/utils/constants.dart';
 import 'package:balady_uikit/gen/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart' as mappness;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -16,7 +17,8 @@ import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.da
 import 'package:urbi_utils/urbi_utils.dart';
 
 class NavigatorSettingsPageContent extends ConsumerWidget {
-  const NavigatorSettingsPageContent({super.key});
+  const NavigatorSettingsPageContent({required this.showDarkModeSection, super.key});
+  final bool showDarkModeSection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,7 +38,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(RadiusBorder.l),
-                    color: context.colors.backgroundSurface4,
+                    color: context.colors.backgroundSurface1,
                   ),
                   child: Column(
                     children: [
@@ -122,50 +124,47 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                               titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                               subtitle: context.l10n.automaticallyLaunchNavigator,
                               subtitleMaxlines: 2,
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: autorun,
-                              ),
+                              actionWidget: ContentRowActionOptions(enabledToggle: true, toggleInitialValue: autorun),
                             ),
                           );
                         },
-                      )
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-            ContentColumn(
-              headerTitle: context.l10n.mapStyle,
-              content: [
-                ContentRow(
-                  onTap: () => context.router.push(const DarkMapRoute()),
-                  options: ContentRowOptions(
-                    wrapperColor: context.colors.backgroundSurface4,
-                    wrapperEnabled: true,
-                    title: context.l10n.darkMap,
-                    titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                    actionWidget: ContentRowActionOptions(
-                      actionIcon: AppIcons(
-                        iconData: SystemIcons.arrowCornerRightLarge,
-                        color: context.colors.foregroundSoft,
+            if (showDarkModeSection)
+              ContentColumn(
+                headerTitle: context.l10n.mapStyle,
+                content: [
+                  ContentRow(
+                    onTap: () => context.router.push(const DarkMapRoute()),
+                    options: ContentRowOptions(
+                      wrapperColor: context.colors.backgroundSurface1,
+                      wrapperEnabled: true,
+                      title: context.l10n.darkMap,
+                      titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                      actionWidget: ContentRowActionOptions(
+                        actionIcon: AppIcons(
+                          iconData: SystemIcons.arrowCornerRightLarge,
+                          color: context.colors.foregroundSoft,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ContentColumn(
               headerTitle: context.l10n.soundAndAlerts,
               content: [
                 ContentRow(
                   onTap: () => context.router.push(const SoundSettingsRoute()),
                   options: ContentRowOptions(
-                    titleStyle: context.textStyles.bodyLargeRegular.copyWith(
-                      color: context.colors.foregroundDefault,
-                    ),
-                    wrapperColor: context.colors.backgroundSurface4,
+                    titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                    wrapperColor: context.colors.backgroundSurface1,
                     wrapperEnabled: true,
+                    leadingIcon: mappness.Assets.icons.svg.icNotification.svg(color: context.colors.accentDefault),
                     title: context.l10n.soundSettings,
                     actionWidget: ContentRowActionOptions(
                       actionIcon: AppIcons(
@@ -180,27 +179,26 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
             ContentColumn(
               headerTitle: context.l10n.roadEvents,
               content: [
-                Consumer(builder: (context, ref, _) {
-                  final navigatorCamerasSettings = ref.watch(navigatorSpeedCamerasSettingsProvider);
+                Consumer(
+                  builder: (context, ref, _) {
+                    final navigatorCamerasSettings = ref.watch(navigatorSpeedCamerasSettingsProvider);
 
-                  return ContentRow(
-                    options: ContentRowOptions(
-                      wrapperColor: context.colors.backgroundSurface4,
-                      wrapperEnabled: true,
-                      leadingIcon: Assets.icons.maneuver.roadEventCam.svg(
-                        package: packageName,
-                        fit: BoxFit.fill,
+                    return ContentRow(
+                      options: ContentRowOptions(
+                        wrapperColor: context.colors.backgroundSurface1,
+                        wrapperEnabled: true,
+                        leadingIcon: Assets.icons.maneuver.roadEventCam.svg(package: packageName, fit: BoxFit.fill),
+                        title: context.l10n.speedCameras,
+                        titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                        actionWidget: ContentRowActionOptions(
+                          enabledToggle: true,
+                          toggleInitialValue: navigatorCamerasSettings,
+                        ),
                       ),
-                      title: context.l10n.speedCameras,
-                      titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                      actionWidget: ContentRowActionOptions(
-                        enabledToggle: true,
-                        toggleInitialValue: navigatorCamerasSettings,
-                      ),
-                    ),
-                    onToggle: (val) => navigatorCamerasSettingsNotifier.toggle(),
-                  );
-                }),
+                      onToggle: (val) => navigatorCamerasSettingsNotifier.toggle(),
+                    );
+                  },
+                ),
               ],
             ),
           ].insertBetween(Spacing.$4x.heightBox).toList(),

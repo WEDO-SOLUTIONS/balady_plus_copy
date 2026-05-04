@@ -7,11 +7,9 @@ import 'package:mapness/pages/feedback/components/feedback_field_widget.dart';
 
 class FeedbackFormWidget extends ConsumerWidget {
   final List<FeedbackBaseEntity> fields;
+  final int? objectId;
 
-  const FeedbackFormWidget({
-    required this.fields,
-    super.key,
-  });
+  const FeedbackFormWidget({required this.fields, this.objectId, super.key});
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -20,12 +18,10 @@ class FeedbackFormWidget extends ConsumerWidget {
       padding: EdgeInsets.zero,
       primary: true,
       shrinkWrap: true,
-      separatorBuilder: (context, index) => Spacing.$3x.heightBox,
+      separatorBuilder: (context, index) => Spacing.$4x.heightBox,
       itemCount: fields.length,
-      itemBuilder: (context, index) => FeedbackFieldWidget(
-        field: fields[index],
-        key: ValueKey(fields[index].id),
-      ),
+      itemBuilder: (context, index) =>
+          FeedbackFieldWidget(field: fields[index], objectId: objectId, key: ValueKey(fields[index].id)),
     );
   }
 }

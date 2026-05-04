@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -32,14 +33,14 @@ class ProfileImage extends _$ProfileImage {
 
   @override
   Future<UserProfileData> build() async {
-    status = await Permission.photos.status;
-    if (!_isUpdated) {
-      await _updateImageFromBackend();
+    Permission.photos.status.then((val) {
+      status = val;
+    });
+    if (CommonProperties.isLoggedIn && !_isUpdated) {
+      _updateImageFromBackend().ignore();
     }
 
-    return UserProfileData(
-      imageBase64: _imageBase64OnDevice ?? '',
-    );
+    return UserProfileData(imageBase64: _imageBase64OnDevice ?? '');
   }
 
   Future<void> _updateImageFromBackend() async {
@@ -104,7 +105,10 @@ class ProfileImage extends _$ProfileImage {
       final response = await dio.post(
         '/profile/photo',
         data: compressedBytes,
-        options: Options(sendTimeout: const Duration(seconds: 35), receiveTimeout: const Duration(seconds: 35)),
+        options: Options(
+          sendTimeout: const Duration(seconds: 35),
+          receiveTimeout: const Duration(seconds: 35),
+        ),
       );
 
       final result = proto.Profile_Photo.fromBuffer(response.data as List<int>);
@@ -123,7 +127,9 @@ class ProfileImage extends _$ProfileImage {
     try {
       if (imgUrl.isEmpty) {
         final profileResponse = await dio.get('/profile');
-        final profileData = proto.ProfileResponse.fromBuffer(profileResponse.data as List<int>);
+        final profileData = proto.ProfileResponse.fromBuffer(
+          profileResponse.data as List<int>,
+        );
         imgUrl = profileData.profile.photo.image.url;
       }
 

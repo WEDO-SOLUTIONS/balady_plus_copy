@@ -11,13 +11,12 @@ class VerticalRadioGroup<T> extends StatelessWidget {
   final Function(T?) onChanged;
 
   const VerticalRadioGroup(
-      {Key? key,
+      {super.key,
       this.currentItem,
       this.isMandatory,
       required this.groupName,
       required this.items,
-      required this.onChanged})
-      : super(key: key);
+      required this.onChanged});
 
   @override
   build(BuildContext context) {

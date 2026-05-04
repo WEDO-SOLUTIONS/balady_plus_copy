@@ -8,8 +8,8 @@ class CircularContainerForIcons extends StatelessWidget {
     required this.height,
     this.color,
     this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final String iconPath;
   final double width;
   final double height;

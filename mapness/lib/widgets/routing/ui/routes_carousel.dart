@@ -43,19 +43,24 @@ class RoutesCarousel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
-      final startPoint = points.firstOrNull?.value;
-      final finishPoint = points.lastOrNull?.value;
+      final startPoint = points.first?.value;
+      final finishPoint = points.last?.value;
+      final intermediatePoints = points.getIntermediatePointsWithLabels();
 
       final publicTransportRoutes = ref.watch(
         publicTransportRoutesProvider(
           startPoint: startPoint,
           finishPoint: finishPoint,
           navType: navType,
+          intermediatePoints: intermediatePoints,
         ),
       );
 
       final publicTransport = publicTransportVisibility.asData?.value;
+      final hasVisibilityError = publicTransportVisibility.hasError;
+      final visibilityError = publicTransportVisibility.error;
 
+      // Check for specific visibility errors first
       if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
         return PathCardFailure.nearestMetroTooFar(
           refresh: () {
@@ -69,24 +74,24 @@ class RoutesCarousel extends ConsumerWidget {
       return publicTransportRoutes.when(
         loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         error: (err, st) {
-          if (err is NoInternetException ||
-              (publicTransportVisibility.hasError && publicTransportVisibility.error is NoInternetException)) {
-            return PathCardFailure.noInternet(
-              refresh: refresh,
-              text: context.l10n.noInternetConnection,
+          // Check for NoInternetException from either provider
+          if (err is NoInternetException || (hasVisibilityError && visibilityError is NoInternetException)) {
+            return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
+          }
+
+          // If visibility check returned findRouteError reason, show that error
+          // This ensures the error message doesn't change after timeout
+          if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
+            return PathCardFailure.nearestMetroTooFar(
+              refresh: () {
+                ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+              },
+              text: context.l10n.nearestMetroTooFar,
+              labelButton: context.l10n.goByCar,
             );
           }
 
-          if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
-            return PathCardFailure.nearestMetroTooFar(
-                  refresh: () {
-                    ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
-                  },
-                  text: context.l10n.nearestMetroTooFar,
-                  labelButton: context.l10n.goByCar,
-                );
-              }
-
+          // Default to route not found for any other error
           return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
         },
         data: (ptRoutes) {
@@ -229,33 +234,24 @@ class RoutesCarousel extends ConsumerWidget {
   /// Also we use it for single element in the list to unify the padding for all cases
   EdgeInsetsDirectional padding({required int index, required int length}) {
     if (length == 1) {
-      return const EdgeInsetsDirectional.only(
-        start: Spacing.$4x,
-        end: Spacing.$4x,
-      );
+      return const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$4x);
     }
     EdgeInsetsDirectional result;
     if (index == 0) {
-      result = const EdgeInsetsDirectional.only(
-        start: Spacing.$4x,
-        end: Spacing.$2x,
-      );
+      result = const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$1x);
     } else if (index == length - 1) {
-      result = const EdgeInsetsDirectional.only(
-        start: Spacing.$2x,
-        end: Spacing.$4x,
-      );
+      result = const EdgeInsetsDirectional.only(start: Spacing.$1x, end: Spacing.$4x);
     } else {
-      result = const EdgeInsetsDirectional.only(start: Spacing.$2x);
+      result = const EdgeInsetsDirectional.only(start: Spacing.$1x, end: Spacing.$1x);
     }
     return result;
   }
 
   RouteInfo getRouteInfo(BriefPublicTransportModel route) => RouteInfo(
-        route.publicTransportTransferRouteLongEntry.fold(0, (acc, e) => acc + e.length.millimeters) / 1000,
-        route.duration,
-        0,
-        0,
-        [],
-      );
+    route.publicTransportTransferRouteLongEntry.fold(0, (acc, e) => acc + e.length.millimeters) / 1000,
+    route.duration,
+    0,
+    0,
+    [],
+  );
 }

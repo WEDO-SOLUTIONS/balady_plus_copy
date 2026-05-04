@@ -20,7 +20,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
-import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:sheetify/sheetify.dart';
@@ -129,42 +128,41 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final systemDirectionality = Directionality.of(context);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
-    return SafeArea(
-      bottom: false,
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Stack(
-          children: [
-            Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerDown: (event) {
-                timer?.cancel();
-                timer = null;
-                setState(() {
-                  if (!isControlsActive) {
-                    wasSetActive = true;
-                    isControlsActive = true;
-                  }
-                });
-              },
-              onPointerUp: (event) {
-                startControlsDisapearTimer();
-              },
-            ),
-            GestureDetector(
-              behavior: isControlsActive ? HitTestBehavior.deferToChild : HitTestBehavior.translucent,
-              onTap: () {
-                setState(() {
-                  if (wasSetActive) {
-                    wasSetActive = false;
-                    return;
-                  }
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Stack(
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (event) {
+              timer?.cancel();
+              timer = null;
+              setState(() {
+                if (!isControlsActive) {
+                  wasSetActive = true;
+                  isControlsActive = true;
+                }
+              });
+            },
+            onPointerUp: (event) {
+              startControlsDisapearTimer();
+            },
+          ),
+          GestureDetector(
+            behavior: isControlsActive ? HitTestBehavior.deferToChild : HitTestBehavior.translucent,
+            onTap: () {
+              setState(() {
+                if (wasSetActive) {
+                  wasSetActive = false;
+                  return;
+                }
 
-                  isControlsActive = !isControlsActive;
-                });
-              },
-            ),
-            Column(
+                isControlsActive = !isControlsActive;
+              });
+            },
+          ),
+          SafeArea(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: uikit.Spacing.$1_5x, width: double.maxFinite),
@@ -188,44 +186,43 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                           startControlsDisapearTimer();
                         },
                         child: Padding(
-                            padding: padding,
-                            child: isPortrait
-                                ? const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      TrafficParkingControl(),
-                                      SizedBox(height: uikit.Spacing.$2x),
-                                      DimensionControl(),
-                                      Spacer(),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          IndoorControl(),
-                                          ZoomControl(),
-                                        ],
-                                      ),
-                                      Spacer(),
-                                      CompassControl(),
-                                      SizedBox(height: uikit.Spacing.$2x),
-                                      FollowControl(),
-                                      SizedBox(height: uikit.Spacing.$3x),
-                                    ],
-                                  )
-                                : const Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Spacer(),
-                                          Padding(
-                                            padding: padding,
-                                            child: IndoorControl(),
-                                          ),
-                                          Spacer(flex: 3),
-                                        ],
-                                      ),
-                                    ],
-                                  )),
+                          padding: padding,
+                          child: isPortrait
+                              ? const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    TrafficParkingControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    DimensionControl(),
+                                    Spacer(),
+                                    Row(
+                                      children: [
+                                        IndoorControl(),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    CompassControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    FollowControl(),
+                                    SizedBox(height: uikit.Spacing.$3x),
+                                  ],
+                                )
+                              : const Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Spacer(),
+                                        Padding(
+                                          padding: padding,
+                                          child: IndoorControl(),
+                                        ),
+                                        Spacer(flex: 3),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                        ),
                       ),
                     ),
                   ),
@@ -236,18 +233,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                     alignment: isPortrait ? AlignmentDirectional.center : AlignmentDirectional.bottomStart,
                     child: RoadPanel(
                       isLoading: isLoading,
-                      onSearch: () => context.router.push(NaviSearchRoute()),
+                      onSearch: isPortrait ? () => context.router.push(NaviSearchRoute()) : null,
                       onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                       onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
                     ),
                   ),
                 ),
-                const SizedBox(height: uikit.Spacing.$5x + uikit.Spacing.px),
               ],
             ),
-            const ParkingBottomSheetPage(),
-          ],
-        ),
+          ),
+          const ParkingBottomSheetPage(),
+        ],
       ),
     );
   }

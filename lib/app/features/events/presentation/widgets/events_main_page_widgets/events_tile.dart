@@ -51,20 +51,23 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<EventsBloc, EventsState>(
       builder: (context, state) {
-        if (state.status == BlocStatus.loading)
+        if (state.status == BlocStatus.loading) {
           return CustomShimmerListWidget(
             height: 189,
             itemCount: 10,
           );
-        if (state.status == BlocStatus.success && state.searchItems.isEmpty)
+        }
+        if (state.status == BlocStatus.success && state.searchItems.isEmpty) {
           return EventsNotFoundPage();
+        }
 
-        if (state.status == BlocStatus.retry)
+        if (state.status == BlocStatus.retry) {
           return ReloadWidget(
             onTab: () {
               context.read<EventsBloc>().add(const GetSearchEvent());
             },
           );
+        }
 
         return RefreshIndicator(
           onRefresh: () async {
@@ -111,7 +114,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                                 false)
                             ? DecorationImage(
                                 image: svgProvider.Svg(
-                                  state.searchItems[index].logoImage ?? ""!,
+                                  state.searchItems[index].logoImage ?? "",
                                   source: svgProvider.SvgSource.network,
                                 ),
                                 fit: BoxFit.fill,

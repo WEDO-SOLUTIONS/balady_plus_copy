@@ -11,6 +11,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
@@ -140,7 +141,8 @@ class EtaUtils {
             ref.read(pathNavMessageProvider.notifier).stopNavigation();
             await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
             unawaited(ref.read(dgisControllerProvider).value?.stopNavigation());
-            unawaited(ref.read(dgisControllerProvider).valueOrNull?.hideRoutes());
+            ref.read(currentRouteProvider.notifier).clearRoute();
+            unawaited(ref.read(dgisControllerProvider).value?.hideRoutes());
           }
 
           await appRouter.navigate(const LandingRoute());

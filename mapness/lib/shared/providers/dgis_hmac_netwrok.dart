@@ -16,7 +16,7 @@ import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 part 'dgis_hmac_netwrok.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DgisHmacNetwrok extends _$DgisHmacNetwrok {
   @override
   Future<Dio> build() async {

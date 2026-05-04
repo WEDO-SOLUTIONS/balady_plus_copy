@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -20,6 +21,8 @@ import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
+const _buttonColorScheme = ButtonColorScheme.accentSecondary;
+
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
 
@@ -32,13 +35,11 @@ class SearchItemQuickActions extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final objectId = directoryObject.id?.objectId;
 
-    ref.watch(favouriteCacheProvider).valueOrNull;
+    ref.watch(favouriteCacheProvider).value;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
-    final favouriteItem =
-        objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    final iconData =
-        isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
+    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
+    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
@@ -66,15 +67,16 @@ class SearchItemQuickActions extends HookConsumerWidget {
         .nonNulls
         .toList()
         .firstOrNull;
+    final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+    final colorScheme = isFoundingDay ? ButtonColorScheme.accent : ButtonColorScheme.accentSecondary;
 
     final actions = [
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
-        colorScheme: ButtonColorScheme.accent,
+        colorScheme: colorScheme,
         label: context.l10n.poiCardDirections,
-        innerPadding: const EdgeInsets.symmetric(
-            vertical: Spacing.$2x, horizontal: Spacing.$3x),
+        innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
           BssService.instance.trackRouteTap(directoryObject);
           openRoutingRoutes(
@@ -95,7 +97,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: iconData,
         buttonType: ButtonType.secondary,
-        colorScheme: ButtonColorScheme.accent,
+        colorScheme: colorScheme,
         onPressed: () {
           _onFavoriteTap(
             context: context,
@@ -109,9 +111,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         callback: () {
           final markerPosition = directoryObject.markerPosition;
           final latLng = markerPosition != null
-              ? LatLng(
-                  latitude: markerPosition.latitude,
-                  longitude: markerPosition.longitude)
+              ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)
               : null;
 
           poiActions.share(
@@ -122,7 +122,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
           icon: SystemIcons.share,
-          colorScheme: ButtonColorScheme.accent,
+          colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
         ),
@@ -130,7 +130,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (phoneNumber != null)
         ItemActionBar(
           icon: GeneralIcons.phoneLTR,
-          colorScheme: ButtonColorScheme.accent,
+          colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: () {
             BssService.instance.trackCallTap(directoryObject, phoneNumber);
@@ -140,21 +140,20 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (website != null)
         ItemActionBar(
           icon: GeneralIcons.web,
-          colorScheme: ButtonColorScheme.accent,
+          colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: () {
-            BssService.instance
-                .trackLinkTap(directoryObject, BssContactType.website, website);
+            BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
             poiActions.launch(website);
           },
         ),
       if (website == null && socialMedia != null)
         ItemActionBar(
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
+          colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () {
-            BssService.instance.trackLinkTap(
-                directoryObject, socialMedia.type.toBss(), socialMedia.link);
+            BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
             poiActions.launch(socialMedia.link);
           },
         ),
@@ -163,8 +162,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.$3x),
       child: ConstrainedBox(
-        constraints:
-            const BoxConstraints(maxHeight: Spacing.$10x + Spacing.$3x),
+        constraints: const BoxConstraints(maxHeight: Spacing.$10x + Spacing.$3x),
         child: Padding(
           padding: const EdgeInsets.only(top: Spacing.$3x),
           child: ListView.separated(
@@ -185,16 +183,14 @@ class SearchItemQuickActions extends HookConsumerWidget {
     required DirectoryObjectMessage data,
     required FavouriteItem? favouriteItem,
   }) async {
-    await ref.read(authMethodsProvider.notifier).authOrOpen(
-      context,
-      callback: () {
-        BssService.instance.trackFavoriteTap(data);
-        toggleFavoriteDirectoryObject(
-            context: context,
-            ref: ref,
-            data: data,
-            favouriteItem: favouriteItem);
-      },
-    );
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authOrOpen(
+          context,
+          callback: () {
+            BssService.instance.trackFavoriteTap(data);
+            toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+          },
+        );
   }
 }

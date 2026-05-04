@@ -2,14 +2,17 @@
 
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:dgis_map/library.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
 import 'package:mapness/entities/feedback/dto/feedback_schedule_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
+import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/widgets/feedback/schedule/drum_picker_widget.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_schedule_interval_widget.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_select_days_sheet.dart';
@@ -20,16 +23,18 @@ typedef _WorkingHours = FeedbackScheduleWorkingHoursEntity;
 typedef _FieldPayload = IList<_WorkingHours>;
 typedef _FieldState = FormFieldState<_FieldPayload>;
 
-class FeedbackScheduleWidget extends StatelessWidget {
+class FeedbackScheduleWidget extends ConsumerWidget {
   final FeedbackScheduleEntity field;
+  final int? objectId;
 
   const FeedbackScheduleWidget({
     required this.field,
+    this.objectId,
     Key? key,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FormBuilderField<_FieldPayload>(
         name: field.id,
         valueTransformer: (value) {
@@ -37,9 +42,14 @@ class FeedbackScheduleWidget extends StatelessWidget {
             return null;
           }
 
-          final days = FeedbackSchedulePayloadDto.fromDomain(value);
-
-          return days.isNotEmpty() ? days.toJson() : null;
+          final sourceWorkingHours = objectId != null
+              ? ref
+                  .read(directoryObjectFromDgisIdProvider(DgisObjectId(objectId: objectId!, entranceId: 0)))
+                  .value
+                  ?.openingHours
+              : null;
+          final days = FeedbackSchedulePayloadDto.fromDomain(value, sourceWorkingHours);
+          return days.toJson();
         },
         validator: (value) {
           /// not required => may be empty
@@ -50,12 +60,6 @@ class FeedbackScheduleWidget extends StatelessWidget {
             // no message is displayed
             return 'should be not empty';
           }
-          final selectedDays = value.expand((e) => e.days).toISet();
-
-          if (ISet(WeekDay.values) != selectedDays && field.isRequired) {
-            return 'not all days';
-          }
-
           return null;
         },
         initialValue: IList(const [

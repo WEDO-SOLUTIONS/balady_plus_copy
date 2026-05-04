@@ -9,13 +9,10 @@ class OfferViewDecorationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.colorsV3.backgroundSurface1,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$3x).copyWith(left: Spacing.$4x),
-          child: child,
-        ),
-      );
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface1,
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    ),
+    child: Padding(padding: const EdgeInsets.all(Spacing.$3x), child: child),
+  );
 }

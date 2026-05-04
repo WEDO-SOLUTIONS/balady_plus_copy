@@ -508,9 +508,11 @@ extension EntranceGeometry {
                 $0.toMessage()
             },
             entrancePolylines: self.entrancePolylines.map { polyline in
-                polyline.map {
-                    $0.toMessage()
-                }
+                PolylineGeometryMessage(
+                    points: polyline.map {
+                        $0.toMessage()
+                    }
+                )
             }
         )
     }
@@ -674,5 +676,28 @@ extension GroupItem {
 extension OrgInfo {
     func toMessage() -> OrgInfoMessage {
         OrgInfoMessage(branchCount: Int64(self.branchCount), id: Int64(self.id.value), name: self.name)
+    }
+}
+
+
+extension SearchHistoryItem {
+    func toMessage() -> SearchHistoryDirectoryObjectMessage {
+        return switch self {
+        case .directoryObject(let directoryObject):
+            SearchHistoryDirectoryObjectMessage(
+                      title: directoryObject.title,
+                      address: directoryObject.addressString,
+                      id: directoryObject.id.map {
+                          DgisObjectIdMessage(
+                            objectId: Int64($0.objectId),
+                            entranceId: Int64(directoryObject.id?.entranceId ?? 0)
+                          )
+                      }
+                  )
+        case .searchQuery(let searchQuery):
+            SearchHistoryDirectoryObjectMessage(title: searchQuery.title, address: searchQuery.subtitle)
+        @unknown default:
+            fatalError("unknown SearchHistoryItem")
+        }
     }
 }

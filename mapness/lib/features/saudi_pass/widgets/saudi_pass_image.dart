@@ -7,31 +7,31 @@ import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_rive
 
 class SaudiPassImage extends ConsumerWidget {
   final String imageId;
-
-  final BoxFit imageFit;
+  final Widget? errorWidget;
+  final BoxFit? imageFit;
 
   const SaudiPassImage({
     required this.imageId,
     this.imageFit = BoxFit.cover,
+    this.errorWidget,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final repository = ref.watch(saudiPassRepositoryProvider).valueOrNull;
+    final repository = ref.watch(saudiPassRepositoryProvider).value;
     if (repository == null) {
       return const SizedBox.shrink();
     }
 
     final imageUri = repository.getPromotionsImagesUri(imageId: imageId);
     return GestureDetector(
-      onTap: () => context.router.push(
-          PhotoViewerRoute(photoPaths: [imageUri.url], currentPhotoIndex: 0)),
+      onTap: () => context.router.push(PhotoViewerRoute(photoPaths: [imageUri.url], currentPhotoIndex: 0)),
       child: CachedNetworkImage(
         imageUrl: imageUri.url,
         httpHeaders: imageUri.headers,
         fit: BoxFit.cover,
-        errorWidget: (context, _, __) => const SizedBox.shrink(),
+        errorWidget: (context, _, __) => errorWidget ?? const SizedBox.shrink(),
       ),
     );
   }

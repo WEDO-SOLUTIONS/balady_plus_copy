@@ -5,11 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'directory_object_from_dgis_id.g.dart';
 
 @riverpod
-Future<DirectoryObjectMessage?> directoryObjectFromDgisId(
-  DirectoryObjectFromDgisIdRef ref,
-  DgisObjectIdMessage objectId,
-) async {
+Future<DirectoryObjectMessage?> directoryObjectFromDgisId(Ref ref, DgisObjectId objectId) async {
   final dgisController = ref.watch(dgisControllerProvider);
-  final result = await dgisController.value?.searchByObjectId(objectId);
+  final result = await dgisController.value?.searchByObjectId(objectId.toMessage());
   return result;
 }

@@ -7,13 +7,7 @@ class _ToastWidget extends ConsumerWidget {
   final ToastIcon? icon;
   final bool isFlipped;
 
-  const _ToastWidget({
-    required this.title,
-    required this.actions,
-    this.titleStyle,
-    this.isFlipped = false,
-    this.icon,
-  });
+  const _ToastWidget({required this.title, required this.actions, this.titleStyle, this.isFlipped = false, this.icon});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,14 +28,18 @@ class _ToastWidget extends ConsumerWidget {
                       Flexible(
                         child: Text(
                           _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
-                          style: titleStyle ?? context.textStyles.bodyLargeRegular,
+                          style:
+                              titleStyle ??
+                              context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                         ),
                       ),
                       const SizedBox(width: Spacing.$2x),
                       switch (icon) {
-                        ToastIconAsset() => SvgPicture.asset((icon as ToastIconAsset).asset),
-                        ToastIconData() => Icon((icon as ToastIconData).data,
-                            color: (icon as ToastIconData).color ?? context.colors.foregroundDefault),
+                        ToastIconAsset() => SvgPicture.asset((icon! as ToastIconAsset).asset),
+                        ToastIconData() => Icon(
+                          (icon! as ToastIconData).data,
+                          color: (icon! as ToastIconData).color ?? context.colors.foregroundDefault,
+                        ),
                         null => const SizedBox.shrink(),
                       },
                     ],
@@ -88,7 +86,7 @@ class _ToastWidget extends ConsumerWidget {
           bottom: actions.isNotEmpty ? 0.0 : Spacing.$3x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
-          color: context.colors.backgroundSurface1,
+          color: context.colors.foregroundSurfacePush,
           borderRadius: BorderRadius.circular(RadiusBorder.l),
           boxShadow: Shadows.m,
         ),
@@ -100,12 +98,8 @@ class _ToastWidget extends ConsumerWidget {
     );
   }
 
-  String _getTitle({
-    required AppLocalizations l10n,
-    required String title,
-  }) =>
-      switch (title) {
-        'beta_notification' => l10n.firstToTryNavigation,
-        _ => title,
-      };
+  String _getTitle({required AppLocalizations l10n, required String title}) => switch (title) {
+    'beta_notification' => l10n.firstToTryNavigation,
+    _ => title,
+  };
 }

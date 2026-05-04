@@ -4,7 +4,7 @@ part 'offer_location.freezed.dart';
 part 'offer_location.g.dart';
 
 @freezed
-class OfferLocation with _$OfferLocation {
+abstract class OfferLocation with _$OfferLocation {
   factory OfferLocation({
     required final String latitude,
     required final String longitude,

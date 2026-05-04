@@ -12,12 +12,12 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
   final VoidCallback onPressedScendButton;
 
   const SubmitApplicationSuccessfullyCancel({
-    Key? key,
+    super.key,
     this.textFirstButton,
     this.onPressedFirstButton,
     required this.textScendButton,
     required this.onPressedScendButton,
-  }) : super(key: key);
+  });
 
 //   @override
 //   State<SubmitApplicationSuccessfullyCancel> createState() =>

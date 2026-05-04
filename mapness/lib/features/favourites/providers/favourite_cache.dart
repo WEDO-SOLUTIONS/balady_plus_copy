@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favorite_cache_item_mapper.dart';
@@ -45,6 +46,42 @@ class _FavouriteCache extends _$FavouriteCache {
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
+  List<FavouriteItem?> _getAllItems(FavouritesState favouriteState) => [
+    ...favouriteState.items,
+    favouriteState.home,
+    favouriteState.work,
+  ];
+
+  FavouriteItemMarkerType _getItemType(String itemId, String? workId, String? homeId) {
+    if (itemId == workId) {
+      return FavouriteItemMarkerType.work;
+    } else if (itemId == homeId) {
+      return FavouriteItemMarkerType.home;
+    } else {
+      return FavouriteItemMarkerType.place;
+    }
+  }
+
+  Future<void> _notifyMapAboutFavourites(FavouritesState data) async {
+    try {
+      final controller = await ref
+          .read(dgisControllerProvider.future)
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('DgisController initialization timeout'),
+          );
+      await controller.favouritesUpdateNotification(
+        FavouritesStateMessage(
+          home: data.home?.message,
+          work: data.work?.message,
+          items: data.items.map((item) => item.message).toList(),
+        ),
+      );
+    } on Exception catch (e) {
+      logger.log('Failed to notify map about favourites update: $e', logLevel: MapnessLogLevel.warning);
+    }
+  }
+
   Future<void> deleteAll() async {
     if (!state.hasValue) {
       return;
@@ -62,11 +99,7 @@ class _FavouriteCache extends _$FavouriteCache {
     await _updateState(newState);
 
     try {
-      await _deleteRequest(
-        items: items,
-        workId: oldDataState.work?.id,
-        homeId: oldDataState.home?.id,
-      );
+      await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
     } on Exception catch (_) {
       await _addToDeletionSync(items);
     }
@@ -90,11 +123,7 @@ class _FavouriteCache extends _$FavouriteCache {
     await _updateState(newState);
 
     try {
-      await _deleteRequest(
-        items: [item],
-        workId: oldDataState.work?.id,
-        homeId: oldDataState.home?.id,
-      );
+      await _deleteRequest(items: [item], workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
 
       ref.invalidate(favouriteMarkersProvider);
     } on Exception catch (_) {
@@ -112,22 +141,14 @@ class _FavouriteCache extends _$FavouriteCache {
     final work = oldDataState.work;
     final home = oldDataState.home;
 
-    oldItems.removeWhere((element) => items.any((e) => e.id == element.id));
+    final filteredItems = oldItems.where((element) => !items.any((e) => e.id == element.id)).toList();
 
-    final newState = FavouritesState(
-      items: oldItems,
-      work: work,
-      home: home,
-    );
+    final newState = FavouritesState(items: filteredItems, work: work, home: home);
 
     await _updateState(newState);
 
     try {
-      await _deleteRequest(
-        items: items,
-        workId: oldDataState.work?.id,
-        homeId: oldDataState.home?.id,
-      );
+      await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
     } on Exception catch (_) {
       await _addToDeletionSync(items);
     }
@@ -135,11 +156,22 @@ class _FavouriteCache extends _$FavouriteCache {
 
   Future<void> _addToDeletionSync(List<FavouriteItem> items) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final deleteSync = (await favoritesBox.get(_keyDeleteSync, defaultValue: []) as List<dynamic>)
-        .cast<FavoriteCacheItem>()
-      ..addAll(items.map((e) => e.toHive()));
+    final deleteSync =
+        (await favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+            .cast<FavoriteCacheItem>()
+          ..addAll(items.map((e) => e.toHive()));
 
     await favoritesBox.put(_keyDeleteSync, deleteSync);
+  }
+
+  Future<void> _addToAddSync(FavouriteItem item) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final addSync =
+        (await favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+            .cast<FavoriteCacheItem>()
+          ..add(item.toHive());
+
+    await favoritesBox.put(_keyAddSync, addSync);
   }
 
   Future<void> setHome(FavouriteItem item) async {
@@ -184,14 +216,9 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     final favouriteState = state.requireValue;
+    final items = _getAllItems(favouriteState);
 
-    final items = [
-      ...favouriteState.items,
-      favouriteState.home,
-      favouriteState.work,
-    ];
-
-    return items.firstWhereOrNull((element) => element?.entity?.id == objectId.toString());
+    return items.firstWhereOrNull((element) => parseObjectIdFromFavouriteEntityId(element?.entity?.id) == objectId);
   }
 
   bool isFavourite(int objectId) {
@@ -200,45 +227,25 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     final favouriteState = state.requireValue;
+    final items = _getAllItems(favouriteState);
 
-    final items = [
-      ...favouriteState.items,
-      favouriteState.home,
-      favouriteState.work,
-    ];
-
-    return items.any((element) => element?.entity?.id == objectId.toString());
+    return items.any((element) => parseObjectIdFromFavouriteEntityId(element?.entity?.id) == objectId);
   }
 
-  Future<void> _addItem(
-    FavouriteItem item,
-    FavouritesState state,
-  ) async {
+  Future<void> _addItem(FavouriteItem item, FavouritesState state) async {
     await _updateState(state);
 
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     try {
-      await _addItemsRequest(
-        items: [item],
-        workId: state.work?.id,
-        homeId: state.home?.id,
-      );
+      await _addItemsRequest(items: [item], workId: state.work?.id, homeId: state.home?.id);
     } on Exception catch (_) {
-      await favoritesBox.put(_keyAddSync, item.toHive());
+      await _addToAddSync(item);
     }
   }
 
   Future<void> _updateState(FavouritesState data) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     state = AsyncValue.data(data);
-    final controller = await ref.read(dgisControllerProvider.future);
-    await controller.favouritesUpdateNotification(
-      FavouritesStateMessage(
-        home: data.home?.message,
-        work: data.work?.message,
-        items: data.items.map((item) => item.message).toList(),
-      ),
-    );
+    await _notifyMapAboutFavourites(data);
     return favoritesBox.put(_keyCache, data.toHive());
   }
 
@@ -250,33 +257,27 @@ class _FavouriteCache extends _$FavouriteCache {
 
     try {
       final deleteSync =
-          (await favoritesBox.get(_keyDeleteSync, defaultValue: []) as List<dynamic>).cast<FavoriteCacheItem>();
+          (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+              .cast<FavoriteCacheItem>();
 
       if (deleteSync.isNotEmpty) {
-        await _deleteRequest(
-          items: deleteSync.map((e) => e.toDomain()).toList(),
-          workId: workId,
-          homeId: homeId,
-        );
+        await _deleteRequest(items: deleteSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
         await favoritesBox.delete(_keyDeleteSync);
       }
-    } on Exception catch (_) {
+    } on Object catch (_) {
       logger.log('Delete sync failed', logLevel: MapnessLogLevel.critical);
     }
 
     try {
       final addSync =
-          (await favoritesBox.get(_keyAddSync, defaultValue: []) as List<dynamic>).cast<FavoriteCacheItem>();
+          (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+              .cast<FavoriteCacheItem>();
 
       if (addSync.isNotEmpty) {
-        await _addItemsRequest(
-          items: addSync.map((e) => e.toDomain()).toList(),
-          workId: workId,
-          homeId: homeId,
-        );
+        await _addItemsRequest(items: addSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
         await favoritesBox.delete(_keyAddSync);
       }
-    } on Exception catch (_) {
+    } on Object catch (_) {
       logger.log('Add sync failed', logLevel: MapnessLogLevel.critical);
     }
   }
@@ -288,26 +289,15 @@ class _FavouriteCache extends _$FavouriteCache {
   }) async {
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.DeleteFavouriteItemsRequest(
-      items: items.map(
-        (e) {
-          final FavouriteItemMarkerType itemType;
-          if (e.id == workId) {
-            itemType = FavouriteItemMarkerType.work;
-          } else if (e.id == homeId) {
-            itemType = FavouriteItemMarkerType.home;
-          } else {
-            itemType = FavouriteItemMarkerType.place;
-          }
-          return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
-        },
-      ),
+      items: items.map((e) {
+        final itemType = _getItemType(e.id, workId, homeId);
+        return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
+      }),
     );
     Metrics.logEventAdvanced(
       MetricsConstants.favoritesKeys.deleteItems,
       group: _tag,
-      props: {
-        'items': items.map((e) => e.id).toList(),
-      },
+      props: {'items': items.map((e) => e.id).toList()},
     );
     await dio.delete('favourites', data: request.writeToBuffer());
   }
@@ -320,22 +310,13 @@ class _FavouriteCache extends _$FavouriteCache {
     Metrics.logEventAdvanced(
       MetricsConstants.favoritesKeys.addItems,
       group: _tag,
-      props: {
-        'items': items.map((e) => e.id).toList(),
-      },
+      props: {'items': items.map((e) => e.id).toList()},
     );
     mixpanel?.timeEvent('Favorites: addItems');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(
       items: items.map((e) {
-        final FavouriteItemMarkerType itemType;
-        if (e.id == workId) {
-          itemType = FavouriteItemMarkerType.work;
-        } else if (e.id == homeId) {
-          itemType = FavouriteItemMarkerType.home;
-        } else {
-          itemType = FavouriteItemMarkerType.place;
-        }
+        final itemType = _getItemType(e.id, workId, homeId);
         return AddRequestItemMapper.fromDomain(e, itemType);
       }),
     );
@@ -344,8 +325,18 @@ class _FavouriteCache extends _$FavouriteCache {
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
       await _updateState(newState);
     } on DioException catch (e) {
-      logger.log(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString(),
-          logLevel: MapnessLogLevel.critical);
+      if (e.response?.data != null) {
+        logger.log(
+          proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString(),
+          logLevel: MapnessLogLevel.critical,
+        );
+      } else {
+        logger.log(
+          'Add favourites request failed: ${e.message}',
+          logLevel: MapnessLogLevel.critical,
+        );
+      }
+      rethrow;
     }
     await mixpanel?.track('Favorites: addItems');
   }
@@ -369,41 +360,45 @@ class _FavouriteCache extends _$FavouriteCache {
 
   @override
   Future<FavouritesState> build() async {
-    final authState = await ref.watch(authProvider.future);
+    final authState = await ref
+        .watch(authProvider.future)
+        .timeout(
+          const Duration(seconds: 10),
+          onTimeout: () {
+            logger.log('Auth provider timeout in favourites', logLevel: MapnessLogLevel.warning);
+            return null;
+          },
+        );
     if (authState == null) {
       return const FavouritesState(items: []);
     }
-
-    final link = ref.keepAlive();
-    final timer = Timer(_cacheFor, link.close);
-
-    ref.onDispose(() => timer.cancel);
 
     // sync uncommitted changes
     await _sync();
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
 
+    FavouritesState result;
     try {
       if (_isForceRefresh || !isCacheValid) {
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
-        final controller = await ref.read(dgisControllerProvider.future);
-        await controller.favouritesUpdateNotification(
-          FavouritesStateMessage(
-            home: apiData.home?.message,
-            work: apiData.work?.message,
-            items: apiData.items.map((item) => item.message).toList(),
-          ),
-        );
-        return apiData;
+        await _notifyMapAboutFavourites(apiData);
+        result = apiData;
+      } else {
+        result = await getFavouritesStateFromHive();
       }
     } on Exception catch (e) {
       logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
+      result = await getFavouritesStateFromHive();
     }
 
-    return getFavouritesStateFromHive();
+    final link = ref.keepAlive();
+    final timer = Timer(_cacheFor, link.close);
+    ref.onDispose(() => timer.cancel);
+
+    return result;
   }
 
   Future<void> clear() async {

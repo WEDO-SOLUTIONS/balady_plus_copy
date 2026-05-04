@@ -26,7 +26,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useToggleSheetController(
       onClose: (controller) {
-        context.router.popForced();
+        context.router.pop();
       },
       heightModel: ToggleSheetHeightModel.offset(Spacing.$4x),
     );
@@ -43,7 +43,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
         dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
         shouldPop: (_) => false,
         header: AppFeedbackSheetHeader(
-          onBackTap: context.router.popForced,
+          onBackTap: context.router.pop,
           title: context.l10n.appFeedbackInputTitle,
         ),
         content: [
@@ -62,14 +62,14 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
             child: ListenableBuilder(
               listenable: textEditingController,
               builder: (context, child) => AppButton(
-                primaryLabel: context.l10n.appFeedbackAddNote,
+                primaryLabel: context.l10n.save,
                 buttonColorScheme: ButtonColorScheme.accentSecondary,
                 buttonState: textEditingController.text.length > maxCharsAllowed
                     ? ButtonState.disabled
                     : ButtonState.defaultState,
                 size: ButtonSize.large,
                 onTap: () {
-                  context.router.popForced(textEditingController.text);
+                  context.router.pop(textEditingController.text);
                 },
               ),
             ),

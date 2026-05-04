@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.location.Location
 import android.util.DisplayMetrics
 import com.dgis.map.DgisMapInitializer
+import com.dgis.map.SoundUpdateNotifier
 import com.dgis.map.android_auto.settings.NotificationVolume
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
@@ -60,6 +61,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import com.dgis.map.control_handlers.IndoorControlHandler
 
 class CarMapController(
     private val sharedPrefs: SharedPrefs,
@@ -93,6 +95,8 @@ class CarMapController(
 
     private val parkingAttrName = "parkingOn"
 
+    private var indoorControlHandler: IndoorControlHandler? = null
+
     init {
         closeables.add(
             routeEditor.routesInfoChannel.connect(::onRoutesInfoChanged)
@@ -103,6 +107,8 @@ class CarMapController(
         this.map = map
 
         val locale = getLocale()
+
+        indoorControlHandler = IndoorControlHandler(map)
 
         val mapSource = MyLocationMapObjectSource(
             sdkContext, MyLocationControllerSettings(bearingSource = BearingSource.AUTO)
@@ -139,6 +145,14 @@ class CarMapController(
         val navigationState = getCurrentNavigationState()
         if (navigationState == NavigationState.DISABLED) {
             startFreeroam()
+        }
+
+        val location = locationSource.lastLocation
+        if (location != null) {
+            moveCamera(
+                point = GeoPoint(location.latitude, location.longitude),
+                tilt = 45.0
+            )
         }
 
         setStyle()
@@ -296,8 +310,12 @@ class CarMapController(
 
 
     private fun settingsInit() {
-        // Voice instructions
-        navigationHandler.toggleVoiceInstruction(sharedPrefs.voiceInstructionsValue)
+        // Voice instructions: read from Flutter's SharedPreferences (the source of truth).
+        // The SDK's NavigationManager resets to all-enabled on fresh launch,
+        // so we must read from persistent storage instead.
+        val flutterSoundType = sharedPrefs.getFlutterVoiceInstructionType()
+        sharedPrefs.voiceInstructionsValue = flutterSoundType
+        navigationHandler.toggleVoiceInstruction(flutterSoundType)
 
         // Traffic
         val trafficStatus =
@@ -324,6 +342,8 @@ class CarMapController(
         set(value) {
             sharedPrefs.voiceInstructionsValue = value
             navigationHandler.toggleVoiceInstruction(value)
+            // Notify Flutter so the phone-side state stays in sync
+            SoundUpdateNotifier.sendEvent(value)
         }
 
     // -- Traffic
@@ -408,7 +428,10 @@ class CarMapController(
 
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
         val startPoint = locationSource.lastLocation?.let {
-            RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+            RouteSearchPoint(
+                coordinates = GeoPoint(it.latitude, it.longitude),
+                levelId = indoorControlHandler?.currentLevelId
+            )
         } ?: return
 
         val finishPoint = if (objectId != null) RouteSearchPoint(
@@ -552,6 +575,7 @@ class CarMapController(
     override fun close() {
         closeables.forEach(AutoCloseable::close)
         paddingFlowJob?.cancel()
+        indoorControlHandler?.close()
     }
 }
 

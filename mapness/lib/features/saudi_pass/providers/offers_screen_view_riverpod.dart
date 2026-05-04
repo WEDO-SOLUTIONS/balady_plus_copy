@@ -17,6 +17,10 @@ class OffersScreenViewRiverpod extends _$OffersScreenViewRiverpod {
       offersGroup: offersGroup,
     );
 
+    // Initialize tab state based on user preferences
+    // This will check if user has preferences and set the appropriate tab
+    notifier.initializeTabState();
+
     ref.onDispose(notifier.dispose);
 
     return notifier;

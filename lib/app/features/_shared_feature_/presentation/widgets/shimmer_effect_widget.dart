@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart' show Shimmer;
 
@@ -24,14 +25,12 @@ class ShimmerEffectWidget extends StatelessWidget {
       width: width ?? context.screenWidth * 0.9,
       height: height,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[200]!,
-        highlightColor: Colors.grey[100]!,
+        baseColor: context.colors.backgroundSurface1,
+        highlightColor: context.colors.backgroundSurface1,
         child: Card(
           margin: margin,
           elevation: elevation,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
         ),
       ),
     );

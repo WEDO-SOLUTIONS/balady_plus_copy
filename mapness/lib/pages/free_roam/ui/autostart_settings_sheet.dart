@@ -29,10 +29,12 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
 
   static const curve = Curves.easeIn;
 
-  late final ToggleSheetController sheetController = ToggleSheetController(onClose: (_) {
-    ref.read(freeRoamStarterProvider.notifier).setShown();
-    context.router.popForced();
-  });
+  late final ToggleSheetController sheetController = ToggleSheetController(
+    onClose: (_) {
+      ref.read(freeRoamStarterProvider.notifier).setShown();
+      context.router.pop();
+    },
+  );
 
   @override
   void dispose() {
@@ -61,7 +63,10 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.l10n.autostartNavigator, style: textStyles.h4SemiBold),
+                  Text(
+                    context.l10n.autostartNavigator,
+                    style: textStyles.h4SemiBold.copyWith(color: colors.foregroundDefault),
+                  ),
                   Spacing.$1x.heightBox,
                   Text(
                     context.l10n.disableStartingTheNavigator,
@@ -72,9 +77,7 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
               ),
             ),
             Spacing.$3x.widthBox,
-            CustomCloseButton(
-              onClose: _hideLayersPanel,
-            ),
+            CustomCloseButton(onClose: _hideLayersPanel),
           ],
         ),
       ),
@@ -110,8 +113,10 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
     }
 
     ToastOverlay.of(context).show(
-        title: context.l10n.activateAutostartNavigator,
-        icon: ToastIconAsset(Assets.icons.svg.icActionsContainer.keyName));
+      titleStyle: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+      title: context.l10n.activateAutostartNavigator,
+      icon: ToastIconAsset(Assets.icons.svg.icActionsContainer.keyName),
+    );
   }
 
   void continueAutorun() {
@@ -125,20 +130,14 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
 class ContentContainer extends StatelessWidget {
   final Widget child;
 
-  const ContentContainer({
-    required this.child,
-    super.key,
-  });
+  const ContentContainer({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.colors.backgroundSurface1,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: child,
-        ),
-      );
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface1,
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    ),
+    child: Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: child),
+  );
 }

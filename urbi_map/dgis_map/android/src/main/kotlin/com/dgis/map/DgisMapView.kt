@@ -10,15 +10,22 @@ import io.flutter.FlutterInjector
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.FileNotFoundException
 import kotlin.math.round
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
+import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.bearing
+import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.directory.RubricId
+import ru.dgis.sdk.directory.SearchHistory
 import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
@@ -50,13 +57,25 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
-    private val navigationManager = DgisMapInitializer.getNavigationManager()
+    private val navigationManager = DgisMapInitializer.getNavigationManager().also { navManager ->
+        // Apply persisted sound setting immediately, before any navigation starts.
+        // The SDK enables all sound categories by default. We read from Flutter's
+        // SharedPreferences and default to OFF if the key is not set.
+        val flutterPrefs = context.getSharedPreferences("FlutterSharedPreferences", android.content.Context.MODE_PRIVATE)
+        val key = "flutter.voice_instruction_index"
+        val voiceIndex = if (flutterPrefs.contains(key)) flutterPrefs.getLong(key, 0).toInt() else 0
+        if (voiceIndex == 0) {
+            navManager.soundNotificationSettings.enabledSoundCategories =
+                java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
+        }
+    }
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,
                 navigationManager = navigationManager,
                 eventSink = eventSink,
                 map = map!!,
+                appContext = context,
         )
     }
     private val packagesHandler by unsafeLazy {
@@ -77,14 +96,34 @@ class DgisMapView(
 
     private val closables = mutableListOf<AutoCloseable>()
 
+    private var soundUpdateJob: kotlinx.coroutines.Job? = null
+
+    private fun getCurrentLevelId(): LevelId? {
+        return indoorControlHandler?.currentLevelId
+    }
+
     init {
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
+
+        // Listen for sound changes from Android Auto and forward them to Flutter
+        soundUpdateJob = CoroutineScope(Dispatchers.Main).launch {
+            for (toggleType in SoundUpdateNotifier.events) {
+                val isSoundOn = toggleType != SoundToggleType.NONE
+                eventSink.success(
+                    mapOf(
+                        "event" to "soundOnEvent",
+                        "value" to isSoundOn,
+                    )
+                )
+            }
+        }
     }
 
     override fun getView() = mapView
 
     override fun dispose() {
+        soundUpdateJob?.cancel()
         map?.close()
         routeHandler?.close()
         zoomControlHandler?.close()
@@ -151,6 +190,12 @@ class DgisMapView(
 
     override fun moveCameraToActiveRoute(index: Long, callback: (Result<Unit>) -> Unit) {
         routeHandler?.moveCameraToActiveRoute(index)
+
+        callback(Result.success(Unit))
+    }
+
+    override fun setActiveRouteIndex(index: Long, callback: (Result<Unit>) -> Unit) {
+        routeHandler?.setActiveRouteIndex(index)
 
         callback(Result.success(Unit))
     }
@@ -408,6 +453,14 @@ class DgisMapView(
         objectTapHandler?.calcPositionForPolylines(polylines, options, callback)
     }
 
+    override fun calcPositionForGeoPoints(
+            points: List<GeoPointMessage>,
+            options: CalcPositionOptionsMessage,
+            callback: (Result<CameraPositionMessage>) -> Unit
+    ) {
+        objectTapHandler?.calcPositionForGeoPoints(points, options, callback)
+    }
+
     override fun animateToRepresentativeArea(
             area: GeometryMessage,
             options: CalcPositionOptionsMessage,
@@ -478,6 +531,7 @@ class DgisMapView(
                         api = FlutterMapApi(binaryMessenger)
                 )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)
+        mapView.addObjectLongTouchCallback(objectTapHandler::objectLongTapListener)
         this.objectTapHandler = objectTapHandler
     }
 
@@ -796,7 +850,7 @@ class DgisMapView(
         if (isPublicTransport) {
             routeHandler.setShowOnlyActiveRoute(true)
         }
-        
+
         navigationHandler.startNavigation(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
@@ -1084,7 +1138,9 @@ class DgisMapView(
     }
 
     private fun onMapReady(map: DgisMap, callback: (Result<InitializeMessage>) -> Unit) {
-        map.graphicsPreset = GraphicsPreset.IMMERSIVE
+        // Don't set graphics preset to IMMERSIVE at initialization
+        // It will be set conditionally in NavigationHandler.setupCamera based on traffic state
+        // This preserves traffic layer colors when freeroam starts
         this.map = map
 
         val mapSource =
@@ -1096,16 +1152,17 @@ class DgisMapView(
                 )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
+        indoorControlHandler = IndoorControlHandler(map, eventSink)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler, indoorControlHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
-        indoorControlHandler = IndoorControlHandler(map, eventSink)
         visibleRectHandler = VisibleRectHandler(map, eventSink)
         searchHandler =
                 SearchHandler(
                         map,
                         SearchManager.createOnlineManager(sdkContext),
                         locationSource,
+                        SearchHistory(DgisMapInitializer.getSdkContext()),
                 )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler =
@@ -1129,7 +1186,8 @@ class DgisMapView(
                         ?: locationSource.lastLocation.let {
                             return@let RouteSearchPoint(
                                     coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
-                                    objectId = DgisObjectId(objectId = 0, entranceId = 0)
+                                    objectId = DgisObjectId(objectId = 0, entranceId = 0),
+                                    levelId = getCurrentLevelId()
                             )
                         }
         val finishSearchPoint =
@@ -1137,7 +1195,8 @@ class DgisMapView(
                         ?: locationSource.lastLocation.let {
                             return@let RouteSearchPoint(
                                     coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
-                                    objectId = DgisObjectId(objectId = 0, entranceId = 0)
+                                    objectId = DgisObjectId(objectId = 0, entranceId = 0),
+                                    levelId = getCurrentLevelId()
                             )
                         }
         val briefRouteInfoSearchPoints =
@@ -1165,16 +1224,18 @@ class DgisMapView(
             startPoint: RouteSearchPointMessage,
             finishPoint: RouteSearchPointMessage,
             navType: RouteSearchOptionsMessage,
+            intermediatePoints: List<RouteSearchPointMessage>?,
             callback: (Result<FindRouteResultMessage>) -> Unit
     ) {
         val routeSearchOptions = navType.toRouteSearchOptions()
         val startSearchPoint = startPoint.toRouteSearchPoint()
         val finishSearchPoint = finishPoint.toRouteSearchPoint()
-        
+
         routeHandler?.findRoute(
             startPoint = startSearchPoint,
             finishPoint = finishSearchPoint,
             routeSearchOptions = routeSearchOptions,
+            intermediatePoints = intermediatePoints?.map { it.toRouteSearchPoint() },
             callback = callback
         )
     }
@@ -1239,6 +1300,90 @@ class DgisMapView(
 
     override fun setMaxFps(maxFps: Long?, callback: (Result<Unit>) -> Unit) {
         mapView.maxFps = maxFps?.toInt()?.let { Fps(it) }
+        callback(Result.success(Unit))
+    }
+
+    override fun getSearchHistoryItems(callback: (Result<List<SearchHistoryDirectoryObjectMessage>>) -> Unit) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+
+        runBlocking {
+            callback(Result.success(searchHandler.getSearchHistoryItems()))
+        }
+    }
+
+    override fun addSearchHistoryItem(
+        item: SearchHistoryDirectoryObjectMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+        val objectId = item.id?.objectId ?: return run {
+            searchHandler.addQuerySearchHistoryItem(queryText = item.title)
+            callback(Result.success(Unit))
+        }
+        val entranceId = item.id.entranceId
+        val directoryObject: DirectoryObject = runBlocking<DirectoryObject?> {
+            return@runBlocking searchHandler.searchByDirectoryObjectIdSync(
+                objectId = DgisObjectId(
+                    objectId = objectId,
+                    entranceId = item.id.entranceId,
+                )
+            )
+        } ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "SEARCH_HISTORY_ERROR",
+                    message = "Failed to get directory object of id",
+                    details = "objectId: $objectId, entranceId: $entranceId",
+                )
+            )
+        )
+
+        searchHandler.addDirectoryObjectSearchHistoryItem(directoryObject = directoryObject)
+        callback(Result.success(Unit))
+    }
+
+    override fun removeSearchHistoryItem(index: Long, callback: (Result<Unit>) -> Unit) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+
+        runBlocking {
+            val items = searchHandler.getRawSearchHistoryItems()
+            searchHandler.removeSearchHistoryItem(item = items[index.toInt()])
+            callback(Result.success(Unit))
+        }
+    }
+
+    override fun clearSearchHistoryItems(callback: (Result<Unit>) -> Unit) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+
+        searchHandler.clearSearchHistory()
         callback(Result.success(Unit))
     }
 }

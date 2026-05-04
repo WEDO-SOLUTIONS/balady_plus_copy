@@ -19,12 +19,12 @@ class LanguageRowWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final soundSettings = ref.watch(soundSettingsProvider);
-    final languageCode = currentLanguage.locale.languageCode;
+    final languageCode = currentLanguage.languageCode; // 'ar_SA' or 'en_SA'
 
     return ContentRow(
       onTap: () {
         ref.read(soundSettingsProvider.notifier).switchLanguage(currentVoiceLanguage: languageCode);
-        context.router.popForced();
+        context.router.pop();
       },
       options: ContentRowOptions(
         title: _getTitle(context, currentLanguage),

@@ -107,7 +107,7 @@ class OpportunityMapCard extends StatelessWidget {
                               child: Text(
                                 description ?? "",
                                 style: AppStyle.cardTitleTextStle
-                                    .copyWith(fontSize: 13, color: AppColor.black, height: 1.3),
+                                    .copyWith(fontSize: 14, color: AppColor.black, height: 1.3),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -144,7 +144,7 @@ class OpportunityMapCard extends StatelessWidget {
                         if (mainActivity?.isNotEmpty ?? false)
                           Text(
                             "activity_type".tr().replaceAll("{}", mainActivity ?? ""),
-                            style: AppStyle.cardTitleTextStle.copyWith(fontSize: 13, color: AppColor.black),
+                            style: AppStyle.cardTitleTextStle.copyWith(fontSize: 14, color: AppColor.black),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -169,7 +169,7 @@ class OpportunityMapCard extends StatelessWidget {
                                   Text(
                                     area != null ? ("${area!} م٢ ") : "",
                                     overflow: TextOverflow.ellipsis,
-                                    style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 12),
+                                    style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 14),
                                   ),
                                 ],
                               ),
@@ -214,7 +214,7 @@ class OpportunityMapCard extends StatelessWidget {
                       Text(
                         "${"bid_end_date".tr()} ${getBidEndDate(bidEndDate ?? "")}",
                         overflow: TextOverflow.ellipsis,
-                        style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 12),
+                        style: AppStyle.cardTitleTextStle.copyWith(color: AppColor.kGray115, fontSize: 14),
                       ),
                     ],
                   ),
@@ -310,7 +310,7 @@ String getBidEndDate(String bidEndDate) {
 
 class RentOrInvestWidget extends StatelessWidget {
   final String type;
-  const RentOrInvestWidget({Key? key, required this.type}) : super(key: key);
+  const RentOrInvestWidget({super.key, required this.type});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -318,7 +318,7 @@ class RentOrInvestWidget extends StatelessWidget {
       child: Text(
         type == "Investment" || type == "Dirct Rental" ? ('investment').tr() : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
-            fontSize: 12, color: type == "Investment" ? AppColor.secondary900Light : AppColor.secondary900Light),
+            fontSize: 14, color: type == "Investment" ? AppColor.secondary900Light : AppColor.secondary900Light),
       ),
     );
   }

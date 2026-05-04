@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/splash/data/model/splash_model.dart';
 import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'splash_state.dart';
@@ -13,17 +14,18 @@ part 'splash_state.dart';
 class SplashCubit extends Cubit<SplashState> {
   final SplashRemoteDataSource splashRemoteDataSource;
 
-  SplashCubit({required this.splashRemoteDataSource})
-      : super(const InitialSplashState()) {
+  SplashCubit({required this.splashRemoteDataSource}) : super(const InitialSplashState()) {
     fetchSplashData();
   }
 
   void fetchSplashData() async {
     try {
-      Map<String, dynamic>? dataOffline = null;//sharedPrefs.getDataOfSplash();
+      debugPrint('SPLASH DEBUG: fetchSplashData called');
+      Map<String, dynamic>? dataOffline; //sharedPrefs.getDataOfSplash();
       if (dataOffline == null) {
+        debugPrint('SPLASH DEBUG: No offline splash data, emitting OfflineSplashState');
         emit(const OfflineSplashState());
-       // getNewOnlineSplashAndDownload();
+        // getNewOnlineSplashAndDownload();
       } else {
         SplashModel splashData = SplashModel.fromJson(dataOffline);
         final currentDate = DateTime.now();

@@ -1,7 +1,7 @@
 import '../../prayer_times_exports.dart';
 
 class PrayerTimeRangeResponseModel extends PrayerTimeRangeEntity {
-  PrayerTimeRangeResponseModel({
+  const PrayerTimeRangeResponseModel({
     String? asr,
     String? day,
     String? fajr,

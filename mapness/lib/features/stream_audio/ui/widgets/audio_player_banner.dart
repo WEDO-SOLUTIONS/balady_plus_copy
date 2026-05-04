@@ -1,0 +1,230 @@
+import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+
+class AudioPlayerBanner extends ConsumerWidget {
+  const AudioPlayerBanner({
+    required this.onTap,
+    required this.onClose,
+    super.key,
+  });
+
+  final VoidCallback onTap;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(streamAudioProvider);
+    final selectedChannel = provider.selectedChannel;
+
+    if (selectedChannel == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      height: 56,
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment(0.50, -0.00),
+          end: Alignment(0.50, 1.00),
+          colors: [Color(0xFF212222), Color(0xFF212222)],
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: [
+                _buildProgramImage(provider),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selectedChannel.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        selectedChannel.name ?? 'MBC Mood',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          height: 1.2,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Play/Pause button
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () async {
+                        final audioProvider = ref.read(streamAudioProvider);
+                        await audioProvider.togglePlayPause();
+                      },
+                      child: Container(
+                        width: 48,
+                        height: 56,
+                        color: Colors.transparent,
+                        alignment: Alignment.center,
+                        child: provider.isLoading
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : SvgPicture.asset(
+                                provider.isPlaying
+                                    ? Assets.icons.svg.audio.pause.keyName
+                                    : Assets.icons.svg.audio.resume.keyName,
+                                width: 16,
+                                height: 16,
+                                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                              ),
+                      ),
+                    ),
+                    // Forward button
+                    Transform.flip(
+                      flipX: Directionality.of(context) == TextDirection.rtl,
+                      child: AnimatedOpacity(
+                        opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
+                        duration: const Duration(milliseconds: 200),
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: !provider.canGoToNextChannel
+                              ? null
+                              : () => ref.read(streamAudioProvider).goToNextChannel(),
+                          child: Container(
+                            width: 48,
+                            height: 56,
+                            color: Colors.transparent,
+                            alignment: Alignment.center,
+                            child: SvgPicture.asset(
+                              Assets.icons.svg.audio.seekForward.keyName,
+                              width: 14,
+                              height: 14,
+                              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Close button
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: onClose,
+                      child: Container(
+                        width: 48,
+                        height: 56,
+                        color: Colors.transparent,
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white.withOpacity(0.8),
+                          size: 24,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgramImage(StreamAudioProvider provider) {
+    final channel = provider.selectedChannel;
+    final hasProgram = channel?.currentPlayedProgram != null;
+    final programLogo = channel?.currentPlayedProgram?.image;
+    final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
+    final url = hasProgramLogo ? programLogo : (channel?.logo ?? 'https://www.mbcmood.com/images/Logo.png');
+
+    return Stack(
+      children: [
+        Container(
+          height: 32,
+          width: 32,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: !url.contains('svg')
+              ? Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.fitWidth,
+                      errorBuilder: (_, __, ___) => Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Assets.icons.svg.icMbcMood.svg(
+                          colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                        ),
+                      ),
+                    ),
+                  ),
+              )
+              : SvgPicture.network(
+                  url,
+                  placeholderBuilder: (_) => Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Assets.icons.svg.icMbcMood.svg(
+                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+        ),
+        if (!hasProgram)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 1.4, sigmaY: 1.4),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.00, 1.00],
+                    colors: [Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.2)],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}

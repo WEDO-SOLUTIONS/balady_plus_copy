@@ -1,6 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/super_app_js_bridge/model/app_theme_config.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
+import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
@@ -8,30 +14,30 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show BlocRequestStatus;
+import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_delegator_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_agent_model.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_preferences_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
-import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -41,6 +47,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../app/features/accecipilities/AccessibilitySettings.dart';
 import 'Requirement_enum.dart';
 import 'model/download_file_paths_model.dart';
 
@@ -48,15 +55,19 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   MiniAppsEngineBloc miniAppsEngineBloc;
   ValueNotifier<bool> isLoading;
 
-  JsBridgeListener({
-    required this.miniAppsEngineBloc,
-    required this.isLoading,
-  }) : super();
+  JsBridgeListener({required this.miniAppsEngineBloc, required this.isLoading})
+    : super();
 
   @override
   void register() {
     registerFunction(getAccessToken);
+    ////////////////////////////////////////////////////////////
+    ///  need remove this function, for the partner knows this
     registerFunction(getAccessSSOToken);
+
+    /// this the new Oen For Use in the Municipal Mini App
+    registerFunction(getBaladySSOToken);
+    ////////////////////////////////////////////////////////////
     registerFunction(getCookies);
     registerFunction(getUserProfile);
     registerFunction(getAppPreferences);
@@ -80,12 +91,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openPdfFile);
     registerFunction(openAppSetting);
     registerFunction(closeCurrentMiniApp);
+    registerFunction(selectedDelegator);
+    registerFunction(selectedAgent);
   }
 
   @pragma('vm:entry-point')
   void closeCurrentMiniApp(dynamic msg, CompletionHandler handler) async {
-    if (NavigationService.navigatorKey.currentContext!.mounted)
+    if (NavigationService.navigatorKey.currentContext!.mounted) {
       Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+    }
   }
 
   @pragma('vm:entry-point')
@@ -95,21 +109,22 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
+    getBaladySSOToken(msg, handler);
+  }
+
+  @pragma('vm:entry-point')
+  void getBaladySSOToken(dynamic msg, CompletionHandler handler) async {
     BaseResponse response = BaseResponse(
       code: 401,
       message: "Unauthorized",
       eventName: "getAccessToken",
       data: AccessTokenModel(accessToken: CommonProperties.token),
     );
-    if (CommonProperties.isLoggedInMunicipality) {
-      response = BaseResponse(
-        code: 200,
-        message: "success",
-        eventName: "getAccessToken",
-        data: AccessTokenModel(accessToken: CommonProperties.token),
-      );
-      handler.complete(response.jsonEncodeModel());
-    } else {
+
+    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' ||
+            miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp') &&
+        !CommonProperties.isLoggedInMunicipality) {
+
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
@@ -140,6 +155,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       } catch (_) {
         handler.complete(response.jsonEncodeModel());
       }
+    } else {
+      response = BaseResponse(
+        code: 200,
+        message: "success",
+        eventName: "getAccessToken",
+        data: AccessTokenModel(accessToken: CommonProperties.token),
+      );
+      handler.complete(response.jsonEncodeModel());
     }
   }
 
@@ -155,8 +178,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             await sl<NewMiniAppLogicCubit>()
                 .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
                 .then((result) {
-              response = result!;
-            });
+                  response = result!;
+                });
           } else {
             response = BaseResponse(
               code: 401,
@@ -174,11 +197,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         content: needDialog.content(withoutActions: Platform.isIOS),
         actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
       );
-    } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true &&
+    } else if (miniAppsEngineBloc.miniApp.otpLogin == true &&
         !CommonProperties.isLoggedIn) {
-      CommonFunctions.onLogin(
-        mainPage: RouteName.miniAppsMainScreen,
-      );
+      CommonFunctions.onLogin(mainPage: RouteName.miniAppsMainScreen);
       response = BaseResponse(
         code: 401,
         eventName: "getAccessToken",
@@ -189,8 +210,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       await sl<NewMiniAppLogicCubit>()
           .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
           .then((result) {
-        response = result!;
-      });
+            response = result!;
+          });
     }
     handler.complete(response.jsonEncodeModel());
   }
@@ -275,9 +296,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               code: 200,
               eventName: "getCookies",
               message: "success",
-              data: CookiesModel(
-                cookies: r,
-              ),
+              data: CookiesModel(cookies: r),
             );
             handler.complete(response.jsonEncodeModel());
           },
@@ -290,9 +309,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 code: 200,
                 message: "success",
                 eventName: "getCookies",
-                data: AccessTokenModel(
-                  accessToken: CommonProperties.token,
-                ),
+                data: AccessTokenModel(accessToken: CommonProperties.token),
               );
             }
           },
@@ -318,24 +335,42 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void getAppPreferences(dynamic msg, CompletionHandler handler) {
+  void getAppPreferences(dynamic msg, CompletionHandler handler) async {
     try {
+      final accessibility = await AccessibilitySettings.load();
       BaseResponse response = BaseResponse(
         code: 200,
         message: "success",
         eventName: "AppPreferences",
-        data: JsPreferencesModel(
+        data: AppThemeConfig(
           language: 'locale'.tr(),
-          themeType: "dark",
-          colors: {
-            "primary": AppColor.primary900Light.value,
-            "secondary": AppColor.secondary900Light.value,
-            // "background": AppColor.backgroundColor,
-            // "text": AppColor.textColor,
-            // "error": AppColor.errorColor,
-            // "warning": AppColor.warningColor,
-            // "success": AppColor.successColor,
-          },
+          accessibilityModel: accessibility,
+          deviceType: Platform.isAndroid ? 'android' : 'ios',
+          themeType: Theme.of(
+            NavigationService.navigatorKey.currentContext!,
+          ).brightness.name,
+          colorSchemeDark: ColorSchemeModel(
+            colorScheme: Theme.of(
+              NavigationService.navigatorKey.currentContext!,
+            ).colorScheme,
+            cardColor: Theme.of(
+              NavigationService.navigatorKey.currentContext!,
+            ).cardColor,
+            scaffoldBackgroundColor: Theme.of(
+              NavigationService.navigatorKey.currentContext!,
+            ).scaffoldBackgroundColor,
+          ),
+          colorSchemeLight: ColorSchemeModel(
+            colorScheme: Theme.of(
+              NavigationService.navigatorKey.currentContext!,
+            ).colorScheme,
+            cardColor: Theme.of(
+              NavigationService.navigatorKey.currentContext!,
+            ).cardColor,
+            scaffoldBackgroundColor: Theme.of(
+              NavigationService.navigatorKey.currentContext!,
+            ).scaffoldBackgroundColor,
+          ),
         ),
       );
       var dataJsonString = response.jsonEncodeModel();
@@ -357,7 +392,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+          serviceKey,
+          RequirementEnum.navigateToSuperAppScreen.name,
+        ) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
@@ -399,7 +436,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
 
     if (checkAppRequirement(
-            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+          serviceKey,
+          RequirementEnum.navigateToSuperAppScreen.name,
+        ) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String) {
@@ -545,6 +584,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
+      isLoading.value = true;
       final XFile? image = await ImagePicker().pickImage(
         source: ImageSource.camera,
       );
@@ -561,15 +601,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           );
         } else {
           String path = image.path;
-          String fileName =
-              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
+          String fileName = path.isNotEmpty
+              ? path.split('/').last
+              : ('attachment_name').tr();
           final fileBytes = await File(path).readAsBytes();
           String base64File = base64Encode(fileBytes);
           JsFilesModel file = JsFilesModel(
-              fileBase64: base64File,
-              fileName: fileName,
-              // fileBytes:fileBytes,
-              filePath: path);
+            fileBase64: base64File,
+            fileName: fileName,
+            // fileBytes:fileBytes,
+            filePath: path,
+          );
           response = BaseResponse(
             code: 200,
             eventName: "openImagePicker",
@@ -585,6 +627,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
+      isLoading.value = false;
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -594,6 +637,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: null,
       );
       handler.complete(response.jsonEncodeModel());
+      isLoading.value = false;
     }
   }
 
@@ -603,10 +647,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
       late BaseResponse response;
-      var fileData =
-          await NavigationService.navigatorKey.currentState!.pushNamed(
-        RouteName.vdCameraPage,
-      );
+      isLoading.value = true;
+      FocusManager.instance.primaryFocus?.unfocus();
+      var fileData = await NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.vdCameraPage);
       if (fileData != null) {
         response = BaseResponse(
           code: 200,
@@ -623,6 +667,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         );
       }
       // String data = response.jsonEncodeModel();
+      isLoading.value = false;
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -631,6 +676,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         eventName: "openCameraWithUI",
         data: null,
       );
+      isLoading.value = false;
       handler.complete(response.jsonEncodeModel());
     }
   }
@@ -661,18 +707,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     final String? attachmentSource = data["attachmentSource"]?.toString();
     final List<String> attachmentExtension = data["attachmentExtension"] != null
         ? (data["attachmentExtension"] as List<dynamic>)
-            .map((e) => e.toString())
-            .toList()
+              .map((e) => e.toString())
+              .toList()
         : [];
 
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
-        type:
-            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type: (attachmentSource == "gallery"
+            ? FileType.image
+            : FileType.custom),
         allowMultiple: false,
-        allowedExtensions:
-            attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions: attachmentSource == "gallery"
+            ? []
+            : attachmentExtension,
       );
 
       late BaseResponse response;
@@ -818,19 +866,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               MaterialPageRoute(
                 builder: (_) {
                   return Scaffold(
-                    appBar: AppBar(
-                      title: const Text(""),
-                    ),
-                    body: SfPdfViewer.network(
-                      data["url"],
-                    ),
+                    appBar: AppBar(title: const Text("")),
+                    body: SfPdfViewer.network(data["url"]),
                   );
                 },
               ),
             );
           } else {
-            CommonFunctions.openBaladyWebView(data["url"],
-                needLogin: data["needLogin"] ?? true);
+            CommonFunctions.openBaladyWebView(
+              data["url"],
+              needLogin: data["needLogin"] ?? true,
+            );
           }
         } else {
           BaseResponse response = BaseResponse(
@@ -864,9 +910,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         NavigationService.navigatorKey.currentState!.push(
           MaterialPageRoute(
             builder: (_) {
-              return PdfViewerScreen(
-                pdfData: JsPdfModel.fromJson(data),
-              );
+              return PdfViewerScreen(pdfData: JsPdfModel.fromJson(data));
             },
           ),
         );
@@ -908,10 +952,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         if (data['type'] == "marketing") {
           FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
           Sentry.addBreadcrumb(
-            Breadcrumb(
-              message: data['event_name'],
-              data: miniAppData,
-            ),
+            Breadcrumb(message: data['event_name'], data: miniAppData),
           );
         } else if (data['type'] == "exception") {
           data.addAll(miniAppData);
@@ -987,7 +1028,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.directionsMap.name) ==
         true) {
-      if (data != null && data is Map) {
+      if(data != null) {
+        data = jsonDecode(data);
+      }
+      if (data is Map) {
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "openDirectionsMap",
@@ -995,10 +1039,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
         CommonFunctions.launchMap(
-          LatLng(
-            latitude: data["latitude"],
-            longitude: data["longitude"],
-          ),
+          LatLng(latitude: data["latitude"], longitude: data["longitude"]),
         );
         handler.complete(response.jsonEncodeModel());
       } else {
@@ -1107,9 +1148,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             final notificationsForType = entry.value;
             // Sort notifications by date (ascending)
             notificationsForType.sort((a, b) {
-              final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ??
+              final dateA =
+                  DateTime.tryParse(a['scheduled_date'] ?? '') ??
                   DateTime(2000);
-              final dateB = DateTime.tryParse(b['scheduled_date'] ?? '') ??
+              final dateB =
+                  DateTime.tryParse(b['scheduled_date'] ?? '') ??
                   DateTime(2000);
               return dateA.compareTo(dateB);
             });
@@ -1146,7 +1189,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   final scheduledDate = DateTime.parse(scheduledDateStr);
                   // Schedule notification using NotificationService
                   NotificationService.showScheduledNotification(
-                      id: id, title: title, scheduledDate: scheduledDate);
+                    id: id,
+                    title: title,
+                    scheduledDate: scheduledDate,
+                  );
                 } catch (e) {
                   debugPrint('Error parsing date: $e');
                 }
@@ -1187,11 +1233,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void downloadAndExtractInAssets(
-      dynamic data, CompletionHandler handler) async {
+    dynamic data,
+    CompletionHandler handler,
+  ) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-            serviceKey, RequirementEnum.downloadAndExtractInAssets.name) ==
+          serviceKey,
+          RequirementEnum.downloadAndExtractInAssets.name,
+        ) ==
         true) {
       if (data != null && data is Map) {
         try {
@@ -1213,11 +1263,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               },
               //Received data with List<int>
               options: Options(
-                  responseType: ResponseType.bytes,
-                  followRedirects: false,
-                  validateStatus: (status) {
-                    return (status ?? 501) < 500;
-                  }),
+                responseType: ResponseType.bytes,
+                followRedirects: false,
+                validateStatus: (status) {
+                  return (status ?? 501) < 500;
+                },
+              ),
             );
 
             File file = File(fullPath);
@@ -1249,8 +1300,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  unarchiveAndSave(
-      String? extractPath, var zippedFile, CompletionHandler handler) async {
+  Future<void> unarchiveAndSave(
+    String? extractPath,
+    var zippedFile,
+    CompletionHandler handler,
+  ) async {
     try {
       extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
@@ -1260,7 +1314,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       for (var file in archive) {
         if (file.isFile && !file.name.contains("__MACOSX")) {
           var outFile = File(
-              '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
+            '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}',
+          );
           outFile = await outFile.create(recursive: true);
           if (counter == 0) {
             filesPath = outFile.path;
@@ -1272,7 +1327,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
       if (filesPath != null) {
         filesPath = filesPath.replaceAll(
-            "${CommonProperties.currentLocalServerDirectory}/assets/", "");
+          "${CommonProperties.currentLocalServerDirectory}/assets/",
+          "",
+        );
         final lastIndex = filesPath.lastIndexOf('/');
         if (lastIndex != -1) {
           filesPath = filesPath.substring(0, lastIndex);
@@ -1296,6 +1353,164 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
     // return indexFilePath;
+  }
+
+  @pragma('vm:entry-point')
+  void selectedDelegator(dynamic msg, CompletionHandler handler) async {
+    try {
+      final cubit = sl<DelegatorsCubit>();
+
+      // First, check if there's a currently selected delegator in the cubit state
+      DelegatorEntity? selectedDelegate = cubit.state.selectedDelegate;
+
+      // If not in state, try to get from SharedPreferences and find it in the list
+      if (selectedDelegate == null) {
+        final savedDelegatorId = sharedPrefs.getSelectedDelegatorId();
+
+        if (savedDelegatorId == null) {
+          // No selection saved
+          final response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "selectedDelegator",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+          return;
+        }
+
+        // Fetch delegators if not already loaded
+        if (cubit.state.delegators.isEmpty) {
+          cubit.loadData();
+
+          // Wait for data to load (max 10 seconds)
+          int attempts = 0;
+          while (attempts < 20 &&
+              cubit.state.accountStatus == DelegatorsAccountStatus.loading) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            attempts++;
+          }
+        }
+
+        // Find the delegator matching the saved ID
+        try {
+          selectedDelegate = cubit.state.delegators.firstWhere(
+            (d) => d.id == savedDelegatorId,
+          );
+        } catch (e) {
+          // Delegator not found in current list
+          print(
+            'Selected delegator $savedDelegatorId not found in delegators list',
+          );
+        }
+      }
+
+      BaseResponse response;
+      if (selectedDelegate != null) {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedDelegator",
+          data: JsDelegatorModel.fromEntity(selectedDelegate),
+        );
+      } else {
+        // No delegator selected
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedDelegator",
+          data: null,
+        );
+      }
+
+      handler.complete(response.jsonEncodeModel());
+    } catch (e) {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "Error getting selected delegator: $e",
+        eventName: "selectedDelegator",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void selectedAgent(dynamic msg, CompletionHandler handler) async {
+    try {
+      final cubit = sl<DelegatorsCubit>();
+
+      // First, check if there's a currently selected agent in the cubit state
+      AgentEntity? selectedAgent = cubit.state.selectedAgent;
+
+      // If not in state, try to get from SharedPreferences and find it in the list
+      if (selectedAgent == null) {
+        final savedAgentId = sharedPrefs.getSelectedAgentId();
+
+        if (savedAgentId == null) {
+          // No selection saved
+          final response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "selectedAgent",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+          return;
+        }
+
+        // Fetch agents if not already loaded
+        if (cubit.state.agents.isEmpty) {
+          cubit.loadData();
+
+          // Wait for data to load (max 10 seconds)
+          int attempts = 0;
+          while (attempts < 20 &&
+              cubit.state.accountStatus == DelegatorsAccountStatus.loading) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            attempts++;
+          }
+        }
+
+        // Find the agent matching the saved ID
+        try {
+          selectedAgent = cubit.state.agents.firstWhere(
+            (a) => a.agencyNumber == savedAgentId,
+          );
+        } catch (e) {
+          // Agent not found in current list
+          print('Selected agent $savedAgentId not found in agents list');
+        }
+      }
+
+      BaseResponse response;
+      if (selectedAgent != null) {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedAgent",
+          data: JsAgentModel.fromEntity(selectedAgent),
+        );
+      } else {
+        // No agent selected
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedAgent",
+          data: null,
+        );
+      }
+
+      handler.complete(response.jsonEncodeModel());
+    } catch (e) {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "Error getting selected agent: $e",
+        eventName: "selectedAgent",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 }
 

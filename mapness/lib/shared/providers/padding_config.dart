@@ -20,7 +20,7 @@ part 'padding_config.g.dart';
 class _PoiPaddingConfig extends _$PoiPaddingConfig {
   @override
   Future<void>? build(
-    DirectoryObjectMessage directoryObject,
+    GeoPointWithElevationMessage? markerPosition,
     LatLng? closestPoint,
     PoiCameraConfig? cameraConfig,
   ) async {
@@ -45,32 +45,24 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
       );
     }
 
-    final paddingConfig = PoiPaddingConfig(
-      paddingOfCamera: paddingOfCamera,
-      sizeOfScreen: sizeOfScreen,
-    );
+    final paddingConfig = PoiPaddingConfig(paddingOfCamera: paddingOfCamera, sizeOfScreen: sizeOfScreen);
 
-    final markerPosition = directoryObject.markerPosition;
-    final position = closestPoint ??
+    final position =
+        closestPoint ??
         (markerPosition == null
             ? null
-            : LatLng(
-                latitude: markerPosition.latitude,
-                longitude: markerPosition.longitude,
-              ));
+            : LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude));
 
     if (position == null) {
       return;
     }
 
-    final markerPoint = GeoPointMessage(
-      latitude: position.latitude,
-      longitude: position.longitude,
-    );
+    final markerPoint = GeoPointMessage(latitude: position.latitude, longitude: position.longitude);
 
     final cameraData = ref.read(cameraPositionProvider) ?? await dgisController.value?.getCameraPosition();
 
     final cameraZoom = cameraData?.zoom;
+    final cameraTilt = cameraData?.tilt;
     final point = cameraData?.point;
     final bearing = cameraData?.bearing;
     final newPoint = point;
@@ -80,25 +72,16 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     // Normalize camera tilt to calculate the viewports
     if (cameraData != null && cameraData.tilt != 0) {
       await cameraPosition.animateTo(
-        CameraPositionMessage(
-          point: cameraData.point,
-          zoom: cameraZoom ?? 17,
-          tilt: 0,
-          bearing: bearing ?? 0,
-        ),
+        CameraPositionMessage(point: cameraData.point, zoom: cameraZoom ?? 17, tilt: 0, bearing: bearing ?? 0),
       );
     }
 
     // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
     CustomRect? visibleRect;
-    final dgisControllerValue = dgisController.valueOrNull;
+    final dgisControllerValue = dgisController.value;
     if (dgisControllerValue != null) {
       final visibleArea = await ref.read(dgisControllerProvider.notifier).getVisibleArea(dgisControllerValue);
-      visibleRect = CustomRect.fromArea(
-        area: visibleArea.areaContour(),
-        center: markerPoint,
-        bearing: bearing ?? 0.0,
-      );
+      visibleRect = CustomRect.fromArea(area: visibleArea.areaContour(), center: markerPoint, bearing: bearing ?? 0.0);
     }
 
     final tappableRect = _getRectWithPaddings(visibleRect, paddingConfig);
@@ -131,18 +114,22 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     // c) zoom set to 17 if point is not in view zone or if zoom is not set
     // d) bearing set to 0 if not set
 
+    final double zoom = cameraConfig?.zoom != null
+        ? cameraConfig!.zoom!
+        : (isInViewZone ? cameraZoom ?? 16 : cameraConfig?.zoom ?? 16);
+
     await cameraPosition.animateTo(
       CameraPositionMessage(
         point: cameraPoint,
-        zoom: isInViewZone ? cameraConfig?.zoom ?? cameraZoom ?? 16 : 16,
-        tilt: 0,
+        zoom: zoom,
+        tilt: (isInViewZone ? cameraTilt : cameraConfig?.tilt) ?? 0,
         bearing: bearing ?? 0,
       ),
     );
   }
 }
 
-const paddingConfigProvider = _poiPaddingConfigProvider;
+final paddingConfigProvider = _poiPaddingConfigProvider;
 
 /// Check if the point is in the rectangle
 bool _isInRectZone(CustomRect? rect, GeoPointMessage markerPoint) {
@@ -151,24 +138,40 @@ bool _isInRectZone(CustomRect? rect, GeoPointMessage markerPoint) {
   }
 
   // Vectors of rectangle sides
-  final p1P2 =
-      algebra.Vector2(rect.topRight.latitude - rect.topLeft.latitude, rect.topRight.longitude - rect.topLeft.longitude);
+  final p1P2 = algebra.Vector2(
+    rect.topRight.latitude - rect.topLeft.latitude,
+    rect.topRight.longitude - rect.topLeft.longitude,
+  );
   final p2P3 = algebra.Vector2(
-      rect.bottomRight.latitude - rect.topRight.latitude, rect.bottomRight.longitude - rect.topRight.longitude);
+    rect.bottomRight.latitude - rect.topRight.latitude,
+    rect.bottomRight.longitude - rect.topRight.longitude,
+  );
   final p3P4 = algebra.Vector2(
-      rect.bottomLeft.latitude - rect.bottomRight.latitude, rect.bottomLeft.longitude - rect.bottomRight.longitude);
+    rect.bottomLeft.latitude - rect.bottomRight.latitude,
+    rect.bottomLeft.longitude - rect.bottomRight.longitude,
+  );
   final p4P1 = algebra.Vector2(
-      rect.topLeft.latitude - rect.bottomLeft.latitude, rect.topLeft.longitude - rect.bottomLeft.longitude);
+    rect.topLeft.latitude - rect.bottomLeft.latitude,
+    rect.topLeft.longitude - rect.bottomLeft.longitude,
+  );
 
   // Vectors from rectangle points to point
-  final p1marker =
-      algebra.Vector2(markerPoint.latitude - rect.topLeft.latitude, markerPoint.longitude - rect.topLeft.longitude);
-  final p2marker =
-      algebra.Vector2(markerPoint.latitude - rect.topRight.latitude, markerPoint.longitude - rect.topRight.longitude);
+  final p1marker = algebra.Vector2(
+    markerPoint.latitude - rect.topLeft.latitude,
+    markerPoint.longitude - rect.topLeft.longitude,
+  );
+  final p2marker = algebra.Vector2(
+    markerPoint.latitude - rect.topRight.latitude,
+    markerPoint.longitude - rect.topRight.longitude,
+  );
   final p3marker = algebra.Vector2(
-      markerPoint.latitude - rect.bottomRight.latitude, markerPoint.longitude - rect.bottomRight.longitude);
+    markerPoint.latitude - rect.bottomRight.latitude,
+    markerPoint.longitude - rect.bottomRight.longitude,
+  );
   final p4marker = algebra.Vector2(
-      markerPoint.latitude - rect.bottomLeft.latitude, markerPoint.longitude - rect.bottomLeft.longitude);
+    markerPoint.latitude - rect.bottomLeft.latitude,
+    markerPoint.longitude - rect.bottomLeft.longitude,
+  );
 
   // Compute cross products: For each side of the rectangle, compute the cross product between the side vector and the vector to the point
   final cross1 = p1P2.cross(p1marker);
@@ -177,8 +180,8 @@ bool _isInRectZone(CustomRect? rect, GeoPointMessage markerPoint) {
   final cross4 = p4P1.cross(p4marker);
 
   // Check the signs:
-// - If all the cross products have the same sign (either all positive or all negative), then the point is inside the rectangle.
-// - If the signs are mixed, the point lies outside the rectangle.
+  // - If all the cross products have the same sign (either all positive or all negative), then the point is inside the rectangle.
+  // - If the signs are mixed, the point lies outside the rectangle.
 
   return (cross1.sign + cross2.sign + cross3.sign + cross4.sign).abs() == 4;
 }
@@ -204,17 +207,29 @@ CustomRect? _getRectWithPaddings(CustomRect? rect, PoiPaddingConfig? paddingConf
   /// A rotated rectangle is defined by its four corners, say P1(x_1, y_1), P2(x_2, y_2), P3(x_3, y_3), P4(x_4, y_4).
   /// Determine the Direction Vectors
   /// Calculate the direction vectors for each side of the rectangle:
-  final fromLeft = algebra.Vector2(
-          rect.topRight.latitude - rect.topLeft.latitude, rect.topRight.longitude - rect.topLeft.longitude) *
+  final fromLeft =
+      algebra.Vector2(
+        rect.topRight.latitude - rect.topLeft.latitude,
+        rect.topRight.longitude - rect.topLeft.longitude,
+      ) *
       paddingInPercents.left;
-  final fromTop = algebra.Vector2(
-          rect.bottomRight.latitude - rect.topRight.latitude, rect.bottomRight.longitude - rect.topRight.longitude) *
+  final fromTop =
+      algebra.Vector2(
+        rect.bottomRight.latitude - rect.topRight.latitude,
+        rect.bottomRight.longitude - rect.topRight.longitude,
+      ) *
       paddingInPercents.top;
-  final fromRight = algebra.Vector2(rect.bottomLeft.latitude - rect.bottomRight.latitude,
-          rect.bottomLeft.longitude - rect.bottomRight.longitude) *
+  final fromRight =
+      algebra.Vector2(
+        rect.bottomLeft.latitude - rect.bottomRight.latitude,
+        rect.bottomLeft.longitude - rect.bottomRight.longitude,
+      ) *
       paddingInPercents.right;
-  final fromBottom = algebra.Vector2(
-          rect.topLeft.latitude - rect.bottomLeft.latitude, rect.topLeft.longitude - rect.bottomLeft.longitude) *
+  final fromBottom =
+      algebra.Vector2(
+        rect.topLeft.latitude - rect.bottomLeft.latitude,
+        rect.topLeft.longitude - rect.bottomLeft.longitude,
+      ) *
       paddingInPercents.bottom;
 
   // Apply the Offsets
@@ -236,22 +251,12 @@ CustomRect? _getRectWithPaddings(CustomRect? rect, PoiPaddingConfig? paddingConf
     longitude: rect.bottomLeft.longitude + fromLeft.y + fromBottom.y,
   );
 
-  return CustomRect(
-    topLeft: topLeft,
-    topRight: topRight,
-    bottomRight: bottomRight,
-    bottomLeft: bottomLeft,
-  );
+  return CustomRect(topLeft: topLeft, topRight: topRight, bottomRight: bottomRight, bottomLeft: bottomLeft);
 }
 
 /// Resulting vector to move the point to the edge of the rect
 algebra.Vector2 _movePoint(GeoPointMessage point, CustomRect innerRect) {
-  final listOfPoints = [
-    innerRect.topLeft,
-    innerRect.topRight,
-    innerRect.bottomRight,
-    innerRect.bottomLeft,
-  ];
+  final listOfPoints = [innerRect.topLeft, innerRect.topRight, innerRect.bottomRight, innerRect.bottomLeft];
   var vectorFinal = algebra.Vector2(0, 0);
 
   for (var i = 0; i < listOfPoints.length; i++) {
@@ -314,20 +319,17 @@ algebra.Vector2? _getFromSideVector(
     pointB.longitude * factor - pointA.longitude * factor,
     pointB.latitude * factor - pointA.latitude * factor,
   );
-// If we have to move the point, then in this direction. \vec{BC}
+  // If we have to move the point, then in this direction. \vec{BC}
   final n = algebra.Vector2(
     pointC.longitude * factor - pointB.longitude * factor,
     pointC.latitude * factor - pointB.latitude * factor,
   ).normalized();
-// Vector from A to point
+  // Vector from A to point
   final toPointVector = algebra.Vector2(
     point.longitude * factor - pointA.longitude * factor,
     point.latitude * factor - pointA.latitude * factor,
   );
-  final toPointVector2 = algebra.Vector2(
-    point.longitude - pointA.longitude,
-    point.latitude - pointA.latitude,
-  );
+  final toPointVector2 = algebra.Vector2(point.longitude - pointA.longitude, point.latitude - pointA.latitude);
   // 2. Calculate the sin value
   // Cross product. AB x AP = ||AB|| * ||AP|| * sin(AB, AP)
   final crossProduct = baseVector.cross(toPointVector);

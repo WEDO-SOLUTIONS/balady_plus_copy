@@ -12,17 +12,11 @@ class LanguagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Column(
-        children: [
-          LanguageRow(
-            language: Language.arabic,
-            border: false,
-          ),
-          LanguageRow(
-            language: Language.english,
-            border: true,
-          ),
-        ],
-      );
+    children: [
+      LanguageRow(language: Language.arabic, border: false),
+      LanguageRow(language: Language.english, border: true),
+    ],
+  );
 }
 
 class LanguageRow extends ConsumerWidget {
@@ -30,11 +24,7 @@ class LanguageRow extends ConsumerWidget {
   // We don't delete it because this goes against the design of this feature
   static const showFlags = false;
 
-  const LanguageRow({
-    required this.language,
-    required this.border,
-    super.key,
-  });
+  const LanguageRow({required this.language, required this.border, super.key});
 
   final Language language;
   final bool border;
@@ -48,7 +38,7 @@ class LanguageRow extends ConsumerWidget {
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
       child: Material(
-        color: context.colors.backgroundSurface4,
+        color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.only(
           bottomLeft: border ? radius12 : radiusZero,
           bottomRight: (border ? radius12 : radiusZero),
@@ -62,17 +52,11 @@ class LanguageRow extends ConsumerWidget {
             ref.read(appLanguageProvider.notifier).update(language);
           },
           child: ContentRow(
-            options: ContentRowOptions(
-              leadingIcon: leadingIcon,
-              title: language.title,
-              actionWidget: ContentRowActionOptions(
-                actionIcon: AppIcons(
-                  iconData: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
-                  size: 24,
-                  color: currentLanguage == language ? context.colors.accentDefault : context.color.surfaceContrastHigh,
-                  // : context.colors.backgroundSurface4,
-                ),
-              ),
+            leading: leadingIcon,
+            text: ContentRowTextOptions(title: language.title),
+            trailing: ContentRowTextTrailingOptions(
+              icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+              iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
             ),
           ),
         ),

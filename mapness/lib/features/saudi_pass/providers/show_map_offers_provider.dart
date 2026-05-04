@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/extensions/marker_icons_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,7 +15,7 @@ import 'package:urbi_analytics/logger.dart';
 
 part 'show_map_offers_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ShowMapOffers extends _$ShowMapOffers {
   final _hidePoi = 'hidePoi';
   final _settings = MapObjectManagerSettings.selectedMarker();
@@ -23,12 +25,8 @@ class ShowMapOffers extends _$ShowMapOffers {
 
   MapObjectManager? mapObjectManager;
 
-  MapObjectManager get selectPinMapObjectManager => ref.read(
-        mapObjectManagerProvider(
-          named: _settings.name,
-          layerId: _settings.layerId,
-        ).notifier,
-      );
+  MapObjectManager get selectPinMapObjectManager =>
+      ref.read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier);
 
   @override
   List<Offer> build() {
@@ -45,17 +43,15 @@ class ShowMapOffers extends _$ShowMapOffers {
     this.mapObjectManager = mapObjectManager;
   }
 
-  Future<void> showMarker(Marker marker) async {
+  Future<void> showMarker(Marker marker, BaladyAppThemes theme) async {
     _showHiddenMarkerIfPresent();
 
-    final position = LatLng(
-      latitude: marker.options.position.latitude,
-      longitude: marker.options.position.longitude,
-    );
+    final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
+    final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
+      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.toBigIcon(isDark: isDarkMode);
       _hideMarker(currentSearchMarker);
     }
 
@@ -67,11 +63,6 @@ class ShowMapOffers extends _$ShowMapOffers {
   Future<void> removeMarker(String id) async {
     _showHiddenMarkerIfPresent();
     await selectPinMapObjectManager.removeMarkerById(id);
-  }
-
-  Future<void> removeAllMarkers() async {
-    await selectPinMapObjectManager.removeAllMarkers();
-    _showHiddenMarkerIfPresent();
   }
 
   void _hideMarker(Marker marker) {
@@ -98,7 +89,9 @@ class ShowMapOffers extends _$ShowMapOffers {
     required bool enabled,
     required String cityId,
     required bool isAll,
+    VisibleRect? visibleRect,
     Set<Category>? category,
+    Set<SubCategory>? subCategory,
     Set<RecommendedType>? promotionsType,
   }) async {
     toggleShowMap = enabled;
@@ -121,27 +114,48 @@ class ShowMapOffers extends _$ShowMapOffers {
 
     try {
       final recommendedTypes = preferences?.recommendedTypes.toSet() ?? promotionsType ?? {};
-      final categories = preferences?.categories.toSet() ?? category ?? {};
+      final categories = preferences?.categoriesOnly.toSet() ?? category ?? {};
+      final subCategories = preferences?.subCategoriesOnly.toSet() ?? subCategory ?? {};
 
       final cities = isAll
-          ? {
-        cityId,
-      }
+          ? {cityId}
           : {
-        if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
-      };
+              // If user has cities in preferences, use them; otherwise fall back to cityId
+              if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
+              if (preferences?.cities.isEmpty ?? true)
+                cityId, // Fall back to location-based city if no city in preferences
+            };
       final updatedState = List<Offer>.from([]);
-
-      final promotions = await saudiPassRepository.getPromotions(
-        cityIds: cities,
-        categories: categories,
-        recommendedTypes: recommendedTypes,
-        pageSize: 100,
-      );
-
-      for (final offer in promotions.records) {
-        updatedState.add(offer);
+      final Promotions promotions;
+      if (visibleRect != null) {
+        final rect = visibleRect;
+        final center = rect.center();
+        promotions = await saudiPassRepository.getPromotions(
+          cityIds: cities,
+          categories: categories,
+          recommendedTypes: recommendedTypes,
+          pageSize: null,
+          mapPoint: GeoPointMessage(latitude: center.latitude, longitude: center.longitude),
+          range: rect.distanceToNW().toInt(),
+        );
+      } else {
+        final controller = await ref.read(dgisControllerProvider.future);
+        final cameraPosition = await controller.getCameraPosition();
+        promotions = await saudiPassRepository.getPromotions(
+          cityIds: cities,
+          categories: categories,
+          subCategories: subCategories,
+          recommendedTypes: recommendedTypes,
+          pageSize: null,
+          mapPoint: cameraPosition.point,
+        );
       }
+
+      final uniqueOffers = <String, Offer>{};
+      for (final offer in promotions.records) {
+        uniqueOffers[offer.id] = offer;
+      }
+      updatedState.addAll(uniqueOffers.values);
 
       state = updatedState;
     } catch (e) {
@@ -149,9 +163,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> toggleOffersOnMap(String cityId, {
-    required bool isAll
-  }) async {
+  Future<void> toggleOffersOnMap(String cityId, {required bool isAll}) async {
     toggleShowMap = !toggleShowMap;
 
     await switchOffersVisibility(enabled: toggleShowMap, isAll: isAll, cityId: cityId);

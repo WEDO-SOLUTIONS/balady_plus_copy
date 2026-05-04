@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/features/delegators/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/delegators/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/features/delegators/domain/repositories/repository.dart';
@@ -15,11 +14,7 @@ class DelegatorsInjection {
     sl.registerLazySingleton(() => GetAgents(sl()));
 
     //! Repository
-    sl.registerLazySingleton<DelegatorsRepository>(
-      () => DelegatorsRepositoryImplementation(
-        remoteDataSource: sl(),
-      ),
-    );
+    sl.registerLazySingleton<DelegatorsRepository>(() => DelegatorsRepositoryImplementation(remoteDataSource: sl()));
 
     //! Data Sources
     sl.registerLazySingleton<DelegatorsRemoteDataSource>(
@@ -27,8 +22,6 @@ class DelegatorsInjection {
     );
 
     //! Cubit
-    sl.registerLazySingleton(
-      () => DelegatorsCubit(sl(), sl()),
-    );
+    sl.registerLazySingleton(() => DelegatorsCubit(sl(), sl()));
   }
 }

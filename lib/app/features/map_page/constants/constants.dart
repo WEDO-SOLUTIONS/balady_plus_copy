@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 import '../../../core/dependency_injection/injection_container.dart';
 import '../../../core/utils/constants/apis/env_types.dart';

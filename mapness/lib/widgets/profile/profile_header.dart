@@ -13,15 +13,10 @@ class ProfileHeader extends HookConsumerWidget {
     final userData = ref.watch(authProvider);
     final onConnect = ref.read(authProvider.notifier).doAuth;
 
-    final topPadding = userData.valueOrNull != null ? 0.0 : Spacing.$6x;
-    final bottomPadding = userData.valueOrNull != null ? Spacing.$4x : Spacing.$8x;
+    final topPadding = userData.value != null ? 0.0 : Spacing.$6x;
+    final bottomPadding = userData.value != null ? Spacing.$4x : Spacing.$8x;
     return Padding(
-      padding: EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
-        top: topPadding,
-        bottom: bottomPadding,
-      ),
+      padding: EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: topPadding, bottom: bottomPadding),
       child: userData.maybeWhen(
         orElse: () => UnauthorizedProfile(onConnect: onConnect),
         data: (userData) {

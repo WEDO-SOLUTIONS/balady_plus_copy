@@ -15,7 +15,7 @@ class FeedbackBaladyBusiness extends _$FeedbackBaladyBusiness {
   }
 
   Future<void> openBaladyBusiness() async {
-    final url = state.valueOrNull;
+    final url = state.value;
     if (url != null) {
       final uri = Uri.parse(url);
       try {

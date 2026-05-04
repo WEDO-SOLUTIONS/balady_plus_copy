@@ -83,7 +83,7 @@ class NaviSearchResults extends ConsumerWidget {
     }
 
     return SearchResults(
-      isShowAddPlace: false,
+      showAddPlace: false,
       results: results,
       bottomSheetContentScrollController: bottomSheetContentScrollController,
       loaderBuilder: (context) => Padding(

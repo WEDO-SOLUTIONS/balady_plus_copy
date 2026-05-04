@@ -14,6 +14,7 @@ class PhotoViewPager extends StatefulWidget {
   final void Function(bool)? showTitleBar;
 
   final List<String> imageSource;
+  final List<String> imagePreviews;
 
   /// Create new instance, using the [easyImageProvider] to populate the [PageView],
   /// and the [pageController] to control the initial image index to display.
@@ -21,11 +22,12 @@ class PhotoViewPager extends StatefulWidget {
   const PhotoViewPager({
     required this.pageController,
     required this.scrollPhysics,
+    required this.imageSource,
+    required this.imagePreviews,
     Key? key,
     this.doubleTapZoomable = false,
     this.showTitleBar,
     this.infinitelyScrollable = false,
-    required this.imageSource,
   }) : super(key: key);
 
   @override
@@ -35,22 +37,38 @@ class PhotoViewPager extends StatefulWidget {
 class _PhotoViewPagerState extends State<PhotoViewPager> {
   int? imageIndex;
 
+  String? _previewForIndex(int index) {
+    if (index < 0 || index >= widget.imagePreviews.length) {
+      return null;
+    }
+    return widget.imagePreviews[index];
+  }
+
+  Widget _buildPageImage(int index) {
+    final previewUrl = _previewForIndex(index);
+    final imageUrl = widget.imageSource[index];
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      placeholder: (_, __) => previewUrl != null
+          ? Image(image: CachedNetworkImageProvider(previewUrl))
+          : const Center(child: CircularProgressIndicator.adaptive()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (imageIndex != null) {
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          // Обработка чистого тапа
           setState(() {
             imageIndex = null;
             widget.showTitleBar?.call(true);
           });
         },
         child: PhotoView(
-          imageProvider: CachedNetworkImageProvider(
-            widget.imageSource[imageIndex!],
-          ),
+          imageProvider: CachedNetworkImageProvider(widget.imageSource[imageIndex!]),
           minScale: .1,
           scaleStateChangedCallback: (value) {
             switch (value) {
@@ -76,17 +94,12 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
       itemBuilder: (context, index) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          // Обработка чистого тапа
           setState(() {
             imageIndex = index;
             widget.showTitleBar?.call(false);
           });
         },
-        child: Image(
-          image: CachedNetworkImageProvider(
-            widget.imageSource[index],
-          ),
-        ),
+        child: _buildPageImage(index),
       ),
     );
   }

@@ -11,10 +11,9 @@ class CustomModalRoute<T> extends PageRoute<T> {
   /// - [routeType] allows configuring custom route transitions, barrier properties,
   ///   and other route behaviors. If no custom route type is provided, a default
   ///   [CustomRouteType] is used.
-  CustomModalRoute({
-    required AutoRoutePage page,
-    this.routeType = const CustomRouteType(),
-  }) : super(settings: page);
+  CustomModalRoute({required AutoRoutePage page, CustomRouteType? routeType})
+    : routeType = routeType ?? CustomRouteType(),
+      super(settings: page);
 
   /// The custom route type that defines various behaviors for this route,
   /// such as the transition duration, opacity, dismissibility, and barriers.
@@ -29,16 +28,8 @@ class CustomModalRoute<T> extends PageRoute<T> {
   /// This method ensures that the page is wrapped in a [Semantics] widget to
   /// improve accessibility by making the route scope explicit.
   @override
-  Widget buildPage(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      ) =>
-      Semantics(
-        scopesRoute: true,
-        explicitChildNodes: true,
-        child: (settings as AutoRoutePage).buildPage(context),
-      );
+  Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
+      Semantics(scopesRoute: true, explicitChildNodes: true, child: (settings as AutoRoutePage).buildPage(context));
 
   /// Whether the route should maintain its state when the page is inactive.
   ///
@@ -52,13 +43,13 @@ class CustomModalRoute<T> extends PageRoute<T> {
   /// The duration is set based on the value defined in [CustomRouteType], defaulting
   /// to 0 milliseconds if no value is provided.
   @override
-  Duration get transitionDuration => Duration(milliseconds: routeType.durationInMilliseconds ?? 0);
+  Duration get transitionDuration => routeType.duration ?? Duration.zero;
 
   /// Specifies the duration for the reverse transition animation (when the route is popped).
   ///
   /// This is also set based on [CustomRouteType], defaulting to 0 milliseconds.
   @override
-  Duration get reverseTransitionDuration => Duration(milliseconds: routeType.reverseDurationInMilliseconds ?? 0);
+  Duration get reverseTransitionDuration => routeType.reverseDuration ?? Duration.zero;
 
   /// Whether the route is opaque, meaning it fully covers the previous route.
   ///
@@ -101,8 +92,12 @@ class CustomModalRoute<T> extends PageRoute<T> {
   Widget buildModalBarrier() => const SizedBox.shrink();
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
-      Widget child) {
+  Widget buildTransitions(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     final transitionsBuilder = _defaultTransitionsBuilder;
     return transitionsBuilder(context, animation, secondaryAnimation, child);
   }
@@ -112,6 +107,5 @@ class CustomModalRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) =>
-      child;
+  ) => child;
 }

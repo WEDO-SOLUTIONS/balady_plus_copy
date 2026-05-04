@@ -20,8 +20,7 @@ extension BssTracking on BssService {
         ),
       );
 
-  Future<void> trackCallTap(DirectoryObjectMessage data, String phoneNumber) =>
-      sendEvent(
+  Future<void> trackCallTap(DirectoryObjectMessage data, String phoneNumber) => sendEvent(
         BssRequest(
           eventType: BSSEventType.action,
           actionType: BSSActionType.tap,
@@ -50,9 +49,7 @@ extension BssTracking on BssService {
         ),
       );
 
-  Future<void> trackLinkTap(
-          DirectoryObjectMessage data, BssContactType type, String link) =>
-      sendEvent(
+  Future<void> trackLinkTap(DirectoryObjectMessage data, BssContactType type, String link) => sendEvent(
         BssRequest(
           eventType: BSSEventType.action,
           actionType: BSSActionType.tap,

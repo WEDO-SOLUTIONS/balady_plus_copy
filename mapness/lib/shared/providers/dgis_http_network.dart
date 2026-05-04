@@ -21,7 +21,7 @@ final defaultCacheOptions = buildCacheOptions(
   forceRefresh: true,
 );
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _DGisHttpNetwork extends _$DGisHttpNetwork {
   final _dioCacheManager = DioCacheManager(CacheConfig());
 

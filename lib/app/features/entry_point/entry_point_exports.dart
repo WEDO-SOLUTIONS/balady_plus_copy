@@ -1,5 +1,7 @@
 //! data
 /// data -> data sources
+library;
+
 export 'data/data_sources/auth_local_data_source.dart';
 export 'data/data_sources/auth_remote_data_source.dart';
 

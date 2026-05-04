@@ -112,7 +112,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
                 Expanded(
                   child: Text(
                     title,
-                    style: context.textStyles.h4SemiBold,
+                    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
                   ),
                 ),
                 CustomCloseButton(
@@ -131,7 +131,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
               ),
               child: Text(
                 '${context.l10n.dates}: $schedule',
-                style: context.textStyles.bodySmallRegular,
+                style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
               ),
             ),
           ],
@@ -181,6 +181,6 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
 
   Future<void> _onClose() async {
     await removeSelection();
-    context.router.popForced();
+    context.router.pop();
   }
 }

@@ -7,5 +7,5 @@ const namesEn = {
   70030076563153344: 'Al Muftahah',
   70030076201324251: 'Riyadh Park Mall',
   70030076200168619: 'Panorama Mall',
-  70030076201501940: 'Al Faisaliah Tower',
+  70030076201501940: 'Al Faisaliah Tower'
 };

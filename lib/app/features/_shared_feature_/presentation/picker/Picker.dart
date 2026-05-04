@@ -680,7 +680,7 @@ abstract class PickerAdapter<T> {
                 Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20),
                   child: AutoSizeText(text!,
-                      minFontSize: 11.0,
+                      minFontSize: 14.0,
                       textScaleFactor: 1,
                       style: (isSel! ? picker!.selectedTextStyle : null)),
                 )));

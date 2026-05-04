@@ -3,6 +3,7 @@ import 'dart:convert';
 // ignore: depend_on_referenced_packages
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/gis_response_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/utils_exports.dart' show LocalStorageKey;
@@ -11,7 +12,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class SharedPrefs {
   static SharedPreferences? _sharedPreferences;
 
-  init() async {
+  Future<void> init() async {
     _sharedPreferences ??= await SharedPreferences.getInstance();
   }
 
@@ -30,8 +31,7 @@ class SharedPrefs {
   }
 
   void setFirstDateTime() async {
-    await _sharedPreferences?.setString(
-        "firstDateTime", DateTime.now().toIso8601String());
+    await _sharedPreferences?.setString("firstDateTime", DateTime.now().toIso8601String());
   }
 
   String? getFirstDateTime() {
@@ -46,7 +46,7 @@ class SharedPrefs {
     }
   }
 
-  setDeviceHeight(double? height) async {
+  Future<void> setDeviceHeight(double? height) async {
     await _sharedPreferences?.setDouble('device_height', height ?? 0);
   }
 
@@ -58,11 +58,11 @@ class SharedPrefs {
     }
   }
 
-  setIsFirstLaunchForGame(bool? firstLaunch) async {
+  Future<void> setIsFirstLaunchForGame(bool? firstLaunch) async {
     await _sharedPreferences?.setBool('first_launch_game', firstLaunch ?? true);
   }
 
-  clearAll() {
+  void clearAll() {
     _sharedPreferences?.clear();
   }
 
@@ -106,25 +106,17 @@ class SharedPrefs {
     return _sharedPreferences?.getString('guestMobile');
   }
 
-
-
-  setPrayerSettings(List<String> settings) async =>
+  Future<bool?>? setPrayerSettings(List<String> settings) async =>
       await _sharedPreferences?.setStringList('prayer_settings', settings);
 
   List<String> getPrayerSettings() =>
       _sharedPreferences?.getStringList('prayer_settings') ??
       // "0" to set all prayer times setting to false
-      [
-        "0",
-        "0",
-        "0",
-        "0",
-        "0",
-      ];
+      ["0", "0", "0", "0", "0"];
 
   /////////////////////////////////////////////////////////////
 
-  setIsEkramDriver(bool? isEkramDriver) async {
+  Future<void> setIsEkramDriver(bool? isEkramDriver) async {
     if (isEkramDriver != null) {
       await _sharedPreferences?.setBool('isEkramDriver', isEkramDriver);
     } else {
@@ -136,7 +128,7 @@ class SharedPrefs {
     return _sharedPreferences?.getBool('isEkramDriver');
   }
 
-  setLocationConsent(bool? value) async {
+  Future<void> setLocationConsent(bool? value) async {
     if (value != null) {
       await _sharedPreferences?.setBool('locationConsent', value);
     } else {
@@ -148,7 +140,7 @@ class SharedPrefs {
     return _sharedPreferences?.getBool('locationConsent');
   }
 
-  setChatbotSessionId(String? sessionId) async {
+  Future<void> setChatbotSessionId(String? sessionId) async {
     if (sessionId != null) {
       _sharedPreferences?.setString('chatbot_session_id', sessionId);
     } else {
@@ -185,15 +177,9 @@ class SharedPrefs {
     }
   }
 
-
-
-
-
-
-  setUserLocation(GISParams? item) async {
+  Future<void> setUserLocation(GISParams? item) async {
     if (item != null) {
-      await _sharedPreferences?.setString(
-          'gis_user_location', json.encode(item.toMap()));
+      await _sharedPreferences?.setString('gis_user_location', json.encode(item.toMap()));
     } else {
       _sharedPreferences?.remove("gis_user_location");
     }
@@ -202,17 +188,15 @@ class SharedPrefs {
   Future<GISParams?> getUserLocation() async {
     String? bookMarks = _sharedPreferences?.getString('gis_user_location');
     GISParams? model = bookMarks != null
-        ? GISParams.fromMap(json
-        .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
+        ? GISParams.fromMap(json.decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
         : null;
 
     return model;
   }
 
-  setUserGISLoaction(GISResponseModel? item) async {
+  Future<void> setUserGISLoaction(GISResponseModel? item) async {
     if (item != null) {
-      await _sharedPreferences?.setString(
-          'gis_user_data', json.encode(item.toMap()));
+      await _sharedPreferences?.setString('gis_user_data', json.encode(item.toMap()));
     } else {
       _sharedPreferences?.remove("gis_user_data");
     }
@@ -221,11 +205,70 @@ class SharedPrefs {
   Future<GISResponseModel?> getUserGISData() async {
     String? bookMarks = _sharedPreferences?.getString('gis_user_data');
     GISResponseModel? model = bookMarks != null
-        ? GISResponseModel.fromMap(
-        json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
+        ? GISResponseModel.fromMap(json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
         : null;
 
     return model;
+  }
+
+  // Account Selection Methods
+  Future<void> saveSelectedDelegator(String? delegatorId) async {
+    const key = 'selected_delegator_id';
+    if (delegatorId != null) {
+      await _sharedPreferences?.setString(key, delegatorId);
+    } else {
+      await _sharedPreferences?.remove(key);
+    }
+  }
+
+  Future<void> saveSelectedAgent(String? agentId) async {
+    const key = 'selected_agent_id';
+    if (agentId != null) {
+      await _sharedPreferences?.setString(key, agentId);
+    } else {
+      await _sharedPreferences?.remove(key);
+    }
+  }
+
+  String? getSelectedDelegatorId() {
+    const key = 'selected_delegator_id';
+    return _sharedPreferences?.getString(key);
+  }
+
+  String? getSelectedAgentId() {
+    const key = 'selected_agent_id';
+    return _sharedPreferences?.getString(key);
+  }
+
+  Future<void> clearSelectedAccounts() async {
+    await _sharedPreferences?.remove('selected_delegator_id');
+    await _sharedPreferences?.remove('selected_agent_id');
+  }
+
+  // Channel ordering methods
+  Future<void> saveChannelOrder(Map<String, int> channelOrder) async {
+    if (channelOrder.isNotEmpty) {
+      await _sharedPreferences?.setString(
+          LocalStorageKey.channelOrder, json.encode(channelOrder));
+    } else {
+      await _sharedPreferences?.remove(LocalStorageKey.channelOrder);
+    }
+  }
+
+
+  Map<String, int>? getChannelOrder() {
+    String? channelOrderString =
+    _sharedPreferences?.getString(LocalStorageKey.channelOrder);
+    if (channelOrderString != null) {
+      try {
+        Map<String, dynamic> decodedMap = json.decode(channelOrderString);
+        return decodedMap.map((key, value) => MapEntry(key, value as int));
+      } catch (e) {
+        debugPrint('Error decoding channel order: $e');
+        return null;
+      }
+    }
+    return null;
   }
 }
 

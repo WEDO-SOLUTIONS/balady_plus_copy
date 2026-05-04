@@ -57,7 +57,9 @@ class SearchScreen {
         let screen = HistoryScreen(
             interfaceController: interfaceController,
             searchHistory: searchHistory,
-            searchNavigation: searchNavigation
+            searchNavigation: searchNavigation,
+            searchManager: searchManager,
+            map: map
         )
         screen.createTemplate().show(with: interfaceController)
     }

@@ -12,6 +12,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let eventChannel: DgisStreamHandler?
     private let container: DGis.Container
     unowned private let hostFlutterApi: HostFlutterApi
+    private let indoorControlHandler: IndoorControlHandler
+    private var moveCameraCancellable: DGis.Cancellable?
 
     init(
         map: Map,
@@ -27,6 +29,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     ) {
         self.map = map
         self.container = container
+        self.indoorControlHandler = IndoorControlHandler(manager: map.indoorManager)
         self.routeEditor = RouteEditor(context: try! container.context)
         self.routeEditorSource = RouteEditorSource(
             context: try! container.context, routeEditor: routeEditor,
@@ -46,7 +49,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         self.mapTemplate = CPMapTemplate()
         self.navigationSessionManeuvers = NavigationSessionManeuvers(
             model: model,
-            mapTemplate: mapTemplate
+            mapTemplate: mapTemplate,
+            eventChannel: eventChannel
         )
         self.hostFlutterApi = hostFlutterApi
     }
@@ -71,6 +75,15 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var everyMinuteTimer: Timer?
     private var isAuthorized: Bool = false
 
+    func startFreeRoam() {
+        do {
+            print("Starting free roam...")
+            try DgisMapInitializer.shared.getNavigationManager().start()
+        } catch {
+            print("Free roam started with error \(error)")
+        }
+    }
+
     func dispose() {
         navigatorStateCancellable?.cancel()
         routesInfoChannelCancellable?.cancel()
@@ -82,7 +95,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.trailingNavigationBarButtons = []
         mapTemplate.mapButtons = []
         navigationSessionManeuvers.cancel()
+        indoorControlHandler.cancel()
         window.rootViewController = nil
+        moveCameraCancellable?.cancel()
+        
+        // Reset camera position point to default, similar to viewSafeAreaInsetsDidChange cleanup
+        try? map.camera.setPositionPoint(positionPoint: DgisCarPlayMapView.defaultCameraPositionPoint)
     }
 
     func createTemplate() -> CPMapTemplate {
@@ -111,9 +129,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             navigatorStateListener
         )
 
-        routeChannelCancelable = model.routeChannel.sink(
-            receiveValue: receiveRouteInfo
-        )
+        routeChannelCancelable = model.routeChannel.sinkOnMainThread { receiveRouteInfo in
+            self.receiveRouteInfo(routeInfo: receiveRouteInfo)
+        }
 
         return mapTemplate
     }
@@ -516,28 +534,40 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             coordinates: GeoPoint(
                 latitude: lastLocation.value.latitude,
                 longitude: lastLocation.value.longitude
-            ))
+            ),
+            levelId: indoorControlHandler.currentLevelId
+        )
 
         let routeEditorRouteParams = RouteEditorRouteParams(
             startPoint: startPoint,
             finishPoint: finishPoint,
             routeSearchOptions: routeSearchOptions
         )
+        routeEditor.setRouteParams(routeParams: routeEditorRouteParams)
 
         routesInfoChannelCancellable = routeEditor.routesInfoChannel
             .sinkOnMainThread {
                 [self]
                 routeEditorRoutesInfo in
-                showTripPreview(
-                    to: destinationName, with: additionalInformation,
-                    with: routeEditorRoutesInfo
-                )
+                /// BSA-3348: This channel has unexpected behaviour
+                /// `routeEditor.routesInfoChannel` returns 2 values: previous and current. If previous is not exist, it returns empty list
+                /// Because of this issue we have to check if the value is the same that we want to achive. Here we decided to compare destination points
+                /// If we use `sink` instead of  `sinkOnMainThread` everything works fine. We believe that this works correctly solely because it is called on different threads,
+                /// and due to racing, the last call comes last (because the onRoutesInfoChanged method is synchronous).
+                ///
+                /// Since future versions of the SDK will not support `sink`, we have to use `sinkOnMainThread`. More: https://docs.2gis.com/en/ios/sdk/examples/base#data-channels
+                ///
+                /// TODO: We don't know whether this problem lies in the SDK or in our implementation. But it is huge problem.
+                if(routeEditorRoutesInfo.routeParams.finishPoint.coordinates == geoPoint) {
+                    self.onRoutesInfoChanged(
+                        to: destinationName, with: additionalInformation,
+                        with: routeEditorRoutesInfo
+                    )
+                }
             }
-
-        routeEditor.setRouteParams(routeParams: routeEditorRouteParams)
     }
 
-    private func showTripPreview(
+    private func onRoutesInfoChanged(
         to destinationName: String,
         with additionalInformation: String,
         with routeEditorRoutesInfo: RouteEditorRoutesInfo
@@ -551,7 +581,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             with: additionalInformation,
             with: routeEditorRoutesInfo
         )
-
+        
+        calcGeometry(for: routeEditorRoutesInfo.routes)
         showRoutes(for: trip)
 
         buildLeadButtons()
@@ -569,9 +600,60 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 updateEstimates(for: trip)
             }
     }
+    
+    private func calcGeometry(for routes: [DGis.TrafficRoute]) {
+        let geometries = routes.map { route in
+            route.route.geometry.entries.map { entry in
+                PointGeometry(point: entry.value)
+            }
+        }.flatMap { $0 }
+        
+        let geometry = ComplexGeometry(geometries: geometries)
+        
+        // Get screen dimensions
+        let screenBounds = window.screen.nativeBounds
+        let screenWidth = Float(screenBounds.width)
+        let screenHeight = Float(screenBounds.height)
+        
+        // Calculate padding as percentage of screen size
+        let leftPaddingPercent: Float = 0.2
+        let rightPaddingPercent: Float = 0.1
+        let topPaddingPercent: Float = 0.05
+        let bottomPaddingPercent: Float = 0.05
+        
+        let leftPaddingFloat = screenWidth * leftPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.left)
+        let rightPaddingFloat = screenWidth * rightPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.right)
+        let topBasePaddingFloat = screenHeight * topPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.top)
+        let bottomBasePaddingFloat = screenHeight * bottomPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.bottom)
+        
+        let leftPadding = UInt32(clamping: Int(leftPaddingFloat))
+        let rightPadding = UInt32(clamping: Int(rightPaddingFloat))
+        let topPadding = UInt32(clamping: Int(topBasePaddingFloat))
+        let bottomPadding = UInt32(clamping: Int(bottomBasePaddingFloat))
+        
+        let position = calcPosition(
+            camera: self.map.camera,
+            geometry: geometry,
+            screenArea: DGis.Padding(
+                left: leftPadding,
+                top: topPadding,
+                right: rightPadding,
+                bottom: bottomPadding
+            ),
+            size: DGis.ScreenSize(
+                width: UInt32(screenWidth),
+                height: UInt32(screenHeight)
+            )
+        )
+        self.moveCameraCancellable?.cancel()
+        self.moveCameraCancellable = self.map.camera.move(
+            position: position
+        ).sinkOnMainThread {_ in } failure: {_ in }
+    }
 
     private func showRoutes(for trip: CPTrip) {
         isRoutesShown = true
+        stopFollowNavigation()
 
         routeEditorSource.setRoutesVisible(visible: isRoutesShown)
 
@@ -597,7 +679,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func hideRoutes() {
         isRoutesShown = false
-
+        startFollowNavigation()
+        moveCameraCancellable?.cancel()
         routeEditorSource.setRoutesVisible(visible: isRoutesShown)
 
         mapTemplate.hideTripPreviews()
@@ -690,25 +773,25 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 0),
                 maxDistanceToManeuver: RouteDistance(millimeters: 10_000),
-                styleZoom: StyleZoom(value: 16.5)
+                styleZoom: StyleZoom(value: 22.0)
             ),
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: 5.0, maxSpeed: 20.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 10_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 50_000),
-                styleZoom: StyleZoom(value: 18.0)
+                styleZoom: StyleZoom(value: 20.0)
             ),
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: 20.0, maxSpeed: 60.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 50_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 100_000),
-                styleZoom: StyleZoom(value: 20.0)
+                styleZoom: StyleZoom(value: 18.0)
             ),
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: 60.0, maxSpeed: 200.0),
                 minDistanceToManeuver: RouteDistance(millimeters: 100_000),
                 maxDistanceToManeuver: RouteDistance(millimeters: 300_000),
-                styleZoom: StyleZoom(value: 22.0)
+                styleZoom: StyleZoom(value: 16.5)
             ),
         ]
         navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = styles
@@ -735,6 +818,22 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             routeBuildOptions: routeBuildOptions,
             trafficRoute: routeEditor.activeTrafficRoute
         )
+    }
+    /// To start default following for the car we have to call this method
+    func startFollowNavigation() {
+        map.camera.setBehaviour(
+            behaviour: self.navigationManager.mapFollowController.cameraBehaviour
+        )
+        self.navigationManager.mapFollowController.setFollow(follow: true)
+        // Default delay is 15 seconds
+        self.navigationManager.mapFollowController.followReturnDelay = 15.0
+    }
+    
+    /// We want to stop zoom in to the car during the route choosing
+    func stopFollowNavigation() {
+        self.navigationManager.mapFollowController.setFollow(follow: false)
+        // Disable auto return to follow mode
+        self.navigationManager.mapFollowController.followReturnDelay = 0.0
     }
 
     private func createBetterRouteAlert(for betterRouteInfo: BetterRouteInfo)

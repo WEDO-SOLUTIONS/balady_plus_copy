@@ -40,14 +40,13 @@ class QuickFilters extends ConsumerWidget {
     final favouritesState = ref.watch(favouriteCacheProvider);
 
     final favourites = <FilterItem>[
-      if (favouritesState.valueOrNull?.home != null)
-
+      if (favouritesState.value?.home != null)
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
           icon: GeneralIcons.home,
           onTap: () {
-            final home = favouritesState.valueOrNull?.home;
+            final home = favouritesState.value?.home;
             if (home != null) {
             } else {
               return;
@@ -57,13 +56,13 @@ class QuickFilters extends ConsumerWidget {
             _showRouting(home, context);
           },
         ),
-      if (favouritesState.valueOrNull?.work != null)
+      if (favouritesState.value?.work != null)
         FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
           icon: GeneralIcons.briefcase,
           onTap: () {
-            final work = favouritesState.valueOrNull?.work;
+            final work = favouritesState.value?.work;
             if (work != null) {
             } else {
               return;
@@ -86,13 +85,13 @@ class QuickFilters extends ConsumerWidget {
       ...customItems,
       ...favourites,
       ...models.QuickFilterList().list.map(
-            (filter) => FilterItemConfig(
-              filterType: FilterType.quick,
-              title: filter.title(context.l10n),
-              icon: filter.icon,
-              onTap: () => onQuickFilterTap(filter),
-            ),
-          ),
+        (filter) => FilterItemConfig(
+          filterType: FilterType.quick,
+          title: filter.title(context.l10n),
+          icon: filter.icon,
+          onTap: () => onQuickFilterTap(filter),
+        ),
+      ),
     ];
 
     return widgets.QuickFilters(

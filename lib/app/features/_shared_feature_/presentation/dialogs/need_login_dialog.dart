@@ -10,19 +10,33 @@ class NeedLoginDialog extends StatelessWidget {
   final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginDialog({Key? key, this.desc, this.img, this.title, this.mainPage, this.onSuccessLogin})
-      : super(key: key);
+  const NeedLoginDialog({
+    super.key,
+    this.desc,
+    this.img,
+    this.title,
+    this.mainPage,
+    this.onSuccessLogin,
+  });
 
   List<Widget> textActions(BuildContext context) => [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text("notNow".tr()),
-        ),
-        TextButton(
-          onPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: mainPage),
-          child: Text("signInButton".tr(), style: const TextStyle(fontWeight: FontWeight.bold)),
-        ),
-      ];
+    TextButton(
+      onPressed: () {
+        //todo check if close mini app needed
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      },
+      child: Text("notNow".tr()),
+    ),
+    TextButton(
+      onPressed: () =>
+          CommonFunctions.onLogin(isMunicipality: true, mainPage: mainPage),
+      child: Text(
+        "signInButton".tr(),
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    ),
+  ];
 
   Widget content({bool withoutActions = false}) {
     return NeedLoginWidget(

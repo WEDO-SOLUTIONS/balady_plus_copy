@@ -127,10 +127,10 @@ class StatusDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['code'] = code;
-    _data['message'] = message;
-    return _data;
+    final data = <String, dynamic>{};
+    data['code'] = code;
+    data['message'] = message;
+    return data;
   }
 }
 
@@ -366,6 +366,7 @@ class Details {
         selectedLocationTypeList!.isNotEmpty) {
       return selectedLocationTypeList![0].getName();
     }
+    return null;
   }
 
   String? getActivityId() {
@@ -373,6 +374,7 @@ class Details {
         selectedLocationTypeList!.isNotEmpty) {
       return selectedLocationTypeList![0].id;
     }
+    return null;
   }
 
   String getNumberOfDays() {
@@ -416,14 +418,16 @@ class Details {
   }
 
   String getStartPeriodDate() {
-    if (rentPeriodList?.first.rentalStartDate != null)
+    if (rentPeriodList?.first.rentalStartDate != null) {
       return getFormattedDate(rentPeriodList!.first.rentalStartDate);
+    }
     return "";
   }
 
   String getEndPeriodDate() {
-    if (rentPeriodList?.first.rentalEndDate != null)
+    if (rentPeriodList?.first.rentalEndDate != null) {
       return getFormattedDate(rentPeriodList!.first.rentalEndDate);
+    }
     return "";
   }
 
@@ -496,7 +500,7 @@ class Details {
   }
 
   String getMuncipalityAndSubMuncipality() {
-    return (municipality ?? "") + " - " + (subMunicipality ?? "");
+    return "${municipality ?? ""} - ${subMunicipality ?? ""}";
   }
 
   List<String> getCitiesOrRegions() {
@@ -683,19 +687,19 @@ class TargetedTourismActivity {
 
   factory TargetedTourismActivity.fromJson(Map<String, dynamic> json) =>
       TargetedTourismActivity(
-        pyCategory: json["pyCategory"] == null ? null : json["pyCategory"],
+        pyCategory: json["pyCategory"],
         pxCreateOperator:
-            json["pxCreateOperator"] == null ? null : json["pxCreateOperator"],
+            json["pxCreateOperator"],
         pxAttachedBy:
-            json["pxAttachedBy"] == null ? null : json["pxAttachedBy"],
-        pyTempText: json["pyTempText"] == null ? null : json["pyTempText"],
+            json["pxAttachedBy"],
+        pyTempText: json["pyTempText"],
       );
 
   Map<String, dynamic> toJson() => {
-        "pyCategory": pyCategory == null ? null : pyCategory,
-        "pxCreateOperator": pxCreateOperator == null ? null : pxCreateOperator,
-        "pxAttachedBy": pxAttachedBy == null ? null : pxAttachedBy,
-        "pyTempText": pyTempText == null ? null : pyTempText,
+        "pyCategory": pyCategory,
+        "pxCreateOperator": pxCreateOperator,
+        "pxAttachedBy": pxAttachedBy,
+        "pyTempText": pyTempText,
       };
 }
 
@@ -713,7 +717,7 @@ class CoOrdinatesList {
   factory CoOrdinatesList.fromJson(Map<String, dynamic> json) =>
       CoOrdinatesList(
         xCoordinate:
-            json["XCoordinate"] != null ? json["XCoordinate"].toDouble() : null,
+            json["XCoordinate"]?.toDouble(),
         pzInsKey: json["pzInsKey"],
         yCoordinate: json["YCoordinate"] != null
             ? json["YCoordinate"].toDouble()
@@ -741,22 +745,22 @@ class RentPeriodList {
     this.rentalEndDate,
   });
 
-  dynamic? dailyLeaseCost;
+  dynamic dailyLeaseCost;
   String? rentalStartDate;
   String? rentalEndDate;
 
   factory RentPeriodList.fromJson(Map<String, dynamic> json) => RentPeriodList(
         dailyLeaseCost:
-            json["DailyLeaseCost"] == null ? null : json["DailyLeaseCost"],
+            json["DailyLeaseCost"],
         rentalStartDate:
-            json["RentalStartDate"] == null ? null : json["RentalStartDate"],
+            json["RentalStartDate"],
         rentalEndDate:
-            json["RentalEndDate"] == null ? null : json["RentalEndDate"],
+            json["RentalEndDate"],
       );
 
   Map<String, dynamic> toJson() => {
-        "DailyLeaseCost": dailyLeaseCost == null ? null : dailyLeaseCost,
-        "RentalStartDate": rentalStartDate == null ? null : rentalStartDate,
-        "RentalEndDate": rentalEndDate == null ? null : rentalEndDate,
+        "DailyLeaseCost": dailyLeaseCost,
+        "RentalStartDate": rentalStartDate,
+        "RentalEndDate": rentalEndDate,
       };
 }

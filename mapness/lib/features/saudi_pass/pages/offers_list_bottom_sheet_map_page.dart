@@ -11,7 +11,9 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/features/saudi_pass/providers/get_all_offers_ids_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/offer_details_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_bottom_sheet_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_on_map_widget.dart';
 import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
@@ -20,9 +22,9 @@ import 'package:mapness/shared/hooks/multi_state_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
 
 class OfferListBottomSheetMapWidget extends HookConsumerWidget {
-  final List<String> offersId;
+  final List<Offer> list;
 
-  const OfferListBottomSheetMapWidget({required this.offersId, super.key});
+  const OfferListBottomSheetMapWidget({required this.list, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,41 +32,47 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     final l10n = context.l10n;
     final colors = context.colors;
     final mediaQueryHeight = MediaQuery.sizeOf(context).height;
-    const offersOneHeightOffset = 250.0;
+    double snapHeight(int n) {
+      const base = 120.0;
+      const stepPerItem = 100.0;
+
+      if (n <= 0) {
+        return 0.0;
+      }
+
+      return base + n * stepPerItem;
+    }
+
+    final allOffersHeight = snapHeight(list.length) + 30;
+    final allOffersSnapHeight = allOffersHeight > mediaQueryHeight ? mediaQueryHeight : allOffersHeight;
 
     final scrollController = useMultiStateSheetController(
       mapper: const PoiCardStateMapper(),
       initialState: PoiCardBottomSheetState.halfOpen,
       behavior: MultiSnappingBehavior(
         models: [
-          SizeSnappingModel({0.0, if (offersId.length == 1) offersOneHeightOffset else mediaQueryHeight}),
-          ComponentsSnappingModel(componentsDescriptions: [
-            SnapComponent.merge(
-              a: const SnapComponent.size(component: Components.header),
-              b: const SnapComponent.size(component: Components.footer),
-              merge: (a, b) => a + b,
-            ),
-          ])
+          SizeSnappingModel({0.0, allOffersSnapHeight}),
+          ComponentsSnappingModel(
+            componentsDescriptions: [
+              SnapComponent.merge(
+                a: const SnapComponent.size(component: Components.header),
+                b: const SnapComponent.size(component: Components.footer),
+                merge: (a, b) => a + b,
+              ),
+            ],
+          ),
         ],
       ),
     );
 
     final backgroundColor = context.colors.backgroundSurface4;
 
-    final offersAsync = ref.watch(getAllOffersIdsProvider(offersId));
-
-    if (offersAsync.isLoading) {
-      return const PoiLoadingOrErrorSheet(
-        sheetHeight: 250,
-        contentHeight: 200,
-        data: PoiLoading(),
-      );
-    }
-
-    final list = offersAsync.value ?? const <OfferDetails>[];
     final first = list.firstOrNull;
+    final lat = first?.location.latitude ?? '0.0';
+    final lon = first?.location.longitude ?? '0.0';
+    final distanceAsync = first != null ? ref.watch(offerDistanceProvider('$lat,$lon')).value : null;
 
-    final duration = first?.briefDurationTo;
+    final duration = distanceAsync;
     final durationString = switch (duration) {
       null => '',
       final n when n < 1 => '${(duration * 1000).toInt()} ${l10n.meter}',
@@ -81,22 +89,26 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              '${offersId.length} ${l10n.offers}',
-              style: context.textStyles.h4SemiBold,
-            ),
-            Text(
-              l10n.selectedLocation,
-              style: context.textStyles.bodySmallRegular,
-            ),
-          ]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${list.length} ${l10n.offers}',
+                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+              ),
+              Text(
+                l10n.selectedLocation,
+                style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+              ),
+            ],
+          ),
           uikit.AppButton.close(
             primaryIcon: uikit.SystemIcons.closeSmall,
             onTap: () async {
               await showMapOffers.removeMarker(offerPoiPinId);
-              context.router.popForced();
+              context.router.pop();
             },
+            padding: EdgeInsets.zero,
           ),
         ],
       ),
@@ -111,11 +123,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
       content: [OffersBottomSheetWidget(list)],
       footer: Container(
         width: double.infinity,
-        padding: const EdgeInsets.only(
-          left: uikit.Spacing.$4x,
-          right: uikit.Spacing.$4x,
-          bottom: uikit.Spacing.$4x,
-        ),
+        padding: const EdgeInsets.only(left: uikit.Spacing.$4x, right: uikit.Spacing.$4x, bottom: uikit.Spacing.$4x),
         child: uikit.AppButton(
           size: uikit.ButtonSize.large,
           primaryIcon: uikit.TransportIcons.locationDirectionNavigator,
@@ -130,7 +138,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     );
   }
 
-  void _openNavigationPage(BuildContext context, OfferDetails offer) {
+  void _openNavigationPage(BuildContext context, Offer offer) {
     context.router.push(
       RoutingRoutesRoute(
         points: [

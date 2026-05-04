@@ -12,12 +12,15 @@ import 'package:mapness/features/share_eta/ui/share_eta_btn_action.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:sheetify/toggle_sheet/toggle_sheet.dart';
 
 class ShareEtaBtn extends HookConsumerWidget {
   final int durationMinutes;
   final String? destination;
+  final ToggleSheetController sheetController;
 
-  const ShareEtaBtn({required this.durationMinutes, this.destination, Key? key}) : super(key: key);
+  const ShareEtaBtn({required this.durationMinutes, required this.sheetController, this.destination, Key? key})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,10 +44,7 @@ class ShareEtaBtn extends HookConsumerWidget {
       }
     });
 
-    final bool isEtaStreamLoading = streamService.maybeWhen(
-      loading: () => true,
-      orElse: () => false,
-    );
+    final bool isEtaStreamLoading = streamService.maybeWhen(loading: () => true, orElse: () => false);
 
     return ContentRow(
       onTap: () async {
@@ -60,33 +60,30 @@ class ShareEtaBtn extends HookConsumerWidget {
         }
       },
       options: ContentRowOptions(
-        wrapperColor: context.colors.staticWhite,
+        wrapperColor: context.colors.backgroundSurface1,
         wrapperEnabled: true,
         titleBuilder: (context) => Row(
           children: [
             Text(
               isPulseactive || isEtaStreamLoading ? context.l10n.routeIsSharing : context.l10n.shareTripProgress,
-              style: context.textStyles.bodyLargeRegular.copyWith(
-                color: context.colors.foregroundDefault,
-              ),
+              style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
             ),
             if (isPulseactive)
               Padding(
                 padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
-                child: PulseIndicator(
-                  color: connectionCode != null ? context.colors.errorDefault : null,
-                ),
-              )
+                child: PulseIndicator(color: connectionCode != null ? context.colors.errorDefault : null),
+              ),
           ],
         ),
         customActionWidget: Padding(
           padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
           child: ShareEtaBtnAction(
+            sheetController: sheetController,
             type: isEtaStreamLoading
                 ? ShareEtaBtnActionType.loading
                 : isPulseactive
-                    ? ShareEtaBtnActionType.active
-                    : ShareEtaBtnActionType.stoped,
+                ? ShareEtaBtnActionType.active
+                : ShareEtaBtnActionType.stoped,
           ),
         ),
       ),

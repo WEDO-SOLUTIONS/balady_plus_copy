@@ -13,7 +13,11 @@ class CustomSubCardsOfLargCard extends StatelessWidget {
       height: context.h(64.37),
       child: DecoratedBox(
           decoration: BoxDecoration(
-            color: const Color(0XFFE5EBED),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Color(0xFF012F41)
+                  : Color(0XFFE5EBED),
+
+
             borderRadius: BorderRadius.circular(16),
           ),
           child: Center(

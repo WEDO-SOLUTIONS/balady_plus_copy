@@ -9,13 +9,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../dependency_injection/dependency_injection_exports.dart' as di
-    show initialize;
-import '../../../features/_shared_feature_/shared_feature_exports.dart'
-    show DeviceDetails, PackageDetails;
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../../utils/utils_exports.dart' show AppConfig, CommonFunctions;
-import '../../services/services_exports.dart' show HiveManager;
 
 class Initializer {
   static Future<void> init() async {
@@ -26,7 +21,6 @@ class Initializer {
     await registerDeviceDetails();
     await registerPackageDetails();
 
-    await localizationInit();
 
     // await sentryInit();
   }
@@ -85,16 +79,6 @@ class Initializer {
     );
     await sl.unregister<PackageDetails>();
     sl.registerLazySingleton(() => details);
-  }
-
-  static Future<void> localizationInit() async {
-    await translator.init(
-      // localeType: LocalizationDefaultType.device, // based on device language
-      // localeType: LocalizationDefaultType.asDefined, // based on first element at languageList
-      localeType: LocalizationDefaultType.asDefined,
-      languagesList: AppConfig.defaultAppLanguage.languages,
-      assetsDirectory: AppConfig.appLanguagesPath,
-    );
   }
 
   static Future<void> sentryInit() async {

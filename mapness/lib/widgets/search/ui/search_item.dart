@@ -21,8 +21,10 @@ import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
+import 'package:mapness/widgets/search/ui/working_hours.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
+import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 const prefixMapping = {
@@ -67,7 +69,10 @@ class SearchItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String subtitle = result.subtitle;
+    String subtitle =(result.id?.objectId == 70030077050725730
+        ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
+        : (result.subtitle == 'تسوية' ? 'نطاق' : result.subtitle));
+    // String subtitle = result.subtitle;
     List<String> photosUrls = [];
     List<Item> photoItems = [];
 
@@ -87,9 +92,15 @@ class SearchItem extends ConsumerWidget {
     }
 
     final workingHours = result.openingHours?.toWorkingHours();
-    final now = DateTime.now();
-    final closedStatus = workingHours?.closedStatus(now, context.l10n) ?? '';
-    final closedStatusColors = workingHours?.colors(now, context.colors);
+    final soonThreshold = ref
+        .watch(workingHoursSoonThresholdProvider)
+        .maybeWhen(
+          data: (value) => value,
+          orElse: () => kDefaultWorkingHoursSoonThreshold,
+        );
+    final now = saudiTimeNow();
+    final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
+    final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
 
     return VisibilityDetector(
       key: Key('searchResult: ${result.id?.objectId}'),
@@ -104,10 +115,7 @@ class SearchItem extends ConsumerWidget {
                 ownerName: BssUIElementNames.searchResultList,
                 position: index + 1,
               ),
-              payload: BssPayload(
-                placeItem: result.toBss(index),
-                searchResultList: searchResultList,
-              ),
+              payload: BssPayload(placeItem: result.toBss(index), searchResultList: searchResultList),
             ),
           );
         }
@@ -137,24 +145,29 @@ class SearchItem extends ConsumerWidget {
                         style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                       ),
                       Spacing.$1x.heightBox,
-                      Text.rich(
-                        TextSpan(
-                          text: subtitle,
-                          children: [
-                            if (closedStatus.isNotEmpty)
-                              TextSpan(
-                                text: ' • ',
-                                style:
-                                    context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.textStyles.bodySmallRegular.copyWith(
+                                color: context.colors.foregroundDefault,
                               ),
-                            if (closedStatus.isNotEmpty)
-                              TextSpan(
-                                text: closedStatus,
-                                style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
-                              ),
-                          ],
-                        ),
-                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+                            ),
+                          ),
+                          if (closedStatus.isNotEmpty)
+                            Text(
+                              ' • ',
+                              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                            ),
+                          if (closedStatus.isNotEmpty)
+                            Text(
+                              closedStatus,
+                              style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
+                            ),
+                        ],
                       ),
                       Spacing.$1x.heightBox,
                       Row(
@@ -167,7 +180,9 @@ class SearchItem extends ConsumerWidget {
                                 Text(
                                   result.makeAddress(),
                                   maxLines: 1,
-                                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                                  style: context.textStyles.bodySmallRegular.copyWith(
+                                    color: context.colors.foregroundSoft,
+                                  ),
                                 ),
                                 if (offers.isNotEmpty)
                                   const Padding(

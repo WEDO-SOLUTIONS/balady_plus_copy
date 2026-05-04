@@ -2,7 +2,7 @@ group 'com.example.my_plugin'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.9.0'
+    ext.kotlin_version = '2.3.0'
     repositories {
         google()
         mavenCentral()
@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath 'com.android.tools.build:gradle:8.13.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -65,7 +65,7 @@ dependencies {
     // implementation (name: 'sdk-full-latest', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.8.0'
-    implementation 'com.huawei.hms:location:6.12.0.300'
+    implementation 'com.huawei.hms:location:6.16.0.302'
     implementation 'com.huawei.agconnect:agconnect-core:1.6.5.300'
     implementation 'com.huawei.hmf:tasks:1.5.2.301'
     implementation 'com.huawei.hms:base:6.5.0.300'

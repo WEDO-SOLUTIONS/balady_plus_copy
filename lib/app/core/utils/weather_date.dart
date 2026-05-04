@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:intl/intl.dart';
 
@@ -21,7 +19,8 @@ class WeatherDateFormatter {
   static String getAlertDay(String date) {
     final DateTime dateTime = DateTime.parse(date);
     return CommonFunctions.replaceArabicNumberWithEnglish(
-        DateFormat('EEEE, dd/MM/yyyy hh:mm a', 'ar').format(dateTime));
+      DateFormat('EEEE, dd/MM/yyyy hh:mm a', 'ar').format(dateTime),
+    );
   }
 
   static bool isToday(String date) {

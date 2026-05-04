@@ -32,11 +32,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const ShareMyLocationPage({
-    super.key,
-    this.closestPoint,
-    this.cameraConfig,
-  });
+  const ShareMyLocationPage({super.key, this.closestPoint, this.cameraConfig});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,18 +51,11 @@ class ShareMyLocationPage extends HookConsumerWidget {
     }
 
     final _bottomHeightNotifier = useState(0.0);
-    final _animationController = useAnimationController(
-      duration: const Duration(milliseconds: 300),
-    );
+    final _animationController = useAnimationController(duration: const Duration(milliseconds: 300));
 
-    final data = ref.watch(
-      poiMyLocationProvider(
-        closestPoint: closestPoint,
-        cameraConfig: cameraConfig,
-      ),
-    );
+    final data = ref.watch(poiMyLocationProvider(closestPoint: closestPoint, cameraConfig: cameraConfig));
 
-    final value = data.valueOrNull;
+    final value = data.value;
 
     final isAuthorized = value?.isAuthorized ?? false;
 
@@ -83,7 +72,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        context.router.popForced();
+        context.router.pop();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
           actions: [
@@ -97,14 +86,15 @@ class ShareMyLocationPage extends HookConsumerWidget {
         );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
 
         if (closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setLatitude(closestPoint!.latitude)
-          ..setLongitude(closestPoint!.longitude);
+          ..setLatitude(closestPoint.latitude)
+          ..setLongitude(closestPoint.longitude);
       }
     });
 
@@ -118,9 +108,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
           },
           child: BottomSheet(
             shape: ShapeBorder.lerp(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               const RoundedRectangleBorder(),
               0,
             ),
@@ -128,12 +116,9 @@ class ShareMyLocationPage extends HookConsumerWidget {
             onClosing: () => onClose(context, ref),
             showDragHandle: false,
             builder: (context) => Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
+              decoration: BoxDecoration(
+                color: context.colors.backgroundSurface2,
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
               ),
               width: double.infinity,
               child: Column(
@@ -161,7 +146,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
+                    padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : 0),
                     child: Text(
                       text,
                       style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
@@ -193,7 +178,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.router.popForced();
+    context.router.pop();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }

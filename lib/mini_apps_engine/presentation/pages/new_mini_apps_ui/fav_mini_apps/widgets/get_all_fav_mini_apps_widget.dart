@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
@@ -17,6 +16,10 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+      buildWhen: (previous, current) =>
+          previous.favoriteApps != current.favoriteApps ||
+          previous.isFavLoading != current.isFavLoading ||
+          previous.favError != current.favError,
       builder: (context, state) {
         if (state.isFavLoading) {
           return const FavPageShimmerLoadingWidget();
@@ -24,93 +27,102 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
 
         if (state.favError != null) {
           return Center(
-            child: Text(
-              state.favError!,
-              style: const TextStyle(color: Colors.red),
-            ),
+            child: Text(state.favError!, style: const TextStyle(color: Colors.red)),
           );
         }
 
-        return ReorderableListView.builder(
-          // Changed to ReorderableListView
-          padding: EdgeInsets.zero,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: state.favoriteApps.length,
-          onReorder: (oldIndex, newIndex) {
-            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(oldIndex, newIndex);
-          },
-          itemBuilder: (context, index) {
-            final favApp = state.favoriteApps[index];
-            return Padding(
-              key: Key(favApp.id),
-              padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
-              child: SizedBox(
-                key: Key(favApp.id), // Important: Add key for reordering
-                width: context.screenWidth,
-                height: context.h(64),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: const Color(0XFFFFFFFF),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0XFFEFEEEE),
+        if (state.favoriteApps.isEmpty) {
+          return const SizedBox();
+        }
+
+        final itemHeight = context.h(64) + context.screenHeight * 0.01;
+        final listHeight = itemHeight * state.favoriteApps.length;
+
+
+        return SizedBox(
+          height: listHeight,
+          child: ReorderableListView.builder(
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: state.favoriteApps.length,
+            proxyDecorator: (Widget child, int index, Animation<double> animation) {
+              return AnimatedBuilder(
+                animation: animation,
+                builder: (BuildContext context, Widget? child) {
+                  return Material(color: Colors.transparent, elevation: 0, child: child);
+                },
+                child: child,
+              );
+            },
+            onReorder: (oldIndex, newIndex) {
+              context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(oldIndex, newIndex);
+            },
+            itemBuilder: (context, index) {
+              final favApp = state.favoriteApps[index];
+
+              return Padding(
+                key: ValueKey('fav_${favApp.id}'),
+                padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
+                child: SizedBox(
+                  width: context.screenWidth,
+                  height: context.h(64),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(15)),
                     ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.screenWidth * 0.01,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            AppsGroupMiniAppsCardWidgets(
-                              width: context.w(48.09228515625),
-                              height: context.h(48.09228515625),
-                              iconHeight: context.h(37.73630905151367),
-                              iconWidth: context.w(37.73630905151367),
-                              isTextRemove: true,
-                              iconPath: favApp.iconPath,
-                              radius: 12.7,
-                            ),
-                            SizedBox(
-                              width: context.screenWidth * 0.02,
-                            ),
-                            CustomSubHeadingText(
-                              width: context.w(192),
-                              height: context.h(30),
-                              text: favApp.name,
-                              fontColor: const Color(0XFF1E2A36),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            CustomMiniAppSwitch(
-                              isActive: true,
-                              onChanged: (_) {
-                                context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
-                              },
-                            ),
-                            // Drag handle - make it more prominent
-                            const Icon(
-                              Icons.drag_indicator_rounded,
-                              color: Color(0x99002A46),
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                      ],
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              AppsGroupMiniAppsCardWidgets(
+                                width: context.w(48.09228515625),
+                                height: context.h(48.09228515625),
+                                iconHeight: context.h(37.73630905151367),
+                                iconWidth: context.w(37.73630905151367),
+                                isTextRemove: true,
+                                iconPath: favApp.iconPath,
+                                radius: 12.7,
+                              ),
+                              SizedBox(width: context.screenWidth * 0.02),
+                              CustomSubHeadingText(
+                                width: context.w(192),
+                                height: context.h(30),
+                                text: favApp.name,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              CustomMiniAppSwitch(
+                                isActive: true,
+                                onChanged: (_) {
+                                  context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
+                                },
+                              ),
+                              Icon(
+                                Icons.drag_indicator_rounded,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Theme.of(context).colorScheme.onSurface.withAlpha(90)
+                                    : Theme.of(context).hoverColor,
+                                size: 20,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       },
     );

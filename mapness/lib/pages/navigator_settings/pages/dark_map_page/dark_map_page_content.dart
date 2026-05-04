@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -14,6 +15,7 @@ class DarkMapPageContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dark = ref.watch(darkModeProvider);
+    const darkModes = DarkMapStateEnum.values;
 
     return Padding(
       padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
@@ -25,7 +27,7 @@ class DarkMapPageContent extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(RadiusBorder.xl),
               child: Image.asset(
-                dark.valueOrNull?.isDark ?? false
+                dark.value?.isDark ?? false
                     ? Assets.images.darkMapPreview.keyName
                     : Assets.images.lightMapPreview.keyName,
                 fit: BoxFit.cover,
@@ -37,24 +39,20 @@ class DarkMapPageContent extends ConsumerWidget {
               ),
             ),
           ),
-          ContentWrapper(
-            color: context.colors.backgroundSurface1,
-            children: DarkMapStateEnum.values
-                .map<Widget>(
-                  (e) => DarkMapModeRowWidget(
-                    currentMode: e,
-                  ),
-                )
-                .insertBetween(
-                  Divider(
-                    height: 0.5,
-                    color: context.colors.borderSoft,
-                    thickness: 1,
-                    indent: Spacing.$4x,
-                    endIndent: 0,
-                  ),
-                )
-                .toList(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: ContentWrapper(
+                color: context.colors.backgroundSurface1,
+                children: darkModes
+                    .mapIndexed<Widget>(
+                      (i, e) => DarkMapModeRowWidget(
+                        currentMode: e,
+                        dividerEnabled: i < darkModes.length - 1,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
           ),
         ].insertBetween(Spacing.$4x.heightBox).toList(),
       ),

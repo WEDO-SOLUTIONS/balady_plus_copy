@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'eta_status_model.freezed.dart';
 
 @freezed
-class EtaStatusModel with _$EtaStatusModel {
+abstract class EtaStatusModel with _$EtaStatusModel {
   factory EtaStatusModel({
     required bool status,
     String? streamId,

@@ -9,37 +9,37 @@ abstract class CameraEvent extends Equatable {
 
 class TakePhoto extends CameraEvent {
   // final AttachmentItem? file;
-  TakePhoto();
+  const TakePhoto();
 }
 
 class ReTakePhotoEvent extends CameraEvent {
   // final AttachmentItem? file;
-  ReTakePhotoEvent();
+  const ReTakePhotoEvent();
 }
 
 class InitCameraEvent extends CameraEvent {
-  InitCameraEvent();
+  const InitCameraEvent();
 }
 
 class OnNewCameraSelected extends CameraEvent {
-  OnNewCameraSelected();
+  const OnNewCameraSelected();
 }
 
 class SetZoomLevelEvent extends CameraEvent {
   final double zoom;
-  SetZoomLevelEvent({required this.zoom});
+  const SetZoomLevelEvent({required this.zoom});
 }
 
 class ToggleCameraFlashEvent extends CameraEvent {
-  ToggleCameraFlashEvent();
+  const ToggleCameraFlashEvent();
 }
 
 class UpdateScaleLevelEvent extends CameraEvent {
   final double scale;
-  UpdateScaleLevelEvent({required this.scale});
+  const UpdateScaleLevelEvent({required this.scale});
 }
 
 class ShowLoading extends CameraEvent {
   final bool status;
-  ShowLoading({required this.status});
+  const ShowLoading({required this.status});
 }

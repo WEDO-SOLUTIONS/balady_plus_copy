@@ -42,7 +42,7 @@ class DgisScrollPosition extends ScrollPositionWithSingleContext {
     super.keepScrollOffset,
     super.oldPosition,
     super.debugLabel,
-  })  : _listener = listener {
+  }) : _listener = listener {
     _listener.position = this;
   }
 

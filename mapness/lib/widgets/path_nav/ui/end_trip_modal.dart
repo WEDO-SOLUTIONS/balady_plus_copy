@@ -20,34 +20,39 @@ class EndTripModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomsheetController = useToggleSheetController(
-      onClose: (_) => Navigator.of(context).pop(),
-    );
+    final bottomsheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
 
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-    final leftPadding = MediaQuery.viewPaddingOf(context).left + (isLandscape ? Spacing.$4x : 0.0);
+
+    final mediaQueryPadding = MediaQuery.paddingOf(context);
+    final left = mediaQueryPadding.left;
+    final right = mediaQueryPadding.right;
+    final width = NaviSheetPanel.landscapeWidth + left + right;
 
     return Align(
       alignment: Alignment.bottomLeft,
       child: Padding(
-        padding: EdgeInsets.only(left: leftPadding),
-        child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxWidth: isLandscape ? NaviSheetPanel.landscapeWidth - Spacing.$4x * 2 : double.infinity),
+        padding: EdgeInsets.only(left: isLandscape ? Spacing.$3x : 0.0),
+        child: SizedBox(
+          width: isLandscape ? width : double.infinity,
           child: ToggleSheet(
             backgroundColor: context.colors.backgroundSurface1,
             safeAreaColor: context.colors.backgroundSurface1,
             dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface1),
+            useSafeArea: false,
             scrollController: bottomsheetController,
             barrierColorDelegate: barrierColorDelegate,
             content: [
               Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(
-                      Spacing.$2x,
+                    padding: const EdgeInsets.all(Spacing.$2x),
+                    child: Center(
+                      child: Text(
+                        context.l10n.endTrip,
+                        style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+                      ),
                     ),
-                    child: Center(child: Text(context.l10n.endTrip, style: context.textStyles.h3SemiBold)),
                   ),
                   PositionedDirectional(
                     end: Spacing.$4x,
@@ -69,7 +74,10 @@ class EndTripModal extends HookWidget {
                   primaryLabel: context.l10n.yesEnd,
                   size: ButtonSize.large,
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  onTap: onEndTripPressed,
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onEndTripPressed?.call();
+                  },
                 ),
               ),
               const SizedBox(height: Spacing.$3x),

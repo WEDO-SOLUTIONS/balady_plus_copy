@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'collect_feedback.g.dart';
@@ -13,26 +15,15 @@ class CollectFeedback extends _$CollectFeedback {
   @override
   AppFeedbackPayload? build() => null;
 
-  Future<void> collectFeedback({
-    required int stars,
-    FeedbackSource? source,
-    String? text,
-    List<String>? tags,
-  }) async {
+  Future<void> collectFeedback({required int stars, FeedbackSource? source, String? text, List<String>? tags}) async {
     final deviceContext = await ref.read(deviceInfoProvider.future);
 
     _storeLink?.close();
     _storeLink = ref.keepAlive();
 
     state = AppFeedbackPayload(
-      review: AppFeedbackReview(
-        stars: stars,
-        tags: tags,
-        text: text,
-      ),
-      context: deviceContext.copyWith(
-        feedbackSource: source,
-      ),
+      review: AppFeedbackReview(stars: stars, tags: tags, text: text),
+      context: deviceContext.copyWith(feedbackSource: source),
     );
   }
 
@@ -40,3 +31,5 @@ class CollectFeedback extends _$CollectFeedback {
     _storeLink?.close();
   }
 }
+
+class MockCollectFeedback extends _$CollectFeedback with Mock implements CollectFeedback {}

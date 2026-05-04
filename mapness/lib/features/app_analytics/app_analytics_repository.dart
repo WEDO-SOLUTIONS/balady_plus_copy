@@ -58,6 +58,10 @@ abstract interface class AppAnalyticsRepository {
 
   void carPlayConnected();
 
+  void poiContributionUsed({required String type});
+
+  void isNavigationUser({bool isNavUser});
+
   Future<void> deviceTypeDetected();
 
   void networkConnectionType({required String type});

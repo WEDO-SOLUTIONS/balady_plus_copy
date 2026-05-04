@@ -71,8 +71,9 @@ class _FormDatePickerState extends State<FormDatePicker> {
             initialDateForm: _dateForm,
             onChange: (dateForm) {
               setState(() => _dateForm = dateForm);
-              if (_selectedDate != null)
+              if (_selectedDate != null) {
                 widget.onChange(_selectedDate!, _dateForm);
+              }
             },
           ),
         ),

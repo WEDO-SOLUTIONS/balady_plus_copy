@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,13 +17,13 @@ class SelectedMarker extends _$SelectedMarker {
   Marker? build() => null;
 
   MapObjectManager get mapObjectManager => ref.read(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-        ).notifier,
-      );
+    mapObjectManagerProvider(
+      named: settings.name,
+      layerId: settings.layerId,
+    ).notifier,
+  );
 
-  Future<void> showMarker(Marker marker, {MapObjectManagerSettings? settings}) async {
+  Future<void> showMarker(Marker marker, {MapObjectManagerSettings? settings, int? objectId}) async {
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
         named: settings?.name ?? searchSettings.name,
@@ -34,13 +33,9 @@ class SelectedMarker extends _$SelectedMarker {
 
     _showHiddenMarkerIfPresent();
 
-    final position = LatLng(
-      latitude: marker.options.position.latitude,
-      longitude: marker.options.position.longitude,
-    );
+    final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
     final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
       _hideMarker(currentSearchMarker);
     }
 
@@ -79,5 +74,11 @@ class SelectedMarker extends _$SelectedMarker {
       marker.id,
       ChangeMarkerOptionsMessage(isVisible: marker.options.isVisible = isVisible),
     );
+  }
+
+  Future<void> clear() async {
+    await mapObjectManager.removeAllMarkers();
+    _showHiddenMarkerIfPresent();
+    state = null;
   }
 }

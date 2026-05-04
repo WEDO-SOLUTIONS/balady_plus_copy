@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/schedule/drum_picker_widget.dart';
 import 'package:mapness/widgets/feedback/schedule/feedback_scroll_handle_widget.dart';
 import 'package:mapness/widgets/feedback/schedule/gradiented_opacity_widget.dart';
+import 'package:provider/provider.dart';
 
 class FeedbackTimeSelectSheet extends StatefulWidget {
   /// be aware that it defaults to nearest divisible by timeStep
@@ -35,8 +38,10 @@ class FeedbackTimeSelectSheet extends StatefulWidget {
 }
 
 class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
-  late final IList<int> _timeValues =
-      Iterable.generate(24 * 60 ~/ widget.timeStep, (i) => i * widget.timeStep).toIList();
+  late final IList<int> _timeValues = Iterable.generate(
+    24 * 60 ~/ widget.timeStep,
+    (i) => i * widget.timeStep,
+  ).toIList();
 
   late int _selectedStart;
   late int _selectedEnd;
@@ -60,9 +65,9 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
 
     return Container(
       padding: const EdgeInsets.all(Spacing.$4x),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: context.colors.backgroundSurface4,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(Spacing.$4x),
           topRight: Radius.circular(Spacing.$4x),
         ),
@@ -131,7 +136,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
 
@@ -144,16 +149,16 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
           /// no breaks toggle
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(
-                widget.toggleTitle,
-                style: context.textStyles.bodyLargeRegular,
-              ),
-              Toggle(
-                value: _isNoBreaksSelected,
-                onChanged: (value) => setState(() => _isNoBreaksSelected = value),
-              )
-            ]),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  widget.toggleTitle,
+                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                ),
+                Toggle(value: _isNoBreaksSelected, onChanged: (value) => setState(() => _isNoBreaksSelected = value)),
+              ],
+            ),
           ),
           const SizedBox(height: 12),
 
@@ -164,8 +169,9 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
               Expanded(
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetClose,
+                  buttonType: ButtonType.secondary,
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  onTap: () => context.router.popForced(),
+                  onTap: () => context.router.pop(),
                 ),
               ),
               const SizedBox(width: 8),
@@ -189,12 +195,13 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
 
   Widget _timeItemBuilder(BuildContext context, int minutes) {
     final time = _timeOfDayFromMinutes(minutes);
-
+    final themeController = Provider.of<ThemeController>(context, listen: false);
+    final colors = AppColorsThemeV3.palette(themes: BaladyAppThemes.light);
     return Center(
       child: Text(
         time.format(context),
         style: context.textStyles.h2Medium.copyWith(
-          color: _isNoBreaksSelected ? context.colors.foregroundMuted : context.colors.foregroundSoft,
+          color: _isNoBreaksSelected ? colors.foregroundMuted : colors.foregroundSoft,
         ),
       ),
     );
@@ -230,11 +237,9 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       end: _timeOfDayFromMinutes(_selectedEnd),
     );
 
-    widget.onSave(
-      _isNoBreaksSelected ? null : selectedStartEnd,
-    );
+    widget.onSave(_isNoBreaksSelected ? null : selectedStartEnd);
 
-    context.router.popForced();
+    context.router.pop();
   }
 }
 

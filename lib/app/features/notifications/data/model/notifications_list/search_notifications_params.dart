@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 
 class SearchNotificationsParams {
   String? query;

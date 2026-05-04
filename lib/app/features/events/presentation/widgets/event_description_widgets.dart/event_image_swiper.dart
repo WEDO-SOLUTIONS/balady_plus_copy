@@ -8,7 +8,7 @@ import '../../bloc/events_state.dart';
 
 class EventImageSwiper extends StatefulWidget {
   final Function(String img) onChange;
-  EventImageSwiper({super.key, required this.onChange});
+  const EventImageSwiper({super.key, required this.onChange});
 
   @override
   State<EventImageSwiper> createState() => _EventImageSwiperState();
@@ -33,7 +33,7 @@ class _EventImageSwiperState extends State<EventImageSwiper> {
                   setState(() {
                     _currentIndex = index;
                   });
-                  widget.onChange(state.eventDetails.pictures![index]!.url!);
+                  widget.onChange(state.eventDetails.pictures![index].url!);
                 },
                 child: Container(
                   width: index == _currentIndex ? 122 : 90,

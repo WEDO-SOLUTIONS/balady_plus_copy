@@ -9,13 +9,13 @@ class CustomCircularLoadingWidget extends StatelessWidget {
   final double circularWidth;
   final double circularHeight;
   const CustomCircularLoadingWidget({
-    Key? key,
+    super.key,
     this.backgroundCircularColor = /*AppColor.primary900Light*/
         const Color(0xff389492),
     this.loadingColor = AppColor.white,
     this.circularWidth = 60.0,
     this.circularHeight = 60.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

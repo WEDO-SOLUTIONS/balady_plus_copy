@@ -38,7 +38,7 @@ class LayersRepositories {
   LayersRepositories({required this.webService});
 
   Future<List<Layers>?> getMinLayers() async {
-    var layersType;
+    Response<dynamic> layersType;
     try {
       layersType = await webService.dio.get(
         Constants.mainUrl,
@@ -58,7 +58,7 @@ class LayersRepositories {
                 element.id != 9)
             .toList();
       }
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -109,7 +109,7 @@ class LayersRepositories {
 
   Future<List<PointLayersData>?> getPointsInLayers(
       {required MapRequestParams params}) async {
-    var points;
+    Response<dynamic> points;
     try {
       String q = "${Constants.mainUrl}/${params.layer.layerId}/query?";
       params.toMap().forEach((key, value) {
@@ -185,7 +185,7 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
       }
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -263,7 +263,7 @@ class LayersRepositories {
       bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
       final response = await webService.dio.get(
-        sl<EnvType>().domain + "v1/ims/investment-details",
+        "${sl<EnvType>().domain}v1/ims/investment-details",
         queryParameters: {
           'Type': type,
           'RFPID': investmentId,
@@ -287,6 +287,7 @@ class LayersRepositories {
         ),
       );
     }
+    return null;
   }
 
   Future<RentalDetailsResponse?> getTempRentalDetails(
@@ -295,7 +296,7 @@ class LayersRepositories {
       bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
       final response = await webService.dio.get(
-        sl<EnvType>().domain + "v1/ims/temp-rental-details",
+        "${sl<EnvType>().domain}v1/ims/temp-rental-details",
         queryParameters: {
           'Type': type,
           'RFPID': investmentId,
@@ -319,5 +320,6 @@ class LayersRepositories {
         ),
       );
     }
+    return null;
   }
 }

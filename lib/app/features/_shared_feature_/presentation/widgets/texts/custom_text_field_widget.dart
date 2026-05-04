@@ -384,7 +384,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final bool? showOptional;
 
   const CustomTextFieldWidgetWithOptinal(
-      {Key? key,
+      {super.key,
       required this.label,
       this.labelColor = AppColor.baladyDarkGreen2,
       this.labelSize = 13.0,
@@ -427,8 +427,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
       this.validator,
       this.onTap,
       this.inputFormatter,
-      this.showOptional})
-      : super(key: key);
+      this.showOptional});
 
   @override
   Widget build(BuildContext context) {

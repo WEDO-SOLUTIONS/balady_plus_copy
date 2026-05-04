@@ -6,32 +6,24 @@ class AddImageButton extends StatelessWidget {
   final void Function() onTap;
   final double size;
 
-  const AddImageButton({
-    required this.onTap,
-    required this.size,
-    super.key,
-  });
+  const AddImageButton({required this.onTap, required this.size, super.key});
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.l),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          child: SizedBox(
-            height: size,
-            width: size,
-            child: ColoredBox(
-              color: context.colors.backgroundSurface1,
-              child: Center(
-                child: Icon(
-                  GeneralIcons.photo,
-                  color: context.colors.accentDefault,
-                  size: size * .4,
-                ),
-              ),
-            ),
+    borderRadius: BorderRadius.circular(21),
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(21),
+      child: SizedBox(
+        height: size,
+        width: size,
+        child: ColoredBox(
+          color: context.colors.backgroundSurface1,
+          child: Center(
+            child: Icon(GeneralIcons.photo, color: context.colors.accentDefault, size: size * .4),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

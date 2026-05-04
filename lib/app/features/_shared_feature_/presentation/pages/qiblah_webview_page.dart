@@ -71,7 +71,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 onLoadStart: (controller, Uri? url) async {},
                 onLoadStop: (controller, Uri? url) async {
                   print(url);
-                  if (mounted)
+                  if (mounted) {
                     Timer(const Duration(seconds: 1), () async {
                       await _controller?.evaluateJavascript(
                           source: "document.getElementsByClassName('mat-raised-button')[0].click()");
@@ -94,6 +94,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                                 "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
                       });
                     });
+                  }
                 },
                 onLoadError: (controller, url, code, message) => print(message),
                 onProgressChanged: (controller, int progress) {

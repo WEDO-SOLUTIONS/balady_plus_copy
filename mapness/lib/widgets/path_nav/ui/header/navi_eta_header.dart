@@ -1,9 +1,12 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:balady_uikit/core/widgets/dragger.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
@@ -32,12 +35,14 @@ class EtaHeader extends HookConsumerWidget {
   final VoidCallback onEndTripPressed;
   final VoidCallback onContinuePressed;
   final ToggleSheetController sheetController;
+  final ValueListenable<bool> isSwitchingToFoot;
 
   const EtaHeader({
     required this.onEndTripPressed,
     required this.onContinuePressed,
     required this.sheetController,
     required this.state,
+    required this.isSwitchingToFoot,
     this.onSearchPressed,
     this.onTapRoute,
     super.key,
@@ -53,13 +58,12 @@ class EtaHeader extends HookConsumerWidget {
       ..watch(websocketTypeProvider.select((_) => null))
       ..watch(shareEtaProvider.select((_) => null));
 
-    final backgroundColor =
-        state == PathNavState.paused ? context.colors.accentSecondaryDefault : context.colors.backgroundSurface1;
+    final backgroundColor = state == PathNavState.paused
+        ? context.colors.accentSecondaryDefault
+        : context.colors.onMapSurfaceOnMap;
 
     /// Animating hide and close buttons based on the sheet interpolation.
-    final animation = useAnimationController(
-      initialValue: sheetController.isClosed ? 1.0 : 0.0,
-    );
+    final animation = useAnimationController(initialValue: sheetController.isClosed ? 1.0 : 0.0);
     useEffect(() {
       final listener = () {
         animation.value = sheetController.interpolation;
@@ -98,74 +102,92 @@ class EtaHeader extends HookConsumerWidget {
             child: SizedBox(
               height: 60,
               child: Padding(
-                padding: const EdgeInsets.only(
-                  top: Spacing.$1x,
-                  right: Spacing.$3x,
-                  left: Spacing.$3x,
-                ),
+                padding: const EdgeInsets.only(top: Spacing.$1x, right: Spacing.$3x, left: Spacing.$3x),
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: Spacing.$2x,
-                    ),
+                    const Dragger(),
+                    const SizedBox(height: Spacing.$1x),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment:
-                          state != PathNavState.finished ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                      crossAxisAlignment: state != PathNavState.finished
+                          ? CrossAxisAlignment.start
+                          : CrossAxisAlignment.center,
                       children: [
                         if (state != PathNavState.paused)
-                          if (!landscape && onSearchPressed != null || state == PathNavState.finished)
+                          ValueListenableBuilder<bool>(
+                            valueListenable: isSwitchingToFoot,
+                            builder: (context, isSwitching, child) {
+                              if (isSwitching) {
+                                return const SizedBox(
+                                  height: 32,
+                                  width: 32,
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (!landscape && onSearchPressed != null || state == PathNavState.finished) {
+                                return _Button(icon: SystemIcons.search, onTap: onSearchPressed!);
+                              }
+                              return onTapRoute != null
+                                  ? _Button(icon: GeneralIcons.routeStroke, onTap: onTapRoute!)
+                                  : SizedBox(width: ButtonSize.small.height);
+                            },
+                          ),
+                        Expanded(
+                          child: switch (state) {
+                            PathNavState.running => _RunningStateTitle(eta: eta),
+                            PathNavState.finished => const _FinishedStateTitle(),
+                            PathNavState.paused => _PausedStateTitle(eta: eta),
+                          },
+                        ),
+                        if (state != PathNavState.paused)
+                          if (state == PathNavState.finished)
                             _Button(
-                              icon: SystemIcons.search,
-                              onTap: onSearchPressed!,
+                              icon: SystemIcons.close,
+                              onTap: () {
+                                openEndTripSheet(context);
+                              },
                             )
                           else
-                            onTapRoute != null
-                                ? _Button(
-                                    icon: GeneralIcons.routeStroke,
-                                    onTap: onTapRoute!,
-                                  )
-                                : SizedBox(width: ButtonSize.small.height),
-                        Expanded(
-                            child: switch (state) {
-                          PathNavState.running => _RunningStateTitle(eta: eta),
-                          PathNavState.finished => const _FinishedStateTitle(),
-                          PathNavState.paused => _PausedStateTitle(eta: eta),
-                        }),
-                        if (state != PathNavState.paused)
-                          ListenableBuilder(
-                            listenable: isClosedButtonVisible,
-                            builder: (context, _) => Stack(
-                              children: [
-                                IgnorePointer(
-                                  ignoring: !isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('hide_button'),
-                                    opacity: ReverseAnimation(animation),
-                                    child: _Button(
-                                      icon: SystemIcons.arrowCornerDownLarge,
-                                      onTap: () {
-                                        sheetController.close(duration: Durations.long1);
-                                      },
+                            ListenableBuilder(
+                              listenable: isClosedButtonVisible,
+                              builder: (context, _) => Stack(
+                                children: [
+                                  IgnorePointer(
+                                    ignoring: !isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('hide_button'),
+                                      opacity: ReverseAnimation(animation),
+                                      child: _Button(
+                                        icon: SystemIcons.arrowCornerDownLarge,
+                                        onTap: () {
+                                          sheetController.close(duration: Durations.long1);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IgnorePointer(
-                                  ignoring: isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('close_button'),
-                                    opacity: animation,
-                                    child: _Button(
-                                      icon: SystemIcons.close,
-                                      onTap: () {
-                                        openEndTripSheet(context);
-                                      },
+
+                                  IgnorePointer(
+                                    ignoring: isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('close_button'),
+                                      opacity: animation,
+                                      child: _Button(
+                                        icon: SystemIcons.close,
+                                        onTap: () {
+                                          openEndTripSheet(context);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                       ],
                     ),
                   ],
@@ -179,32 +201,27 @@ class EtaHeader extends HookConsumerWidget {
   }
 
   void openEndTripSheet(BuildContext context) => showModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        barrierColor: Colors.transparent,
-        context: context,
-        builder: (_) => EndTripModal(
-          onEndTripPressed: onEndTripPressed,
-        ),
-      );
+    backgroundColor: Colors.transparent,
+    barrierColor: Colors.transparent,
+    isScrollControlled: true,
+    context: context,
+    builder: (_) => EndTripModal(onEndTripPressed: onEndTripPressed),
+  );
 }
 
 class _Button extends StatelessWidget {
   final IconData? icon;
   final VoidCallback onTap;
 
-  const _Button({
-    required this.onTap,
-    this.icon,
-    Key? key,
-  }) : super(key: key);
+  const _Button({required this.onTap, this.icon, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => AppButton(
-        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
-        size: ButtonSize.small,
-        primaryIcon: icon,
-        buttonType: ButtonType.secondary,
-        buttonColorScheme: ButtonColorScheme.neutral,
-        onTap: onTap,
-      );
+    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
+    size: ButtonSize.small,
+    primaryIcon: icon,
+    buttonType: ButtonType.secondary,
+    buttonColorScheme: ButtonColorScheme.neutral,
+    onTap: onTap,
+  );
 }

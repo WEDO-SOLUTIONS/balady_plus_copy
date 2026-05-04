@@ -7,8 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/saudi_pass/functions/create_amount_or_ratio_text_span.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/features/saudi_pass/providers/offer_details_provider.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 import 'saudi_pass_image.dart';
@@ -16,35 +19,32 @@ import 'saudi_pass_image.dart';
 class OffersBottomSheetWidget extends StatelessWidget {
   const OffersBottomSheetWidget(this.offers, {super.key});
 
-  final List<OfferDetails> offers;
+  final List<Offer> offers;
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
-        decoration: BoxDecoration(
-          color: context.colors.backgroundSurface1,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: offers
-              .map<Widget>((e) => _OfferViewWidgetDetails(e))
-              .insertBetween(
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
-                  child: Divider(
-                    height: 1,
-                    color: context.colors.borderDefault,
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      );
+    margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface1,
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: offers
+          .map<Widget>((e) => _OfferViewWidgetDetails(e))
+          .insertBetween(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+              child: Divider(height: 1, color: context.colors.borderDefault),
+            ),
+          )
+          .toList(),
+    ),
+  );
 }
 
 class _OfferViewWidgetDetails extends ConsumerWidget {
-  final OfferDetails offerDetails;
+  final Offer offerDetails;
 
   const _OfferViewWidgetDetails(this.offerDetails);
 
@@ -59,26 +59,53 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
     );
 
     final amountOrRatioTextSpan = createAmountOrRatioTextSpan(
-      amount: offerDetails.typeDetails.amount,
-      ratio: offerDetails.typeDetails.ratio,
+      amount: offerDetails.typeDetails?.amount,
+      ratio: offerDetails.typeDetails?.ratio,
       language: ref.watch(appLanguageProvider),
       locale: Localizations.localeOf(context),
       iconSize: 12,
     );
     final offerImage = offerDetails.images.firstOrNull;
 
+    final offerGroup = offerDetails.offerGroup;
+    final gradientColors = offerGroup.color;
+    final path = offerGroup.imagePath;
+
+    final fallbackWidget = DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors ?? OffersGroup.others.color,
+          begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+          end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
+        ),
+      ),
+      child: Image.asset(
+        path ?? OffersGroup.others.imagePath,
+        fit: BoxFit.cover,
+        alignment: AlignmentDirectional.centerEnd,
+        matchTextDirection: true,
+      ),
+    );
+
     return InkWell(
-      onTap: () => context.router.push(OfferRoute(offerId: offerDetails.id)),
+      onTap: () {
+        ref.read(currentSelectedOfferProvider.notifier).state = offerDetails;
+        context.router.push(OfferRoute(offerId: offerDetails.id));
+      },
       child: Padding(
         padding: const EdgeInsets.all(Spacing.$3x).copyWith(left: Spacing.$4x),
         child: Row(
           children: [
-            if (offerImage != null)
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
               child: SizedBox.square(
                 dimension: Spacing.$12x,
-                child:  SaudiPassImage(imageId: offerDetails.provider.logo),
+                child: offerImage != null && offerDetails.provider.logo.isNotEmpty
+                    ? SaudiPassImage(
+                        imageId: offerDetails.provider.logo,
+                        errorWidget: fallbackWidget,
+                      )
+                    : fallbackWidget,
               ),
             ),
             const SizedBox(width: Spacing.$3x),
@@ -90,7 +117,10 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
                     TextSpan(
                       children: [
                         if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
-                        TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
+                        TextSpan(
+                          text: ' • ',
+                          style: TextStyle(color: colors.neutralMuted),
+                        ),
                         TextSpan(text: offerDetails.name),
                         WidgetSpan(
                           child: Padding(
@@ -99,32 +129,32 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
                           ),
                         ),
                       ],
-                      style: textStyles.bodySmallSemiBold,
+                      style: textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerDetails.description,
-                    style: textStyles.captionMediumRegular,
+                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerDetails.branchName,
-                    style: textStyles.captionMediumRegular,
+                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     '${context.l10n.saudiPassOfferBy} $byDate',
-                    style: byDateStyle,
+                    style: byDateStyle.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                   ),
                 ],
               ),
             ),
-            SystemIcons.arrowCornerRightSmall.icon()
+            SystemIcons.arrowCornerRightSmall.icon(color: context.colors.foregroundDefault),
           ],
         ),
       ),

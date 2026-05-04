@@ -218,99 +218,97 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   StreamSubscription _initEventChannel() {
-    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
-      (event) {
-        final map = event as Map<dynamic, dynamic>;
-        switch (map['event']) {
-          case MyLocationTapEvent.name:
-            return _objectTapEventHandler.myLocationTapEvent(map);
-          case ZoomControlEnabledEvent.zoomInEvent:
-            return _zoomEventHandler.zoomInEvent(map);
-          case ZoomControlEnabledEvent.zoomOutEvent:
-            return _zoomEventHandler.zoomOutEvent(map);
-          case LocationEnabledEvent.name:
-            return _locationEventHandler.enabledEvent(map);
-          case LocationFollowEvent.name:
-            return _locationEventHandler.followEvent(map);
-          case IndoorLevelsEvent.name:
-            return _indoorEventHandler.levelNamesEvent(map);
-          case HideIndoorLevelsEvent.name:
-            return _indoorEventHandler.hideLevelsEvent();
-          case IndoorActiveLevelEvent.name:
-            return _indoorEventHandler.activeLevelEvent(map);
-          case ObjectTapEvent.name:
-            return _objectTapEventHandler.objectTapEvent(map);
+    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen((event) {
+      final map = event as Map<dynamic, dynamic>;
+      switch (map['event']) {
+        case MyLocationTapEvent.name:
+          return _objectTapEventHandler.myLocationTapEvent(map);
+        case ZoomControlEnabledEvent.zoomInEvent:
+          return _zoomEventHandler.zoomInEvent(map);
+        case ZoomControlEnabledEvent.zoomOutEvent:
+          return _zoomEventHandler.zoomOutEvent(map);
+        case LocationEnabledEvent.name:
+          return _locationEventHandler.enabledEvent(map);
+        case LocationFollowEvent.name:
+          return _locationEventHandler.followEvent(map);
+        case IndoorLevelsEvent.name:
+          return _indoorEventHandler.levelNamesEvent(map);
+        case HideIndoorLevelsEvent.name:
+          return _indoorEventHandler.hideLevelsEvent();
+        case IndoorActiveLevelEvent.name:
+          return _indoorEventHandler.activeLevelEvent(map);
+        case ObjectTapEvent.name:
+          return _objectTapEventHandler.objectTapEvent(map);
 
-          case RoadEventTapEvent.name:
-            return _objectTapEventHandler.roadEventTapEvent(map);
-          case MarkerTapEvent.name:
-            return _objectTapEventHandler.markerTapEvent(map);
-          case ClusterTapEvent.name:
-            unawaited(_objectTapEventHandler.clusterTapEvent(map, _api).then(
-              (value) async {
-                await _api.releaseCluster(map["cluster"]["id"]);
-              },
-            ));
-            break;
-          case PolygonTapEvent.name:
-            return _objectTapEventHandler.polygonTapEvent(map);
-          case PolylineTapEvent.name:
-            return _objectTapEventHandler.polylineTapEvent(map);
-          case CircleTapEvent.name:
-            return _objectTapEventHandler.circleTapEvent(map);
-          case VisibleRectEvent.name:
-            return _visibleRectEventHandler.visibleRectEvent(map);
-          case "cameraPositionChanged":
-            return _visibleRectEventHandler.cameraPositionEvent(map);
-          case CameraStateEvent.name:
-            return _cameraStateEventHandler.cameraStateEvent(map);
-          case MarkerWithPhotoTapEvent.name:
-            return _markerTapEventHandler.markerWithPhotoTapEvent(map);
-          case ActiveRouteChangedEvent.name:
-            return _routesEventHandler.activeRouteChangedEvent(map);
-          case RoutesInfoChangedEvent.name:
-            return _routesEventHandler.routesInfoChangedEvent(map);
-          case BetterRouteInfoEvent.name:
-            return _routesEventHandler.betterRouteInfoEvent(map);
-          case NavigationEvent.name:
-            return _navigationEventHandler.handleNavigationEvent(map);
-          case CarConnectionEvent.name:
-            return _androidAutoHandler.handleAndroidAutoConnectionEvent(map);
-          case IoTapEvent.name:
-            return _objectTapEventHandler.onIoTap(map);
-          case IdleTapEvent.name:
-            return _objectTapEventHandler.onIdleTap(map);
-          case NaviSpeedEvent.name:
-            return _naviSpeedEventHandler.handleNavigationEvent(map);
-          case NaviDashboardEvent.name:
-            return _naviDashboardEventHandler.handleDashboardEvent(map);
-          case CompassBearingEvent.name:
-            return _compassEventHandler.compassBearingChangedEvent(map);
-          case RouteOptionsEvent.name:
-            return _navigationEventHandler.routeOptionsEvent(map);
-          case SoundOnEvent.name:
-            return _navigationEventHandler.soundOnEvent(map);
-          case NaviMessageEvent.name:
-            return _naviMessageEventHandler.handleMessageEvent(map);
-          case ManeuverEvent.name:
-            return _naviManeuverEventHandler.handleManeuverEvent(map);
-          case ManeuverAdditionalEvent.name:
-            return _naviManeuverEventHandler.handleAdditionalManeuverEvent(map);
-          case ParkingStateEvent.name:
-            return _trafficAndParkingStateEventHandler.parkingStateChanged(map);
-          case TrafficStateEvent.name:
-            return _trafficAndParkingStateEventHandler.trafficStateChanged(map);
-          case PublicTransportRoutesChangedEvent.name:
-            return _publicTransportEventHandler.routesChangedEvent(map);
-          case PublicTransportActiveRouteChanged.name:
-            return _publicTransportEventHandler.activeRouteChangedEvent(map);
-          case PackageProgressEvent.name:
-            return _packagesHandler.packageProgressEvent(map);
-          case PackageInfoChangedEvent.name:
-            return _packagesHandler.packageInfoChangedEvent(map);
-        }
-      },
-    );
+        case RoadEventTapEvent.name:
+          return _objectTapEventHandler.roadEventTapEvent(map);
+        case MarkerTapEvent.name:
+          return _objectTapEventHandler.markerTapEvent(map);
+        case ClusterTapEvent.name:
+          unawaited(
+            _objectTapEventHandler.clusterTapEvent(map, _api).then((value) async {
+              await _api.releaseCluster(map["cluster"]["id"]);
+            }),
+          );
+          break;
+        case PolygonTapEvent.name:
+          return _objectTapEventHandler.polygonTapEvent(map);
+        case PolylineTapEvent.name:
+          return _objectTapEventHandler.polylineTapEvent(map);
+        case CircleTapEvent.name:
+          return _objectTapEventHandler.circleTapEvent(map);
+        case VisibleRectEvent.name:
+          return _visibleRectEventHandler.visibleRectEvent(map);
+        case "cameraPositionChanged":
+          return _visibleRectEventHandler.cameraPositionEvent(map);
+        case CameraStateEvent.name:
+          return _cameraStateEventHandler.cameraStateEvent(map);
+        case MarkerWithPhotoTapEvent.name:
+          return _markerTapEventHandler.markerWithPhotoTapEvent(map);
+        case ActiveRouteChangedEvent.name:
+          return _routesEventHandler.activeRouteChangedEvent(map);
+        case RoutesInfoChangedEvent.name:
+          return _routesEventHandler.routesInfoChangedEvent(map);
+        case BetterRouteInfoEvent.name:
+          return _routesEventHandler.betterRouteInfoEvent(map);
+        case NavigationEvent.name:
+          return _navigationEventHandler.handleNavigationEvent(map);
+        case CarConnectionEvent.name:
+          return _androidAutoHandler.handleAndroidAutoConnectionEvent(map);
+        case IoTapEvent.name:
+          return _objectTapEventHandler.onIoTap(map);
+        case IdleTapEvent.name:
+          return _objectTapEventHandler.onIdleTap(map);
+        case NaviSpeedEvent.name:
+          return _naviSpeedEventHandler.handleNavigationEvent(map);
+        case NaviDashboardEvent.name:
+          return _naviDashboardEventHandler.handleDashboardEvent(map);
+        case CompassBearingEvent.name:
+          return _compassEventHandler.compassBearingChangedEvent(map);
+        case RouteOptionsEvent.name:
+          return _navigationEventHandler.routeOptionsEvent(map);
+        case SoundOnEvent.name:
+          return _navigationEventHandler.soundOnEvent(map);
+        case NaviMessageEvent.name:
+          return _naviMessageEventHandler.handleMessageEvent(map);
+        case ManeuverEvent.name:
+          return _naviManeuverEventHandler.handleManeuverEvent(map);
+        case ManeuverAdditionalEvent.name:
+          return _naviManeuverEventHandler.handleAdditionalManeuverEvent(map);
+        case ParkingStateEvent.name:
+          return _trafficAndParkingStateEventHandler.parkingStateChanged(map);
+        case TrafficStateEvent.name:
+          return _trafficAndParkingStateEventHandler.trafficStateChanged(map);
+        case PublicTransportRoutesChangedEvent.name:
+          return _publicTransportEventHandler.routesChangedEvent(map);
+        case PublicTransportActiveRouteChanged.name:
+          return _publicTransportEventHandler.activeRouteChangedEvent(map);
+        case PackageProgressEvent.name:
+          return _packagesHandler.packageProgressEvent(map);
+        case PackageInfoChangedEvent.name:
+          return _packagesHandler.packageInfoChangedEvent(map);
+      }
+    });
   }
 
   /// Select indoor level.
@@ -351,7 +349,10 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Move Camera to the specified [cameraPosition].
   Future<void> moveCamera(
-      CameraPositionMessage cameraPosition, double duration, CameraAnimationTypeMessage animationType) {
+    CameraPositionMessage cameraPosition,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  ) {
     return _api.moveCamera(cameraPosition, duration, animationType);
   }
 
@@ -385,10 +386,22 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.calcPositionForPolylines(polylines, options);
   }
 
+  /// Calculate [CameraPositionMessage] for the specified points.
+  Future<CameraPositionMessage> calcPositionForGeoPoints(
+    List<GeoPointMessage> points,
+    CalcPositionOptionsMessage options,
+  ) {
+    return _api.calcPositionForGeoPoints(points, options);
+  }
+
   /// Animation of the camera to the representative area (or out view port) of the search.
   /// Search returns a Geometry that represents the best area to show.
-  Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
-      CameraAnimationTypeMessage animationType) {
+  Future<void> animateToRepresentativeArea(
+    GeometryMessage area,
+    CalcPositionOptionsMessage options,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  ) {
     return _api.animateToRepresentativeArea(area, options, duration, animationType);
   }
 
@@ -425,16 +438,7 @@ class DgisMapPlugin extends FlutterMapApi {
     GeoRectMessage? searchRect,
     String? locale,
   }) {
-    return _api.search(
-      queryText,
-      rubricIds,
-      spatialRestriction,
-      weekTime,
-      searchRect,
-      sortingType,
-      pageSize,
-      locale,
-    );
+    return _api.search(queryText, rubricIds, spatialRestriction, weekTime, searchRect, sortingType, pageSize, locale);
   }
 
   /// Search by query.
@@ -453,15 +457,7 @@ class DgisMapPlugin extends FlutterMapApi {
     GeoRectMessage? searchRect,
     String? locale,
   }) {
-    return _api.searchByQuery(
-      query,
-      spatialRestriction,
-      weekTime,
-      searchRect,
-      sortingType,
-      pageSize,
-      locale,
-    );
+    return _api.searchByQuery(query, spatialRestriction, weekTime, searchRect, sortingType, pageSize, locale);
   }
 
   /// Search by rubrics.
@@ -480,15 +476,7 @@ class DgisMapPlugin extends FlutterMapApi {
     GeoRectMessage? searchRect,
     String? locale,
   }) {
-    return _api.searchByRubrics(
-      rubrics,
-      spatialRestriction,
-      weekTime,
-      searchRect,
-      sortingType,
-      pageSize,
-      locale,
-    );
+    return _api.searchByRubrics(rubrics, spatialRestriction, weekTime, searchRect, sortingType, pageSize, locale);
   }
 
   /// Fetch Previous Page.
@@ -514,8 +502,7 @@ class DgisMapPlugin extends FlutterMapApi {
     String? locale,
     SuggestorTypeEnum? suggestorType,
     int? limit,
-  }) =>
-      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale, suggestorType, limit);
+  }) => _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale, suggestorType, limit);
 
   /// Get distance to the specified points.
   Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage> points) {
@@ -523,21 +510,11 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Add marker on the map.
-  Future<void> addMarker(
-    Marker marker,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addMarker(Marker marker, MapObjectManagerMessage? manager) {
     if (marker.onTap != null) {
-      _objectTapEventHandler.addMarkerHandler(
-        marker.id,
-        marker.onTap!,
-        manager?.id,
-      );
+      _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!, manager?.id);
     }
-    return _api.addMarker(
-      MarkerMessage(id: marker.id, options: marker.options),
-      manager,
-    );
+    return _api.addMarker(MarkerMessage(id: marker.id, options: marker.options), manager);
   }
 
   Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) {
@@ -545,34 +522,20 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Add markers on the map.
-  Future<void> addMarkers(
-    List<Marker> markers,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addMarkers(List<Marker> markers, MapObjectManagerMessage? manager) {
     for (var marker in markers) {
       if (marker.onTap != null) {
-        _objectTapEventHandler.addMarkerHandler(
-          marker.id,
-          marker.onTap!,
-          manager?.id,
-        );
+        _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!, manager?.id);
       }
     }
     return _api.addMarkers(
-      markers
-          .map(
-            (marker) => MarkerMessage(id: marker.id, options: marker.options),
-          )
-          .toList(),
+      markers.map((marker) => MarkerMessage(id: marker.id, options: marker.options)).toList(),
       manager,
     );
   }
 
   /// Remove marker from the map by id
-  Future<void> removeMarker(
-    String id,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> removeMarker(String id, MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeMarkerHandler(id);
     return _api.removeMarker(id, manager);
   }
@@ -597,17 +560,13 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Create map object manager.
-  Future<MapObjectManagerMessage> createMapObjectManager({
-    String? layerId,
-  }) async {
+  Future<MapObjectManagerMessage> createMapObjectManager({String? layerId}) async {
     final result = await _api.createMapObjectManager(layerId);
     return result;
   }
 
   /// Remove map object manager.
-  Future<void> removeMapObjectManager(
-    MapObjectManagerMessage manager,
-  ) {
+  Future<void> removeMapObjectManager(MapObjectManagerMessage manager) {
     _objectTapEventHandler.removeClusterRenderer(manager.id);
     return _api.removeMapObjectManager(manager);
   }
@@ -618,62 +577,35 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   @override
-  SimpleClusterOptionsMessage renderCluster(
-    MapObjectManagerMessage manager,
-    int objectCount,
-  ) {
+  SimpleClusterOptionsMessage renderCluster(MapObjectManagerMessage manager, int objectCount) {
     return _objectTapEventHandler.clusterRenderers[manager.id]!(objectCount);
   }
 
   /// --- POLYGON ---
 
   /// Add polygon on the map related to the [manager].
-  Future<void> addPolygon(
-    Polygon polygon,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addPolygon(Polygon polygon, MapObjectManagerMessage? manager) {
     if (polygon.onTap != null) {
-      _objectTapEventHandler.addPolygonHandler(
-        polygon.id,
-        polygon.onTap!,
-        manager?.id,
-      );
+      _objectTapEventHandler.addPolygonHandler(polygon.id, polygon.onTap!, manager?.id);
     }
-    return _api.addPolygon(
-      PolygonMessage(id: polygon.id, options: polygon.options),
-      manager,
-    );
+    return _api.addPolygon(PolygonMessage(id: polygon.id, options: polygon.options), manager);
   }
 
   /// Add polygons on the map related to the [manager].
-  Future<void> addPolygons(
-    List<Polygon> polygons,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addPolygons(List<Polygon> polygons, MapObjectManagerMessage? manager) {
     for (var polygon in polygons) {
       if (polygon.onTap != null) {
-        _objectTapEventHandler.addPolygonHandler(
-          polygon.id,
-          polygon.onTap!,
-          manager?.id,
-        );
+        _objectTapEventHandler.addPolygonHandler(polygon.id, polygon.onTap!, manager?.id);
       }
     }
     return _api.addPolygons(
-      polygons
-          .map(
-            (polygon) => PolygonMessage(id: polygon.id, options: polygon.options),
-          )
-          .toList(),
+      polygons.map((polygon) => PolygonMessage(id: polygon.id, options: polygon.options)).toList(),
       manager,
     );
   }
 
   /// Remove polygon from the map by id related to the [manager].
-  Future<void> removePolygon(
-    String id,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> removePolygon(String id, MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removePolygonHandler(id);
     return _api.removePolygon(id, manager);
   }
@@ -687,52 +619,28 @@ class DgisMapPlugin extends FlutterMapApi {
   /// --- CIRCLE ---
 
   /// Add circle on the map related to the [manager].
-  Future<void> addCircle(
-    Circle circle,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addCircle(Circle circle, MapObjectManagerMessage? manager) {
     if (circle.onTap != null) {
-      _objectTapEventHandler.addCircleHandler(
-        circle.id,
-        circle.onTap!,
-        manager?.id,
-      );
+      _objectTapEventHandler.addCircleHandler(circle.id, circle.onTap!, manager?.id);
     }
-    return _api.addCircle(
-      CircleMessage(id: circle.id, options: circle.options),
-      manager,
-    );
+    return _api.addCircle(CircleMessage(id: circle.id, options: circle.options), manager);
   }
 
   /// Add circles on the map related to the [manager].
-  Future<void> addCircles(
-    List<Circle> circles,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addCircles(List<Circle> circles, MapObjectManagerMessage? manager) {
     for (var circle in circles) {
       if (circle.onTap != null) {
-        _objectTapEventHandler.addCircleHandler(
-          circle.id,
-          circle.onTap!,
-          manager?.id,
-        );
+        _objectTapEventHandler.addCircleHandler(circle.id, circle.onTap!, manager?.id);
       }
     }
     return _api.addCircles(
-      circles
-          .map(
-            (circle) => CircleMessage(id: circle.id, options: circle.options),
-          )
-          .toList(),
+      circles.map((circle) => CircleMessage(id: circle.id, options: circle.options)).toList(),
       manager,
     );
   }
 
   /// Remove circle from the map by id related to the [manager].
-  Future<void> removeCircle(
-    String id,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> removeCircle(String id, MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeCircleHandler(id);
     return _api.removeCircle(id, manager);
   }
@@ -746,44 +654,28 @@ class DgisMapPlugin extends FlutterMapApi {
   /// --- POLYLINE ---
 
   /// Add polyline on the map related to the [manager].
-  Future<void> addPolyline(
-    Polyline polyline,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addPolyline(Polyline polyline, MapObjectManagerMessage? manager) {
     if (polyline.onTap != null) {
       _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!, manager?.id);
     }
-    return _api.addPolyline(
-      PolylineMessage(id: polyline.id, options: polyline.options),
-      manager,
-    );
+    return _api.addPolyline(PolylineMessage(id: polyline.id, options: polyline.options), manager);
   }
 
   /// Add polylines on the map related to the [manager].
-  Future<void> addPolylines(
-    List<Polyline> polylines,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> addPolylines(List<Polyline> polylines, MapObjectManagerMessage? manager) {
     for (var polyline in polylines) {
       if (polyline.onTap != null) {
         _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!, manager?.id);
       }
     }
     return _api.addPolylines(
-      polylines
-          .map(
-            (polyline) => PolylineMessage(id: polyline.id, options: polyline.options),
-          )
-          .toList(),
+      polylines.map((polyline) => PolylineMessage(id: polyline.id, options: polyline.options)).toList(),
       manager,
     );
   }
 
   /// Remove polyline from the map by id related to the [manager].
-  Future<void> removePolyline(
-    String id,
-    MapObjectManagerMessage? manager,
-  ) {
+  Future<void> removePolyline(String id, MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removePolylineHandler(id);
     return _api.removePolyline(id, manager);
   }
@@ -835,16 +727,18 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Overlapped by.
-  Future<int> overlappedBy(
-    GeoRectMessage outerRect,
-    GeoRectMessage innerRect,
-  ) {
+  Future<int> overlappedBy(GeoRectMessage outerRect, GeoRectMessage innerRect) {
     return _api.overlappedBy(outerRect, innerRect);
   }
 
   /// Move camera to active route.
   Future<void> moveCameraToActiveRoute(int index) {
     return _api.moveCameraToActiveRoute(index);
+  }
+
+  /// Set active route index.
+  Future<void> setActiveRouteIndex(int index) {
+    return _api.setActiveRouteIndex(index);
   }
 
   /// Contains
@@ -1066,20 +960,17 @@ class DgisMapPlugin extends FlutterMapApi {
     RouteSearchPointMessage? startPoint,
     RouteSearchPointMessage? finishPoint,
   ) {
-    return _api.findBriefRouteInfos(
-      routeSearchOptions,
-      startPoint,
-      finishPoint,
-    );
+    return _api.findBriefRouteInfos(routeSearchOptions, startPoint, finishPoint);
   }
 
   /// Find Route.
   Future<FindRouteResultMessage> findRoute(
     RouteSearchPointMessage startPoint,
     RouteSearchPointMessage finishPoint,
-    RouteSearchOptionsMessage routeSearchOptions,
-  ) {
-    return _api.findRoute(startPoint, finishPoint, routeSearchOptions);
+    RouteSearchOptionsMessage routeSearchOptions, {
+    List<RouteSearchPointMessage>? intermediatePoints,
+  }) {
+    return _api.findRoute(startPoint, finishPoint, routeSearchOptions, intermediatePoints: intermediatePoints);
   }
 
   /// Retrieves a list of available packages.
@@ -1161,4 +1052,16 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Set map max fps
   Future<void> setMaxFps(int? fps) => _api.setMaxFps(fps);
+
+  /// Get search history items
+  Future<List<SearchHistoryDirectoryObjectMessage>> getSearchHistoryItems() => _api.getSearchHistoryItems();
+
+  /// Add search history item
+  Future<void> addSearchHistoryItem(SearchHistoryDirectoryObjectMessage item) => _api.addSearchHistoryItem(item);
+
+  /// Remove search history item
+  Future<void> removeSearchHistoryItem(int index) => _api.removeSearchHistoryItem(index);
+
+  /// Clear search history items
+  Future<void> clearSearchHistoryItems() => _api.clearSearchHistoryItems();
 }

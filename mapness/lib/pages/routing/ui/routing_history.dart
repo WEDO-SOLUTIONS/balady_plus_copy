@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ErrorWidget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,11 +19,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 
 class RoutingHistory extends ConsumerWidget {
-  const RoutingHistory({
-    required this.updatePoint,
-    required this.searchByQuery,
-    super.key,
-  });
+  const RoutingHistory({required this.updatePoint, required this.searchByQuery, super.key});
 
   final void Function(RoutePoint point) updatePoint;
   final void Function(String query) searchByQuery;
@@ -30,29 +27,15 @@ class RoutingHistory extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value))
-      ..retainWhere((e) => e.objectId != null);
+      ..where((e) => e.id?.objectId != null);
 
     if (history.isEmpty) {
       return const RoutingHistoryEmpty();
     }
 
-    history.sort((a, b) {
-      final aCreated = a.createdAt;
-      final bCreated = b.createdAt;
-      if (aCreated != null && bCreated != null) {
-        return DateTime.parse(bCreated).compareTo(DateTime.parse(aCreated));
-      } else if (aCreated == null && bCreated == null) {
-        return 0;
-      } else if (aCreated != null && bCreated == null) {
-        return -1;
-      } else if (aCreated == null && bCreated != null) {
-        return 1;
-      }
-      return 0;
-    });
-
     return SearchHistoryCollapsible(
       history: history,
+      iconColor: context.colors.foregroundMuted,
       onClear: () {
         Metrics.logEventAdvanced(
           MetricsConstants.routesKeys.searchClearButton,
@@ -61,33 +44,29 @@ class RoutingHistory extends ConsumerWidget {
         );
         ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).clear();
       },
-      onDelete: (item) {
+      onDelete: (item, index) {
         Metrics.logEventAdvanced(
           MetricsConstants.routesKeys.searchOnDelete,
           group: MetricsConstants.routesTag,
           action: MetricAction.tap.toString(),
-          props: {
-            'item': item.objectId,
-          },
+          props: {'item': item.id?.objectId},
         );
 
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
+        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
       },
       onTap: (item, index, historyList) async {
         Metrics.logEventAdvanced(
           MetricsConstants.routesKeys.routeSelectionChangeNavType,
           group: MetricsConstants.routesTag,
           action: MetricAction.tap.toString(),
-          props: {
-            'item': item.objectId,
-          },
+          props: {'item': item.id?.objectId},
         );
         final dgisController = await ref.read(dgisControllerProvider.future);
         try {
           final object = await dgisController.searchByObjectId(
             DgisObjectIdMessage(
-              objectId: int.tryParse(item.objectId ?? '') ?? 0,
-              entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+              objectId: item.id?.objectId ?? 0,
+              entranceId: item.id?.entranceId ?? 0,
             ),
           );
 
@@ -97,18 +76,19 @@ class RoutingHistory extends ConsumerWidget {
           final result = await context.router.push(
             ErrorSheetDialogRoute(
               buttonLabel: context.l10n.tryAgain,
-              onRetry: () => context.router.popForced(true),
-              onClose: (_) => context.router.popForced(true),
-              onBarrierTap: () => context.router.popForced(true),
+              onRetry: () => context.router.pop(true),
+              onClose: (_) => context.router.pop(true),
+              onBarrierTap: () => context.router.pop(true),
             ),
           );
-          await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
+          await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
           if (result != null && result as bool) {
             searchByQuery(item.title);
           }
         }
-        final bssHistoryHandlingType =
-            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
+        final bssHistoryHandlingType = item.id?.objectId != null
+            ? BssHistoryHandlingType.openRecord
+            : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.action,

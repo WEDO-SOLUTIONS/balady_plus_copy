@@ -1,8 +1,8 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/features/saudi_pass/widgets/favorite_dialog_menu.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/popup_card/popup_card.dart';
 
 class PinnedPlaceCard extends StatelessWidget {
   const PinnedPlaceCard({
@@ -30,102 +30,78 @@ class PinnedPlaceCard extends StatelessWidget {
   final VoidCallback onTapShare;
   final VoidCallback onTapChange;
 
+  Future<void> showBottomSheet(BuildContext context) async {
+    await showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (_) => FavoriteDialogMenu(
+        onDelete: onDelete,
+        onTapRoute: onTapRoute,
+        onTapShare: onTapShare,
+        onTapChange: onTapChange,
+        change: context.l10n.change,
+        delete: context.l10n.delete,
+        route: context.l10n.route,
+        share: context.l10n.share,
+        title: context.l10n.action,
+        close: context.l10n.saudiPassTermAndConditionsClose,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: Spacing.$3x,
-          horizontal: Spacing.$2x,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          color: context.colors.backgroundSurface4,
-        ),
-        child: Stack(
-          fit: StackFit.passthrough,
+    padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(RadiusBorder.l),
+      color: context.colors.backgroundSurface1,
+    ),
+    child: Stack(
+      fit: StackFit.passthrough,
+      children: [
+        Column(
           children: [
-            Column(
-              children: [
-                const SizedBox(height: Spacing.$2x),
-                InkWell(
-                  onTap: onTap,
-                  child: Container(
-                    height: 56,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40),
-                      color: isAdded ? context.colors.backgroundSurface1 : context.color.surfaceStatusContrastAccent,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SizedBox(
-                        height: 32,
-                        width: 32,
-                        child: isAdded
-                            ? iconData.icon(color: context.colors.accentDefault)
-                            : SystemIcons.zoomPlus.icon(
-                                color: context.colors.accentOnContainer,
-                              ),
-                      ),
-                    ),
-                  ),
+            const SizedBox(height: Spacing.$2x),
+            InkWell(
+              onTap: isAdded ? () => showBottomSheet(context) : onTap,
+              child: Container(
+                height: 56,
+                width: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  color: isAdded
+                      ? context.colors.accentSecondaryContainerDefault
+                      : context.colors.accentSecondaryDefault,
                 ),
-                const SizedBox(height: Spacing.$1x),
-                Text(
-                  title,
-                  textAlign: TextAlign.right,
-                  style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
-                ),
-                const SizedBox(height: Spacing.$0_5x),
-                Text(
-                  address,
-                  textAlign: TextAlign.right,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.caption.copyWith(color: context.colors.foregroundSoft),
-                ),
-              ],
-            ),
-            if (isAdded)
-              Positioned(
-                top: 0,
-                right: context.isLTR ? 0 : null,
-                left: context.isLTR ? null : 0,
-                child: PopupCard(
-                  items: [
-                    PopupModel(
-                      title: context.l10n.route,
-                      icon: GeneralIcons.routeStroke,
-                      onTap: onTapRoute,
-                      color: context.colors.foregroundDefault,
-                    ),
-                    PopupModel(
-                      title: context.l10n.share,
-                      icon: SystemIcons.share,
-                      onTap: onTapShare,
-                      color: context.colors.foregroundDefault,
-                    ),
-                    PopupModel(
-                      title: context.l10n.change,
-                      icon: SystemIcons.bookmarkAdd,
-                      onTap: onTapChange,
-                      color: context.colors.foregroundDefault,
-                    ),
-                    PopupModel(
-                      titleStyle: context.textStyle.text.copyWith(
-                        color: context.colors.errorDefault,
-                      ),
-                      color: context.colors.errorDefault,
-                      title: context.l10n.delete,
-                      icon: GeneralIcons.trash,
-                      onTap: onDelete,
-                    ),
-                  ],
-                  child: SystemIcons.ellipsis.icon(
-                    color: context.colors.accentDefault,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: isAdded
+                        ? iconData.icon(color: context.colors.accentSecondaryOnContainer)
+                        : SystemIcons.zoomPlus.icon(color: context.colors.staticWhite),
                   ),
                 ),
               ),
+            ),
+            const SizedBox(height: Spacing.$1x),
+            Text(
+              title,
+              textAlign: TextAlign.right,
+              style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
+            ),
+            const SizedBox(height: Spacing.$0_5x),
+            Text(
+              address,
+              textAlign: TextAlign.right,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyle.caption.copyWith(color: context.colors.foregroundSoft),
+            ),
           ],
         ),
-      );
+      ],
+    ),
+  );
 }

@@ -440,20 +440,28 @@ class MiniAppCategory {
   final String name;
   final int? categoryOrder;
   final int? serviceOrderByCategory;
+  final List<MiniAppCategory>? subCategories;
 
   MiniAppCategory({
     required this.id,
     required this.name,
     required this.categoryOrder,
     required this.serviceOrderByCategory,
+    required this.subCategories,
   });
 
   factory MiniAppCategory.fromJson(Map<String, dynamic> json) {
     return MiniAppCategory(
       id: json['id'] as String,
-      name: json['name'] as String,
+      name: json['name']  ?? json['arName'],
       categoryOrder: json['categoryOrder'] as int?,
       serviceOrderByCategory: json['serviceOrderByCategory'] as int?,
+      subCategories: json['subCategories'] != null &&
+              json['subCategories'] is List<dynamic> && json['subCategories'].isNotEmpty
+          ? json['subCategories']
+              .map<MiniAppCategory>((e) => MiniAppCategory.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
     );
   }
 
@@ -463,6 +471,7 @@ class MiniAppCategory {
       'name': name,
       'categoryOrder': categoryOrder,
       'serviceOrderByCategory': serviceOrderByCategory,
+      'subCategories': subCategories,
     };
   }
 }
@@ -500,8 +509,8 @@ class LatestVersion {
   final String versionDescription;
   final String versionNumber;
   final String? serviceUrl;
-  final bool nafathLogin;
-  final bool otpLogin;
+  // final bool nafathLogin;
+  // final bool otpLogin;
   final bool forceUpdate;
   final int status;
   final PackageMetaDataDto? packageMetaDataDto;
@@ -520,8 +529,8 @@ class LatestVersion {
     required this.versionDescription,
     required this.versionNumber,
     required this.serviceUrl,
-    required this.nafathLogin,
-    required this.otpLogin,
+    // required this.nafathLogin,
+    // required this.otpLogin,
     required this.forceUpdate,
     required this.status,
     required this.packageMetaDataDto,
@@ -539,8 +548,8 @@ class LatestVersion {
       versionDescription: json['versionDescription'] as String,
       versionNumber: json['versionNumber'] as String,
       serviceUrl: json['serviceUrl'] as String?,
-      nafathLogin: json['nafathLogin'] as bool,
-      otpLogin: json['otpLogin'] as bool,
+      // nafathLogin: json['nafathLogin'] as bool,
+      // otpLogin: json['otpLogin'] as bool,
       forceUpdate: json['forceUpdate'] as bool,
       status: json['status'] as int,
       packageMetaDataDto: json['packageMetaDataDto'] == null
@@ -569,8 +578,8 @@ class LatestVersion {
       'versionDescription': versionDescription,
       'versionNumber': versionNumber,
       'serviceUrl': serviceUrl,
-      'nafathLogin': nafathLogin,
-      'otpLogin': otpLogin,
+      // 'nafathLogin': nafathLogin,
+      // 'otpLogin': otpLogin,
       'forceUpdate': forceUpdate,
       'status': status,
       'packageMetaDataDto': packageMetaDataDto?.toJson(),

@@ -8,13 +8,15 @@ import 'package:urbi_utils/urbi_utils.dart';
 
 class PoiContentFullAddressCard extends StatelessWidget {
   final PoiContentFullAddressModel data;
+
   const PoiContentFullAddressCard({required this.data, super.key});
 
   @override
   Widget build(BuildContext context) {
     final showButtonsRow = data.floors != null || (data.entrances != null && data.entrances!.count > 0);
     final type = data.types?.firstOrNull?.type;
-    final hasMetro = type == ObjectTypeMessage.stationMetro ||
+    final hasMetro =
+        type == ObjectTypeMessage.stationMetro ||
         type == ObjectTypeMessage.station ||
         type == ObjectTypeMessage.stationPlatform ||
         type == ObjectTypeMessage.stationEntrance;
@@ -27,21 +29,18 @@ class PoiContentFullAddressCard extends StatelessWidget {
             title: data.title,
             titleOptions: const ContentRowTextOption(isBold: true),
             subtitle: data.fullAddress,
-            subtitleOptions: const ContentRowTextOption(
-              maxLines: 99,
-            ),
+            subtitleOptions: const ContentRowTextOption(maxLines: 99),
           ),
-          trailing: data.networkLogoUrl != null
+          trailing: data.networkLogoUrl != null || data.assetLogoUrl != null
               ? ContentRowCustomTrailingOptions(
                   builder: (context) => Padding(
                     padding: const EdgeInsetsDirectional.only(end: Spacing.$4x, top: Spacing.$4x),
                     child: SizedBox(
                       width: 48,
                       height: 48,
-                      child: Image.network(
-                        data.networkLogoUrl ?? '',
-                        fit: BoxFit.cover,
-                      ),
+                      child: data.assetLogoUrl != null
+                          ? Image.asset(data.assetLogoUrl!, fit: BoxFit.cover)
+                          : Image.network(data.networkLogoUrl ?? '', fit: BoxFit.cover),
                     ),
                   ),
                 )
@@ -53,11 +52,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
             child: Row(
               children: <Widget>[
-                if (data.floors != null)
-                  _ActionButton(
-                    title: data.floors!.title,
-                    count: data.floors!.floors,
-                  ),
+                if (data.floors != null) _ActionButton(title: data.floors!.title, count: data.floors!.floors),
                 if (data.entrances != null && data.entrances!.count > 0)
                   _ActionButton(
                     title: data.entrances!.title,
@@ -77,23 +72,16 @@ class _ActionButton extends StatelessWidget {
   final int? count;
   final void Function()? onTap;
 
-  const _ActionButton({
-    required this.title,
-    this.count,
-    this.onTap,
-  });
+  const _ActionButton({required this.title, this.count, this.onTap});
 
   @override
   Widget build(BuildContext context) => AppButton(
-        padding: EdgeInsets.zero,
-        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
-        primaryLabel: title,
-        trailing: Counter(
-          count: count,
-          color: context.colors.accentDefault,
-        ),
-        buttonColorScheme: ButtonColorScheme.accent,
-        buttonType: ButtonType.secondary,
-        onTap: onTap,
-      );
+    padding: EdgeInsets.zero,
+    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
+    primaryLabel: title,
+    trailing: Counter(count: count, color: context.colors.accentDefault),
+    buttonColorScheme: ButtonColorScheme.accent,
+    buttonType: ButtonType.secondary,
+    onTap: onTap,
+  );
 }

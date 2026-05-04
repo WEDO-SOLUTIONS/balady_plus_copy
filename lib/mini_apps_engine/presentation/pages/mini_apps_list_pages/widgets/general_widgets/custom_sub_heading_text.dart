@@ -35,7 +35,7 @@ class CustomSubHeadingText extends StatelessWidget {
                 text,
                 style: TextStyle(
                   height: 1.2,
-                  color: fontColor ?? Colors.black,
+                 // color: fontColor ?? Colors.black,
                   fontWeight: fontWeight ?? FontWeight.w300,
                   fontSize: fontSize ?? 18,
                   fontFamily: GeneralKey.appFontType,
@@ -50,7 +50,7 @@ class CustomSubHeadingText extends StatelessWidget {
               overflow: TextOverflow.visible,
               maxLines: maxLines ?? 1,
               style: TextStyle(
-                color: fontColor ?? Colors.black,
+            //    color: fontColor ?? Colors.black,
                 fontWeight: fontWeight ?? FontWeight.w700,
                 // fontSize: fontSize ?? 18,
                 height: 1.4,

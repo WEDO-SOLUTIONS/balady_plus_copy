@@ -11,37 +11,45 @@ import 'package:mapness/widgets/profile/profile_image/profile_image_widget.dart'
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileEditablePhoto extends StatelessWidget {
-  const ProfileEditablePhoto({super.key});
+  final String? abbreviatedName;
+  const ProfileEditablePhoto({super.key, this.abbreviatedName});
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: () => _showBottomSheet(context),
-        child: Stack(
-          children: [
-            const ProfileImageWidget(dimension: 2 * AppSizes.m),
-            PositionedDirectional(
-              start: Spacing.none,
-              bottom: Spacing.none,
-              child: Container(
-                padding: const EdgeInsets.all(Spacing.$1x),
-                width: AppSizes.xxs,
-                height: AppSizes.xxs,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  // TODO: Change to background screen
-                  color: context.colors.staticWhite,
-                ),
-                child: Center(
-                  child: General16Icons.edit.icon(
-                    color: context.colors.foregroundMuted,
-                    size: AppSizes.$4xs,
-                  ),
-                ),
+    onTap: () => _showBottomSheet(context),
+    child: Stack(
+      children: [
+        SizedBox.square(
+          dimension: AvatarSize.$80.size,
+          child: ProfileImageWidget(
+            abbreviatedName: abbreviatedName,
+            style: AvatarEmptyStyle.accentSecondary,
+            isEditing: true,
+          ),
+        ),
+        PositionedDirectional(
+          start: Spacing.none,
+          bottom: Spacing.none,
+          child: Container(
+            padding: const EdgeInsets.all(Spacing.$1x),
+            width: AppSizes.xxs,
+            height: AppSizes.xxs,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              // TODO: Change to background screen
+              color: context.colors.staticWhite,
+            ),
+            child: Center(
+              child: General16Icons.edit.icon(
+                color: context.colors.foregroundMuted,
+                size: AppSizes.$4xs,
               ),
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 
   Future<void> _showBottomSheet(BuildContext context) async {
     // Result of the bottom sheet is "Should we open sheet with text 'Open settings to give permission'?"

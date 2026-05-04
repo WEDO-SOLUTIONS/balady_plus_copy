@@ -26,11 +26,7 @@ class PoiLinesMetro extends StatelessWidget {
   final PublicTransportDirectoryRouteInfoMessage transportDirectoryRouteInfo;
   final String address;
 
-  const PoiLinesMetro({
-    required this.transportDirectoryRouteInfo,
-    required this.address,
-    super.key,
-  });
+  const PoiLinesMetro({required this.transportDirectoryRouteInfo, required this.address, super.key});
 
   List<PublicTransportPlatformMessage> _getPlatformsInfo() {
     final directions = transportDirectoryRouteInfo.directions;
@@ -89,28 +85,24 @@ class PoiLinesMetro extends StatelessWidget {
   Widget build(BuildContext context) {
     final _platformsInfo = _getPlatformsInfo();
 
-    final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colorsV3.foregroundDefault.value);
+    final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colors.foregroundDefault.value);
 
     return ContentWrapper(
       color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
-          expandIconColor: context.colorsV3.foregroundMuted,
+          expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
             title: getTitle(context),
-            leadingIcon: Assets.icons.svg.icMetroMarker.svg(
-              colorFilter: ColorFilter.mode(_colorLine, BlendMode.srcIn),
-            ),
+            leadingIcon: Assets.icons.svg.icMetroMarker.svg(colorFilter: ColorFilter.mode(_colorLine, BlendMode.srcIn)),
           ),
           content: Column(
             children: List.generate(_platformsInfo.length, (index) {
               final transitionRoute = _platformsInfo[index].transitions;
-              final routeCurrent = _platformsInfo[index].name == address ||
-                  (transitionRoute.isNotEmpty &&
-                      transitionRoute.any(
-                        (element) => element.stationName == address,
-                      ));
+              final routeCurrent =
+                  _platformsInfo[index].name == address ||
+                  (transitionRoute.isNotEmpty && transitionRoute.any((element) => element.stationName == address));
               return CustomPaint(
                 painter: _StationLinePainter(
                   isFirst: index == 0,
@@ -124,20 +116,24 @@ class PoiLinesMetro extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(width: 40),
-                      Text(_platformsInfo[index].name, style: context.textStyleV3.bodyLargeRegular),
+                      Text(
+                        _platformsInfo[index].name,
+                        style: context.textStyleV3.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                      ),
+                      const SizedBox(width: 4),
                       if (transitionRoute.isNotEmpty)
                         Row(
                           children: transitionRoute
                               .map(
                                 (e) => Padding(
-                                  padding: const EdgeInsetsDirectional.only(start: Spacing.px),
+                                  padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$1x),
                                   child: Assets.icons.svg.icMetroMarker.svg(
                                     colorFilter: ColorFilter.mode(Color(e.color ?? 0xFF000000), BlendMode.srcIn),
                                   ),
                                 ),
                               )
                               .toList(),
-                        )
+                        ),
                     ],
                   ),
                 ),
@@ -165,12 +161,7 @@ class _StationLinePainter extends CustomPainter {
   final bool isSelected;
   final Color color;
 
-  _StationLinePainter({
-    required this.isFirst,
-    required this.isLast,
-    required this.isSelected,
-    required this.color,
-  });
+  _StationLinePainter({required this.isFirst, required this.isLast, required this.isSelected, required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {

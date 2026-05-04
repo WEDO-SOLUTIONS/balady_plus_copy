@@ -30,27 +30,28 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdk 35
+    compileSdk = 36
     namespace "momra.balady.android"
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled true
 
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
-      compose true
-   }
+        compose true
+    }
 
-   composeOptions {
-      kotlinCompilerExtensionVersion = "1.5.2"
-   }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
+    }
 
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     sourceSets {
@@ -60,17 +61,11 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "momra.balady.android"
-        minSdk 26
+        minSdkVersion 26
         multiDexEnabled true
-        targetSdk 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [
-                //     'appAuthRedirectScheme': 'com.momra.balady',
-                'appAuthRedirectScheme': 'com.balady'
-        ]
-        manifestPlaceholders = [partner:"baladyapp"]
-       // manifestPlaceholders = [partner:"baladyappuat"]
     }
     signingConfigs {
         release {
@@ -90,6 +85,7 @@ android {
 
     buildTypes {
         release {
+            shrinkResources false
             minifyEnabled true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -106,7 +102,10 @@ android {
         stg {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
-            versionCode 1000 + android.defaultConfig.versionCode
+            manifestPlaceholders = [
+                    partner: "baladyappuat",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
 //            versionNameSuffix ".stg"
 //            applicationIdSuffix ".stg"
 //            applicationId  "com.balady.balady_app"
@@ -114,16 +113,28 @@ android {
         prod {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
+            manifestPlaceholders = [
+                    partner: "baladyapp",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
         pre {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
+            manifestPlaceholders = [
+                    partner: "baladyappuat",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
     }
 
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
+    }
+
+    lint {
+        checkReleaseBuilds false
     }
 
 }
@@ -133,8 +144,8 @@ flutter {
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
-    implementation 'com.android.support:multidex:1.0.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
@@ -142,10 +153,20 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android-meta-referrer:5.0.1'
     implementation 'androidx.glance:glance-appwidget:1.0.0'
     implementation 'com.huawei.agconnect:agconnect-core:1.9.1.301'
-
+    // AndroidX Media support for MediaSessionCompat, PlaybackStateCompat, MediaMetadataCompat
+    implementation 'androidx.media:media:1.7.0'
     implementation 'com.adjust.sdk:adjust-android:5.4.0'
     implementation 'com.adjust.sdk:adjust-android-oaid:5.4.0'
     implementation 'com.huawei.hms:ads-identifier:3.4.62.300'
 }
+
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
+
+// أضٝ هذا الجزء هنا ٝي النهاية تماماً
+configurations.all {
+    resolutionStrategy {
+        // هذا السطر يمنع التضارب بين مكتبات هواوي المختلٝة
+        force 'com.huawei.hms:common:6.10.0.300'
+    }
+}

@@ -59,7 +59,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
               // url: Uri.parse('https://flutter.dev/'),
               url: WebUri(url),
               headers: {
-                "Authorization": CommonProperties.token,
+                "Authorization": "Bearer ${CommonProperties.token}",
                 "authToken": CommonProperties.token,
               },
             ),

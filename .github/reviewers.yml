@@ -1,61 +1,98 @@
+#reviewers:
+#  defaults:
+#    - platform-team
+#    - feature-team
+#    # - doldrums # Arina Kharlamova (Tech Lead)
+#    - scroollocker # Alex Haylov (Team Lead)
+#    - support-team
+#  groups:
+#    platform-team:
+#      - cutzmf
+#      - anisovdev
+#      - smitsk
+#    feature-team:
+#      - wultriel
+#      - ForesThule
+#      - DmitriiProshutinskii
+#      - smitsk
+#    devops-team:
+#      - r9odt
+#    support-team:
+#      - AyatAliev
+#      - wultriel
+#      - anisovdev
+#files:
+#  ".github/**":
+#    - devops-team
+#    - alexstrnik
+#  ".lefthook/**":
+#    - devops-team
+#    - scroollocker
+#    - AlexStrNik
+#  "justscripts/**":
+#    - devops-team
+#    - platform-team
+#    - DmitriiProshutinskii
+#    - AlexStrNik
+#  "urbi_map/**":
+#    - platform-team
+#    - scroollocker
+#  "mapness/scripts/**":
+#    - platform-team
+#    - devops-team
+#    - AlexStrNik
+#    - DmitriiProshutinskii
+#  "tests/**":
+#    - support-team
+#    - scroollocker
+#  "mapness/lib/features/**":
+#    - feature-team
+#    - wultriel
+#    - scroollocker
+#  "mapness/lib/_features/**":
+#    - feature-team
+#    - wultriel
+#    - scroollocker
+#  "mapness/**":
+#    - support-team
+#  "urbi_map/dgis_map/ios/**":
+#    - AlexStrNik
+#  "**":
+#    - scroollocker
+
+# URBI NEW TEAM
+
 reviewers:
   defaults:
-    - platform-team
     - feature-team
-    # - doldrums # Arina Kharlamova (Tech Lead)
-    - scroollocker # Alex Haylov (Team Lead)
-    - support-team
   groups:
-    platform-team:
-      - cutzmf
-      - anisovdev
-      - smitsk
     feature-team:
-      - wultriel
+      - D4vr4n
+      - StrozerD
+      - PenF00k
+      - zhukeev
       - ForesThule
-      - DmitriiProshutinskii
-      - smitsk
     devops-team:
-      - r9odt
-    support-team:
-      - AyatAliev
-      - wultriel
-      - anisovdev
+      - sWift2626
 files:
   ".github/**":
     - devops-team
-    - alexstrnik
   ".lefthook/**":
     - devops-team
-    - scroollocker
-    - AlexStrNik
   "justscripts/**":
     - devops-team
-    - platform-team
-    - DmitriiProshutinskii
-    - AlexStrNik
   "urbi_map/**":
-    - platform-team
-    - scroollocker
+    - feature-team
   "mapness/scripts/**":
-    - platform-team
     - devops-team
-    - AlexStrNik
-    - DmitriiProshutinskii
   "tests/**":
-    - support-team
-    - scroollocker
+    - feature-team
   "mapness/lib/features/**":
     - feature-team
-    - wultriel
-    - scroollocker
   "mapness/lib/_features/**":
     - feature-team
-    - wultriel
-    - scroollocker
   "mapness/**":
-    - support-team
+    - feature-team
   "urbi_map/dgis_map/ios/**":
-    - AlexStrNik
-  "**":
-    - scroollocker
+    - feature-team
+#  "**":

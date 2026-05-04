@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -50,37 +53,21 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    // Styles
-    await controller
-        .loadStyles(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
+    await controller.loadStyles(MapnessConstants.mapStylesPath);
 
     // Appearance
-    await controller.setZoomRestrictions(
-      min: 5.5,
-    );
-    await controller.overrideLocales(
-      ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA'],
-    );
+    await controller.setZoomRestrictions(min: 5.5);
+    await controller.overrideLocales(ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA']);
     await controller.setAppearance(
       (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
     );
     ref
-      ..listen(
-        darkModeProvider,
-        (previous, next) {
-          controller.setAppearance(
-            next.valueOrNull?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day,
-          );
-        },
-      )
-      ..listen(
-        appLanguageProvider,
-        (previous, next) {
-          controller.overrideLocales(
-            next == Language.arabic ? ['ar-SA'] : ['en-SA'],
-          );
-        },
-      );
+      ..listen(darkModeProvider, (previous, next) {
+        controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+      })
+      ..listen(appLanguageProvider, (previous, next) {
+        controller.overrideLocales(next == Language.arabic ? ['ar-SA'] : ['en-SA']);
+      });
 
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
@@ -98,37 +85,55 @@ class DgisController extends _$DgisController {
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
 
-    // at this point, geolocation is either activated,
-    // or the user has definitively denied it (the helper will timeout
-    // if you add it inside _LocationSetupHelper).
+    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    await controller.toggleFollowState();
   }
 
   /// Moves camera on Riyadh Tower
   Future<void> _setDefaultLocation(DgisMapController controller) async {
-    await controller.setCameraPosition(
+    await controller.setCameraPosition(CameraPositionMessage(point: _kingdomTower, zoom: 17, tilt: 0, bearing: 0));
+    await controller.moveCamera(
       CameraPositionMessage(
-        point: _kingdomTower,
+        point: getForwardPosition(_kingdomTower, 0),
         zoom: 17,
-        tilt: 0,
+        tilt: 65,
         bearing: 0,
       ),
+      0.3,
+      CameraAnimationTypeMessage.linear,
     );
+  }
+
+  GeoPointMessage getForwardPosition(GeoPointMessage position, double bearing) {
+    const forward = 0.0005;
+    const side = 0.0002;
+
+    final forwardLat = forward * cos(bearing * pi / 180);
+    final forwardLng = forward * sin(bearing * pi / 180);
+
+    final sideAngle = (bearing - 90) * pi / 180;
+    final sideLat = side * cos(sideAngle);
+    final sideLng = side * sin(sideAngle);
+
+    final lat = position.latitude + forwardLat + sideLat;
+    final lng = position.longitude + forwardLng + sideLng;
+
+    return GeoPointMessage(latitude: lat, longitude: lng);
   }
 
   Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
 
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
-    final visibleRectSubscription =
-        controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen(_listenVisibleRectangle);
+    final visibleRectSubscription = controller.visibleRectEvents
+        .debounceTime(const Duration(seconds: 1))
+        .listen(_listenVisibleRectangle);
     _visibleRectSubject.add(null);
 
     ref.onDispose(visibleRectSubscription.cancel);
   }
 
   void _listenVisibleRectangle(VisibleRectEvent event) {
-    ref.read(urbiAnalyticsProvider).track(
-          'mapInteraction',
-        );
+    ref.read(urbiAnalyticsProvider).track('mapInteraction');
     if (!_visibleRectSubject.isClosed) {
       _visibleRectSubject.add(event);
     }

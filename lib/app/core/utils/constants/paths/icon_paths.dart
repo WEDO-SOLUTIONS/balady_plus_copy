@@ -119,7 +119,7 @@ class IconPath {
   static const isha = '${_svgPrayerIconPath}iconSalahIsha$_svg';
 
   // Services
-  static serviceIcon(String name) => '$_svgServicesIconPath$name';
+  static String serviceIcon(String name) => '$_svgServicesIconPath$name';
   static const rating = '${_svgServicesIconPath}rating$_svg';
   static const duration = '${_svgServicesIconPath}duration$_svg';
   static const warnings = '${_svgServicesIconPath}warnings$_svg';
@@ -150,7 +150,7 @@ class IconPath {
   static const notification = '${_svgProfileIconPath}notification$_svg';
 
   // Nearby
-  static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
+  static String nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';
@@ -322,6 +322,8 @@ class IconPath {
   static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
   static const buildingIcon = '${_svgIconPath}building$_svg';
 
+  static const volunteerIcon = '${_svgIconPath}volunteer$_svg';
+
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';
@@ -464,6 +466,8 @@ class IconPath {
 
   static const defaultMiniAppIcon = '${_svgIconPath}default_mini_app_logo$_svg';
   static const searchSVG = '${_svgIconPath}search$_svg';
+  static const searchSVG2 = '${_svgIconPath}search2$_svg';
+  static const sortDescending = '${_svgIconPathJod}sort-descending$_svg';
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

@@ -1,14 +1,16 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -33,25 +35,23 @@ const parkingObjectId = 10;
 @riverpod
 class _ParkingManage extends _$ParkingManage {
   late final _settings = MapObjectManagerSettings.parking();
-
+  @override
+  late final BaladyAppThemes theme;
   late final _mapObjectManager = ref.watch(
-    mapObjectManagerProvider(
-      named: _settings.name,
-      layerId: _settings.layerId,
-    ).notifier,
+    mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
   );
 
   @override
-  Future<ParkingStoreModel?> build() async {
+  Future<ParkingStoreModel?> build({required BaladyAppThemes theme}) async {
+    this.theme = theme;
     await ref.read(dgisControllerProvider.future);
-
     final hive = await ref.read(hiveProvider(_boxName).future);
     final cachedData = await hive.get(_keyCache);
 
     if (cachedData is Map) {
       final model = ParkingStoreModel.fromJson(Map<String, dynamic>.from(cachedData));
 
-      final isExpired = DateTime.now().difference(model.dateTime) > const Duration(hours: 24);
+      final isExpired = DateTime.now().difference(model.dateTime).inHours > 23;
       if (isExpired) {
         await hive.delete(_keyCache);
         return null;
@@ -71,30 +71,28 @@ class _ParkingManage extends _$ParkingManage {
     await hive.put(_keyCache, model.toJson());
     await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
     await _mapObjectManager.removeAllMarkers();
+    final activeCityEvent = ref.read(activeCityEventProvider);
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
         options: MarkerOptionsMessage(
-          position: GeoPointWithElevationMessage(
-            latitude: model.lat,
-            longitude: model.lon,
-            elevation: 1,
-          ),
-          icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+          position: GeoPointWithElevationMessage(latitude: model.lat, longitude: model.lon, elevation: 1),
+          icon: switch (theme) {
+            BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+            BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
+            _ => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
+          },
         ),
         onTap: () {
-          ref.read(appRouterProvider).replaceOrPush(
-            route: PoiCardWidgetRoute(
-              closestPoint: LatLng(latitude: model.lat, longitude: model.lon),
-              objectId: DgisObjectIdMessage(
-                objectId: parkingObjectId,
-                entranceId: 0,
-              ),
-            ),
-            toCompareRoutes: [PoiCardWidgetRoute.page],
-          );
+          ref
+              .read(appRouterProvider)
+              .replaceOrPush(
+                route: PoiCardWidgetRoute(
+                  closestPoint: LatLng(latitude: model.lat, longitude: model.lon),
+                  objectId: DgisObjectIdMessage(objectId: parkingObjectId, entranceId: 0),
+                ),
+                toCompareRoutes: [PoiCardWidgetRoute.page],
+              );
         },
       ),
     );
@@ -110,15 +108,13 @@ class _ParkingManage extends _$ParkingManage {
 
   Future<void> clearStore() async {
     final hive = await ref.read(hiveProvider(_boxName).future);
+    unawaited(_mapObjectManager.removeMarkerById(parkingId));
 
     await hive.delete(_keyCache);
     state = const AsyncValue.data(null);
   }
 
-  Future<void> addPinParking(
-    GeoPointWithElevationMessage? geoPoint,
-    String title,
-  ) async {
+  Future<void> addPinParking(GeoPointWithElevationMessage? geoPoint, String title) async {
     final selectedMarker = ref.read(selectedMarkerProvider.notifier);
     final markers = selectedMarker.mapObjectManager.markers;
     final exists = markers.any((marker) => marker.id == poiPinId);
@@ -132,13 +128,19 @@ class _ParkingManage extends _$ParkingManage {
     await _mapObjectManager.removeAllMarkers();
 
     final style = await _markerStyle(title);
-    await selectedMarker.showMarker(Markers.pinMarker(
-      GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
-      text: title,
-      textStyle: style,
-      icon: SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew,
-      id: poiPinId,
-    ));
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
+    await selectedMarker.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
+        text: title,
+        textStyle: style,
+        activeCityEvent: ref.read(activeCityEventProvider),
+        id: poiPinId,
+        isDark: isDark,
+      ),
+    );
   }
 
   Future<MarkerTextStyleMessage> _markerStyle(String title) async {
@@ -153,9 +155,7 @@ class _ParkingManage extends _$ParkingManage {
       strokeColor: darkMode.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
       strokeWidth: 1,
       fontName: font,
-      textPlacement: MarkerTextPlacementMessage(
-        placement: TextPlacementMessage.bottomCenter,
-      ),
+      textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
     );
   }
 
@@ -167,31 +167,32 @@ class _ParkingManage extends _$ParkingManage {
       return;
     }
 
+    final activeCityEvent = ref.read(activeCityEventProvider);
+
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
         options: MarkerOptionsMessage(
-          position: GeoPointWithElevationMessage(
-            latitude: lat,
-            longitude: lon,
-            elevation: 1,
-          ),
+          position: GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
           icon: SaudiNationalDay.isNow()
               ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+              : switch (theme) {
+                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(size: 32),
+                  BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32),
+                  _ => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(size: 32),
+                },
         ),
         onTap: () {
           ref.read(poiCardClosingProvider.notifier).close();
-          ref.read(appRouterProvider).replaceOrPush(
-            route: PoiCardWidgetRoute(
-              closestPoint: LatLng(latitude: lat, longitude: lon),
-              objectId: DgisObjectIdMessage(
-                objectId: parkingObjectId,
-                entranceId: 0,
-              ),
-            ),
-            toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
-          );
+          ref
+              .read(appRouterProvider)
+              .replaceOrPush(
+                route: PoiCardWidgetRoute(
+                  closestPoint: LatLng(latitude: lat, longitude: lon),
+                  objectId: DgisObjectIdMessage(objectId: parkingObjectId, entranceId: 0),
+                ),
+                toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
+              );
         },
       ),
     );

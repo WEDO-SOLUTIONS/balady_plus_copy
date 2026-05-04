@@ -14,14 +14,14 @@ class NeedLoginWidget extends StatefulWidget {
   final bool withoutActions;
 
   const NeedLoginWidget({
-    Key? key,
+    super.key,
     this.desc,
     this.img,
     this.title,
     this.mainPage,
     this.onSuccessLogin,
     this.withoutActions = false,
-  }) : super(key: key);
+  });
 
   @override
   State<NeedLoginWidget> createState() => _NeedLoginWidgetState();
@@ -33,7 +33,9 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
     return BlocListener<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated &&
-            widget.onSuccessLogin != null) widget.onSuccessLogin!(true);
+            widget.onSuccessLogin != null) {
+          widget.onSuccessLogin!(true);
+        }
       },
       child: SingleChildScrollView(
         child: Padding(
@@ -62,6 +64,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                 fontWeight: AppFontWeight.bold,
                 fontSize: 20,
               ),
+
               const SizedBox(height: 8),
               CustomTextWidget(
                 widget.desc ?? ('not_register_desc').tr(),
@@ -78,7 +81,9 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
               if (!widget.withoutActions) ...[
                 EnhancedCustomElevatedButtonWidget(
                   btnPressed: () => CommonFunctions.onLogin(
-                      isMunicipality: true, mainPage: widget.mainPage),
+                    isMunicipality: true,
+                    mainPage: widget.mainPage,
+                  ),
                   btnText: ("signInButton").tr(),
                   btnTextSize: 18,
                   btnTextWeight: AppFontWeight.bold,
@@ -88,7 +93,11 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                 ),
                 const SizedBox(height: 12),
                 EnhancedCustomElevatedButtonWidget(
-                  btnPressed: () => Navigator.of(context).pop(),
+                  btnPressed: () {
+                    //todo check if close mini app needed
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
                   btnText: ("notNow").tr(),
                   btnTextSize: 16,
                   btnTextWeight: AppFontWeight.bold,
@@ -99,7 +108,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                   btnHeight: 56,
                   btnRadius: 8,
                 ),
-              ]
+              ],
             ],
           ),
         ),
@@ -118,7 +127,7 @@ class EmptyListWidget extends StatelessWidget {
   final double imgWidth;
 
   const EmptyListWidget({
-    Key? key,
+    super.key,
     this.desc,
     this.img = ImagePath.emptyDoc,
     this.title,
@@ -126,7 +135,7 @@ class EmptyListWidget extends StatelessWidget {
     this.btnPressed,
     this.imgHeight = 161,
     this.imgWidth = 190,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -139,8 +148,12 @@ class EmptyListWidget extends StatelessWidget {
           children: [
             Image.asset(img, width: imgWidth, height: imgHeight),
             const CustomVerticalSpace(height: 48),
-            CustomTextWidget(title ?? "",
-                fontSize: 17, fontColor: AppColor.black800, maxLines: 2),
+            CustomTextWidget(
+              title ?? "",
+              fontSize: 17,
+              fontColor: AppColor.black800,
+              maxLines: 2,
+            ),
             const CustomVerticalSpace(height: 13),
             CustomTextWidget(
               desc ?? "",

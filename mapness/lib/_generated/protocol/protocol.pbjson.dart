@@ -1,13 +1,15 @@
+// This is a generated file - do not edit.
 //
-//  Generated code. Do not modify.
-//  source: protocol.proto
-//
+// Generated from protocol.proto.
+
 // @dart = 3.3
 
 // ignore_for_file: annotate_overrides, camel_case_types, comment_references
-// ignore_for_file: constant_identifier_names, library_prefixes
-// ignore_for_file: non_constant_identifier_names, prefer_final_fields
-// ignore_for_file: unnecessary_import, unnecessary_this, unused_import
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: curly_braces_in_flow_control_structures
+// ignore_for_file: deprecated_member_use_from_same_package, library_prefixes
+// ignore_for_file: non_constant_identifier_names, prefer_relative_imports
+// ignore_for_file: unused_import
 
 import 'dart:convert' as $convert;
 import 'dart:core' as $core;
@@ -166,8 +168,8 @@ const Timestamp$json = {
 };
 
 /// Descriptor for `Timestamp`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List timestampDescriptor = $convert.base64Decode(
-    'CglUaW1lc3RhbXASFAoFdmFsdWUYASABKANSBXZhbHVl');
+final $typed_data.Uint8List timestampDescriptor =
+    $convert.base64Decode('CglUaW1lc3RhbXASFAoFdmFsdWUYASABKANSBXZhbHVl');
 
 @$core.Deprecated('Use imageDescriptor instead')
 const Image$json = {
@@ -178,8 +180,8 @@ const Image$json = {
 };
 
 /// Descriptor for `Image`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List imageDescriptor = $convert.base64Decode(
-    'CgVJbWFnZRIQCgN1cmwYASABKAlSA3VybA==');
+final $typed_data.Uint8List imageDescriptor =
+    $convert.base64Decode('CgVJbWFnZRIQCgN1cmwYASABKAlSA3VybA==');
 
 @$core.Deprecated('Use pointDescriptor instead')
 const Point$json = {
@@ -204,14 +206,21 @@ const Color$json = {
 };
 
 /// Descriptor for `Color`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List colorDescriptor = $convert.base64Decode(
-    'CgVDb2xvchIQCgNoZXgYASABKAlSA2hleA==');
+final $typed_data.Uint8List colorDescriptor =
+    $convert.base64Decode('CgVDb2xvchIQCgNoZXgYASABKAlSA2hleA==');
 
 @$core.Deprecated('Use textStyleDescriptor instead')
 const TextStyle$json = {
   '1': 'TextStyle',
   '2': [
-    {'1': 'color', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Color', '10': 'color'},
+    {
+      '1': 'color',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Color',
+      '10': 'color'
+    },
   ],
 };
 
@@ -224,7 +233,14 @@ final $typed_data.Uint8List textStyleDescriptor = $convert.base64Decode(
 const ErrorResponse$json = {
   '1': 'ErrorResponse',
   '2': [
-    {'1': 'error', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.ErrorResponse.ErrorMessage', '10': 'error'},
+    {
+      '1': 'error',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.ErrorResponse.ErrorMessage',
+      '10': 'error'
+    },
   ],
   '3': [ErrorResponse_ErrorMessage$json],
   '9': [
@@ -236,10 +252,33 @@ const ErrorResponse$json = {
 const ErrorResponse_ErrorMessage$json = {
   '1': 'ErrorMessage',
   '2': [
-    {'1': 'type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.Error', '10': 'type'},
+    {
+      '1': 'type',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.Error',
+      '10': 'type'
+    },
     {'1': 'int_code', '3': 2, '4': 1, '5': 5, '10': 'intCode'},
-    {'1': 'message', '3': 3, '4': 1, '5': 9, '9': 0, '10': 'message', '17': true},
-    {'1': 'system_message', '3': 4, '4': 1, '5': 9, '9': 1, '10': 'systemMessage', '17': true},
+    {
+      '1': 'message',
+      '3': 3,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'message',
+      '17': true
+    },
+    {
+      '1': 'system_message',
+      '3': 4,
+      '4': 1,
+      '5': 9,
+      '9': 1,
+      '10': 'systemMessage',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_message'},
@@ -268,19 +307,48 @@ const OkResponse$json = {
 };
 
 /// Descriptor for `OkResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List okResponseDescriptor = $convert.base64Decode(
-    'CgpPa1Jlc3BvbnNlEhIKBGNvZGUYAiABKAVSBGNvZGVKBAgBEAI=');
+final $typed_data.Uint8List okResponseDescriptor = $convert
+    .base64Decode('CgpPa1Jlc3BvbnNlEhIKBGNvZGUYAiABKAVSBGNvZGVKBAgBEAI=');
 
 @$core.Deprecated('Use storyDescriptor instead')
 const Story$json = {
   '1': 'Story',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
-    {'1': 'preview', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Story.Preview', '10': 'preview'},
-    {'1': 'frames', '3': 3, '4': 3, '5': 11, '6': '.balady.protocol.Story.Frame', '10': 'frames'},
+    {
+      '1': 'preview',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Story.Preview',
+      '10': 'preview'
+    },
+    {
+      '1': 'frames',
+      '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.Story.Frame',
+      '10': 'frames'
+    },
     {'1': 'is_viewed', '3': 4, '4': 1, '5': 8, '10': 'isViewed'},
-    {'1': 'activate_every_n_launches', '3': 5, '4': 1, '5': 5, '9': 0, '10': 'activateEveryNLaunches', '17': true},
-    {'1': 'videos', '3': 6, '4': 3, '5': 11, '6': '.balady.protocol.Story.Video', '10': 'videos'},
+    {
+      '1': 'activate_every_n_launches',
+      '3': 5,
+      '4': 1,
+      '5': 5,
+      '9': 0,
+      '10': 'activateEveryNLaunches',
+      '17': true
+    },
+    {
+      '1': 'videos',
+      '3': 6,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.Story.Video',
+      '10': 'videos'
+    },
   ],
   '3': [Story_Preview$json, Story_Video$json, Story_Frame$json],
   '8': [
@@ -292,7 +360,14 @@ const Story$json = {
 const Story_Preview$json = {
   '1': 'Preview',
   '2': [
-    {'1': 'image', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+    {
+      '1': 'image',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'image'
+    },
     {'1': 'title', '3': 2, '4': 1, '5': 9, '10': 'title'},
   ],
 };
@@ -310,16 +385,60 @@ const Story_Video$json = {
 const Story_Frame$json = {
   '1': 'Frame',
   '2': [
-    {'1': 'background', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'background'},
+    {
+      '1': 'background',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'background'
+    },
     {'1': 'title', '3': 2, '4': 1, '5': 9, '9': 0, '10': 'title', '17': true},
-    {'1': 'description', '3': 3, '4': 1, '5': 9, '9': 1, '10': 'description', '17': true},
-    {'1': 'action_button', '3': 4, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.ActionButton', '9': 2, '10': 'actionButton', '17': true},
+    {
+      '1': 'description',
+      '3': 3,
+      '4': 1,
+      '5': 9,
+      '9': 1,
+      '10': 'description',
+      '17': true
+    },
+    {
+      '1': 'action_button',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Story.Frame.ActionButton',
+      '9': 2,
+      '10': 'actionButton',
+      '17': true
+    },
     {'1': 'is_viewed', '3': 5, '4': 1, '5': 8, '10': 'isViewed'},
     {'1': 'duration', '3': 6, '4': 1, '5': 5, '10': 'duration'},
-    {'1': 'style', '3': 7, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.Style', '10': 'style'},
-    {'1': 'content', '3': 8, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.Content', '9': 3, '10': 'content', '17': true},
+    {
+      '1': 'style',
+      '3': 7,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Story.Frame.Style',
+      '10': 'style'
+    },
+    {
+      '1': 'content',
+      '3': 8,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Story.Frame.Content',
+      '9': 3,
+      '10': 'content',
+      '17': true
+    },
   ],
-  '3': [Story_Frame_Content$json, Story_Frame_Style$json, Story_Frame_ActionButton$json],
+  '3': [
+    Story_Frame_Content$json,
+    Story_Frame_Style$json,
+    Story_Frame_ActionButton$json
+  ],
   '8': [
     {'1': '_title'},
     {'1': '_description'},
@@ -332,7 +451,14 @@ const Story_Frame$json = {
 const Story_Frame_Content$json = {
   '1': 'Content',
   '2': [
-    {'1': 'images', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.Image', '10': 'images'},
+    {
+      '1': 'images',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'images'
+    },
   ],
 };
 
@@ -340,9 +466,36 @@ const Story_Frame_Content$json = {
 const Story_Frame_Style$json = {
   '1': 'Style',
   '2': [
-    {'1': 'title', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.TextStyle', '9': 0, '10': 'title', '17': true},
-    {'1': 'description', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.TextStyle', '9': 1, '10': 'description', '17': true},
-    {'1': 'background_color', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.TextStyle', '9': 2, '10': 'backgroundColor', '17': true},
+    {
+      '1': 'title',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.TextStyle',
+      '9': 0,
+      '10': 'title',
+      '17': true
+    },
+    {
+      '1': 'description',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.TextStyle',
+      '9': 1,
+      '10': 'description',
+      '17': true
+    },
+    {
+      '1': 'background_color',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.TextStyle',
+      '9': 2,
+      '10': 'backgroundColor',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_title'},
@@ -356,11 +509,28 @@ const Story_Frame_ActionButton$json = {
   '1': 'ActionButton',
   '2': [
     {'1': 'title', '3': 1, '4': 1, '5': 9, '10': 'title'},
-    {'1': 'link', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.ActionButton.Link', '10': 'link'},
-    {'1': 'style', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.Story.Frame.ActionButton.Style', '10': 'style'},
+    {
+      '1': 'link',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Story.Frame.ActionButton.Link',
+      '10': 'link'
+    },
+    {
+      '1': 'style',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Story.Frame.ActionButton.Style',
+      '10': 'style'
+    },
     {'1': 'is_enabled', '3': 4, '4': 1, '5': 8, '10': 'isEnabled'},
   ],
-  '3': [Story_Frame_ActionButton_Link$json, Story_Frame_ActionButton_Style$json],
+  '3': [
+    Story_Frame_ActionButton_Link$json,
+    Story_Frame_ActionButton_Style$json
+  ],
 };
 
 @$core.Deprecated('Use storyDescriptor instead')
@@ -375,8 +545,26 @@ const Story_Frame_ActionButton_Link$json = {
 const Story_Frame_ActionButton_Style$json = {
   '1': 'Style',
   '2': [
-    {'1': 'background_color', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Color', '9': 0, '10': 'backgroundColor', '17': true},
-    {'1': 'text_style', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.TextStyle', '9': 1, '10': 'textStyle', '17': true},
+    {
+      '1': 'background_color',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Color',
+      '9': 0,
+      '10': 'backgroundColor',
+      '17': true
+    },
+    {
+      '1': 'text_style',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.TextStyle',
+      '9': 1,
+      '10': 'textStyle',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_background_color'},
@@ -421,7 +609,14 @@ final $typed_data.Uint8List storyDescriptor = $convert.base64Decode(
 const StoriesResponse$json = {
   '1': 'StoriesResponse',
   '2': [
-    {'1': 'stories', '3': 2, '4': 3, '5': 11, '6': '.balady.protocol.Story', '10': 'stories'},
+    {
+      '1': 'stories',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.Story',
+      '10': 'stories'
+    },
   ],
   '9': [
     {'1': 1, '2': 2},
@@ -437,9 +632,23 @@ final $typed_data.Uint8List storiesResponseDescriptor = $convert.base64Decode(
 const HappinessRequest$json = {
   '1': 'HappinessRequest',
   '2': [
-    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+    {
+      '1': 'point',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
     {'1': 'is_positive', '3': 2, '4': 1, '5': 8, '10': 'isPositive'},
-    {'1': 'tags', '3': 3, '4': 3, '5': 11, '6': '.balady.protocol.HappinessRequest.Tag', '10': 'tags'},
+    {
+      '1': 'tags',
+      '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.HappinessRequest.Tag',
+      '10': 'tags'
+    },
     {'1': 'text', '3': 4, '4': 1, '5': 9, '9': 0, '10': 'text', '17': true},
   ],
   '3': [HappinessRequest_Tag$json],
@@ -467,8 +676,24 @@ final $typed_data.Uint8List happinessRequestDescriptor = $convert.base64Decode(
 const FavouriteItemPlace$json = {
   '1': 'FavouriteItemPlace',
   '2': [
-    {'1': 'location', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.FavouriteItemPlace.Location', '10': 'location'},
-    {'1': 'entity', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.FavouriteItemPlace.Entity', '9': 0, '10': 'entity', '17': true},
+    {
+      '1': 'location',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.FavouriteItemPlace.Location',
+      '10': 'location'
+    },
+    {
+      '1': 'entity',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.FavouriteItemPlace.Entity',
+      '9': 0,
+      '10': 'entity',
+      '17': true
+    },
     {'1': 'title', '3': 3, '4': 1, '5': 9, '10': 'title'},
     {'1': 'subtitle', '3': 4, '4': 1, '5': 9, '10': 'subtitle'},
   ],
@@ -482,7 +707,14 @@ const FavouriteItemPlace$json = {
 const FavouriteItemPlace_Location$json = {
   '1': 'Location',
   '2': [
-    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+    {
+      '1': 'point',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
   ],
 };
 
@@ -490,7 +722,14 @@ const FavouriteItemPlace_Location$json = {
 const FavouriteItemPlace_Entity$json = {
   '1': 'Entity',
   '2': [
-    {'1': 'source_type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.EntitySourceType', '10': 'sourceType'},
+    {
+      '1': 'source_type',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.EntitySourceType',
+      '10': 'sourceType'
+    },
     {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
   ],
 };
@@ -510,7 +749,14 @@ const FavouriteItem$json = {
   '1': 'FavouriteItem',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
-    {'1': 'place', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.FavouriteItemPlace', '10': 'place'},
+    {
+      '1': 'place',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.FavouriteItemPlace',
+      '10': 'place'
+    },
   ],
 };
 
@@ -523,8 +769,22 @@ final $typed_data.Uint8List favouriteItemDescriptor = $convert.base64Decode(
 const FavouritesResponse$json = {
   '1': 'FavouritesResponse',
   '2': [
-    {'1': 'places', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.FavouritesResponse.Places', '10': 'places'},
-    {'1': 'items', '3': 2, '4': 3, '5': 11, '6': '.balady.protocol.FavouriteItem', '10': 'items'},
+    {
+      '1': 'places',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.FavouritesResponse.Places',
+      '10': 'places'
+    },
+    {
+      '1': 'items',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.FavouriteItem',
+      '10': 'items'
+    },
   ],
   '3': [FavouritesResponse_Places$json],
 };
@@ -533,8 +793,26 @@ const FavouritesResponse$json = {
 const FavouritesResponse_Places$json = {
   '1': 'Places',
   '2': [
-    {'1': 'home', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.FavouriteItemPlace', '9': 0, '10': 'home', '17': true},
-    {'1': 'work', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.FavouriteItemPlace', '9': 1, '10': 'work', '17': true},
+    {
+      '1': 'home',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.FavouriteItemPlace',
+      '9': 0,
+      '10': 'home',
+      '17': true
+    },
+    {
+      '1': 'work',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.FavouriteItemPlace',
+      '9': 1,
+      '10': 'work',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_home'},
@@ -555,7 +833,14 @@ final $typed_data.Uint8List favouritesResponseDescriptor = $convert.base64Decode
 const AddFavouriteItemsRequest$json = {
   '1': 'AddFavouriteItemsRequest',
   '2': [
-    {'1': 'items', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.AddFavouriteItemsRequest.Item', '10': 'items'},
+    {
+      '1': 'items',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.AddFavouriteItemsRequest.Item',
+      '10': 'items'
+    },
   ],
   '3': [AddFavouriteItemsRequest_Item$json],
 };
@@ -564,9 +849,32 @@ const AddFavouriteItemsRequest$json = {
 const AddFavouriteItemsRequest_Item$json = {
   '1': 'Item',
   '2': [
-    {'1': 'type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.FavouriteItemType', '10': 'type'},
-    {'1': 'point', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
-    {'1': 'entity', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.AddFavouriteItemsRequest.Item.Entity', '9': 0, '10': 'entity', '17': true},
+    {
+      '1': 'type',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.FavouriteItemType',
+      '10': 'type'
+    },
+    {
+      '1': 'point',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
+    {
+      '1': 'entity',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.AddFavouriteItemsRequest.Item.Entity',
+      '9': 0,
+      '10': 'entity',
+      '17': true
+    },
   ],
   '3': [AddFavouriteItemsRequest_Item_Entity$json],
   '8': [
@@ -578,7 +886,14 @@ const AddFavouriteItemsRequest_Item$json = {
 const AddFavouriteItemsRequest_Item_Entity$json = {
   '1': 'Entity',
   '2': [
-    {'1': 'source_type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.EntitySourceType', '10': 'sourceType'},
+    {
+      '1': 'source_type',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.EntitySourceType',
+      '10': 'sourceType'
+    },
     {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
   ],
 };
@@ -598,7 +913,14 @@ final $typed_data.Uint8List addFavouriteItemsRequestDescriptor = $convert.base64
 const DeleteFavouriteItemsRequest$json = {
   '1': 'DeleteFavouriteItemsRequest',
   '2': [
-    {'1': 'items', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.DeleteFavouriteItemsRequest.Item', '10': 'items'},
+    {
+      '1': 'items',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.DeleteFavouriteItemsRequest.Item',
+      '10': 'items'
+    },
   ],
   '3': [DeleteFavouriteItemsRequest_Item$json],
 };
@@ -607,7 +929,14 @@ const DeleteFavouriteItemsRequest$json = {
 const DeleteFavouriteItemsRequest_Item$json = {
   '1': 'Item',
   '2': [
-    {'1': 'type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.FavouriteItemType', '10': 'type'},
+    {
+      '1': 'type',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.FavouriteItemType',
+      '10': 'type'
+    },
     {'1': 'id', '3': 2, '4': 1, '5': 9, '9': 0, '10': 'id', '17': true},
   ],
   '8': [
@@ -652,9 +981,30 @@ const IWishObjectMarker$json = {
       '8': {'3': true},
       '10': 'category',
     },
-    {'1': 'location', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.IWishObjectMarker.Location', '10': 'location'},
-    {'1': 'state', '3': 4, '4': 1, '5': 14, '6': '.balady.protocol.IWishState', '10': 'state'},
-    {'1': 'iwish_category', '3': 5, '4': 1, '5': 11, '6': '.balady.protocol.Category', '10': 'iwishCategory'},
+    {
+      '1': 'location',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.IWishObjectMarker.Location',
+      '10': 'location'
+    },
+    {
+      '1': 'state',
+      '3': 4,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.IWishState',
+      '10': 'state'
+    },
+    {
+      '1': 'iwish_category',
+      '3': 5,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Category',
+      '10': 'iwishCategory'
+    },
     {'1': 'address', '3': 6, '4': 1, '5': 9, '10': 'address'},
     {'1': 'photo', '3': 7, '4': 1, '5': 9, '10': 'photo'},
     {'1': 'name', '3': 8, '4': 1, '5': 9, '10': 'name'},
@@ -667,7 +1017,14 @@ const IWishObjectMarker$json = {
 const IWishObjectMarker_Location$json = {
   '1': 'Location',
   '2': [
-    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+    {
+      '1': 'point',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
   ],
 };
 
@@ -686,7 +1043,14 @@ final $typed_data.Uint8List iWishObjectMarkerDescriptor = $convert.base64Decode(
 const Location$json = {
   '1': 'Location',
   '2': [
-    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+    {
+      '1': 'point',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
   ],
 };
 
@@ -701,7 +1065,14 @@ const IWishObjectMarkerV2$json = {
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
     {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
-    {'1': 'location', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.Location', '10': 'location'},
+    {
+      '1': 'location',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Location',
+      '10': 'location'
+    },
   ],
 };
 
@@ -725,20 +1096,90 @@ const IWishObject$json = {
       '8': {'3': true},
       '10': 'category',
     },
-    {'1': 'state', '3': 3, '4': 1, '5': 14, '6': '.balady.protocol.IWishState', '10': 'state'},
-    {'1': 'location', '3': 4, '4': 1, '5': 11, '6': '.balady.protocol.IWishObject.Location', '10': 'location'},
+    {
+      '1': 'state',
+      '3': 3,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.IWishState',
+      '10': 'state'
+    },
+    {
+      '1': 'location',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject.Location',
+      '10': 'location'
+    },
     {'1': 'title', '3': 5, '4': 1, '5': 9, '10': 'title'},
     {'1': 'subtitle', '3': 6, '4': 1, '5': 9, '10': 'subtitle'},
-    {'1': 'photos', '3': 7, '4': 3, '5': 11, '6': '.balady.protocol.IWishObject.Photo', '10': 'photos'},
-    {'1': 'variants', '3': 8, '4': 3, '5': 11, '6': '.balady.protocol.IWishObject.Variant', '10': 'variants'},
-    {'1': 'selected_variant_id', '3': 9, '4': 1, '5': 5, '9': 0, '10': 'selectedVariantId', '17': true},
+    {
+      '1': 'photos',
+      '3': 7,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject.Photo',
+      '10': 'photos'
+    },
+    {
+      '1': 'variants',
+      '3': 8,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject.Variant',
+      '10': 'variants'
+    },
+    {
+      '1': 'selected_variant_id',
+      '3': 9,
+      '4': 1,
+      '5': 5,
+      '9': 0,
+      '10': 'selectedVariantId',
+      '17': true
+    },
     {'1': 'feedback_sent', '3': 10, '4': 1, '5': 8, '10': 'feedbackSent'},
-    {'1': 'metadata', '3': 11, '4': 1, '5': 11, '6': '.balady.protocol.IWishObject.Metadata', '10': 'metadata'},
-    {'1': 'size', '3': 12, '4': 1, '5': 14, '6': '.balady.protocol.IWishSize', '10': 'size'},
-    {'1': 'iwish_category', '3': 13, '4': 1, '5': 11, '6': '.balady.protocol.Category', '10': 'iwishCategory'},
-    {'1': 'iwish_tags', '3': 14, '4': 3, '5': 11, '6': '.balady.protocol.IWishTag', '10': 'iwishTags'},
+    {
+      '1': 'metadata',
+      '3': 11,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject.Metadata',
+      '10': 'metadata'
+    },
+    {
+      '1': 'size',
+      '3': 12,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.IWishSize',
+      '10': 'size'
+    },
+    {
+      '1': 'iwish_category',
+      '3': 13,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Category',
+      '10': 'iwishCategory'
+    },
+    {
+      '1': 'iwish_tags',
+      '3': 14,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishTag',
+      '10': 'iwishTags'
+    },
   ],
-  '3': [IWishObject_Location$json, IWishObject_Variant$json, IWishObject_Voted$json, IWishObject_Photo$json, IWishObject_Metadata$json],
+  '3': [
+    IWishObject_Location$json,
+    IWishObject_Variant$json,
+    IWishObject_Voted$json,
+    IWishObject_Photo$json,
+    IWishObject_Metadata$json
+  ],
   '8': [
     {'1': '_selected_variant_id'},
   ],
@@ -748,7 +1189,14 @@ const IWishObject$json = {
 const IWishObject_Location$json = {
   '1': 'Location',
   '2': [
-    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+    {
+      '1': 'point',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
   ],
 };
 
@@ -758,8 +1206,22 @@ const IWishObject_Variant$json = {
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 5, '10': 'id'},
     {'1': 'title', '3': 2, '4': 1, '5': 9, '10': 'title'},
-    {'1': 'preview', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.IWishObject.Variant.Preview', '10': 'preview'},
-    {'1': 'photos', '3': 4, '4': 3, '5': 11, '6': '.balady.protocol.IWishObject.Photo', '10': 'photos'},
+    {
+      '1': 'preview',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject.Variant.Preview',
+      '10': 'preview'
+    },
+    {
+      '1': 'photos',
+      '3': 4,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject.Photo',
+      '10': 'photos'
+    },
   ],
   '3': [IWishObject_Variant_Preview$json],
 };
@@ -768,7 +1230,14 @@ const IWishObject_Variant$json = {
 const IWishObject_Variant_Preview$json = {
   '1': 'Preview',
   '2': [
-    {'1': 'image', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+    {
+      '1': 'image',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'image'
+    },
   ],
 };
 
@@ -785,7 +1254,14 @@ const IWishObject_Voted$json = {
 const IWishObject_Photo$json = {
   '1': 'Photo',
   '2': [
-    {'1': 'image', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+    {
+      '1': 'image',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'image'
+    },
   ],
 };
 
@@ -793,10 +1269,43 @@ const IWishObject_Photo$json = {
 const IWishObject_Metadata$json = {
   '1': 'Metadata',
   '2': [
-    {'1': 'area_name', '3': 1, '4': 1, '5': 9, '9': 0, '10': 'areaName', '17': true},
-    {'1': 'type_name', '3': 2, '4': 1, '5': 9, '9': 1, '10': 'typeName', '17': true},
-    {'1': 'area_size', '3': 3, '4': 1, '5': 5, '9': 2, '10': 'areaSize', '17': true},
-    {'1': 'opening_date', '3': 4, '4': 1, '5': 11, '6': '.balady.protocol.Timestamp', '9': 3, '10': 'openingDate', '17': true},
+    {
+      '1': 'area_name',
+      '3': 1,
+      '4': 1,
+      '5': 9,
+      '9': 0,
+      '10': 'areaName',
+      '17': true
+    },
+    {
+      '1': 'type_name',
+      '3': 2,
+      '4': 1,
+      '5': 9,
+      '9': 1,
+      '10': 'typeName',
+      '17': true
+    },
+    {
+      '1': 'area_size',
+      '3': 3,
+      '4': 1,
+      '5': 5,
+      '9': 2,
+      '10': 'areaSize',
+      '17': true
+    },
+    {
+      '1': 'opening_date',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Timestamp',
+      '9': 3,
+      '10': 'openingDate',
+      '17': true
+    },
   ],
   '8': [
     {'1': '_area_name'},
@@ -855,7 +1364,14 @@ final $typed_data.Uint8List iWishTagDescriptor = $convert.base64Decode(
 const IWishMarkersResponse$json = {
   '1': 'IWishMarkersResponse',
   '2': [
-    {'1': 'markers', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.IWishObjectMarker', '10': 'markers'},
+    {
+      '1': 'markers',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishObjectMarker',
+      '10': 'markers'
+    },
   ],
 };
 
@@ -868,20 +1384,35 @@ final $typed_data.Uint8List iWishMarkersResponseDescriptor = $convert.base64Deco
 const IWishMarkersResponseV2$json = {
   '1': 'IWishMarkersResponseV2',
   '2': [
-    {'1': 'markers', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.IWishObjectMarkerV2', '10': 'markers'},
+    {
+      '1': 'markers',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishObjectMarkerV2',
+      '10': 'markers'
+    },
   ],
 };
 
 /// Descriptor for `IWishMarkersResponseV2`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List iWishMarkersResponseV2Descriptor = $convert.base64Decode(
-    'ChZJV2lzaE1hcmtlcnNSZXNwb25zZVYyEj4KB21hcmtlcnMYASADKAsyJC5iYWxhZHkucHJvdG'
-    '9jb2wuSVdpc2hPYmplY3RNYXJrZXJWMlIHbWFya2Vycw==');
+final $typed_data.Uint8List iWishMarkersResponseV2Descriptor =
+    $convert.base64Decode(
+        'ChZJV2lzaE1hcmtlcnNSZXNwb25zZVYyEj4KB21hcmtlcnMYASADKAsyJC5iYWxhZHkucHJvdG'
+        '9jb2wuSVdpc2hPYmplY3RNYXJrZXJWMlIHbWFya2Vycw==');
 
 @$core.Deprecated('Use iWishItemResponseDescriptor instead')
 const IWishItemResponse$json = {
   '1': 'IWishItemResponse',
   '2': [
-    {'1': 'object', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.IWishObject', '10': 'object'},
+    {
+      '1': 'object',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.IWishObject',
+      '10': 'object'
+    },
   ],
 };
 
@@ -906,8 +1437,22 @@ final $typed_data.Uint8List iWishVoteRequestDescriptor = $convert.base64Decode(
 const IWishFeedbackRequest$json = {
   '1': 'IWishFeedbackRequest',
   '2': [
-    {'1': 'rating', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.IWishFeedbackRating', '10': 'rating'},
-    {'1': 'tags', '3': 2, '4': 3, '5': 11, '6': '.balady.protocol.IWishFeedbackRequest.Tag', '10': 'tags'},
+    {
+      '1': 'rating',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.IWishFeedbackRating',
+      '10': 'rating'
+    },
+    {
+      '1': 'tags',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.IWishFeedbackRequest.Tag',
+      '10': 'tags'
+    },
     {'1': 'text', '3': 3, '4': 1, '5': 9, '9': 0, '10': 'text', '17': true},
   ],
   '3': [IWishFeedbackRequest_Tag$json],
@@ -940,23 +1485,66 @@ const IWishDeleteAllFeedbacksRequest$json = {
 };
 
 /// Descriptor for `IWishDeleteAllFeedbacksRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List iWishDeleteAllFeedbacksRequestDescriptor = $convert.base64Decode(
-    'Ch5JV2lzaERlbGV0ZUFsbEZlZWRiYWNrc1JlcXVlc3QSGQoIdXNlcl9pZHMYASADKAlSB3VzZX'
-    'JJZHM=');
+final $typed_data.Uint8List iWishDeleteAllFeedbacksRequestDescriptor =
+    $convert.base64Decode(
+        'Ch5JV2lzaERlbGV0ZUFsbEZlZWRiYWNrc1JlcXVlc3QSGQoIdXNlcl9pZHMYASADKAlSB3VzZX'
+        'JJZHM=');
 
 @$core.Deprecated('Use interestingPlaceDescriptor instead')
 const InterestingPlace$json = {
   '1': 'InterestingPlace',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 9, '10': 'id'},
-    {'1': 'preview', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Preview', '10': 'preview'},
-    {'1': 'location', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Location', '10': 'location'},
-    {'1': 'entity', '3': 4, '4': 1, '5': 11, '6': '.balady.protocol.InterestingPlace.Entity', '9': 0, '10': 'entity', '17': true},
-    {'1': 'tags', '3': 5, '4': 3, '5': 14, '6': '.balady.protocol.InterestingPlaceTag', '10': 'tags'},
-    {'1': 'distance', '3': 6, '4': 1, '5': 2, '9': 1, '10': 'distance', '17': true},
+    {
+      '1': 'preview',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.InterestingPlace.Preview',
+      '10': 'preview'
+    },
+    {
+      '1': 'location',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.InterestingPlace.Location',
+      '10': 'location'
+    },
+    {
+      '1': 'entity',
+      '3': 4,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.InterestingPlace.Entity',
+      '9': 0,
+      '10': 'entity',
+      '17': true
+    },
+    {
+      '1': 'tags',
+      '3': 5,
+      '4': 3,
+      '5': 14,
+      '6': '.balady.protocol.InterestingPlaceTag',
+      '10': 'tags'
+    },
+    {
+      '1': 'distance',
+      '3': 6,
+      '4': 1,
+      '5': 2,
+      '9': 1,
+      '10': 'distance',
+      '17': true
+    },
     {'1': 'pinned', '3': 7, '4': 1, '5': 8, '10': 'pinned'},
   ],
-  '3': [InterestingPlace_Preview$json, InterestingPlace_Location$json, InterestingPlace_Entity$json],
+  '3': [
+    InterestingPlace_Preview$json,
+    InterestingPlace_Location$json,
+    InterestingPlace_Entity$json
+  ],
   '8': [
     {'1': '_entity'},
     {'1': '_distance'},
@@ -968,7 +1556,14 @@ const InterestingPlace_Preview$json = {
   '1': 'Preview',
   '2': [
     {'1': 'title', '3': 1, '4': 1, '5': 9, '10': 'title'},
-    {'1': 'image', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+    {
+      '1': 'image',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'image'
+    },
   ],
 };
 
@@ -976,7 +1571,14 @@ const InterestingPlace_Preview$json = {
 const InterestingPlace_Location$json = {
   '1': 'Location',
   '2': [
-    {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Point', '10': 'point'},
+    {
+      '1': 'point',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Point',
+      '10': 'point'
+    },
   ],
 };
 
@@ -984,7 +1586,14 @@ const InterestingPlace_Location$json = {
 const InterestingPlace_Entity$json = {
   '1': 'Entity',
   '2': [
-    {'1': 'source_type', '3': 1, '4': 1, '5': 14, '6': '.balady.protocol.EntitySourceType', '10': 'sourceType'},
+    {
+      '1': 'source_type',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.balady.protocol.EntitySourceType',
+      '10': 'sourceType'
+    },
     {'1': 'id', '3': 2, '4': 1, '5': 9, '10': 'id'},
   ],
 };
@@ -1008,7 +1617,14 @@ final $typed_data.Uint8List interestingPlaceDescriptor = $convert.base64Decode(
 const InterestingPlacesResponse$json = {
   '1': 'InterestingPlacesResponse',
   '2': [
-    {'1': 'interesting_places', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.InterestingPlace', '10': 'interestingPlaces'},
+    {
+      '1': 'interesting_places',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.InterestingPlace',
+      '10': 'interestingPlaces'
+    },
   ],
 };
 
@@ -1021,7 +1637,16 @@ final $typed_data.Uint8List interestingPlacesResponseDescriptor = $convert.base6
 const Profile$json = {
   '1': 'Profile',
   '2': [
-    {'1': 'photo', '3': 6, '4': 1, '5': 11, '6': '.balady.protocol.Profile.Photo', '9': 0, '10': 'photo', '17': true},
+    {
+      '1': 'photo',
+      '3': 6,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Profile.Photo',
+      '9': 0,
+      '10': 'photo',
+      '17': true
+    },
   ],
   '3': [Profile_Photo$json],
   '8': [
@@ -1036,7 +1661,14 @@ const Profile$json = {
 const Profile_Photo$json = {
   '1': 'Photo',
   '2': [
-    {'1': 'image', '3': 1, '4': 1, '5': 11, '6': '.balady.protocol.Image', '10': 'image'},
+    {
+      '1': 'image',
+      '3': 1,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Image',
+      '10': 'image'
+    },
   ],
 };
 
@@ -1050,7 +1682,14 @@ final $typed_data.Uint8List profileDescriptor = $convert.base64Decode(
 const ProfileResponse$json = {
   '1': 'ProfileResponse',
   '2': [
-    {'1': 'profile', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.Profile', '10': 'profile'},
+    {
+      '1': 'profile',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.Profile',
+      '10': 'profile'
+    },
   ],
   '9': [
     {'1': 1, '2': 2},
@@ -1066,7 +1705,14 @@ final $typed_data.Uint8List profileResponseDescriptor = $convert.base64Decode(
 const CategoryResponse$json = {
   '1': 'CategoryResponse',
   '2': [
-    {'1': 'categories', '3': 1, '4': 3, '5': 11, '6': '.balady.protocol.Category', '10': 'categories'},
+    {
+      '1': 'categories',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.balady.protocol.Category',
+      '10': 'categories'
+    },
   ],
 };
 
@@ -1084,16 +1730,30 @@ const StaticAsset$json = {
 };
 
 /// Descriptor for `StaticAsset`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List staticAssetDescriptor = $convert.base64Decode(
-    'CgtTdGF0aWNBc3NldBIbCglpY29uc191cmwYASABKAlSCGljb25zVXJs');
+final $typed_data.Uint8List staticAssetDescriptor = $convert
+    .base64Decode('CgtTdGF0aWNBc3NldBIbCglpY29uc191cmwYASABKAlSCGljb25zVXJs');
 
 @$core.Deprecated('Use createFeedbackRequestDescriptor instead')
 const CreateFeedbackRequest$json = {
   '1': 'CreateFeedbackRequest',
   '2': [
     {'1': 'reviewText', '3': 1, '4': 1, '5': 9, '10': 'reviewText'},
-    {'1': 'context', '3': 2, '4': 1, '5': 11, '6': '.balady.protocol.CreateFeedbackRequest.Context', '10': 'context'},
-    {'1': 'review', '3': 3, '4': 1, '5': 11, '6': '.balady.protocol.CreateFeedbackRequest.Review', '10': 'review'},
+    {
+      '1': 'context',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.CreateFeedbackRequest.Context',
+      '10': 'context'
+    },
+    {
+      '1': 'review',
+      '3': 3,
+      '4': 1,
+      '5': 11,
+      '6': '.balady.protocol.CreateFeedbackRequest.Review',
+      '10': 'review'
+    },
   ],
   '3': [CreateFeedbackRequest_Context$json, CreateFeedbackRequest_Review$json],
 };
@@ -1149,4 +1809,3 @@ const UpdateUserIdRequest$json = {
 final $typed_data.Uint8List updateUserIdRequestDescriptor = $convert.base64Decode(
     'ChNVcGRhdGVVc2VySWRSZXF1ZXN0EhkKCG9sZF91dWlkGAEgASgJUgdvbGRVdWlkEhkKCG5ld1'
     '91dWlkGAIgASgJUgduZXdVdWlk');
-

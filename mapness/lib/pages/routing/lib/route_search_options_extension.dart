@@ -7,7 +7,7 @@ extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
     BuildContext context, {
     required bool isOffline,
     required bool isPedestrianBlocked,
-    required bool hasPublicTransportData,
+    required bool noPublicTransportData,
   }) {
     final ltr = Directionality.of(context) == TextDirection.ltr;
 
@@ -20,7 +20,7 @@ extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
     } else if (this == RouteSearchOptionsMessage.car) {
       return isOffline ? TransportIcons.carError : TransportIcons.car;
     } else if (this == RouteSearchOptionsMessage.publicTransport) {
-      return (isOffline || hasPublicTransportData) ? TransportIcons.tramError : TransportIcons.tram;
+      return (isOffline || noPublicTransportData) ? TransportIcons.tramError : TransportIcons.tram;
     }
 
     return TransportIcons.car;

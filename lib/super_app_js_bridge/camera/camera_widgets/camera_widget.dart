@@ -181,7 +181,7 @@ class _CameraWidgetState extends State<CameraWidget>
                     },
                   ),
                   CustomIconButtonWidget(
-                    icon: state.isFlashOn
+                    icon: !state.isFlashOn
                         ? IconPath.vdCameraFlashOff
                         : IconPath.vdCameraFlashOn,
                     iconSize: 32,

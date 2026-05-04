@@ -6,8 +6,11 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'cityscape.g.dart';
@@ -35,6 +38,8 @@ class Cityscape extends _$Cityscape {
   String get customPinPath => Assets.icons.svg.icCityscapePin.keyName;
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
+
+  String get cityscapeDefaultMarker => Assets.icons.svg.cityscapeUniqueDefaultMarker.keyName;
 
   String get globalImg => Assets.images.cityscapeGlobal.keyName;
 
@@ -71,25 +76,19 @@ class Cityscape extends _$Cityscape {
   /// Checks if the custom pin should be shown, based on the object ID
   bool showCustomPin(int objectId) => _cityscapeObjectId == objectId && state;
 
-  /// Manually triggers an update of the state
-  void refresh() {
-    ref.read(dgisEnvironmentProvider).whenData(
-      (data) {
-        final now = DateTime.now();
-        state = now.isAfter(data.cityscapeDateTimeRange.from) && now.isBefore(data.cityscapeDateTimeRange.to);
-      },
-    );
-  }
-
   Future<void> initializeGlobalMarker() async {
     mapManager = ref.read(
       mapObjectManagerProvider(
-        named: MapObjectManagerSettings.myLocation().name,
-        layerId: MapObjectManagerSettings.myLocation().layerId,
+        named: MapObjectManagerSettings.cityEvent().name,
+        layerId: MapObjectManagerSettings.cityEvent().layerId,
       ).notifier,
     );
     await mapManager?.removeMarkerById(cityscapeGlobalMarkerId);
 
+    final isArabic = ref.read(appLanguageProvider) == Language.arabic;
+    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
+    final title =
+        isArabic ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات' : 'Riyadh International\nExhibition\n& Convention Center';
     final globalMarker = sdk.Marker(
       id: cityscapeGlobalMarkerId,
       options: sdk.MarkerOptionsMessage(
@@ -98,9 +97,17 @@ class Cityscape extends _$Cityscape {
           longitude: 46.38741921633482,
           elevation: 1,
         ),
-        icon: sdk.MarkerIconMessage(svgPath: customPinPath, width: 70),
-        anchor: sdk.MarkerAnchorMessage(x: 0.5, y: 1),
-        animatedAppearance: true,
+        icon: sdk.MarkerIconMessage(svgPath: cityscapeDefaultMarker, width: 20),
+        anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
+        text: title,
+        textStyle: sdk.MarkerTextStyleMessage(
+          fontSize: 13,
+          color: 0xFF2AB3A9,
+          strokeWidth: 1,
+          strokeColor: 0xFFFFFFFF,
+          fontName: fontName,
+          suppressOnOverlap: true,
+        ),
         isVisible: false,
         zIndex: 50,
       ),
@@ -111,6 +118,18 @@ class Cityscape extends _$Cityscape {
   }
 
   Future<void> showGlobalMarker() async {
+    final cameraPosition = ref.read(cameraPositionProvider);
+    final zoom = cameraPosition?.zoom ?? 0.0;
+
+    if (zoom < 12) {
+      await hideGlobalMarker();
+      return;
+    }
+
+    final isArabic = ref.read(appLanguageProvider) == Language.arabic;
+    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
+    final title =
+        isArabic ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات' : 'Riyadh International\nExhibition\n& Convention Center';
     await mapManager?.setMarkerOptions(
       cityscapeGlobalMarkerId,
       sdk.ChangeMarkerOptionsMessage(
@@ -119,8 +138,17 @@ class Cityscape extends _$Cityscape {
           longitude: 46.38741921633482,
           elevation: 1,
         ),
-        icon: sdk.MarkerIconMessage(svgPath: customPinPath, width: 70),
+        icon: sdk.MarkerIconMessage(svgPath: cityscapeDefaultMarker, width: 20),
         anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
+        text: title,
+        textStyle: sdk.MarkerTextStyleMessage(
+          fontSize: 13,
+          color: 0xFF2AB3A9,
+          strokeWidth: 1,
+          strokeColor: 0xFFFFFFFF,
+          fontName: fontName,
+          suppressOnOverlap: true,
+        ),
         animatedAppearance: true,
         isVisible: true,
         zIndex: 50,
@@ -144,16 +172,5 @@ class Cityscape extends _$Cityscape {
       ),
       toCompareRoutes: [PoiCardWidgetRoute.page],
     );
-  }
-
-  /// Simple provider that returns the current status without periodic updates
-  /// Use this if you only need a one-time check
-  bool isNow() {
-    // Check if debug override is enabled
-    if (cityscapeDebugOverride) {
-      return true;
-    }
-
-    return state;
   }
 }

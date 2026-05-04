@@ -20,12 +20,9 @@ class FeedbackSelectDaysSheet extends StatefulWidget {
   final _FieldState fieldState;
   final int fieldIndex;
 
-  FeedbackSelectDaysSheet({
-    required this.fieldState,
-    required this.fieldIndex,
-    super.key,
-  })  : assert(fieldState.value != null, 'field value should present'),
-        assert(fieldState.value!.length > fieldIndex, 'field index should be withing range of fields');
+  FeedbackSelectDaysSheet({required this.fieldState, required this.fieldIndex, super.key})
+    : assert(fieldState.value != null, 'field value should present'),
+      assert(fieldState.value!.length > fieldIndex, 'field index should be withing range of fields');
 
   @override
   State<FeedbackSelectDaysSheet> createState() => _FeedbackSelectDaysSheetState();
@@ -47,9 +44,9 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
 
     return Container(
       padding: const EdgeInsets.all(Spacing.$4x),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: context.colors.backgroundSurface4,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(Spacing.$4x),
           topRight: Radius.circular(Spacing.$4x),
         ),
@@ -66,29 +63,24 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                 children: [
                   Text(
                     context.l10n.feedbackSelectDaysTitle,
-                    style: context.textStyle.heading2,
+                    style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
                   ),
                   Text(
                     lockedDays.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
-                    style: context.textStyle.footNote.copyWith(
-                      color: context.colors.foregroundSoft,
-                    ),
+                    style: context.textStyle.footNote.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ],
               ),
-              uikit.AppButton.close(onTap: () => context.router.popForced()),
+              uikit.AppButton.close(onTap: () => context.router.pop()),
             ],
           ),
           const SizedBox(height: Spacing.$3x),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Spacing.$4x),
-              color: context.colors.backgroundSurface4,
+              color: context.colors.backgroundSurface1,
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.$4x,
-              vertical: Spacing.$2x,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$2x),
             child: Column(
               children: [
                 _SelectDayItem(
@@ -99,8 +91,9 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                 ),
                 for (final day in WeekDay.values)
                   _SelectDayItem(
-                    state:
-                        workingHours.days.contains(day) ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
+                    state: workingHours.days.contains(day)
+                        ? BaladyCheckBoxState.checked
+                        : BaladyCheckBoxState.unchecked,
                     disable: lockedDays.contains(day),
                     dayName: day.localizedName(context.l10n),
                     onTap: () => _handleOnDayTap(day),
@@ -113,23 +106,16 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
     );
   }
 
-  void _updateFieldInState(
-    int fieldIndex,
-    FeedbackScheduleWorkingHoursEntity updatedField,
-  ) {
+  void _updateFieldInState(int fieldIndex, FeedbackScheduleWorkingHoursEntity updatedField) {
     /// since this widget is in other tree we could not directly listen to updates.
     /// Fortunately there is no flow where update comes from outside => we could assume
     /// that both in sync.
     if (!mounted) {
       return;
     }
-    setState(
-      () {
-        widget.fieldState.didChange(
-          widget.fieldState.value!.replace(fieldIndex, updatedField),
-        );
-      },
-    );
+    setState(() {
+      widget.fieldState.didChange(widget.fieldState.value!.replace(fieldIndex, updatedField));
+    });
   }
 
   void _handleOnDayTap(WeekDay day) {
@@ -143,23 +129,16 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
     );
   }
 
-  void _handleMarkAll(
-    BaladyCheckBoxState selectAllState,
-  ) {
-    _updateFieldInState(
-      widget.fieldIndex,
-      switch (selectAllState) {
-        /// if all days are selected, select none
-        BaladyCheckBoxState.checked => workingHours.copyWith(days: ISet(const {})),
+  void _handleMarkAll(BaladyCheckBoxState selectAllState) {
+    _updateFieldInState(widget.fieldIndex, switch (selectAllState) {
+      /// if all days are selected, select none
+      BaladyCheckBoxState.checked => workingHours.copyWith(days: ISet(const {})),
 
-        /// if not all days are selected, select all days
-        BaladyCheckBoxState.indeterminate || BaladyCheckBoxState.unchecked => workingHours.copyWith(
-            days: ISet(
-              WeekDay.values.toSet().difference(lockedDays.toSet()),
-            ),
-          ),
-      },
-    );
+      /// if not all days are selected, select all days
+      BaladyCheckBoxState.indeterminate || BaladyCheckBoxState.unchecked => workingHours.copyWith(
+        days: ISet(WeekDay.values.toSet().difference(lockedDays.toSet())),
+      ),
+    });
     if (!mounted) {
       return;
     }
@@ -174,52 +153,40 @@ class _SelectDayItem extends StatelessWidget {
 
   final void Function() onTap;
 
-  const _SelectDayItem({
-    required this.state,
-    required this.disable,
-    required this.dayName,
-    required this.onTap,
-  });
+  const _SelectDayItem({required this.state, required this.disable, required this.dayName, required this.onTap});
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: context.colors.neutralContainerActive,
-              ),
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.colors.neutralContainerActive)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              dayName,
+              style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
             ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  dayName,
-                  style: context.textStyles.bodyLargeRegular,
-                ),
-              ),
-              uikit.BaladyCheckBox(
-                state: state,
-                disable: disable,
-                onChanged: (state) => onTap(),
+          uikit.BaladyCheckBox(
+            state: state,
+            disable: disable,
+            onChanged: (state) => onTap(),
 
-                /// rebuild checkbox when state or dayName changes
-                /// since weeldays does not update when everyday checked
-                key: ValueKey(dayName.hashCode ^ state.hashCode),
-              ),
-            ],
+            /// rebuild checkbox when state or dayName changes
+            /// since weeldays does not update when everyday checked
+            key: ValueKey(dayName.hashCode ^ state.hashCode),
           ),
-        ),
-      );
+        ],
+      ),
+    ),
+  );
 }
 
-BaladyCheckBoxState _isAllDaysState(
-  Iterable<WeekDay> lockedDays,
-  Iterable<WeekDay> selectedDays,
-) {
+BaladyCheckBoxState _isAllDaysState(Iterable<WeekDay> lockedDays, Iterable<WeekDay> selectedDays) {
   final notLockedDays = WeekDay.values.toSet().difference(lockedDays.toSet());
   final notSelectedDays = notLockedDays.difference(selectedDays.toSet());
 

@@ -1,14 +1,20 @@
+import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
+import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'point_of_interest.g.dart';
@@ -20,70 +26,90 @@ const poiMapFontEn = 'GolosText_SemiBold';
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
-  DgisObjectIdMessage objectId,
+  DgisObjectId objectId,
   LatLng? closestPoint,
+  BaladyAppThemes theme,
 ) async {
-  final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
+  final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
+  final l10n = ref.watch(appLocaleProvider);
+  final dgisController = await ref.read(dgisControllerProvider.future);
+  final directoryObject = await dgisController.searchByObjectId(objectId.toMessage());
 
-  final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
+  if (directoryObject.levelId == null) {
+    final nearestObjects = await dgisController.getNearestObjects();
+    final renderedObject = nearestObjects.where((e) => e.objectId.objectId == objectId.objectId).firstOrNull;
+
+    if (renderedObject?.levelId != null) {
+      directoryObject.levelId = renderedObject!.levelId;
+    }
+  }
+
+  final cleanupRubrics = directoryObject.rubricIds.nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
-  final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerPath(rubrics, objectId.objectId);
+  final mapMarkerMapper = await ref
+      .watch(rubricMarkerMapperProvider.notifier)
+      .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final bigIconPath = mapMarkerMapper.$2;
 
-  final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
+  final markerPosition = directoryObject.markerPosition;
+  final fallbackPosition = closestPoint;
+  if (markerPosition == null && fallbackPosition == null) {
+    return null;
+  }
 
   final position = LatLng(
-    latitude: directoryObject?.markerPosition!.latitude ?? 0,
-    longitude: directoryObject?.markerPosition!.longitude ?? 0,
+    latitude: (fallbackPosition?.latitude ?? markerPosition?.latitude)!,
+    longitude: (fallbackPosition?.longitude ?? markerPosition?.longitude)!,
+  );
+  directoryObject.markerPosition = GeoPointWithElevationMessage(
+    latitude: position.latitude,
+    longitude: position.longitude,
+    elevation: 0,
   );
 
-  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
   final dark = await ref.watch(darkModeProvider.future);
-  final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+  final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
 
-  final title = directoryObject?.title;
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
     color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
-    fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
-    textPlacement: MarkerTextPlacementMessage(
-      placement: TextPlacementMessage.bottomCenter,
-    ),
+    fontName: directoryObject.title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
+    textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
+  final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+  final markerTitle = directoryObject.title.trim();
+  final fullStreetAddress = directoryObject.fullAddressName?.streetAddress?.trim();
+  final shortStreetAddress = directoryObject.shortAddressName?.streetAddress?.trim();
+  final isAddressUsedAsTitle =
+      (fullStreetAddress != null && fullStreetAddress == markerTitle) ||
+      (shortStreetAddress != null && shortStreetAddress == markerTitle);
+  final showPinLabel = markerTitle.isNotEmpty && !directoryObject.isDroppedPin && !isAddressUsedAsTitle;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(
       GeoPointWithElevationMessage(
-        latitude: closestPoint?.latitude ?? position.latitude,
-        longitude: closestPoint?.longitude ?? position.longitude,
+        latitude: position.latitude,
+        longitude: position.longitude,
         elevation: 1,
       ),
-      text: title,
+      text: showPinLabel ? directoryObject.title : null,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       id: poiPinId,
+      activeCityEvent: ref.read(activeCityEventProvider),
+      isDark: isDark,
     ),
+    objectId: objectId.objectId,
   );
 
-  final highlightController = ref.read(highlightProvider.notifier);
+  final highlightController = ref.watch(highlightProvider.notifier);
   await highlightController.removeAll();
-  await highlightController.addHighlight(objectId);
 
-  if (directoryObject != null) {
-    for (final entrance in directoryObject.entrances) {
-      await highlightController.addHighlight(entrance.id);
-    }
-  }
-
-  ref.onDispose(() async {
-    await highlightController.removeAll();
-  });
-
-  if (isMarkerPositionIsNull) {
-    return null;
+  if (directoryObject.hasHighlightableType) {
+    await highlightController.addHighlight(objectId.toMessage());
   }
 
   return directoryObject;

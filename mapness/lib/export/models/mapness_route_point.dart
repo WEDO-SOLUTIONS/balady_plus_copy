@@ -1,5 +1,4 @@
 class MapnessRoutePoint {
-
   const MapnessRoutePoint({
     required this.latitude,
     required this.longitude,

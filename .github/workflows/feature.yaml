@@ -20,7 +20,7 @@ on:
       - "feat/*"
       - "feature/*"
       - "urbi"
-      - "urbi-release-*"
+      - "urbi-service/release-*"
     paths-ignore:
       - "**.md"
       - "doc/**"
@@ -29,8 +29,11 @@ on:
 
 jobs:
   check-typos:
-    runs-on: [misc]
+    # runs-on: [misc]
+    runs-on: ubuntu-latest
     steps:
+      - name: Check out code
+        uses: actions/checkout@v4
       - name: typos-action
         uses: crate-ci/typos@v1.23.1
         with:
@@ -39,7 +42,8 @@ jobs:
 
   auto-request-review:
     name: Auto Request Review CODEOWNERS
-    runs-on: [misc]
+    runs-on: ubuntu-latest
+    # runs-on: [misc]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -50,83 +54,135 @@ jobs:
           config: .github/reviewers.yml # Config file location override
 
   notify-reviewers:
-    name: Notify reviewers
+    name: Notify reviewers (Teams)
     if: ${{ !github.event.pull_request.draft }}
-    runs-on: [misc]
+    runs-on: ubuntu-latest
     needs: auto-request-review
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Send notification
+      - name: 🔔 Notify reviewers in Microsoft Teams (Adaptive Card + mentions)
+        shell: bash
         env:
-          MM_CHANNEL_ID: ${{ secrets.MM_REVIEWERS_CHANNEL_ID }}
-          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
-          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
-          MM_MAPPING_FILE: ${{ github.workspace }}/.github/mm_mapping.yml
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL_PR }}
+          TEAMS_MAPPING_FILE: ${{ github.workspace }}/.github/teams_mapping.yml
+
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_API_URL: ${{ github.event.pull_request.url }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          EVENT_ACTION: ${{ github.event.action }}
+
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          # Get info about PR
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          PR_API_URL="${{ github.event.pull_request.url }}"
-          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
-          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-          EVENT_ACTION="${{ github.event.action }}"
+          set -euo pipefail
 
-          # Get reviewers
-          REVIEWERS=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" ${PR_API_URL}/requested_reviewers | jq -r '.users // [] | map(.login) | join(" ")')
+          : "${TEAMS_WEBHOOK_URL:?missing TEAMS_WEBHOOK_URL}"
+          : "${TEAMS_MAPPING_FILE:?missing TEAMS_MAPPING_FILE}"
+          : "${PR_API_URL:?missing PR_API_URL (run on pull_request events)}"
 
-          # If no reviewers, exiting
+          # Get reviewers (GitHub logins)
+          REVIEWERS="$(curl -sS \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            "${PR_API_URL}/requested_reviewers" \
+            | jq -r '.users // [] | map(.login) | join(" ")')"
+
           if [ -z "${REVIEWERS}" ]; then
             echo "No reviewers to notify."
             exit 0
           fi
 
-          # Get mattermost usernames from github usernames
-          MENTION_REVIEWERS=""
+          # Build mentions for Teams Adaptive Card
+          MENTION_TEXT=""
+          MSTEAMS_ENTITIES='[]'
           NOT_FOUND_REVIEWERS=""
+
+          i=0
           for reviewer in ${REVIEWERS}; do
-            mattermost_user="$(reviewer=${reviewer} yq e '.[env(reviewer)] // ""' ${{ env.MM_MAPPING_FILE }})"
-            if [ -n "${mattermost_user}" ]; then
-              MENTION_REVIEWERS+="@${mattermost_user} "
-              echo "Mattermost user ${mattermost_user} for reviewer ${reviewer}"
+            teams_id="$(reviewer=${reviewer} yq e '.[env(reviewer)] // ""' "${TEAMS_MAPPING_FILE}")"
+
+            if [ -n "${teams_id}" ] && [ "${teams_id}" != "null" ]; then
+              i=$((i+1))
+              tag="<at>reviewer${i}</at>"
+              MENTION_TEXT+="${tag} "
+
+              MSTEAMS_ENTITIES="$(jq -c \
+                --arg id "${teams_id}" \
+                --arg name "${reviewer}" \
+                --arg text "${tag}" \
+                '. + [{
+                  "type": "mention",
+                  "text": $text,
+                  "mentioned": { "id": $id, "name": $name }
+                }]' <<< "${MSTEAMS_ENTITIES}")"
+
+              echo "Teams id ${teams_id} for reviewer ${reviewer}"
             else
               NOT_FOUND_REVIEWERS+="${reviewer} "
-              echo "Couldn't map github username to mattermost for ${reviewer}"
+              echo "Couldn't map github username to teams id for ${reviewer}"
             fi
           done
 
-          # Create message depending on action type
-          if [ "${EVENT_ACTION}" == "opened" ] || [ "${EVENT_ACTION}" == "reopened" ] || [ "${EVENT_ACTION}" == "ready_for_review" ]; then
-            MESSAGE="${MENTION_REVIEWERS}\n\
-          You were assigned as a reviewer:\n\
-          **Pull request**: [${PR_TITLE}](${PR_URL})\n"
-          elif [ "${EVENT_ACTION}" == "synchronize" ]; then
-            MESSAGE="${MENTION_REVIEWERS}\n\
-          There are some changes:\n\
-          **Pull request**: [${PR_TITLE}](${PR_URL})\n"
-          fi
+          # Decide whether to notify based on action
+          case "${EVENT_ACTION}" in
+            opened|reopened|ready_for_review) HEADER="You were assigned as a reviewer:" ;;
+            synchronize) HEADER="There are some changes:" ;;
+            *) echo "Action ${EVENT_ACTION} does not require notification."; exit 0 ;;
+          esac
 
-          # Send notification mentioning reviewers
-          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
-            \"channel_id\": \"${MM_CHANNEL_ID}\", \
-            \"message\": \"\
-          ${MESSAGE}\
-          **Branch**: ${PR_BRANCH}\n\
-          **Author**: ${PR_AUTHOR}\
-          \"\
-          }"
+          # Build Adaptive Card payload safely with jq
+          PAYLOAD="$(jq -nc \
+            --arg pr_title "${PR_TITLE}" \
+            --arg pr_url "${PR_URL}" \
+            --arg pr_branch "${PR_BRANCH}" \
+            --arg pr_author "${PR_AUTHOR}" \
+            --arg header "${HEADER}" \
+            --arg mention "${MENTION_TEXT}" \
+            --argjson entities "${MSTEAMS_ENTITIES}" \
+            '{
+              type:"message",
+              attachments:[{
+                contentType:"application/vnd.microsoft.card.adaptive",
+                content:{
+                  "$schema":"http://adaptivecards.io/schemas/adaptive-card.json",
+                  type:"AdaptiveCard",
+                  version:"1.5",
+                  msteams:{entities:$entities},
+                  body:[
+                    {type:"TextBlock", size:"Large", weight:"Bolder", wrap:true, text:"👀 PR review request"},
+                    {type:"TextBlock", wrap:true, text:($mention + $header)},
+                    {type:"FactSet", facts:[
+                      {title:"Pull request", value:("[" + $pr_title + "](" + $pr_url + ")")},
+                      {title:"Branch", value:$pr_branch},
+                      {title:"Author", value:$pr_author}
+                    ]}
+                  ]
+                }
+              }]
+            }')"
 
-          # Send notification if we couldn't map some reviewers to mattermost users
-          if [ -n "${NOT_FOUND_REVIEWERS}" ]; then
-            curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
-              \"channel_id\": \"${MM_CHANNEL_ID}\", \
-              \"message\": \"Can't map github users to mattermost: $NOT_FOUND_REVIEWERS\"\
-            }"
+          curl -sS -H 'Content-Type: application/json' -d "${PAYLOAD}" "${TEAMS_WEBHOOK_URL}" >/dev/null
+          echo "Teams notification sent."
+
+          if [ -n "${NOT_FOUND_REVIEWERS// /}" ]; then
+            WARN_PAYLOAD="$(jq -nc --arg nf "${NOT_FOUND_REVIEWERS}" '{
+              "@type":"MessageCard",
+              "@context":"https://schema.org/extensions",
+              themeColor:"D83B01",
+              summary:"Reviewers mapping warning",
+              title:"⚠️ Reviewers mapping warning",
+              sections:[{text:("Can'\''t map GitHub users to Teams IDs: " + $nf)}]
+            }')"
+            curl -sS -H 'Content-Type: application/json' -d "${WARN_PAYLOAD}" "${TEAMS_WEBHOOK_URL}" >/dev/null
+            echo "Teams mapping warning sent."
           fi
 
   linter:
-    runs-on: [self-hosted, Linux]
+    # runs-on: [self-hosted, Linux]
+    runs-on: ubuntu-latest
     name: Lint flutter code
     steps:
       - name: Checkout code
@@ -134,10 +190,10 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.3"
+          flutter-version: "3.38.5"
           channel: "stable"
-          cache: true
-      - name: Download Localazy
+
+      - name: Download Localazy #wait secrets from 2gis
         uses: localazy/download@v1
         with:
           read_key: ${{ secrets.LOCALAZY_READ_KEY }}
@@ -147,16 +203,17 @@ jobs:
         run: |
           cd mapness
           # FIXME: Workaround, see https://github.com/localazy/download/issues/3
-          sudo chown github:github -R lib/l10n
+          sudo chown -R "$USER:$USER" lib/l10n || true
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: |
-                ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
-                ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
+#       NOT USED
+#      - name: Setup SSH
+#        uses: webfactory/ssh-agent@v0.9.0
+#        with:
+#          ssh-private-key: |
+#                ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
+#                ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
 
       - name: Setup dgis_map_platform_interface
         run: |
@@ -185,8 +242,7 @@ jobs:
           flutter pub get
 
       - name: Analyze Flutter
-        uses: ValentinVignal/action-dart-analyze@v0.17
+        uses: ValentinVignal/action-dart-analyze@v2.1
         with:
-          fail-on: "format"
           line-length: 120
           check-renamed-files: true

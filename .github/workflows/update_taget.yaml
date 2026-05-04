@@ -3,7 +3,7 @@ name: Update PR Target Branches for Release
 on:
   push:
     branches:
-      - "urbi-release-*"
+      - "urbi-service/release-*"
 
 permissions:
   pull-requests: write
@@ -33,6 +33,15 @@ jobs:
             });
 
             for (const pr of pullRequests) {
+              // Check correct PR
+              const hasMoveLabel = pr.labels?.some(
+                label => label.name.includes('Move2NextRelease')
+              );
+
+              if (!hasMoveLabel) {
+                console.log(`⏭️ PR #${pr.number} doesn't include required word for update ('Move2NextRelease'). Skipping.`);
+                continue;
+              }
               // 3) Skip if the PR already targets the current branch
               if (pr.base.ref === currentBranch) {
                 console.log(`✅ PR #${pr.number} already targets ${currentBranch}. Skipping.`);

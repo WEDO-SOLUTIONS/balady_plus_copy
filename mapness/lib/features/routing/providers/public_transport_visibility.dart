@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_region_bound.dart';
@@ -31,10 +32,7 @@ class PublicTransportVisibilityException implements Exception {
   final String message;
   final PublicTransportVisibilityReason reason;
 
-  const PublicTransportVisibilityException({
-    required this.message,
-    required this.reason,
-  });
+  const PublicTransportVisibilityException({required this.message, required this.reason});
 }
 
 class PublicTransportVisibilityIsTooFarException implements Exception {
@@ -63,19 +61,16 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   Future<PublicTransportVisibilityResult> build({
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
+    RouteParamsPointList? intermediatePoints,
   }) async {
-    final online = ref.watch(networkStatusProvider);
     try {
-      if (!online) {
-        throw const NoInternetException();
-      }
-
       final normalizedStartPoint = _normalizePoint(startPoint);
       final normalizedFinishPoint = _normalizePoint(finishPoint);
 
       final hasRoutes = await _checkPublicTransportRoutes(
         normalizedStartPoint,
         normalizedFinishPoint,
+        intermediatePoints?.points.map((e) => e.value).nonNulls.toList(),
       );
 
       if (!hasRoutes) {
@@ -86,33 +81,34 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         );
       }
 
-      final isBothInRiyadh = await _checkRiyadhRegion(
-        normalizedStartPoint,
-        normalizedFinishPoint,
-      );
+      final isBothInRiyadh = await _checkRiyadhRegion(normalizedStartPoint, normalizedFinishPoint);
 
       return PublicTransportVisibilityResult(
         isBothInRiyadh: isBothInRiyadh,
         hasPublicTransportRoutes: true,
         reason: isBothInRiyadh ? null : PublicTransportVisibilityReason.notInRiyadh,
       );
+    } on NoInternetException {
+      // Re-throw NoInternetException to be handled by UI
+      rethrow;
     } on PublicTransportVisibilityException catch (e) {
-      return PublicTransportVisibilityResult(
-        isBothInRiyadh: false,
-        hasPublicTransportRoutes: false,
-        reason: e.reason,
-      );
-    } on PublicTransportVisibilityIsTooFarException catch (_) {
+      // Handle specific visibility exceptions
+      return PublicTransportVisibilityResult(isBothInRiyadh: false, hasPublicTransportRoutes: false, reason: e.reason);
+    } on PublicTransportVisibilityIsTooFarException {
+      // Handle route distance exception
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
         reason: PublicTransportVisibilityReason.findRouteError,
       );
     } catch (error) {
+      // Re-check network status before returning unknown error
+      final online = ref.read(networkStatusProvider);
       if (!online) {
         throw const NoInternetException();
       }
 
+      // Return unknown error as result (not exception)
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
@@ -127,7 +123,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       return point;
     }
 
-    final location = ref.watch(locationProvider);
+    final location = ref.watch(locationProvider.select((v) => v == null ? null : (v.longitude, v.latitude)));
     if (location == null) {
       debugPrint('User location is null. Check [locationProvider] and permissions');
       throw const PublicTransportVisibilityException(
@@ -135,25 +131,24 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         reason: PublicTransportVisibilityReason.noLocation,
       );
     }
-    return RouteParamsPoint(
-      longitude: location.longitude,
-      latitude: location.latitude,
-    );
+    return RouteParamsPoint(longitude: location.$1, latitude: location.$2);
   }
 
   /// Checks if public transport routes are available with retry logic
   Future<bool> _checkPublicTransportRoutes(
     RouteParamsPoint startPoint,
     RouteParamsPoint finishPoint,
+    List<RouteParamsPoint>? intermediatePoints,
   ) async {
-    final online = ref.watch(networkStatusProvider);
     final dgisController = await ref.read(dgisControllerProvider.future);
+    final intermediateSearchPoints = intermediatePoints?.map((e) => e.routeSearchPointMessage).toList();
     try {
       // Initial route search
       final initialRoutes = await dgisController.findRoute(
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
         finishPoint: finishPoint.routeSearchPointMessage,
+        intermediatePoints: intermediateSearchPoints,
       );
 
       if (initialRoutes.routes.isEmpty) {
@@ -162,6 +157,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
 
       return initialRoutes.routes.isNotEmpty;
     } catch (e) {
+      final online = ref.read(networkStatusProvider);
       if (!online) {
         throw const NoInternetException();
       }
@@ -171,20 +167,15 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   }
 
   /// Checks if both points are within Riyadh region
-  Future<bool> _checkRiyadhRegion(
-    RouteParamsPoint startPoint,
-    RouteParamsPoint finishPoint,
-  ) async {
+  Future<bool> _checkRiyadhRegion(RouteParamsPoint startPoint, RouteParamsPoint finishPoint) async {
     try {
-      final startRegion = await ref.read(searchRegionBoundProvider(
-        longitude: startPoint.longitude,
-        latitude: startPoint.latitude,
-      ).future);
+      final startRegion = await ref.read(
+        searchRegionBoundProvider(longitude: startPoint.longitude, latitude: startPoint.latitude).future,
+      );
 
-      final finishRegion = await ref.read(searchRegionBoundProvider(
-        longitude: finishPoint.longitude,
-        latitude: finishPoint.latitude,
-      ).future);
+      final finishRegion = await ref.read(
+        searchRegionBoundProvider(longitude: finishPoint.longitude, latitude: finishPoint.latitude).future,
+      );
 
       return startRegion.isRiyadh == true && finishRegion.isRiyadh == true;
     } catch (e) {

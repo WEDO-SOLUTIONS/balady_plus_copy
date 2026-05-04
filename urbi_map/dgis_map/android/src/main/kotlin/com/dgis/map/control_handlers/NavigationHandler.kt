@@ -1,5 +1,6 @@
 package com.dgis.map.control_handlers
 
+import android.content.Context
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
@@ -28,6 +29,7 @@ import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteMapObject
 import ru.dgis.sdk.map.RouteMapObjectDisplayFlag
 import ru.dgis.sdk.map.Source
+import ru.dgis.sdk.map.GraphicsPreset
 import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.calcPosition
@@ -36,12 +38,15 @@ import ru.dgis.sdk.routing.RouteDistance
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.routing.TrafficRoute
+import ru.dgis.sdk.traffic.TrafficControlModel
+import ru.dgis.sdk.traffic.TrafficControlStatus
 
 class NavigationHandler(
         sdkContext: SdkContext,
         private val navigationManager: NavigationManager,
         private val eventSink: EventChannel.EventSink,
         private val map: Map,
+        private val appContext: Context,
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
         private val voicesManager = getVoiceManager(sdkContext)
@@ -52,6 +57,7 @@ class NavigationHandler(
         private val betterRouteCloseable: AutoCloseable
 
         private var prevCameraBehaviour: CameraBehaviour? = null
+        private var prevGraphicsPreset: GraphicsPreset? = null
         private var oldSource: Source? = null
 
         var isNavigating: Boolean = false
@@ -85,6 +91,7 @@ class NavigationHandler(
                                 navigationManager.uiModel,
                                 eventSink,
                                 navigationManager,
+                                appContext,
                         )
 
                 stateClosable =
@@ -96,6 +103,23 @@ class NavigationHandler(
         }
 
         fun setupCamera(speedRangeZoom: List<SpeedRangeZoom>) {
+                // Store the original graphics preset before changing it
+                // This allows us to restore it later to preserve traffic layer colors
+                prevGraphicsPreset = map.graphicsPreset
+                
+                // NEVER change graphics preset if it's not already immersive
+                // This preserves traffic layer colors when freeroam starts
+                // The preset will only be changed if it's already immersive (no-op)
+                // This ensures traffic colors remain consistent regardless of traffic state
+                // Only change to immersive if current preset is already immersive (no change needed)
+                // Otherwise, preserve the current preset to maintain traffic colors
+                if (map.graphicsPreset == GraphicsPreset.IMMERSIVE) {
+                        // Already immersive, no change needed
+                } else {
+                        // Preserve current preset - don't change to immersive
+                        // This keeps traffic colors consistent
+                }
+                
                 prevCameraBehaviour = map.camera.behaviour.newBehaviour
                 map.camera.setBehaviour(
                         behaviour = navigationManager.mapFollowController.cameraBehaviour
@@ -159,6 +183,13 @@ class NavigationHandler(
         fun resetCamera() {
                 if (this.prevCameraBehaviour != null) {
                         map.camera.setBehaviour(this.prevCameraBehaviour!!)
+                }
+                
+                // Restore the original graphics preset if it was stored
+                // This preserves traffic layer colors when freeroam ends
+                if (prevGraphicsPreset != null) {
+                        map.graphicsPreset = prevGraphicsPreset!!
+                        prevGraphicsPreset = null
                 }
 
                 if (oldSource != null) {

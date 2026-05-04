@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/components.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,9 +19,11 @@ import 'package:provider/provider.dart';
 
 class RoutingSearchBar extends ConsumerStatefulWidget {
   final String placeholder;
+  final BaladyInputAffixIcon? affixIcon;
 
   const RoutingSearchBar({
     required this.placeholder,
+    this.affixIcon,
     super.key,
   });
 
@@ -66,6 +68,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
     return BaladySearchWithBackButtonV2(
       searchInput: BaladyTextInput.search(
         controller: _controller,
+        affixIcon: widget.affixIcon,
         config: BaladyInputConfig(
           focusNode: _focusNode,
           onTap: () {
@@ -101,12 +104,16 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             );
             if (query.trim().isNotEmpty) {
               ref.read(searchProvider(scope.value).notifier).searchByText(query);
-              ref.read(urbiAnalyticsProvider).track(
+              ref
+                  .read(urbiAnalyticsProvider)
+                  .track(
                     '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
                   );
 
-              ref.read(searchHistoryProvider(scope.value).notifier).put(
-                    SearchHistoryItem.fromQuery(query: query),
+              ref
+                  .read(searchHistoryProvider(scope.value).notifier)
+                  .put(
+                    SearchHistoryItem.fromQuery(query: query).toMessage(),
                   );
             }
           },
@@ -125,7 +132,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             action: MetricAction.tap.toString(),
           );
           FocusScope.of(context).unfocus();
-          context.router.popForced();
+          context.router.pop();
         },
       ),
     );

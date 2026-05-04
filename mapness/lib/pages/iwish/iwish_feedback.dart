@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
@@ -52,7 +51,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     final isLoading = entityState.isLoading || feedbackState.isLoading;
     final didSentFeedback = entityState.value?.feedbackSent ?? false;
     final isFeedbackComplited = entityState.value?.state == IwishState.completed;
-    final isSetMood = feedbackState.valueOrNull?.mood != null;
+    final isSetMood = feedbackState.value?.mood != null;
     final hasFeedback = entityState.hasValue && entityState.requireValue.feedbackSent;
 
     if (isLoading && (!didSentFeedback || !isSetMood) && !isFeedbackComplited) {
@@ -76,7 +75,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
             isLoading: entityState.isLoading || feedbackState.isLoading,
             onComplete: widget.onFeedbackSent,
             showValuableOpinionMessage: true,
-            triggerOnComplete: feedbackState.valueOrNull?.mood == IwishFeedbackMoodType.happy,
+            triggerOnComplete: feedbackState.value?.mood == IwishFeedbackMoodType.happy,
             onClose: () {
               if (mounted) {
                 context.router.replace(IwishPlaceCardRoute(iwishId: widget.iwishId));
@@ -95,14 +94,16 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final title = isCompleted ? context.l10n.shareYourFeelingsAboutPark : context.l10n.voteWhatDoYouWantToHaveInThePark;
     final onPressedSubmit = () async {
-      await ref.read(authMethodsProvider.notifier).authOrOpen(
+      await ref
+          .read(authMethodsProvider.notifier)
+          .authOrOpen(
             context,
             callback: feedbackNotifier.submitFeedback,
           );
     };
 
     return LabeledDraggableSheet(
-      onClose: context.router.popForced,
+      onClose: context.router.pop,
       title: title,
       child: SafeArea(
         top: false,

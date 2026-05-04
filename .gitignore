@@ -146,6 +146,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/app/build
+**/.cxx/
+/android/app/.cxx/
 
 # temporal
 urbi_map/dgis_map/ios/_DELETE_ME_
@@ -171,3 +173,7 @@ reports/
 /.env.stg
 /.env.dev
 /.env.urbiPre
+/.fvm/
+
+# Build runner
+**/*.gen.dart

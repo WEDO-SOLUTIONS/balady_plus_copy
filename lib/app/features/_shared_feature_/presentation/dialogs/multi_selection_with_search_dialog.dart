@@ -18,14 +18,13 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   final String? title;
   final String? searchHint;
 
-  MultiSelectionWithSearchDialog(
-      {Key? key,
+  const MultiSelectionWithSearchDialog(
+      {super.key,
       required this.onSelect,
       this.selectedItem,
       required this.items,
       this.title,
-      this.searchHint})
-      : super(key: key);
+      this.searchHint});
 
   @override
   State<StatefulWidget> createState() {

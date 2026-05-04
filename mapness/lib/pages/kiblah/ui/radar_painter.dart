@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RadarPainter extends CustomPainter {
-
   RadarPainter(this.radarShader, this.updateTime);
   final Shader radarShader;
   final double updateTime;
@@ -14,6 +13,5 @@ class RadarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant RadarPainter oldDelegate) =>
-      updateTime != oldDelegate.updateTime;
+  bool shouldRepaint(covariant RadarPainter oldDelegate) => updateTime != oldDelegate.updateTime;
 }

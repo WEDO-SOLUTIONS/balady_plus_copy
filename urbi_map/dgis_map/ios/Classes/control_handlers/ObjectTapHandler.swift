@@ -117,58 +117,83 @@ class ObjectTapHandler {
         cancelable.forEach { $0.cancel() }
         cancelable.removeAll()
     }
-    
+     func objectLongTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
+            let tappedObject = objectInfo.item.item
+
+            switch tappedObject {
+            case let polygon as Polygon:
+                if let id = polygon.userData as? PolygonId {
+                    eventChannel.success([
+                        "event": Events.onPolygonTap,
+                        "id": id.id,
+                    ] as [String : Any])
+                    return
+                }
+            case let circle as Circle:
+                if let id = circle.userData as? CircleId {
+                    eventChannel.success([
+                        "event": Events.onCircleTap,
+                        "id": id.id,
+                    ] as [String : Any])
+                    return
+                }
+            case let polyline as Polyline:
+                if let id = polyline.userData as? PolylineId {
+                    eventChannel.success([
+                        "event": Events.onPolylineTap,
+                        "id": id.id,
+                    ] as [String : Any])
+                    return
+                }
+            case is GeometryMapObject:
+                let mapObject = tappedObject as! GeometryMapObject
+
+                if mapObject.objectAttributes.attributeNames.contains(where: { $0 == "DESCRIPTION"}) {
+                    eventChannel.success(mapObject.objectAttributes.mapIdle(objectInfo.closestMapPoint))
+                    return
+                }
+
+                if mapObject.objectAttributes.attributeNames.contains(where: { $0 == "OPPORTUNITYDESCRIPTION"}) {
+                    eventChannel.success(mapObject.objectAttributes.mapIo(objectInfo.closestMapPoint))
+                    return
+                }
+                return
+            case is MyLocationMapObject:
+                guard let myLocation = tappedObject as? MyLocationMapObject else { return }
+                self.sendDgisMyLocationEvent(objectInfo.closestMapPoint)
+                return
+            case is DgisMapObject:
+                guard let mapObject = tappedObject as? DgisMapObject else { return }
+                self.onDgisObjectTap(mapObject, objectInfo)
+                return
+            case let cluster as SimpleClusterObject:
+                if let id = cluster.userData as? MapObjectManagerMessage {
+                    let clusterId = UUID().uuidString
+                    self.clusters[clusterId] = cluster
+                    eventChannel.success([
+                        "event": Events.onClusterTap,
+                        "id": id.id,
+                        "cluster": cluster.toMap(id: clusterId)
+                    ] as [String : Any])
+                }
+                return
+            case is RouteMapObject:
+                self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)
+                return
+            case is RoadEventMapObject:
+                self.onRoadEventTap(tappedObject as! RoadEventMapObject)
+                return
+            default:
+                self.eventChannel.error(code: Events.objectTapError)
+            }
+        }
+
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
         let tappedObject = objectInfo.item.item
         
         switch tappedObject {
         case is Marker:
             self.onMarkerTap(tappedObject as! Marker)
-            return
-        case let polygon as Polygon:
-            if let id = polygon.userData as? PolygonId {
-                eventChannel.success([
-                    "event": Events.onPolygonTap,
-                    "id": id.id,
-                ] as [String : Any])
-                return
-            }
-        case let circle as Circle:
-            if let id = circle.userData as? CircleId {
-                eventChannel.success([
-                    "event": Events.onCircleTap,
-                    "id": id.id,
-                ] as [String : Any])
-                return
-            }
-        case let polyline as Polyline:
-            if let id = polyline.userData as? PolylineId {
-                eventChannel.success([
-                    "event": Events.onPolylineTap,
-                    "id": id.id,
-                ] as [String : Any])
-                return
-            }
-        case is GeometryMapObject:
-            let mapObject = tappedObject as! GeometryMapObject
-            
-            if mapObject.objectAttributes.attributeNames.contains(where: { $0 == "DESCRIPTION"}) {
-                eventChannel.success(mapObject.objectAttributes.mapIdle(objectInfo.closestMapPoint))
-                return
-            }
-            
-            if mapObject.objectAttributes.attributeNames.contains(where: { $0 == "OPPORTUNITYDESCRIPTION"}) {
-                eventChannel.success(mapObject.objectAttributes.mapIo(objectInfo.closestMapPoint))
-                return
-            }
-            return
-        case is MyLocationMapObject:
-            guard let myLocation = tappedObject as? MyLocationMapObject else { return }
-            self.sendDgisMyLocationEvent(objectInfo.closestMapPoint)
-            return
-        case is DgisMapObject:
-            guard let mapObject = tappedObject as? DgisMapObject else { return }
-            self.onDgisObjectTap(mapObject, objectInfo)
             return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
@@ -180,12 +205,6 @@ class ObjectTapHandler {
                     "cluster": cluster.toMap(id: clusterId)
                 ] as [String : Any])
             }
-            return
-        case is RouteMapObject:
-            self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)
-            return
-        case is RoadEventMapObject:
-            self.onRoadEventTap(tappedObject as! RoadEventMapObject)
             return
         default:
             self.eventChannel.error(code: Events.objectTapError)
@@ -496,7 +515,7 @@ class ObjectTapHandler {
         
         let manager = MapObjectManager.withGeneralization(
             map: self.map,
-            logicalPixel: LogicalPixel(value: 70),
+            logicalPixel: LogicalPixel(value: 100),
             maxZoom: Zoom(value: 18),
             layerId: layerId
         )
@@ -527,7 +546,7 @@ class ObjectTapHandler {
         let options = PolygonOptions(
             // TODO : fix force unwrap
             contours: polygon.options.contours.map { contour in
-                contour.compactMap {
+                contour.points.compactMap {
                     GeoPoint(
                         latitude: Latitude(value: $0.latitude),
                       longitude: Longitude(value: $0.longitude)
@@ -1137,8 +1156,8 @@ class ObjectTapHandler {
             )))
             return
         }
-    
-        
+
+
         self.cancelable.append(
             map.getRenderedObjects(centerPoint: screenPoint, radius: ScreenDistance(value: 1)).sink { renderedObjects in
                 let objects = renderedObjects.filter {
@@ -1146,10 +1165,11 @@ class ObjectTapHandler {
                 }.map {
                     RenderedObjectMessage(
                         objectId: ($0.item.item as! DgisMapObject).id.toMessage(),
-                        closestMapPoint: $0.closestMapPoint.toMessage()
+                        closestMapPoint: $0.closestMapPoint.toMessage(),
+                        levelId: $0.item.levelId.map { Int64($0.value) }
                     )
                 }
-                
+
                 completion(Result.success(objects))
             } failure: { _ in
                 completion(Result.failure( FlutterError(

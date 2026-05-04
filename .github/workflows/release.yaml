@@ -9,7 +9,8 @@ on:
 jobs:
   release:
     name: "Release"
-    runs-on: [misc]
+    # runs-on: [misc]
+    runs-on: ubuntu-latest
     steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:

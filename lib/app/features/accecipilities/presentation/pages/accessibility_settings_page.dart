@@ -1,0 +1,154 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
+import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_info.dart';
+import 'package:balady_plus/app/features/accecipilities/presentation/pages/text_size_preview_page.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart' as p;
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+class AccessibilitySettingsPage extends ConsumerStatefulWidget {
+  const AccessibilitySettingsPage({super.key});
+
+  @override
+  ConsumerState<AccessibilitySettingsPage> createState() =>
+      _AccessibilitySettingsPageState();
+}
+
+class _AccessibilitySettingsPageState
+    extends ConsumerState<AccessibilitySettingsPage> {
+  @override
+  Widget build(BuildContext context) {
+    final controller = p.Provider.of<AccessibilityController>(context);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Directionality(
+        textDirection: ref.watch(uiDirectionProvider),
+        child: Material(
+          color: context.colors.backgroundSurface4,
+
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x),
+            child: Scaffold(
+              appBar: BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                title: context.l10n.accessibility,
+                colorEnabled: context.colors.accentDefault,
+                leading: ActionModel(
+                  onPressed: () => context.router.pop(),
+                  icon: SystemIcons.arrowCornerLeftLarge,
+                ),
+              ),
+              body: Padding(
+                padding: const EdgeInsets.only(
+                  top: 12,
+                  left: 12,
+                  right: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ContentWrapper(
+                      color: context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const TextSizePreviewPage(),
+                              )),
+                          options: ContentRowOptions(
+                            leadingIcon: AppIcons(
+                              iconData: GeneralIcons.messageTextLTR,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            title: 'fontSize'.tr(),
+                            actionWidget: ContentRowActionOptions(
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundSoft,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Spacing.$4x.heightBox,
+                    ContentWrapper(
+                      color: context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () =>
+                              controller.toggleGrayscale(!controller.grayscale),
+                          options: ContentRowOptions(
+                            leadingIcon: AppIcons(
+                              iconData: Icons.color_lens_outlined,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            title: 'grayScaleMode'.tr(),
+                            actionWidget: ContentRowActionOptions(
+                              customToggleBuilder: (
+                                  {required onToggle, bool? initial}) {
+                                return CupertinoSwitch(
+                                  value: controller.grayscale ?? false,
+                                  onChanged: (value) {
+                                    controller.toggleGrayscale(value);
+                                    onToggle?.call(value);
+                                  },
+                                  activeTrackColor: context.colors.accentDefault,
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Spacing.$4x.heightBox,
+                    ContentWrapper(
+                      color: context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const AccessibilityInfo({
+                                  "0": "accessibilityStepOpenSettings",
+                                  "1": "accessibilityStepAccessibility",
+                                  "2": "accessibilityStepScreenReader",
+                                  "3": "accessibilityStepEnableReader",
+                                  // "4": "accessibilityStepFinishSetup",
+                                }),
+                              )),
+                          options: ContentRowOptions(
+                            leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
+                            title: 'voiceReader'.tr(),
+                            actionWidget: ContentRowActionOptions(
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundSoft,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Spacing.$2x.heightBox,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

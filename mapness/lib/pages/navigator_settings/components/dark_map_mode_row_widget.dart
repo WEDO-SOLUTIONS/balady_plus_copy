@@ -5,14 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/location.dart';
 
 class DarkMapModeRowWidget extends ConsumerWidget {
   final DarkMapStateEnum currentMode;
+  final bool dividerEnabled;
 
-  const DarkMapModeRowWidget({
-    required this.currentMode,
-    super.key,
-  });
+  const DarkMapModeRowWidget({required this.dividerEnabled, required this.currentMode, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,25 +19,27 @@ class DarkMapModeRowWidget extends ConsumerWidget {
 
     return ContentRow(
       onTap: () {
+        if (currentMode == DarkMapStateEnum.autoSunDependent) {
+          // check permissions in case of first app start as the location may not be available
+          ref.read(locationProvider.notifier).checkLocationPermission();
+        }
         ref.read(darkModeProvider.notifier).changeDarkModeState(currentMode);
       },
+      constraints: const BoxConstraints(minHeight: 66),
       options: ContentRowOptions(
-        padding: const EdgeInsets.symmetric(
-          vertical: Spacing.$2x,
-          horizontal: Spacing.$4x,
-        ),
+        padding: EdgeInsets.zero,
         wrapperColor: context.colors.backgroundSurface1,
-        wrapperEnabled: true,
+        dividerEnabled: dividerEnabled,
         title: _getTitleFromDarkModeState(context),
-        titleStyle: context.textStyles.bodyLargeRegular.copyWith(
-          color: context.colors.foregroundDefault,
-        ),
-        customActionWidget: darModeState.valueOrNull?.currentMapMode == currentMode
+        subtitle: _getSubtitle(context),
+        titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+        customActionWidget: darModeState.value?.currentMapMode == currentMode
             ? Padding(
                 padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
                 child: Icon(
                   SystemIcons.checkmark,
                   color: context.colors.successDefault,
+                  size: 24,
                 ),
               )
             : Spacing.$6x.heightBox,
@@ -47,8 +48,16 @@ class DarkMapModeRowWidget extends ConsumerWidget {
   }
 
   String _getTitleFromDarkModeState(BuildContext context) => switch (currentMode) {
-        DarkMapStateEnum.asInASystem => context.l10n.darkModeAsInASystem,
-        DarkMapStateEnum.alwaysEnabled => context.l10n.darkModeAlwaysEnabled,
-        DarkMapStateEnum.off => context.l10n.darkModeOff,
-      };
+    DarkMapStateEnum.asInASystem => context.l10n.darkModeAsInASystemTitle,
+    DarkMapStateEnum.autoSunDependent => context.l10n.darkModeSunDependentTitle,
+    DarkMapStateEnum.alwaysEnabled => context.l10n.darkModeOnTitle,
+    DarkMapStateEnum.off => context.l10n.darkModeOff,
+  };
+
+  String? _getSubtitle(BuildContext context) => switch (currentMode) {
+    DarkMapStateEnum.asInASystem => context.l10n.darkModeAsInASystemSubtitle,
+    DarkMapStateEnum.autoSunDependent => context.l10n.darkModeSunDependentSubtitle,
+    DarkMapStateEnum.alwaysEnabled => null,
+    DarkMapStateEnum.off => null,
+  };
 }

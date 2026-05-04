@@ -2,11 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
-import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
+import 'package:mapness/app/auto_route/guards/theme_splash_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/ui/stories_transition.dart';
+import 'package:mapness/pages/poi_makkah/poi_makkah_widget_page.dart';
 
 import 'app_routes.gr.dart';
 
@@ -15,10 +16,8 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter(
-    this.ref,
-    GlobalKey<NavigatorState> navigatorKey,
-  ) : super(navigatorKey: navigatorKey);
+  AppRouter(this.ref, GlobalKey<NavigatorState> navigatorKey)
+      : super(navigatorKey: navigatorKey);
 
   final Ref ref;
 
@@ -32,10 +31,10 @@ class AppRouter extends RootStackRouter {
           path: '/',
           initial: true,
           transitionsBuilder: TransitionsBuilders.zoomIn,
-          guards: [
-            OnboardRouteGuard(ref),
-            SaudiDaySplashGuard(ref),
-          ],
+          // Note: ThemeSplashGuard uses MaterialPageRoute directly because auto_route
+          // can't generate code for routes with enum parameters (SpecialThemeMode).
+          // The guard dynamically shows splash screens based on the current theme.
+          guards: [OnboardRouteGuard(ref), ThemeSplashGuard(ref)],
           children: [
             Routes.bottomMenuRoute,
             CustomRoute(
@@ -48,7 +47,8 @@ class AppRouter extends RootStackRouter {
               path: 'service_available',
               page: ServiceNotAvailableSheetRoute.page,
               opaque: false,
-              customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
+              customRouteBuilder: <T>(context, child, page) =>
+                  RouteBuilders.modalSheetBuilder(
                 context,
                 child,
                 page,
@@ -84,6 +84,7 @@ class AppRouter extends RootStackRouter {
               path: 'poi-map',
               page: PoiCardWidgetRoute.page,
             ),
+            AppRoute(path: 'poi-makkah', page: PoiMakkahWidgetRoute.page),
             AppRoute(
               path: 'hajj-poi-card',
               page: HajjPoiCardRoute.page,
@@ -113,6 +114,10 @@ class AppRouter extends RootStackRouter {
             AppRoute(
               path: 'weather_router',
               page: WeatherRoute.page,
+            ),
+            CustomRoute(
+              path: 'media_catalog',
+              page: MediaCatalogRoute.page,
             ),
             CustomRoute(
               path: 'road_panel_sheet',
@@ -230,10 +235,10 @@ class AppRouter extends RootStackRouter {
               page: PoiFavoriteDialogRoute.page,
             ),
             CustomRoute(
-              page: CitySelectionDialogViewRoute.page,
-              path: 'saudi_pass_city_selection_dialog',
+              path: 'remove_history_confirmation',
+              page: RemoveHistoryConfirmationRoute.page,
               opaque: false,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
               path: 'error_sheet_dialog',
@@ -254,13 +259,18 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_favourite_offers_screen',
               page: FavouriteOffersScreenViewRoute.page,
             ),
-            AppRoute(
-              path: 'saudi_pass_profile_preferences_screen',
-              page: ProfilePreferencesRoute.page,
-            ),
+            RedirectRoute(
+                path: 'saudi_pass_profile_preferences_screen',
+                redirectTo: 'profile_preferences'),
             AppRoute(
               path: 'saudi_pass_offers_on_map_screen',
               page: OffersOnMapRoute.page,
+            ),
+            CustomRoute(
+              page: CitySelectionDialogViewRoute.page,
+              path: 'saudi_pass_city_selection_dialog',
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             CustomRoute(
               path: 'saudi_pass_type_selection_dialog',
@@ -268,9 +278,10 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
-              path: 'saudi_pass_category_selection_dialog',
-              page: CategorySelectionDialogViewRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+              path: 'saudi_pass_all_categories_selection_dialog',
+              page: AllCategoriesSelectionDialogViewRoute.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             CustomRoute(
               path: 'saudi_pass_sorting_selection_dialog',
@@ -285,12 +296,8 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_offer_page',
               page: OfferRoute.page,
             ),
-            CustomRoute(
-              path: 'saudi_pass_offer_feedback',
-              page: AppFeedbackSheet.page,
-              opaque: false,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
-            ),
+            RedirectRoute(
+                path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
             CustomRoute(
               path: 'saudi_pass_offer_favorites_removing_sheet',
               page: OfferFavoritesRemovingSheetRoute.page,
@@ -326,6 +333,11 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
+              path: 'privacy_and_terms_of_use',
+              page: PrivacyAndTermsOfUseRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
               path: 'help_center',
               page: HelpCenterRoute.page,
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
@@ -334,6 +346,11 @@ class AppRouter extends RootStackRouter {
               path: 'profile_info',
               page: ProfileInfoRoute.page,
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'profile_logout_sheet',
+              page: ProfileLogoutSheetRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
               path: 'momra_website',
@@ -379,6 +396,11 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
+              path: 'gaussian_splatting',
+              page: GaussianSplattingRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
               path: 'addPhoto',
               page: AddPhotoRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -390,6 +412,10 @@ class AppRouter extends RootStackRouter {
               opaque: false,
               transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
+            AppRoute(
+              path: 'profile_preferences',
+              page: ProfilePreferencesRoute.page,
+            ),
           ],
         ),
         CustomRoute(
@@ -400,13 +426,22 @@ class AppRouter extends RootStackRouter {
             child: child,
           ),
         ),
-        CustomRoute(
-          page: SaudiDaySplashRoute.page,
-          opaque: false,
-          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-            type: StoryTypes.saudiDay,
-            child: child,
-          ),
-        ),
+        // NOTE: SaudiDaySplashRoute deprecated - replaced by ThemeSplashPage
+        // The guard now uses MaterialPageRoute directly instead of auto_route
+        // CustomRoute(
+        //   page: SaudiDaySplashRoute.page,
+        //   opaque: false,
+        //   transitionsBuilder:
+        //       (_, __, ___, child) =>
+        //           StoriesTransition(type: StoryTypes.saudiDay, child: child),
+        // ),
+        // NOTE: ThemeSplashRoute is used programmatically only (not in routes list)
+        // Auto_route has issues generating code when routes have enum parameters.
+        // Use context.router.push(MaterialPageRoute(...)) instead in guards/debug panel.
+        // CustomRoute(
+        //   page: ThemeSplashRoute.page,
+        //   opaque: false,
+        //   transitionsBuilder: TransitionsBuilders.fadeIn,
+        // ),
       ];
 }

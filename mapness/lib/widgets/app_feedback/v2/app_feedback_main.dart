@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -64,7 +66,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             child: CustomCloseButton(
               onClose: () {
                 if (rating.value == (initialRating ?? 0) || onNeedPopConfirm == null) {
-                  context.router.popForced();
+                  context.router.pop();
                 } else {
                   onNeedPopConfirm?.call();
                 }
@@ -87,16 +89,13 @@ class AppFeedbackMain extends HookConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.$4x),
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ValueListenableBuilder(
-            valueListenable: rating,
-            builder: (context, ratingValue, _) => RatingBar(
-              rating: ratingValue,
-              onRatingChanged: (value) {
-                rating.value = value;
-              },
-            ),
+        ValueListenableBuilder(
+          valueListenable: rating,
+          builder: (context, ratingValue, _) => RatingBar(
+            rating: ratingValue,
+            onRatingChanged: (value) {
+              rating.value = value;
+            },
           ),
         ),
         ValueListenableBuilder(
@@ -117,17 +116,18 @@ class AppFeedbackMain extends HookConsumerWidget {
         ValueListenableBuilder(
           valueListenable: rating,
           builder: (context, ratingValue, _) => AnimatedSwitcher(
-              duration: Durations.short3,
-              child: ratingValue > 0 && source is! FeedbackSourceOffer
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: Spacing.$4x),
-                      child: TagCloud(
-                        key: ValueKey(ratingValue),
-                        rating: ratingValue,
-                        onTagsChanged: (tags) => selectedTags.value = tags,
-                      ),
-                    )
-                  : const SizedBox.shrink()),
+            duration: Durations.short3,
+            child: ratingValue > 0 && source is! FeedbackSourceOffer
+                ? Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$4x),
+                    child: TagCloud(
+                      key: ValueKey(ratingValue),
+                      rating: ratingValue,
+                      onTagsChanged: (tags) => selectedTags.value = tags,
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ),
         ValueListenableBuilder(
           valueListenable: rating,
@@ -142,8 +142,9 @@ class AppFeedbackMain extends HookConsumerWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   /// change feedback text
-                  final result =
-                      await context.router.push(AppFeedbackInputSheet(initialText: feedbackTextController.text));
+                  final result = await context.router.push(
+                    AppFeedbackInputSheet(initialText: feedbackTextController.text),
+                  );
                   if (result != null && result is String) {
                     feedbackTextController.text = result;
                   }
@@ -169,34 +170,35 @@ class AppFeedbackMain extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: ValueListenableBuilder(
-              valueListenable: rating,
-              builder: (context, ratingValue, _) {
-                final canSend = ratingValue > 0;
-                final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
-                return SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                    buttonState: buttonState,
-                    size: ButtonSize.large,
-                    onTap: !canSend
-                        ? null
-                        : () async {
-                            final text = feedbackTextController.text;
-                            await collectFeedback.collectFeedback(
-                              stars: ratingValue,
-                              source: source,
-                              // Convert tag labels to source tags
-                              tags:
-                                  selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
-                              text: text.isEmpty ? null : feedbackTextController.text,
-                            );
-                            openInAppReviewRating(ratingValue);
-                          },
-                    primaryLabel: context.l10n.appFeedbackSubmitButton,
-                  ),
-                );
-              }),
+            valueListenable: rating,
+            builder: (context, ratingValue, _) {
+              final canSend = ratingValue > 0;
+              final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
+              return SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonState: buttonState,
+                  size: ButtonSize.large,
+                  onTap: !canSend
+                      ? null
+                      : () async {
+                          final text = feedbackTextController.text;
+                          await collectFeedback.collectFeedback(
+                            stars: ratingValue,
+                            source: source,
+                            // Convert tag labels to source tags
+                            tags: selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
+                            text: text.isEmpty ? null : feedbackTextController.text,
+                          );
+                          // Unawaited for not freezed HMS
+                          unawaited(openInAppReviewRating(ratingValue));
+                        },
+                  primaryLabel: context.l10n.appFeedbackSubmitButton,
+                ),
+              );
+            },
+          ),
         ),
         const SizedBox(height: Spacing.$4x),
       ],
@@ -206,8 +208,8 @@ class AppFeedbackMain extends HookConsumerWidget {
   String _feedbackSubtitleText(AppLocalizations l10n, int rating, FeedbackSource source) =>
       source is FeedbackSourceOffer ? l10n.offerFeedbackMessage : _ratingText(l10n, rating);
 
-  void openInAppReviewRating (ratingValue) async {
-    if(ratingValue > 3) {
+  Future<void> openInAppReviewRating(int ratingValue) async {
+    if (ratingValue > 3) {
       final InAppReview inAppReview = InAppReview.instance;
       try {
         final available = await inAppReview.isAvailable();
@@ -223,11 +225,11 @@ class AppFeedbackMain extends HookConsumerWidget {
   }
 
   String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {
-        1 => l10n.appFeedbackRating1,
-        2 => l10n.appFeedbackRating2,
-        3 => l10n.appFeedbackRating3,
-        4 => l10n.appFeedbackRating4,
-        5 => l10n.appFeedbackRating5,
-        _ => l10n.appFeedbackRatingDefault,
-      };
+    1 => l10n.appFeedbackRating1,
+    2 => l10n.appFeedbackRating2,
+    3 => l10n.appFeedbackRating3,
+    4 => l10n.appFeedbackRating4,
+    5 => l10n.appFeedbackRating5,
+    _ => l10n.appFeedbackRatingDefault,
+  };
 }
