@@ -61,7 +61,9 @@ class _MakkahNearbySection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: Spacing.$4x),
-                  Expanded(child: PlacePreviewMakkah(excludeDgisId: excludeDgisId, excludePlaceId: excludePlaceId)),
+                  Expanded(
+                    child: PlacePreviewMakkah(excludeDgisId: excludeDgisId, excludePlaceId: excludePlaceId),
+                  ),
                 ],
               ),
             ),
@@ -105,8 +107,9 @@ class _MakkahPoiInfoSliverPlaceholder extends ConsumerWidget {
 
     final featureWidgets = _buildFeatureWidgets(context, features, makkahPlace?.features, accessibility);
 
-    final title =
-        makkahPlace != null ? MakkahMultilingualHelper.getTitle(makkahPlace!, Directionality.of(context)) : null;
+    final title = makkahPlace != null
+        ? MakkahMultilingualHelper.getTitle(makkahPlace!, Directionality.of(context))
+        : null;
 
     return SliverPadding(
       padding: const EdgeInsets.only(top: Spacing.$4x),

@@ -12,29 +12,43 @@ class AiSummaryTokens {
 
   // --- Card container ---
   static const double cardBorderWidth = 1;
-  static const double cardBorderRadius = 12;
+  static const double cardBorderRadius = 16;
   static const EdgeInsets cardPadding = EdgeInsets.all(16);
   static const EdgeInsets cardOuterMargin = EdgeInsets.only(left: 16, right: 16, bottom: 12);
 
-  // --- Header: sparkle icon + "AI SUMMARY" label + "BALADY AI" badge ---
-  static const double headerSpacing = 8;
-  static const double sparkleSize = 18;
+  // --- Header: "AI Summary" label + "Balady AI" badge (sparkle inside badge) ---
+  static const double headerSpacing = 12;
+  // Sparkle now lives inside the badge.
+  static const double sparkleSize = 12;
+  static const double badgeIconToTextSpacing = 4;
 
-  // Muted violet pill with white text and a subtle left-to-right
-  // gradient for the "BALADY AI" badge. Keep the badge on-brand
-  // across modes — white text on violet works on either backdrop.
-  static const LinearGradient badgeGradient = LinearGradient(
-    colors: [Color(0xFFA293F0), Color(0xFF7968D9)],
+  // Teal gradient pill matching the Makkah-Dark accent ribbon
+  // (Figma node 1777:23872). Used by [AiSummaryPalette.dark.badgeGradient].
+  static const LinearGradient badgeGradientDark = LinearGradient(
+    stops: [0.017, 0.192, 0.473, 0.786, 0.974],
+    colors: [
+      Color(0xFF083F46),
+      Color(0xFF068B81),
+      Color(0xFF31CDC2),
+      Color(0xFF068B81),
+      Color(0xFF083F46),
+    ],
   );
-  static const Color badgeTextColor = Colors.white;
-  static const EdgeInsets badgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 3);
-  static const double badgeBorderRadius = 4;
-  static const TextStyle badgeTextStyle = TextStyle(
-    fontSize: 10,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.8,
-    color: Colors.white,
+  // Gold/amber gradient pill matching the Makkah-Light accent
+  // (Figma node 1777:23839). Used by [AiSummaryPalette.light.badgeGradient].
+  static const LinearGradient badgeGradientLight = LinearGradient(
+    stops: [0.017, 0.192, 0.473, 0.786, 0.974],
+    colors: [
+      Color(0xFFD19D3F),
+      Color(0xFFFFCA69),
+      Color(0xFFFFECC9),
+      Color(0xFFFFCA69),
+      Color(0xFFD19D3F),
+    ],
   );
+
+  static const EdgeInsets badgePadding = EdgeInsets.fromLTRB(4, 3, 6, 3);
+  static const double badgeBorderRadius = 6;
 
   // --- Description body text ---
   static const EdgeInsets descriptionPadding = EdgeInsets.only(top: 12);
@@ -42,7 +56,7 @@ class AiSummaryTokens {
   // --- Rating bar ---
   static const EdgeInsets ratingPadding = EdgeInsets.only(top: 12);
   static const double ratingStarSize = 16;
-  static const double ratingStarSpacing = 2;
+  static const double ratingStarSpacing = 4;
   static const double ratingStarToValueSpacing = 6;
   static const double ratingValueToCountSpacing = 6;
 
@@ -66,20 +80,25 @@ class AiSummaryTokens {
   static const double skeletonLineGap = 8;
   static const double skeletonLineRadius = 4;
 
-  static AiSummaryPalette paletteFor({required bool isDark}) =>
-      isDark ? AiSummaryPalette.dark : AiSummaryPalette.light;
+  static AiSummaryPalette paletteFor({required bool isDark}) => isDark ? AiSummaryPalette.dark : AiSummaryPalette.light;
 }
 
 /// Theme-dependent colour set for the AI Summary card.
 ///
 /// Two const instances are exposed (`light`, `dark`). Pick via
-/// [AiSummaryTokens.paletteFor]. Values remain placeholders
-/// awaiting the final Figma; the dark variant was chosen by eye
-/// to read well against the Mekkah dark backdrop (`#131A19`).
+/// [AiSummaryTokens.paletteFor]. The dark variant is tuned to
+/// match the surrounding `_MakkahContentCard` surface treatment
+/// in the Makkah-Dark POI sheet so the AI summary card reads as
+/// a peer of the neighbouring "Address", fact-tile and warning
+/// containers (same `darkSunken` fill, `RadiusBorder.xl`, and
+/// 4-12 drop shadow).
 @immutable
 class AiSummaryPalette {
   final Color cardBackground;
   final Color cardBorder;
+  final List<BoxShadow> cardShadow;
+  final LinearGradient badgeGradient;
+  final TextStyle badgeTextStyle;
   final Color sparkleColor;
   final TextStyle labelTextStyle;
   final TextStyle descriptionTextStyle;
@@ -95,6 +114,9 @@ class AiSummaryPalette {
   const AiSummaryPalette({
     required this.cardBackground,
     required this.cardBorder,
+    required this.cardShadow,
+    required this.badgeGradient,
+    required this.badgeTextStyle,
     required this.sparkleColor,
     required this.labelTextStyle,
     required this.descriptionTextStyle,
@@ -111,12 +133,21 @@ class AiSummaryPalette {
   static const AiSummaryPalette light = AiSummaryPalette(
     cardBackground: Color(0xFFF3F2FB),
     cardBorder: Color(0xFFE6E3F5),
-    sparkleColor: Color(0xFFF5B638),
+    cardShadow: [],
+    badgeGradient: AiSummaryTokens.badgeGradientLight,
+    badgeTextStyle: TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      height: 14 / 11,
+      color: Color(0xFF9D6808),
+    ),
+    // Dark amber on the gold gradient — matches Figma 1777:23840 icon tint.
+    sparkleColor: Color(0xFF9D6808),
     labelTextStyle: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w700,
-      letterSpacing: 1.1,
-      color: Color(0xFF3D5A9C),
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      height: 20 / 16,
+      color: Color(0xFF111827),
     ),
     descriptionTextStyle: TextStyle(
       fontSize: 14,
@@ -126,12 +157,14 @@ class AiSummaryPalette {
     ratingStarFilled: Color(0xFFF59E0B),
     ratingStarEmpty: Color(0xFFD1D5DB),
     ratingValueStyle: TextStyle(
-      fontSize: 13,
-      fontWeight: FontWeight.w700,
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      height: 20 / 14,
       color: Color(0xFF111827),
     ),
     ratingCountStyle: TextStyle(
       fontSize: 13,
+      height: 16 / 13,
       color: Color(0xFF6B7280),
     ),
     transitSectionLabelStyle: TextStyle(
@@ -148,36 +181,54 @@ class AiSummaryPalette {
   );
 
   static const AiSummaryPalette dark = AiSummaryPalette(
-    // Slightly lifted off the dashboard backdrop so the card reads
-    // as a distinct surface, matching the visual weight of the
-    // light pale-lavender tile against cream.
-    cardBackground: Color(0xFF1E2625),
-    cardBorder: Color(0xFF2C3938),
-    // Sparkle keeps its golden hue — high-contrast on dark.
-    sparkleColor: Color(0xFFF5B638),
+    // Matches `MakkahPoiConstants.darkSunken` — the same surface used
+    // by the surrounding "About", fact-tile and warning containers in
+    // the Makkah-Dark POI sheet.
+    cardBackground: Color(0xFF00141C),
+    // No visible outline in the Makkah-Dark spec — keep the field
+    // present so the palette shape is symmetrical with the light variant.
+    cardBorder: Colors.transparent,
+    // Mirrors `_MakkahContentCard` (poi_card_content_info.dart:330) so the
+    // AI summary card sits at the same elevation as its peers in the sheet.
+    cardShadow: [
+      BoxShadow(
+        blurRadius: 12,
+        offset: Offset(0, 4),
+        color: Color(0x0FFFFFFF),
+      ),
+    ],
+    badgeGradient: AiSummaryTokens.badgeGradientDark,
+    badgeTextStyle: TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      height: 14 / 11,
+      color: Colors.white,
+    ),
+    // White on the teal gradient.
+    sparkleColor: Colors.white,
     labelTextStyle: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.w700,
-      letterSpacing: 1.1,
-      // Lighter indigo so the AI SUMMARY label still reads as the
-      // brand-coloured chip rather than blending with body text.
-      color: Color(0xFFA9B7E0),
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+      height: 20 / 16,
+      color: Colors.white,
     ),
     descriptionTextStyle: TextStyle(
       fontSize: 14,
-      height: 1.45,
-      color: Color(0xFFE5E7EB),
+      height: 18 / 14,
+      color: Color(0xCCFFFFFF), // white @ 80%
     ),
     ratingStarFilled: Color(0xFFFBBF24),
     ratingStarEmpty: Color(0xFF4B5563),
     ratingValueStyle: TextStyle(
-      fontSize: 13,
-      fontWeight: FontWeight.w700,
-      color: Color(0xFFE5E7EB),
+      fontSize: 14,
+      fontWeight: FontWeight.w600,
+      height: 20 / 14,
+      color: Colors.white,
     ),
     ratingCountStyle: TextStyle(
       fontSize: 13,
-      color: Color(0xFF9CA3AF),
+      height: 16 / 13,
+      color: Colors.white,
     ),
     transitSectionLabelStyle: TextStyle(
       fontSize: 12,
@@ -186,7 +237,9 @@ class AiSummaryPalette {
     ),
     footerTextStyle: TextStyle(
       fontSize: 11,
-      color: Color(0xFF6B7280),
+      fontWeight: FontWeight.w500,
+      height: 14 / 11,
+      color: Color(0x99FFFFFF), // white @ 60%
     ),
     shimmerBase: Color(0xFF2C3938),
     shimmerHighlight: Color(0xFF3D4D4B),

@@ -17,10 +17,17 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// ```json
 /// {
 ///   "description": "...",
-///   "metadata": { "rating": 3.2, "ratingCount": 435, ... },
-///   "cached": true
+///   "rating": 4.8,
+///   "ratingTotal": 5,
+///   "ratingCount": 62426,
+///   "sources": { ... },
+///   "cached": false
 /// }
 /// ```
+///
+/// `rating` and `ratingCount` are siblings of `description` — there
+/// is no `metadata` envelope. Both are optional; the rating row is
+/// rendered only when both are present.
 ///
 /// `transitLines` is intentionally never populated — the upstream
 /// response does not include any transit data, so the field stays
@@ -91,19 +98,17 @@ class HttpAiSummaryRepository implements AiSummaryRepository {
 
   AiSummary _mapResponse(Map<String, dynamic> json) {
     final description = (json['description'] as String?)?.trim() ?? '';
-    final metadata = json['metadata'] as Map<String, dynamic>?;
 
     double? rating;
+    final r = json['rating'];
+    if (r is num) {
+      rating = r.toDouble();
+    }
+
     int? reviewCount;
-    if (metadata != null) {
-      final r = metadata['rating'];
-      if (r is num) {
-        rating = r.toDouble();
-      }
-      final c = metadata['ratingCount'];
-      if (c is num) {
-        reviewCount = c.toInt();
-      }
+    final c = json['ratingCount'];
+    if (c is num) {
+      reviewCount = c.toInt();
     }
 
     return AiSummary(
