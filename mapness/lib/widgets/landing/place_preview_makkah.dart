@@ -73,7 +73,9 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ref.watch(makkahPlacesRepositoryProvider).when(
+    return ref
+        .watch(makkahPlacesRepositoryProvider)
+        .when(
           data: (items) {
             // Optimize: Only trigger rebuild when location changes significantly
             // (more than ~100m), not on every GPS update
@@ -160,7 +162,9 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
                 // Fly to marker location
                 if (item.lat != null && item.lon != null) {
                   unawaited(
-                    ref.read(cameraPositionProvider.notifier).animateTo(
+                    ref
+                        .read(cameraPositionProvider.notifier)
+                        .animateTo(
                           CameraPositionMessage(
                             point: GeoPointMessage(
                               latitude: item.lat!,
@@ -215,7 +219,8 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with Au
     const earthRadius = 6371.0; // km
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);
-    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+    final a =
+        math.sin(dLat / 2) * math.sin(dLat / 2) +
         math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) * math.sin(dLon / 2) * math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
@@ -374,8 +379,9 @@ class _TravelTimeChip extends ConsumerWidget {
 
     // Get SDK distances
     final carDistance = (carInfo != null && carInfo.isNotEmpty) ? carInfo.first.extraInfo.distance : null;
-    final walkDistance =
-        (pedestrianInfo != null && pedestrianInfo.isNotEmpty) ? pedestrianInfo.first.extraInfo.distance : null;
+    final walkDistance = (pedestrianInfo != null && pedestrianInfo.isNotEmpty)
+        ? pedestrianInfo.first.extraInfo.distance
+        : null;
 
     // Check if SDK data is suspicious (route distance >> straight-line distance)
     bool sdkDataSuspicious = false;
@@ -448,9 +454,7 @@ class _TravelTimeChip extends ConsumerWidget {
     }
 
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
-    final chipBg = isDark
-        ? MakkahPoiConstants.darkMutedSlate
-        : context.colors.staticWhite.withOpacity(0.9);
+    final chipBg = isDark ? MakkahPoiConstants.darkMutedSlate : context.colors.staticWhite.withOpacity(0.9);
     final chipFg = isDark ? const Color(0xFFFFFFFF) : const Color(0xFF4A3016);
     // Show two separate chips
     return Row(

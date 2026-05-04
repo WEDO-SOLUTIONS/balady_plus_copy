@@ -68,8 +68,8 @@ DashboardThemeConfig dashboardThemeConfigFor(
             : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
         exploreBackgroundGradient: isDark
-            ? const [Colors.transparent, Color(0xFF00141C)]
-            : const [Colors.transparent, Colors.transparent],
+            ? const [Colors.transparent, Color(0xFF31CDC2)]
+            : const [Colors.transparent, Color(0xFFD19D3F)],
         exploreBackgroundImageBuilder: isDark
             ? null
             : () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
