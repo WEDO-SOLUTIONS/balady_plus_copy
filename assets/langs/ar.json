@@ -81,6 +81,8 @@
   "account_verify_email_instruction": "لتأكيد البريد الإلكتروني",
   "account_email_not_verified": "البريد الإلكتروني غير مُحقق",
   "account_email_verified": "البريد الإلكتروني مُحقق",
+  "englishFullName": "الاسم الكامل باللغة الانجليزية",
+  "arabicFullName": "الاسم الكامل باللغة العربية",
   "account_save_success": "تم حفظ التغييرات بنجاح",
   "account_saving": "جاري الحفظ...",
   "account_verifying": "جاري التحقق...",
