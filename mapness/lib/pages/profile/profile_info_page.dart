@@ -39,7 +39,14 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
     try {
       final service = ProfileAccountService();
       final userInfoJson = await service.getUserInfo();
-      final freshUserInfo = SsoUserInfo.fromJson(userInfoJson);
+      // `/api/user/userinfo` does NOT carry `complete_profile` — preserve the
+      // value already captured at login (from `MobileLoginVerifyOtp`) so we
+      // don't accidentally re-enable editing for SSO-backed OTP users.
+      final existing = ref.read(authProvider).value;
+      final freshUserInfo = SsoUserInfo.fromJson(userInfoJson).copyWith(
+        completeProfile: existing?.completeProfile,
+        loginType: existing?.loginType,
+      );
 
       setState(() {
         _userInfo = freshUserInfo;

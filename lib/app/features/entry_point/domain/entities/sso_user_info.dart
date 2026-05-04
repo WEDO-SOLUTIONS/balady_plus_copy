@@ -27,6 +27,7 @@ class SsoUserInfo extends Equatable {
     this.isEmailVerified = false,
     this.isEmailEditable = true,
     this.isSSOLocked = false,
+    this.completeProfile = true,
   });
 
   final String? name;
@@ -49,6 +50,14 @@ class SsoUserInfo extends Equatable {
   final bool isEmailVerified;
   final bool isEmailEditable;
   final bool isSSOLocked;
+
+  /// Returned by the OTP login API (`MobileLoginVerifyOtp`).
+  /// - `true`  → the user completed their profile via OTP login → can edit profile.
+  /// - `false` → the user originally signed up through SSO/Nafath → profile is owned
+  ///   by SSO and must NOT be editable from the OTP flow.
+  /// Defaults to `true` so flows that don't carry this flag (e.g. SSO login)
+  /// don't unintentionally lock the UI; SSO editing is already gated by `loginType`.
+  final bool completeProfile;
 
   String getFormattedBirthDate({bool withDash = false}) {
     if (dob != null && dob!.isNotEmpty) {
@@ -260,8 +269,8 @@ class SsoUserInfo extends Equatable {
   }
 
   // ✅ Helper methods
-  bool get canEditEmail => isEmailEditable && !isSSOLocked;
-  bool get canEditProfile => !isSSOLocked;
+  bool get canEditEmail => isEmailEditable && !isSSOLocked && completeProfile;
+  bool get canEditProfile => !isSSOLocked && completeProfile;
 
   factory SsoUserInfo.fromJson(Map<String, dynamic> json) {
     // Helper to get value from multiple possible keys
@@ -323,6 +332,12 @@ class SsoUserInfo extends Equatable {
       isEmailVerified: json['isEmailVerified'] == true,
       isEmailEditable: json['isEmailEditable'] ?? true,
       isSSOLocked: json['isSSOLocked'] ?? false,
+      // NOTE: `complete_profile` is ONLY returned by `MobileLoginVerifyOtp`
+      // (captured via `LoginDataModel.completeProfile` in the OTP login flow).
+      // The `/api/user/userinfo` endpoint does NOT return it, so we default to
+      // `true` here. Callers that refresh the profile from `userinfo` MUST
+      // preserve the original value via `copyWith(completeProfile: ...)`.
+      completeProfile: true,
     );
   }
 
@@ -336,6 +351,7 @@ class SsoUserInfo extends Equatable {
     data['isEmailVerified'] = isEmailVerified;
     data['isEmailEditable'] = isEmailEditable;
     data['isSSOLocked'] = isSSOLocked;
+    data['complete_profile'] = completeProfile;
     return data;
   }
 
@@ -349,6 +365,7 @@ class SsoUserInfo extends Equatable {
     isEmailVerified,
     isEmailEditable,
     isSSOLocked,
+    completeProfile,
   ];
 
   SsoUserInfo copyWith({
@@ -370,6 +387,7 @@ class SsoUserInfo extends Equatable {
     bool? isEmailVerified,
     bool? isEmailEditable,
     bool? isSSOLocked,
+    bool? completeProfile,
   }) {
     return SsoUserInfo(
       name: name ?? this.name,
@@ -390,6 +408,7 @@ class SsoUserInfo extends Equatable {
       isEmailVerified: isEmailVerified ?? this.isEmailVerified,
       isEmailEditable: isEmailEditable ?? this.isEmailEditable,
       isSSOLocked: isSSOLocked ?? this.isSSOLocked,
+      completeProfile: completeProfile ?? this.completeProfile,
     );
   }
 }

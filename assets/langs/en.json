@@ -4866,8 +4866,8 @@
   "no_business_access_title": "Business Access Unavailable",
   "no_business_access_message": "Your current account does not have access to business services. Please switch to an individual account to use these services.",
   "switch_to_individual_account": "Switch to Individual Services",
-
-
+  "arabicFullName": "Arabic full name",
+  "englishFullName": "English full name",
 
   "privacyAndTermsTitle": "Privacy and Terms of Use",
   "privacyIntroText": "The Balady App treats your personal data with the utmost care, safeguarding the confidentiality of your information through the application of approved controls and standards for data protection across secure systems. The App collects and uses data for the purposes of delivering high-quality services to all beneficiaries, including:",
