@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.3+515
+version: 3.30.3+555
 # version: 3.12.23+433
 
 environment:
@@ -170,11 +170,11 @@ dependencies:
   # Mapness
   balady_uikit:
 #   path: ../balady_uikit
-    git:
-      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/BaladyPlus/_git/balady_uikit
-      ref: feature/dga_theme
-#    hosted: https://baladyapp-unpub.urbi.ae/
-#    version: 5.0.10
+#    git:
+#      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/BaladyPlus/_git/balady_uikit
+#      ref: feature/dga_theme
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 5.1.0
 
   sheetify: ^1.1.3
 
