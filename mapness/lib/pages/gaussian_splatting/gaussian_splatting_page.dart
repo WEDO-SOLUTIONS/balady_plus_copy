@@ -1,12 +1,19 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+
+const _pilgrimKeyboardFixChannel = MethodChannel('pilgrim/keyboard_fix');
 
 @RoutePage()
 class GaussianSplattingPage extends ConsumerWidget {
@@ -49,7 +56,14 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
       props: {'url': _getVirtualTourUrl()},
     );
 
-    _controller = WebViewController()
+    final PlatformWebViewControllerCreationParams params = Platform.isIOS
+        ? WebKitWebViewControllerCreationParams(
+            allowsInlineMediaPlayback: true,
+            mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+          )
+        : const PlatformWebViewControllerCreationParams();
+
+    _controller = WebViewController.fromPlatformCreationParams(params)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(Colors.transparent)
       ..setNavigationDelegate(
@@ -93,6 +107,16 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
         ),
       )
       ..loadRequest(Uri.parse(_getVirtualTourUrl()));
+
+    if (Platform.isIOS && _controller.platform is WebKitWebViewController) {
+      final wk = _controller.platform as WebKitWebViewController;
+      unawaited(wk.setInspectable(true));
+      // Defer the native keyboard-fix call until after the WKWebView is mounted
+      // in the view hierarchy — the Swift side needs to find it to attach.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        unawaited(_pilgrimKeyboardFixChannel.invokeMethod<void>('enable'));
+      });
+    }
   }
 
   @override
@@ -104,6 +128,9 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
     );
     // Stop any playing media by loading an empty page before disposing
     _controller.loadRequest(Uri.parse('about:blank'));
+    if (Platform.isIOS) {
+      unawaited(_pilgrimKeyboardFixChannel.invokeMethod<void>('disable'));
+    }
     super.dispose();
   }
 
@@ -114,6 +141,8 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
       children: [
         WebViewWidget(controller: _controller),
         if (_isLoading) const Center(child: CircularProgressIndicator()),
+
+        // balady back button
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(left: 24, top: 24),
@@ -125,23 +154,27 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.black54,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(32),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Balady',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                  child: const Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      // textDirection: TextDirection.ltr,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                        SizedBox(width: 4),
+                        Text(
+                          'Balady',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                    ],
+                        SizedBox(width: 4),
+                      ],
+                    ),
                   ),
                 ),
               ),
