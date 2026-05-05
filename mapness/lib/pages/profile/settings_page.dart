@@ -12,7 +12,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
@@ -68,41 +67,30 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         children: const [AuthQuickAccessBiometricWidget()],
                       ),
                     ],
-                    Consumer(
-                        builder: (context, ref, child) {
-                          final specialThemeMode = ref.watch(specialThemeModeProvider);
-                          final bool isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
-                        return Opacity(
-                          opacity: isMakkahTheme ? 0.5 : 1.0,
-                          child: ContentWrapper(
-                            color: context.colors.backgroundSurface1,
-                            children: [
-                              ContentRow(
-                                onTap: isMakkahTheme
-                                    ? null // Disable the switch
-                                    :() => context.router.push(const DarkMapRoute()),
-                                options: ContentRowOptions(
-                                  wrapperColor: context.colors.backgroundSurface1,
-                                  wrapperEnabled: true,
-                                  title: context.l10n.darkMode,
-                                  leadingIcon: AppIcons(
-                                    iconData: GeneralIcons.darkMode,
-                                    color: context.colors.accentDefault,
-                                    size: 24,
-                                  ),
-                                  titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                                  actionWidget: ContentRowActionOptions(
-                                    actionIcon: AppIcons(
-                                      iconData: SystemIcons.arrowCornerRightLarge,
-                                      color: context.colors.foregroundSoft,
-                                    ),
-                                  ),
-                                ),
+                    ContentWrapper(
+                      color: context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () => context.router.push(const DarkMapRoute()),
+                          options: ContentRowOptions(
+                            wrapperColor: context.colors.backgroundSurface1,
+                            wrapperEnabled: true,
+                            title: context.l10n.darkMode,
+                            leadingIcon: AppIcons(
+                              iconData: GeneralIcons.darkMode,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundSoft,
                               ),
-                            ],
+                            ),
                           ),
-                        );
-                      }
+                        ),
+                      ],
                     ),
                     ContentWrapper(
                       color: context.colors.backgroundSurface1,

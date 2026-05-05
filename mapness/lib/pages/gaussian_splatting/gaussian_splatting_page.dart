@@ -109,46 +109,46 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: context.colors.backgroundSurface4,
-        body: Stack(
-          children: [
-            WebViewWidget(controller: _controller),
-            if (_isLoading) const Center(child: CircularProgressIndicator()),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: GestureDetector(
-                    onTap: () => context.router.maybePop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(8),
+    backgroundColor: context.colors.backgroundSurface4,
+    body: Stack(
+      children: [
+        WebViewWidget(controller: _controller),
+        if (_isLoading) const Center(child: CircularProgressIndicator()),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24, top: 24),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: GestureDetector(
+                onTap: () => context.router.maybePop(),
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                      const SizedBox(width: 4),
+                      const Text(
+                        'Balady',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                          const SizedBox(width: 4),
-                          const Text(
-                            'Balady',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                        ],
-                      ),
-                    ),
+                      const SizedBox(width: 4),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
