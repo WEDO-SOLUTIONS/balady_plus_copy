@@ -1,6 +1,12 @@
 import 'package:dgis_map/library.dart';
 
 extension DirectoryObjectMessageExt on DirectoryObjectMessage {
+  static const _broadAreaDrilldownTypes = {
+    'region',
+    'district_area',
+    'district',
+  };
+
   Map<String, dynamic> toJson() {
     final typesList = types.map((item) => item.toJson()).toList();
     final markerPositionJson = markerPosition?.toJson();
@@ -135,6 +141,8 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         ObjectTypeMessage.admDivSettlement ||
         ObjectTypeMessage.road ||
         ObjectTypeMessage.street => true,
+        ObjectTypeMessage.unknown =>
+          address?.drilldown.any((item) => _broadAreaDrilldownTypes.contains(item.type)) ?? false,
         _ => false,
       },
     );
