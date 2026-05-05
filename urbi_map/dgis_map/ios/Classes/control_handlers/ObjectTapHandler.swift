@@ -206,12 +206,7 @@ class ObjectTapHandler {
                 ] as [String : Any])
             }
             return
-        case is DgisMapObject:
-            // BE-153: instant POI selection — POI taps no longer wait for the
-            // long-press threshold. Empty-area taps (Polygon / Geometry) keep
-            // their press-and-hold behaviour via objectLongTapListener.
-            self.onDgisObjectTap(tappedObject as! DgisMapObject, objectInfo)
-            return
+
         default:
             self.eventChannel.error(code: Events.objectTapError)
         }
