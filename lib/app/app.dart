@@ -35,10 +35,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Color(0x00000000),
-      systemNavigationBarDividerColor: Color(0x00000000),
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0x00000000),
+        systemNavigationBarDividerColor: Color(0x00000000),
+      ),
+    );
 
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
@@ -57,13 +59,9 @@ class App extends StatelessWidget {
       providers: [
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        BlocProvider<NewMiniAppLogicCubit>.value(
-          value: sl<NewMiniAppLogicCubit>(),
-        ),
+        BlocProvider<NewMiniAppLogicCubit>.value(value: sl<NewMiniAppLogicCubit>()),
         // Add AccessibilityController to providers
         ChangeNotifierProvider(create: (_) => AccessibilityController()),
-        // Add BaladyThemeNotifier to providers
-        ChangeNotifierProvider(create: (_) => BaladyThemeNotifier()),
         BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
@@ -121,29 +119,21 @@ class AppWidgetState extends State<AppWidget> {
         return Consumer<BaladyThemeNotifier>(
           builder: (context, themeController, child) {
             return Directionality(
-              textDirection: translator.activeLanguageCode == "ar"
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
-              child: Consumer2<BaladyThemeNotifier, SpecialThemeMode?>(
-                  builder: (context, themeController, specialThemeMode, child) {
-                    final bool isMakkahTheme =
-                        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
-                    return MediaQuery(
-                    data: MediaQuery.of(
-                      context,
-                    ).copyWith(textScaler: TextScaler.linear(controller.textScale)),
+              textDirection: translator.activeLanguageCode == "ar" ? TextDirection.rtl : TextDirection.ltr,
+              child: Consumer<BaladyThemeNotifier>(
+                builder: (context, themeController, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(controller.textScale)),
                     child: MaterialApp(
                       title: 'appNameWord'.tr(),
                       debugShowCheckedModeBanner: false,
                       navigatorKey: NavigationService.navigatorKey,
                       theme: myLightTheme,
                       darkTheme: myDarkTheme,
-                      themeMode:  (themeController.isDarkMode && !isMakkahTheme) ? ThemeMode.dark : ThemeMode.light,
+                      themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
                       builder: (context, child) {
                         final botToastBuilder = BotToastInit();
-                        final easyLoadingBuilder = EasyLoading.init(
-                          builder: botToastBuilder,
-                        );
+                        final easyLoadingBuilder = EasyLoading.init(builder: botToastBuilder);
                         final builtChild = easyLoadingBuilder(context, child);
 
                         // [BUG FIX]: The old code accidentally excluded the StreamAudio wrapper when grayscale was disabled:
@@ -157,7 +147,7 @@ class AppWidgetState extends State<AppWidget> {
                     // is always present in the widget tree, regardless of the grayscale filter.
                     // TODO: MBC - Uncomment for next release
                     // final streamAudioChild = Material(
-                    //   type: MaterialType.transparency, 
+                    //   type: MaterialType.transparency,
                     //   child: StreamAudio(child: builtChild),
                     // );
                     final streamAudioChild = Material(
@@ -165,12 +155,9 @@ class AppWidgetState extends State<AppWidget> {
                       child: builtChild,
                     );
 
-                    if (grayscaleFilter == null) return streamAudioChild;
+                        if (grayscaleFilter == null) return streamAudioChild;
 
-                        return ColorFiltered(
-                          colorFilter: grayscaleFilter,
-                          child: streamAudioChild,
-                        );
+                        return ColorFiltered(colorFilter: grayscaleFilter, child: streamAudioChild);
                       },
                       navigatorObservers: [
                         SentryNavigatorObserver(),
@@ -178,15 +165,14 @@ class AppWidgetState extends State<AppWidget> {
                         FlutterUxcamNavigatorObserver(),
                         MapnessRouteObserver(),
                       ],
-                      localizationsDelegates: translator.delegates.toList()
-                        ..add(CountryLocalizations.delegate),
+                      localizationsDelegates: translator.delegates.toList()..add(CountryLocalizations.delegate),
                       locale: translator.activeLocale,
                       supportedLocales: translator.locals(),
                       initialRoute: RouteName.bottomNavigation,
                       routes: Routes.routes(),
                     ),
                   );
-                }
+                },
               ),
             );
           },

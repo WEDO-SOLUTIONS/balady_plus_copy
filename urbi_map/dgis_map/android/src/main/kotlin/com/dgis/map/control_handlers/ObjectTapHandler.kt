@@ -2,6 +2,7 @@ package com.dgis.map.control_handlers
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.util.Size
 import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
@@ -39,6 +40,7 @@ class ObjectTapHandler(
         private val ioObjectManager: MapObjectManager,
         private val routeHandler: RouteHandler?,
         private val sdkContext: Context,
+        private val androidContext: android.content.Context,
         private val eventSink: EventSink,
         private val api: FlutterMapApi,
 ) : AutoCloseable {
@@ -90,9 +92,11 @@ class ObjectTapHandler(
         //            else -> eventSink.error("ClassCastException", "tapped object class is not
         // supported", null)
         //        }
+        // Markers now require long-press (handled in objectLongTapListener) per
+        // dynamic-POI iter4 UX. Short taps on markers fall through silently.
         when (val tappedObject = roi.item.item) {
             is Marker -> {
-                onMarkerTap(tappedObject)
+                Log.d("DynamicPoiDebug.Android", "short tap on Marker — ignored, long-press required")
                 return
             }
             is SimpleClusterObject -> {
@@ -115,6 +119,11 @@ class ObjectTapHandler(
     }
     fun objectLongTapListener(roi: RenderedObjectInfo) {
         when (val tappedObject = roi.item.item) {
+            is Marker -> {
+                Log.d("DynamicPoiDebug.Android", "object long-press hit Marker")
+                onMarkerTap(tappedObject)
+                return
+            }
             is Polygon -> {
                 val userData = tappedObject.userData
 
@@ -261,6 +270,37 @@ class ObjectTapHandler(
         }
     }
 
+    // PNG asset path: read bytes, decode + scale via BitmapFactory, then go
+    // through `imageFromBitmap`. The SDK's `imageFromAsset(..., Size)` overload
+    // mis-handles raster PNGs — Size(width, width) draws clipped/zoomed on
+    // hi-DPI, and Size(0, 0) yields no image at all. The bitmap path is the
+    // same one `pngData` already uses successfully.
+    private fun getPngImageFromAsset(
+            assetPath: String,
+            widthLogical: Int,
+            callback: (Result<Unit>) -> Unit
+    ): Image? {
+        if (iconCache.containsKey(assetPath)) {
+            return iconCache[assetPath]
+        }
+
+        return try {
+            val assetKey =
+                    FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(assetPath)
+            val pixelSize = (widthLogical * androidContext.resources.displayMetrics.density).toInt()
+            val stream: java.io.InputStream = androidContext.assets.open(assetKey)
+            val bytes = stream.use { it.readBytes() }
+            val image = getImageFromBytes(bytes, if (pixelSize > 0) pixelSize else widthLogical)
+            if (image != null) {
+                iconCache[assetPath] = image
+            }
+            image
+        } catch (e: FileNotFoundException) {
+            callback(Result.failure(e))
+            null
+        }
+    }
+
     private fun mapMarker(marker: MarkerMessage, callback: (Result<Unit>) -> Unit): Marker {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
@@ -274,12 +314,11 @@ class ObjectTapHandler(
             if (svgPath != null) {
                 markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
             } else if (pngPath != null) {
-                markerImage =
-                        getImageFromAsset(
-                                pngPath,
-                                Size(iconOptions.width.toInt(), iconOptions.width.toInt()),
-                                callback
-                        )
+                Log.d(
+                    "MakkahPinDebug.Android",
+                    "addMarker pngPath=$pngPath width=${iconOptions.width}"
+                )
+                markerImage = getPngImageFromAsset(pngPath, iconOptions.width.toInt(), callback)
             } else if (pngData != null) {
 
                 val data = pngData
@@ -340,12 +379,11 @@ class ObjectTapHandler(
             if (svgPath != null) {
                 markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
             } else if (pngPath != null) {
-                markerImage =
-                        getImageFromAsset(
-                                pngPath,
-                                Size(iconOptions.width.toInt(), iconOptions.width.toInt()),
-                                callback
-                        )
+                Log.d(
+                    "MakkahPinDebug.Android",
+                    "setMarkerOptions pngPath=$pngPath width=${iconOptions.width}"
+                )
+                markerImage = getPngImageFromAsset(pngPath, iconOptions.width.toInt(), callback)
             } else if (pngData != null) {
                 val data = pngData
                 markerImage = getImageFromBytes(data, iconOptions.width.toInt())
@@ -376,7 +414,15 @@ class ObjectTapHandler(
         options.animatedAppearance?.let { animatedAppearance ->
             markers[id]?.first?.animatedAppearance = animatedAppearance
         }
-        options.isVisible?.let { isVisible -> markers[id]?.first?.isVisible = isVisible }
+        options.isVisible?.let { isVisible ->
+            if (id.startsWith("dynamic_poi_")) {
+                Log.d(
+                    "DynamicPoiDebug.Android",
+                    "setMarkerOptions id=$id isVisible=$isVisible found=${markers[id] != null}"
+                )
+            }
+            markers[id]?.first?.isVisible = isVisible
+        }
     }
 
     fun addMarkers(
