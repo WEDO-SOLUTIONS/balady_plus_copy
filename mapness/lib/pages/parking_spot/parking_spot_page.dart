@@ -27,6 +27,7 @@ import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
 import 'package:provider/provider.dart';
 
+
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
   final String? address;
@@ -223,7 +224,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 Spacing.$0_5x.heightBox,
                 Center(
                   child: Text(
-                    context.l10n.dataStoredFor,
+                    context.l10n.dataWillStore,
                     style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ),
