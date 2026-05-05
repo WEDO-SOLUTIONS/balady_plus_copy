@@ -191,6 +191,10 @@ class ObjectTapHandler {
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
         let tappedObject = objectInfo.item.item
 
+        // Markers now require long-press (handled in objectLongTapListener) per
+        // dynamic-POI iter4 UX. Short taps on markers fall through silently
+        // instead of opening the POI card. Other object types are handled in
+        // their respective tap streams.
         switch tappedObject {
         case is Marker:
             self.onMarkerTap(tappedObject as! Marker)
