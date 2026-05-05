@@ -27,7 +27,6 @@ import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
 import 'package:provider/provider.dart';
 
-
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
   final String? address;
