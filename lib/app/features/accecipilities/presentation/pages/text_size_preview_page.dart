@@ -4,23 +4,25 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
-class TextSizePreviewPage extends StatefulWidget {
+import 'package:provider/provider.dart' as p;
+class TextSizePreviewPage extends ConsumerStatefulWidget {
   const TextSizePreviewPage({super.key});
 
   @override
-  State<TextSizePreviewPage> createState() => _TextSizePreviewPageState();
+  ConsumerState<TextSizePreviewPage> createState() => _TextSizePreviewPageState();
 }
 
-class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
+class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
   double _fontSize = 16;
 
   @override
   void initState() {
     super.initState();
-    final controller = Provider.of<AccessibilityController>(
+    final controller = p.Provider.of<AccessibilityController>(
       context,
       listen: false,
     );
@@ -29,7 +31,8 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<AccessibilityController>(context);
+    final controller = p.Provider.of<AccessibilityController>(context);
+    final dgisController = ref.watch(dgisControllerProvider);
 
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
@@ -101,7 +104,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                       divisions: 12,
                       onChanged: (value) {
                         setState(() => _fontSize = value);
-                        controller.setTextScale(_fontSize / 16);
+                        controller.setTextScale(_fontSize / 16,dgisController.value);
                       },
                     ),
                   ),
