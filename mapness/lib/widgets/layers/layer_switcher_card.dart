@@ -69,33 +69,51 @@ class LayerSwitcherCard extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(
-                value.titleLocale(context.l10n),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: textStyles.bodySmallMedium.copyWith(
-                  color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+        // BE-153: when this is the parking layer card, the whole title row
+        // (text + chevron) opens the parking menu — not only the chevron icon.
+        if (value == layers_state.LayerType.parkingLots)
+          GestureDetector(
+            onTap: tapOnParkingLotsMenu,
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                    value.titleLocale(context.l10n),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: textStyles.bodySmallMedium.copyWith(
+                      color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            if (value == layers_state.LayerType.parkingLots) ...[
-              GestureDetector(
-                onTap: tapOnParkingLotsMenu,
-                behavior: HitTestBehavior.opaque,
-                child: Icon(
+                Icon(
                   Icons.chevron_right,
                   size: 22,
                   color: colors.foregroundSoft,
                 ),
+              ],
+            ),
+          )
+        else
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  value.titleLocale(context.l10n),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: textStyles.bodySmallMedium.copyWith(
+                    color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                  ),
+                ),
               ),
             ],
-          ],
-        ),
+          ),
       ],
     );
   }

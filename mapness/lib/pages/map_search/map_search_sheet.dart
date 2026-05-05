@@ -102,6 +102,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         ],
       ),
       stateMapper: const LandingStateMapper(),
+      // BE-153: animation how in Google Maps
+      durationMultiplier: 0.0,
+      forceMultiplier: 100.0,
+      initialOpenCurve: Curves.linear,
+      mainCurve: Curves.linear,
     );
     _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
