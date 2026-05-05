@@ -95,7 +95,14 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
             },
           ),
         ),
-        const AutoRouter(),
+        Positioned.fill(
+          top: null,
+          child: Container(
+            color: context.colors.backgroundSurface2,
+            height: MediaQuery.of(context).viewPadding.bottom,
+          ),
+        ),
+        const SafeArea(child: AutoRouter()),
       ],
     );
   }
