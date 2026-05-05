@@ -57,7 +57,8 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
       departureDateTime = departureDateTime.add(const Duration(days: 1));
     }
     final difference = departureDateTime.difference(now);
-    return difference.inMinutes;
+    final minutes = (difference.inSeconds / 60).ceil();
+    return minutes;
   }
 
   @override
