@@ -36,13 +36,26 @@ class AccessibilityInfo extends StatelessWidget {
                 ),
               ),
             ],
-            appBar: BaladyTopBar.iconAndText(
+            appBar: BaladyTopBar(
               systemUiOverlayStyle: SystemUiOverlayStyle.dark,
               title: 'voiceReader'.tr(),
-              colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(
-                onPressed: () => context.router.pop(),
-                icon: SystemIcons.arrowCornerLeftLarge,
+              onLeadingPressed: () => context.router.pop(),
+              leading: Semantics(
+                label: 'back',
+                button: true,
+                child: ExcludeSemantics(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: Spacing.$4x),
+                      Icon(
+                        SystemIcons.arrowCornerLeftLarge,
+                        color: context.colors.accentDefault,
+                      ),
+                      const SizedBox(width: Spacing.$4x),
+                    ],
+                  ),
+                ),
               ),
             ),
             body: Padding(

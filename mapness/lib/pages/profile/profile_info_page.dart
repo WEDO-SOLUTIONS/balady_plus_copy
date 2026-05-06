@@ -28,14 +28,26 @@ class ProfileInfoPage extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
-              appBar: BaladyTopBar.iconAndText(
+              appBar: BaladyTopBar(
                 systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
                 title: context.l10n.profileInfo,
-                colorEnabled: context.colors.accentDefault,
-                leading: ActionModel(
-                  text: context.l10n.back,
-                  onPressed: () => context.router.pop(),
-                  icon: SystemIcons.arrowCornerLeftLarge,
+                onLeadingPressed: () => context.router.pop(),
+                leading: Semantics(
+                  label: 'back',
+                  button: true,
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: Spacing.$4x),
+                        Icon(
+                          SystemIcons.arrowCornerLeftLarge,
+                          color: context.colors.accentDefault,
+                        ),
+                        const SizedBox(width: Spacing.$4x),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               body: ListView(

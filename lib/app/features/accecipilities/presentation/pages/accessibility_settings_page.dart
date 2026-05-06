@@ -19,12 +19,10 @@ class AccessibilitySettingsPage extends ConsumerStatefulWidget {
   const AccessibilitySettingsPage({super.key});
 
   @override
-  ConsumerState<AccessibilitySettingsPage> createState() =>
-      _AccessibilitySettingsPageState();
+  ConsumerState<AccessibilitySettingsPage> createState() => _AccessibilitySettingsPageState();
 }
 
-class _AccessibilitySettingsPageState
-    extends ConsumerState<AccessibilitySettingsPage> {
+class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySettingsPage> {
   @override
   Widget build(BuildContext context) {
     final controller = p.Provider.of<AccessibilityController>(context);
@@ -39,21 +37,30 @@ class _AccessibilitySettingsPageState
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
-              appBar: BaladyTopBar.iconAndText(
+              appBar: BaladyTopBar(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.accessibility,
-                colorEnabled: context.colors.accentDefault,
-                leading: ActionModel(
-                  onPressed: () => context.router.pop(),
-                  icon: SystemIcons.arrowCornerLeftLarge,
+                onLeadingPressed: () => context.router.pop(),
+                leading: Semantics(
+                  label: 'back',
+                  button: true,
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: Spacing.$4x),
+                        Icon(
+                          SystemIcons.arrowCornerLeftLarge,
+                          color: context.colors.accentDefault,
+                        ),
+                        const SizedBox(width: Spacing.$4x),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               body: Padding(
-                padding: const EdgeInsets.only(
-                  top: 12,
-                  left: 12,
-                  right: 12,
-                ),
+                padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -61,10 +68,9 @@ class _AccessibilitySettingsPageState
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const TextSizePreviewPage(),
-                              )),
+                          onTap: () => Navigator.of(
+                            context,
+                          ).push(MaterialPageRoute(builder: (context) => const TextSizePreviewPage())),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: GeneralIcons.messageTextLTR,
@@ -79,7 +85,7 @@ class _AccessibilitySettingsPageState
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$4x.heightBox,
@@ -87,8 +93,7 @@ class _AccessibilitySettingsPageState
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              controller.toggleGrayscale(!controller.grayscale),
+                          onTap: () => controller.toggleGrayscale(!controller.grayscale),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.color_lens_outlined,
@@ -97,8 +102,7 @@ class _AccessibilitySettingsPageState
                             ),
                             title: 'grayScaleMode'.tr(),
                             actionWidget: ContentRowActionOptions(
-                              customToggleBuilder: (
-                                  {required onToggle, bool? initial}) {
+                              customToggleBuilder: ({required onToggle, bool? initial}) {
                                 return CupertinoSwitch(
                                   value: controller.grayscale ?? false,
                                   onChanged: (value) {
@@ -110,7 +114,7 @@ class _AccessibilitySettingsPageState
                               },
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$4x.heightBox,
@@ -118,16 +122,17 @@ class _AccessibilitySettingsPageState
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const AccessibilityInfo({
-                                  "0": "accessibilityStepOpenSettings",
-                                  "1": "accessibilityStepAccessibility",
-                                  "2": "accessibilityStepScreenReader",
-                                  "3": "accessibilityStepEnableReader",
-                                  // "4": "accessibilityStepFinishSetup",
-                                }),
-                              )),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const AccessibilityInfo({
+                                "0": "accessibilityStepOpenSettings",
+                                "1": "accessibilityStepAccessibility",
+                                "2": "accessibilityStepScreenReader",
+                                "3": "accessibilityStepEnableReader",
+                                // "4": "accessibilityStepFinishSetup",
+                              }),
+                            ),
+                          ),
                           options: ContentRowOptions(
                             leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
                             title: 'voiceReader'.tr(),
@@ -138,7 +143,7 @@ class _AccessibilitySettingsPageState
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$2x.heightBox,

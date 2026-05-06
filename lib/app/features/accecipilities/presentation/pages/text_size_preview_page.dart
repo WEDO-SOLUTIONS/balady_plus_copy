@@ -20,10 +20,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
   @override
   void initState() {
     super.initState();
-    final controller = Provider.of<AccessibilityController>(
-      context,
-      listen: false,
-    );
+    final controller = Provider.of<AccessibilityController>(context, listen: false);
     _fontSize = 16 * controller.textScale;
   }
 
@@ -34,15 +31,28 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
 
-      appBar: BaladyTopBar.iconAndText(
+      appBar: BaladyTopBar(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         title: 'fontSize'.tr(),
-        colorEnabled: context.colors.accentDefault,
-        leading: ActionModel(
-          onPressed: () {
-            context.router.pop();
-          },
-          icon: SystemIcons.arrowCornerLeftLarge,
+        onLeadingPressed: () {
+          context.router.pop();
+        },
+        leading: Semantics(
+          label: 'back',
+          button: true,
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: Spacing.$4x),
+                Icon(
+                  SystemIcons.arrowCornerLeftLarge,
+                  color: context.colors.accentDefault,
+                ),
+                const SizedBox(width: Spacing.$4x),
+              ],
+            ),
+          ),
         ),
       ),
       body: Padding(
@@ -60,23 +70,13 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 'Main text will look like this.\n'
                 '1234567890!@#%&*()_+-=',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: _fontSize,
-                  height: 1.4,
-                  color: context.colors.foregroundDefault,
-                ),
+                style: TextStyle(fontSize: _fontSize, height: 1.4, color: context.colors.foregroundDefault),
               ),
             ),
             const SizedBox(height: 32),
             Row(
               children: [
-                Text(
-                  'A',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
+                Text('A', style: TextStyle(fontSize: 12, color: context.colors.foregroundDefault)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: SliderTheme(
@@ -86,13 +86,9 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                       inactiveTrackColor: context.colors.backgroundSurface1,
                       thumbColor: const Color(0xFF4DB6AC),
                       overlayColor: const Color(0xFF4DB6AC).withOpacity(0.15),
-                      tickMarkShape: const RoundSliderTickMarkShape(
-                        tickMarkRadius: 2,
-                      ),
+                      tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 2),
                       activeTickMarkColor: Colors.transparent,
-                      inactiveTickMarkColor: const Color(
-                        0xFF4DB6AC,
-                      ).withOpacity(0.4),
+                      inactiveTickMarkColor: const Color(0xFF4DB6AC).withOpacity(0.4),
                     ),
                     child: Slider(
                       value: _fontSize,
@@ -107,13 +103,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'A',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
+                Text('A', style: TextStyle(fontSize: 24, color: context.colors.foregroundDefault)),
               ],
             ),
             const Padding(

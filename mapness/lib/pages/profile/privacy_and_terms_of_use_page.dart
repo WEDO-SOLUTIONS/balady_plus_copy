@@ -41,14 +41,18 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
             ),
           ),
           centerTitle: true,
-          leading: BackButton(color: theme.primaryColor),
+          leading: Semantics(
+            label: 'back',
+            button: true,
+            excludeSemantics: true,
+            child: BackButton(color: theme.primaryColor),
+          ),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(15.0),
             child: Column(
-              crossAxisAlignment:
-              context.isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              crossAxisAlignment: context.isRTL ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               children: [
                 Text(
                   "privacyIntroText".tr(),
@@ -88,8 +92,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 Align(
-                  alignment:
-                  context.isRTL ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment: context.isRTL ? Alignment.centerRight : Alignment.centerLeft,
                   child: Wrap(
                     children: [
                       Text(
@@ -99,8 +102,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
                       const SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
-                          final Uri url =
-                          Uri.parse('https://balady.sa/ar/privacy-policy');
+                          final Uri url = Uri.parse('https://balady.sa/ar/privacy-policy');
                           launchUrl(url, mode: LaunchMode.externalApplication);
                         },
                         child: Text(
@@ -129,26 +131,25 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
     required String iconPath,
     required String text,
     required String fontFamily,
-  }) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SvgPicture.asset(iconPath, height: 20),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                text,
-                textAlign: context.isRTL ? TextAlign.right : TextAlign.left,
-                style: TextStyle(
-                  fontSize: 16,
-                  height: 1.4,
-                  fontFamily: fontFamily,
-                ),
-              ),
+  }) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SvgPicture.asset(iconPath, height: 20),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            textAlign: context.isRTL ? TextAlign.right : TextAlign.left,
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.4,
+              fontFamily: fontFamily,
             ),
-          ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }

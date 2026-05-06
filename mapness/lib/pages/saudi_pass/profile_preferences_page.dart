@@ -61,10 +61,24 @@ class ProfilePreferencesPage extends ConsumerWidget {
         color: colors.backgroundSurface4,
         child: SafeArea(
           child: Scaffold(
-            appBar: BaladyTopBar.iconAndText(
+            appBar: BaladyTopBar(
               title: context.l10n.preferences,
               textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
-              leading: ActionModel(onPressed: popWithPreferences, icon: SystemIcons.arrowCornerLeftLarge),
+              onLeadingPressed: popWithPreferences,
+              leading: Semantics(
+                label: 'back',
+                button: true,
+                child: ExcludeSemantics(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: Spacing.$4x),
+                      Icon(SystemIcons.arrowCornerLeftLarge, color: colors.foregroundDefault),
+                      const SizedBox(width: Spacing.$4x),
+                    ],
+                  ),
+                ),
+              ),
             ),
             body: isLoading
                 ? Center(child: Loading.large())

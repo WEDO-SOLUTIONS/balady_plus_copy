@@ -51,12 +51,19 @@ class LanguageRow extends ConsumerWidget {
           onTap: () {
             ref.read(appLanguageProvider.notifier).update(language);
           },
-          child: ContentRow(
-            leading: leadingIcon,
-            text: ContentRowTextOptions(title: language.title),
-            trailing: ContentRowTextTrailingOptions(
-              icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
-              iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
+          child: Semantics(
+            label: language == Language.arabic ? 'Arabic' : 'English',
+            button: true,
+            selected: currentLanguage == language,
+            child: ExcludeSemantics(
+              child: ContentRow(
+                leading: leadingIcon,
+                text: ContentRowTextOptions(title: language.title),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+                  iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
+                ),
+              ),
             ),
           ),
         ),

@@ -44,10 +44,24 @@ class OfferPage extends HookConsumerWidget {
       color: colors.backgroundSurface4,
       child: SafeArea(
         child: Scaffold(
-          appBar: BaladyTopBar.iconAndText(
+          appBar: BaladyTopBar(
             title: context.l10n.offer,
             textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
-            leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+            onLeadingPressed: () => context.router.pop(),
+            leading: Semantics(
+              label: 'back',
+              button: true,
+              child: ExcludeSemantics(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: Spacing.$4x),
+                    Icon(SystemIcons.arrowCornerLeftLarge, color: colors.foregroundDefault),
+                    const SizedBox(width: Spacing.$4x),
+                  ],
+                ),
+              ),
+            ),
           ),
           body: offerProvider.isLoading
               ? Center(child: Loading.large())

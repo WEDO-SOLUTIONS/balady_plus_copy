@@ -32,11 +32,25 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
-              appBar: BaladyTopBar.iconAndText(
+              appBar: BaladyTopBar(
                 systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
                 title: l10n.soundSettings,
                 textStyle: textStyles.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
-                leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+                onLeadingPressed: () => context.router.pop(),
+                leading: Semantics(
+                  label: 'back',
+                  button: true,
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: Spacing.$4x),
+                        Icon(SystemIcons.arrowCornerLeftLarge, color: colors.foregroundDefault),
+                        const SizedBox(width: Spacing.$4x),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               body: const SoundSettingsPageContent(),
             ),

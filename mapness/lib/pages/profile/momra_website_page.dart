@@ -60,14 +60,26 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
     child: Material(
       color: context.colors.backgroundSurface1,
       child: Scaffold(
-        appBar: BaladyTopBar.iconAndText(
+        appBar: BaladyTopBar(
           systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
           title: context.l10n.baladyWebsite,
-          colorEnabled: context.colors.accentDefault,
-          leading: ActionModel(
-            text: context.l10n.back,
-            onPressed: () => context.router.pop(),
-            icon: SystemIcons.arrowCornerLeftLarge,
+          onLeadingPressed: () => context.router.pop(),
+          leading: Semantics(
+            label: 'back',
+            button: true,
+            child: ExcludeSemantics(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(width: Spacing.$4x),
+                  Icon(
+                    SystemIcons.arrowCornerLeftLarge,
+                    color: context.colors.accentDefault,
+                  ),
+                  const SizedBox(width: Spacing.$4x),
+                ],
+              ),
+            ),
           ),
         ),
         body: _isLoading
