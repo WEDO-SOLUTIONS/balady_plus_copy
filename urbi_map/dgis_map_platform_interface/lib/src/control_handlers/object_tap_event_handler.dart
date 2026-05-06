@@ -214,6 +214,15 @@ class ObjectTapEventHandler {
     await _objectTapController.close();
   }
 
+  void mapAreaLongPressEvent(Map<dynamic, dynamic> map) {
+    _objectTapController.sink.add(
+      MapAreaLongPressEvent(LatLng(
+        latitude: map["latitude"],
+        longitude: map["longitude"],
+      )),
+    );
+  }
+
   void onIoTap(Map<dynamic, dynamic> map) {
     final event = IoTapEvent(
       description: map["description"],
