@@ -203,6 +203,8 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
     return aboutMap[dgisObjectId] ?? '';
   }
 
+  bool shouldForceShow(int dgisObjectId) => _forceShowIds.contains(dgisObjectId);
+
   String getPhotoByDgisId(int dgisObjectId) {
     final Map<int, String> map = {
       // Diriyah - Cultural Institution
@@ -221,3 +223,5 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
     return map[dgisObjectId] ?? '';
   }
 }
+
+const _forceShowIds = {70030076209992609};
