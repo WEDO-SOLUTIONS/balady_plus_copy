@@ -207,7 +207,8 @@ class PoiContentSliver extends ConsumerWidget {
     final isFoundationDay = activeCityEvent?.isFoundingDay ?? false;
     final isFoundationObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(data.id!.objectId);
     final localAboutText = ref.read(foundingDayUrbiProvider.notifier).getAboutByDgisId(data.id!.objectId);
-    final about = data.getAbout(context.l10n);
+    final forceShow = ref.read(foundingDayUrbiProvider.notifier).shouldForceShow(data.id!.objectId);
+    final about = data.getAbout(context.l10n, customAbout: forceShow ? localAboutText : null);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
 
@@ -288,7 +289,7 @@ class PoiContentSliver extends ConsumerWidget {
                     ],
                   ),
                 )
-              else if(about!=null)
+              else if (about != null)
                 Padding(
                   padding: itemPadding,
                   child: PoiContentAboutCard(data: about),
@@ -327,8 +328,13 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 )
                 .toList(),
-            PoiLinesContainer(model: makkahDeparturesModel,),
-            PoiLinesContainer(model: haramDeparturesModel,isShuttle: true,),
+            PoiLinesContainer(
+              model: makkahDeparturesModel,
+            ),
+            PoiLinesContainer(
+              model: haramDeparturesModel,
+              isShuttle: true,
+            ),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(
