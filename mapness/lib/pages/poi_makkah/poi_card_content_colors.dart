@@ -52,7 +52,10 @@ _MakkahPoiColors _resolveMakkahPoiColors(
         featureTileBackground: MakkahPoiConstants.darkSheet,
         titleColor: MakkahPoiConstants.darkPrimaryTextColor,
         secondaryTextColor: MakkahPoiConstants.darkSecondaryTextColor,
-        iconBackground: MakkahPoiConstants.darkAccentTeal,
+        // overriden because icons from bucket return this color only
+        // iconBackground: MakkahPoiConstants.darkAccentTeal,
+        // TODO: replace this back when update the bucket
+        iconBackground: const Color(0xffD19D3F),
         closeButtonBackground: MakkahPoiConstants.darkSheet,
         closeButtonIcon: MakkahPoiConstants.darkPrimaryTextColor,
         directionsButtonBackground: MakkahPoiConstants.darkAccentTeal,

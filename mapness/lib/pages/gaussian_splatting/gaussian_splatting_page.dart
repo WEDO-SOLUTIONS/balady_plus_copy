@@ -114,6 +114,8 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
       children: [
         WebViewWidget(controller: _controller),
         if (_isLoading) const Center(child: CircularProgressIndicator()),
+
+        // balady back button
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(left: 24, top: 24),
@@ -125,23 +127,27 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                   padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.black54,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(32),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                      const SizedBox(width: 4),
-                      const Text(
-                        'Balady',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                  child: const Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      // textDirection: TextDirection.ltr,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                        SizedBox(width: 4),
+                        Text(
+                          'Balady',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                    ],
+                        SizedBox(width: 4),
+                      ],
+                    ),
                   ),
                 ),
               ),
