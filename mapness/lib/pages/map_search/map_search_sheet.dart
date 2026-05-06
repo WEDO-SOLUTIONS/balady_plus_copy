@@ -211,12 +211,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onLongPress: _onMapAreaLongPress,
-            ),
-          ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
