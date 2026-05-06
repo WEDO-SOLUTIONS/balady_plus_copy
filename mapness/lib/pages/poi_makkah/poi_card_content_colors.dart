@@ -14,6 +14,11 @@ class _MakkahPoiColors {
   final Color iconBackground;
   final Color closeButtonBackground;
   final Color closeButtonIcon;
+  final Color directionsButtonBackground;
+  final Color directionsButtonForeground;
+  final Color actionButtonBackground;
+  final Color actionButtonIconColor;
+  final bool isDark;
 
   const _MakkahPoiColors({
     required this.cardBackground,
@@ -25,11 +30,38 @@ class _MakkahPoiColors {
     required this.iconBackground,
     required this.closeButtonBackground,
     required this.closeButtonIcon,
+    required this.directionsButtonBackground,
+    required this.directionsButtonForeground,
+    required this.actionButtonBackground,
+    required this.actionButtonIconColor,
+    this.isDark = false,
   });
 }
 
-_MakkahPoiColors _resolveMakkahPoiColors(BuildContext context, SpecialThemeMode mode) {
+_MakkahPoiColors _resolveMakkahPoiColors(
+  BuildContext context,
+  SpecialThemeMode mode, {
+  bool isDark = false,
+}) {
   if (mode == SpecialThemeMode.mekkahBase || mode == SpecialThemeMode.ramadan) {
+    if (isDark) {
+      return _MakkahPoiColors(
+        cardBackground: MakkahPoiConstants.darkSheet,
+        headerBackground: MakkahPoiConstants.darkSunken,
+        contentCardBackground: MakkahPoiConstants.darkSunken,
+        featureTileBackground: MakkahPoiConstants.darkSheet,
+        titleColor: MakkahPoiConstants.darkPrimaryTextColor,
+        secondaryTextColor: MakkahPoiConstants.darkSecondaryTextColor,
+        iconBackground: MakkahPoiConstants.darkAccentTeal,
+        closeButtonBackground: MakkahPoiConstants.darkSheet,
+        closeButtonIcon: MakkahPoiConstants.darkPrimaryTextColor,
+        directionsButtonBackground: MakkahPoiConstants.darkAccentTeal,
+        directionsButtonForeground: MakkahPoiConstants.darkPrimaryTextColor,
+        actionButtonBackground: MakkahPoiConstants.darkSheet,
+        actionButtonIconColor: MakkahPoiConstants.darkPrimaryTextColor,
+        isDark: true,
+      );
+    }
     return const _MakkahPoiColors(
       cardBackground: MakkahPoiConstants.cardBackground,
       headerBackground: MakkahPoiConstants.headerBackground,
@@ -40,6 +72,10 @@ _MakkahPoiColors _resolveMakkahPoiColors(BuildContext context, SpecialThemeMode 
       iconBackground: MakkahPoiConstants.iconBackground,
       closeButtonBackground: MakkahPoiConstants.closeButtonBackground,
       closeButtonIcon: MakkahPoiConstants.closeButtonIcon,
+      directionsButtonBackground: MakkahPoiConstants.directionsButtonBackground,
+      directionsButtonForeground: Color(0xFFFFFFFF),
+      actionButtonBackground: MakkahPoiConstants.actionButtonBackground,
+      actionButtonIconColor: MakkahPoiConstants.normalActionIconColor,
     );
   }
 
@@ -53,6 +89,10 @@ _MakkahPoiColors _resolveMakkahPoiColors(BuildContext context, SpecialThemeMode 
     iconBackground: context.colors.backgroundSurface3,
     closeButtonBackground: context.colors.backgroundSurface2,
     closeButtonIcon: context.colors.foregroundMuted,
+    directionsButtonBackground: context.colors.accentDefault,
+    directionsButtonForeground: context.colors.staticWhite,
+    actionButtonBackground: context.colors.backgroundSurface2,
+    actionButtonIconColor: context.colors.foregroundDefault,
   );
 }
 

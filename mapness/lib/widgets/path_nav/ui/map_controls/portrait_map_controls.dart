@@ -32,118 +32,130 @@ class _PortraitLayout extends ConsumerStatefulWidget {
 class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
   @override
   Widget build(BuildContext context) => SafeArea(
-        bottom: false,
-        child: Stack(
+    child: Stack(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SizedBox(height: 6, width: double.maxFinite),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                  child: widget.maneuverAndLimitWidget,
-                ),
-                Expanded(
-                  child: ValueListenableBuilder(
-                      valueListenable: widget.showControls,
-                      builder: (context, isVisible, child) => AnimatedOpacity(
-                            opacity: isVisible ? 1 : 0,
-                            duration: const Duration(milliseconds: 250),
-                            child: IgnorePointer(
-                              ignoring: !isVisible,
-                              child: GestureDetector(
-                                onTap: widget.onUserActivity,
+            const SizedBox(height: 6, width: double.maxFinite),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+              child: widget.maneuverAndLimitWidget,
+            ),
+            Expanded(
+              child: ValueListenableBuilder(
+                valueListenable: widget.showControls,
+                builder: (context, isVisible, child) => GestureDetector(
+                  onTap: widget.onUserActivity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      AnimatedOpacity(
+                        opacity: isVisible ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: IgnorePointer(
+                          ignoring: !isVisible,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: widget.padding,
+                                child: const TrafficParkingControl(trafficVisible: false),
+                              ),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              Padding(
+                                padding: widget.padding,
+                                child: const DimensionControl(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      AnimatedOpacity(
+                        opacity: isVisible ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: IgnorePointer(
+                          ignoring: !isVisible,
+                          child: Padding(
+                            padding: widget.padding,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                if (widget.navType == RouteSearchOptionsMessage.pedestrian) const IndoorControl(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: widget.padding,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            AnimatedOpacity(
+                              opacity: isVisible ? 1 : 0,
+                              duration: const Duration(milliseconds: 250),
+                              child: IgnorePointer(
+                                ignoring: !isVisible,
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: const TrafficParkingControl(
-                                          trafficVisible: false),
-                                    ),
-                                    const SizedBox(height: uikit.Spacing.$2x),
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: const DimensionControl(),
-                                    ),
-                                    const Spacer(),
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          if (widget.navType ==
-                                              RouteSearchOptionsMessage
-                                                  .pedestrian)
-                                            const IndoorControl()
-                                          else
-                                            const SizedBox.shrink(),
-                                          const ZoomControl(),
-                                        ],
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Padding(
-                                      padding: widget.padding,
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // TODO: MBC - Uncomment for next release
-                                              // const RadioContextualButton(),
-                                              const SizedBox(height: 10),
-                                              ValueListenableBuilder(
-                                                  valueListenable:
-                                                      widget.navigationState,
-                                                  builder: (context, state, _) {
-                                                    if (state ==
-                                                            PathNavState
-                                                                .finished ||
-                                                        state ==
-                                                            PathNavState
-                                                                .paused ||
-                                                        widget.onRoutePressed ==
-                                                            null) {
-                                                      return const SizedBox
-                                                          .shrink();
-                                                    }
-                                                    return RouteControl(
-                                                      onTap: widget
-                                                          .onRoutePressed!,
-                                                    );
-                                                  }),
-                                            ],
-                                          ),
-                                          const Spacer(),
-                                          Column(
-                                            children: [
-                                              widget.compassControlWidget,
-                                              uikit.Spacing.$2x.heightBox,
-                                              widget.pathNavFollowControlWidget,
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                    // TODO: MBC - Uncomment for next release
+                                    // const RadioContextualButton(),
+                                    const SizedBox(height: 10),
+                                    ValueListenableBuilder(
+                                      valueListenable: widget.navigationState,
+                                      builder: (context, state, _) {
+                                        if (state == PathNavState.finished ||
+                                            state == PathNavState.paused ||
+                                            widget.onRoutePressed == null) {
+                                          return const SizedBox.shrink();
+                                        }
+                                        return RouteControl(
+                                          onTap: widget.onRoutePressed!,
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          )),
+                            const Spacer(),
+                            Column(
+                              children: [
+                                AnimatedOpacity(
+                                  opacity: isVisible ? 1 : 0,
+                                  duration: const Duration(milliseconds: 250),
+                                  child: IgnorePointer(
+                                    ignoring: !isVisible,
+                                    child: Column(
+                                      children: [
+                                        widget.compassControlWidget,
+                                        uikit.Spacing.$2x.heightBox,
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                widget.pathNavFollowControlWidget,
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                ValueListenableBuilder(
-                  valueListenable: widget.bottomHeightNotifier,
-                  builder: (context, value, _) => value.heightBox,
-                )
-              ],
+              ),
+            ),
+            ValueListenableBuilder(
+              valueListenable: widget.bottomHeightNotifier,
+              builder: (context, value, _) => value.heightBox,
             ),
           ],
         ),
-      );
+      ],
+    ),
+  );
 }

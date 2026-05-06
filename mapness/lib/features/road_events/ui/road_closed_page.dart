@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -40,46 +41,70 @@ class RoadClosedPage extends StatefulHookConsumerWidget {
 }
 
 class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
+  bool _isClosing = false;
+
+  RoadEventSheetState get _initialRoadEventState => RoadEventSheetState(
+    id: widget.id,
+    title: widget.title,
+    objectId: widget.id.objectId,
+    startTime: widget.startTime,
+    finishTime: widget.finishTime,
+  );
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      unawaited(selectEvent());
+      unawaited(selectEvent(_currentRoadEventState.id));
     });
   }
 
-  Future<void> selectEvent() async {
+  RoadEventSheetState get _currentRoadEventState => ref.read(roadEventsProvider) ?? _initialRoadEventState;
+
+  Future<void> selectEvent(DgisObjectId objectId) async {
     final highlight = ref.read(highlightProvider.notifier);
-    await highlight.addHighlight(widget.id.toMessage());
+    await highlight.addHighlight(objectId.toMessage());
   }
 
-  Future<void> removeSelection() async {
+  Future<void> removeSelection(DgisObjectId objectId) async {
     final highlight = ref.read(highlightProvider.notifier);
-    await highlight.removeHighlight(widget.id.toMessage());
+    await highlight.removeHighlight(objectId.toMessage());
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<RoadEventSheetState?>(roadEventsProvider, (previous, next) {
+      if (previous == null || next == null || previous == next) {
+        return;
+      }
+
+      unawaited(() async {
+        await removeSelection(previous.id);
+        await selectEvent(next.id);
+      }());
+    });
+
     final scrollController = useToggleSheetController(
       onClose: (controller) {
-        unawaited(removeSelection());
+        unawaited(_onClose());
       },
       heightModel: ToggleSheetHeightModel.fixed(120),
     );
+    final roadEventState = ref.watch(roadEventsProvider) ?? _initialRoadEventState;
     final currentLang = ref.read(appLanguageProvider).languageCode;
 
     // TODO(@alexstrnik) switch back to widget.title after SDK fix
     // This is a workaround to fix the title and description that is not localized
     // When it will be fixed, we can switch back to widget.title
-    final titleLang = LanguageDetector.detectLanguage(widget.title);
-    var title = widget.title;
+    final titleLang = LanguageDetector.detectLanguage(roadEventState.title);
+    var title = roadEventState.title;
     if (titleLang.localeForMapness != currentLang) {
       title = context.l10n.roadBlocking;
     }
 
     final schedule = _formatSchedule(
-      widget.startTime,
-      widget.finishTime,
+      roadEventState.startTime,
+      roadEventState.finishTime,
       currentLang,
       context.l10n,
     );
@@ -144,7 +169,8 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   /// Date formats:
   /// 00:00 1 April 2025 — 23:59 10 June 2026 (if different years)
   /// 00:00 1 April — 23:59 10 June (if the same year (current))
-  /// 00:00–23:59 10 June (if one month and year)
+  /// 00:00 1 April – 23:59 10 April (if the same month and year)
+  /// 00:00–23:59 10 June (if one day)
   String? _formatSchedule(DateTime? from, DateTime? to, String currentLang, AppLocalizations l10n) {
     final tf = DateFormat('HH:mm', currentLang);
     final dmf = DateFormat('d MMMM', currentLang);
@@ -152,6 +178,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
     if (from != null && to != null) {
       final showYear = from.year != to.year;
       final showMonth = from.month != to.month;
+      final sameDay = DateUtils.isSameDay(from, to);
 
       final fromTime = tf.format(from);
       final fromMonth = dmf.format(from);
@@ -165,6 +192,8 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
         return '$fromTime $fromMonth $fromYear – $toTime $toMonth $toYear';
       } else {
         if (showMonth) {
+          return '$fromTime $fromMonth – $toTime $toMonth';
+        } else if (!sameDay) {
           return '$fromTime $fromMonth – $toTime $toMonth';
         } else {
           return '$fromTime–$toTime $fromMonth';
@@ -180,7 +209,13 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   }
 
   Future<void> _onClose() async {
-    await removeSelection();
-    context.router.pop();
+    if (_isClosing) {
+      return;
+    }
+    _isClosing = true;
+    await removeSelection(_currentRoadEventState.id);
+    if (mounted) {
+      context.router.pop();
+    }
   }
 }
