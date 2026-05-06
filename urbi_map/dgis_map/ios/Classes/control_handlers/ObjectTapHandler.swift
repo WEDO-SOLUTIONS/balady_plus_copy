@@ -23,6 +23,7 @@ class ObjectTapHandler {
         static let onPolylineTap = "onPolylineTap"
         static let onClusterTap = "onClusterTap"
         static let onMyLocationTap = "onMyLocationTap"
+        static let onMapAreaLongPress = "onMapAreaLongPress"
     }
     
     private struct PhotoData {
@@ -161,6 +162,11 @@ class ObjectTapHandler {
                     eventChannel.success(mapObject.objectAttributes.mapIo(objectInfo.closestMapPoint))
                     return
                 }
+
+                // BSA-3493: long-press landed on empty area (no useful object
+                // metadata). Emit a generic empty-area event so the Flutter
+                // search sheet can exit search mode without affecting POI taps.
+                self.sendMapAreaLongPressEvent(objectInfo.closestMapPoint)
                 return
             case is MyLocationMapObject:
                 guard let myLocation = tappedObject as? MyLocationMapObject else { return }
@@ -1119,6 +1125,14 @@ class ObjectTapHandler {
         }
     }
     
+    private func sendMapAreaLongPressEvent(_ point: GeoPointWithElevation) {
+        eventChannel.success([
+            "event": Events.onMapAreaLongPress,
+            "latitude": point.latitude.value,
+            "longitude": point.longitude.value,
+        ] as [String : Any])
+    }
+
     private func onRoadEventTap(_ event: RoadEventMapObject) {
         switch event.event.type {
         case .roadRestriction:
