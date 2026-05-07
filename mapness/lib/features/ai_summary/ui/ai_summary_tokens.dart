@@ -67,6 +67,7 @@ class AiSummaryTokens {
   static const double transitBadgeBorderRadius = 8;
   // Per-line badge text always white — line backgrounds come from feed.
   static const TextStyle transitBadgeTextStyle = TextStyle(
+    fontFamily: _aiSummaryFont,
     fontSize: 12,
     fontWeight: FontWeight.w700,
     color: Colors.white,
@@ -82,6 +83,8 @@ class AiSummaryTokens {
 
   static AiSummaryPalette paletteFor({required bool isDark}) => isDark ? AiSummaryPalette.dark : AiSummaryPalette.light;
 }
+
+const _aiSummaryFont = 'Golos Text';
 
 /// Theme-dependent colour set for the AI Summary card.
 ///
@@ -136,6 +139,7 @@ class AiSummaryPalette {
     cardShadow: [],
     badgeGradient: AiSummaryTokens.badgeGradientLight,
     badgeTextStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 11,
       fontWeight: FontWeight.w500,
       height: 14 / 11,
@@ -148,8 +152,10 @@ class AiSummaryPalette {
       fontWeight: FontWeight.w600,
       height: 20 / 16,
       color: Color(0xFF111827),
+      fontFamily: _aiSummaryFont,
     ),
     descriptionTextStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 14,
       height: 1.45,
       color: Color(0xFF111827),
@@ -157,22 +163,26 @@ class AiSummaryPalette {
     ratingStarFilled: Color(0xFFF59E0B),
     ratingStarEmpty: Color(0xFFD1D5DB),
     ratingValueStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 14,
       fontWeight: FontWeight.w600,
       height: 20 / 14,
       color: Color(0xFF111827),
     ),
     ratingCountStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 13,
       height: 16 / 13,
       color: Color(0xFF6B7280),
     ),
     transitSectionLabelStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 12,
       fontWeight: FontWeight.w600,
       color: Color(0xFF6B7280),
     ),
     footerTextStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 11,
       color: Color(0xFF9CA3AF),
     ),
@@ -199,6 +209,7 @@ class AiSummaryPalette {
     ],
     badgeGradient: AiSummaryTokens.badgeGradientDark,
     badgeTextStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 11,
       fontWeight: FontWeight.w500,
       height: 14 / 11,
@@ -211,8 +222,10 @@ class AiSummaryPalette {
       fontWeight: FontWeight.w600,
       height: 20 / 16,
       color: Colors.white,
+      fontFamily: _aiSummaryFont,
     ),
     descriptionTextStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 14,
       height: 18 / 14,
       color: Color(0xCCFFFFFF), // white @ 80%
@@ -220,22 +233,26 @@ class AiSummaryPalette {
     ratingStarFilled: Color(0xFFFBBF24),
     ratingStarEmpty: Color(0xFF4B5563),
     ratingValueStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 14,
       fontWeight: FontWeight.w600,
       height: 20 / 14,
       color: Colors.white,
     ),
     ratingCountStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 13,
       height: 16 / 13,
       color: Colors.white,
     ),
     transitSectionLabelStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 12,
       fontWeight: FontWeight.w600,
       color: Color(0xFF9CA3AF),
     ),
     footerTextStyle: TextStyle(
+      fontFamily: _aiSummaryFont,
       fontSize: 11,
       fontWeight: FontWeight.w500,
       height: 14 / 11,
