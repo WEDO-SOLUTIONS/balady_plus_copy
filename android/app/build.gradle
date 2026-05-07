@@ -106,6 +106,7 @@ android {
                     partner: "baladyappuat",
                     'appAuthRedirectScheme': 'com.balady',
             ]
+            versionCode: (flutterVersionCode.toInteger()) + 105637
 //            versionNameSuffix ".stg"
 //            applicationIdSuffix ".stg"
 //            applicationId  "com.balady.balady_app"
@@ -125,6 +126,7 @@ android {
                     partner: "baladyappuat",
                     'appAuthRedirectScheme': 'com.balady',
             ]
+            versionCode:  (flutterVersionCode.toInteger()) + 105637
         }
     }
 
