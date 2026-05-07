@@ -102,7 +102,7 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
             height: MediaQuery.of(context).viewPadding.bottom,
           ),
         ),
-        const SafeArea(child: AutoRouter()),
+        const SafeArea(top: false, child: AutoRouter()),
       ],
     );
   }
@@ -118,7 +118,6 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
     ToastOverlay.of(context).show(
       title: context.l10n.darkModeToastMessage,
-      displayDuration: const Duration(seconds: 10),
       isDismissible: true,
       actions: [
         ToastAction(
