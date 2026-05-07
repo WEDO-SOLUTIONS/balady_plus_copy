@@ -82,7 +82,7 @@ class RoadEventTapEvent extends TapEvent {
   final String title;
   final String description;
   final DateTime? startTime;
-  final DateTime finishTime;
+  final DateTime? finishTime;
   final LatLng latLng;
 }
 
