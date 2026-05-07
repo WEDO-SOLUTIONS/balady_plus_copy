@@ -29,9 +29,14 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
     this.sorting,
   }) : preferences = null;
 
+  /// [resolvedCity] is the BRD-resolved fallback used when the user has no
+  /// preference cities configured. It is computed by
+  /// `byPreferenceCityResolverProvider` per the priority chain
+  /// `Preference City → Current Location City → Riyadh` (BRD US-01,
+  /// Jira BALADY-188).
   OffersChunkedAsyncIterable.byPrefs({
     required this.saudiPassRepository,
-    required City cityByLocation,
+    required City resolvedCity,
     required Preferences this.preferences,
     required this.mapPoint,
   })  : recommendedTypes = preferences.recommendedTypes.toSet(),
@@ -40,7 +45,7 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
         favorites = null,
         sorting = null,
         cities = {
-          if (preferences.cities.isEmpty) cityByLocation,
+          if (preferences.cities.isEmpty) resolvedCity,
           if (preferences.cities.isNotEmpty) ...preferences.cities,
         };
 

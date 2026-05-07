@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/features/saudi_pass/constants/saudi_pass_constants.dart';
 import 'package:mapness/features/saudi_pass/repo/geocoder_data.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -16,24 +17,22 @@ class _SaudiPassCityByLocationRiverpod extends _$SaudiPassCityByLocationRiverpod
   Future<String> build() async {
     final Position? position = ref.read(locationProvider);
 
-    const riyadhId = '70030076560739975';
-
     if (position == null) {
-      return riyadhId;
+      return kRiyadhCityId;
     }
 
     try {
       final geocoderData = await _admDivCityByPosition((latitude: position.latitude, longitude: position.longitude));
 
       if (geocoderData.result.items.isEmpty) {
-        return riyadhId;
+        return kRiyadhCityId;
       }
 
       final item = geocoderData.result.items.first;
 
       return item.id;
     } on Object {
-      return riyadhId;
+      return kRiyadhCityId;
     }
   }
 

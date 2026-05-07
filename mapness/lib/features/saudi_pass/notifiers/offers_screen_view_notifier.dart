@@ -23,6 +23,7 @@ import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
+import 'package:mapness/features/saudi_pass/services/city_resolver/by_preference_city_resolver_provider.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -113,13 +114,16 @@ class OffersScreenViewNotifier extends OffersViewNotifier
   Future<PrefsOffersViewNotifier> createPrefsOffersViewNotifier() async {
     final saudiPassRepository = await this.saudiPassRepository;
     final preferences = await saudiPassRepository.getPreferences();
-    final cityByLocation = await this.cityByLocation();
+    // BRD US-01 (BALADY-188): city resolution chain Preference → Location → Riyadh
+    // is centralized in `byPreferenceCityResolverProvider`. Do not reimplement
+    // the priority chain here.
+    final resolution = await ref.read(byPreferenceCityResolverProvider.future);
     final controller = await ref.read(dgisControllerProvider.future);
     final cameraPosition = await controller.getCameraPosition();
     return PrefsOffersViewNotifier(
       saudiPassRepository,
       cameraPosition.point,
-      cityByLocation,
+      resolution.city,
       ref,
       preferences,
     );

@@ -1,10 +1,15 @@
 part of 'offers_screen_view_notifier.dart';
 
 class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView {
-  PrefsOffersViewNotifier(this.saudiPassRepository, this.point, this.cityByLocation, this.ref, this.preferences);
+  PrefsOffersViewNotifier(this.saudiPassRepository, this.point, this.resolvedCity, this.ref, this.preferences);
 
   final SaudiPassRepository saudiPassRepository;
-  final City cityByLocation;
+
+  /// City resolved per BRD US-01 priority chain
+  /// (`Preference City → Current Location City → Riyadh`). Computed by
+  /// `byPreferenceCityResolverProvider`. Used as the fallback when the user
+  /// has no preference cities configured.
+  final City resolvedCity;
   final Ref ref;
   final GeoPointMessage point;
   Preferences preferences;
@@ -38,7 +43,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
     final chunked = OffersChunkedAsyncIterable.byPrefs(
       saudiPassRepository: saudiPassRepository,
       preferences: preferences,
-      cityByLocation: cityByLocation,
+      resolvedCity: resolvedCity,
       mapPoint: point,
     );
 
@@ -51,7 +56,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
   }
 
   @override
-  String get cityTitle => (preferences.cities.firstOrNull ?? cityByLocation).name;
+  String get cityTitle => (preferences.cities.firstOrNull ?? resolvedCity).name;
 
   @override
   int get types => preferences.recommendedTypes.length;
