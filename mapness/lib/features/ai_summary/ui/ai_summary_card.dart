@@ -2,10 +2,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/ai_summary/domain/ai_summary.dart';
-import 'package:mapness/features/ai_summary/ui/ai_summary_strings.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_tokens.dart';
 import 'package:mapness/features/ai_summary/ui/widgets/ai_summary_rating_bar.dart';
 import 'package:mapness/features/ai_summary/ui/widgets/ai_summary_transit_badges.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:shimmer/shimmer.dart';
@@ -50,7 +50,7 @@ class AiSummaryCard extends ConsumerWidget {
         // boxShadow: palette.cardShadow,
       ),
       child: _isSkeleton
-          ? _SkeletonBody(language: language, palette: palette)
+          ? _SkeletonBody(palette: palette)
           : _DataBody(summary: summary!, language: language, palette: palette),
     );
   }
@@ -65,14 +65,13 @@ class _DataBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strings = AiSummaryStrings(language);
     final hasRating = summary.rating != null && summary.reviewCount != null;
     final hasTransit = summary.transitLines != null && summary.transitLines!.isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Header(strings: strings, palette: palette),
+        _Header(palette: palette),
         Padding(
           padding: AiSummaryTokens.descriptionPadding,
           child: Text(summary.description, style: palette.descriptionTextStyle),
@@ -83,7 +82,6 @@ class _DataBody extends StatelessWidget {
             child: AiSummaryRatingBar(
               rating: summary.rating!,
               reviewCount: summary.reviewCount!,
-              language: language,
               palette: palette,
             ),
           ),
@@ -98,7 +96,7 @@ class _DataBody extends StatelessWidget {
           ),
         Padding(
           padding: AiSummaryTokens.footerPadding,
-          child: Text(strings.poweredBy, style: palette.footerTextStyle),
+          child: Text(context.l10n.aiSummaryPoweredBy, style: palette.footerTextStyle),
         ),
       ],
     );
@@ -106,15 +104,14 @@ class _DataBody extends StatelessWidget {
 }
 
 class _Header extends StatelessWidget {
-  final AiSummaryStrings strings;
   final AiSummaryPalette palette;
 
-  const _Header({required this.strings, required this.palette});
+  const _Header({required this.palette});
 
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Text(strings.label, style: palette.labelTextStyle),
+      Text(context.l10n.aiSummaryLabel, style: palette.labelTextStyle),
       const SizedBox(width: AiSummaryTokens.headerSpacing),
       Container(
         padding: AiSummaryTokens.badgePadding,
@@ -131,7 +128,7 @@ class _Header extends StatelessWidget {
               color: palette.sparkleColor,
             ),
             const SizedBox(width: AiSummaryTokens.badgeIconToTextSpacing),
-            Text(strings.baladyBadge, style: palette.badgeTextStyle),
+            Text(context.l10n.aiSummaryBaladyBadge, style: palette.badgeTextStyle),
           ],
         ),
       ),
@@ -140,43 +137,38 @@ class _Header extends StatelessWidget {
 }
 
 class _SkeletonBody extends StatelessWidget {
-  final Language language;
   final AiSummaryPalette palette;
 
-  const _SkeletonBody({required this.language, required this.palette});
+  const _SkeletonBody({required this.palette});
 
   @override
-  Widget build(BuildContext context) {
-    // Header is rendered statically outside the shimmer wrapper —
-    // only the description placeholders animate while loading.
-    final strings = AiSummaryStrings(language);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _Header(strings: strings, palette: palette),
-        Shimmer.fromColors(
-          baseColor: palette.shimmerBase,
-          highlightColor: palette.shimmerHighlight,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: AiSummaryTokens.skeletonLineGap * 1.5),
-              _SkeletonLine(widthFactor: 1.0, color: palette.shimmerBase),
-              const SizedBox(height: AiSummaryTokens.skeletonLineGap),
-              _SkeletonLine(widthFactor: 0.96, color: palette.shimmerBase),
-              const SizedBox(height: AiSummaryTokens.skeletonLineGap),
-              _SkeletonLine(widthFactor: 0.88, color: palette.shimmerBase),
-              const SizedBox(height: AiSummaryTokens.skeletonLineGap),
-              _SkeletonLine(widthFactor: 0.6, color: palette.shimmerBase),
-              const SizedBox(height: AiSummaryTokens.skeletonLineGap * 2),
-              _SkeletonLine(widthFactor: 0.45, height: 14, color: palette.shimmerBase),
-            ],
-          ),
+  // Header is rendered statically outside the shimmer wrapper —
+  // only the description placeholders animate while loading.
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      _Header(palette: palette),
+      Shimmer.fromColors(
+        baseColor: palette.shimmerBase,
+        highlightColor: palette.shimmerHighlight,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: AiSummaryTokens.skeletonLineGap * 1.5),
+            _SkeletonLine(widthFactor: 1.0, color: palette.shimmerBase),
+            const SizedBox(height: AiSummaryTokens.skeletonLineGap),
+            _SkeletonLine(widthFactor: 0.96, color: palette.shimmerBase),
+            const SizedBox(height: AiSummaryTokens.skeletonLineGap),
+            _SkeletonLine(widthFactor: 0.88, color: palette.shimmerBase),
+            const SizedBox(height: AiSummaryTokens.skeletonLineGap),
+            _SkeletonLine(widthFactor: 0.6, color: palette.shimmerBase),
+            const SizedBox(height: AiSummaryTokens.skeletonLineGap * 2),
+            _SkeletonLine(widthFactor: 0.45, height: 14, color: palette.shimmerBase),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class _SkeletonLine extends StatelessWidget {
