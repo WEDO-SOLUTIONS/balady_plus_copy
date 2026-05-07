@@ -11,13 +11,16 @@ class Highlight extends _$Highlight {
   List<DgisObjectIdMessage> build() => [];
 
   Future<void> addHighlight(DgisObjectIdMessage objectId) async {
-    if (!_containsObjectWithId(objectId.entranceId)) {
+    if (!_containsObject(objectId)) {
       state = [...state, objectId];
       await ref.read(dgisControllerProvider).value?.setHighlighted(state);
     }
   }
 
-  bool _containsObjectWithId(int objectId) => state.any((element) => element.entranceId == objectId);
+  // BALADY-21: road-event markers share entranceId == 0, so de-dup on the full
+  // (objectId, entranceId) pair to allow switching between adjacent closures.
+  bool _containsObject(DgisObjectIdMessage id) =>
+      state.any((element) => element.objectId == id.objectId && element.entranceId == id.entranceId);
 
   Future<void> removeHighlight(DgisObjectIdMessage objectId) async {
     state = state.whereNot((element) => element == objectId).toList();

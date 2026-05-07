@@ -166,6 +166,12 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
     );
   }
 
+  /// BALADY-21: SDK reports inclusive seconds (HH:59:59) for bounds the data
+  /// actually stores as exclusive (HH+1):00:00. Round up so the displayed
+  /// minute matches the source data (5:00 PM, not 4:59 PM).
+  DateTime _normalizeBoundary(DateTime dt) =>
+      dt.second >= 59 ? dt.add(const Duration(seconds: 1)) : dt;
+
   /// Date formats:
   /// 00:00 1 April 2025 — 23:59 10 June 2026 (if different years)
   /// 00:00 1 April — 23:59 10 June (if the same year (current))
@@ -175,6 +181,8 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
     final tf = DateFormat('HH:mm', currentLang);
     final dmf = DateFormat('d MMMM', currentLang);
     final yf = DateFormat('yyyy', currentLang);
+    if (from != null) from = _normalizeBoundary(from);
+    if (to != null) to = _normalizeBoundary(to);
     if (from != null && to != null) {
       final showYear = from.year != to.year;
       final showMonth = from.month != to.month;
