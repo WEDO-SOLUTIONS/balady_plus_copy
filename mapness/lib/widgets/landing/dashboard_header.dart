@@ -14,11 +14,11 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -169,7 +169,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
     final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final headerBackgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
-    final headerHintColor = themeConfig.searchHintColor ?? context.colors.backgroundSurface2;
+    final headerHintColor = themeConfig.searchHintColor ?? context.colors.foregroundSoft;
 
     return Container(
       width: double.infinity,

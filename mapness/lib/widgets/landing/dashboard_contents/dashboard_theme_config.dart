@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
-
 import 'package:mapness/entities/city_event/city_event.dart';
-import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 
 typedef ImageProviderBuilder = ImageProvider Function();
 
@@ -58,7 +55,6 @@ DashboardThemeConfig dashboardThemeConfigFor(
           Color(0xff00343A),
         ],
         exploreBackgroundImageBuilder: () => Assets.images.backgroundOrnamentSaudiday.provider(),
-        backgroundColor: null,
       );
 
     case SpecialThemeMode.mekkahBase:
@@ -109,8 +105,6 @@ DashboardThemeConfig dashboardThemeConfigFor(
           Colors.transparent,
           Colors.transparent,
         ],
-        exploreBackgroundImageBuilder: null,
-        backgroundColor: null,
       );
     case SpecialThemeMode.foundationDay:
       return DashboardThemeConfig(
@@ -124,8 +118,6 @@ DashboardThemeConfig dashboardThemeConfigFor(
           Colors.transparent,
           Colors.transparent,
         ],
-        exploreBackgroundImageBuilder: null,
-        backgroundColor: null,
       );
   }
 }
