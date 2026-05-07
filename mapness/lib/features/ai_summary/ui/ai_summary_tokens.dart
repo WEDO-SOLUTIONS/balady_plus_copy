@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 
 /// Visual design tokens for the AI Summary POI card section.
 ///
@@ -51,10 +52,11 @@ class AiSummaryTokens {
   static const double badgeBorderRadius = 6;
 
   // --- Description body text ---
-  static const EdgeInsets descriptionPadding = EdgeInsets.only(top: 12);
+  // Figma uses a single column gap of 10px between every section (1777:23869 / 1777:23836).
+  static const EdgeInsets descriptionPadding = EdgeInsets.only(top: 10);
 
   // --- Rating bar ---
-  static const EdgeInsets ratingPadding = EdgeInsets.only(top: 12);
+  static const EdgeInsets ratingPadding = EdgeInsets.only(top: 10);
   static const double ratingStarSize = 16;
   static const double ratingStarSpacing = 4;
   static const double ratingStarToValueSpacing = 6;
@@ -74,7 +76,7 @@ class AiSummaryTokens {
   );
 
   // --- Footer: "Powered by Balady AI · Based on verified sources" ---
-  static const EdgeInsets footerPadding = EdgeInsets.only(top: 14);
+  static const EdgeInsets footerPadding = EdgeInsets.only(top: 10);
 
   // --- Skeleton shimmer geometry ---
   static const double skeletonLineHeight = 12;
@@ -133,12 +135,12 @@ class AiSummaryPalette {
     required this.shimmerHighlight,
   });
 
-  static const AiSummaryPalette light = AiSummaryPalette(
-    cardBackground: Color(0xFFF3F2FB),
-    cardBorder: Color(0xFFE6E3F5),
-    cardShadow: [],
+  static final AiSummaryPalette light = AiSummaryPalette(
+    cardBackground: MakkahPoiConstants.headerBackground,
+    cardBorder: Colors.transparent,
+    cardShadow: const [],
     badgeGradient: AiSummaryTokens.badgeGradientLight,
-    badgeTextStyle: TextStyle(
+    badgeTextStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 11,
       fontWeight: FontWeight.w500,
@@ -146,61 +148,62 @@ class AiSummaryPalette {
       color: Color(0xFF9D6808),
     ),
     // Dark amber on the gold gradient — matches Figma 1777:23840 icon tint.
-    sparkleColor: Color(0xFF9D6808),
-    labelTextStyle: TextStyle(
+    sparkleColor: const Color(0xFF9D6808),
+    labelTextStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       height: 20 / 16,
-      color: Color(0xFF111827),
+      color: MakkahPoiConstants.primaryTextColor,
       fontFamily: _aiSummaryFont,
     ),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
-      height: 1.45,
-      color: Color(0xFF111827),
+      height: 18 / 14,
+      color: MakkahPoiConstants.primaryTextColor.withOpacity(0.8),
     ),
-    ratingStarFilled: Color(0xFFF59E0B),
-    ratingStarEmpty: Color(0xFFD1D5DB),
-    ratingValueStyle: TextStyle(
+    ratingStarFilled: const Color(0xFFF59E0B),
+    ratingStarEmpty: const Color(0xFFD1D5DB),
+    ratingValueStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
       fontWeight: FontWeight.w600,
       height: 20 / 14,
-      color: Color(0xFF111827),
+      color: MakkahPoiConstants.primaryTextColor,
     ),
-    ratingCountStyle: TextStyle(
+    ratingCountStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 13,
       height: 16 / 13,
-      color: Color(0xFF6B7280),
+      color: MakkahPoiConstants.closeButtonIcon,
     ),
-    transitSectionLabelStyle: TextStyle(
+    transitSectionLabelStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 12,
       fontWeight: FontWeight.w600,
-      color: Color(0xFF6B7280),
+      color: MakkahPoiConstants.closeButtonIcon,
     ),
-    footerTextStyle: TextStyle(
+    footerTextStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 11,
-      color: Color(0xFF9CA3AF),
+      fontWeight: FontWeight.w500,
+      height: 14 / 11,
+      color: MakkahPoiConstants.closeButtonIcon,
     ),
-    shimmerBase: Color(0xFFE3E3E3),
-    shimmerHighlight: Color(0xFFF5F5F5),
+    shimmerBase: const Color(0xFFE3E3E3),
+    shimmerHighlight: const Color(0xFFF5F5F5),
   );
 
-  static const AiSummaryPalette dark = AiSummaryPalette(
-    // Matches `MakkahPoiConstants.darkSunken` — the same surface used
-    // by the surrounding "About", fact-tile and warning containers in
-    // the Makkah-Dark POI sheet.
-    cardBackground: Color(0xFF00141C),
+  static final AiSummaryPalette dark = AiSummaryPalette(
+    // Same surface as the surrounding "About", fact-tile and warning containers
+    // in the Makkah-Dark POI sheet.
+    cardBackground: MakkahPoiConstants.darkSunken,
     // No visible outline in the Makkah-Dark spec — keep the field
     // present so the palette shape is symmetrical with the light variant.
     cardBorder: Colors.transparent,
     // Mirrors `_MakkahContentCard` (poi_card_content_info.dart:330) so the
     // AI summary card sits at the same elevation as its peers in the sheet.
-    cardShadow: [
+    cardShadow: const [
       BoxShadow(
         blurRadius: 12,
         offset: Offset(0, 4),
@@ -208,57 +211,58 @@ class AiSummaryPalette {
       ),
     ],
     badgeGradient: AiSummaryTokens.badgeGradientDark,
+    // Figma applies opacity 0.8 to the badge contents (sparkle + "Balady AI")
+    // via the `subtitleExtra1` wrapper — node 1777:23874.
     badgeTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 11,
       fontWeight: FontWeight.w500,
       height: 14 / 11,
-      color: Colors.white,
+      color: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
     ),
-    // White on the teal gradient.
-    sparkleColor: Colors.white,
-    labelTextStyle: TextStyle(
+    sparkleColor: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
+    labelTextStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       height: 20 / 16,
-      color: Colors.white,
+      color: MakkahPoiConstants.darkPrimaryTextColor,
       fontFamily: _aiSummaryFont,
     ),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
       height: 18 / 14,
-      color: Color(0xCCFFFFFF), // white @ 80%
+      color: MakkahPoiConstants.darkSecondaryTextColor, // white @ 80%
     ),
-    ratingStarFilled: Color(0xFFFBBF24),
-    ratingStarEmpty: Color(0xFF4B5563),
-    ratingValueStyle: TextStyle(
+    ratingStarFilled: const Color(0xFFFBBF24),
+    ratingStarEmpty: const Color(0xFF4B5563),
+    ratingValueStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
       fontWeight: FontWeight.w600,
       height: 20 / 14,
-      color: Colors.white,
+      color: MakkahPoiConstants.darkPrimaryTextColor,
     ),
-    ratingCountStyle: TextStyle(
+    ratingCountStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 13,
       height: 16 / 13,
-      color: Colors.white,
+      color: MakkahPoiConstants.darkPrimaryTextColor,
     ),
-    transitSectionLabelStyle: TextStyle(
+    transitSectionLabelStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 12,
       fontWeight: FontWeight.w600,
       color: Color(0xFF9CA3AF),
     ),
-    footerTextStyle: TextStyle(
+    footerTextStyle: const TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 11,
       fontWeight: FontWeight.w500,
       height: 14 / 11,
       color: Color(0x99FFFFFF), // white @ 60%
     ),
-    shimmerBase: Color(0xFF2C3938),
-    shimmerHighlight: Color(0xFF3D4D4B),
+    shimmerBase: const Color(0xFF2C3938),
+    shimmerHighlight: const Color(0xFF3D4D4B),
   );
 }
