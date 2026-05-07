@@ -158,9 +158,9 @@ class $AssetsImagesGen {
   AssetGenImage get gaussianSplattingEntryPointLightAr =>
       const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_ar.png');
 
-  /// File path: assets/images/gaussian_splatting_entry_point_ligth_en.png
-  AssetGenImage get gaussianSplattingEntryPointLigthEn =>
-      const AssetGenImage('assets/images/gaussian_splatting_entry_point_ligth_en.png');
+  /// File path: assets/images/gaussian_splatting_entry_point_light_en.png
+  AssetGenImage get gaussianSplattingEntryPointLightEn =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_en.png');
 
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
@@ -281,7 +281,7 @@ class $AssetsImagesGen {
     gaussianSplattingEntryPointDarkAr,
     gaussianSplattingEntryPointDarkEn,
     gaussianSplattingEntryPointLightAr,
-    gaussianSplattingEntryPointLigthEn,
+    gaussianSplattingEntryPointLightEn,
     icArrowFeedback,
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,

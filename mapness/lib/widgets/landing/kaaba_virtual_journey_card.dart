@@ -22,7 +22,7 @@ class KaabaVirtualJourneyCard extends ConsumerWidget {
       (true, Language.arabic) => Assets.images.gaussianSplattingEntryPointDarkAr,
       (true, Language.english) => Assets.images.gaussianSplattingEntryPointDarkEn,
       (false, Language.arabic) => Assets.images.gaussianSplattingEntryPointLightAr,
-      (false, Language.english) => Assets.images.gaussianSplattingEntryPointLigthEn,
+      (false, Language.english) => Assets.images.gaussianSplattingEntryPointLightEn,
     };
 
     return GaussianSplattingEntryPointCard(
