@@ -32,13 +32,28 @@ typedef CityResolution = ({City city, CityResolutionSource source});
 /// returns `String?`. Out of US-01 scope.
 @riverpod
 Future<CityResolution> byPreferenceCityResolver(Ref ref) async {
-  final repository = await ref.read(saudiPassRepositoryProvider.future);
+  // Capture all provider Futures synchronously, before any await. Under
+  // autoDispose, this provider can be disposed mid-flight (consumer goes
+  // away, or a transitive dependency invalidates this build). Any
+  // `ref.read(...)` after an `await` would then throw
+  // "Cannot use the Ref ... after it has been disposed". The Futures
+  // captured here are independent of our `ref` mount state.
+  final repositoryFuture = ref.read(saudiPassRepositoryProvider.future);
+  final preferencesFuture = CommonProperties.isLoggedIn
+      ? ref.read(getProfilePreferencesProvider.future)
+      : null;
+  final servicesEnabledFuture =
+      ref.read(locationServicesEnabledProvider.future);
+  final locationCityIdFuture =
+      ref.read(saudiPassCityIdByLocationProvider.future);
+
+  final repository = await repositoryFuture;
   final lookups = await repository.getAllLookups();
 
   // 1) Preference City.
-  if (CommonProperties.isLoggedIn) {
+  if (preferencesFuture != null) {
     try {
-      final preferences = await ref.read(getProfilePreferencesProvider.future);
+      final preferences = await preferencesFuture;
       final preferenceCityId = preferences.cities.firstOrNull?.id;
       if (preferenceCityId != null) {
         final preferenceCity = lookups.cities
@@ -57,10 +72,10 @@ Future<CityResolution> byPreferenceCityResolver(Ref ref) async {
   }
 
   // 2) Current Location City.
-  final servicesEnabled = await ref.read(locationServicesEnabledProvider.future);
+  final servicesEnabled = await servicesEnabledFuture;
   if (servicesEnabled) {
     try {
-      final locationCityId = await ref.read(saudiPassCityIdByLocationProvider.future);
+      final locationCityId = await locationCityIdFuture;
       // See class-level ASSUMPTION: Riyadh from this provider is always
       // attributed as fallback for the resolution source.
       if (locationCityId != kRiyadhCityId) {
