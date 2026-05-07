@@ -110,6 +110,7 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: context.colors.backgroundSurface4,
+    resizeToAvoidBottomInset: false,
     body: Stack(
       children: [
         WebViewWidget(controller: _controller),
