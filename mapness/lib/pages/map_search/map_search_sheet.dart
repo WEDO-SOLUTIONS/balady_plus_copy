@@ -32,6 +32,7 @@ import 'package:mapness/shared/providers/analytic/models/extensions/search_type_
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -102,10 +103,28 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         ],
       ),
       stateMapper: const LandingStateMapper(),
+      // BE-153: animation how in Google Maps
+      durationMultiplier: 0.0,
+      forceMultiplier: 100.0,
+      initialOpenCurve: Curves.linear,
+      mainCurve: Curves.linear,
     );
     _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
+    // BSA-3493 (Option 2): subscribe to native empty-area long-press events.
+    // Only emitted when the SDK's long-press lands on empty map area
+    // (not a POI marker), so POI long-press still opens the POI card.
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+      final controller = await ref.read(dgisControllerProvider.future);
+      if (!mounted) return;
+      _streamSubscription = controller.objectTapEvents.listen((event) {
+        if (event is MapAreaLongPressEvent) {
+          _onMapAreaLongPress();
+        }
+      });
+    });
   }
 
   void _onSheetChanged() {
@@ -206,12 +225,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onLongPress: _onMapAreaLongPress,
-            ),
-          ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(

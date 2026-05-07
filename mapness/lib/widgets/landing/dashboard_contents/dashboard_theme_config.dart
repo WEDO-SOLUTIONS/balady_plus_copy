@@ -21,6 +21,7 @@ class DashboardThemeConfig {
     this.backgroundColor,
     this.exploreBackgroundImageBuilder,
     this.imageSizeCalculator,
+    this.searchHintColor,
   });
 
   final bool useTopHeaderOffset;
@@ -34,9 +35,16 @@ class DashboardThemeConfig {
   final ImageProviderBuilder? exploreBackgroundImageBuilder;
   final Color? backgroundColor;
   final ImageSizeCalculator? imageSizeCalculator;
+
+  final Color? searchHintColor;
 }
 
-DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventType? activeEvent) {
+DashboardThemeConfig dashboardThemeConfigFor(
+  SpecialThemeMode mode,
+  CityEventType? activeEvent, {
+  bool isDark = false,
+}) {
+  debugPrint('[DarkThemeDebug] dashboardThemeConfigFor mode=$mode isDark=$isDark');
   switch (mode) {
     case SpecialThemeMode.nationalDay:
       return DashboardThemeConfig(
@@ -58,14 +66,18 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
         useTopHeaderOffset: true,
         offsetOutsideWidgetByTopHeader: true,
         feedbackBannerAssetPath: Assets.images.feedbackDashboard.keyName,
-        feedbackBannerGradient: const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
+        feedbackBannerGradient: isDark
+            ? const [Color(0xFF14706D), Color(0xFF0D4F4B)]
+            : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
-        exploreBackgroundGradient: const [
-          Colors.transparent,
-          Colors.transparent,
-        ],
-        exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
-        backgroundColor: const Color(0xFFFAF5EE),
+        exploreBackgroundGradient: isDark
+            ? const [Colors.transparent, Color(0xFF31CDC2)]
+            : const [Colors.transparent, Color(0xFFD19D3F)],
+        exploreBackgroundImageBuilder: isDark
+            ? null
+            : () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
+        backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
+        searchHintColor: isDark ? const Color.fromRGBO(255, 255, 255, 0.8 * 255) : null,
       );
 
     case SpecialThemeMode.ramadan:
@@ -73,14 +85,17 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
         useTopHeaderOffset: true,
         offsetOutsideWidgetByTopHeader: true,
         feedbackBannerAssetPath: Assets.images.feedbackDashboard.keyName,
-        feedbackBannerGradient: const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
+        feedbackBannerGradient: isDark
+            ? const [Color(0xFF14706D), Color(0xFF0D4F4B)]
+            : const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
         useThemedExploreBackground: true,
-        exploreBackgroundGradient: const [
-          Colors.transparent,
-          Colors.transparent,
-        ],
-        exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
-        backgroundColor: const Color(0xFFFAF5EE),
+        exploreBackgroundGradient: isDark
+            ? const [Colors.transparent, Color(0xFF00141C)]
+            : const [Colors.transparent, Colors.transparent],
+        exploreBackgroundImageBuilder: isDark
+            ? null
+            : () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
+        backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
       );
 
     case SpecialThemeMode.base:

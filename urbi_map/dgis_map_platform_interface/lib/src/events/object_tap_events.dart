@@ -165,6 +165,16 @@ class IoTapEvent extends TapEvent {
   }
 }
 
+/// Long-press on empty map area (no POI / road / parcel hit). Used by the
+/// search sheet to exit search mode without breaking POI long-press.
+class MapAreaLongPressEvent extends TapEvent {
+  const MapAreaLongPressEvent(this.latLng);
+
+  static const name = "onMapAreaLongPress";
+
+  final LatLng latLng;
+}
+
 /// Tap on Idle layer
 class IdleTapEvent extends TapEvent {
   /// @nodoc
