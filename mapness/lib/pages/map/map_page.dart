@@ -78,42 +78,64 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
       ).notifier,
     );
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
-          onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
-          child: DgisMap(
-            key: ValueKey(_keyIndex),
-            androidUseExpensive: true,
-            onMapCreated: (controller) async {
-              await dgisController.onMapCreated(controller);
-              Future.delayed(const Duration(seconds: 3), () {
-                if (!mounted) return;
-                ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
-              });
-            },
+    if (Platform.isAndroid) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            child: DgisMap(
+              key: ValueKey(_keyIndex),
+              androidUseExpensive: true,
+              onMapCreated: (controller) async {
+                await dgisController.onMapCreated(controller);
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (!mounted) return;
+                  ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+                });
+              },
+            ),
           ),
-        ),
-        Positioned.fill(
-          top: null,
-          child: Container(
-            color: context.colors.backgroundSurface2,
-            height: MediaQuery.of(context).viewPadding.bottom,
+          Positioned.fill(
+            top: null,
+            child: Container(
+              color: context.colors.backgroundSurface2,
+              height: MediaQuery.of(context).viewPadding.bottom,
+            ),
           ),
-        ),
 
-        if (Platform.isAndroid && MediaQuery.of(context).orientation == Orientation.portrait)
           const SafeArea(
             top: false,
             child: AutoRouter(),
-          )
-        else
+          ),
+        ],
+      );
+    } else {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            child: DgisMap(
+              key: ValueKey(_keyIndex),
+              androidUseExpensive: true,
+              onMapCreated: (controller) async {
+                await dgisController.onMapCreated(controller);
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (!mounted) return;
+                  ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+                });
+              },
+            ),
+          ),
           const AutoRouter(),
-      ],
-    );
+        ],
+      );
+    }
   }
 
   @override
