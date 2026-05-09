@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -98,10 +100,18 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
         Positioned.fill(
           top: null,
           child: Container(
+            color: context.colors.backgroundSurface2,
             height: MediaQuery.of(context).viewPadding.bottom,
           ),
         ),
-        const AutoRouter(),
+
+        if (Platform.isAndroid)
+          const SafeArea(
+            top: false,
+            child: AutoRouter(),
+          )
+        else
+          const AutoRouter(),
       ],
     );
   }
