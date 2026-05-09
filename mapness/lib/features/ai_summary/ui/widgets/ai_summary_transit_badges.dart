@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/ai_summary/domain/transit_line.dart';
 import 'package:mapness/features/ai_summary/ui/_preview_fixtures.dart';
-import 'package:mapness/features/ai_summary/ui/ai_summary_strings.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_tokens.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 /// "Available Lines" section with colored pill-shaped badges
@@ -32,12 +32,10 @@ class AiSummaryTransitBadges extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final strings = AiSummaryStrings(language);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(strings.availableLines, style: palette.transitSectionLabelStyle),
+        Text(context.l10n.aiSummaryAvailableLines, style: palette.transitSectionLabelStyle),
         const SizedBox(height: AiSummaryTokens.transitBadgeGap),
         Wrap(
           spacing: AiSummaryTokens.transitBadgeGap,

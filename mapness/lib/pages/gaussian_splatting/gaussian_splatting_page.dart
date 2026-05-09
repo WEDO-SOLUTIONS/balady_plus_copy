@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -110,6 +111,7 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: context.colors.backgroundSurface4,
+    resizeToAvoidBottomInset: false,
     body: Stack(
       children: [
         WebViewWidget(controller: _controller),
@@ -118,9 +120,9 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
         // balady back button
         SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(left: 24, top: 24),
+            padding: const EdgeInsetsDirectional.only(start: 24, top: 24),
             child: Align(
-              alignment: Alignment.topLeft,
+              alignment: AlignmentDirectional.topStart,
               child: GestureDetector(
                 onTap: () => context.router.maybePop(),
                 child: Container(
@@ -129,25 +131,21 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                     color: Colors.black54,
                     borderRadius: BorderRadius.circular(32),
                   ),
-                  child: const Directionality(
-                    textDirection: TextDirection.ltr,
-                    child: Row(
-                      // textDirection: TextDirection.ltr,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                        SizedBox(width: 4),
-                        Text(
-                          'Balady',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                      const SizedBox(width: 4),
+                      Text(
+                        context.l10n.pilgrimVirtualTourBackButton,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
                         ),
-                        SizedBox(width: 4),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 4),
+                    ],
                   ),
                 ),
               ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/features/ai_summary/ui/ai_summary_strings.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_tokens.dart';
-import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// Star rating + numeric value + review count.
 ///
@@ -16,41 +15,35 @@ import 'package:mapness/shared/providers/app_language.dart';
 class AiSummaryRatingBar extends StatelessWidget {
   final double rating;
   final int reviewCount;
-  final Language language;
   final AiSummaryPalette palette;
 
   const AiSummaryRatingBar({
     required this.rating,
     required this.reviewCount,
-    required this.language,
     required this.palette,
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final strings = AiSummaryStrings(language);
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: _StarRow(rating: rating, palette: palette),
-        ),
-        const SizedBox(width: AiSummaryTokens.ratingStarToValueSpacing),
-        Text(
-          rating.toStringAsFixed(1),
-          style: palette.ratingValueStyle,
-        ),
-        const SizedBox(width: AiSummaryTokens.ratingValueToCountSpacing),
-        Text(
-          '(${strings.reviews(reviewCount)})',
-          style: palette.ratingCountStyle,
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: _StarRow(rating: rating, palette: palette),
+      ),
+      const SizedBox(width: AiSummaryTokens.ratingStarToValueSpacing),
+      Text(
+        rating.toStringAsFixed(1),
+        style: palette.ratingValueStyle,
+      ),
+      const SizedBox(width: AiSummaryTokens.ratingValueToCountSpacing),
+      Text(
+        '(${context.l10n.aiSummaryReviews(reviewCount)})',
+        style: palette.ratingCountStyle,
+      ),
+    ],
+  );
 }
 
 class _StarRow extends StatelessWidget {
