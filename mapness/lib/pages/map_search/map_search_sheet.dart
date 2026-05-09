@@ -70,7 +70,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
   bool _showMoreQuickFilters = false;
 
@@ -107,21 +106,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       initialOpenCurve: Curves.linear,
       mainCurve: Curves.linear,
     );
-    _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  void _onSheetChanged() {
-    if (!mounted) {
-      return;
-    }
-    final newState = _multiStateSheetController.state;
-    if (newState != _sheetState) {
-      setState(() {
-        _sheetState = newState;
-      });
-    }
   }
 
   @override
@@ -146,9 +132,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
-    _multiStateSheetController
-      ..removeListener(_onSheetChanged)
-      ..dispose();
+    _multiStateSheetController.dispose();
     _keyboardVisible.cancel();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -223,7 +207,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
+              safeAreaColor: _showMoreQuickFilters
                   ? switch (searchState) {
                       SearchStateEmpty() ||
                       SearchStateLoading() ||
@@ -282,11 +266,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                   ),
                 ),
               },
-              outside: MapSearchSheetControls(
-                onClose: onClose,
-                currentSize: currentSize,
-                collapsedSize: collapsedHeight,
-                sheetState: _sheetState,
+              outside: ListenableBuilder(
+                listenable: _multiStateSheetController,
+                builder: (context, _) => MapSearchSheetControls(
+                  onClose: onClose,
+                  currentSize: currentSize,
+                  collapsedSize: collapsedHeight,
+                  sheetState: _multiStateSheetController.state,
+                ),
               ),
               sliver: SliverToBoxAdapter(
                 child: MapSearchContent(
