@@ -105,7 +105,7 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
           ),
         ),
 
-        if (Platform.isAndroid)
+        if (Platform.isAndroid && MediaQuery.of(context).orientation == Orientation.portrait)
           const SafeArea(
             top: false,
             child: AutoRouter(),
