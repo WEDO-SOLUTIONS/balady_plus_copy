@@ -32,7 +32,6 @@ import 'package:mapness/shared/providers/analytic/models/extensions/search_type_
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -111,19 +110,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
-    // BSA-3493 (Option 2): subscribe to native empty-area long-press events.
-    // Only emitted when the SDK's long-press lands on empty map area
-    // (not a POI marker), so POI long-press still opens the POI card.
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (!mounted) return;
-      final controller = await ref.read(dgisControllerProvider.future);
-      if (!mounted) return;
-      _streamSubscription = controller.objectTapEvents.listen((event) {
-        if (event is MapAreaLongPressEvent) {
-          _onMapAreaLongPress();
-        }
-      });
-    });
   }
 
   void _onSheetChanged() {
@@ -224,6 +210,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _unfocusSearchField();
+              _collapseBottomSheet();
+            },
+          ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
@@ -433,18 +426,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     context.router.pop();
   }
 
-  void _onMapAreaLongPress() {
-    if (!mounted) {
-      return;
-    }
-    _unfocusSearchField();
-    ref.read(searchProvider(_scope).notifier).clear();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      _removeAllMarkersAndPop();
-    });
+  void _collapseBottomSheet() {
+    _multiStateSheetController.setState(ThreeStateSheet.hidden);
   }
 
   void _setShowMoreQuickFilters(bool value) {

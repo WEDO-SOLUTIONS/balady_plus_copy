@@ -279,8 +279,6 @@ class DgisMapPlugin extends FlutterMapApi {
           return _objectTapEventHandler.onIoTap(map);
         case IdleTapEvent.name:
           return _objectTapEventHandler.onIdleTap(map);
-        case MapAreaLongPressEvent.name:
-          return _objectTapEventHandler.mapAreaLongPressEvent(map);
         case NaviSpeedEvent.name:
           return _naviSpeedEventHandler.handleNavigationEvent(map);
         case NaviDashboardEvent.name:

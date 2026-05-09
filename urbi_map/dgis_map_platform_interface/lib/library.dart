@@ -20,7 +20,6 @@ export 'src/events/object_tap_events.dart'
         TapEvent,
         IdleTapEvent,
         IoTapEvent,
-        MapAreaLongPressEvent,
         DgisObjectId,
         DgisObjectIdMessageExt,
         RoadEventTapEvent;

@@ -161,11 +161,6 @@ class ObjectTapHandler(
                     eventSink.success(attrs.mapIdle(roi.closestMapPoint))
                     return
                 }
-
-                // BSA-3493: long-press on empty area — emit a generic event
-                // so the search sheet can exit search without affecting POI taps.
-                sendMapAreaLongPressEvent(roi.closestMapPoint)
-                return
             }
             is MyLocationMapObject -> {
                 sendDgisMyLocationEvent(roi.closestMapPoint)
@@ -191,11 +186,12 @@ class ObjectTapHandler(
             is RoadEventMapObject -> {
                 onRoadEventTap(tappedObject)
             }
-            else -> {
-                // BSA-3493: any unrecognised long-press object = treat as
-                // empty-area long-press so the search sheet can exit search.
-                sendMapAreaLongPressEvent(roi.closestMapPoint)
-            }
+            else ->
+                    eventSink.error(
+                            "ClassCastException",
+                            "No suitable handler for tapped object: " + tappedObject.javaClass,
+                            null,
+                    )
         }
     }
 
@@ -1025,16 +1021,6 @@ class ObjectTapHandler(
         eventSink.success(mapOf("event" to Events.onMarkerTap.name, "id" to id))
     }
 
-    private fun sendMapAreaLongPressEvent(point: GeoPointWithElevation) {
-        eventSink.success(
-            mapOf(
-                "event" to Events.onMapAreaLongPress.name,
-                "latitude" to point.latitude.value,
-                "longitude" to point.longitude.value,
-            )
-        )
-    }
-
     private fun onRoadEventTap(event: RoadEventMapObject) {
         when (event.event.type) {
             RoadEventType.ROAD_RESTRICTION -> {
@@ -1233,7 +1219,6 @@ private enum class Events {
     onPolylineTap,
     onClusterTap,
     onMyLocationTap,
-    onMapAreaLongPress,
 }
 
 private fun Attributes.mapIo(point: GeoPointWithElevation): Map<String, Any> =
