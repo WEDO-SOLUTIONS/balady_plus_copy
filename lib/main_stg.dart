@@ -12,14 +12,12 @@ import './env.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
-  // Ensure Flutter bindings are initialized
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final themeNotifier = BaladyThemeNotifier();
-
-  await themeNotifier.init();
-
   unhandledExceptionBaladyLogs(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    final themeNotifier = BaladyThemeNotifier();
+    await themeNotifier.init();
+
     await runMapnessApp(EnvType.stg, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
