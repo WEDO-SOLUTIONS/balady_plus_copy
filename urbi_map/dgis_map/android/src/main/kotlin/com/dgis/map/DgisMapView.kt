@@ -75,6 +75,7 @@ class DgisMapView(
                 navigationManager = navigationManager,
                 eventSink = eventSink,
                 map = map!!,
+                appContext = context,
         )
     }
     private val packagesHandler by unsafeLazy {
@@ -527,6 +528,7 @@ class DgisMapView(
                         routeHandler = routeHandler,
                         eventSink = eventSink,
                         sdkContext = sdkContext,
+                        androidContext = context,
                         api = FlutterMapApi(binaryMessenger)
                 )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)

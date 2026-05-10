@@ -25,11 +25,12 @@ extension WorkingHoursStrings on WorkingHours {
         return '${appLocalizations.openUntil} ${closesAt.formatHHmm}';
       case WorkingHoursStatusType.openSoon:
         final remaining = closesIn(now);
+        final prefix = isBreakUpcoming(now) ? appLocalizations.breakIn : appLocalizations.closesIn;
         if (remaining > const Duration(hours: 1)) {
-          return _buildClosesInHoursAndMinutesStatus(remaining, appLocalizations);
+          return _buildRemainingHoursAndMinutesStatus(prefix, remaining, appLocalizations);
         }
         if (remaining.inMinutes > 1) {
-          return '${appLocalizations.closesIn}${remaining.inMinutes} ${appLocalizations.minutes}';
+          return '${prefix.trim()} ${remaining.inMinutes} ${appLocalizations.minutesShort}';
         }
         return appLocalizations.closed;
       case WorkingHoursStatusType.closed:
@@ -41,15 +42,19 @@ extension WorkingHoursStrings on WorkingHours {
     }
   }
 
-  String _buildClosesInHoursAndMinutesStatus(Duration remaining, AppLocalizations appLocalizations) {
+  String _buildRemainingHoursAndMinutesStatus(
+    String prefix,
+    Duration remaining,
+    AppLocalizations appLocalizations,
+  ) {
     final hours = remaining.inHours;
     final minutes = remaining.inMinutes.remainder(60);
 
     if (minutes == 0) {
-      return '${appLocalizations.closesIn}$hours ${appLocalizations.hoursShort}';
+      return '${prefix.trim()} $hours ${appLocalizations.hoursShort}';
     }
 
-    return '${appLocalizations.closesIn}$hours ${appLocalizations.hoursShort} '
+    return '${prefix.trim()} $hours ${appLocalizations.hoursShort} '
         '$minutes ${appLocalizations.minutesShort}';
   }
 
@@ -67,7 +72,8 @@ extension WorkingHoursStrings on WorkingHours {
       value: opensAt,
       appLocalizations: appLocalizations,
     );
-    return '${appLocalizations.closedUntil} $dayPrefix${opensAt.formatHHmm}'.trim();
+
+    return '$dayPrefix${opensAt.formatHHmm}'.trim();
   }
 
   String _dayPrefix({
@@ -76,12 +82,12 @@ extension WorkingHoursStrings on WorkingHours {
     required AppLocalizations appLocalizations,
   }) {
     if (_isSameDate(now, value)) {
-      return '';
+      return '${appLocalizations.closedUntil} ';
     }
     if (_isTomorrowDate(now, value)) {
-      return '${appLocalizations.tomorrow} ';
+      return '${appLocalizations.closedUntilOnly} ${appLocalizations.tomorrow} ';
     }
-    return '${value.weekday.weekDayNameShort(appLocalizations)} ';
+    return '${appLocalizations.closedUntilOnly} ${value.weekday.weekDayNameShort(appLocalizations)} ${appLocalizations.hour} ';
   }
 }
 

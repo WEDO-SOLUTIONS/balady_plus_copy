@@ -1257,17 +1257,52 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
 
     func muteOtherSounds( mute: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
+        // This method is called from Flutter without a duration parameter (Pigeon: `muteOtherSounds(bool)`).
+        // Instead of "mute", we implement a short "duck then restore" behavior:
+        // - mute=true  -> set policy to .duck, then auto-restore to .ignore after a few seconds
+        // - mute=false -> restore immediately and cancel any pending restore
+        //
+        // This reduces other audio volume briefly for guidance, then returns to normal.
+        struct DuckingState {
+            static var restoreWorkItem: DispatchWorkItem?
+            static let duckDurationSeconds: TimeInterval = 3.0
+        }
+
         do {
+            // Cancel any previously scheduled restore to avoid races.
+            DuckingState.restoreWorkItem?.cancel()
+            DuckingState.restoreWorkItem = nil
+
             if mute {
                 try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.duck
-               } else {
-                   try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
-               }
-                completion(Result.success(()))
-           } catch {
-               completion(
-                Result.failure(FlutterError(code: "ERROR_SETTING_AUDIO_POLICY", message: "Failed to set audio focus policy", details: error.localizedDescription)))
-           }
+
+                let workItem = DispatchWorkItem { [weak self] in
+                    guard let self else { return }
+                    do {
+                        try self.sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
+                    } catch {
+                        // Best-effort restore; nothing to return to Flutter at this point.
+                        NSLog("DgisMapView: Failed to restore audio focus policy: %@", error.localizedDescription)
+                    }
+                }
+                DuckingState.restoreWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + DuckingState.duckDurationSeconds, execute: workItem)
+            } else {
+                try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore
+            }
+
+            completion(Result.success(()))
+        } catch {
+            completion(
+                Result.failure(
+                    FlutterError(
+                        code: "ERROR_SETTING_AUDIO_POLICY",
+                        message: "Failed to set audio focus policy",
+                        details: error.localizedDescription
+                    )
+                )
+            )
+        }
     }
     
     func voicePlayWelcome(id: String, completion: @escaping (Result<Void, any Error>) -> Void) {

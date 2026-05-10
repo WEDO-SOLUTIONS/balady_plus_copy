@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_bottom_sheet.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
@@ -38,16 +39,16 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Timer? _searchDebounce;
 
   //! Get mini apps ...
-  Future<void> loadMiniApps({
-    bool showLoading = true,
-    bool forceRefresh = false,
-  }) async {
-
+  Future<void> loadMiniApps({bool showLoading = true, bool forceRefresh = false}) async {
     print("Future<void> loadMiniApps({");
     //! Always block concurrent calls — even forceRefresh must wait until the
     //! current load finishes. This prevents the double-load that happens when
     //! `authenticated` and `unAuthenticatedState` both fire on first open.
-    if (state.isAppsGroupLoading == true || state.isFavLoading == true || state.isUnFavLoading == true || state.isSearching == true || state.isEntryPointsLoading == true) {
+    if (state.isAppsGroupLoading == true ||
+        state.isFavLoading == true ||
+        state.isUnFavLoading == true ||
+        state.isSearching == true ||
+        state.isEntryPointsLoading == true) {
       return;
     }
 
@@ -65,96 +66,115 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         isSearching: false,
         searchResults: const [],
         searchError: null,
-
+        status: BlocStatus.loading,
       ),
     );
 
-    final isLoggedInLifestyle = CommonProperties.isLoggedIn;
-    final isLoggedInMunicipality = CommonProperties.isLoggedInMunicipality;
-    final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality);
+    try {
+      final isLoggedInLifestyle = CommonProperties.isLoggedIn;
+      final isLoggedInMunicipality = CommonProperties.isLoggedInMunicipality;
 
-    result.fold(
-      (e) {
-        emit(
-          state.copyWith(
-            isFavLoading: false,
-            isAppsGroupLoading: false,
-            isEntryPointsLoading: false,
-            favError: e.toString(),
-            entryPointsError: e.toString(),
-          ),
-        );
-      },
-      (final data) async {
-        final delegatorsCubit = sl<DelegatorsCubit>();
+      final result = await getMiniAppsUseCase(
+        isLoggedInLifestyle,
+        isLoggedInMunicipality,
+      ).timeout(const Duration(seconds: 30));
 
-        if (isLoggedInMunicipality) {
-          // Trigger load only if not already loaded or in progress
-          if (delegatorsCubit.state.accountStatus == DelegatorsAccountStatus.initial) {
-            await delegatorsCubit.loadData();
+      await result.fold(
+        (e) async {
+          emit(
+            state.copyWith(
+              isFavLoading: false,
+              isAppsGroupLoading: false,
+              isEntryPointsLoading: false,
+              favError: e.toString(),
+              entryPointsError: e.toString(),
+              status: BlocStatus.failure,
+            ),
+          );
+        },
+        (final data) async {
+          final delegatorsCubit = sl<DelegatorsCubit>();
+
+          if (isLoggedInMunicipality) {
+            // Trigger load only if not already loaded or in progress
+            if (delegatorsCubit.state.accountStatus == DelegatorsAccountStatus.initial) {
+              await delegatorsCubit.loadData();
+            }
           }
-        }
 
-        final userAccountBusiness = delegatorsCubit.state.isUserAccountBusiness;
-        // ---------------------------
-        // ✅ 1) Filter apps (business rules)
-        // ---------------------------
-        final filteredApps = _filterMiniApps(
-          allApps: data.miniApps,
-          isLoggedInLifestyle: isLoggedInLifestyle,
-          isLoggedInMunicipality: isLoggedInMunicipality,
-          isUserAccountBusiness: userAccountBusiness,
-        );
+          final userAccountBusiness = delegatorsCubit.state.isUserAccountBusiness;
+          // ---------------------------
+          // ✅ 1) Filter apps (business rules)
+          // ---------------------------
+          final filteredApps = _filterMiniApps(
+            allApps: data.miniApps,
+            isLoggedInLifestyle: isLoggedInLifestyle,
+            isLoggedInMunicipality: isLoggedInMunicipality,
+            isUserAccountBusiness: userAccountBusiness,
+          );
 
-        final allowedIds = filteredApps.map((e) => e.id).toSet();
+          final allowedIds = filteredApps.map((e) => e.id).toSet();
 
-        // ---------------------------
-        // ✅ 2) Filter groups recursively by allowed apps
-        // (fixes subCategoryGroup + "Other Services" leaking)
-        // ---------------------------
-        final filteredGroups = _filterAppGroups(
-          groups: _filterGroupsRecursivelyByAllowedIds(data.appGroups, allowedIds),
-          isLoggedInMunicipality: isLoggedInMunicipality,
-          isUserAccountBusiness: userAccountBusiness,
-        );
+          // ---------------------------
+          // ✅ 2) Filter groups recursively by allowed apps
+          // (fixes subCategoryGroup + "Other Services" leaking)
+          // ---------------------------
+          final filteredGroups = _filterAppGroups(
+            groups: _filterGroupsRecursivelyByAllowedIds(data.appGroups, allowedIds),
+            isLoggedInMunicipality: isLoggedInMunicipality,
+            isUserAccountBusiness: userAccountBusiness,
+          );
 
-        // ---------------------------
-        // ✅ 3) Filter entry points apps by allowed apps
-        // (fixes business apps appearing in Most Used section)
-        // ---------------------------
-        final filteredEntryPoints = _filterEntryPointsByAllowedIds(data.entryPoints, allowedIds);
+          // ---------------------------
+          // ✅ 3) Filter entry points apps by allowed apps
+          // (fixes business apps appearing in Most Used section)
+          // ---------------------------
+          final filteredEntryPoints = _filterEntryPointsByAllowedIds(data.entryPoints, allowedIds);
 
-        // ---------------------------
-        // ✅ 4) Favorites should be computed from the filtered list
-        // ---------------------------
-        final savedFavIds = await loadFavoriteIds();
-        final appsById = {for (final app in filteredApps) app.id: app};
+          // ---------------------------
+          // ✅ 4) Favorites should be computed from the filtered list
+          // ---------------------------
+          final savedFavIds = await loadFavoriteIds();
+          final appsById = {for (final app in filteredApps) app.id: app};
 
-        final favoriteApps = savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
+          final favoriteApps = savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
 
-        final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-        final unFavoriteApps = filteredApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
+          final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
+          final unFavoriteApps = filteredApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
 
-        // ---------------------------
-        // ✅ 5) Emit ONE consistent state
-        // ---------------------------
-        emit(
-          state.copyWith(
-            allMiniApps: filteredApps,
-            isFavLoading: false,
-            isAppsGroupLoading: false,
-            isEntryPointsLoading: false,
-            favoriteApps: favoriteApps,
-            unFavoriteApps: unFavoriteApps,
-            parentMiniApp: data.parentMiniApp,
-            appGroups: filteredGroups,
-            entryPoints: filteredEntryPoints,
-            favError: null,
-            entryPointsError: null,
-          ),
-        );
-      },
-    );
+          // ---------------------------
+          // ✅ 5) Emit ONE consistent state
+          // ---------------------------
+          emit(
+            state.copyWith(
+              allMiniApps: filteredApps,
+              isFavLoading: false,
+              isAppsGroupLoading: false,
+              isEntryPointsLoading: false,
+              favoriteApps: favoriteApps,
+              unFavoriteApps: unFavoriteApps,
+              parentMiniApp: data.parentMiniApp,
+              appGroups: filteredGroups,
+              entryPoints: filteredEntryPoints,
+              favError: null,
+              entryPointsError: null,
+              status: BlocStatus.success,
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      emit(
+        state.copyWith(
+          isFavLoading: false,
+          isAppsGroupLoading: false,
+          isEntryPointsLoading: false,
+          favError: e.toString(),
+          entryPointsError: e.toString(),
+          status: BlocStatus.failure,
+        ),
+      );
+    }
   }
 
   //! pull to refresh mini apps UI.
@@ -163,10 +183,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     emit(state.copyWith(isRefreshing: true, favError: null, entryPointsError: null, searchError: null));
 
-    await loadMiniApps(
-      showLoading: false,
-      forceRefresh: true,
-    );
+    await loadMiniApps(showLoading: false, forceRefresh: true);
 
     emit(state.copyWith(isRefreshing: false));
   }
@@ -434,7 +451,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       return;
     }
 
-
     await _deepLinkSubscription?.cancel();
 
     _deepLinkSubscription = stream.listen((state) {
@@ -454,7 +470,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void clearSearch() {
     _searchDebounce?.cancel();
-    emit(state.copyWith(searchResults: [], isSearching: false, searchError: null, isAppsGroupLoading: false, isEntryPointsLoading: false, isFavLoading: false, isUnFavLoading: false, isRefreshing: false));
+    emit(
+      state.copyWith(
+        searchResults: [],
+        isSearching: false,
+        searchError: null,
+        isAppsGroupLoading: false,
+        isEntryPointsLoading: false,
+        isFavLoading: false,
+        isUnFavLoading: false,
+        isRefreshing: false,
+      ),
+    );
   }
 
   void setSortType(FilterOptionType? sortType) {
@@ -660,7 +687,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         .whereType<EntryPoints>()
         .toList();
   }
-
 
   MiniApp? getMiniAppByServiceId(String serviceKey) {
     try {

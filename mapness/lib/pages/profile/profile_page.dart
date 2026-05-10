@@ -195,7 +195,13 @@ class ProfilePage extends HookConsumerWidget {
                                       context.router.push(const PrivacyAndTermsOfUseRoute());
                                     },
                                     trailing: trailing,
-                                    leading: SvgPicture.asset('assets/icons/svg/shield-lock.svg'),
+                                    leading: Padding(
+                                      padding: const EdgeInsetsGeometry.directional(start: 2),
+                                      child: SvgPicture.asset(
+                                        'assets/icons/svg/shield-lock.svg',
+                                        color: context.colors.accentDefault,
+                                      ),
+                                    ),
                                     text: ContentRowTextOptions(title: "privacyAndTermsTitle".tr()),
                                   ),
                                 ],

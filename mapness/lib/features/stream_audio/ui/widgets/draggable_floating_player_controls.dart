@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -237,225 +238,227 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
       endPosition.dy.clamp(topBoundary, bottomBoundary),
     );
 
-    _momentumAnimation = Tween<Offset>(
-      begin: _position,
-      end: constrainedEnd,
-    ).animate(CurvedAnimation(
-      parent: _momentumController,
-      curve: Curves.decelerate,
-    ));
+    _momentumAnimation =
+        Tween<Offset>(
+          begin: _position,
+          end: constrainedEnd,
+        ).animate(
+          CurvedAnimation(
+            parent: _momentumController,
+            curve: Curves.decelerate,
+          ),
+        );
 
     _momentumController.forward(from: 0);
   }
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: Listenable.merge([_scaleAnimation, _snapController, _shapeAnimation, _momentumController]),
-        builder: (context, child) {
-          final currentPosition =
-              _snapController.isAnimating && _snapAnimation != null ? _snapAnimation!.value : _position;
+    animation: Listenable.merge([_scaleAnimation, _snapController, _shapeAnimation, _momentumController]),
+    builder: (context, child) {
+      final currentPosition = _snapController.isAnimating && _snapAnimation != null ? _snapAnimation!.value : _position;
 
-          final currentWidth = widgetWidth + (circleSize - widgetWidth) * _shapeAnimation.value;
-          final currentHeight = widgetHeight + (circleSize - widgetHeight) * _shapeAnimation.value;
-          final currentBorderRadius = 12.0 + (circleSize / 2 - 12.0) * _shapeAnimation.value;
+      final currentWidth = widgetWidth + (circleSize - widgetWidth) * _shapeAnimation.value;
+      final currentHeight = widgetHeight + (circleSize - widgetHeight) * _shapeAnimation.value;
+      final currentBorderRadius = 12.0 + (circleSize / 2 - 12.0) * _shapeAnimation.value;
 
-          return Transform.translate(
-            offset: currentPosition,
-            child: Transform.scale(
-              scale: _scaleAnimation.value,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  if (!isCollapsed) {
-                    widget.onTap();
-                  } else {
-                    _expandToCenter();
-                  }
-                },
-                onPanStart: (details) {
-                  _momentumController.stop();
+      return Transform.translate(
+        offset: currentPosition,
+        child: Transform.scale(
+          scale: _scaleAnimation.value,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              if (!isCollapsed) {
+                widget.onTap();
+              } else {
+                _expandToCenter();
+              }
+            },
+            onPanStart: (details) {
+              _momentumController.stop();
 
-                  // Notify parent that dragging started
+              // Notify parent that dragging started
+              widget.onChange(isHolding: true, mustRemove: false);
+
+              setState(() {
+                _isDragging = true;
+                _initialPosition = _position;
+                _dragStartPosition = details.localPosition;
+                _inRemovalZone = false;
+                _openTriggeredThisDrag = false;
+              });
+              _scaleController.forward();
+            },
+            onPanUpdate: (details) {
+              final screenSize = MediaQuery.of(context).size;
+              final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+              final dragDelta = details.localPosition - _dragStartPosition;
+              final newPosition = _initialPosition + dragDelta;
+
+              // Get screen bounds
+              final screenWidth = screenSize.width;
+              final screenHeight = screenSize.height;
+              final topPadding = MediaQuery.of(context).padding.top;
+              final bottomPadding = MediaQuery.of(context).padding.bottom;
+
+              // Calculate boundaries based on current shape
+              final currentWidth = isCollapsed ? circleSize : widgetWidth;
+              final currentHeight = isCollapsed ? circleSize : widgetHeight;
+
+              final leftBoundary = -screenWidth / 2 + currentWidth / 2;
+              final rightBoundary = screenWidth / 2 - currentWidth / 2;
+              final topBoundary = -screenHeight / 2 + currentHeight / 2 + topPadding;
+              final bottomBoundary = screenHeight / 2 - currentHeight / 2 - bottomPadding;
+
+              // Constrain position (but allow going beyond top for removal)
+              final constrainedX = newPosition.dx.clamp(leftBoundary, rightBoundary);
+              final constrainedY = newPosition.dy.clamp(topBoundary, bottomBoundary);
+
+              setState(() {
+                _position = Offset(constrainedX, constrainedY);
+              });
+
+              // Check if dragging to top for removal
+              final distanceFromTop = (constrainedY - topBoundary).abs();
+
+              if (distanceFromTop <= removeThreshold) {
+                // In removal zone - notify parent to show removal UI
+                if (!_inRemovalZone) {
+                  _inRemovalZone = true;
+                  widget.onChange(isHolding: true, mustRemove: true);
+                  HapticFeedback.selectionClick();
+                }
+              } else {
+                // Not in removal zone
+                if (_inRemovalZone) {
+                  _inRemovalZone = false;
                   widget.onChange(isHolding: true, mustRemove: false);
+                }
+              }
 
-                  setState(() {
-                    _isDragging = true;
-                    _initialPosition = _position;
-                    _dragStartPosition = details.localPosition;
-                    _inRemovalZone = false;
-                    _openTriggeredThisDrag = false;
-                  });
-                  _scaleController.forward();
-                },
-                onPanUpdate: (details) {
-                  final screenSize = MediaQuery.of(context).size;
-                  final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-                  final dragDelta = details.localPosition - _dragStartPosition;
-                  final newPosition = _initialPosition + dragDelta;
-
-                  // Get screen bounds
-                  final screenWidth = screenSize.width;
-                  final screenHeight = screenSize.height;
-                  final topPadding = MediaQuery.of(context).padding.top;
-                  final bottomPadding = MediaQuery.of(context).padding.bottom;
-
-                  // Calculate boundaries based on current shape
-                  final currentWidth = isCollapsed ? circleSize : widgetWidth;
-                  final currentHeight = isCollapsed ? circleSize : widgetHeight;
-
-                  final leftBoundary = -screenWidth / 2 + currentWidth / 2;
-                  final rightBoundary = screenWidth / 2 - currentWidth / 2;
-                  final topBoundary = -screenHeight / 2 + currentHeight / 2 + topPadding;
-                  final bottomBoundary = screenHeight / 2 - currentHeight / 2 - bottomPadding;
-
-                  // Constrain position (but allow going beyond top for removal)
-                  final constrainedX = newPosition.dx.clamp(leftBoundary, rightBoundary);
-                  final constrainedY = newPosition.dy.clamp(topBoundary, bottomBoundary);
-
-                  setState(() {
-                    _position = Offset(constrainedX, constrainedY);
-                  });
-
-                  // Check if dragging to top for removal
-                  final distanceFromTop = (constrainedY - topBoundary).abs();
-
-                  if (distanceFromTop <= removeThreshold ) {
-                    // In removal zone - notify parent to show removal UI
-                    if (!_inRemovalZone) {
-                      _inRemovalZone = true;
-                      widget.onChange(isHolding: true, mustRemove: true);
-                      HapticFeedback.selectionClick();
-                    }
-                  } else {
-                    // Not in removal zone
-                    if (_inRemovalZone) {
-                      _inRemovalZone = false;
-                      widget.onChange(isHolding: true, mustRemove: false);
-                    }
-                  }
-
-                  // Check for edge hit during drag (orientation-specific)
-                  final isLandscape = screenWidth > screenHeight;
-                  if (isLandscape) {
-                    if (isRtl) {
-                      // RTL landscape: only open when reaching far LEFT edge
-                      if ((constrainedX - leftBoundary).abs() < 5 &&
-                          constrainedX != newPosition.dx &&
-                          !_openTriggeredThisDrag) {
-                        _openTriggeredThisDrag = true;
-                        widget.onTap();
-                        HapticFeedback.mediumImpact();
-                      }
-                    } else {
-                      // LTR landscape: open when reaching far RIGHT edge
-                      if ((rightBoundary - constrainedX).abs() < 5 && constrainedX != newPosition.dx) {
-                        widget.onTap();
-                        HapticFeedback.mediumImpact();
-                      }
-                    }
-                  } else {
-                    // Check for bottom edge hit in portrait
-                    if ((bottomBoundary - constrainedY).abs() < 5 && constrainedY != newPosition.dy) {
-                      widget.onTap();
-                      HapticFeedback.mediumImpact();
-                    }
-                  }
-
-                  // For expanded controls, check if dragging to edges (similar to old code)
-                  if (!isCollapsed) {
-                    final leftBoundaryRect = -screenWidth / 2 + widgetWidth / 2;
-                    final rightBoundaryRect = screenWidth / 2 - widgetWidth / 2;
-
-                    final isAtLeftEdge = (constrainedX - leftBoundaryRect).abs() < 0.5;
-                    final isAtRightEdge = (constrainedX - rightBoundaryRect).abs() < 0.5;
-                    final wasConstrained = constrainedX != newPosition.dx;
-
-                    if ((isAtLeftEdge || isAtRightEdge) && wasConstrained) {
-                      final leftBoundaryCircle = -screenWidth / 2 + circleSize / 2;
-                      final rightBoundaryCircle = screenWidth / 2 - circleSize / 2;
-                      final adjustedX = isAtLeftEdge ? leftBoundaryCircle : rightBoundaryCircle;
-
-                      setState(() {
-                        _position = Offset(adjustedX, constrainedY);
-                        isCollapsed = true;
-                        _isDragging = false;
-                      });
-
-                      _shapeController.forward();
-                      _scaleController.reverse();
-                      HapticFeedback.lightImpact();
-                    }
-                  }
-                },
-                onPanEnd: (details) {
-                  final screenSize = MediaQuery.of(context).size;
-                  final topPadding = MediaQuery.of(context).padding.top;
-                  final currentHeight = isCollapsed ? circleSize : widgetHeight;
-                  final topBoundary = -screenSize.height / 2 + currentHeight / 2 + topPadding;
-                  final distanceFromTop = (_position.dy - topBoundary).abs();
-                  if (distanceFromTop < removeThreshold && _inRemovalZone) {
-                    widget.onChange(isHolding: false, mustRemove: true);
+              // Check for edge hit during drag (orientation-specific)
+              final isLandscape = screenWidth > screenHeight;
+              if (isLandscape) {
+                if (isRtl) {
+                  // RTL landscape: only open when reaching far LEFT edge
+                  if ((constrainedX - leftBoundary).abs() < 5 &&
+                      constrainedX != newPosition.dx &&
+                      !_openTriggeredThisDrag) {
+                    _openTriggeredThisDrag = true;
+                    widget.onTap();
                     HapticFeedback.mediumImpact();
-                    return;
                   }
+                } else {
+                  // LTR landscape: open when reaching far RIGHT edge
+                  if ((rightBoundary - constrainedX).abs() < 5 && constrainedX != newPosition.dx) {
+                    widget.onTap();
+                    HapticFeedback.mediumImpact();
+                  }
+                }
+              } else {
+                // Check for bottom edge hit in portrait
+                if ((bottomBoundary - constrainedY).abs() < 5 && constrainedY != newPosition.dy) {
+                  widget.onTap();
+                  HapticFeedback.mediumImpact();
+                }
+              }
 
-                  widget.onChange(isHolding: false, mustRemove: false);
+              // For expanded controls, check if dragging to edges (similar to old code)
+              if (!isCollapsed) {
+                final leftBoundaryRect = -screenWidth / 2 + widgetWidth / 2;
+                final rightBoundaryRect = screenWidth / 2 - widgetWidth / 2;
+
+                final isAtLeftEdge = (constrainedX - leftBoundaryRect).abs() < 0.5;
+                final isAtRightEdge = (constrainedX - rightBoundaryRect).abs() < 0.5;
+                final wasConstrained = constrainedX != newPosition.dx;
+
+                if ((isAtLeftEdge || isAtRightEdge) && wasConstrained) {
+                  final leftBoundaryCircle = -screenWidth / 2 + circleSize / 2;
+                  final rightBoundaryCircle = screenWidth / 2 - circleSize / 2;
+                  final adjustedX = isAtLeftEdge ? leftBoundaryCircle : rightBoundaryCircle;
 
                   setState(() {
+                    _position = Offset(adjustedX, constrainedY);
+                    isCollapsed = true;
                     _isDragging = false;
-                    _inRemovalZone = false;
-                    _openTriggeredThisDrag = false;
                   });
-                  _scaleController.reverse();
 
-                  // Apply momentum if velocity is significant
-                  if (details.velocity.pixelsPerSecond.distance > 100) {
-                    _applyMomentum(details.velocity);
-                  } else {
-                    // No significant velocity - check position for transformation
-                    _checkPositionAndTransform();
-                  }
-                },
-                child: Container(
-                  width: currentWidth,
-                  height: currentHeight,
-                  decoration: BoxDecoration(
-                    // Debug visuals - remove for production
-                    // color: Colors.red.withOpacity(0.2),
-                    border: Border.all(color: Colors.white.withOpacity(0.15)),
-                    borderRadius: BorderRadius.circular(currentBorderRadius),
-                  ),
-                  child: Container(
-                    decoration: ShapeDecoration(
-                      shadows: [
-                        BoxShadow(
-                          color: const Color(0x7F212222),
-                          blurRadius: _isDragging ? 24 : 16,
-                          offset: _isDragging ? const Offset(0, 12) : const Offset(0, 8),
-                          spreadRadius: -8,
-                        )
-                      ],
-                      gradient: const LinearGradient(
-                        begin: Alignment(0.50, -0.00),
-                        end: Alignment(0.50, 1.00),
-                        colors: [Color(0xFF212222), Color(0xFF212222)],
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(currentBorderRadius)),
-                        side: BorderSide(
-                          width: 2,
-                          color: Colors.white.withOpacity(0.15),
-                        ),
-                      ),
+                  _shapeController.forward();
+                  _scaleController.reverse();
+                  HapticFeedback.lightImpact();
+                }
+              }
+            },
+            onPanEnd: (details) {
+              final screenSize = MediaQuery.of(context).size;
+              final topPadding = MediaQuery.of(context).padding.top;
+              final currentHeight = isCollapsed ? circleSize : widgetHeight;
+              final topBoundary = -screenSize.height / 2 + currentHeight / 2 + topPadding;
+              final distanceFromTop = (_position.dy - topBoundary).abs();
+              if (distanceFromTop < removeThreshold && _inRemovalZone) {
+                widget.onChange(isHolding: false, mustRemove: true);
+                HapticFeedback.mediumImpact();
+                return;
+              }
+
+              widget.onChange(isHolding: false, mustRemove: false);
+
+              setState(() {
+                _isDragging = false;
+                _inRemovalZone = false;
+                _openTriggeredThisDrag = false;
+              });
+              _scaleController.reverse();
+
+              // Apply momentum if velocity is significant
+              if (details.velocity.pixelsPerSecond.distance > 100) {
+                _applyMomentum(details.velocity);
+              } else {
+                // No significant velocity - check position for transformation
+                _checkPositionAndTransform();
+              }
+            },
+            child: Container(
+              width: currentWidth,
+              height: currentHeight,
+              decoration: BoxDecoration(
+                // Debug visuals - remove for production
+                // color: Colors.red.withOpacity(0.2),
+                border: Border.all(color: Colors.white.withOpacity(0.15)),
+                borderRadius: BorderRadius.circular(currentBorderRadius),
+              ),
+              child: Container(
+                decoration: ShapeDecoration(
+                  shadows: [
+                    BoxShadow(
+                      color: const Color(0x7F212222),
+                      blurRadius: _isDragging ? 24 : 16,
+                      offset: _isDragging ? const Offset(0, 12) : const Offset(0, 8),
+                      spreadRadius: -8,
                     ),
-                    child: _buildContent(),
+                  ],
+                  gradient: const LinearGradient(
+                    begin: Alignment(0.50, -0.00),
+                    end: Alignment(0.50, 1.00),
+                    colors: [Color(0xFF212222), Color(0xFF212222)],
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(currentBorderRadius)),
+                    side: BorderSide(
+                      width: 2,
+                      color: Colors.white.withOpacity(0.15),
+                    ),
                   ),
                 ),
+                child: _buildContent(),
               ),
             ),
-          );
-        },
+          ),
+        ),
       );
+    },
+  );
 
   Widget _buildContent() {
     if (_shapeAnimation.value > 0.1) {
@@ -496,25 +499,36 @@ class _ContentState extends ConsumerState<Content> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  selectedChannel?.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    height: 1.2,
+                Padding(
+                  padding: const EdgeInsets.only(top: 1.0),
+                  child: Text(
+                    selectedChannel?.currentPlayedProgram?.name ??
+                        (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      height: 1.2,
+                      fontFamily: GeneralKey.appFontType,
+                    ),
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  selectedChannel?.name ?? 'MBC Mood',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    height: 1.2,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 1),
+                  child: Text(
+                    selectedChannel?.name ?? 'MBC Mood',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      height: 1.2,
+                      fontFamily: GeneralKey.appFontType,
+                    ),
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -523,16 +537,21 @@ class _ContentState extends ConsumerState<Content> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(width: 12),
               // Play/Pause button
               GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   final audioProvider = ref.read(streamAudioProvider);
                   await audioProvider.togglePlayPause();
                 },
-                child: _buildPlayPauseIcon(provider),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  color: Colors.transparent,
+                  alignment: Alignment.center,
+                  child: _buildPlayPauseIcon(provider),
+                ),
               ),
-              const SizedBox(width: 12),
               // Forward button
               Transform.flip(
                 flipX: Directionality.of(context) == TextDirection.rtl,
@@ -540,12 +559,19 @@ class _ContentState extends ConsumerState<Content> {
                   opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
                   duration: const Duration(milliseconds: 200),
                   child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
-                    child: SvgPicture.asset(
-                      Assets.icons.svg.audio.seekForward.keyName,
-                      width: 14,
-                      height: 14,
-                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      color: Colors.transparent,
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        Assets.icons.svg.audio.seekForward.keyName,
+                        width: 14,
+                        height: 14,
+                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                      ),
                     ),
                   ),
                 ),
@@ -599,8 +625,8 @@ class _ContentState extends ConsumerState<Content> {
           ),
           child: !url.contains('svg')
               ? Padding(
-                padding: const EdgeInsets.all(2),
-                child: ClipRRect(
+                  padding: const EdgeInsets.all(2),
+                  child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.network(
                       url,
@@ -613,7 +639,7 @@ class _ContentState extends ConsumerState<Content> {
                       ),
                     ),
                   ),
-              )
+                )
               : SvgPicture.network(
                   url,
                   placeholderBuilder: (_) => Padding(

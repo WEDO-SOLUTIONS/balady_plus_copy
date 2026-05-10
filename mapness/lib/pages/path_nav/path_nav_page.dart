@@ -35,6 +35,8 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/stream_audio/services/audio_service.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -235,6 +237,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await _moveCameraToUser(followAfter: false);
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
+      // Ensure any in-app stream audio is paused while navigation is active.
+      // iOS doesn't reliably provide per-instruction callbacks from the SDK,
+      // so we pause at navigation start and resume when the trip ends.
+      unawaited(AudioService().pause());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       await _moveCameraToUser();
       await saveNavigationState();
@@ -287,7 +293,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     void onSheetHeightChanged() {
       if (isPortrait) {
         final sheetHeight =
-            sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
@@ -313,7 +319,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
       if (isPortrait) {
         final bottomHeight =
-            sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
         _bottomHeightNotifier.value = bottomHeight;
       }
 
@@ -520,6 +526,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     } catch (_) {}
+
+    // Restore in-app stream audio after navigation stops.
+    unawaited(AudioService().resume());
 
     ref.read(currentRouteProvider.notifier).clearRoute();
 
@@ -771,6 +780,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _finishNavigation() async {
+    // iOS: DGis "arrival" voice can stop in-app radio. Capture current state so we can
+    // restore it after the voice finishes (best-effort, delayed).
+    final streamAudioWasPlayingBeforeFinish = ref.read(streamAudioProvider).isEffectivelyPlaying;
+
     _sendAnalitycs();
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
@@ -781,6 +794,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     sheetController.close();
     unawaited(clearNavigationState());
     unawaited(_stopActiveSharing());
+
+    // Restore in-app stream audio when navigation finishes normally.
+    // We delay because the DGis arrival prompt is played around this time on iOS.
+    if (streamAudioWasPlayingBeforeFinish) {
+      unawaited(
+        Future<void>.delayed(const Duration(seconds: 4), () async {
+          if (!mounted) return;
+          final streamAudio = ref.read(streamAudioProvider);
+          if (!streamAudio.isEffectivelyPlaying && !streamAudio.isLoading) {
+            await ref.read(streamAudioProvider).togglePlayPause();
+          }
+        }),
+      );
+    }
   }
 
   void _sendAnalitycs() {
