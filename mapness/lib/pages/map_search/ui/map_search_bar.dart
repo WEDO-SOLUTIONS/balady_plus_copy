@@ -54,6 +54,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
+  bool _initialFocusScheduled = false;
+  Animation<double>? _routeAnimation;
+  void Function(AnimationStatus)? _routeAnimationStatusListener;
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -76,18 +79,43 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.initState();
     _controller = _MapSearchTextEditingController();
     _focusNode = FocusNode();
-    if (widget.requestFocus) {
-      _safeFocusAction(_focusNode.requestFocus);
-    }
     if (widget.initialState != null) {
       _updateText(widget.initialState!);
       ref.read(searchProvider(_scope).notifier).fetchSuggest(_controller.text);
     }
   }
 
+  /// Defers initial keyboard until the page transition animation completes —
+  /// otherwise the keyboard fights the route animation and the user perceives lag.
+  void _scheduleInitialFocus() {
+    if (_initialFocusScheduled || !widget.requestFocus) {
+      return;
+    }
+    _initialFocusScheduled = true;
+    final animation = ModalRoute.of(context)?.animation;
+    if (animation == null || animation.status == AnimationStatus.completed) {
+      _safeFocusAction(_focusNode.requestFocus);
+      return;
+    }
+    void listener(AnimationStatus status) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        animation.removeStatusListener(listener);
+        _routeAnimation = null;
+        _routeAnimationStatusListener = null;
+        if (mounted && status == AnimationStatus.completed) {
+          _safeFocusAction(_focusNode.requestFocus);
+        }
+      }
+    }
+    _routeAnimation = animation;
+    _routeAnimationStatusListener = listener;
+    animation.addStatusListener(listener);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _scheduleInitialFocus();
     _searchSubscription?.close();
     final scope = context.read<SearchScope>();
     _searchSubscription = ref.listenManual<SearchState>(
@@ -124,6 +152,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
+    final listener = _routeAnimationStatusListener;
+    if (listener != null) {
+      _routeAnimation?.removeStatusListener(listener);
+    }
+    _routeAnimation = null;
+    _routeAnimationStatusListener = null;
     _searchSubscription?.close();
     _controller.dispose();
     _focusNode.dispose();
