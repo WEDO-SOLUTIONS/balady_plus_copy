@@ -205,6 +205,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
+              // Sheet is already wrapped in a fade route transition (see SearchRoute
+              // in app_routes.dart), so suppress sheetify's own slide-up open animation.
+              // Otherwise the sheet would slide ~700–900 ms from the bottom on top of
+              // the route fade, dominating perceived latency.
+              animateOpening: false,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: _showMoreQuickFilters
