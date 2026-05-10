@@ -23,6 +23,7 @@ import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
@@ -54,9 +55,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   late FreeRoamStartState freeRoamState;
 
   StatefulSheetDelegateFunction<double, ThreeStateSheet> _buildOutsideOpacityDelegate(bool isMakkahTheme) {
-    // Makkah theme: start fading earlier (0.33) and fade faster (multiplier 15)
-    // Other themes: start fading at 0.4 with multiplier 9
-    final threshold = isMakkahTheme ? 0.33 : 0.4;
+    const threshold = 0.4;
     final fadeMultiplier = isMakkahTheme ? 15.0 : 9.0;
 
     return StatefulSheetDelegateFunction<double, ThreeStateSheet>(
@@ -131,7 +130,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final isMakkahTheme =
         specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
 

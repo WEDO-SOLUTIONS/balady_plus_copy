@@ -123,10 +123,10 @@ class MakkahBusLayer extends _$MakkahBusLayer {
           options: PolylineOptionsMessage(
             points: geoPoints,
             width: 5,
+            // borderWidth: 0,
+            // borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
             color: colorValue,
-            borderWidth: 2,
-            borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
-            zIndex: 0,
+            // zIndex: 0,
           ),
         ),
       );

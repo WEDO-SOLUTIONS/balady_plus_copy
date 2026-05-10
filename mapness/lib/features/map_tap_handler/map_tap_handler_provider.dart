@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
@@ -12,6 +13,8 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'map_tap_handler_provider.g.dart';
@@ -19,9 +22,76 @@ part 'map_tap_mixin.dart';
 
 typedef OnMapTapHandler = void Function(TapEvent event);
 
+@Riverpod(keepAlive: true)
+class RoadEvents extends _$RoadEvents {
+  @override
+  RoadEventSheetState? build() {
+    final appRouter = ref.read(appRouterProvider);
+    final removeRouterListener = appRouter.removeListener;
+
+    appRouter.addListener(_onAppRouterChanged);
+    ref.onDispose(() {
+      removeRouterListener(_onAppRouterChanged);
+    });
+
+    return _routeState(appRouter, currentState: null);
+  }
+
+  void handleTap(RoadEventTapEvent event) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.roadEvent,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'event': event.id.objectId, 'title': event.title},
+    );
+    final nextState = RoadEventSheetState.fromEvent(event);
+    final router = ref.read(appRouterProvider);
+
+    if (router.topRoute.name == RoadClosedRoute.name) {
+      if (state == nextState) {
+        return;
+      }
+      state = nextState;
+      return;
+    }
+
+    state = nextState;
+
+    // BSA-2431: We don't need description here, we don't use it according to the design
+    // If we will need it, we can add it in the future
+    unawaited(
+      router.push(
+        RoadClosedRoute(
+          id: nextState.id,
+          title: nextState.title,
+          startTime: nextState.startTime,
+          finishTime: nextState.finishTime,
+        ),
+      ),
+    );
+  }
+
+  void _onAppRouterChanged() {
+    final router = ref.read(appRouterProvider);
+    final nextState = _routeState(router, currentState: state);
+
+    if (state != nextState) {
+      state = nextState;
+    }
+  }
+
+  RoadEventSheetState? _routeState(AppRouter router, {required RoadEventSheetState? currentState}) =>
+      switch (router.topRoute.name) {
+        RoadClosedRoute.name =>
+          currentState ?? RoadEventSheetState.fromRouteArgs(router.topRoute.argsAs<RoadClosedRouteArgs>()),
+        _ => null,
+      };
+}
+
 @riverpod
 class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
+  ProviderSubscription<RoadEventSheetState?>? _poiPageClosingSubscription;
 
   OnMapTapHandler? _priorityMapTapHandler;
 
@@ -32,9 +102,15 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     final dgisController = await ref.watch(dgisControllerProvider.future);
 
     _baseStreamSubscription = dgisController.objectTapEvents.listen(_onNewEvent);
+    _poiPageClosingSubscription = ref.listen<RoadEventSheetState?>(roadEventsProvider, (previous, next) {
+      if (previous != null && next == null) {
+        unawaited(ref.read(selectedMarkerProvider.notifier).clear());
+      }
+    });
 
     ref.onDispose(() {
       _baseStreamSubscription?.cancel();
+      _poiPageClosingSubscription?.close();
       _currentMapHandlers.close();
     });
   }
@@ -101,28 +177,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleRoadEventTapEvent(RoadEventTapEvent event) {
-    Metrics.logEventAdvanced(
-      MetricsConstants.poiKeys.roadEvent,
-      group: MetricsConstants.poiTag,
-      action: MetricAction.tap.toString(),
-      props: {'event': event.id.objectId, 'title': event.title},
-    );
-
-    final router = ref.read(appRouterProvider);
-
-    // BSA-2431: We don't need description here, we don't use it according to the design
-    // If we will need it, we can add it in the future
-    final roadClosedRoute = RoadClosedRoute(
-      id: event.id,
-      title: event.title,
-      startTime: event.startTime,
-      finishTime: event.finishTime,
-    );
-    if (router.isRouteActive(RoadClosedRoute.name)) {
-      router.popAndPush(roadClosedRoute);
-    } else {
-      router.push(roadClosedRoute);
-    }
+    ref.read(roadEventsProvider.notifier).handleTap(event);
   }
 
   void _handleMyLocationTapEvent(MyLocationTapEvent event) {
@@ -148,4 +203,50 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
           toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
         );
   }
+}
+
+@immutable
+class RoadEventSheetState {
+  const RoadEventSheetState({
+    required this.id,
+    required this.title,
+    required this.objectId,
+    required this.startTime,
+    required this.finishTime,
+  });
+
+  factory RoadEventSheetState.fromEvent(RoadEventTapEvent event) => RoadEventSheetState(
+    id: event.id,
+    title: event.title,
+    objectId: event.id.objectId,
+    startTime: event.startTime,
+    finishTime: event.finishTime,
+  );
+
+  factory RoadEventSheetState.fromRouteArgs(RoadClosedRouteArgs args) => RoadEventSheetState(
+    id: args.id,
+    title: args.title,
+    objectId: args.id.objectId,
+    startTime: args.startTime,
+    finishTime: args.finishTime,
+  );
+
+  final DgisObjectId id;
+  final String title;
+  final int objectId;
+  final DateTime? startTime;
+  final DateTime? finishTime;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RoadEventSheetState &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          title == other.title &&
+          startTime == other.startTime &&
+          finishTime == other.finishTime;
+
+  @override
+  int get hashCode => Object.hash(id, title, startTime, finishTime);
 }

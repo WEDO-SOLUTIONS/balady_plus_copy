@@ -111,6 +111,23 @@ class WorkingHours {
     return until.isNegative ? Duration.zero : until;
   }
 
+  /// Returns true if the current open interval ends at a break (i.e. another
+  /// open interval starts later the same day). Returns false when the current
+  /// interval is the last one of the day (true close).
+  bool isBreakUpcoming(DateTime dateTime) {
+    final current = _currentInterval(dateTime);
+    if (current == null) {
+      return false;
+    }
+
+    final next = _nextInterval(dateTime);
+    if (next == null) {
+      return false;
+    }
+
+    return _sameDate(current.end, next.start);
+  }
+
   /// Shows next working hours start
   /// Loops over weekend - if is sunday will show monday
   Duration nextOpen(DateTime dateTime) {

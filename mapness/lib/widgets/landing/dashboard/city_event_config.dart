@@ -202,6 +202,9 @@ class FoundingDayConfig extends CityEventConfig {
   String get customMarkerPath => Assets.icons.svg.historicDiriyahFort.keyName;
 
   @override
+  String get defaultMarkerPath => Assets.icons.svg.historicDiriyahFort.keyName;
+
+  @override
   String get globalImagePath => Assets.images.foundingDayLogo.keyName;
 
   @override

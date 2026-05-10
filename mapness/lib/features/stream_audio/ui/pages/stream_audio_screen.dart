@@ -41,7 +41,6 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
 
   /// Track previous orientation to handle transitions
   Orientation? _previousOrientation;
-  bool _isTransitioningOrientation = false;
 
   @override
   void initState() {
@@ -165,270 +164,198 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
       builder: (context, orientation) {
         final isLandscape = orientation == Orientation.landscape;
 
-        // Handle orientation change after frame
-        if (_previousOrientation != null && _previousOrientation != orientation && !_isTransitioningOrientation) {
-          _isTransitioningOrientation = true;
+        // Handle orientation change safely
+        if (_previousOrientation != null && _previousOrientation != orientation) {
+          final wasLandscape = _previousOrientation == Orientation.landscape;
+          _previousOrientation = orientation;
 
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            if (!mounted) {
-              _isTransitioningOrientation = false;
-              return;
-            }
+            if (!mounted) return;
 
             try {
-              // Small delay to let the layout settle
-              await Future.delayed(const Duration(milliseconds: 50));
-              if (!mounted) {
-                return;
-              }
-
-              if (isLandscape) {
+              if (isLandscape && !wasLandscape) {
                 // Switching to landscape: if portrait sheet was open, open landscape sheet
                 if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-                  if (mounted) {
-                    setState(() {
-                      _landscapeSheetWidth = _landscapeMaxWidth;
-                      _isTransitioningOrientation = false;
-                    });
-                  }
-                } else {
-                  if (mounted) {
-                    setState(() => _isTransitioningOrientation = false);
-                  }
+                  setState(() {
+                    _landscapeSheetWidth = _landscapeMaxWidth;
+                  });
                 }
-              } else {
+              } else if (!isLandscape && wasLandscape) {
                 // Switching to portrait: if landscape sheet was open, open portrait sheet
                 if (_landscapeSheetWidth > 0) {
-                  if (mounted) {
-                    setState(() {
-                      _landscapeSheetWidth = 0;
-                      _isTransitioningOrientation = false;
-                    });
-                  }
+                  setState(() {
+                    _landscapeSheetWidth = 0;
+                  });
 
                   // Wait a frame before animating the portrait sheet
-                  await Future.delayed(const Duration(milliseconds: 100));
+                  await Future.delayed(const Duration(milliseconds: 50));
                   if (mounted && _sheetController.isAttached) {
                     await _sheetController.animateTo(
                       _maxChildSize,
-                      duration: const Duration(milliseconds: 400),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOutCubic,
                     );
-                  }
-                } else {
-                  if (mounted) {
-                    setState(() => _isTransitioningOrientation = false);
                   }
                 }
               }
             } catch (e) {
-              // Silently handle any state transition errors during orientation change
               debugPrint('StreamAudio orientation change error: $e');
-              if (mounted) {
-                setState(() => _isTransitioningOrientation = false);
-              }
             }
           });
         }
 
-        // Update orientation tracking after frame to avoid build-time mutation
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          _previousOrientation = orientation;
-        });
-
-        // Show a simple black screen during rapid transitions to avoid layer disposal errors
-        if (_isTransitioningOrientation) {
-          return Container(
-            color: Colors.transparent,
-            child: Center(
-              child: widget.child,
-            ),
-          );
+        // Update orientation tracking if it's the first build
+        if (_previousOrientation == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _previousOrientation = orientation;
+          });
         }
 
-        return isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider);
+        return _buildUnifiedLayout(provider, isLandscape);
       },
     );
   }
 
-  Widget _buildPortraitLayout(StreamAudioProvider provider) => AnimatedBuilder(
-        animation: _sheetController,
-        builder: (context, _) {
-          final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+  Widget _buildUnifiedLayout(StreamAudioProvider provider, bool isLandscape) => AnimatedBuilder(
+    animation: _sheetController,
+    builder: (context, _) {
+      // Portrait calculations
+      final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+      final double progress = (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
+      final double portraitMapOffset = -320 * progress;
 
-          final double progress = (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
+      final screenHeight = MediaQuery.of(context).size.height;
+      final currentHeightPx = currentSize * screenHeight;
 
-          final double mapOffset = -320 * progress;
+      if (currentSize >= _maxChildSize - 0.01) {
+        _isPanelFullyOpened = true;
+      }
 
-          /// Calculate current sheet height in pixels
-          final screenHeight = MediaQuery.of(context).size.height;
-          final currentHeightPx = currentSize * screenHeight;
+      if (_isPanelFullyOpened &&
+          currentHeightPx <= 150 &&
+          !_hasTriggeredHeightThreshold &&
+          currentSize > _minChildSize &&
+          currentSize < _maxChildSize &&
+          _autoCloseTimer != null &&
+          _autoCloseTimer!.isActive) {
+        _hasTriggeredHeightThreshold = true;
 
-          if (currentSize >= _maxChildSize - 0.01) {
-            /// Small tolerance for floating point
-            _isPanelFullyOpened = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _autoCloseTimer?.cancel();
+          if (_sheetController.isAttached) {
+            _sheetController.animateTo(
+              _minChildSize,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
           }
+        });
+      }
 
-          /// Check for 150px threshold (only trigger once during opening)
-          if (_isPanelFullyOpened &&
-              currentHeightPx <= 150 &&
-              !_hasTriggeredHeightThreshold &&
-              currentSize > _minChildSize &&
-              currentSize < _maxChildSize &&
-              _autoCloseTimer != null &&
-              _autoCloseTimer!.isActive) {
-            _hasTriggeredHeightThreshold = true;
+      if (currentSize == _minChildSize) {
+        _hasTriggeredHeightThreshold = false;
+        _isPanelFullyOpened = false;
+      }
 
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              /// Cancel any existing timer since we're closing early
-              _autoCloseTimer?.cancel();
+      // Landscape calculations
+      final screenWidth = MediaQuery.of(context).size.width;
+      final sheetWidthPx = screenWidth * _landscapeSheetWidth;
+      final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+      final bool sheetFromLeft = isRtl;
+      final double landscapeMapOffset = sheetFromLeft ? sheetWidthPx : -sheetWidthPx;
 
-              /// Directly close the panel instead of toggling
-              if (_sheetController.isAttached) {
-                _sheetController.animateTo(
-                  _minChildSize,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              }
-            });
-          }
+      // Unified values
+      final double xOffset = isLandscape ? landscapeMapOffset : 0;
+      final double yOffset = isLandscape ? 0 : portraitMapOffset;
+      final double bottomRadius = (isLandscape || currentSize == _minChildSize) ? 0 : 32;
 
-          /// Reset threshold flag when panel is fully closed
-          if (currentSize == _minChildSize) {
-            _hasTriggeredHeightThreshold = false;
-            _isPanelFullyOpened = false;
-          }
-
-          return Container(
-            color: Colors.black,
-            child: Stack(
-              children: [
-                /// Passed [child] widget, can be anything it pushed from the bottom sheet when it's opened
-                _buildChild(mapOffset, currentSize, false),
-
-                /// Player controls widget, it's only visible when the panel is fully opened and there is a program selected
-                _buildFloatingControls(provider, currentSize, false),
-
-                /// Details Radio Controls Sheet (can be dragged to close)
-                _buildDetailsControlsSheet(provider),
-
-                /// Removal zone widget, it's only visible when the panel is fully opened and there is a program selected
-                _buildRemovalZone(),
-              ],
-            ),
-          );
-        },
-      );
-
-  Widget _buildLandscapeLayout(StreamAudioProvider provider) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final sheetWidthPx = screenWidth * _landscapeSheetWidth;
-    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
-    final bool sheetFromLeft = isRtl; // Arabic -> from left, English -> from right
-    final double childOffset = sheetFromLeft ? sheetWidthPx : -sheetWidthPx;
-
-    return Stack(
-      children: [
-        /// Passed [child] widget, pushed to left when sheet opens
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeOutCubic,
-          transform: Matrix4.translationValues(childOffset, 0, 0),
-          child: widget.child,
-        ),
-
-        /// Player controls widget
-        if (_landscapeSheetWidth == 0 && provider.selectedChannel != null && provider.isFloatingPlayerVisible)
-          Center(
-            child: DraggableFloatingPlayerControls(
-              onTap: togglePanel,
-              onChange: ({required isHolding, required mustRemove}) {
-                if (mounted) {
-                  setState(() => _showRemovalZone = isHolding);
-                  if (mustRemove) {
-                    ref.read(streamAudioProvider.notifier).exitPlayer();
-                    setState(() => _showRemovalZone = false);
-                  }
-                }
-              },
-            ),
-          ),
-
-        /// Side sheet (RTL: left, LTR: right)
-        AnimatedPositioned(
-          duration: const Duration(milliseconds: 350),
-          curve: Curves.easeOutCubic,
-          left: sheetFromLeft ? (_landscapeSheetWidth == 0 ? -screenWidth * _landscapeMaxWidth : 0) : null,
-          right: !sheetFromLeft ? (_landscapeSheetWidth == 0 ? -screenWidth * _landscapeMaxWidth : 0) : null,
-          top: 0,
-          bottom: 0,
-          width: screenWidth * _landscapeMaxWidth,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onHorizontalDragUpdate: (details) {
-              // Close when dragging toward the outside edge
-              final bool shouldClose = sheetFromLeft
-                  ? (details.delta.dx < -6) // drag left to close
-                  : (details.delta.dx > 6); // drag right to close
-              if (shouldClose) {
-                if (mounted && _landscapeSheetWidth > 0) {
-                  setState(() => _landscapeSheetWidth = 0.0);
-                }
-              }
-            },
-            onHorizontalDragEnd: (details) {
-              // Also close on a fling toward the outside edge
-              final double velocity = details.primaryVelocity ?? 0;
-              final bool shouldClose = sheetFromLeft
-                  ? (velocity < -300) // fling left
-                  : (velocity > 300); // fling right
-              if (shouldClose) {
-                if (mounted && _landscapeSheetWidth > 0) {
-                  setState(() => _landscapeSheetWidth = 0.0);
-                }
-              }
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.black,
-                // Border is updated below based on side
-              ),
-              child: DecoratedBox(
+      return Container(
+        color: Colors.black,
+        child: Stack(
+          children: [
+            // 1. The Main App Content (widget.child)
+            AnimatedContainer(
+              duration: isLandscape ? const Duration(milliseconds: 350) : Duration.zero,
+              curve: Curves.easeOutCubic,
+              transform: Matrix4.translationValues(xOffset, yOffset, 0),
+              child: Container(
+                clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
-                  border: sheetFromLeft
-                      ? const Border(right: BorderSide(color: Colors.white24))
-                      : const Border(left: BorderSide(color: Colors.white24)),
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(bottomRadius),
+                  ),
                 ),
-                child: _buildLandscapeSheetContent(provider),
+                child: widget.child,
               ),
             ),
-          ),
-        ),
 
-        /// Removal zone widget
-        _buildRemovalZone(),
-      ],
-    );
-  }
+            // 2. Floating Controls
+            _buildFloatingControls(provider, currentSize, isLandscape),
 
-  Widget _buildChild(double mapOffset, double currentSize, bool isLandscape) => Transform.translate(
-        offset: Offset(0, mapOffset),
-        child: Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(currentSize == _minChildSize ? 0 : 32),
-            ),
-          ),
-          child: widget.child,
+            // 3. Portrait Details Sheet
+            if (!isLandscape) _buildDetailsControlsSheet(provider),
+
+            // 4. Landscape Details Sheet
+            if (isLandscape)
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOutCubic,
+                left: sheetFromLeft ? (_landscapeSheetWidth == 0 ? -screenWidth * _landscapeMaxWidth : 0) : null,
+                right: !sheetFromLeft ? (_landscapeSheetWidth == 0 ? -screenWidth * _landscapeMaxWidth : 0) : null,
+                top: 0,
+                bottom: 0,
+                width: screenWidth * _landscapeMaxWidth,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onHorizontalDragUpdate: (details) {
+                    final bool shouldClose = sheetFromLeft ? (details.delta.dx < -6) : (details.delta.dx > 6);
+                    if (shouldClose && mounted && _landscapeSheetWidth > 0) {
+                      setState(() => _landscapeSheetWidth = 0.0);
+                    }
+                  },
+                  onHorizontalDragEnd: (details) {
+                    final double velocity = details.primaryVelocity ?? 0;
+                    final bool shouldClose = sheetFromLeft ? (velocity < -300) : (velocity > 300);
+                    if (shouldClose && mounted && _landscapeSheetWidth > 0) {
+                      setState(() => _landscapeSheetWidth = 0.0);
+                    }
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(color: Colors.black),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        border: sheetFromLeft
+                            ? const Border(right: BorderSide(color: Colors.white24))
+                            : const Border(left: BorderSide(color: Colors.white24)),
+                      ),
+                      child: _buildLandscapeSheetContent(provider),
+                    ),
+                  ),
+                ),
+              ),
+
+            // 5. Removal zone widget
+            _buildRemovalZone(),
+          ],
         ),
       );
+    },
+  );
 
   Widget _buildFloatingControls(StreamAudioProvider provider, double currentSize, bool isLandscape) {
-    if (currentSize != _minChildSize || provider.selectedChannel == null || !provider.isFloatingPlayerVisible) {
+    if (provider.selectedChannel == null || !provider.isFloatingPlayerVisible) {
       return const SizedBox.shrink();
     }
+
+    // In portrait, it hides when the sheet is open
+    if (!isLandscape && currentSize != _minChildSize) {
+      return const SizedBox.shrink();
+    }
+    // In landscape, it hides when the sheet is open
+    if (isLandscape && _landscapeSheetWidth > 0) {
+      return const SizedBox.shrink();
+    }
+
     return Center(
       child: DraggableFloatingPlayerControls(
         onTap: togglePanel,
@@ -436,7 +363,6 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
           if (mounted) {
             setState(() => _showRemovalZone = isHolding);
             if (mustRemove) {
-              // Only exit the player, don't reset immediately
               ref.read(streamAudioProvider.notifier).exitPlayer();
               setState(() => _showRemovalZone = false);
             }
@@ -447,196 +373,198 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
   }
 
   Widget _buildLandscapeSheetContent(StreamAudioProvider provider) => SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Left side: PlayingAudioTile (vertical layout)
-            const Expanded(
-              flex: 2,
-              child: PlayingAudioTile(isLandscape: true, instanceId: 'landscape_sheet'),
-            ),
-            const SizedBox(width: 16),
-            // Right side: MediaCatalogList (vertical layout)
-            SizedBox(
-              width: 160,
-              child: MediaCatalogList(
-                isLandscape: true,
-                needReset: () {
-                  //reset the timer
-                  _autoCloseTimer?.cancel();
-                  _autoCloseTimer = Timer(const Duration(seconds: 8), () {
-                    if (mounted && _landscapeSheetWidth > 0) {
-                      setState(() => _landscapeSheetWidth = 0.0);
-                    }
-                  });
-                },
-              ),
-            ),
-          ],
+    padding: const EdgeInsets.all(16),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Left side: PlayingAudioTile (vertical layout)
+        const Expanded(
+          flex: 2,
+          child: PlayingAudioTile(isLandscape: true, instanceId: 'landscape_sheet'),
         ),
-      );
+        const SizedBox(width: 16),
+        // Right side: MediaCatalogList (vertical layout)
+        SizedBox(
+          width: 160,
+          child: MediaCatalogList(
+            isLandscape: true,
+            needReset: () {
+              //reset the timer
+              _autoCloseTimer?.cancel();
+              _autoCloseTimer = Timer(const Duration(seconds: 8), () {
+                if (mounted && _landscapeSheetWidth > 0) {
+                  setState(() => _landscapeSheetWidth = 0.0);
+                }
+              });
+            },
+          ),
+        ),
+      ],
+    ),
+  );
 
   Widget _buildDetailsControlsSheet(StreamAudioProvider provider) => AnimatedBuilder(
-        animation: _sheetController,
-        builder: (context, _) {
-          final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
-          final bool isVisible = currentSize > _minChildSize;
+    animation: _sheetController,
+    builder: (context, _) {
+      final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+      final bool isVisible = currentSize > _minChildSize;
 
-          return DraggableScrollableSheet(
-            controller: _sheetController,
-            initialChildSize: _minChildSize,
-            minChildSize: _minChildSize,
-            maxChildSize: _maxChildSize,
-            builder: (context, scrollController) => Container(
-              decoration: BoxDecoration(
-                color: isVisible ? Colors.black : Colors.transparent,
-              ),
-              child: Opacity(
-                opacity: isVisible ? 1.0 : 0.0,
-                child: SingleChildScrollView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(0),
-                  physics: const ClampingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 3,
-                        margin: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(36),
-                        ),
+      return DraggableScrollableSheet(
+        controller: _sheetController,
+        initialChildSize: _minChildSize,
+        minChildSize: _minChildSize,
+        maxChildSize: _maxChildSize,
+        builder: (context, scrollController) => Container(
+          decoration: BoxDecoration(
+            color: isVisible ? Colors.black : Colors.transparent,
+          ),
+          child: Opacity(
+            opacity: isVisible ? 1.0 : 0.0,
+            child: SingleChildScrollView(
+              controller: scrollController,
+              padding: const EdgeInsets.all(0),
+              physics: const ClampingScrollPhysics(),
+              child: Column(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 3,
+                    margin: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(36),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const PlayingAudioTile(instanceId: 'portrait_sheet'),
+                  if (provider.hasError) ...[
+                    const SizedBox(height: 16),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.withOpacity(0.1),
+                        border: Border.all(color: Colors.red.withOpacity(0.3)),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(height: 8),
-                      const PlayingAudioTile(instanceId: 'portrait_sheet'),
-                      if (provider.hasError) ...[
-                        const SizedBox(height: 16),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.1),
-                            border: Border.all(color: Colors.red.withOpacity(0.3)),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
-                                  style: const TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 12,
-                                  ),
-                                ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              Directionality.of(context) == TextDirection.rtl
+                                  ? 'لم يتم اكتشاف اتصال بالإنترنت ، يرجى التحقق منه والمحاولة مرة أخرى..'
+                                  : 'No internet connection detected, please check it and try again.',
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 12,
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
-                      const SizedBox(height: 8),
-                      MediaCatalogList(
-                        needReset: () {
-                          //reset the timer
-                          _autoCloseTimer?.cancel();
-                          _autoCloseTimer = Timer(const Duration(seconds: 8), () {
-                            if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
-                              _sheetController.animateTo(
-                                _minChildSize,
-                                duration: const Duration(milliseconds: 800),
-                                curve: Curves.easeInOut,
-                              );
-                            }
-                          });
-                        },
+                        ],
                       ),
-                      const SizedBox(height: 32),
+                    ),
+                  ],
+                  const SizedBox(height: 8),
+                  MediaCatalogList(
+                    needReset: () {
+                      //reset the timer
+                      _autoCloseTimer?.cancel();
+                      _autoCloseTimer = Timer(const Duration(seconds: 8), () {
+                        if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
+                          _sheetController.animateTo(
+                            _minChildSize,
+                            duration: const Duration(milliseconds: 800),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+
+  Widget _buildRemovalZone() => Positioned(
+    top: 0,
+    right: 0,
+    left: 0,
+    child: AnimatedOpacity(
+      opacity: _showRemovalZone ? 1.0 : 0.0,
+      duration: const Duration(milliseconds: 220),
+      child: IgnorePointer(
+        ignoring: !_showRemovalZone,
+        child: Stack(
+          children: [
+            ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: ShaderMask(
+                  shaderCallback: (bounds) => const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white, Colors.transparent],
+                  ).createShader(bounds),
+                  blendMode: BlendMode.dstOut,
+                  child: Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: const Alignment(0.50, -0.00),
+                        end: const Alignment(0.50, 1.00),
+                        colors: [Colors.black.withOpacity(0.20), Colors.black.withOpacity(0)],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 80,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: 240,
+                  height: 40,
+                  padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
+                  decoration: ShapeDecoration(
+                    color: Colors.black.withOpacity(0.65),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white.withOpacity(0.20)),
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
+                      Text(
+                        Directionality.of(context) == TextDirection.rtl
+                            ? 'اسحب هنا للخروج من مشغل الصوت'
+                            : 'Drag here to exit audio player',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          height: 1.33,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-          );
-        },
-      );
-
-  Widget _buildRemovalZone() => Positioned(
-        top: 0,
-        right: 0,
-        left: 0,
-        child: AnimatedOpacity(
-          opacity: _showRemovalZone ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 220),
-          child: IgnorePointer(
-            ignoring: !_showRemovalZone,
-            child: Stack(
-              children: [
-                ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.white, Colors.transparent],
-                      ).createShader(bounds),
-                      blendMode: BlendMode.dstOut,
-                      child: Container(
-                        height: 160,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: const Alignment(0.50, -0.00),
-                            end: const Alignment(0.50, 1.00),
-                            colors: [Colors.black.withOpacity(0.20), Colors.black.withOpacity(0)],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 80,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      width: 240,
-                      height: 40,
-                      padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
-                      decoration: ShapeDecoration(
-                        color: Colors.black.withOpacity(0.65),
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white.withOpacity(0.20)),
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
-                          Text(
-                            Directionality.of(context) == TextDirection.rtl
-                                ? 'اسحب هنا للخروج من مشغل الصوت'
-                                : 'Drag here to exit audio player',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              height: 1.33,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }

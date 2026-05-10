@@ -100,7 +100,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
 
   void _clearPoiSelectionState() {
     ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-    ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+    ref.read(highlightProvider.notifier).removeAll();
     ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
 
     // Show Makkah place markers again when POI card is closed
