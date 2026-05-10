@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -21,16 +22,30 @@ class PoiLinesMakkahBus extends ConsumerStatefulWidget {
 }
 
 class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   int getMinutesFromDepartureTime(String departureTime) {
     final appLanguage = ref.read(appLanguageProvider);
     final format = DateFormat('hh:mm a');
     final now = DateTime.now();
 
-    final parsedTime = format.parse(departureTime
-        .replaceAll('ص', 'AM')
-        .replaceAll('م', 'PM')
-        .trim());
+    final parsedTime = format.parse(departureTime.replaceAll('ص', 'AM').replaceAll('م', 'PM').trim());
     var departureDateTime = DateTime(
       now.year,
       now.month,
@@ -42,7 +57,8 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
       departureDateTime = departureDateTime.add(const Duration(days: 1));
     }
     final difference = departureDateTime.difference(now);
-    return difference.inMinutes;
+    final minutes = (difference.inSeconds / 60).ceil();
+    return minutes;
   }
 
   @override
@@ -51,7 +67,12 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
     final colorLine = widget.routeInfo.routeColor.toColor() ?? context.colorsV3.foregroundDefault;
     final textColorLine = widget.routeInfo.routeTextColor.toColor() ?? context.colorsV3.foregroundDefault;
     final l10n = context.l10n;
-    final trips = widget.routeInfo.trips;
+    final trips = widget.routeInfo.trips.where((trip) {
+      final inMinutes = getMinutesFromDepartureTime(
+        trip.departureTimeUpdate ?? trip.departureTime,
+      );
+      return inMinutes < 1380;
+    }).toList();
     return ContentWrapper(
       color: context.colors.backgroundSurface5,
       children: [
@@ -63,8 +84,8 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                 children: [
                   if (widget.isShuttle)
                     TextSpan(
-                      text: '${l10n.from}\t',
-                      style: TextStyle(
+                      text: '${l10n.from}\t\t',
+                      style: context.textStyles.bodyLargeMedium.copyWith(
                         color: context.colors.foregroundDefault,
                         fontSize: 16,
                       ),
@@ -79,23 +100,23 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                       margin: const EdgeInsetsDirectional.only(end: Spacing.$1x),
                       child: Text(
                         widget.routeInfo.routeShortName,
-                        style: TextStyle(color: textColorLine, fontSize: 12),
+                        style: context.textStyles.bodyLargeMedium.copyWith(color: textColorLine, fontSize: 12),
                       ),
                     ),
                   ),
                   if (widget.isShuttle)
                     TextSpan(
                       text: '${l10n.to}\n',
-                      style: TextStyle(
+                      style: context.textStyles.bodyLargeMedium.copyWith(
                         color: context.colors.foregroundDefault,
-                        fontSize: 16,
+                        fontSize: 14,
                       ),
                     ),
                   TextSpan(
                     text: widget.routeInfo.headsign,
-                    style: TextStyle(
+                    style: context.textStyles.bodyLargeMedium.copyWith(
                       color: context.colors.foregroundDefault,
-                      fontSize: 16,
+                      fontSize: 14,
                     ),
                   ),
                 ],

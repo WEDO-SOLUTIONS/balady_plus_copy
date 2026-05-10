@@ -187,9 +187,18 @@ class ObjectTapEventHandler {
     ));
   }
 
+  // Asia/Riyadh has no DST; Hajj closure schedules are authored in KSA wall time
+  // and must be displayed in KSA regardless of the device locale (BALADY-21).
+  static const Duration _ksaOffset = Duration(hours: 3);
+
+  DateTime? _ksaWallTimeFromEpoch(Object? millis) {
+    if (millis is! int) return null;
+    return DateTime.fromMillisecondsSinceEpoch(millis, isUtc: true).add(_ksaOffset);
+  }
+
   void roadEventTapEvent(Map<dynamic, dynamic> map) {
-    final startTime = DateTime.fromMillisecondsSinceEpoch(map["startTime"]);
-    final finishTime = DateTime.fromMillisecondsSinceEpoch(map["finishTime"]);
+    final startTime = _ksaWallTimeFromEpoch(map["startTime"]);
+    final finishTime = _ksaWallTimeFromEpoch(map["finishTime"]);
     final dgisObjectMap = map["dgisObjectId"];
 
     _objectTapController.sink.add(
