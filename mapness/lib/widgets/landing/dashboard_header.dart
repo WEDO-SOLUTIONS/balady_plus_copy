@@ -18,6 +18,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -82,8 +83,9 @@ class _DashboardMenu extends ConsumerWidget {
 
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final backgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
 
     return ColoredBox(
@@ -164,8 +166,10 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     );
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final headerBackgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
+    final headerHintColor = themeConfig.searchHintColor ?? context.colors.foregroundSoft;
 
     return Container(
       width: double.infinity,
@@ -210,7 +214,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
             config: BaladyInputConfig(
               hintText: context.l10n.searchPlaceOrAddress,
               fillColor: context.colors.backgroundSurface2,
-              hintColor: context.colors.foregroundSoft,
+              hintColor: headerHintColor,
               textStyle: context.textStyles.bodySmallRegular,
             ),
           ),

@@ -6,6 +6,7 @@ import dgis_map
 @main
 @objc class AppDelegate: FlutterAppDelegate {
     private var overlayView: UIView?
+    private var audioCoordinationManager: AudioCoordinationManager?
 
     override func application(
         _ application: UIApplication,
@@ -20,6 +21,9 @@ import dgis_map
 
         // Setup native overlay method channel
         setupNativeOverlayChannel(with: sharedSingleFlutterEngine)
+
+        // Setup iOS audio coordination → Flutter events (duck/restore).
+        audioCoordinationManager = AudioCoordinationManager(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate

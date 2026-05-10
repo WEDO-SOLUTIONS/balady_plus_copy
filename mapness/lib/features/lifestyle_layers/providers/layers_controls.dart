@@ -27,6 +27,9 @@ import 'package:mapness/features/makkah_bus/provider.dart';
 import 'package:mapness/features/makkah_bus/repo.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
+import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
+import 'package:mapness/features/makkah_bus/visible_provider.dart';
+import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
@@ -282,30 +285,43 @@ class LayersControls extends _$LayersControls {
     }
   }
 
+
   void toggleMetro() {
-    ref.read(metroLayerProvider.notifier).toggleMetro();
-    if (state.selectedType != (LayerType.metro)) {
-      setSelection(selectedType: LayerType.metro);
+    final isVisible = ref.read(metroLayerVisibleProvider);
+    if (isVisible) {
+      ref.read(metroLayerProvider.notifier).hideMetro();
+      if (state.selectedType == LayerType.metro) {
+        setSelection();
+      }
     } else {
-      setSelection();
+      ref.read(metroLayerProvider.notifier).showMetro();
+      setSelection(selectedType: LayerType.metro);
     }
   }
 
   void toggleMakkahBuses() {
-    ref.read(makkahBusLayerProvider.notifier).toggle();
-    if (state.selectedType != (LayerType.makkahBus)) {
-      setSelection(selectedType: LayerType.makkahBus);
+    final isVisible = ref.read(makkahBusLayerVisibleProvider);
+    if (isVisible) {
+      ref.read(makkahBusLayerProvider.notifier).hide();
+      if (state.selectedType == LayerType.makkahBus) {
+        setSelection();
+      }
     } else {
-      setSelection();
+      ref.read(makkahBusLayerProvider.notifier).show();
+      setSelection(selectedType: LayerType.makkahBus);
     }
   }
 
   void toggleHaramShuttle() {
-    ref.read(shuttleBusLayerProvider.notifier).toggle();
-    if (state.selectedType != (LayerType.shuttleBus)) {
-      setSelection(selectedType: LayerType.shuttleBus);
+    final isVisible = ref.read(shuttleBusLayerVisibleProvider);
+    if (isVisible) {
+      ref.read(shuttleBusLayerProvider.notifier).hide();
+      if (state.selectedType == LayerType.shuttleBus) {
+        setSelection();
+      }
     } else {
-      setSelection();
+      ref.read(shuttleBusLayerProvider.notifier).show();
+      setSelection(selectedType: LayerType.shuttleBus);
     }
   }
 
@@ -627,15 +643,20 @@ class LayersControls extends _$LayersControls {
         }
 
       case LayerType.metro:
-        await ref.read(metroLayerProvider.notifier).toggleMetro();
+        await ref.read(metroLayerProvider.notifier).hideMetro();
         break;
       case LayerType.makkahBus:
-        await ref.read(makkahBusLayerProvider.notifier).toggle();
+        await ref.read(makkahBusLayerProvider.notifier).hide();
         break;
       case LayerType.shuttleBus:
-        await ref.read(shuttleBusLayerProvider.notifier).toggle();
+        await ref.read(shuttleBusLayerProvider.notifier).hide();
         break;
       case LayerType.traffic:
+        final trafficNotifier = ref.read(trafficStateProvider.notifier);
+        if (trafficNotifier.isTrafficEnabled) {
+          trafficNotifier.onTrafficTap();
+        }
+        break;
       case LayerType.three3D:
       // case LayerType.roadEvents:
       //   break;
@@ -858,16 +879,23 @@ class LayersControls extends _$LayersControls {
   // }
 
   Future<void> toggleTraffic() async {
-    final trafficState = ref.watch(trafficStateProvider);
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
-    final isEnabled = trafficState.status == TrafficControlStatus.enabled;
+    final wasEnabled = trafficNotifier.isTrafficEnabled;
 
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.trafficLightButton,
       group: MetricsConstants.exploreTag,
       action: MetricAction.tap.name,
     );
+
     trafficNotifier.onTrafficTap();
-    hideLayer(LayerType.metro, restorable: false);
+
+    if (wasEnabled) {
+      if (state.selectedType == LayerType.traffic) {
+        setSelection();
+      }
+    } else {
+      setSelection(selectedType: LayerType.traffic);
+    }
   }
 }

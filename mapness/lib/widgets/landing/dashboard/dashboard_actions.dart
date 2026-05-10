@@ -40,13 +40,13 @@ class DashboardActions {
     );
   }
 
-  /// Opens the parking layer view.
+  /// Toggles the parking layer view on/off.
   void openParking() {
     _logThemedQuickAction('parking');
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
     bottomSheetController?.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
     bottomSheetController?.setState(ThreeStateSheet.hidden);
-    ref.read(layersControlsProvider.notifier).enableParking();
+    ref.read(layersControlsProvider.notifier).toggleParking();
   }
 
   /// Opens the Qibla (Kiblah) direction screen.

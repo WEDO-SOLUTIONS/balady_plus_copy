@@ -13,19 +13,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation, translator;
+import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
-import 'package:provider/provider.dart';
 import 'package:mapness/features/stream_audio/ui/pages/stream_audio_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
-import './core/utils/utils_exports.dart' show AppColor, AppConfig, RouteName;
+import './core/utils/utils_exports.dart' show RouteName;
 import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
@@ -62,8 +61,6 @@ class App extends StatelessWidget {
         ),
         // Add AccessibilityController to providers
         ChangeNotifierProvider(create: (_) => AccessibilityController()),
-        // Add BaladyThemeNotifier to providers
-        ChangeNotifierProvider(create: (_) => BaladyThemeNotifier()),
         BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
@@ -121,51 +118,45 @@ class AppWidgetState extends State<AppWidget> {
         return Consumer<BaladyThemeNotifier>(
           builder: (context, themeController, child) {
             return Directionality(
-              textDirection: translator.activeLanguageCode == "ar"
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
-              child: Consumer2<BaladyThemeNotifier, SpecialThemeMode?>(
-                  builder: (context, themeController, specialThemeMode, child) {
-                    final bool isMakkahTheme =
-                        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
-                    return MediaQuery(
-                    data: MediaQuery.of(
-                      context,
-                    ).copyWith(textScaler: TextScaler.linear(controller.textScale)),
+              textDirection: translator.activeLanguageCode == "ar" ? TextDirection.rtl : TextDirection.ltr,
+              child: Consumer<BaladyThemeNotifier>(
+                builder: (context, themeController, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(controller.textScale)),
                     child: MaterialApp(
                       title: 'appNameWord'.tr(),
                       debugShowCheckedModeBanner: false,
                       navigatorKey: NavigationService.navigatorKey,
                       theme: myLightTheme,
                       darkTheme: myDarkTheme,
-                      themeMode:  (themeController.isDarkMode && !isMakkahTheme) ? ThemeMode.dark : ThemeMode.light,
+                      themeMode: themeController.isDarkMode ? ThemeMode.dark : ThemeMode.light,
                       builder: (context, child) {
                         final botToastBuilder = BotToastInit();
-                        final easyLoadingBuilder = EasyLoading.init(
-                          builder: botToastBuilder,
-                        );
+                        final easyLoadingBuilder = EasyLoading.init(builder: botToastBuilder);
                         final builtChild = easyLoadingBuilder(context, child);
 
                         // [BUG FIX]: The old code accidentally excluded the StreamAudio wrapper when grayscale was disabled:
-                    // if (grayscaleFilter == null) return builtChild;
-                    // return ColorFiltered(
-                    //   colorFilter: grayscaleFilter,
+                        // if (grayscaleFilter == null) return builtChild;
+                        // return ColorFiltered(
+                        //   colorFilter: grayscaleFilter,
+                        //   child: StreamAudio(child: builtChild),
+                        // );
+
+                        // [NEW CODE]: We first wrap builtChild with StreamAudio so the floating audio player
+                        // is always present in the widget tree, regardless of the grayscale filter.
+                    // TODO: MBC - Uncomment for next release
+                    // final streamAudioChild = Material(
+                    //   type: MaterialType.transparency,
                     //   child: StreamAudio(child: builtChild),
                     // );
-
-                    // [NEW CODE]: We first wrap builtChild with StreamAudio so the floating audio player
-                    // is always present in the widget tree, regardless of the grayscale filter.
-                    final streamAudioChild = Material(
-                      type: MaterialType.transparency, 
-                      child: StreamAudio(child: builtChild),
-                    );
-
-                    if (grayscaleFilter == null) return streamAudioChild;
-
-                        return ColorFiltered(
-                          colorFilter: grayscaleFilter,
-                          child: streamAudioChild,
+                        final streamAudioChild = Material(
+                          type: MaterialType.transparency,
+                      child: builtChild,
                         );
+
+                        if (grayscaleFilter == null) return streamAudioChild;
+
+                        return ColorFiltered(colorFilter: grayscaleFilter, child: streamAudioChild);
                       },
                       navigatorObservers: [
                         SentryNavigatorObserver(),
@@ -173,15 +164,14 @@ class AppWidgetState extends State<AppWidget> {
                         FlutterUxcamNavigatorObserver(),
                         MapnessRouteObserver(),
                       ],
-                      localizationsDelegates: translator.delegates.toList()
-                        ..add(CountryLocalizations.delegate),
+                      localizationsDelegates: translator.delegates.toList()..add(CountryLocalizations.delegate),
                       locale: translator.activeLocale,
                       supportedLocales: translator.locals(),
                       initialRoute: RouteName.bottomNavigation,
                       routes: Routes.routes(),
                     ),
                   );
-                }
+                },
               ),
             );
           },

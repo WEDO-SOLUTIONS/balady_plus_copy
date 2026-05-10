@@ -45,7 +45,9 @@ class Lookups {
 @immutable
 @noRenameNoToJson
 class NameId {
+  @JsonKey(defaultValue: '')
   final String id;
+  @JsonKey(defaultValue: '')
   final String name;
 
   const NameId({required this.id, required this.name});
@@ -113,6 +115,7 @@ class OfferType extends NameId {
 
 @noRenameNoToJson
 class OfferProvider extends NameId {
+  @JsonKey(defaultValue: '')
   final String logo;
 
   const OfferProvider({

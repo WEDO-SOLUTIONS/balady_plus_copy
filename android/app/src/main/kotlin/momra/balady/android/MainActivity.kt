@@ -3,6 +3,10 @@ package momra.balady.android
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
 import com.dgis.FlutterProvider
 import com.dgis.map.android_auto.CarAppConnectionState
@@ -18,6 +22,27 @@ import com.ryanheise.audioservice.AudioServiceFragmentActivity
 class MainActivity : AudioServiceFragmentActivity() {
     
     // TEMPORARILY DISABLED: private var mediaSessionHandler: MediaSessionHandler? = null
+    private var audioCoordinationChannel: MethodChannel? = null
+    private var audioManager: AudioManager? = null
+    private var focusRequest: AudioFocusRequest? = null
+
+    private val audioFocusListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        // Forward focus changes to Flutter so it can pause/resume the in-app player.
+        // DGis navigation voice prompts typically request transient focus, causing
+        // LOSS_TRANSIENT(_CAN_DUCK) for the currently playing media.
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT,
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                audioCoordinationChannel?.invokeMethod("duckAudio", mapOf("volume" to 0.0))
+            }
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                audioCoordinationChannel?.invokeMethod("restoreAudio", mapOf("volume" to 1.0))
+            }
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                audioCoordinationChannel?.invokeMethod("duckAudio", mapOf("volume" to 0.0))
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +51,8 @@ class MainActivity : AudioServiceFragmentActivity() {
 
         FlutterProvider.getHostFlutterApi(this).runMain { }
         MainAppScreenStateNotifier.setState(MainAppScreenState.CREATED)
+
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as? AudioManager
     }
 
     override fun onStart() {
@@ -36,11 +63,16 @@ class MainActivity : AudioServiceFragmentActivity() {
     override fun onResume() {
         super.onResume()
         MainAppScreenStateNotifier.setState(MainAppScreenState.RESUMED)
+
+        // Ensure we are listening for focus changes while the app is active.
+        requestAudioFocusForCoordination()
     }
 
     override fun onPause() {
         super.onPause()
         MainAppScreenStateNotifier.setState(MainAppScreenState.PAUSED)
+
+        abandonAudioFocusForCoordination()
     }
 
     override fun onStop() {
@@ -74,10 +106,54 @@ class MainActivity : AudioServiceFragmentActivity() {
         // channel.setMethodCallHandler(mediaSessionHandler)
         
         // Native audio interruption removed for simplicity
+
+        // Android audio coordination → Flutter events (duck/restore).
+        audioCoordinationChannel = MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "com.balady.audio_coordination"
+        )
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {
         return false
+    }
+
+    private fun requestAudioFocusForCoordination() {
+        val am = audioManager ?: return
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val attrs = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+
+                val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(attrs)
+                    .setOnAudioFocusChangeListener(audioFocusListener)
+                    .build()
+                focusRequest = req
+                am.requestAudioFocus(req)
+            } else {
+                @Suppress("DEPRECATION")
+                am.requestAudioFocus(audioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+            }
+        } catch (_: Exception) {
+            // Best-effort: if focus cannot be requested, coordination will be unavailable.
+        }
+    }
+
+    private fun abandonAudioFocusForCoordination() {
+        val am = audioManager ?: return
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                focusRequest?.let { am.abandonAudioFocusRequest(it) }
+                focusRequest = null
+            } else {
+                @Suppress("DEPRECATION")
+                am.abandonAudioFocus(audioFocusListener)
+            }
+        } catch (_: Exception) {
+        }
     }
 }
 
