@@ -104,7 +104,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     func createTemplate() -> CPMapTemplate {
-        if let maneuverColor = UIColor(named: "CarPlayManueverBackgroung") {
+        if let maneuverColor = UIColor(named: "CarPlayManueverBackground") {
             mapTemplate.guidanceBackgroundColor = maneuverColor
         }
 
