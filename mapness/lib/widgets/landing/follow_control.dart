@@ -11,6 +11,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
+import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class FollowControl extends ConsumerWidget {
@@ -36,6 +37,7 @@ class FollowControl extends ConsumerWidget {
         );
 
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+        ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
 
         final location = ref.read(locationProvider.notifier);
         final result = await location.checkLocationPermission();

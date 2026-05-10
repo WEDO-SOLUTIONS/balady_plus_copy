@@ -1,5 +1,6 @@
 package com.dgis.map.control_handlers
 
+import android.content.Context
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
@@ -45,6 +46,7 @@ class NavigationHandler(
         private val navigationManager: NavigationManager,
         private val eventSink: EventChannel.EventSink,
         private val map: Map,
+        private val appContext: Context,
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
         private val voicesManager = getVoiceManager(sdkContext)
@@ -89,6 +91,7 @@ class NavigationHandler(
                                 navigationManager.uiModel,
                                 eventSink,
                                 navigationManager,
+                                appContext,
                         )
 
                 stateClosable =

@@ -100,7 +100,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
 
   void _clearPoiSelectionState() {
     ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-    ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+    ref.read(highlightProvider.notifier).removeAll();
     ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
 
     // Show Makkah place markers again when POI card is closed
@@ -170,13 +170,14 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       );
     }
 
+    final isFoundingDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
     final isFoundingDayObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(widget.objectId.objectId);
 
     final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
     if (wrcEventPoint != null) {
       return _WrcCardContent(wrcEventPoint: wrcEventPoint, poiCardState: poiCardState);
     }
-    if (isFoundingDayObject && data != null) {
+    if (isFoundingDay && isFoundingDayObject && data != null) {
       return _FoundingDayPoiCardContent(
         objectId: widget.objectId.objectId,
         closestPoint: widget.closestPoint,

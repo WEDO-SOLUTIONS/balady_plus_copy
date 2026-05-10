@@ -122,7 +122,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                   alignment: AlignmentDirectional.bottomStart,
                   children: [
                     SizedBox(
-                      height: widget.isExpandable
+                      height: widget.isExpandable && _animation.value!=1
                           ? _textHeight.heightTruncated +
                                 (_textHeight.height - _textHeight.heightTruncated) * _animation.value
                           : null,

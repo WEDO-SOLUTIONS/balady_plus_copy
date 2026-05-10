@@ -51,6 +51,16 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
+            Column(
+              children: [
+                StoriesWidget(
+                  titleWidget: Padding(
+                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: Spacing.$3x),
             SizedBox(
               width: double.infinity,
@@ -64,13 +74,6 @@ class BaseDashboardContent extends ConsumerWidget {
                 title: context.l10n.contribute,
                 subtitle: context.l10n.buildBaladyTogether,
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
-              ),
-            ),
-            const SizedBox(height: Spacing.$6x),
-            StoriesWidget(
-              titleWidget: Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                child: DashboardTitle(context.l10n.whatIsNewInBalady),
               ),
             ),
             const SizedBox(height: Spacing.$6x),
@@ -105,84 +108,85 @@ class BaseDashboardContent extends ConsumerWidget {
                       icon: General32Icons.parkingAction,
                       onTap: actions.openParking,
                     ),
-                    const SizedBox(width: Spacing.$2x),
-                    Consumer(
-                      builder: (context, ref, child) {
-                        final streamAudio = ref.watch(streamAudioProvider);
-                        final isLoading = streamAudio.isLoadingChannels;
-                        final hasChannels = streamAudio.hasChannels;
-
-                        return QuickActionButton(
-                          text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
-                          icon: Icons.wifi,
-                          child: isLoading
-                              ? SizedBox(
-                            height: Spacing.$6x + Spacing.$1x,
-                            width: Spacing.$6x + Spacing.$1x,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                context.colors.accentDefault,
-                              ),
-                            ),
-                          )
-                              : SvgPicture.asset(
-                            Assets.icons.svg.audio.audioStream.keyName,
-                            height: Spacing.$6x + Spacing.$1x,
-                            colorFilter: ColorFilter.mode(
-                              context.colors.accentDefault,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          onTap: () async {
-                            final provider = ref.read(streamAudioProvider.notifier);
-
-                            try {
-                              // Reset if needed before getting live programs
-                              if (provider.needsReinitialization) {
-                                await provider.reset();
-                              }
-
-                              // Always try to get channels (this will show loading state)
-                              await provider.getChannels(forceRefresh: !hasChannels);
-
-                              if (provider.filteredChannels.isNotEmpty) {
-                                await provider.selectChannel(provider.filteredChannels.first);
-                              } else {
-                                // Show message if no channels available
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(Directionality.of(context) == TextDirection.rtl
-                                          ? 'لا توجد قنوات متاحة حالياً. اضغط مرة أخرى للمحاولة.'
-                                          : 'No channels available right now. Tap again to retry.'),
-                                      action: SnackBarAction(
-                                        label:
-                                        Directionality.of(context) == TextDirection.rtl ? 'إعادة المحاولة' : 'Retry',
-                                        onPressed: () async {
-                                          await provider.getChannels(forceRefresh: true);
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }
-                            } catch (e) {
-                              debugPrint('Dashboard: Error loading channels: $e');
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(Directionality.of(context) == TextDirection.rtl
-                                        ? 'خطأ في تحميل القنوات. اضغط مرة أخرى للمحاولة.'
-                                        : 'Error loading channels. Tap again to retry.'),
-                                  ),
-                                );
-                              }
-                            }
-                          },
-                        );
-                      },
-                    ),
+                    // TODO: MBC - Uncomment for next release
+                    // const SizedBox(width: Spacing.$2x),
+                    // Consumer(
+                    //   builder: (context, ref, child) {
+                    //     final streamAudio = ref.watch(streamAudioProvider);
+                    //     final isLoading = streamAudio.isLoadingChannels;
+                    //     final hasChannels = streamAudio.hasChannels;
+                    //
+                    //     return QuickActionButton(
+                    //       text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
+                    //       icon: Icons.wifi,
+                    //       child: isLoading
+                    //           ? SizedBox(
+                    //         height: Spacing.$6x + Spacing.$1x,
+                    //         width: Spacing.$6x + Spacing.$1x,
+                    //         child: CircularProgressIndicator(
+                    //           strokeWidth: 2,
+                    //           valueColor: AlwaysStoppedAnimation<Color>(
+                    //             context.colors.accentDefault,
+                    //           ),
+                    //         ),
+                    //       )
+                    //           : SvgPicture.asset(
+                    //         Assets.icons.svg.audio.audioStream.keyName,
+                    //         height: Spacing.$6x + Spacing.$1x,
+                    //         colorFilter: ColorFilter.mode(
+                    //           context.colors.accentDefault,
+                    //           BlendMode.srcIn,
+                    //         ),
+                    //       ),
+                    //       onTap: () async {
+                    //         final provider = ref.read(streamAudioProvider.notifier);
+                    //
+                    //         try {
+                    //           // Reset if needed before getting live programs
+                    //           if (provider.needsReinitialization) {
+                    //             await provider.reset();
+                    //           }
+                    //
+                    //           // Always try to get channels (this will show loading state)
+                    //           await provider.getChannels(forceRefresh: !hasChannels);
+                    //
+                    //           if (provider.filteredChannels.isNotEmpty) {
+                    //             await provider.selectChannel(provider.filteredChannels.first);
+                    //           } else {
+                    //             // Show message if no channels available
+                    //             if (context.mounted) {
+                    //               ScaffoldMessenger.of(context).showSnackBar(
+                    //                 SnackBar(
+                    //                   content: Text(Directionality.of(context) == TextDirection.rtl
+                    //                       ? 'لا توجد قنوات متاحة حالياً. اضغط مرة أخرى للمحاولة.'
+                    //                       : 'No channels available right now. Tap again to retry.'),
+                    //                   action: SnackBarAction(
+                    //                     label:
+                    //                     Directionality.of(context) == TextDirection.rtl ? 'إعادة المحاولة' : 'Retry',
+                    //                     onPressed: () async {
+                    //                       await provider.getChannels(forceRefresh: true);
+                    //                     },
+                    //                   ),
+                    //                 ),
+                    //               );
+                    //             }
+                    //           }
+                    //         } catch (e) {
+                    //           debugPrint('Dashboard: Error loading channels: $e');
+                    //           if (context.mounted) {
+                    //             ScaffoldMessenger.of(context).showSnackBar(
+                    //               SnackBar(
+                    //                 content: Text(Directionality.of(context) == TextDirection.rtl
+                    //                     ? 'خطأ في تحميل القنوات. اضغط مرة أخرى للمحاولة.'
+                    //                     : 'Error loading channels. Tap again to retry.'),
+                    //               ),
+                    //             );
+                    //           }
+                    //         }
+                    //       },
+                    //     );
+                    //   },
+                    // ),
                     const SizedBox(width: Spacing.$2x),
                     QuickActionButton(
                       text: context.l10n.snapAndSendAction,
@@ -221,7 +225,8 @@ class BaseDashboardContent extends ConsumerWidget {
               const SizedBox(height: Spacing.$4x),
               const PlacePreview(),
               const SizedBox(height: Spacing.$4x),
-              const ExploreCard(),
+              // TODO: MBC - Uncomment for next release
+              // const ExploreCard(),
               const SizedBox(height: Spacing.$6x),
             ],
             if (themeConfig.useThemedExploreBackground)

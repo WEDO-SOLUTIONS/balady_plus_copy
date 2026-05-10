@@ -3,9 +3,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
-import 'package:sheetify/multi_state_sheet/state_snapping/sheet_state_mapper.dart';
 
 class QuickFilter extends ConsumerWidget {
   final FilterItemConfig item;
@@ -19,16 +20,23 @@ class QuickFilter extends ConsumerWidget {
     final controllerWrapper = ref.watch(bottomSheetControllerProvider);
     final controller = controllerWrapper.controller;
 
+    final colors = context.colors;
+
     final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
     final bool isMekkahTheme =
         specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
 
-    final Color themedColor = specialThemeMode == SpecialThemeMode.ramadan
+    final Color lightThemedColor = specialThemeMode == SpecialThemeMode.ramadan
         ? const Color(0xFF806E5C)
         : const Color(0xFF307457);
 
-    final Color iconColor = isMekkahTheme ? themedColor : context.colors.foregroundSoft;
+    // Dark Makkah uses white chrome inside the dark navy chip; the gold/green
+    // tints from the light Makkah palette wash out.
+    final Color themedColor = isDark ? const Color(0xFFFFFFFF) : lightThemedColor;
+
+    final Color iconColor = isMekkahTheme ? themedColor : colors.foregroundSoft;
     final Color? labelColor = isMekkahTheme ? themedColor : null;
 
     final leadingIcon = item.icon != null
@@ -38,39 +46,40 @@ class QuickFilter extends ConsumerWidget {
         : null;
     final label = item.title;
 
-    return ListenableBuilder(
-      listenable: controller!,
-      builder: (context, _) {
-        final isHidden = controller.closestState == ThreeStateSheet.hidden;
-        final WidgetColors colors = WidgetColors(
-          background: context.colors.backgroundSurface2,
-          foreground: context.colors.foregroundDefault,
-        );
-        if (label == null || label.isEmpty == true) {
-          if (leadingIcon == null) {
-            return const SizedBox.shrink();
-          }
-          return ChipsElement(
-            colors: isHidden ? colors : null,
-            onPressed: item.onTap,
-            isSelected: item.selected,
-            type: chipsType,
-            options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
-          );
-        }
-        return ChipsElement(
-          colors: isHidden ? colors : null,
-          onPressed: item.onTap,
-          isSelected: item.selected,
-          type: chipsType,
-          options: ChipsLabelOptions(
-            labelFirst: label,
-            leadingIcon: leadingIcon,
-            leadingIconColor: iconColor,
-            labelFirstColor: labelColor,
-          ),
-        );
-      },
+    final Color chipBackground = isMekkahTheme && isDark
+        ? MakkahPoiConstants.darkSheet
+        : context.colors.backgroundSurface2;
+    final Color chipForeground = isMekkahTheme && isDark
+        ? const Color(0xFFFFFFFF)
+        : context.colors.foregroundDefault;
+    final WidgetColors chipsColors = WidgetColors(
+      background: chipBackground,
+      foreground: chipForeground,
+    );
+
+    if (label == null || label.isEmpty == true) {
+      if (leadingIcon == null) {
+        return const SizedBox.shrink();
+      }
+      return ChipsElement(
+        colors: chipsColors,
+        onPressed: item.onTap,
+        isSelected: item.selected,
+        type: chipsType,
+        options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
+      );
+    }
+    return ChipsElement(
+      colors: chipsColors,
+      onPressed: item.onTap,
+      isSelected: item.selected,
+      type: chipsType,
+      options: ChipsLabelOptions(
+        labelFirst: label,
+        leadingIcon: leadingIcon,
+        leadingIconColor: iconColor,
+        labelFirstColor: labelColor,
+      ),
     );
   }
 }

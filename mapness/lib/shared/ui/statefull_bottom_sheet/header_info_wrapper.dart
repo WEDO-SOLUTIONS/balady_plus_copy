@@ -43,13 +43,11 @@ class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: SizedBox(
-              height: _interpolation(state, interpolation, 26),
+              height: _interpolation(state, interpolation, 42),
               width: double.infinity,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [Text(text, style: context.textStyles.bodySmallRegular.copyWith(color: textColor))],
-                ),
+              child: Padding(
+                padding: const EdgeInsets.only(top: Spacing.$2x),
+                child: Text(text, style: context.textStyles.bodySmallRegular.copyWith(color: textColor)),
               ),
             ),
           ),

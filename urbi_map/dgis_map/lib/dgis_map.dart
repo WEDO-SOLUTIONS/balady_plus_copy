@@ -7,17 +7,18 @@ import 'dgis_map_controller.dart';
 
 const String _viewType = 'com.dgis.map_view';
 
-///  Setting [androidUseExpensive] to true eradicates spaming "SurfaceView"
-///  on some Android devices. It may cause performance loss on devices with API < 10
 class DgisMap extends StatelessWidget {
-  DgisMap({
-    required this.onMapCreated,
-    this.androidUseExpensive = false,
-    super.key,
-  });
+  DgisMap({required this.onMapCreated, this.androidUseExpensive = false, super.key});
 
   final Function(DgisMapController controller) onMapCreated;
+
+  ///  Setting [androidUseExpensive] to true eradicates spaming "SurfaceView"
+  ///  on some Android devices. It may cause performance loss on devices with API < 10
   final bool androidUseExpensive;
+
+  late final _gestureRecognizers = <Factory<OneSequenceGestureRecognizer>>{
+    Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +26,8 @@ class DgisMap extends StatelessWidget {
         ? AndroidView(
             key: key,
             viewType: _viewType,
-            onPlatformViewCreated: (viewId) {
-              final controller = DgisMapController(viewId);
-              onMapCreated(controller);
-            },
-            gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+            onPlatformViewCreated: (viewId) => onMapCreated(DgisMapController(viewId)),
+            gestureRecognizers: _gestureRecognizers,
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
             layoutDirection: TextDirection.ltr,
           )
@@ -37,10 +35,8 @@ class DgisMap extends StatelessWidget {
             key: key,
             viewType: _viewType,
             layoutDirection: TextDirection.ltr,
-            onPlatformViewCreated: (viewId) {
-              final controller = DgisMapController(viewId);
-              onMapCreated(controller);
-            },
+            gestureRecognizers: _gestureRecognizers,
+            onPlatformViewCreated: (viewId) => onMapCreated(DgisMapController(viewId)),
           );
   }
 }

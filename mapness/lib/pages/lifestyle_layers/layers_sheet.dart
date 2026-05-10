@@ -21,6 +21,8 @@ class LayersSheetPage extends StatefulHookConsumerWidget {
 class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTickerProviderStateMixin {
   late final ToggleSheetController _layersController;
   late final ToggleSheetController _parkingLotsController;
+  bool _isParkingSheetMounted = false;
+  bool _isClosingRoute = false;
 
   late final barrierColorDelegate = ToggleSheetDelegateFunction(
     function: (controller) => screenOverlayDimming40.withAlpha((controller.fraction * 255).toInt()),
@@ -34,14 +36,19 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
     _layersController = ToggleSheetController(
       durationMultiplier: 2,
       onClose: (_) {
-        if (_parkingLotsController.isClosed) {
-          context.router.pop();
+        if (_parkingLotsController.isClosed && mounted) {
+          _closeRouteWithoutSheetPopScope();
         }
       },
     );
     _parkingLotsController = ToggleSheetController(
       durationMultiplier: 2,
       onClose: (_) {
+        if (mounted && _isParkingSheetMounted) {
+          setState(() {
+            _isParkingSheetMounted = false;
+          });
+        }
         _layersController.open();
       },
     );
@@ -57,6 +64,10 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
   @override
   Widget build(BuildContext context) {
     screenOverlayDimming40 = context.colors.screenOverlayDimming40;
+    if (_isClosingRoute) {
+      return const Scaffold(body: SizedBox.expand());
+    }
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -90,31 +101,27 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
                   final controller = ref.read(bottomSheetControllerProvider).controller;
                   final isBottomSheetOpen = controller?.state == ThreeStateSheet.open;
                   if (isBottomSheetOpen) {
-                    controller?.setState(ThreeStateSheet.hidden, duration: Duration.zero);
-
-                    Future.delayed(
-                      const Duration(milliseconds: 200),
-                      () => controller?.setState(ThreeStateSheet.open),
-                    );
+                    controller?.setState(ThreeStateSheet.open);
                   }
                 }
-                context.router.pop();
+                _closeRouteWithoutSheetPopScope();
               },
             ),
           ),
-          ToggleSheet(
-            scrollController: _parkingLotsController,
-            backgroundColor: context.colors.backgroundSurface4,
-            safeAreaColor: context.colors.backgroundSurface4,
-            dragger: const SheetDragger(),
-            startConfig: ToggleSheetStart.closed,
-            barrierColorDelegate: barrierColorDelegate,
-            sliver: ParkingDetailsContent(
-              onPanelClose: () {
-                _showLayersPanel();
-              },
+          if (_isParkingSheetMounted)
+            ToggleSheet(
+              scrollController: _parkingLotsController,
+              backgroundColor: context.colors.backgroundSurface4,
+              safeAreaColor: context.colors.backgroundSurface4,
+              dragger: const SheetDragger(),
+              startConfig: ToggleSheetStart.closed,
+              barrierColorDelegate: barrierColorDelegate,
+              sliver: ParkingDetailsContent(
+                onPanelClose: () {
+                  _showLayersPanel();
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -125,14 +132,44 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
   }
 
   void _showLayersPanel() {
-    ref.watch(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.layers);
+    ref.read(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.layers);
     _layersController.open();
     _parkingLotsController.close();
   }
 
   void _showParkingLotsPanel() {
-    ref.watch(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.parking);
+    ref.read(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.parking);
+    if (!_isParkingSheetMounted) {
+      setState(() {
+        _isParkingSheetMounted = true;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _layersController.close();
+        _parkingLotsController.open();
+      });
+      return;
+    }
     _layersController.close();
     _parkingLotsController.open();
+  }
+
+  void _closeRouteWithoutSheetPopScope() {
+    if (!mounted || _isClosingRoute) {
+      return;
+    }
+
+    setState(() {
+      _isClosingRoute = true;
+      _isParkingSheetMounted = false;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.router.pop();
+      }
+    });
   }
 }

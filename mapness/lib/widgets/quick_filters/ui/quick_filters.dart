@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -46,35 +47,27 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
   @override
   Widget build(BuildContext context) {
     // Workaround to fix issue: https://github.com/google/flutter.widgets/issues/192
-    final originalDirectionality = Directionality.of(context);
-    const positionedListDirectionality = TextDirection.ltr;
-    final reverse = originalDirectionality == TextDirection.rtl;
+    final isArabic = ref.watch(uiDirectionProvider) == TextDirection.rtl;
 
     return SizedBox(
       height: widget.height,
-      child: Directionality(
-        textDirection: positionedListDirectionality,
-        child: ScrollablePositionedList.separated(
-          scrollDirection: Axis.horizontal,
-          reverse: reverse,
-          padding: widget.padding,
-          itemScrollController: itemScrollController,
-          separatorBuilder: (_, __) => const SizedBox(width: Spacing.$2x),
-          itemCount: widget.filters.length,
-          itemBuilder: (context, index) {
-            final item = widget.filters[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x),
-              child: Directionality(
-                textDirection: originalDirectionality,
-                child: switch (item) {
-                  FilterItemConfig() => QuickFilter(item: item, selected: item.selected, chipsType: ChipsType.map),
-                  FilterItemBuilder() => item.builder(context, isSelected: item.selected),
-                },
-              ),
-            );
-          },
-        ),
+      child: ScrollablePositionedList.separated(
+        scrollDirection: Axis.horizontal,
+        padding: widget.padding,
+        reverse: isArabic,
+        itemScrollController: itemScrollController,
+        separatorBuilder: (_, __) => const SizedBox(width: Spacing.$2x),
+        itemCount: widget.filters.length,
+        itemBuilder: (context, index) {
+          final item = widget.filters[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x),
+            child: switch (item) {
+              FilterItemConfig() => QuickFilter(item: item, selected: item.selected, chipsType: ChipsType.map),
+              FilterItemBuilder() => item.builder(context, isSelected: item.selected),
+            },
+          );
+        },
       ),
     );
   }

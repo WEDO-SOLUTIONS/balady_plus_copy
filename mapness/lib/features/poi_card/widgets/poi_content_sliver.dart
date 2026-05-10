@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +10,10 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/ai_summary/ui/ai_summary_section.dart';
+import 'package:mapness/features/bus_departures/providers/provider.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
@@ -20,6 +25,8 @@ import 'package:mapness/features/poi_card/provider/poi_search_by_object.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_bus.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_container.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
@@ -28,6 +35,7 @@ import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
@@ -112,6 +120,13 @@ class PoiContentSliver extends ConsumerWidget {
       child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
     );
 
+    final busDepartures = ref.watch(busDeparturesProvider(data.id!.objectId.toString()));
+    final makkahDeparturesModel = busDepartures.value?.data.transitSystems.firstWhereOrNull(
+      (element) => element.id == 'makkah_bus',
+    );
+    final haramDeparturesModel = busDepartures.value?.data.transitSystems.firstWhereOrNull(
+      (element) => element.id == 'haram_shuttle',
+    );
     final workingHours = data.openingHours?.toWorkingHours();
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
@@ -192,7 +207,8 @@ class PoiContentSliver extends ConsumerWidget {
     final isFoundationDay = activeCityEvent?.isFoundingDay ?? false;
     final isFoundationObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(data.id!.objectId);
     final localAboutText = ref.read(foundingDayUrbiProvider.notifier).getAboutByDgisId(data.id!.objectId);
-    final about = data.getAbout(context.l10n);
+    final forceShow = ref.read(foundingDayUrbiProvider.notifier).shouldForceShow(data.id!.objectId);
+    final about = data.getAbout(context.l10n, customAbout: forceShow ? localAboutText : null);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
 
@@ -201,27 +217,37 @@ class PoiContentSliver extends ConsumerWidget {
       sliver: SliverToBoxAdapter(
         child: Column(
           children: [
-            Padding(
-              padding: itemPadding,
-              child: PoiContentFeedbackCard(
-                onTap: () {
-                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
-                  if (objectIdInt == null) {
-                    return;
-                  }
-
-                  context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.editCompany,
-                      params: FeedbackObjectIdParams(objectIdInt),
-                    ),
-                  );
-                },
-                data: PoiContentFeedbackType.cityExpert,
-                padding: EdgeInsets.zero,
-                activeCityEvent: activeCityEvent,
+            if (data.isDroppedPin)
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  padding: EdgeInsetsGeometry.zero,
+                  data: PoiContentFeedbackType.addPlace,
+                  onTap: () => context.router.push(QuickFeedbackRoute()),
+                  activeCityEvent: activeCityEvent,
+                ),
+              )
+            else
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  onTap: () {
+                    final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                    if (objectIdInt == null) {
+                      return;
+                    }
+                    context.router.push(
+                      QuickFeedbackRoute(
+                        type: QuickFeedbackType.editCompany,
+                        params: FeedbackObjectIdParams(objectIdInt),
+                      ),
+                    );
+                  },
+                  data: PoiContentFeedbackType.cityExpert,
+                  padding: EdgeInsets.zero,
+                  activeCityEvent: activeCityEvent,
+                ),
               ),
-            ),
             Padding(
               padding: itemPadding,
               child: PoiContentFullAddressCard(
@@ -233,6 +259,7 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               ),
             ),
+            AiSummarySection(poiId: data.id!.objectId.toString()),
             if (shouldShowMakkahPreview)
               Padding(
                 padding: const EdgeInsets.only(bottom: Spacing.$3x),
@@ -262,10 +289,10 @@ class PoiContentSliver extends ConsumerWidget {
                     ],
                   ),
                 )
-              else
+              else if (about != null)
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentAboutCard(data: about!),
+                  child: PoiContentAboutCard(data: about),
                 ),
             if (workingHours != null) //
               Padding(
@@ -301,6 +328,13 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 )
                 .toList(),
+            PoiLinesContainer(
+              model: makkahDeparturesModel,
+            ),
+            PoiLinesContainer(
+              model: haramDeparturesModel,
+              isShuttle: true,
+            ),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(

@@ -30,6 +30,11 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController;
 
+  /// Tracks whether the AI Summary fetch has already been kicked
+  /// off for this POI. The spec says the request fires exactly
+  /// once, on the first collapsed → expanded transition.
+  bool _aiSummaryTriggered = false;
+
   bool get isGooglePoi => widget.poiCardDataFromGoogle != null;
 
   @override
@@ -113,6 +118,18 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       }
       _bottomSheetPreviousState = state;
       _stateNotifier.value = state;
+
+      // Kick off the AI summary fetch as soon as the sheet leaves
+      // the preview states (hidden / halfOpen) — i.e. when the
+      // card is visually "expanded" per the spec. The enum has
+      // two such states (open, expanded) because of the snapping
+      // ladder; either one shows the detail content, so both
+      // should trigger the request. Runs for the initial
+      // transition too, covering the deep-link case.
+      if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+        _maybeTriggerAiSummary();
+      }
+
       if (!isInitial) {
         BssUIElementNames? uiElementName;
         switch (state) {
@@ -158,14 +175,45 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     super.dispose();
   }
 
+  /// Kick off the AI summary fetch on the first expand for this
+  /// POI. Subsequent expand transitions are no-ops. Also handles
+  /// the deep-link edge case where the card is opened directly
+  /// in the [PoiCardBottomSheetState.expanded] state.
+  void _maybeTriggerAiSummary() {
+    if (_aiSummaryTriggered) {
+      return;
+    }
+    _aiSummaryTriggered = true;
+    final language = ref.read(appLanguageProvider);
+    final poiId = widget.objectId.toString();
+    ref.read(aiSummaryProvider(poiId, language).notifier).load();
+  }
+
   @override
   Widget build(BuildContext context) {
-    /// has value
-    ref.listen(poiPhotoProvider(widget.objectId), (previous, next) {
-      if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
-        return;
-      }
-    });
+    // When the app language changes, the AI summary is keyed by a
+    // different family argument (poiId, newLocale) so a fresh
+    // notifier instance appears. Reset the trigger flag so that
+    // the next expand fires `load()` for the new locale; if the
+    // sheet is already expanded, re-trigger immediately.
+    ref
+      ..listen(appLanguageProvider, (previous, next) {
+        if (previous == next) {
+          return;
+        }
+        _aiSummaryTriggered = false;
+        final currentState = _bottomSheetController.state;
+        if (currentState == PoiCardBottomSheetState.open ||
+            currentState == PoiCardBottomSheetState.expanded) {
+          _maybeTriggerAiSummary();
+        }
+      })
+      ..listen(poiPhotoProvider(widget.objectId), (previous, next) {
+        /// has value
+        if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
+          return;
+        }
+      });
     final l10n = context.l10n;
 
     final parkingPoi = widget.objectId == parkingObjectId;
@@ -322,8 +370,12 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   title:
                       widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
-                      widget.data.title,
-                  subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
+                      widget.data.pinTitle(l10n),
+                  subTitle:
+                      _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
+                      (widget.objectId == 70030077050725730
+                          ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
+                          : (widget.data.subtitle == 'تسوية' ? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
                       const TextSpan(text: ' • '),
@@ -366,7 +418,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   parkingInfo: widget.data.parkingInfo,
                   poiCardState: poiCardState,
                   tabController: _tabController,
-                  data: widget.data,
+                  data: poiCardState?.gisObjectIdMessage ?? widget.data,
                   onTapClose: () async {
                     await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
                     await closePoiCard(context, ref);

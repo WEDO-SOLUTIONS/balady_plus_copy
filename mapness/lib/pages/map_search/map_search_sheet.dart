@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -23,7 +22,7 @@ import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart' hide Search;
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -45,6 +44,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   final bool withClustering;
   final double biggestHeight;
   final Expansion? expansion;
+  final String? initialState;
 
   const MapSearchSheet({
     required this.withClustering,
@@ -52,6 +52,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
     required this.requestFocus,
     this.expansion,
     super.key,
+    this.initialState,
   });
 
   @override
@@ -69,14 +70,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
+  bool _showMoreQuickFilters = false;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
-    final state = controller.state;
+    const startFade = 0.56;
+    const endFade = 1.0;
 
-    return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+    final opacity = (1 - ((fraction - startFade) / (endFade - startFade))).clamp(0.0, 1.0);
+
+    return fraction < startFade ? 1.0 : opacity;
   });
 
   late final barrierColorDelegate = StatefulSheetDelegate.func<Color?, ThreeStateSheet>((controller) {
@@ -92,24 +96,18 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       initialState: ThreeStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({.8, 1.0}),
+          FractionSnappingModel({.56, 1.0}),
           ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
       stateMapper: const LandingStateMapper(),
+      // BE-153: animation how in Google Maps
+      forceMultiplier: 100.0,
+      initialOpenCurve: Curves.linear,
+      mainCurve: Curves.linear,
     );
-    _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  void _onSheetChanged() {
-    final newState = _multiStateSheetController.state;
-    if (newState != _sheetState) {
-      setState(() {
-        _sheetState = newState;
-      });
-    }
   }
 
   @override
@@ -134,9 +132,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
-    _multiStateSheetController
-      ..removeListener(_onSheetChanged)
-      ..dispose();
+    _multiStateSheetController.dispose();
     _keyboardVisible.cancel();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -151,6 +147,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     final contentColor = context.colors.backgroundSurface1;
     final containerColor = context.colors.backgroundSurface4;
 
+    final searchState = ref.watch(searchProvider(_scope));
+    final searcher = ref.watch(searchProvider(_scope).notifier);
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: settings.name,
@@ -165,9 +163,26 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
-    ref.listen(searchProvider(_scope), (previous, next) {
-      _drawSearchMarkers(next, previous, searchObjectManager);
-    });
+    ref
+      ..listen(searchProvider(_scope), (previous, next) {
+        if (!mounted) {
+          return;
+        }
+        if (_showMoreQuickFilters && next is! SearchStateHistory) {
+          setState(() {
+            _showMoreQuickFilters = false;
+          });
+        }
+        _drawSearchMarkers(next, previous, searchObjectManager);
+      })
+      ..listen<SearchState>(
+        searchProvider(_scope),
+        (previous, next) {
+          if (next is SearchStateLoading) {
+            _multiStateSheetController.setState(ThreeStateSheet.open);
+          }
+        },
+      );
     final isCloseButton = ref.watch(
       searchProvider(
         _scope,
@@ -192,28 +207,92 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: _sheetState == ThreeStateSheet.hidden ? contentColor : containerColor,
-              dragger: SheetDragger(backgroundColor: contentColor),
+              safeAreaColor: _showMoreQuickFilters
+                  ? switch (searchState) {
+                      SearchStateEmpty() ||
+                      SearchStateLoading() ||
+                      SearchStateResults() ||
+                      SearchStateError() => containerColor,
+                      SearchStateHistory() || SearchStateSuggest() => contentColor,
+                    }
+                  : containerColor,
+              dragger: SheetDragger(
+                backgroundColor: switch (searchState) {
+                  SearchStateEmpty() ||
+                  SearchStateLoading() ||
+                  SearchStateResults() ||
+                  SearchStateError() => containerColor,
+                  SearchStateHistory() || SearchStateSuggest() => contentColor,
+                },
+              ),
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
-              header: Container(
-                color: contentColor,
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
-              ),
-              outside: MapSearchSheetControls(
-                currentSize: currentSize,
-                collapsedSize: collapsedHeight,
-                sheetState: _sheetState,
+              header: switch (searchState) {
+                SearchStateEmpty() || SearchStateLoading() || SearchStateResults() || SearchStateError() => Container(
+                  color: containerColor,
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          searchState.searchText,
+                          style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      AppButton(
+                        buttonColorScheme: ButtonColorScheme.neutral,
+                        buttonType: ButtonType.secondary,
+                        primaryIcon: SystemIcons.close,
+                        onTap: () => _onBackPressed(searcher),
+                        padding: const EdgeInsets.all(0),
+                        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+                      ),
+                    ],
+                  ),
+                ),
+                SearchStateHistory() || SearchStateSuggest() => Container(
+                  color: contentColor,
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+                  child: MapSearchBar(
+                    initialState: widget.initialState,
+                    requestFocus: widget.requestFocus,
+                    onClose: onClose,
+                    isCloseButton: isCloseButton,
+                    showLeadingBackButton: _showMoreQuickFilters,
+                    onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
+                  ),
+                ),
+              },
+              outside: ListenableBuilder(
+                listenable: _multiStateSheetController,
+                builder: (context, _) => MapSearchSheetControls(
+                  onClose: onClose,
+                  currentSize: currentSize,
+                  collapsedSize: collapsedHeight,
+                  sheetState: _multiStateSheetController.state,
+                ),
               ),
               sliver: SliverToBoxAdapter(
-                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+                child: MapSearchContent(
+                  bottomSheetContentScrollController: _multiStateSheetController,
+                  showMoreQuickFilters: _showMoreQuickFilters,
+                  onMoreQuickFiltersChanged: _setShowMoreQuickFilters,
+                ),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _onBackPressed(Search searcher) {
+    FocusScope.of(context).unfocus();
+    searcher.clear();
+    onClose();
   }
 
   Future<void> _drawSearchMarkers(
@@ -336,5 +415,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   void _collapseBottomSheet() {
     _multiStateSheetController.setState(ThreeStateSheet.hidden);
+  }
+
+  void _setShowMoreQuickFilters(bool value) {
+    if (!mounted || _showMoreQuickFilters == value) {
+      return;
+    }
+    setState(() => _showMoreQuickFilters = value);
   }
 }

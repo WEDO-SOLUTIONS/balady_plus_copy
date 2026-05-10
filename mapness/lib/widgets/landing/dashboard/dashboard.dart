@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/arrow_dragger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -22,6 +23,7 @@ import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
@@ -29,7 +31,6 @@ import 'package:mapness/widgets/landing/dashboard_contents/base_dashboard_conten
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/makkah_based_dashboard_content.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/national_day_dashboard_content.dart';
-import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'city_event_config.dart';
@@ -54,9 +55,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   late FreeRoamStartState freeRoamState;
 
   StatefulSheetDelegateFunction<double, ThreeStateSheet> _buildOutsideOpacityDelegate(bool isMakkahTheme) {
-    // Makkah theme: start fading earlier (0.33) and fade faster (multiplier 15)
-    // Other themes: start fading at 0.4 with multiplier 9
-    final threshold = isMakkahTheme ? 0.33 : 0.4;
+    const threshold = 0.4;
     final fadeMultiplier = isMakkahTheme ? 15.0 : 9.0;
 
     return StatefulSheetDelegateFunction<double, ThreeStateSheet>(
@@ -127,12 +126,12 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         widget.bottomSheetController.setState(ThreeStateSheet.hidden);
       }
     });
-
     freeRoamState = ref.watch(freeRoamStarterProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent, isDark: isDark);
     final isMakkahTheme =
         specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
 
@@ -158,55 +157,68 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
           children: [
             Directionality(
               textDirection: Directionality.of(context),
-              child: MultiStateSheet<ThreeStateSheet>(
-                animateOpening: false,
-                keepContentBehindFooter: true,
-                useSafeArea: false,
-                scrollController: widget.bottomSheetController,
-                topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
-                topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
-                offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
-                backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                dragger: SheetDragger(
+              child: ListenableBuilder(
+                listenable: widget.bottomSheetController,
+                builder: (context, child) => MultiStateSheet<ThreeStateSheet>(
+                  animateOpening: false,
+                  keepContentBehindFooter: true,
+                  useSafeArea: false,
+                  scrollController: widget.bottomSheetController,
+                  topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+                  topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
+                  offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
                   backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                ),
-                header: const DashboardHeader(),
-                footer: IgnorePointer(
-                  child: SizedBox(
-                    height: Spacing.$16x + Spacing.$5x,
-                    width: double.infinity,
-                    child: FadeTransition(
-                      opacity: Animation.fromValueListenable(footerOpacity),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          backgroundBlendMode: BlendMode.srcOver,
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              context.colors.gradientBackgroundSurface4opacity0,
-                              context.colors.gradientBackgroundSurface4opacity80,
-                            ],
+                  dragger: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 450),
+                    transitionBuilder: (child, animation) => FadeTransition(
+                      opacity: animation,
+                      child: SizeTransition(
+                        sizeFactor: animation,
+                        child: child,
+                      ),
+                    ),
+                    child: widget.bottomSheetController.closestState == ThreeStateSheet.hidden
+                        ? ArrowDragger(
+                            key: const ValueKey('arrow'),
+                            backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
+                          )
+                        : SheetDragger(
+                            key: const ValueKey('line'),
+                            backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
+                          ),
+                  ),
+                  footer: IgnorePointer(
+                    child: SizedBox(
+                      height: Spacing.$16x + Spacing.$5x,
+                      width: double.infinity,
+                      child: FadeTransition(
+                        opacity: Animation.fromValueListenable(footerOpacity),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            backgroundBlendMode: BlendMode.srcOver,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                context.colors.gradientBackgroundSurface4opacity0,
+                                context.colors.gradientBackgroundSurface4opacity80,
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
+                  barrierColorDelegate: barrierColorDelegate,
+                  outside: MapDashboardControls(
+                    widget.bottomSheetController,
+                    key: const ValueKey('MapDashboardControls'),
+                  ),
+                  outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
+                  content: [
+                    _buildDashboardContent(specialThemeMode, themeConfig),
+                  ],
                 ),
-                barrierColorDelegate: barrierColorDelegate,
-                outside: MapDashboardControls(
-                  widget.bottomSheetController,
-                  key: const ValueKey('MapDashboardControls'),
-                ),
-                outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
-                sliver: SliverPersistentHeader(
-                  delegate: DashboardHeaderDelegate(vsync: this),
-                  pinned: true,
-                  floating: true,
-                ),
-                content: [
-                  _buildDashboardContent(specialThemeMode, themeConfig),
-                ],
               ),
             ),
             if (eventLogo != null)

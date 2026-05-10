@@ -66,15 +66,6 @@ android {
         targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [
-                partner: "baladyapp"
-        ]
-        manifestPlaceholders = [
-                'appAuthRedirectScheme': 'com.balady',
-                partner                : "baladyappuat"
-        ]
-        manifestPlaceholders = [partner:"baladyapp"]
-       // manifestPlaceholders = [partner:"baladyappuat"]
     }
     signingConfigs {
         release {
@@ -111,18 +102,28 @@ android {
         stg {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
-            android.defaultConfig.versionCode
-//            versionNameSuffix ".stg"
-//            applicationIdSuffix ".stg"
-//            applicationId  "com.balady.balady_app"
+            versionCode =  (flutterVersionCode.toInteger()) + 105637
+            manifestPlaceholders = [
+                    partner: "baladyappuat",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
         prod {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
+            manifestPlaceholders = [
+                    partner: "baladyapp",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
         pre {
             dimension "default"
             resValue "string", "app_name", "Balady+بلدي"
+            versionCode =  (flutterVersionCode.toInteger()) + 105637
+            manifestPlaceholders = [
+                    partner: "baladyappuat",
+                    'appAuthRedirectScheme': 'com.balady',
+            ]
         }
     }
 
@@ -161,10 +162,10 @@ dependencies {
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
 
-// أضف هذا الجزء هنا في النهاية تماماً
+// أضٝ هذا الجزء هنا ٝي النهاية تماماً
 configurations.all {
     resolutionStrategy {
-        // هذا السطر يمنع التضارب بين مكتبات هواوي المختلفة
+        // هذا السطر يمنع التضارب بين مكتبات هواوي المختلٝة
         force 'com.huawei.hms:common:6.10.0.300'
     }
 }

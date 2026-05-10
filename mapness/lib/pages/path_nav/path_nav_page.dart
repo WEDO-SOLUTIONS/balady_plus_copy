@@ -30,9 +30,13 @@ import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/stream_audio/services/audio_service.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -54,7 +58,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/shared/utils/insets_utils.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
@@ -234,6 +237,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await _moveCameraToUser(followAfter: false);
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
+      // Ensure any in-app stream audio is paused while navigation is active.
+      // iOS doesn't reliably provide per-instruction callbacks from the SDK,
+      // so we pause at navigation start and resume when the trip ends.
+      unawaited(AudioService().pause());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       await _moveCameraToUser();
       await saveNavigationState();
@@ -277,16 +284,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
-    final stableBottomInset = InsetsUtils.platformAwareBottomInset(context, isLandscape: !isPortrait);
-    final topBarPadding = MediaQuery.viewPaddingOf(context).top;
+    const stableInset = uikit.Spacing.$3x;
 
     sheetController = useToggleSheetController(onClose: (_) {}, clipByHeader: true, resetContentScrollOnClosed: true)
-      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(topBarPadding));
+      ..updateHeightModel(isPortrait ? null : ToggleSheetHeightModel.offset(stableInset));
+    final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
 
     void onSheetHeightChanged() {
       if (isPortrait) {
         final sheetHeight =
-            sheetController.componentSizes.header + uikit.Spacing.$3x + stableBottomInset + uikit.Spacing.$4x;
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
@@ -309,10 +316,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     useEffect(() {
       sheetController.addListener(onSheetHeightChanged);
-      final bottomPadding = stableBottomInset;
 
       if (isPortrait) {
-        final bottomHeight = sheetController.componentSizes.header + uikit.Spacing.$3x + uikit.Spacing.$4x;
+        final bottomHeight =
+            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
         _bottomHeightNotifier.value = bottomHeight;
       }
 
@@ -342,7 +349,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           unawaited(_endTripAndShowHome());
         }
       })
-      ..listen(pathNavEtaProvider, (previous, next) async {
+      ..listen(pathNavEtaProvider, (previous, next) {
         if (next != null) {
           if (next.distanceEtaUnits != DistanceUnits.m) {
             return;
@@ -359,12 +366,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           // Fallback: finish pedestrian trip when very close to destination
           final shouldFinishByEta =
               widget.navType == RouteSearchOptionsMessage.pedestrian &&
-                  !_finishedByEta &&
-                  distance != null &&
-                  distance <= 5;
+              !_finishedByEta &&
+              distance != null &&
+              distance <= 5;
           if (shouldFinishByEta) {
             _finishedByEta = true;
-            await _finishNavigation();
+            _finishNavigation();
             if (mounted) {
               unawaited(_endTripAndShowHome());
             }
@@ -399,13 +406,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 listenable: sheetController,
                 builder: (context, _) => !sheetController.isClosed
                     ? GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-                    sheetController.close();
-                  },
-                  child: const SizedBox.expand(),
-                )
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+                          sheetController.close();
+                        },
+                        child: const SizedBox.expand(),
+                      )
                     : const SizedBox.shrink(),
               ),
             if (widget.navType == RouteSearchOptionsMessage.publicTransport && publicRoute != null)
@@ -520,6 +527,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     } catch (_) {}
 
+    // Restore in-app stream audio after navigation stops.
+    unawaited(AudioService().resume());
+
     ref.read(currentRouteProvider.notifier).clearRoute();
 
     await Future.wait([
@@ -531,6 +541,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
 
+    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
     final mapSettings = MapObjectManagerSettings.search();
     final mapObjectProvider = ref.read(
       mapObjectManagerProvider(named: mapSettings.name, layerId: mapSettings.layerId).notifier,
@@ -769,6 +780,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _finishNavigation() async {
+    // iOS: DGis "arrival" voice can stop in-app radio. Capture current state so we can
+    // restore it after the voice finishes (best-effort, delayed).
+    final streamAudioWasPlayingBeforeFinish = ref.read(streamAudioProvider).isEffectivelyPlaying;
+
     _sendAnalitycs();
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
@@ -779,6 +794,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     sheetController.close();
     unawaited(clearNavigationState());
     unawaited(_stopActiveSharing());
+
+    // Restore in-app stream audio when navigation finishes normally.
+    // We delay because the DGis arrival prompt is played around this time on iOS.
+    if (streamAudioWasPlayingBeforeFinish) {
+      unawaited(
+        Future<void>.delayed(const Duration(seconds: 4), () async {
+          if (!mounted) return;
+          final streamAudio = ref.read(streamAudioProvider);
+          if (!streamAudio.isEffectivelyPlaying && !streamAudio.isLoading) {
+            await ref.read(streamAudioProvider).togglePlayPause();
+          }
+        }),
+      );
+    }
   }
 
   void _sendAnalitycs() {

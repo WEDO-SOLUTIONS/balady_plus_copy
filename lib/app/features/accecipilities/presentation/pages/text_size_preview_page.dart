@@ -40,7 +40,6 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
         colorEnabled: context.colors.accentDefault,
         leading: ActionModel(
           onPressed: () {
-            controller.setTextScale(_fontSize / 16);
             context.router.pop();
           },
           icon: SystemIcons.arrowCornerLeftLarge,
@@ -102,6 +101,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                       divisions: 12,
                       onChanged: (value) {
                         setState(() => _fontSize = value);
+                        controller.setTextScale(_fontSize / 16);
                       },
                     ),
                   ),

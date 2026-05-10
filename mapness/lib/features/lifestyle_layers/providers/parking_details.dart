@@ -13,30 +13,30 @@ part 'parking_details.g.dart';
 
 extension ParkingFilterExt on ParkingFilter {
   String title(AppLocalizations l10n) => switch (this) {
-        ParkingFilter.all => l10n.parkingLotFilterAll,
-        ParkingFilter.free => l10n.parkingLotFilterFree,
-        ParkingFilter.paid => l10n.parkingLotFilterPaid,
-        _ => '',
-      };
+    ParkingFilter.all => l10n.parkingLotFilterAll,
+    ParkingFilter.free => l10n.parkingLotFilterFree,
+    ParkingFilter.paid => l10n.parkingLotFilterPaid,
+    _ => '',
+  };
 
   IconData icon() => switch (this) {
-        ParkingFilter.all => TransportIcons.parkingEnable,
-        ParkingFilter.free => GeneralIcons.checkmarkCircle,
-        ParkingFilter.paid => GeneralIcons.money,
-        _ => GeneralIcons.placeholder,
-      };
+    ParkingFilter.all => TransportIcons.parkingEnable,
+    ParkingFilter.free => GeneralIcons.checkmarkCircle,
+    ParkingFilter.paid => GeneralIcons.timeQuarter,
+    _ => GeneralIcons.placeholder,
+  };
 
   bool paidOn() => switch (this) {
-        ParkingFilter.all => true,
-        ParkingFilter.paid => true,
-        _ => false,
-      };
+    ParkingFilter.all => true,
+    ParkingFilter.paid => true,
+    _ => false,
+  };
 
   bool freeOn() => switch (this) {
-        ParkingFilter.all => true,
-        ParkingFilter.free => true,
-        _ => false,
-      };
+    ParkingFilter.all => true,
+    ParkingFilter.free => true,
+    _ => false,
+  };
 }
 
 class ParkingState {

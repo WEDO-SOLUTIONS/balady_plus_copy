@@ -26,7 +26,7 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: const Color(0xFFD19D3F),
+              color: colors.iconBackground,
               borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
             ),
             child: Center(
@@ -58,7 +58,7 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
                   Text(
                     displaySubtitle,
                     style: context.textStyles.bodySmallRegular.copyWith(
-                      color: const Color(0xFF806E5C),
+                      color: colors.secondaryTextColor,
                       fontSize: 14,
                     ),
                   ),
@@ -87,9 +87,10 @@ class MakkahPoiWorkingHoursCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final saudiWeekday = saudiTimeNow().weekday;
 
     String formatOpenClose(Iterable<Hours> hours) =>
-        hours.isNotEmpty ? '${hours.first.from.formatHHmm}-${hours.last.till.formatHHmm}' : '';
+        hours.map((h) => '${h.from.formatHHmm}-${h.till.formatHHmm}').join(',');
 
     String formatBreaks(Iterable<Hours> breakHours) =>
         breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(',');
@@ -97,13 +98,13 @@ class MakkahPoiWorkingHoursCard extends StatelessWidget {
     String todayWorkingHours() {
       final hours = workingHours.isOpen24x7
           ? l10n.twentyFourSeven
-          : formatOpenClose(workingHours.todayHours(DateTime.now().weekday));
+          : formatOpenClose(workingHours.todayHoursForDisplay(saudiWeekday));
       final todayOrDaily = workingHours.isSameEveryDay ? l10n.daily : l10n.today;
       return '$todayOrDaily $hours';
     }
 
     String? todayBreaks() {
-      final breaks = workingHours.todayBreaks(DateTime.now().weekday);
+      final breaks = workingHours.todayBreaksForDisplay(saudiWeekday);
       if (breaks.isNotEmpty) {
         final hours = formatBreaks(breaks);
         return l10n.breakHour(hours);
@@ -188,7 +189,7 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD19D3F),
+                    color: widget.colors.iconBackground,
                     borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
                   ),
                   child: Center(
@@ -220,7 +221,7 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
                         Text(
                           displaySubtitle,
                           style: context.textStyles.bodySmallRegular.copyWith(
-                            color: const Color(0xFF806E5C),
+                            color: widget.colors.secondaryTextColor,
                             fontSize: 14,
                           ),
                         ),
@@ -243,9 +244,9 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
           if (_expanded) ...[
             const SizedBox(height: Spacing.$3x),
             ...weekDays.map((weekday) {
-              final periods = widget.workingHours.todayHours(weekday);
+              final periods = widget.workingHours.todayHoursForDisplay(weekday);
               final workHours = periods.isEmpty ? l10n.weekend : widget.formatOpenClose(periods);
-              final breakHours = widget.formatBreaks(widget.workingHours.todayBreaks(weekday));
+              final breakHours = widget.formatBreaks(widget.workingHours.todayBreaksForDisplay(weekday));
 
               return _MakkahWorkTimeRow(
                 colors: widget.colors,
@@ -321,7 +322,7 @@ class _MakkahWorkTimeRow extends StatelessWidget {
                       Text(
                         breakHours!,
                         style: context.textStyles.bodySmallRegular.copyWith(
-                          color: const Color(0xFF806E5C),
+                          color: colors.secondaryTextColor,
                           fontSize: 14,
                         ),
                       ),
@@ -365,7 +366,7 @@ class _MakkahWorkHoursHintTile extends StatelessWidget {
             'assets/icons/makkah/info.svg',
             width: 20,
             height: 20,
-            colorFilter: const ColorFilter.mode(Color(0xFFD19D3F), BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(colors.iconBackground, BlendMode.srcIn),
           ),
           const SizedBox(width: 10),
           Expanded(
