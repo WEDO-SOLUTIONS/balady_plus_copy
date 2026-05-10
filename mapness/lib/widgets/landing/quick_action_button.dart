@@ -1,9 +1,12 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 
-class QuickActionButton extends StatelessWidget {
+class QuickActionButton extends ConsumerWidget {
   final String text;
   final String? mekkahText;
   final IconData icon;
@@ -26,17 +29,20 @@ class QuickActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colors;
 
     // Determine if Makkah theme is active based on explicit theme mode
     final isMekkahTheme = themeMode == SpecialThemeMode.mekkahBase || themeMode == SpecialThemeMode.ramadan;
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
     final baseTextStyle = context.textStyles.captionSmallMedium.copyWith(
       fontSize: 11,
       color: context.colors.foregroundDefault,
     );
-    final textStyle = isMekkahTheme ? baseTextStyle.copyWith(color: const Color(0xFF4A3016)) : baseTextStyle;
+    // Mekkah light: dark brown on cream. Mekkah dark: warm cream on near-black.
+    final mekkahColor = isDark ? const Color(0xFFEDE3D1) : const Color(0xFF4A3016);
+    final textStyle = isMekkahTheme ? baseTextStyle.copyWith(color: mekkahColor) : baseTextStyle;
 
     final displayText = isMekkahTheme && mekkahText != null ? mekkahText! : text;
 
@@ -58,6 +64,9 @@ class QuickActionButton extends StatelessWidget {
       );
     }
 
+    final tileColor = isMekkahTheme && isDark
+        ? MakkahPoiConstants.darkSheet
+        : colors.backgroundSurface1;
     return Column(
       children: [
         InkWell(
@@ -68,8 +77,8 @@ class QuickActionButton extends StatelessWidget {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                color: colors.backgroundSurface1,
-                boxShadow: Shadows.s,
+                color: tileColor,
+                boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),

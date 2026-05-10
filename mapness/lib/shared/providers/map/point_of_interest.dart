@@ -112,9 +112,5 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     await highlightController.addHighlight(objectId.toMessage());
   }
 
-  for (final entrance in directoryObject.entrances) {
-    await highlightController.addHighlight(entrance.id);
-  }
-
   return directoryObject;
 }

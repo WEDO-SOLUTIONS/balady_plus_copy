@@ -135,13 +135,14 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
       child: Consumer(
         builder: (context, ref, _) {
           final mode = ref.watch(specialThemeModeProvider);
-          final colors = _resolveMakkahPoiColors(context, mode);
+          final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+          final colors = _resolveMakkahPoiColors(context, mode, isDark: isDark);
 
           return MultiStateSheet(
             dragger: null,
             scrollController: _bottomSheetController,
             offsetOutsideWidgetByTopheader: false,
-            safeAreaColor: Colors.white,
+            safeAreaColor: colors.cardBackground,
             backgroundColor: colors.cardBackground,
             barrierColorDelegate: PoiCardStateMapper.barrierColorDelegate,
             outside: PoiCardMapControlsWrapper(
@@ -158,6 +159,7 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
               data: widget.data,
               closestPoint: widget.closestPoint,
               makkahPlace: widget.makkahPlace,
+              colors: colors,
             ),
             header: _MakkahPoiHeader(
               colors: colors,
@@ -168,7 +170,7 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
                     )
                   : (widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
-                      widget.data.title),
+                      widget.data.pinTitle(context.l10n)),
               subTitleWidget: _MakkahPoiSubtitle(
                 colors: colors,
                 data: widget.data,

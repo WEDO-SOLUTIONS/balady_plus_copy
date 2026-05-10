@@ -312,23 +312,25 @@ class ArrivingSoon extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<ArrivingSoonModel> items = [
       ArrivingSoonModel(
-        title: 'On demand audio content & shows',
+        title: Directionality.of(context) == TextDirection.rtl
+            ? 'محتوى وبرامج صوتية حسب الطلب'
+            : 'On demand audio content & shows',
         image: Assets.images.audioPlaceholders.arrivingSoon.onDemand.keyName,
       ),
       ArrivingSoonModel(
-        title: 'MBC Video & News',
+        title: Directionality.of(context) == TextDirection.rtl ? 'فيديو وأخبار MBC' : 'MBC Video & News',
         image: Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
       ),
       ArrivingSoonModel(
-        title: 'Original Balady Content',
+        title: Directionality.of(context) == TextDirection.rtl ? 'محتوى بلدي الأصلي' : 'Original Balady Content',
         image: Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
       ),
       ArrivingSoonModel(
-        title: 'Balady in Apple CarPlay',
+        title: Directionality.of(context) == TextDirection.rtl ? 'بلدي على أبل كاربلاي' : 'Balady in Apple CarPlay',
         image: Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
       ),
       ArrivingSoonModel(
-        title: 'Speed alerts',
+        title: Directionality.of(context) == TextDirection.rtl ? 'تنبيهات السرعة' : 'Speed alerts',
         image: Assets.images.audioPlaceholders.arrivingSoon.speedAlerts.keyName,
       ),
     ];
@@ -390,6 +392,7 @@ class ArrivingSoonItem extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           clipBehavior: Clip.antiAlias,
           decoration: ShapeDecoration(
+            color: context.colors.accentDefault,
             image: DecorationImage(
               image: AssetImage(item.image),
               fit: BoxFit.fill,
