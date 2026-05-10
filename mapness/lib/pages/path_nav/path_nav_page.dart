@@ -938,8 +938,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: targetZoom,
-            tilt: 0,
+            zoom: 18,
+            tilt: 90,
             bearing: 0,
           ),
         );
@@ -948,6 +948,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (followAfter) {
       await dgisController.startFollowNavigation();
+      if (position != null) {
+        if (_isLocationAccuracyAcceptable(position.latitude, position.longitude)) {
+          await cameraProvider.animateTo(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+              zoom: 18,
+              tilt: 90,
+              bearing: 0,
+            ),
+          );
+        }
+      }
     }
   }
 
