@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/ai_summary/ui/ai_summary_section.dart';
 import 'package:mapness/features/bus_departures/providers/provider.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
@@ -206,7 +207,8 @@ class PoiContentSliver extends ConsumerWidget {
     final isFoundationDay = activeCityEvent?.isFoundingDay ?? false;
     final isFoundationObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(data.id!.objectId);
     final localAboutText = ref.read(foundingDayUrbiProvider.notifier).getAboutByDgisId(data.id!.objectId);
-    final about = data.getAbout(context.l10n);
+    final forceShow = ref.read(foundingDayUrbiProvider.notifier).shouldForceShow(data.id!.objectId);
+    final about = data.getAbout(context.l10n, customAbout: forceShow ? localAboutText : null);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
 
@@ -257,6 +259,7 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               ),
             ),
+            AiSummarySection(poiId: data.id!.objectId.toString()),
             if (shouldShowMakkahPreview)
               Padding(
                 padding: const EdgeInsets.only(bottom: Spacing.$3x),
@@ -286,10 +289,10 @@ class PoiContentSliver extends ConsumerWidget {
                     ],
                   ),
                 )
-              else if(about!=null)
+              else if (about != null)
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentAboutCard(data: about!),
+                  child: PoiContentAboutCard(data: about),
                 ),
             if (workingHours != null) //
               Padding(
@@ -325,8 +328,13 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 )
                 .toList(),
-            PoiLinesContainer(model: makkahDeparturesModel,),
-            PoiLinesContainer(model: haramDeparturesModel,isShuttle: true,),
+            PoiLinesContainer(
+              model: makkahDeparturesModel,
+            ),
+            PoiLinesContainer(
+              model: haramDeparturesModel,
+              isShuttle: true,
+            ),
             ...?poiSearchObjectFuture
                 ?.map(
                   (e) => Padding(

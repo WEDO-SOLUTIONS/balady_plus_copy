@@ -7,6 +7,7 @@ import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/shared/extensions/marker_icons_ext.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -51,7 +52,9 @@ class ShowMapOffers extends _$ShowMapOffers {
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.toBigIcon(isDark: isDarkMode);
+      if (marker.options.icon?.svgPath == Markers.defaultPinNew) {
+        marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.toBigIcon(isDark: isDarkMode);
+      }
       _hideMarker(currentSearchMarker);
     }
 

@@ -57,7 +57,7 @@ codegen:
     set -euo pipefail
     print_style '' 'yellow' '> generate code...'
     cd mapness
-    fvm dart run build_runner build --delete-conflicting-outputs || true
+    fvm dart run build_runner build --delete-conflicting-outputs --force-jit || true
     print_style '' 'yellow' '< code generated'
 
 codegen_dir path:
@@ -65,14 +65,14 @@ codegen_dir path:
     set -euo pipefail
     print_style '' 'yellow' '> generate code for: {{path}}'
     cd mapness
-    fvm dart run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs || true
+    fvm dart run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs --force-jit || true
     print_style '' 'yellow' '< code generated: {{path}}'
 
 codegen-watch:
     #!/bin/bash
     set -euo pipefail
     cd mapness
-    fvm dart run build_runner watch --delete-conflicting-outputs || true
+    fvm dart run build_runner watch --delete-conflicting-outputs --force-jit || true
 
 open_built:
     print_style '' 'yellow' 'Open built folder with:'
