@@ -12,8 +12,22 @@ class AppFeedbackSheetHeader extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => BaladyTopBar.iconAndText(
-        leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: onBackTap),
+  Widget build(BuildContext context) => BaladyTopBar(
+        onLeadingPressed: onBackTap,
+        leading: Semantics(
+          label: 'back',
+          button: true,
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(width: Spacing.$4x),
+                Icon(SystemIcons.arrowCornerLeftLarge),
+                SizedBox(width: Spacing.$4x),
+              ],
+            ),
+          ),
+        ),
         title: title,
         useSafeArea: false,
       );

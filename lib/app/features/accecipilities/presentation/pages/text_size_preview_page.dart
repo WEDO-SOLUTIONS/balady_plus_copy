@@ -45,10 +45,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(width: Spacing.$4x),
-                Icon(
-                  SystemIcons.arrowCornerLeftLarge,
-                  color: context.colors.accentDefault,
-                ),
+                Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.accentDefault),
                 const SizedBox(width: Spacing.$4x),
               ],
             ),

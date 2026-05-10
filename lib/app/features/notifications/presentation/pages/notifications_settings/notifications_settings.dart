@@ -22,6 +22,7 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
 
       appBar: AppBar(
         leading: IconButton(
+          tooltip: 'back',
           onPressed: () => Navigator.pop(context),
           icon: Icon(
             Icons.arrow_back_ios,

@@ -36,6 +36,7 @@ class DefaultAppBarWidget extends StatelessWidget
       leadingWidth: showBack == true ? null : 8,
       leading: Navigator.canPop(context) && showBack
           ? IconButton(
+              tooltip: 'back',
               icon: Icon(
                 x ? Icons.close : Icons.arrow_back_ios,
                 color: Theme.of(context).colorScheme.onSurface,

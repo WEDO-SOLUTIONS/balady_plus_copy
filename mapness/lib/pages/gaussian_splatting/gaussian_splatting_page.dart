@@ -119,9 +119,13 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                 padding: const EdgeInsets.only(left: 16),
                 child: Align(
                   alignment: Alignment.topLeft,
-                  child: GestureDetector(
-                    onTap: () => context.router.maybePop(),
-                    child: Container(
+                  child: Semantics(
+                    label: 'back',
+                    button: true,
+                    child: GestureDetector(
+                      onTap: () => context.router.maybePop(),
+                      child: ExcludeSemantics(
+                        child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: Colors.black54,
@@ -142,6 +146,8 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                           ),
                           const SizedBox(width: 4),
                         ],
+                      ),
+                        ),
                       ),
                     ),
                   ),

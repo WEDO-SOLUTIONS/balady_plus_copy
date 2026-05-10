@@ -118,10 +118,16 @@ class ParkingSpotPage extends HookConsumerWidget {
         systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         title: isEdit ? context.l10n.edit : context.l10n.addParking,
-        leading: Container(
-          padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-          alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-          child: const Icon(SystemIcons.arrowCornerLeftLarge),
+        leading: Semantics(
+          label: 'back',
+          button: true,
+          child: ExcludeSemantics(
+            child: Container(
+              padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+              alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+              child: const Icon(SystemIcons.arrowCornerLeftLarge),
+            ),
+          ),
         ),
         onLeadingPressed: () => context.router.pop(),
       ),

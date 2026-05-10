@@ -118,11 +118,14 @@ class MapnessProviderScope extends StatelessWidget {
 
   final Widget child;
 
+
+
   @override
   Widget build(BuildContext context) => ProviderScope(
     child: EagerInitWidget(
       child: Consumer(
         builder: (context, ref, child) {
+
           final language = ref.watch(appLanguageProvider);
           final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
           // Initialize Saudi National Day provider to start the timer
@@ -151,6 +154,8 @@ class MapnessProviderScope extends StatelessWidget {
   );
 }
 
+
+
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   const MapnessEntryPoint({required this.mapCreated, super.key});
 
@@ -160,13 +165,19 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
 }
 
+
+
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
   StreamSubscription? _navigationEventsListener;
+  String _fontFamily() {
 
+    final language = ref.watch(appLanguageProvider);
+    return language ==Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+  }
   @override
   void initState() {
     super.initState();
@@ -528,6 +539,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             return MaterialApp.router(
               routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
+                fontFamily: _fontFamily(),
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],
                 useMaterial3: false,
