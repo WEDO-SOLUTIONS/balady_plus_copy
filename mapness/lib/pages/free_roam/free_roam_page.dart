@@ -82,6 +82,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
+    context.changeSystemNavBar();
   }
 
   @override
