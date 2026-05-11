@@ -94,10 +94,10 @@ The cluster icon name has a **`Dark` suffix only in dark mode** (`icOffersCluste
 
 The map widget for offers. Entry points:
 
-- `_onClusterTap(simpleClusterObject)` — cluster tap: opens the offer list for the cluster's offers without mutating map objects inside the cluster tap flow. The list is built by filtering `showMapOffersProvider` state by the IDs in `simpleClusterObject.markers`.
+- `_onTapOfferGroup(offers)` — grouped-marker tap: opens the offer list for all offers sharing the same coordinates. This is a Dart-side workaround used instead of native 2GIS clustering for Saudi Pass markers.
 - `_onTapMarker(item, text, options)` — single offer tap: shows pin (`icOffersPin`) via `showMarker`, then sets `_notifierOffers.value = [item]`. Keep the same mounted guards as cluster tap before and after the async `showMarker` call.
 - `_setupVisibleRectListener(controller)` — `visibleRectEvents.debounceTime(1s).listen(...)` refreshes offers based on the visible map rect via `switchOffersVisibility`.
-- `_showOffers(offers, cameraPosition)` — listener-driven; rebuilds all markers/clusters when state changes. On first call only, animates camera to fit the markers (`_isFirstLoad` guard).
+- `_showOffers(offers, cameraPosition)` — listener-driven; rebuilds grouped markers when state changes. On first call only, animates camera to fit the markers (`_isFirstLoad` guard).
 
 The offer list below the map is driven by `ValueNotifier<List<Offer>> _notifierOffers`. Empty list → `RoutingMapControls` placeholder; non-empty → `OfferListBottomSheetMapWidget`.
 
@@ -105,18 +105,16 @@ The offer list below the map is driven by `ValueNotifier<List<Offer>> _notifierO
 
 - **Always guard `_notifierOffers.value =` with `if (!mounted) return;` after each `await`.** The widget can be popped while `showMarker` is awaiting platform-channel calls; writing to a disposed `ValueNotifier` throws.
 - **Single-marker tap had the same crash mode as cluster tap.** If `_onTapMarker` writes to `_notifierOffers` after `await showMarker(...)` without re-checking `mounted`, the widget can already be disposed and the app will crash on marker tap.
-- **Do not animate camera from inside cluster/marker tap handlers.** `cameraPosition.animateToMarkers(simpleClusterObject.markers.toMarkers())` constructs ad-hoc `Marker` objects whose IDs may not be tracked on the native side; the SDK's `calcPosition` can throw on the resulting empty/sparse list. Use camera animation only from `_showOffers` first-load, where markers are guaranteed to be added.
-- **BALADY-3581 root cause:** Android/iOS cluster tap bridging must keep the serialized cluster payload minimal. Accessing extra native-backed cluster fields during `cluster.toMap(...)` can crash inside `libdgisfull`. For Saudi Pass, cluster tap should rely only on the tapped objects' ids and open the offers list without mutating map objects from `_onClusterTap`.
+- **Do not animate camera from inside grouped-marker/marker tap handlers.** Use camera animation only from `_showOffers` first-load, where markers are guaranteed to be added.
+- **BALADY-3581 workaround:** Saudi Pass no longer uses native 2GIS clustering for offer markers. Offers are grouped by identical coordinates in Dart and rendered as ordinary markers, so tapping the count badge no longer enters the crashing `SimpleClusterObject` path in `libdgisfull`.
 - **Always pass an explicit `icon` when calling `showMarker`** for offer pins — the BALADY-3570 guard relies on `icon != Markers.defaultPinNew` to preserve the explicit path.
 
-### Cluster behavior
+### Grouped marker behavior
 
-Clustering options:
-- `_kClusterLogicalPixel = 40` — clustering radius in logical pixels.
-- `_kClusterMaxZoom = 20` — clusters are released past this zoom; below it, even widely-separated offers may stay in a single cluster.
-- `_kClusterIconSize = 32`.
-
-Two offers at **identical** lat/lng never declustering at any zoom — that's the typical BALADY-3581 reproduction case. Treat that tap path as list-only UI; avoid map mutations from the cluster callback itself.
+- `_kClusterIconSize = 32` is reused for grouped markers that represent multiple offers at the same coordinates.
+- Saudi Pass groups offers by exact parsed latitude/longitude pair and renders one ordinary marker per group.
+- Single-offer group: regular offer marker with provider label.
+- Multi-offer group: count badge marker that opens the offers list.
 
 ## Offer types
 

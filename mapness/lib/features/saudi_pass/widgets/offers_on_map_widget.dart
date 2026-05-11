@@ -52,8 +52,6 @@ class OffersOnMapWidget extends StatefulHookConsumerWidget {
 class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   final _settings = MapObjectManagerSettings.mappness();
   static const double _kMarkerWidth = 32.0;
-  static const double _kClusterLogicalPixel = 40;
-  static const double _kClusterMaxZoom = 20;
   static const double _kClusterIconSize = 32.0;
   final ValueNotifier<List<Offer>> _notifierOffers = ValueNotifier([]);
 
@@ -81,54 +79,84 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     strokeWidth: 1,
   );
 
-  Marker _createMarker({required Offer item, required bool isRtl, required bool isDark}) {
-    final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
-    final hasArabic = text.containsArabic() || isRtl;
+  List<_OfferMarkerGroup> _groupOffersByLocation(List<Offer> offers) {
+    final groups = <String, List<Offer>>{};
 
-    final options = MarkerOptionsMessage(
-      text: text,
-      textStyle: _buildTextStyle(isArabic: hasArabic, isDark: isDark),
-      position: GeoPointWithElevationMessage(
-        latitude: double.tryParse(item.location.latitude) ?? 0.0,
-        longitude: double.tryParse(item.location.longitude) ?? 0.0,
-        elevation: 0,
-      ),
-      isVisible: true,
-      icon: SvgMarkerIcon(
-        svgPath: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
-          _ => Assets.icons.svg.placesNew.light.icOffers.keyName,
-        },
-        width: _kMarkerWidth,
-      ),
-    );
+    for (final offer in offers) {
+      final lat = double.tryParse(offer.location.latitude) ?? 0.0;
+      final lon = double.tryParse(offer.location.longitude) ?? 0.0;
+      final key = '$lat,$lon';
+      groups.putIfAbsent(key, () => []).add(offer);
+    }
 
-    return Marker(id: item.id, onTap: () => _onTapMarker(item, text, options), options: options);
+    return groups.entries.map((entry) {
+      final first = entry.value.first;
+      return _OfferMarkerGroup(
+        id: entry.key,
+        offers: entry.value,
+        position: GeoPointWithElevationMessage(
+          latitude: double.tryParse(first.location.latitude) ?? 0.0,
+          longitude: double.tryParse(first.location.longitude) ?? 0.0,
+          elevation: 0,
+        ),
+      );
+    }).toList();
   }
 
-  SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
-      SimpleClusterOptionsMessage(
-        icon: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
-          _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
-        }.markerIcon(size: _kClusterIconSize),
-        text: objectCount.toString(),
-        textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
-          color: Colors.white.value,
-          fontSize: 13,
-          fontName: isRtl ? poiMapFontAr : poiMapFontEn,
+  Marker _createMarker({required _OfferMarkerGroup group, required bool isRtl, required bool isDark}) {
+    if (group.offers.length == 1) {
+      final item = group.offers.first;
+      final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
+      final hasArabic = text.containsArabic() || isRtl;
+
+      final options = MarkerOptionsMessage(
+        text: text,
+        textStyle: _buildTextStyle(isArabic: hasArabic, isDark: isDark),
+        position: group.position,
+        isVisible: true,
+        icon: SvgMarkerIcon(
+          svgPath: switch (context.read<ThemeController>().currentTheme) {
+            BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
+            _ => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          },
+          width: _kMarkerWidth,
         ),
       );
 
-  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject) async {
+      return Marker(id: item.id, onTap: () => _onTapMarker(item, text, options), options: options);
+    }
+
+    final options = MarkerOptionsMessage(
+      text: group.offers.length.toString(),
+      textStyle: MarkerTextStyleMessage(
+        textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+        color: Colors.white.value,
+        fontSize: 13,
+        fontName: isRtl ? poiMapFontAr : poiMapFontEn,
+      ),
+      position: group.position,
+      isVisible: true,
+      icon: SvgMarkerIcon(
+        svgPath: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+          _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        },
+        width: _kClusterIconSize,
+      ),
+    );
+
+    return Marker(
+      id: 'offers-group-${group.id}',
+      onTap: () => _onTapOfferGroup(group.offers),
+      options: options,
+    );
+  }
+
+  Future<void> _onTapOfferGroup(List<Offer> offers) async {
     if (!mounted) {
       return;
     }
-
-    final offersInState = ref.read(showMapOffersProvider);
-    final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
-    _notifierOffers.value = offersInState.where((o) => ids.contains(o.id)).toList();
+    _notifierOffers.value = offers;
   }
 
   Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
@@ -192,21 +220,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     final isRtl = ref.read(appLanguageProvider) == Language.arabic;
     final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
     final mapObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-        clustering: ClusteringMapObjectManager(
-          options: ClusteringMapObjectManagerOptionsMessage(
-            logicalPixel: _kClusterLogicalPixel,
-            maxZoom: _kClusterMaxZoom,
-          ),
-          onTap: (cluster) => _onClusterTap(cluster),
-          renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
-        ),
-      ).notifier,
+      mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
-
-    final markers = offers.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
+    final groupedOffers = _groupOffersByLocation(offers);
+    final markers = groupedOffers.map((group) => _createMarker(group: group, isRtl: isRtl, isDark: isDark)).toList();
 
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.addMarkers(markers);
@@ -293,4 +310,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ],
     );
   }
+}
+
+class _OfferMarkerGroup {
+  final String id;
+  final List<Offer> offers;
+  final GeoPointWithElevationMessage position;
+
+  const _OfferMarkerGroup({
+    required this.id,
+    required this.offers,
+    required this.position,
+  });
 }
