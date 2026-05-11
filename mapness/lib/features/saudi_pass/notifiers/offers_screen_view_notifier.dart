@@ -110,6 +110,19 @@ class OffersScreenViewNotifier extends OffersViewNotifier
     notifyListeners();
   }
 
+  @override
+  Future<OffersMapContext> get activeMapContext async {
+    // Resolve the snapshot from whichever tab is currently active. This is
+    // the single point where the Map view inherits the list's filter
+    // context per BRD US-03 BR-02.
+    if (isByPreferencesElseAll) {
+      final view = await prefsOffersViewFuture;
+      return view.mapContext;
+    }
+    final view = await offersFiltersFuture;
+    return view.mapContext;
+  }
+
   Future<PrefsOffersViewNotifier> createPrefsOffersViewNotifier() async {
     final saudiPassRepository = await this.saudiPassRepository;
     final preferences = await saudiPassRepository.getPreferences();

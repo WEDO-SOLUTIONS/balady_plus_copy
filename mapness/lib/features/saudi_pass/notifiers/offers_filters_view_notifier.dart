@@ -40,6 +40,15 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
   Set<RecommendedType> get recommendedTypes => recommendedTypesSelected;
 
   @override
+  OffersMapContext get mapContext => OffersMapContext(
+        cityIds: {citySelected.id},
+        cityTitle: citySelected.name,
+        categories: categories,
+        subCategories: subCategoriesSelected,
+        recommendedTypes: recommendedTypesSelected,
+      );
+
+  @override
   late AsyncIterable<OfferView> asyncIterableOffers = createOffersAsyncIterable();
 
   AsyncIterable<OfferView> createOffersAsyncIterable() {

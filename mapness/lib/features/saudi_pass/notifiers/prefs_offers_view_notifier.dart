@@ -63,4 +63,21 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
 
   @override
   int get categories => preferences.categories.length;
+
+  @override
+  OffersMapContext get mapContext {
+    // City id rule mirrors `OffersChunkedAsyncIterable.byPrefs`: use all
+    // preference cities if set, otherwise fall back to the single resolved
+    // city. Keep the Map's `cityIds` aligned with the list's request.
+    final cities = preferences.cities.isEmpty
+        ? <City>{resolvedCity}
+        : preferences.cities.toSet();
+    return OffersMapContext(
+      cityIds: cities.map((c) => c.id).toSet(),
+      cityTitle: cityTitle,
+      categories: preferences.categoriesOnly.toSet(),
+      subCategories: preferences.subCategoriesOnly.toSet(),
+      recommendedTypes: preferences.recommendedTypes.toSet(),
+    );
+  }
 }

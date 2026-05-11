@@ -34,16 +34,24 @@ import '../../lifestyle_layers/configs/layers_consts.dart';
 const offerPoiPinId = 'offer_poi_pin_id';
 
 class OffersOnMapWidget extends StatefulHookConsumerWidget {
+  /// City ids from the originating list snapshot
+  /// (`OffersMapContext.cityIds`). The Map must use exactly this set —
+  /// BRD US-03 BR-02.
+  final Set<String> cityIds;
+
+  /// Display label for the city portion of the Map top bar. See
+  /// [OffersMapContext.cityTitle].
+  final String cityTitle;
   final Set<lookups_body.Category> categories;
+  final Set<lookups_body.SubCategory> subCategories;
   final Set<lookups_body.RecommendedType> recommendedTypes;
-  final lookups_body.City city;
-  final bool isAll;
 
   const OffersOnMapWidget({
-    required this.categories,
-    required this.recommendedTypes,
-    required this.city,
-    required this.isAll,
+    required this.cityIds,
+    required this.cityTitle,
+    this.categories = const {},
+    this.subCategories = const {},
+    this.recommendedTypes = const {},
     super.key,
   });
 
@@ -197,10 +205,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           .read(showMapOffersProvider.notifier)
           .switchOffersVisibility(
             enabled: true,
-            cityId: widget.city.id,
-            isAll: widget.isAll,
-            category: widget.categories.isEmpty ? null : widget.categories,
-            promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+            cityIds: widget.cityIds,
+            categories: widget.categories,
+            subCategories: widget.subCategories,
+            recommendedTypes: widget.recommendedTypes,
             visibleRect: event.visibleRect,
           );
     });
@@ -259,10 +267,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       // First load
       showMapOffers.switchOffersVisibility(
         enabled: true,
-        cityId: widget.city.id,
-        isAll: widget.isAll,
-        category: widget.categories.isEmpty ? null : widget.categories,
-        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+        cityIds: widget.cityIds,
+        categories: widget.categories,
+        subCategories: widget.subCategories,
+        recommendedTypes: widget.recommendedTypes,
       );
       return null;
     }, []);
@@ -291,7 +299,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                 ),
                 const SizedBox(height: Spacing.$1x),
                 Text(
-                  '${widget.city.name}$typesStringBar$categoryStringBar',
+                  '${widget.cityTitle}$typesStringBar$categoryStringBar',
                   style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               ],

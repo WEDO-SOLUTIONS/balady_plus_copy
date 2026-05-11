@@ -17,6 +17,40 @@ abstract class OffersScreenView implements OffersView {
   void tapRetryPrefs();
 
   Future<PrefsOffersView> get prefsOffersViewFuture;
+
+  /// Snapshot of the active list's filtering / preference context, used by
+  /// the Offers Map to render the same offer set (BRD US-03 BR-02). The
+  /// snapshot resolves the currently active tab (By Preference vs All Offers)
+  /// at the moment of access.
+  Future<OffersMapContext> get activeMapContext;
+}
+
+/// Filtering / preference context used by the Offers Map.
+///
+/// Built by the originating list (By Preference or All Offers) and passed
+/// to the Map provider so the map reflects exactly the same offer set as
+/// the list it was launched from (BRD US-03 BR-02). The Map provider must
+/// NOT re-derive these by calling `getPreferences()` internally.
+class OffersMapContext {
+  final Set<String> cityIds;
+  final Set<lookups_body.Category> categories;
+  final Set<lookups_body.SubCategory> subCategories;
+  final Set<lookups_body.RecommendedType> recommendedTypes;
+
+  /// Human-readable city label for the Map's top bar. For single-city
+  /// contexts this is the city name; for multi-city (By Preference with
+  /// multiple cities) this is the first city's name, matching the existing
+  /// `PrefsOffersView.cityTitle` convention. Purely cosmetic — filter
+  /// behavior is driven by [cityIds].
+  final String cityTitle;
+
+  const OffersMapContext({
+    required this.cityIds,
+    required this.cityTitle,
+    this.categories = const {},
+    this.subCategories = const {},
+    this.recommendedTypes = const {},
+  });
 }
 
 abstract class PrefsOffersView implements Listenable {
@@ -33,6 +67,10 @@ abstract class PrefsOffersView implements Listenable {
   void tapGotoPreferences();
 
   AsyncIterable<OfferView> get asyncIterableOffers;
+
+  /// Snapshot of the active By Preference filtering context (preferences +
+  /// resolved city) for the Offers Map. See [OffersMapContext].
+  OffersMapContext get mapContext;
 }
 
 abstract class OffersFiltersView implements Listenable {
@@ -67,6 +105,11 @@ abstract class OffersFiltersView implements Listenable {
   lookups_body.City get city;
 
   Set<lookups_body.RecommendedType> get recommendedTypes;
+
+  /// Snapshot of the active All Offers filtering context (single selected
+  /// city + manual filter selections) for the Offers Map. See
+  /// [OffersMapContext].
+  OffersMapContext get mapContext;
 }
 
 typedef FilterView = ({String? title, String? plusMore, bool isHighlighted, void Function()? tapCross});

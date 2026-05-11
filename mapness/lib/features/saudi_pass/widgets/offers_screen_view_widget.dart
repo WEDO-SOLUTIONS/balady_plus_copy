@@ -30,15 +30,27 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
     child: FutureBuilder<OffersFiltersView>(
       future: widget.offersScreenView.offersFiltersFuture,
       builder: (_, s) => SaudiPassScaffold(
+        // BRD US-03 BR-02: Map must inherit the active list's filtering /
+        // preference context. Resolve the snapshot from the currently
+        // active tab via `activeMapContext` (not from `s.data`, which is
+        // always the All Offers view regardless of which tab is active).
         onShowOnMapPressed: s.hasData
-            ? () => context.router.push(
-                OffersOnMapRoute(
-                  city: s.data!.city,
-                  categories: s.data!.categories,
-                  isAll: _filtersIndex == 1,
-                  recommendedTypes: s.data!.recommendedTypes,
-                ),
-              )
+            ? () async {
+                final mapContext =
+                    await widget.offersScreenView.activeMapContext;
+                if (!context.mounted) {
+                  return;
+                }
+                await context.router.push(
+                  OffersOnMapRoute(
+                    cityIds: mapContext.cityIds,
+                    cityTitle: mapContext.cityTitle,
+                    categories: mapContext.categories,
+                    subCategories: mapContext.subCategories,
+                    recommendedTypes: mapContext.recommendedTypes,
+                  ),
+                );
+              }
             : null,
         onBackButton: () {
           context.router.pop(_hasChangeFavorites);
