@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -88,61 +89,64 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
     final sheetController = useToggleSheetController(isInteractive: false);
 
-    return ToggleSheet(
-      shouldPop: (_) => false,
-      backgroundColor: colors.backgroundSurface4,
-      safeAreaColor: colors.backgroundSurface4,
-      dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
-      scrollController: sheetController,
-      outside: RoutingMapControls(onAddStop: _onAddStop(context)),
-      header: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: ABPoints(
-                    locations: _abLocations(context.l10n),
-                    onTap: _changeRoute,
-                    change: points.first.value == null
-                        ? ABPointsChange.off
-                        : points.last.value == null
-                        ? ABPointsChange.on
-                        : ABPointsChange.none,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: context.read<ThemeController>().systemOverlayStyle,
+      child: ToggleSheet(
+        shouldPop: (_) => false,
+        backgroundColor: colors.backgroundSurface4,
+        safeAreaColor: colors.backgroundSurface4,
+        dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
+        scrollController: sheetController,
+        outside: RoutingMapControls(onAddStop: _onAddStop(context)),
+        header: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ABPoints(
+                      locations: _abLocations(context.l10n),
+                      onTap: _changeRoute,
+                      change: points.first.value == null
+                          ? ABPointsChange.off
+                          : points.last.value == null
+                          ? ABPointsChange.on
+                          : ABPointsChange.none,
+                    ),
                   ),
-                ),
-                if (points.length > 2)
+                  if (points.length > 2)
+                    AppButton(
+                      primaryIcon: General16Icons.edit,
+                      iconColor: colors.neutralOnContainer,
+                      buttonColorScheme: ButtonColorScheme.neutral,
+                      buttonType: ButtonType.secondary,
+                      size: ButtonSize.large,
+                      onTap: _changeRoute,
+                    )
+                  else
+                    AppButton(
+                      primaryIcon: TransportIcons.verticalChange,
+                      buttonColorScheme: ButtonColorScheme.neutral,
+                      buttonType: ButtonType.secondary,
+                      size: ButtonSize.large,
+                      onTap: _onSwipeRoutes,
+                    ),
                   AppButton(
-                    primaryIcon: General16Icons.edit,
+                    primaryIcon: SystemIcons.close,
                     iconColor: colors.neutralOnContainer,
                     buttonColorScheme: ButtonColorScheme.neutral,
                     buttonType: ButtonType.secondary,
                     size: ButtonSize.large,
-                    onTap: _changeRoute,
-                  )
-                else
-                  AppButton(
-                    primaryIcon: TransportIcons.verticalChange,
-                    buttonColorScheme: ButtonColorScheme.neutral,
-                    buttonType: ButtonType.secondary,
-                    size: ButtonSize.large,
-                    onTap: _onSwipeRoutes,
+                    onTap: _onClose,
                   ),
-                AppButton(
-                  primaryIcon: SystemIcons.close,
-                  iconColor: colors.neutralOnContainer,
-                  buttonColorScheme: ButtonColorScheme.neutral,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  onTap: _onClose,
-                ),
-              ].insertBetween(Spacing.$3x.widthBox).toList(),
+                ].insertBetween(Spacing.$3x.widthBox).toList(),
+              ),
             ),
-          ),
-          RoutingInfo(pointsWithLabel: points, isHomeOrWork: widget.isHomeOrWork),
-        ],
+            RoutingInfo(pointsWithLabel: points, isHomeOrWork: widget.isHomeOrWork),
+          ],
+        ),
       ),
     );
   }
