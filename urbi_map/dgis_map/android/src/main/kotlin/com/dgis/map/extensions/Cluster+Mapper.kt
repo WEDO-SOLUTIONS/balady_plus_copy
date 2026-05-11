@@ -13,36 +13,13 @@ import ru.dgis.sdk.map.SimpleMapObject
 
 /**
  * Convert a SimpleClusterObject to a Map<String, Any?> representation.
- * Includes position, objects inside the cluster, and various visual and metadata parameters.
+ * Keep cluster tap payload minimal to avoid touching unstable native-backed fields.
  */
 fun SimpleClusterObject.toMap(clusterId: String): Map<String, Any?> {
     return mapOf(
         "id" to clusterId, // Unique cluster ID
-
-        // Cluster position with latitude, longitude, and elevation
-        "position" to geoPointWithElevationToMap(this.position),
-
-        // Number of objects inside the cluster
         "objectCount" to this.objectCount,
-
-        // Full serialization of each object inside the cluster
-        "objects" to this.objects.map { it.toMap() },
-
-        // Anchor point for icon placement and visual properties
-        "anchor" to anchorToMap(this.anchor),
-        "iconOpacity" to this.iconOpacity.value,
-
-        // Cluster label text and its style
-        "text" to this.text,
-        "textStyle" to this.textStyle.toMap(),
-
-        // Icon size, direction, and other parameters
-        "iconWidth" to this.iconWidth.value,
-        "iconMapDirection" to this.iconMapDirection?.value,
-
-        // Additional visual/animation parameters
-        "animatedAppearance" to this.animatedAppearance,
-        "zIndex" to this.zIndex.value,
+        "objects" to this.objects.map { it.toClusterTapMap() },
     )
 }
 
@@ -71,6 +48,12 @@ fun SimpleMapObject.toMap(): Map<String, Any?> {
         // Floor level (if applicable) and the bounding rectangle
         "levelId" to this.levelId?.toMap(),
         "bounds" to this.bounds.toMap(),
+    )
+}
+
+private fun SimpleMapObject.toClusterTapMap(): Map<String, Any?> {
+    return mapOf(
+        "id" to (userData as? ObjectTapHandler.MarkerId)?.id,
     )
 }
 

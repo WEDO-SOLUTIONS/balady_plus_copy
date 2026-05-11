@@ -106,7 +106,7 @@ The offer list below the map is driven by `ValueNotifier<List<Offer>> _notifierO
 - **Always guard `_notifierOffers.value =` with `if (!mounted) return;` after each `await`.** The widget can be popped while `showMarker` is awaiting platform-channel calls; writing to a disposed `ValueNotifier` throws.
 - **Single-marker tap had the same crash mode as cluster tap.** If `_onTapMarker` writes to `_notifierOffers` after `await showMarker(...)` without re-checking `mounted`, the widget can already be disposed and the app will crash on marker tap.
 - **Do not animate camera from inside cluster/marker tap handlers.** `cameraPosition.animateToMarkers(simpleClusterObject.markers.toMarkers())` constructs ad-hoc `Marker` objects whose IDs may not be tracked on the native side; the SDK's `calcPosition` can throw on the resulting empty/sparse list. Use camera animation only from `_showOffers` first-load, where markers are guaranteed to be added.
-- **BALADY-3581 root cause:** cluster tap must not mutate map objects from inside the native cluster callback. For clusters, open the offers list only; do not show or move a pin from `_onClusterTap`.
+- **BALADY-3581 root cause:** Android/iOS cluster tap bridging must keep the serialized cluster payload minimal. Accessing extra native-backed cluster fields during `cluster.toMap(...)` can crash inside `libdgisfull`. For Saudi Pass, cluster tap should rely only on the tapped objects' ids and open the offers list without mutating map objects from `_onClusterTap`.
 - **Always pass an explicit `icon` when calling `showMarker`** for offer pins — the BALADY-3570 guard relies on `icon != Markers.defaultPinNew` to preserve the explicit path.
 
 ### Cluster behavior

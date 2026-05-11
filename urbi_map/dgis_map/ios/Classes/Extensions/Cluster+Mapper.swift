@@ -3,33 +3,12 @@ import DGis
 
 extension SimpleClusterObject {
     /// Convert a SimpleClusterObject into a [String: Any?] dictionary
-    /// Includes position, all objects inside the cluster, and visual/metadata properties
+    /// Keep cluster tap payload minimal to avoid touching unstable native-backed fields
     func toMap(id: String) -> [String: Any?] {
         return [
             "id": id, // Unique cluster ID
-
-            // Cluster position (latitude, longitude, elevation)
-            "position": geoPointWithElevationToMap(self.position),
-
-            // Number of objects inside the cluster
             "objectCount": self.objectCount,
-
-            // Full serialization of each object in the cluster
-            "objects": self.objects.map { $0.toMap() },
-
-            // Anchor point for icon placement
-            "anchor": anchorToMap(self.anchor),
-
-            // Visual properties
-            "iconOpacity": self.iconOpacity.value,
-
-            // Cluster label and style
-            "text": self.text,
-            "textStyle": self.textStyle.toMap(),
-
-            // Size and direction
-            "iconWidth": self.iconWidth.value,
-            "iconMapDirection": self.iconMapDirection?.value
+            "objects": self.objects.map { $0.toClusterTapMap() }
         ]
     }
 }
@@ -51,6 +30,12 @@ extension SimpleMapObject {
 
             // Bounding rectangle of the object
             "bounds": self.bounds.toMap()
+        ]
+    }
+
+    func toClusterTapMap() -> [String: Any?] {
+        return [
+            "id": (self.userData as? MarkerId)?.id
         ]
     }
 }

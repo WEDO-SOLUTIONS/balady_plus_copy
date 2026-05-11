@@ -47,45 +47,45 @@ class ObjectTapEventHandler {
   Future<void> clusterTapEvent(Map<dynamic, dynamic> map, MapApi api) async {
     final id = map["id"] as String;
     final cluster = map["cluster"];
+    final clusterMap = (cluster as Map).cast<dynamic, dynamic>();
+    final textStyle = clusterMap["textStyle"] as Map?;
+    final position = clusterMap["position"] as Map?;
+    final anchor = clusterMap["anchor"] as Map?;
 
-    final textStyle = cluster["textStyle"];
-    final position = cluster["position"];
-
-    final List<SimpleMapObjectModel> objects = ((cluster['objects'] as List?) ?? const [])
-        .map((e) => SimpleMapObjectModel.fromJson(
-              (e as Map).cast<String, dynamic>(),
-            ))
+    final List<SimpleMapObjectModel> objects = ((clusterMap['objects'] as List?) ?? const [])
+        .map((e) => SimpleMapObjectModel.fromJson((e as Map).cast<String, dynamic>()))
         .toList();
 
     final clusterObject = SimpleClusterObject(
       api,
-      cluster["id"],
+      clusterMap["id"] as String,
       GeoPointWithElevationMessage(
-        latitude: position["latitude"],
-        longitude: position["longitude"],
-        elevation: position["elevation"],
+        latitude: (position?["latitude"] as num?)?.toDouble() ?? 0.0,
+        longitude: (position?["longitude"] as num?)?.toDouble() ?? 0.0,
+        elevation: (position?["elevation"] as num?)?.toDouble() ?? 0.0,
       ),
-      cluster["objectCount"],
+      (clusterMap["objectCount"] as num?)?.toInt() ?? objects.length,
       objects,
-      MarkerAnchorMessage(
-        x: cluster["anchor"]["x"],
-        y: cluster["anchor"]["y"],
-      ),
-      cluster["iconOpacity"],
-      MarkerTextStyleMessage(
-        fontSize: textStyle["fontSize"],
-        color: textStyle["color"],
-        strokeWidth: textStyle["strokeWidth"],
-        strokeColor: textStyle["strokeColor"],
-        textPlacement: MarkerTextPlacementMessage(
-          placement: TextPlacementMessage.values[textStyle["textPlacement"]],
-        ),
-        textOffset: textStyle["textOffset"],
-        fontName: textStyle["fontName"],
-      ),
-      cluster["iconWidth"],
-      cluster["iconMapDirection"] != null ? MapDirectionMessage(degree: cluster["iconMapDirection"]) : null,
-      cluster["text"],
+      MarkerAnchorMessage(x: (anchor?["x"] as num?)?.toDouble() ?? 0.5, y: (anchor?["y"] as num?)?.toDouble() ?? 0.5),
+      (clusterMap["iconOpacity"] as num?)?.toDouble() ?? 1.0,
+      textStyle == null
+          ? null
+          : MarkerTextStyleMessage(
+              fontSize: (textStyle["fontSize"] as num?)?.toDouble() ?? 0.0,
+              color: (textStyle["color"] as num?)?.toInt() ?? 0,
+              strokeWidth: (textStyle["strokeWidth"] as num?)?.toDouble() ?? 0.0,
+              strokeColor: (textStyle["strokeColor"] as num?)?.toInt() ?? 0,
+              textPlacement: MarkerTextPlacementMessage(
+                placement: TextPlacementMessage.values[(textStyle["textPlacement"] as int?) ?? 0],
+              ),
+              textOffset: (textStyle["textOffset"] as num?)?.toDouble() ?? 0.0,
+              fontName: textStyle["fontName"] as String?,
+            ),
+      (clusterMap["iconWidth"] as num?)?.toDouble() ?? 0.0,
+      clusterMap["iconMapDirection"] != null
+          ? MapDirectionMessage(degree: (clusterMap["iconMapDirection"] as num).toDouble())
+          : null,
+      clusterMap["text"] as String? ?? '',
     );
     await clusterHandlers[id]?.call(clusterObject);
   }
@@ -163,28 +163,21 @@ class ObjectTapEventHandler {
     final dgisObjectMap = map["dgisObjectId"];
     final latLngMap = map["latlng"];
 
-    _objectTapController.sink.add(ObjectTapEvent(
-      DgisObjectId(
-        objectId: dgisObjectMap["objectId"],
-        entranceId: dgisObjectMap["entranceId"],
+    _objectTapController.sink.add(
+      ObjectTapEvent(
+        DgisObjectId(objectId: dgisObjectMap["objectId"], entranceId: dgisObjectMap["entranceId"]),
+        LatLng(latitude: latLngMap["latitude"], longitude: latLngMap["longitude"]),
+        map["levelId"],
       ),
-      LatLng(
-        latitude: latLngMap["latitude"],
-        longitude: latLngMap["longitude"],
-      ),
-      map["levelId"],
-    ));
+    );
   }
 
   void myLocationTapEvent(Map<dynamic, dynamic> map) {
     final latLngMap = map["latlng"];
 
-    _objectTapController.sink.add(MyLocationTapEvent(
-      LatLng(
-        latitude: latLngMap["latitude"],
-        longitude: latLngMap["longitude"],
-      ),
-    ));
+    _objectTapController.sink.add(
+      MyLocationTapEvent(LatLng(latitude: latLngMap["latitude"], longitude: latLngMap["longitude"])),
+    );
   }
 
   // Asia/Riyadh has no DST; Hajj closure schedules are authored in KSA wall time
@@ -203,18 +196,12 @@ class ObjectTapEventHandler {
 
     _objectTapController.sink.add(
       RoadEventTapEvent(
-        DgisObjectId(
-          objectId: dgisObjectMap["objectId"],
-          entranceId: dgisObjectMap["entranceId"],
-        ),
+        DgisObjectId(objectId: dgisObjectMap["objectId"], entranceId: dgisObjectMap["entranceId"]),
         map["title"],
         map["description"],
         startTime,
         finishTime,
-        LatLng(
-          latitude: map["latitude"],
-          longitude: map["longitude"],
-        ),
+        LatLng(latitude: map["latitude"], longitude: map["longitude"]),
       ),
     );
   }
@@ -232,10 +219,7 @@ class ObjectTapEventHandler {
       price: map["price"],
       startDate: map["startDate"],
       endDate: map["endDate"],
-      latLng: LatLng(
-        latitude: map["latitude"],
-        longitude: map["longitude"],
-      ),
+      latLng: LatLng(latitude: map["latitude"], longitude: map["longitude"]),
     );
 
     _objectTapController.sink.add(event);
@@ -254,10 +238,7 @@ class ObjectTapEventHandler {
       status: map["status"],
       streetName: map["streetName"],
       planNo: map["planNo"],
-      latLng: LatLng(
-        latitude: map["latitude"],
-        longitude: map["longitude"],
-      ),
+      latLng: LatLng(latitude: map["latitude"], longitude: map["longitude"]),
     );
 
     _objectTapController.sink.add(event);
