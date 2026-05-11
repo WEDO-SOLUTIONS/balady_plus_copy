@@ -7,7 +7,6 @@ import 'package:mapness/features/saudi_pass/views/favourite_offers_screen_view.d
 class FavouriteOffersScreenViewNotifier extends OffersViewNotifier implements FavouriteOffersScreenView {
   FavouriteOffersScreenViewNotifier({
     required super.saudiPassRepository,
-    required super.cityIdByLocation,
     required super.ref,
   });
 

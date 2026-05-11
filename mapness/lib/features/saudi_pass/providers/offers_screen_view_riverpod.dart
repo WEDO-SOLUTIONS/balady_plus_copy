@@ -1,6 +1,5 @@
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifier.dart';
-import 'package:mapness/features/saudi_pass/providers/saudi_pass_city_by_location_riverpod.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,7 +12,6 @@ class OffersScreenViewRiverpod extends _$OffersScreenViewRiverpod {
     final notifier = OffersScreenViewNotifier(
       saudiPassRepository: ref.read(saudiPassRepositoryProvider.future),
       ref: ref,
-      cityIdByLocation: ref.read(saudiPassCityIdByLocationProvider.future),
       offersGroup: offersGroup,
     );
 

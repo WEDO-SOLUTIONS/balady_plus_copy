@@ -36,7 +36,6 @@ class OffersScreenViewNotifier extends OffersViewNotifier
     implements OffersScreenView {
   OffersScreenViewNotifier({
     required super.saudiPassRepository,
-    required super.cityIdByLocation,
     required super.ref,
     this.offersGroup,
   });
