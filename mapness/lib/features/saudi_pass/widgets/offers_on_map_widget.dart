@@ -126,29 +126,6 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       return;
     }
 
-    final theme = context.read<ThemeController>().currentTheme;
-    final showMapOffers = ref.read(showMapOffersProvider.notifier);
-
-    await showMapOffers.showMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: simpleClusterObject.position.latitude,
-          longitude: simpleClusterObject.position.longitude,
-          elevation: 0,
-        ),
-        icon: switch (theme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
-          _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
-        },
-        id: offerPoiPinId,
-      ),
-      theme,
-    );
-
-    if (!mounted) {
-      return;
-    }
-
     final offersInState = ref.read(showMapOffersProvider);
     final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
     _notifierOffers.value = offersInState.where((o) => ids.contains(o.id)).toList();
