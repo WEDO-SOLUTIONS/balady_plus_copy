@@ -87,7 +87,17 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   Future<void> launch(String value) async {
-    final url = Uri.parse(value);
+    var url = Uri.parse(value);
+    if (url.host == 'wa.me' || url.host == 'api.whatsapp.com') {
+      final params = Map<String, String>.from(url.queryParameters);
+      if (params.containsKey('text')) {
+        params['text'] = params['text']!.replaceAll(
+          RegExp(r'2[Gg][Ii][Ss]\s*[Aa]pp', caseSensitive: false),
+          'Balady+',
+        );
+      }
+      url = url.replace(queryParameters: params.isEmpty ? null : params);
+    }
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     }
