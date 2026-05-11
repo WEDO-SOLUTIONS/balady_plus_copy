@@ -32,6 +32,14 @@ class _Location extends _$Location {
 
   @override
   Position? build() {
+    // do NOT register any Riverpod edge to dgisControllerProvider
+    // here. `dgisControllerProvider` depends on darkModeProvider → ... →
+    // locationProvider during its own build, so any reverse `ref.watch` /
+    // `ref.listen` / `ref.read` from this provider back to
+    // dgisControllerProvider closes a graph cycle. The Geolocator stream
+    // listener and other async callsites read the controller from the plain
+    // top-level [activeDgisController] cache (populated by
+    // DgisController.onMapCreated) — invisible to Riverpod's graph analysis.
     checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
       if (!permitted) {
         return;
@@ -199,7 +207,14 @@ class _Location extends _$Location {
     final status = await perm.Permission.location.status;
 
     if (status.isGranted) {
-      final dgisController = await ref.read(dgisControllerProvider.future);
+      // prefer the top-level [activeDgisController] cache so we
+      // don't go through Riverpod (which would close the graph cycle —
+      // dgisControllerProvider transitively depends on locationProvider).
+      // Fall back to `ref.read(dgisControllerProvider.future)` only if the
+      // cache is empty; in that case we're by definition outside the
+      // initialization window where the cycle could trip.
+      final DgisMapController dgisController =
+          activeDgisController ?? await ref.read(dgisControllerProvider.future);
       unawaited(dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
 
       CommonFunctions.locationDialogShowed = false;
@@ -252,8 +267,12 @@ class _Location extends _$Location {
       return null;
     }
 
-    final controllerAsync = ref.read(dgisControllerProvider);
-    final controller = controllerAsync.value;
+    // read the controller from the plain top-level cache
+    // [activeDgisController]. We can't use `ref.read(dgisControllerProvider)`
+    // because dgisControllerProvider transitively depends on this provider
+    // (via darkModeProvider → LocationWithPrecision → us) and any reverse
+    // Riverpod read closes a graph cycle. See [activeDgisController] doc.
+    final controller = activeDgisController;
     if (controller == null) {
       return userLocation;
     }
