@@ -24,17 +24,19 @@ convention). Do not try to migrate this feature to Bloc.
 | State (screen) | `notifiers/offers_screen_view_notifier.dart` | Tab switching + builds `PrefsOffersViewNotifier`. |
 | State (filters) | `notifiers/offers_filters_view_notifier.dart` | All Offers filters incl. manual `tapCity()`. |
 | State (preferences tab) | `notifiers/prefs_offers_view_notifier.dart` | By Preference offers list. |
-| Map view | `providers/show_map_offers_provider.dart` | Renders offers on map; must not re-fetch preferences (US-03). |
+| Map view | `providers/show_map_offers_provider.dart` | Renders offers on map. Must accept the full filter snapshot from the caller and must NOT call `getPreferences()` internally (US-03). |
 | Location | `../../shared/providers/location.dart` | GPS via Geolocator/HMS, KSA-bounding fallback to Riyadh coords. |
 | Reverse geocoding | `providers/saudi_pass_city_by_location_riverpod.dart` | 2GIS Geocoder → city id. Falls back to `kRiyadhCityId`. |
 | Preferences (read) | `providers/get_profile_preferences_provider.dart` | API GET `/preferences`. |
 | City resolver (US-01) | `services/city_resolver/by_preference_city_resolver_provider.dart` | Single source of truth for By Preference city resolution. |
+| City resolver (US-02) | `services/city_resolver/all_offers_city_resolver_provider.dart` | Single source of truth for the All Offers *default* city (before manual `tapCity()` override). |
+| Map context (US-03) | `views/offers_screen_view.dart` (`OffersMapContext`) | Snapshot of the active list's filter / preference context, passed to the Offers Map. |
 
 ## City Resolution Rules
 
-Both tabs send a single `city` parameter to `/promotions`. The resolution
-priority differs per tab. Source: BRD "Offers Lists Enhancements" (Confluence
-page 511246338) and Jira BALADY-188.
+Both tabs send a `city-id` parameter to `/promotions`. The resolution priority
+differs per tab. Source: BRD "Offers Lists Enhancements" (Confluence page
+511246338) and Jira BE-188.
 
 ### By Preference (US-01)
 
@@ -51,15 +53,33 @@ Source of truth:
 All By Preference call-sites MUST go through this provider; do not re-implement
 the priority chain elsewhere.
 
-### All Offers (US-02 — implemented in a separate branch)
+### All Offers (US-02)
 
 Priority: `Current Location City → Preference City → Riyadh`.
 
-### Map View (US-03 — implemented in a separate branch)
+- If location services are enabled and reverse geocoding returns a city that is
+  present in `lookups.cities`, use that city.
+- Else if the user is logged in and has a preference city present in
+  `lookups.cities`, use it.
+- Else fall back to Riyadh (`kRiyadhCityId`).
+
+Source of truth:
+`services/city_resolver/all_offers_city_resolver_provider.dart`. The resolver
+returns the **default** city; a subsequent manual `tapCity()` override in the
+All Offers filter sheet wins and persists until the user resets filters.
+
+### Map View (US-03)
 
 The Offers Map MUST inherit the active filtering / preference context from the
-list it was launched from. Do not call `getPreferences()` inside the map
-provider; the active filters must be passed from the originating notifier.
+list it was launched from. The list builds an `OffersMapContext` snapshot
+(cityIds, cityTitle, categories, subCategories, recommendedTypes) via the
+`mapContext` getter on `PrefsOffersView` / `OffersFiltersView`, and
+`OffersScreenView.activeMapContext` selects the snapshot of the currently
+active tab.
+
+`showMapOffersProvider.switchOffersVisibility` accepts that snapshot directly.
+Do NOT call `getPreferences()` inside the map provider — the active filters
+must come from the caller only.
 
 ## Assumptions
 
@@ -119,3 +139,7 @@ selected`). Add edge cases for "geocoded city not in lookups" and
   logic in one place for testability.
 - `lookups.cities.first` is NOT a valid Riyadh fallback. Use
   `kRiyadhCityId` and look it up explicitly.
+- The Offers Map provider does NOT fetch preferences. The list builds an
+  `OffersMapContext` snapshot and passes it to
+  `switchOffersVisibility(...)`. Adding a `getPreferences()` call back into
+  the map provider re-introduces the US-03 regression.
