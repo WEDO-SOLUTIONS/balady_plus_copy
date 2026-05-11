@@ -58,7 +58,6 @@ class ShowMapOffers extends _$ShowMapOffers {
       _hideMarker(currentSearchMarker);
     }
 
-    await mapObjectManager?.removeAllMarkers();
     await selectPinMapObjectManager.removeAllMarkers();
     await selectPinMapObjectManager.addMarker(marker);
   }

@@ -72,11 +72,11 @@ Sequence:
 3. If found:
    - Icon is replaced with the "big" version **only if** the marker's icon is the default (`Markers.defaultPinNew`). If an explicit icon was passed, it is **not** overwritten.
    - The found marker is hidden via `_hideMarker(marker)` (visibility=false) and stored as `_hiddenMarker`.
-4. `mapObjectManager.removeAllMarkers()` then `selectPinMapObjectManager.removeAllMarkers()` then `selectPinMapObjectManager.addMarker(marker)`.
+4. `selectPinMapObjectManager.removeAllMarkers()` then `selectPinMapObjectManager.addMarker(marker)`.
 
 **BALADY-3570 — why the icon guard matters:** small offer icon (`places_new/<theme>/ic_offers.svg`) and large offer pin (`places_big_new/<theme>/ic_offers_pin.svg`) have different *filenames*, not just different folders. `String.toBigIcon()` (in `shared/extensions/marker_icons_ext.dart`) only rewrites `places_new/` → `places_big_new/`, so blindly applying it to an explicit `icOffersPin` would yield `places_big_new/<theme>/ic_offers.svg` — a non-existent asset — and trigger `PlatformException(Error loading asset for marker)`.
 
-**`_hiddenMarker` is a dangling reference after `removeAllMarkers`.** Step 4 wipes the cluster manager's marker list, but `_hiddenMarker` still holds the (now-removed) Dart `Marker` object. When `removeMarker(offerPoiPinId)` is later called (close button), `_showHiddenMarkerIfPresent` calls `setMarkerOptions(marker.id, isVisible: true)`. On Android this is null-safe (`markers[id]?.first?.isVisible = ...`); if `_showOffers` re-added a marker with the same id (same offer), the visibility flips on the new marker — which is the intended behavior.
+**Do not clear the offers manager from inside marker/cluster tap flow.** The selected-offer pin has its own manager layer; clearing `mapObjectManager` while handling a cluster tap can invalidate objects the native 2GIS render thread is still processing and lead to a native crash.
 
 ### Marker icons
 
@@ -105,7 +105,8 @@ The offer list below the map is driven by `ValueNotifier<List<Offer>> _notifierO
 
 - **Always guard `_notifierOffers.value =` with `if (!mounted) return;` after each `await`.** The widget can be popped while `showMarker` is awaiting platform-channel calls; writing to a disposed `ValueNotifier` throws.
 - **Single-marker tap had the same crash mode as cluster tap.** If `_onTapMarker` writes to `_notifierOffers` after `await showMarker(...)` without re-checking `mounted`, the widget can already be disposed and the app will crash on marker tap.
-- **Do not animate camera from inside cluster/marker tap handlers.** `cameraPosition.animateToMarkers(simpleClusterObject.markers.toMarkers())` constructs ad-hoc `Marker` objects whose IDs may not be tracked on the native side; the SDK's `calcPosition` can throw on the resulting empty/sparse list (root cause of BALADY-3581). Use camera animation only from `_showOffers` first-load, where markers are guaranteed to be added.
+- **Do not animate camera from inside cluster/marker tap handlers.** `cameraPosition.animateToMarkers(simpleClusterObject.markers.toMarkers())` constructs ad-hoc `Marker` objects whose IDs may not be tracked on the native side; the SDK's `calcPosition` can throw on the resulting empty/sparse list. Use camera animation only from `_showOffers` first-load, where markers are guaranteed to be added.
+- **BALADY-3581 root cause:** cluster tap must not mutate or clear the same `mapObjectManager` layer that produced the native tap callback. Show the selected pin only through `selectPinMapObjectManager`.
 - **Always pass an explicit `icon` when calling `showMarker`** for offer pins — the BALADY-3570 guard relies on `icon != Markers.defaultPinNew` to preserve the explicit path.
 
 ### Cluster behavior
@@ -115,7 +116,7 @@ Clustering options:
 - `_kClusterMaxZoom = 20` — clusters are released past this zoom; below it, even widely-separated offers may stay in a single cluster.
 - `_kClusterIconSize = 32`.
 
-Two offers at **identical** lat/lng never declustering at any zoom — that's the typical BALADY-3581 reproduction case. The cluster centroid equals each marker's position, so `markerByGeoPoint(centroid)` finds one of them; the BALADY-3570 icon guard handles the rest.
+Two offers at **identical** lat/lng never declustering at any zoom — that's the typical BALADY-3581 reproduction case. The cluster centroid equals each marker's position, so `markerByGeoPoint(centroid)` finds one of them; the BALADY-3570 icon guard handles the rest, but the tap handler still must avoid clearing the offers manager during that native callback.
 
 ## Offer types
 
