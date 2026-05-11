@@ -95,7 +95,7 @@ The cluster icon name has a **`Dark` suffix only in dark mode** (`icOffersCluste
 The map widget for offers. Entry points:
 
 - `_onClusterTap(simpleClusterObject)` — cluster tap: always shows the offer-pin and the offer list for the cluster's offers, regardless of camera zoom. Pin position = `simpleClusterObject.position` (centroid). The list is built by filtering `showMapOffersProvider` state by the IDs in `simpleClusterObject.markers`.
-- `_onTapMarker(item, text, options)` — single offer tap: shows pin (`icOffersPin`) via `showMarker`, then sets `_notifierOffers.value = [item]`.
+- `_onTapMarker(item, text, options)` — single offer tap: shows pin (`icOffersPin`) via `showMarker`, then sets `_notifierOffers.value = [item]`. Keep the same mounted guards as cluster tap before and after the async `showMarker` call.
 - `_setupVisibleRectListener(controller)` — `visibleRectEvents.debounceTime(1s).listen(...)` refreshes offers based on the visible map rect via `switchOffersVisibility`.
 - `_showOffers(offers, cameraPosition)` — listener-driven; rebuilds all markers/clusters when state changes. On first call only, animates camera to fit the markers (`_isFirstLoad` guard).
 
@@ -104,6 +104,7 @@ The offer list below the map is driven by `ValueNotifier<List<Offer>> _notifierO
 ### Invariants for tap callbacks
 
 - **Always guard `_notifierOffers.value =` with `if (!mounted) return;` after each `await`.** The widget can be popped while `showMarker` is awaiting platform-channel calls; writing to a disposed `ValueNotifier` throws.
+- **Single-marker tap had the same crash mode as cluster tap.** If `_onTapMarker` writes to `_notifierOffers` after `await showMarker(...)` without re-checking `mounted`, the widget can already be disposed and the app will crash on marker tap.
 - **Do not animate camera from inside cluster/marker tap handlers.** `cameraPosition.animateToMarkers(simpleClusterObject.markers.toMarkers())` constructs ad-hoc `Marker` objects whose IDs may not be tracked on the native side; the SDK's `calcPosition` can throw on the resulting empty/sparse list (root cause of BALADY-3581). Use camera animation only from `_showOffers` first-load, where markers are guaranteed to be added.
 - **Always pass an explicit `icon` when calling `showMarker`** for offer pins — the BALADY-3570 guard relies on `icon != Markers.defaultPinNew` to preserve the explicit path.
 

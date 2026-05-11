@@ -122,7 +122,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       );
 
   Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject) async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     final theme = context.read<ThemeController>().currentTheme;
     final showMapOffers = ref.read(showMapOffersProvider.notifier);
@@ -143,7 +145,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       theme,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     final offersInState = ref.read(showMapOffersProvider);
     final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
@@ -151,6 +155,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   }
 
   Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
+    if (!mounted) {
+      return;
+    }
+
     final showMapOffers = ref.read(showMapOffersProvider.notifier);
     await showMapOffers.showMarker(
       Markers.pinMarker(
@@ -169,6 +177,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
       context.read<ThemeController>().currentTheme,
     );
+
+    if (!mounted) {
+      return;
+    }
 
     _notifierOffers.value = [item];
   }

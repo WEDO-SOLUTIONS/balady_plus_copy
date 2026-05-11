@@ -5,7 +5,7 @@ Guidelines for AI coding agents working in this repository (Balady+ Flutter supe
 ## Tooling
 
 - **Flutter / Dart:** pinned via [FVM](https://fvm.app/) — see `.fvm/fvm_config.json` (currently `3.38.5`). Always invoke `fvm flutter ...` and `fvm dart ...`, never the system `flutter` / `dart`.
-- **Formatter:** `fvm dart format -l 120 --fix <files>` — line width is **120**, not the Dart default 80. Lefthook applies this automatically on staged Dart files.
+- **Formatter:** `fvm dart format -l 120 <files>` — line width is **120**, not the Dart default 80. Lefthook applies this automatically on staged Dart files.
 - **Static analysis:** `fvm flutter analyze` from the relevant package directory (usually `mapness/`).
 - **Git hooks:** managed by [lefthook](https://github.com/evilmartians/lefthook) (`lefthook.yml`). Do **not** bypass with `--no-verify` unless a human explicitly authorises it.
 
