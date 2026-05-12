@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:mapness/features/ai_summary/domain/ai_summary.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -23,5 +24,5 @@ import 'package:mapness/shared/providers/app_language.dart';
 /// and rendering accordingly (both end up hidden from the user,
 /// but failures may retry / fall back to cache).
 abstract class AiSummaryRepository {
-  Future<AiSummary?> fetchSummary(String poiId, Language locale);
+  Future<AiSummary?> fetchSummary(String poiId, Language locale, {CancelToken? cancelToken});
 }
