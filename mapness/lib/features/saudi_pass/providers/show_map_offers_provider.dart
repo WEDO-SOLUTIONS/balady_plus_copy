@@ -44,11 +44,17 @@ class ShowMapOffers extends _$ShowMapOffers {
     this.mapObjectManager = mapObjectManager;
   }
 
-  Future<void> showMarker(Marker marker, BaladyAppThemes theme) async {
+  Future<void> showMarker(
+    Marker marker,
+    BaladyAppThemes theme, {
+    MapObjectManager? selectedMarkerManager,
+    bool clearSourceMarkers = true,
+  }) async {
     _showHiddenMarkerIfPresent();
 
     final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
     final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
+    final pinMapObjectManager = selectedMarkerManager ?? selectPinMapObjectManager;
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
@@ -58,14 +64,16 @@ class ShowMapOffers extends _$ShowMapOffers {
       _hideMarker(currentSearchMarker);
     }
 
-    await mapObjectManager?.removeAllMarkers();
-    await selectPinMapObjectManager.removeAllMarkers();
-    await selectPinMapObjectManager.addMarker(marker);
+    if (clearSourceMarkers) {
+      await mapObjectManager?.removeAllMarkers();
+    }
+    await pinMapObjectManager.removeAllMarkers();
+    await pinMapObjectManager.addMarker(marker);
   }
 
-  Future<void> removeMarker(String id) async {
+  Future<void> removeMarker(String id, {MapObjectManager? selectedMarkerManager}) async {
     _showHiddenMarkerIfPresent();
-    await selectPinMapObjectManager.removeMarkerById(id);
+    await (selectedMarkerManager ?? selectPinMapObjectManager).removeMarkerById(id);
   }
 
   void _hideMarker(Marker marker) {

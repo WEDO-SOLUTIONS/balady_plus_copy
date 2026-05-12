@@ -98,16 +98,35 @@ class MapObjectManager extends _$MapObjectManager {
     String? layerId = MapObjectLayers.defaultLayerId,
     ClusteringMapObjectManager? clustering,
   }) async {
-    final dgisController = await ref.watch(dgisControllerProvider.future);
+    DgisMapController? dgisController;
+    MapObjectManagerMessage? manager;
 
-    final manager = clustering != null
-        ? await dgisController.createMapObjectManagerWithClustering(clustering, layerId: layerId)
-        : await dgisController.createMapObjectManager(layerId: layerId);
+    ref.onDispose(() {
+      final controller = dgisController;
+      final mapObjectManager = manager;
+      if (controller == null || mapObjectManager == null) {
+        return;
+      }
 
-    ref.onDispose(() async {
-      await dgisController.removeAllMarkers(fromManager: manager);
-      await dgisController.removeMapObjectManager(manager);
+      unawaited(controller.removeAllMarkers(fromManager: mapObjectManager));
+      unawaited(controller.removeMapObjectManager(mapObjectManager));
     });
+
+    final controller = await ref.watch(dgisControllerProvider.future);
+    dgisController = controller;
+    if (!ref.mounted) {
+      throw StateError('MapObjectManager($named) was disposed before the map controller resolved.');
+    }
+
+    manager = clustering != null
+        ? await controller.createMapObjectManagerWithClustering(clustering, layerId: layerId)
+        : await controller.createMapObjectManager(layerId: layerId);
+
+    if (!ref.mounted) {
+      unawaited(controller.removeAllMarkers(fromManager: manager));
+      unawaited(controller.removeMapObjectManager(manager));
+      throw StateError('MapObjectManager($named) was disposed before native manager creation completed.');
+    }
 
     return manager;
   }

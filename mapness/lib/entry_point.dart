@@ -528,8 +528,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         textDirection: direction,
         child: Consumer(
           builder: (context, ref, child) {
+            final analytics = ref.read(urbiAnalyticsProvider);
+
             return MaterialApp.router(
-              routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
+              routerConfig: ref
+                  .read(appRouterProvider)
+                  .config(
+                    navigatorObservers: () => [RoutesObserver(analytics: analytics)],
+                  ),
               theme: ThemeData(
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],

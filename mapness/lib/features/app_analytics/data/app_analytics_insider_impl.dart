@@ -162,10 +162,11 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
     final androidModel = androidInfo?.data['model'];
     final iosModel = iOSInfo?.data['machine'];
+    final deviceType = (isAndroid ? androidModel : iosModel)?.toString() ?? 'unknown';
 
     await FlutterInsider.Instance.tagEvent('device_type_detected')
         .addParameterWithString('event_name', 'device_type_detected')
-        .addParameterWithString('device_type', isAndroid ? androidModel : iosModel)
+        .addParameterWithString('device_type', deviceType)
         .addParameterWithString('platform', Platform.operatingSystem)
         .addParameterWithString('timestamp', now)
         .build();
@@ -192,12 +193,13 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   }
 
   @override
-  void navigationSearch(
-      {required String destinationCity,
-      required String keyword,
-      required String originCity,
-      required bool isResultsFound,
-      required int resultCount}) {
+  void navigationSearch({
+    required String destinationCity,
+    required String keyword,
+    required String originCity,
+    required bool isResultsFound,
+    required int resultCount,
+  }) {
     FlutterInsider.Instance.tagEvent('navigation_search')
         .addParameterWithString('event_name', 'navigation_search')
         .addParameterWithString('keyword', keyword)
@@ -210,15 +212,14 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   }
 
   @override
-  void isNavigationUser({bool isNavUser=false}) {
-    FlutterInsider.Instance.tagEvent('is_navigation_user')
-        .addParameterWithString('is_navigation_user', isNavUser?'1':'0')
-        .build();
+  void isNavigationUser({bool isNavUser = false}) {
+    FlutterInsider.Instance.tagEvent(
+      'is_navigation_user',
+    ).addParameterWithString('is_navigation_user', isNavUser ? '1' : '0').build();
   }
 
   @override
-  void poiContributionUsed({required String type})
-  {
+  void poiContributionUsed({required String type}) {
     FlutterInsider.Instance.tagEvent('contribution_used')
         .addParameterWithString('event_name', 'poi_contribution_used')
         .addParameterWithString('contribution_type', type)

@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -51,25 +52,42 @@ class OffersOnMapWidget extends StatefulHookConsumerWidget {
 
 class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   final _settings = MapObjectManagerSettings.mappness();
+  final _selectedMarkerSettings = MapObjectManagerSettings.selectedMarker();
   static const double _kMarkerWidth = 32.0;
   static const double _kClusterLogicalPixel = 40;
   static const double _kClusterMaxZoom = 20;
   static const double _kClusterIconSize = 32.0;
   final ValueNotifier<List<Offer>> _notifierOffers = ValueNotifier([]);
+  late final ClusteringMapObjectManager _offersClustering;
+  StreamSubscription<VisibleRectEvent>? _visibleRectSub;
+  MapObjectManager? _selectedMarkerManager;
+  BaladyAppThemes _currentTheme = BaladyAppThemes.light;
+  bool _isRtl = false;
+  bool _isDark = false;
+  bool _isFirstLoad = true;
+  int _showOffersRequestId = 0;
 
   @override
   void initState() {
     super.initState();
+    _offersClustering = ClusteringMapObjectManager(
+      options: ClusteringMapObjectManagerOptionsMessage(
+        logicalPixel: _kClusterLogicalPixel,
+        maxZoom: _kClusterMaxZoom,
+      ),
+      onTap: (cluster) => _onClusterTap(cluster),
+      renderCluster: (count) => _clusterOptions(objectCount: count),
+    );
     init();
   }
 
   Future<void> init() async {
     final controller = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
+
     _setupVisibleRectListener(controller);
-
-    final offers = ref.read(showMapOffersProvider);
-
-    await _showOffers(offers, ref.read(cameraPositionProvider.notifier));
   }
 
   MarkerTextStyleMessage _buildTextStyle({required bool isArabic, required bool isDark}) => MarkerTextStyleMessage(
@@ -81,13 +99,13 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     strokeWidth: 1,
   );
 
-  Marker _createMarker({required Offer item, required bool isRtl, required bool isDark}) {
+  Marker _createMarker({required Offer item}) {
     final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
-    final hasArabic = text.containsArabic() || isRtl;
+    final hasArabic = text.containsArabic() || _isRtl;
 
     final options = MarkerOptionsMessage(
       text: text,
-      textStyle: _buildTextStyle(isArabic: hasArabic, isDark: isDark),
+      textStyle: _buildTextStyle(isArabic: hasArabic, isDark: _isDark),
       position: GeoPointWithElevationMessage(
         latitude: double.tryParse(item.location.latitude) ?? 0.0,
         longitude: double.tryParse(item.location.longitude) ?? 0.0,
@@ -95,7 +113,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
       isVisible: true,
       icon: SvgMarkerIcon(
-        svgPath: switch (context.read<ThemeController>().currentTheme) {
+        svgPath: switch (_currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
           _ => Assets.icons.svg.placesNew.light.icOffers.keyName,
         },
@@ -106,48 +124,53 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     return Marker(id: item.id, onTap: () => _onTapMarker(item, text, options), options: options);
   }
 
-  SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
-      SimpleClusterOptionsMessage(
-        icon: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
-          _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
-        }.markerIcon(size: _kClusterIconSize),
-        text: objectCount.toString(),
-        textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
-          color: Colors.white.value,
-          fontSize: 13,
-          fontName: isRtl ? poiMapFontAr : poiMapFontEn,
-        ),
-      );
+  SimpleClusterOptionsMessage _clusterOptions({required int objectCount}) => SimpleClusterOptionsMessage(
+    icon: switch (_currentTheme) {
+      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+      _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+    }.markerIcon(size: _kClusterIconSize),
+    text: objectCount.toString(),
+    textStyle: MarkerTextStyleMessage(
+      textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+      color: Colors.white.value,
+      fontSize: 13,
+      fontName: _isRtl ? poiMapFontAr : poiMapFontEn,
+    ),
+  );
 
   Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject) async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
-    final theme = context.read<ThemeController>().currentTheme;
     final showMapOffers = ref.read(showMapOffersProvider.notifier);
+    final clusterPosition = simpleClusterObject.position;
+    final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toSet();
 
     await showMapOffers.showMarker(
       Markers.pinMarker(
         GeoPointWithElevationMessage(
-          latitude: simpleClusterObject.position.latitude,
-          longitude: simpleClusterObject.position.longitude,
+          latitude: clusterPosition.latitude,
+          longitude: clusterPosition.longitude,
           elevation: 0,
         ),
-        icon: switch (theme) {
+        icon: switch (_currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
           _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
         },
         id: offerPoiPinId,
       ),
-      theme,
+      _currentTheme,
+      selectedMarkerManager: _selectedMarkerManager,
+      clearSourceMarkers: false,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     final offersInState = ref.read(showMapOffersProvider);
-    final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
-    _notifierOffers.value = offersInState.where((o) => ids.contains(o.id)).toList();
+    _setSelectedOffers(offersInState.where((o) => ids.contains(o.id)).toList());
   }
 
   Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
@@ -161,22 +184,45 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
         text: text,
         textStyle: options.textStyle,
-        icon: switch (context.read<ThemeController>().currentTheme) {
+        icon: switch (_currentTheme) {
           BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
           _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
         },
         id: offerPoiPinId,
       ),
-      context.read<ThemeController>().currentTheme,
+      _currentTheme,
+      selectedMarkerManager: _selectedMarkerManager,
     );
 
-    _notifierOffers.value = [item];
+    _setSelectedOffers([item]);
   }
 
-  late StreamSubscription<VisibleRectEvent> _visibleRectSub;
+  void _setSelectedOffers(List<Offer> offers) {
+    if (!mounted) {
+      return;
+    }
+
+    void update() {
+      if (mounted) {
+        _notifierOffers.value = offers;
+      }
+    }
+
+    final phase = SchedulerBinding.instance.schedulerPhase;
+    if (phase == SchedulerPhase.idle || phase == SchedulerPhase.postFrameCallbacks) {
+      update();
+      return;
+    }
+
+    SchedulerBinding.instance.addPostFrameCallback((_) => update());
+  }
 
   void _setupVisibleRectListener(DgisMapController controller) {
     _visibleRectSub = controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen((event) {
+      if (!mounted) {
+        return;
+      }
+
       ref
           .read(showMapOffersProvider.notifier)
           .switchOffersVisibility(
@@ -192,35 +238,32 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   @override
   void dispose() {
-    _visibleRectSub.cancel();
+    _showOffersRequestId++;
+    _visibleRectSub?.cancel();
     _notifierOffers.dispose();
     super.dispose();
   }
 
-  bool _isFirstLoad = true;
+  bool _isActiveShowOffersRequest(int requestId) => mounted && requestId == _showOffersRequestId;
 
-  Future<void> _showOffers(List<Offer> offers, CameraPosition cameraPosition) async {
-    final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
-    final mapObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-        clustering: ClusteringMapObjectManager(
-          options: ClusteringMapObjectManagerOptionsMessage(
-            logicalPixel: _kClusterLogicalPixel,
-            maxZoom: _kClusterMaxZoom,
-          ),
-          onTap: (cluster) => _onClusterTap(cluster),
-          renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
-        ),
-      ).notifier,
-    );
+  Future<void> _showOffers(
+    List<Offer> offers,
+    CameraPosition cameraPosition,
+    MapObjectManager mapObjectManager,
+  ) async {
+    final requestId = ++_showOffersRequestId;
+    final markers = offers.map((o) => _createMarker(item: o)).toList();
 
-    final markers = offers.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
-
+    await ref.read(showMapOffersProvider.notifier).initObjectManager(mapObjectManager);
     await mapObjectManager.removeAllMarkers();
+    if (!_isActiveShowOffersRequest(requestId)) {
+      return;
+    }
+
     await mapObjectManager.addMarkers(markers);
+    if (!_isActiveShowOffersRequest(requestId)) {
+      return;
+    }
 
     // Only for the first load, animate to the first marker
     if (_isFirstLoad && markers.isNotEmpty) {
@@ -228,16 +271,31 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       final first = markers.first.options.position;
       final gp = GeoPointMessage(latitude: first.latitude, longitude: first.longitude);
       final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
+      if (!_isActiveShowOffersRequest(requestId)) {
+        return;
+      }
+
       await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
     }
-
-    await ref.read(showMapOffersProvider.notifier).initObjectManager(mapObjectManager);
   }
 
   @override
   Widget build(BuildContext context) {
     final showMapOffers = ref.watch(showMapOffersProvider.notifier);
     final cameraPosition = ref.read(cameraPositionProvider.notifier);
+    _currentTheme = context.read<ThemeController>().currentTheme;
+    _isRtl = ref.watch(appLanguageProvider) == Language.arabic;
+    _isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: _settings.name,
+        layerId: _settings.layerId,
+        clustering: _offersClustering,
+      ).notifier,
+    );
+    _selectedMarkerManager = ref.watch(
+      mapObjectManagerProvider(named: _selectedMarkerSettings.name, layerId: _selectedMarkerSettings.layerId).notifier,
+    );
 
     useEffect(() {
       // First load
@@ -249,9 +307,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
       );
       return null;
-    }, []);
+    }, [mapObjectManager]);
 
-    ref.listen(showMapOffersProvider, (prev, next) => _showOffers(next, cameraPosition));
+    ref.listen(showMapOffersProvider, (prev, next) {
+      unawaited(_showOffers(next, cameraPosition, mapObjectManager));
+    });
 
     final typesStringBar = widget.recommendedTypes.isNotEmpty
         ? ', ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero}'

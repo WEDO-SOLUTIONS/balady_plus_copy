@@ -1,19 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:urbi_analytics/analytics.dart' show Analytics;
 
 class RoutesObserver extends AutoRouteObserver {
-  final WidgetRef ref;
+  final Analytics analytics;
 
-  RoutesObserver({required this.ref});
+  RoutesObserver({required this.analytics});
 
   @override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
-    final analytics = ref.read(urbiAnalyticsProvider);
 
     if (route.settings is AutoRoutePage && previousRoute?.settings is AutoRoutePage) {
       final path = (route.settings as AutoRoutePage).routeData.path;
@@ -41,7 +39,7 @@ class RoutesObserver extends AutoRouteObserver {
 
     final path = route.path.startsWith('/') ? route.path : '/${route.path}';
     FlutterUxcam.tagScreenName(path);
-    ref.read(urbiAnalyticsProvider).screen(path);
+    analytics.screen(path);
     logger.log('Tab changed: ${route.name}');
   }
 }
