@@ -135,15 +135,15 @@ class EnvironmentConfig {
   );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
-    url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
+    url: 'https://urbi-lifestyle-stg.momah.gov.sa/api/1.0/',
     meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
     weatherApi: 'https://apiservicesstg.balady.gov.sa/',
-    jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
-    twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
+    jobsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/v1/recruitment-services',
+    twinsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/v1',
     baseApiDomain: 'urbi.ae',
-    shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
-    feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
-    appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
+    shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momah.gov.sa',
+    feedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api/2.0/',
+    appFeedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api',
     appFeedbackEnable: true,
     proxy: null,
     bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
@@ -156,15 +156,15 @@ class EnvironmentConfig {
   );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
-    url: 'https://urbi-lifestyle.momrah.gov.sa/api/1.0/',
+    url: 'https://urbi-lifestyle.momah.gov.sa/api/1.0/',
     meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
     weatherApi: 'https://apiservices.balady.gov.sa/',
-    jobsApi: 'https://urbi-lifestyle.momrah.gov.sa/v1/recruitment-services',
-    twinsApi: 'https://urbi-lifestyle.momrah.gov.sa/v1',
+    jobsApi: 'https://urbi-lifestyle.momah.gov.sa/v1/recruitment-services',
+    twinsApi: 'https://urbi-lifestyle.momah.gov.sa/v1',
     baseApiDomain: 'urbi.ae',
-    shareEtaApi: 'https://geostream-urbi-lifestyle.momrah.gov.sa',
-    feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api/2.0/',
-    appFeedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api',
+    shareEtaApi: 'https://geostream-urbi-lifestyle.momah.gov.sa',
+    feedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api/2.0/',
+    appFeedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api',
     appFeedbackEnable: true,
     proxy: null,
     bssApi: 'https://s1.bss.2gis.com',
