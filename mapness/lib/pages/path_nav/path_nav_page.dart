@@ -32,6 +32,8 @@ import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
@@ -106,6 +108,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Timer? timer;
 
   late ToggleSheetController sheetController;
+  Orientation _orientation = Orientation.portrait;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -176,6 +179,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
     context.changeSystemNavBar();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final orientation = MediaQuery.of(context).orientation;
+    if (orientation != _orientation) {
+      _orientation = orientation;
+      // BALADY-3591: HACK: after orientation change [sheetController.sheetHeight] is returned wrong on the first
+      // build(), so we trigger another one to get the right value
+      WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+    }
   }
 
   @override
@@ -497,7 +511,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
-    if (_isEndingTrip) return;
+    if (_isEndingTrip) {
+      return;
+    }
     _isEndingTrip = true;
     final route = ref.read(etaRouteInfoProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
@@ -556,7 +572,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     action?.call();
   }
 
-  Future<void> _sendNavigationCompletedAnalytics(route) async {
+  Future<void> _sendNavigationCompletedAnalytics(EtaRoute route) async {
     try {
       final pathInfo = ref.read(pathNavEtaProvider);
       final location = ref.read(cityByLocationProvider.notifier);
@@ -785,7 +801,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _sendAnalitycs();
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     ref.read(layersControlsProvider.notifier).hideParking();
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     ref.read(currentRouteProvider.notifier).clearRoute();
@@ -798,7 +816,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (streamAudioWasPlayingBeforeFinish) {
       unawaited(
         Future<void>.delayed(const Duration(seconds: 4), () async {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
           final streamAudio = ref.read(streamAudioProvider);
           if (!streamAudio.isEffectivelyPlaying && !streamAudio.isLoading) {
             await ref.read(streamAudioProvider).togglePlayPause();
