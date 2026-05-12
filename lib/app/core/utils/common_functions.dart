@@ -285,9 +285,6 @@ class CommonFunctions {
       final location = await locationService.getLastLocation();
 
       if (location.latitude != null && location.longitude != null) {
-        debugPrint(
-          'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}',
-        );
         return LatLng(
           latitude: location.latitude!,
           longitude: location.longitude!,
