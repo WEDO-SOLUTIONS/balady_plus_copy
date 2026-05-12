@@ -151,6 +151,11 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     if (_aiSummaryTriggered) {
       return;
     }
+    final types = widget.data.types.map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
+      return;
+    }
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
@@ -166,8 +171,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
         }
         _aiSummaryTriggered = false;
         final currentState = _bottomSheetController.state;
-        if (currentState == PoiCardBottomSheetState.open ||
-            currentState == PoiCardBottomSheetState.expanded) {
+        if (currentState == PoiCardBottomSheetState.open || currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })
