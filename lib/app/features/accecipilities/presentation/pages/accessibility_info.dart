@@ -1,11 +1,13 @@
 import 'package:app_settings/app_settings.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 class AccessibilityInfo extends StatelessWidget {
   final Map<String, String> settingsText;
@@ -14,7 +16,7 @@ class AccessibilityInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: SystemUiOverlayStyle.dark,
+    value: context.read<ThemeController>().systemOverlayStyle,
     child: Material(
       color: context.colors.backgroundSurface4,
       child: Padding(
@@ -30,37 +32,23 @@ class AccessibilityInfo extends StatelessWidget {
                   primaryLabel: 'navigate'.tr(),
                   size: ButtonSize.large,
                   buttonColorScheme: ButtonColorScheme.accent,
-                  onTap: () => AppSettings.openAppSettings(
-                    type: AppSettingsType.accessibility,
-                  ),
+                  onTap: () => AppSettings.openAppSettings(type: AppSettingsType.accessibility),
                 ),
               ),
             ],
             appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+              systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
               title: 'voiceReader'.tr(),
               colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(
-                onPressed: () => context.router.pop(),
-                icon: SystemIcons.arrowCornerLeftLarge,
-              ),
+              leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
             ),
             body: Padding(
-              padding: const EdgeInsets.only(
-                top: 12,
-                left: 16,
-                right: 16,
-                bottom: 36,
-              ),
+              padding: const EdgeInsets.only(top: 12, left: 16, right: 16, bottom: 36),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(
-                      child: Image(
-                        image: AssetImage('assets/images/voice_reader.png'),
-                      ),
-                    ),
+                    const Center(child: Image(image: AssetImage('assets/images/voice_reader.png'))),
                     Spacing.$5x.heightBox,
                     Text(
                       'stepsToAccessFeature'.tr(),
@@ -89,11 +77,7 @@ class AccessibilityInfo extends StatelessWidget {
                             child: Center(
                               child: Text(
                                 '${index + 1}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
+                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: Colors.white),
                               ),
                             ),
                           ),
