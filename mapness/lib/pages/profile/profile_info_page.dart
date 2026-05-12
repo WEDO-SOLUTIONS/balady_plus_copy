@@ -1,22 +1,71 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_info.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/personal_data.dart';
+import 'package:mapness/widgets/profile/profile_account_service.dart';
 import 'package:provider/provider.dart';
 
 @RoutePage()
-class ProfileInfoPage extends ConsumerWidget {
+class ProfileInfoPage extends ConsumerStatefulWidget {
   const ProfileInfoPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(authProvider).value;
+  ConsumerState<ProfileInfoPage> createState() => _ProfileInfoPageState();
+}
+
+class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
+  SsoUserInfo? _userInfo;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfoFromApi();
+  }
+
+  Future<void> _loadUserInfoFromApi() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final service = ProfileAccountService();
+      final userInfoJson = await service.getUserInfo();
+      // `/api/user/userinfo` does NOT carry `complete_profile` — preserve the
+      // value already captured at login (from `MobileLoginVerifyOtp`) so we
+      // don't accidentally re-enable editing for SSO-backed OTP users.
+      final existing = ref.read(authProvider).value;
+      final freshUserInfo = SsoUserInfo.fromJson(userInfoJson).copyWith(
+        completeProfile: existing?.completeProfile,
+        loginType: existing?.loginType,
+      );
+
+      setState(() {
+        _userInfo = freshUserInfo;
+        _isLoading = false;
+      });
+
+      // تحديث الـ provider أيضاً
+      await ref.read(authProvider.notifier).forceUpdate();
+    } catch (e) {
+      print('Error loading user info from API: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userData = _userInfo ?? ref.watch(authProvider).value;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.read<ThemeController>().systemOverlayStyle,
@@ -38,11 +87,18 @@ class ProfileInfoPage extends ConsumerWidget {
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
-              body: ListView(
+              body: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column(children: [if (userData != null) PersonalData(userInfo: userData)]),
+                    child: Column(
+                      children: [
+                        if (userData != null)
+                          PersonalData(userInfo: userData),
+                      ],
+                    ),
                   ),
                 ],
               ),
