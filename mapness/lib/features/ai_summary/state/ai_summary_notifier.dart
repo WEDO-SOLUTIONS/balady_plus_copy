@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/ai_summary/data/ai_summary_cache.dart';
 import 'package:mapness/features/ai_summary/data/ai_summary_repository_provider.dart';
@@ -34,9 +35,12 @@ part 'ai_summary_notifier.g.dart';
 ///   existing cached value or `AsyncData(null)` (section hidden).
 @Riverpod(keepAlive: true)
 class AiSummaryNotifier extends _$AiSummaryNotifier {
+  CancelToken? _cancelToken;
+
   @override
   AsyncValue<AiSummary?> build(String poiId, Language locale) {
     debugPrint('[AiSummaryDebug] notifier.build poi=$poiId locale=${locale.languageCode}');
+    ref.onDispose(() => _cancelToken?.cancel('AiSummaryNotifier disposed'));
     return const AsyncValue.data(null);
   }
 
@@ -49,20 +53,31 @@ class AiSummaryNotifier extends _$AiSummaryNotifier {
     final cached = cache.get(poiId, locale);
     if (cached != null) {
       debugPrint('[AiSummaryDebug] cache HIT poi=$poiId locale=${locale.languageCode} — no network');
+      _cancelToken?.cancel('Superseded by cache hit');
+      _cancelToken = null;
       state = AsyncValue.data(cached);
       return;
     }
 
     debugPrint('[AiSummaryDebug] cache MISS poi=$poiId locale=${locale.languageCode} — fetching');
+    _cancelToken?.cancel('Superseded by new load() call');
+    final token = CancelToken();
+    _cancelToken = token;
     state = const AsyncValue.loading();
     try {
       final repo = await ref.read(aiSummaryRepositoryProvider.future);
-      final summary = await repo.fetchSummary(poiId, locale);
+      final summary = await repo.fetchSummary(poiId, locale, cancelToken: token);
+      if (token.isCancelled) {
+        return;
+      }
       if (summary != null) {
         await cache.put(poiId, locale, summary);
       }
       state = AsyncValue.data(summary);
     } catch (e, _) {
+      if (token.isCancelled || (e is DioException && CancelToken.isCancel(e))) {
+        return;
+      }
       logger.log('AI Summary fetch failed: $e', logLevel: MapnessLogLevel.error);
       // Fall back to any stored cached value (offline scenario);
       // otherwise surface as "no data" so the section is hidden.
@@ -76,6 +91,10 @@ class AiSummaryNotifier extends _$AiSummaryNotifier {
       // UX rather than a spinner-forever.
       final fallback = cache.get(poiId, locale);
       state = AsyncValue.data(fallback);
+    } finally {
+      if (identical(_cancelToken, token)) {
+        _cancelToken = null;
+      }
     }
   }
 }
