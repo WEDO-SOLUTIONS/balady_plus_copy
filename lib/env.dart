@@ -58,12 +58,14 @@ abstract class AppEnv {
     } else {
       Adjust.initSdk(config);
     }
-    Adjust.getGoogleAdId().then((googleAdId) {
-      if (kDebugMode) {
-        print(googleAdId);
-      }
-      // Use googleAdId string value.
-    });
+    if (Platform.isAndroid) {
+      Adjust.getGoogleAdId().then((googleAdId) {
+        if (kDebugMode) {
+          print(googleAdId);
+        }
+        // Use googleAdId string value.
+      });
+    }
 
     /// force app to be only portrait
     SystemChrome.setPreferredOrientations([
