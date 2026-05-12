@@ -20,7 +20,7 @@ class DynamicPoiSizeThresholds {
   /// Zoom at which [DynamicPoiMarkerSize.large] becomes the active size.
   final int large;
 
-  static const defaults = DynamicPoiSizeThresholds(medium: 13, large: 18);
+  static const defaults = DynamicPoiSizeThresholds(medium: 16, large: 18);
 }
 
 /// Map continuous zoom to a discrete [DynamicPoiMarkerSize].

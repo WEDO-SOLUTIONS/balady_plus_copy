@@ -2,15 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_marker_size.dart';
 
 void main() {
-  group('sizeForZoom with default thresholds (medium=13, large=18)', () {
+  group('sizeForZoom with default thresholds (medium=16, large=18)', () {
     test('zoom below medium → small', () {
       expect(sizeForZoom(0), DynamicPoiMarkerSize.small);
-      expect(sizeForZoom(12.99), DynamicPoiMarkerSize.small);
+      expect(sizeForZoom(13), DynamicPoiMarkerSize.small);
+      expect(sizeForZoom(15.99), DynamicPoiMarkerSize.small);
     });
 
     test('zoom at medium threshold → medium (inclusive lower bound)', () {
-      expect(sizeForZoom(13), DynamicPoiMarkerSize.medium);
-      expect(sizeForZoom(15), DynamicPoiMarkerSize.medium);
+      expect(sizeForZoom(16), DynamicPoiMarkerSize.medium);
+      expect(sizeForZoom(17), DynamicPoiMarkerSize.medium);
       expect(sizeForZoom(17.99), DynamicPoiMarkerSize.medium);
     });
 
