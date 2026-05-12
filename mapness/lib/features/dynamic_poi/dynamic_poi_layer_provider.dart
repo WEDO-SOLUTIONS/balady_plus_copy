@@ -20,6 +20,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dynamic_poi_layer_provider.g.dart';
@@ -108,6 +109,16 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
       ..listen<String?>(selectedDynamicPoiIdProvider, (prev, next) {
         final z = ref.read(cameraPositionProvider)?.zoom ?? 0;
         _rebuildAtZoom(manager, z, isArabic: isArabic, isDark: isDark, selectedId: next);
+      })
+      // Hide the 2GIS shared `selectedMarker` (purple pin) whenever it gets
+      // added while a dynamic POI is selected — our promoted `large + accent
+      // dot` is enough indication. The SDK pin lives in a separate
+      // MapObjectManager, so zIndex doesn't put us above it; we have to
+      // explicitly clear it. Reactive (not delayed) so the pin never flashes.
+      ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
+        if (next != null && ref.read(selectedDynamicPoiIdProvider) != null) {
+          ref.read(selectedMarkerProvider.notifier).clear();
+        }
       });
 
     // Clear selection whenever the POI card leaves the route stack (e.g. user
@@ -345,7 +356,11 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
         textStyle: hasLabel ? _labelStyle(label, isArabic: isArabic, isDark: isDark) : null,
         anchor: MarkerAnchorMessage(x: anchor.x, y: anchor.y),
         animatedAppearance: true,
-        zIndex: 40,
+        // Above the 2GIS shared `selectedMarker` (zIndex 50) so the "large
+        // + accent dot" stays on top instead of being covered by the SDK's
+        // purple drop-pin that `point_of_interest.dart` adds when the POI
+        // card opens.
+        zIndex: 100,
       ),
     );
   }
