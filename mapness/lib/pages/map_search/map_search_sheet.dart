@@ -101,8 +101,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         ],
       ),
       stateMapper: const LandingStateMapper(),
-      // BE-153: animation how in Google Maps
-      forceMultiplier: 100.0,
+      // Tuned down so transitions between the middle and expanded states
+      // require less force and feel easier to control with a swipe.
+      forceMultiplier: 45.0,
       initialOpenCurve: Curves.linear,
       mainCurve: Curves.linear,
     );
@@ -268,6 +269,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                     isCloseButton: isCloseButton,
                     showLeadingBackButton: _showMoreQuickFilters,
                     onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
+                    onTap: _expandSheet,
                   ),
                 ),
               },
@@ -388,10 +390,20 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
+    if (!kbState) {
       return;
     }
+    _expandSheet();
+  }
 
+  /// Snaps the sheet to `expanded`. Wired both to the field tap (synchronous,
+  /// reliable on Android — BALADY-3580) and to the keyboard visibility signal
+  /// (fallback for programmatic focus requests, e.g. after Loading → Results).
+  /// Idempotent: a no-op if the sheet is already at expanded.
+  void _expandSheet() {
+    if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
+      return;
+    }
     _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 

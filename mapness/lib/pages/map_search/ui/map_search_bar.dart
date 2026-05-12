@@ -35,12 +35,19 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final bool showLeadingBackButton;
   final VoidCallback? onLeadingBackPressed;
 
+  /// Fires synchronously on every tap on the field, before focus / keyboard work.
+  /// Parents use this to expand the enclosing bottom sheet without waiting for
+  /// `flutter_keyboard_visibility`, whose `onChange` signal is unreliable on
+  /// Android when the keyboard reopens on the same screen (BALADY-3580).
+  final VoidCallback? onTap;
+
   const MapSearchBar({
     required this.requestFocus,
     required this.onClose,
     this.isCloseButton = false,
     this.showLeadingBackButton = false,
     this.onLeadingBackPressed,
+    this.onTap,
     super.key,
     this.initialState,
   });
@@ -224,6 +231,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
+            // Notify parent first so it can synchronously expand the enclosing
+            // bottom sheet — this is the reliable signal on Android, instead of
+            // waiting for `flutter_keyboard_visibility` (BALADY-3580).
+            widget.onTap?.call();
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             BssService.instance.sendEvent(
               const BssRequest(
