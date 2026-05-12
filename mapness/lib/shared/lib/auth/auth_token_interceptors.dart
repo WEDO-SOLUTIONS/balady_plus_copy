@@ -13,6 +13,10 @@ class AuthTokenInterceptor {
   ) =>
       QueuedInterceptorsWrapper(
         onRequest: (options, handler) async {
+          if (!ref.mounted) {
+            handler.next(options);
+            return;
+          }
           final token = await ref.read(tokenProvider.future);
           final headers = options.headers;
           if (token.isNotEmpty) {
@@ -22,8 +26,16 @@ class AuthTokenInterceptor {
         },
         onError: (error, handler) async {
           try {
+            if (!ref.mounted) {
+              handler.next(error);
+              return;
+            }
             final token = await ref.read(tokenProvider.future);
             if (error.response?.statusCode == 401 && token.isNotEmpty) {
+              if (!ref.mounted) {
+                handler.reject(error);
+                return;
+              }
               await ref.read(tokenProvider.notifier).refreshToken();
               // Create dummy dio to rehandle data
               final dummyDio = Dio(baseOptions);
@@ -41,14 +53,18 @@ class AuthTokenInterceptor {
               }
               final options = error.response!.requestOptions;
 
-              // Add new refresh token to headers
-              final token = await ref.read(tokenProvider.future);
-              if (token.isEmpty) {
+              if (!ref.mounted) {
                 handler.reject(error);
+                return;
+              }
+              final newToken = await ref.read(tokenProvider.future);
+              if (newToken.isEmpty) {
+                handler.reject(error);
+                return;
               }
 
               final headers = options.headers;
-              headers['Authorization'] = 'Bearer $token';
+              headers['Authorization'] = 'Bearer $newToken';
               final response = await dummyDio.request(
                 options.path,
                 data: options.data,
@@ -59,6 +75,7 @@ class AuthTokenInterceptor {
                 ),
               );
               handler.resolve(response);
+              return;
             }
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
@@ -67,6 +84,7 @@ class AuthTokenInterceptor {
             } else {
               handler.reject(error);
             }
+            return;
           }
 
           handler.next(error);
