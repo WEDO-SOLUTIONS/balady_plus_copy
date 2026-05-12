@@ -101,8 +101,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         ],
       ),
       stateMapper: const LandingStateMapper(),
-      // BE-153: animation how in Google Maps
-      forceMultiplier: 100.0,
+      // Tuned down so transitions between the middle and expanded states
+      // require less force and feel easier to control with a swipe.
+      forceMultiplier: 45.0,
       initialOpenCurve: Curves.linear,
       mainCurve: Curves.linear,
     );
