@@ -54,7 +54,7 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
   /// active rebuild finishes.
   Future<void>? _activeRebuild;
   double? _pendingZoom;
-  bool? _pendingIsArabic;
+  bool? _lastIsArabic;
 
   @override
   Future<void> build() async {
@@ -70,7 +70,6 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
 
     final pois = await ref.watch(dynamicPoiRepositoryProvider.future);
     final visibility = await ref.watch(dynamicPoiVisibilityConfigProvider.future);
-    final isArabic = ref.watch(appLanguageProvider) == Language.arabic;
 
     // ignore: avoid_print
     print('[DynamicPoiDebug] layer rebuilding pois=${pois.length} visibility=$visibility');
@@ -85,7 +84,7 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
     _polygonCache.clear();
 
     final initialZoom = ref.read(cameraPositionProvider)?.zoom ?? 0;
-    await _rebuildAtZoom(manager, initialZoom, isArabic: isArabic);
+    await _rebuildAtZoom(manager, initialZoom);
 
     // React to subsequent zoom changes. We listen rather than watch so the
     // layer doesn't fully rebuild on every camera tick — only on bucket cross.
@@ -93,7 +92,7 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
       if (next == null) {
         return;
       }
-      _rebuildAtZoom(manager, next.zoom, isArabic: isArabic);
+      _rebuildAtZoom(manager, next.zoom);
     });
   }
 
@@ -101,12 +100,10 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
   /// semantics. See `_activeRebuild` doc above for the rationale.
   Future<void> _rebuildAtZoom(
     MapObjectManager manager,
-    double zoom, {
-    required bool isArabic,
-  }) async {
+    double zoom) async {
+    final isArabic = ref.read(appLanguageProvider) == Language.arabic;
     if (_activeRebuild != null) {
       _pendingZoom = zoom;
-      _pendingIsArabic = isArabic;
       return;
     }
     _activeRebuild = _runRebuild(manager, zoom, isArabic: isArabic);
@@ -117,10 +114,8 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
     }
     if (_pendingZoom != null) {
       final z = _pendingZoom!;
-      final a = _pendingIsArabic ?? isArabic;
       _pendingZoom = null;
-      _pendingIsArabic = null;
-      await _rebuildAtZoom(manager, z, isArabic: a);
+      await _rebuildAtZoom(manager, z);
     }
   }
 
@@ -173,16 +168,30 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
 
     // Phase 2 — fast-path: the desired ID sets match what's already onscreen.
     // No rebuild needed. This replaces the broken integer-bucket short-circuit.
-    if (_setEquals(desiredMarkerIds, _liveMarkerIds) &&
+    final languageChanged = _lastIsArabic != isArabic;
+    _lastIsArabic = isArabic;
+
+    if (!languageChanged &&
+        _setEquals(desiredMarkerIds, _liveMarkerIds) &&
         _setEquals(desiredPolygonIds, _livePolygonIds)) {
       return;
     }
 
     // Phase 3 — diff. Work out exactly which IDs need to enter/leave the SDK.
-    final markersToAddIds = desiredMarkerIds.difference(_liveMarkerIds);
-    final markersToRemoveIds = _liveMarkerIds.difference(desiredMarkerIds);
-    final polygonsToAddIds = desiredPolygonIds.difference(_livePolygonIds);
-    final polygonsToRemoveIds = _livePolygonIds.difference(desiredPolygonIds);
+    // If language changed, we treat all desired markers as "to add" and all
+    // live markers as "to remove" to ensure labels are refreshed.
+    final markersToAddIds = languageChanged ? desiredMarkerIds : desiredMarkerIds.difference(_liveMarkerIds);
+    final markersToRemoveIds = languageChanged ? _liveMarkerIds : _liveMarkerIds.difference(desiredMarkerIds);
+    final polygonsToAddIds = languageChanged ? desiredPolygonIds : desiredPolygonIds.difference(_livePolygonIds);
+    final polygonsToRemoveIds = languageChanged ? _livePolygonIds : _livePolygonIds.difference(desiredPolygonIds);
+
+    if (languageChanged) {
+      _markerCache.clear();
+      await manager.setMapObjectManagerIsVisible(isVisible: false);
+      await manager.removeAll();
+      _liveMarkerIds.clear();
+      _livePolygonIds.clear();
+    }
 
     // Phase 4 — build the new objects (heavy path), drawing from the cache so
     // a marker that was removed for being off-zoom and is now back doesn't
@@ -216,12 +225,17 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
       if (polygonsToAdd.isNotEmpty) {
         await manager.addPolygons(polygonsToAdd);
       }
-      // Then remove the objects that left the desired set. Removals run in
-      // parallel; each is an independent pigeon round-trip.
-      await Future.wait([
-        for (final id in markersToRemoveIds) manager.removeMarkerById(id),
-        for (final id in polygonsToRemoveIds) manager.removePolygonById(id),
-      ]);
+      // Then remove the objects that left the desired set (unless we already
+      // cleared everything via Phase 3.5).
+      if (!languageChanged) {
+        await Future.wait([
+          for (final id in markersToRemoveIds) manager.removeMarkerById(id),
+          for (final id in polygonsToRemoveIds) manager.removePolygonById(id),
+        ]);
+      } else {
+        // Restore visibility after the heavy add operations.
+        await manager.setMapObjectManagerIsVisible(isVisible: true);
+      }
 
       _liveMarkerIds
         ..removeAll(markersToRemoveIds)
