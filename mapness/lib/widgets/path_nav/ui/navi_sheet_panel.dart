@@ -143,7 +143,6 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
     return SizedBox(
       width: widget.isLandscape ? width : double.infinity,
       child: ToggleSheet(
-        key: ValueKey(widget.isLandscape),
         dragger: null,
         shouldPop: (controller) {
           ref.read(pathNavMessageProvider.notifier).stopNavigation();
