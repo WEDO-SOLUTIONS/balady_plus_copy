@@ -43,7 +43,10 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
     final controller = ref.watch(dgisControllerProvider.notifier);
 
     ref.onDispose(() {
-      _cancelToken?.cancel('DynamicPoiRepository disposed');
+      final token = _cancelToken;
+      if (token != null && !token.isCancelled) {
+        token.cancel('DynamicPoiRepository disposed');
+      }
       _subscription?.cancel();
     });
 
@@ -75,7 +78,10 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
   }
 
   Future<void> _refresh(DynamicPoiDatasource ds, String locale, VisibleRect visibleRect) async {
-    _cancelToken?.cancel('superseded');
+    final oldToken = _cancelToken;
+    if (oldToken != null && !oldToken.isCancelled) {
+      oldToken.cancel('superseded');
+    }
     final cancel = _cancelToken = CancelToken();
 
     final bbox = DynamicPoiBbox(
@@ -117,3 +123,5 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
         (aRect.southWestLon - bRect.southWestLon).abs() < epsilon;
   }
 }
+
+
