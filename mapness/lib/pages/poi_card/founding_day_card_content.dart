@@ -142,11 +142,14 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
   @override
   void dispose() {
     // Mirror `_ContentState.dispose()` — cancel any AI Summary inflight when
-    // the founding-day POI card goes away.
+    // the founding-day POI card goes away. Deferred via a microtask so the
+    // notifier state mutation doesn't race the disposing subtree (see the
+    // sibling state for the full rationale).
     if (_aiSummaryTriggered) {
       final language = ref.read(appLanguageProvider);
       final poiId = widget.objectId.toString();
-      ref.read(aiSummaryProvider(poiId, language).notifier).cancel(reason: 'Founding-day POI card closed or switched');
+      final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+      Future<void>.microtask(() => notifier.cancel(reason: 'Founding-day POI card closed or switched'));
     }
     _tabController.dispose();
     _tabType.dispose();
