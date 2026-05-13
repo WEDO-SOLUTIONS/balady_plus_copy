@@ -24,21 +24,6 @@ allprojects {
 
     subprojects {
         afterEvaluate { project ->
-            // Workaround: huawei_location 6.16.0+300 declares a broken
-            // `compileOnly files("$flutterRoot/bin/cache/artifacts/engine/android-arm/flutter.jar")`
-            // dependency. That JAR no longer ships with modern Flutter (3.x+),
-            // which makes Gradle's JetifierTransform fail. The Flutter embedding
-            // classes are already auto-injected by the Flutter Gradle plugin, so
-            // we can safely strip out this stale file dependency.
-            if (project.name == 'huawei_location') {
-                project.configurations.all { config ->
-                    config.dependencies.removeAll { dep ->
-                        (dep instanceof org.gradle.api.artifacts.FileCollectionDependency) &&
-                            dep.files.any { it.name == 'flutter.jar' }
-                    }
-                }
-            }
-
             if (project.hasProperty('android')) {
                 project.android {
                     if (namespace == null) {
