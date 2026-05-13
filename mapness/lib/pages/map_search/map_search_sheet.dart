@@ -60,7 +60,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
+  late final MultiStateSheetController<ThreeStateSheet>  _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -93,6 +93,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     super.initState();
 
     _multiStateSheetController = MultiStateSheetController(
+      forceMultiplier: 2,
       initialState: ThreeStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
@@ -101,11 +102,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         ],
       ),
       stateMapper: const LandingStateMapper(),
-      // Tuned down so transitions between the middle and expanded states
-      // require less force and feel easier to control with a swipe.
-      forceMultiplier: 45.0,
-      initialOpenCurve: Curves.linear,
-      mainCurve: Curves.linear,
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
