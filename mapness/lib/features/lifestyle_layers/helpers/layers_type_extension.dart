@@ -11,6 +11,7 @@ extension LayerTypeExt on LayerType {
   GISMapLayers? getGISLayerType() => switch (this) {
     LayerType.makkahBus => null,
     LayerType.shuttleBus => null,
+    LayerType.jeddahBus => null,
     LayerType.invest => GISMapLayers.opportunities,
     LayerType.buildings => GISMapLayers.bsAimtithalBuildingsCertificateL,
     LayerType.fencing => GISMapLayers.bsWhiteParcelS,
@@ -19,8 +20,9 @@ extension LayerTypeExt on LayerType {
     LayerType.metro ||
     LayerType.parkingLots ||
     LayerType.traffic ||
-    LayerType.three3D // || LayerType.roadEvents
-    => null,
+    LayerType
+        .three3D // || LayerType.roadEvents
+        => null,
   };
 
   IconData iconData() => switch (this) {
@@ -31,9 +33,12 @@ extension LayerTypeExt on LayerType {
     LayerType.fencing => GeneralIcons.fence,
     LayerType.makkahBus => PlacesIcons.qibla,
     LayerType.shuttleBus => PlacesIcons.qibla,
+    LayerType.jeddahBus => PlacesIcons.qibla,
     LayerType.parkingLots => TransportIcons.parkingEnable,
-    LayerType.traffic || LayerType.three3D // || LayerType.roadEvents
-    => GeneralIcons.placeholder,
+    LayerType.traffic ||
+    LayerType
+        .three3D // || LayerType.roadEvents
+        => GeneralIcons.placeholder,
   };
 
   String imageAsset() => switch (this) {
@@ -44,10 +49,13 @@ extension LayerTypeExt on LayerType {
     LayerType.metro => Assets.imagesSvg.layers.metro.keyName,
     LayerType.makkahBus => Assets.imagesSvg.layers.makkahBus.keyName,
     LayerType.shuttleBus => Assets.imagesSvg.layers.shuttleBus.keyName,
+    // TODO(jeddah_bus): valid icon needed
+    // TODO(jeddah_bus): also think about uniting bus logic to dynamically add more buses in the future
+    LayerType.jeddahBus => Assets.imagesSvg.layers.makkahBus.keyName,
     LayerType.parkingLots => Assets.imagesSvg.layers.parking.keyName,
     LayerType.traffic => Assets.imagesSvg.layers.traffic.keyName,
     LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
-   // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
+    // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
   };
 
   String titleLocale(AppLocalizations l10n) => switch (this) {
@@ -58,6 +66,7 @@ extension LayerTypeExt on LayerType {
     LayerType.fencing => l10n.fencingVacantLands,
     LayerType.makkahBus => l10n.makkahBus,
     LayerType.shuttleBus => l10n.shuttleBus,
+    LayerType.jeddahBus => l10n.jeddahBus,
     LayerType.parkingLots => l10n.layersParking,
     LayerType.traffic => l10n.layersTraffic,
     LayerType.three3D => l10n.threeDee,

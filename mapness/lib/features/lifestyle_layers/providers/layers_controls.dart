@@ -9,6 +9,9 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/features/jeddah_bus/provider.dart';
+import 'package:mapness/features/jeddah_bus/repo.dart';
+import 'package:mapness/features/jeddah_bus/visible_provider.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
 import 'package:mapness/features/lifestyle_layers/models/building_compliance_certificate.dart';
@@ -223,6 +226,9 @@ class LayersControls extends _$LayersControls {
       case LayerType.shuttleBus:
         toggleHaramShuttle();
         break;
+      case LayerType.jeddahBus:
+        toggleJeddahBuses();
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -246,6 +252,9 @@ class LayersControls extends _$LayersControls {
     } else if (layerType case LayerType.shuttleBus) {
       ref.read(shuttleBusLayerRepoProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
+    } else if (layerType case LayerType.jeddahBus) {
+      ref.read(jeddahBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.jeddahBus);
     }
   }
 
@@ -285,7 +294,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-
   void toggleMetro() {
     final isVisible = ref.read(metroLayerVisibleProvider);
     if (isVisible) {
@@ -322,6 +330,19 @@ class LayersControls extends _$LayersControls {
     } else {
       ref.read(shuttleBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
+    }
+  }
+
+  void toggleJeddahBuses() {
+    final isVisible = ref.read(jeddahBusLayerVisibleProvider);
+    if (isVisible) {
+      ref.read(jeddahBusLayerProvider.notifier).hide();
+      if (state.selectedType == LayerType.jeddahBus) {
+        setSelection();
+      }
+    } else {
+      ref.read(jeddahBusLayerProvider.notifier).show();
+      setSelection(selectedType: LayerType.jeddahBus);
     }
   }
 
@@ -650,6 +671,9 @@ class LayersControls extends _$LayersControls {
         break;
       case LayerType.shuttleBus:
         await ref.read(shuttleBusLayerProvider.notifier).hide();
+        break;
+      case LayerType.jeddahBus:
+        await ref.read(jeddahBusLayerProvider.notifier).hide();
         break;
       case LayerType.traffic:
         final trafficNotifier = ref.read(trafficStateProvider.notifier);
