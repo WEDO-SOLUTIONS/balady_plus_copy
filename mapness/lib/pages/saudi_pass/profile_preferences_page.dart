@@ -66,7 +66,7 @@ class ProfilePreferencesPage extends ConsumerWidget {
               textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
               onLeadingPressed: popWithPreferences,
               leading: Semantics(
-                label: 'back',
+                label: context.l10n.a11yBack,
                 button: true,
                 child: ExcludeSemantics(
                   child: Row(

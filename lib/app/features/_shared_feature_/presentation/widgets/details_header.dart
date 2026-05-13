@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/gen
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -45,7 +46,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: Container(
         child: Semantics(
-          label: 'back',
+          label: 'a11yBack'.tr(),
           button: true,
           child: GestureDetector(
             onTap: () => Navigator.of(context).pop(),

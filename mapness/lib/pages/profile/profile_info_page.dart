@@ -33,7 +33,7 @@ class ProfileInfoPage extends ConsumerWidget {
                 title: context.l10n.profileInfo,
                 onLeadingPressed: () => context.router.pop(),
                 leading: Semantics(
-                  label: 'back',
+                  label: context.l10n.a11yBack,
                   button: true,
                   child: ExcludeSemantics(
                     child: Row(

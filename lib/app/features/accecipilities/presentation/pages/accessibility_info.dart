@@ -41,7 +41,7 @@ class AccessibilityInfo extends StatelessWidget {
               title: 'voiceReader'.tr(),
               onLeadingPressed: () => context.router.pop(),
               leading: Semantics(
-                label: 'back',
+                label: 'a11yBack'.tr(),
                 button: true,
                 child: ExcludeSemantics(
                   child: Row(

@@ -253,7 +253,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     return Row(
       children: [
         Semantics(
-          label: 'back',
+          label: context.l10n.a11yBack,
           button: true,
           child: AppButton(
             buttonColorScheme: ButtonColorScheme.neutral,

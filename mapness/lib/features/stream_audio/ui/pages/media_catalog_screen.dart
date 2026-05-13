@@ -40,7 +40,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
         title: Directionality.of(context) == TextDirection.rtl ? 'كتالوج الوسائط' : 'media catalog',
         onLeadingPressed: () => context.router.pop(),
         leading: Semantics(
-          label: 'back',
+          label: context.l10n.a11yBack,
           button: true,
           child: ExcludeSemantics(
             child: Row(

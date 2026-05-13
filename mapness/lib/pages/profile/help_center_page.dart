@@ -38,7 +38,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
             textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
             onLeadingPressed: () => context.router.pop(),
             leading: Semantics(
-              label: 'back',
+              label: context.l10n.a11yBack,
               button: true,
               child: ExcludeSemantics(
                 child: Row(

@@ -61,6 +61,7 @@ class LayerSwitcherCard extends ConsumerWidget {
               value.imageAsset(),
               fit: BoxFit.cover,
               height: 80,
+              semanticsLabel: context.l10n.a11yImage,
               colorFilter: ColorFilter.mode(
                 Colors.black.withAlpha(40),
                 BlendMode.overlay,

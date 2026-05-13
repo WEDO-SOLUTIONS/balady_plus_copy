@@ -42,7 +42,7 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                 title: context.l10n.accessibility,
                 onLeadingPressed: () => context.router.pop(),
                 leading: Semantics(
-                  label: 'back',
+                  label: 'a11yBack'.tr(),
                   button: true,
                   child: ExcludeSemantics(
                     child: Row(

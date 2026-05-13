@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -55,7 +56,7 @@ class CompassControl extends HookConsumerWidget {
               },
               child: Transform.rotate(
                 angle: bearingState.angle - pi - pi / 4,
-                child: SvgPicture.asset(compass(context), semanticsLabel: 'MinApps Screen'),
+                child: SvgPicture.asset(compass(context), semanticsLabel: context.l10n.a11yCompass),
               ),
             ),
           ),

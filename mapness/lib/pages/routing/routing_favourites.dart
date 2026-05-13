@@ -36,7 +36,7 @@ class RoutingFavouritesPage extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                     color: Colors.transparent,
                   child: Semantics(
-                    label: 'back',
+                    label: context.l10n.a11yBack,
                     button: true,
                     child: InkWell(
                       onTap: () {

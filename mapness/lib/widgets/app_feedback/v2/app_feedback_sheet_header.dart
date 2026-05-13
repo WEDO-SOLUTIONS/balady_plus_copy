@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AppFeedbackSheetHeader extends StatelessWidget {
   final VoidCallback? onBackTap;
@@ -15,7 +16,7 @@ class AppFeedbackSheetHeader extends StatelessWidget {
   Widget build(BuildContext context) => BaladyTopBar(
         onLeadingPressed: onBackTap,
         leading: Semantics(
-          label: 'back',
+          label: context.l10n.a11yBack,
           button: true,
           child: ExcludeSemantics(
             child: Row(

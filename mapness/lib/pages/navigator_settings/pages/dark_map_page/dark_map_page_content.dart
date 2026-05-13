@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/pages/navigator_settings/components/dark_map_mode_row_widget.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -32,6 +33,7 @@ class DarkMapPageContent extends ConsumerWidget {
                     : Assets.images.lightMapPreview.keyName,
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.high,
+                semanticLabel: context.l10n.a11yImage,
                 height: switch (MediaQuery.of(context).orientation) {
                   Orientation.portrait => null,
                   Orientation.landscape => 100,

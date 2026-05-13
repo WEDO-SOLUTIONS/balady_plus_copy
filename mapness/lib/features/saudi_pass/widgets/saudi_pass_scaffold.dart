@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
 class SaudiPassScaffold extends StatelessWidget {
@@ -27,7 +28,7 @@ class SaudiPassScaffold extends StatelessWidget {
       textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
       onLeadingPressed: onBackButton,
       leading: Semantics(
-        label: 'back',
+        label: context.l10n.a11yBack,
         button: true,
         child: ExcludeSemantics(
           child: Row(
@@ -46,7 +47,7 @@ class SaudiPassScaffold extends StatelessWidget {
               child: Align(
                 alignment: AlignmentDirectional.centerEnd,
                 child: IconButton(
-                  tooltip: 'show on map',
+                  tooltip: context.l10n.a11yShowOnMap,
                   onPressed: onShowOnMapPressed,
                   icon: Icon(GeneralIcons.map, color: context.colors.foregroundDefault),
                 ),

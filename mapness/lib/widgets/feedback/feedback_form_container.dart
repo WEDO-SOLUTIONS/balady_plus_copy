@@ -38,7 +38,7 @@ class FeedbackFormContainer extends ConsumerWidget {
             title: title,
             onLeadingPressed: onBack ?? context.router.pop,
             leading: Semantics(
-              label: 'back',
+              label: context.l10n.a11yBack,
               button: true,
               child: ExcludeSemantics(
                 child: Row(

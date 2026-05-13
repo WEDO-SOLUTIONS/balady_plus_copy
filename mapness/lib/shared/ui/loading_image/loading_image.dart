@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/ui/buttons/refresh_button.dart';
 
 class LoadingImage extends ConsumerStatefulWidget {
@@ -75,6 +76,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
         widget.file!,
         fit: widget.fit,
         width: double.infinity,
+        semanticLabel: AppLocalizations.of(context).a11yImage,
         errorBuilder: (context, __, ___) => ColoredBox(
           color: context.colors.backgroundSurface1,
           child: const SizedBox.shrink(),
@@ -87,6 +89,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
         ? Image.asset(
             imageUrl,
             fit: widget.fit,
+            semanticLabel: AppLocalizations.of(context).a11yImage,
             errorBuilder: (context, __, ___) => ColoredBox(
               color: context.colors.backgroundSurface1,
               child: const SizedBox.shrink(),
@@ -126,6 +129,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
                   child: Image(
                     image: imageProvider,
                     fit: widget.fit,
+                    semanticLabel: AppLocalizations.of(context).a11yImage,
                   ),
                 ),
               );

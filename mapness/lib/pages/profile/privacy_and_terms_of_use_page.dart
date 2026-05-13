@@ -42,7 +42,7 @@ class PrivacyAndTermsOfUsePage extends StatelessWidget {
           ),
           centerTitle: true,
           leading: Semantics(
-            label: 'back',
+            label: context.l10n.a11yBack,
             button: true,
             excludeSemantics: true,
             child: BackButton(color: theme.primaryColor),

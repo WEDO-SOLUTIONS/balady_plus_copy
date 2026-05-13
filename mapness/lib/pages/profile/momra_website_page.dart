@@ -65,7 +65,7 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
           title: context.l10n.baladyWebsite,
           onLeadingPressed: () => context.router.pop(),
           leading: Semantics(
-            label: 'back',
+            label: context.l10n.a11yBack,
             button: true,
             child: ExcludeSemantics(
               child: Row(

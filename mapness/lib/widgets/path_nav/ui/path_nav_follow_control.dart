@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -40,7 +41,7 @@ class PathNavFollowControl extends ConsumerWidget {
       },
       child: SvgPicture.asset(
         Assets.icons.svg.icControlLocation.keyName,
-        semanticsLabel: 'MinApps Screen',
+        semanticsLabel: context.l10n.a11yFollowNavigation,
         colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       ),
     );

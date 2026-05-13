@@ -47,7 +47,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               title: context.l10n.settings,
               onLeadingPressed: () => context.router.pop(),
               leading: Semantics(
-                label: 'back',
+                label: context.l10n.a11yBack,
                 button: true,
                 child: ExcludeSemantics(
                   child: Row(
@@ -203,6 +203,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           },
           height: 16,
           width: 22,
+          semanticsLabel: context.l10n.a11yImage,
         )
       : AppIcons(
           iconData: GeneralIcons.web,

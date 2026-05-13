@@ -104,7 +104,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 elevation: 0,
                 leading: IconButton(
-                  tooltip: 'back',
+                  tooltip: 'a11yBack'.tr(),
                   icon: Icon(
                     Icons.arrow_back_ios,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -166,7 +166,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                               children: [
                                 // Back Button
                                 Semantics(
-                                  label: 'back',
+                                  label: 'a11yBack'.tr(),
                                   button: true,
                                   child: GestureDetector(
                                   onTap: () {

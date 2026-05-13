@@ -139,7 +139,7 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
 
               /// TODO(ui_kit): Fix leading in UIKIT
               leading: Semantics(
-                label: 'back',
+                label: context.l10n.a11yBack,
                 button: true,
                 child: ExcludeSemantics(
                   child: Container(

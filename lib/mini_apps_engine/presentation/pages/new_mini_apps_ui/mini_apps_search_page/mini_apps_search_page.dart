@@ -220,7 +220,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         ),
                                       ),
                                       child: IconButton(
-                                        tooltip: 'back',
+                                        tooltip: 'a11yBack'.tr(),
                                         onPressed: () {
                                           context.read<NewMiniAppLogicCubit>().clearSearch();
 

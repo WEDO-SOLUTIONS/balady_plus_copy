@@ -119,7 +119,7 @@ class ParkingSpotPage extends HookConsumerWidget {
         textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         title: isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Semantics(
-          label: 'back',
+          label: context.l10n.a11yBack,
           button: true,
           child: ExcludeSemantics(
             child: Container(

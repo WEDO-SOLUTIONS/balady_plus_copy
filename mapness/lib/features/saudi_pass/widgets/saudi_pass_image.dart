@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SaudiPassImage extends ConsumerWidget {
   final String imageId;
@@ -25,13 +26,19 @@ class SaudiPassImage extends ConsumerWidget {
     }
 
     final imageUri = repository.getPromotionsImagesUri(imageId: imageId);
-    return GestureDetector(
-      onTap: () => context.router.push(PhotoViewerRoute(photoPaths: [imageUri.url], currentPhotoIndex: 0)),
-      child: CachedNetworkImage(
-        imageUrl: imageUri.url,
-        httpHeaders: imageUri.headers,
-        fit: BoxFit.cover,
-        errorWidget: (context, _, __) => errorWidget ?? const SizedBox.shrink(),
+    return Semantics(
+      label: context.l10n.a11yImage,
+      button: true,
+      child: GestureDetector(
+        onTap: () => context.router.push(PhotoViewerRoute(photoPaths: [imageUri.url], currentPhotoIndex: 0)),
+        child: ExcludeSemantics(
+          child: CachedNetworkImage(
+            imageUrl: imageUri.url,
+            httpHeaders: imageUri.headers,
+            fit: BoxFit.cover,
+            errorWidget: (context, _, __) => errorWidget ?? const SizedBox.shrink(),
+          ),
+        ),
       ),
     );
   }

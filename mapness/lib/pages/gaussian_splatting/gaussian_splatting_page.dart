@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -120,7 +121,7 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                 child: Align(
                   alignment: Alignment.topLeft,
                   child: Semantics(
-                    label: 'back',
+                    label: context.l10n.a11yBack,
                     button: true,
                     child: GestureDetector(
                       onTap: () => context.router.maybePop(),
