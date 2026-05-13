@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -166,13 +167,44 @@ List<MakkahBusModel> _parse(String jsonInput) {
   return result;
 }
 
-class JeddahBusJsonDatasource {
+abstract class JeddahBusJsonDatasource {
+  Future<List<MakkahBusModel>> getInfo();
+}
+
+class JeddahBusJsonDatasourceAsset implements JeddahBusJsonDatasource {
+  @override
   Future<List<MakkahBusModel>> getInfo() async {
     try {
       final jsonOutput = await rootBundle.loadString(Assets.maps.buses.jeddahBus);
       final result = await compute(_parse, jsonOutput);
       return result;
     } catch (ex) {
+      return [];
+    }
+  }
+}
+
+class JeddahBusJsonDatasourceGist implements JeddahBusJsonDatasource {
+  @override
+  Future<List<MakkahBusModel>> getInfo() async {
+    try {
+      final dio = Dio();
+      final response = await dio.get(
+        'https://api.github.com/gists/b19bedbb11c713abf5d2798dcb24f615',
+        // options: Options(headers: {
+        //   'Accept': 'application/vnd.github+json',
+        // }),
+      );
+      final files = (response.data as Map<String, dynamic>?)?['files'] as Map<String, dynamic>?;
+      final firstFile = files?['gistfile1.txt'] as Map<String, dynamic>?;
+      final fileContent = firstFile?['content'] as String?;
+      if (fileContent == null) {
+        throw Exception('no file content in response: ${response.data}');
+      }
+
+      return await compute(_parse, fileContent);
+    } catch (e) {
+      debugPrint('Failed to load Jeddah bus geojson from gist: $e');
       return [];
     }
   }

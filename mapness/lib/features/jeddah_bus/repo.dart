@@ -8,7 +8,7 @@ part 'repo.g.dart';
 @riverpod
 class JeddahBusLayerRepo extends _$JeddahBusLayerRepo {
   @override
-  Future<List<MakkahBusModel>> build() => JeddahBusJsonDatasource().getInfo();
+  Future<List<MakkahBusModel>> build() => JeddahBusJsonDatasourceGist().getInfo();
 
   void show() {
     ref.read(jeddahBusLayerVisibleProvider.notifier).show();
