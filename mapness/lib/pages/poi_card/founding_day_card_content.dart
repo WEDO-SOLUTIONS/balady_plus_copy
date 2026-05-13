@@ -182,9 +182,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
 
-    final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
-
     return Directionality(
       textDirection: Directionality.of(context),
       child: MultiStateSheet(
@@ -287,18 +284,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
               baseline: TextBaseline.ideographic,
               alignment: PlaceholderAlignment.middle,
             ),
-            if (hasOffers) ...[
-              const TextSpan(text: ' • '),
-              WidgetSpan(
-                child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
-                baseline: TextBaseline.ideographic,
-                alignment: PlaceholderAlignment.middle,
-              ),
-              TextSpan(
-                text: ' ${context.l10n.offer}',
-                style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
-              ),
-            ],
           ],
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,

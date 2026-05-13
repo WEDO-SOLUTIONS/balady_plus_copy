@@ -6,7 +6,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -666,10 +665,6 @@ class Search extends _$Search {
     MapMarkersType? markerType,
   }) async {
     final licenseIds = results.firstPage?.items.map((e) => e.tradeLicense?.license.trim()).nonNulls.toSet();
-
-    if (licenseIds != null && licenseIds.isNotEmpty) {
-      unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
-    }
     return SearchStateResults(
       results: results,
       searchText: searchQuery,
