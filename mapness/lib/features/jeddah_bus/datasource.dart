@@ -191,9 +191,6 @@ class JeddahBusJsonDatasourceGist implements JeddahBusJsonDatasource {
       final dio = Dio();
       final response = await dio.get(
         'https://api.github.com/gists/b19bedbb11c713abf5d2798dcb24f615',
-        // options: Options(headers: {
-        //   'Accept': 'application/vnd.github+json',
-        // }),
       );
       final files = (response.data as Map<String, dynamic>?)?['files'] as Map<String, dynamic>?;
       final firstFile = files?['gistfile1.txt'] as Map<String, dynamic>?;
