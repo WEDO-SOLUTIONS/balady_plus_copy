@@ -12,6 +12,9 @@ class CustomSubHeadingText extends StatelessWidget {
   final double? fontSize;
   final bool? isTextCenter;
   final int? maxLines;
+
+  final double? autoSizeMaxFont;
+  final double? autoSizeMinFont;
   const CustomSubHeadingText({
     super.key,
     required this.text,
@@ -22,6 +25,8 @@ class CustomSubHeadingText extends StatelessWidget {
     this.isTextCenter,
     this.fontWeight,
     this.maxLines,
+    this.autoSizeMaxFont,
+    this.autoSizeMinFont,
   });
 
   @override
@@ -35,7 +40,7 @@ class CustomSubHeadingText extends StatelessWidget {
                 text,
                 style: TextStyle(
                   height: 1.2,
-                 // color: fontColor ?? Colors.black,
+                  // color: fontColor ?? Colors.black,
                   fontWeight: fontWeight ?? FontWeight.w300,
                   fontSize: fontSize ?? 18,
                   fontFamily: GeneralKey.appFontType,
@@ -45,12 +50,12 @@ class CustomSubHeadingText extends StatelessWidget {
             )
           : AutoSizeText(
               text,
-              maxFontSize: 18,
-              minFontSize: 14,
+              maxFontSize: autoSizeMaxFont ?? 18,
+              minFontSize: autoSizeMinFont ?? 14,
               overflow: TextOverflow.visible,
               maxLines: maxLines ?? 1,
               style: TextStyle(
-            //    color: fontColor ?? Colors.black,
+                //    color: fontColor ?? Colors.black,
                 fontWeight: fontWeight ?? FontWeight.w700,
                 // fontSize: fontSize ?? 18,
                 height: 1.4,

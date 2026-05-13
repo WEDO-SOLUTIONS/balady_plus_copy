@@ -41,7 +41,7 @@ class QuickFilter extends ConsumerWidget {
 
     final leadingIcon = item.icon != null
         ? ChipIconWidget(
-            ({color}) => Icon(item.icon, size: 24, color: color ?? iconColor),
+            ({color}) => Icon(item.icon, size: 18, color: color ?? iconColor),
           )
         : null;
     final label = item.title;
@@ -61,15 +61,33 @@ class QuickFilter extends ConsumerWidget {
       if (leadingIcon == null) {
         return const SizedBox.shrink();
       }
-      return ChipsElement(
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          border: Border.all(
+            color: context.colors.borderMuted,
+            width: 1,
+          ),
+        ),
+
+        child:  ChipsElement(
         colors: chipsColors,
         onPressed: item.onTap,
         isSelected: item.selected,
         type: chipsType,
         options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
-      );
+        ), );
     }
-    return ChipsElement(
+    return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(7),
+          border: Border.all(
+            color: context.colors.borderMuted,
+            width: 1,
+          ),
+        ),
+
+        child:  ChipsElement(
       colors: chipsColors,
       onPressed: item.onTap,
       isSelected: item.selected,
@@ -80,6 +98,7 @@ class QuickFilter extends ConsumerWidget {
         leadingIconColor: iconColor,
         labelFirstColor: labelColor,
       ),
+        ),
     );
   }
 }

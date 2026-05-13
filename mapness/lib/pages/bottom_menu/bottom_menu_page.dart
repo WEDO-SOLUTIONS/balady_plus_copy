@@ -12,6 +12,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
 import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
@@ -27,6 +28,7 @@ class BottomMenuPage extends ConsumerStatefulWidget {
 }
 
 class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProviderStateMixin {
+
   late final landingController = MultiStateSheetController<ThreeStateSheet>(
     initialState: ThreeStateSheet.open,
     behavior: FractionSnappingBehavior(fractions: {0.0, if (Platform.isIOS) .3 else .38, 1.0}),
@@ -71,6 +73,8 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
     ref.read(bottomSheetControllerProvider.notifier).state.controller = controller;
   }
 
+
+
   @override
   Widget build(BuildContext context) => AutoTabsRouter.builder(
     routes: [const LandingRoute(), const RoutingPointsRoute(), MapnessServicesRoute(), const ProfileRoute()],
@@ -82,11 +86,14 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
       }
 
+
       if (tab.activeIndex == 2 && tab.previousIndex != 2) {
         ref.read(appAnalyticsProvider).serviceSectionVisited();
       }
     },
     builder: (_, tabsRouter, route) {
+      late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
       final controller = ref.watch(bottomSheetControllerProvider.notifier).state.controller;
       final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
       final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
@@ -118,72 +125,94 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
                       ),
                     ],
                   ),
-                  child: BottomNavigationBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    type: BottomNavigationBarType.fixed,
-                    selectedLabelStyle: TextStyle(
-                      color: context.colors.accentOnContainer,
-                      fontSize: 0,
-                      height: 0,
-                    ),
-                    unselectedLabelStyle: TextStyle(
-                      color: context.colors.foregroundDefault,
-                      fontSize: 0,
-                      height: 0,
-                    ),
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: AppBottomNavigationBarItem(
-                          selected: route.activeIndex == 0,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(
-                            icon: GeneralIcons.pin,
-                            selected: isSelected,
-                            color: isSelected ? accentColor : context.colors.foregroundSoft,
-                          ),
-                          label: context.l10n.nav_general,
-                        ),
-                        label: '',
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: List.generate(4, (index) => Expanded(
+                            child: Container(
+                              height: 1,
+                              color: route.activeIndex == index
+                                  ? accentColor
+                                  :  isDark? Colors.black: const Color(0xffE5E7EB) ,
+                            ),
+                          )),
                       ),
-                      BottomNavigationBarItem(
-                        icon: AppBottomNavigationBarItem(
-                          selected: route.activeIndex == 1,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(
-                            icon: GeneralIcons.routeStroke,
-                            selected: isSelected,
-                            color: isSelected ? accentColor : context.colors.foregroundSoft,
-                          ),
-                          label: context.l10n.nav_route,
+
+                      BottomNavigationBar(
+                        backgroundColor: context.colors.backgroundSurface2,
+                        elevation: 0,
+                        type: BottomNavigationBarType.fixed,
+                        selectedLabelStyle: TextStyle(
+                          color: context.colors.accentOnContainer,
+                          fontSize: 0,
+                          height: 0,
                         ),
-                        label: '',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: AppBottomNavigationBarItem(
-                          selected: route.activeIndex == 2,
-                          iconBuilder: (ctx, isSelected) => DefaultIcon(
-                            icon: GeneralIcons.dashboard,
-                            selected: isSelected,
-                            color: isSelected ? accentColor : context.colors.foregroundSoft,
-                          ),
-                          label: context.l10n.nav_landing,
+                        unselectedLabelStyle: TextStyle(
+                          color: context.colors.foregroundDefault,
+                          fontSize: 0,
+                          height: 0,
                         ),
-                        label: '',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: AppBottomNavigationBarItem(
-                          selected: route.activeIndex == 3,
-                          iconBuilder: (context, isSelected) => ProfileImageWidget(
-                            dimension: AvatarSize.$24,
-                            isSelected: isSelected,
+                        items: [
+                          BottomNavigationBarItem(
+                            icon: AppBottomNavigationBarItem(
+                              selected: route.activeIndex == 0,
+                              iconBuilder: (ctx, isSelected) => DefaultIcon(
+                                icon: GeneralIcons.pin,
+                                selected: isSelected,
+                                color: isSelected
+                                    ? accentColor
+                                    : context.colors.foregroundSoft,
+                              ),
+                              label: context.l10n.nav_general,
+                            ),
+                            label: '',
                           ),
-                          label: context.l10n.nav_profile,
-                        ),
-                        label: '',
+                          BottomNavigationBarItem(
+                            icon: AppBottomNavigationBarItem(
+                              selected: route.activeIndex == 1,
+                              iconBuilder: (ctx, isSelected) => DefaultIcon(
+                                icon: GeneralIcons.routeStroke,
+                                selected: isSelected,
+                                color: isSelected
+                                    ? accentColor
+                                    : context.colors.foregroundSoft,
+                              ),
+                              label: context.l10n.nav_route,
+                            ),
+                            label: '',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: AppBottomNavigationBarItem(
+                              selected: route.activeIndex == 2,
+                              iconBuilder: (ctx, isSelected) => DefaultIcon(
+                                icon: GeneralIcons.dashboard,
+                                selected: isSelected,
+                                color: isSelected
+                                    ? accentColor
+                                    : context.colors.foregroundSoft,
+                              ),
+                              label: context.l10n.nav_landing,
+                            ),
+                            label: '',
+                          ),
+                          BottomNavigationBarItem(
+                            icon: AppBottomNavigationBarItem(
+                              selected: route.activeIndex == 3,
+                              iconBuilder: (context, isSelected) => ProfileImageWidget(
+                                dimension: AvatarSize.$24,
+                                isSelected: isSelected,
+                              ),
+                              label: context.l10n.nav_profile,
+                            ),
+                            label: '',
+                          ),
+                        ],
+                        currentIndex: route.activeIndex,
+                        onTap: route.setActiveIndex,
                       ),
                     ],
-                    currentIndex: route.activeIndex,
-                    onTap: route.setActiveIndex,
-                  ),
+                  )
                 );
               },
             ),

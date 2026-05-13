@@ -11,7 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SearchMiniAppsResultsList extends StatelessWidget {
-  const SearchMiniAppsResultsList({super.key});
+  final bool isSearching;
+  const SearchMiniAppsResultsList({super.key, required this.isSearching});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +24,7 @@ class SearchMiniAppsResultsList extends StatelessWidget {
 
         if (state.searchError != null) {
           return Center(
-            child: Text(
-              state.searchError!,
-              style: const TextStyle(color: Colors.red),
-            ),
+            child: Text(state.searchError!, style: const TextStyle(color: Colors.red)),
           );
         }
 
@@ -47,70 +45,69 @@ class SearchMiniAppsResultsList extends StatelessWidget {
 
         final favIds = state.favoriteApps.map((app) => app.id).toSet();
 
-        return ListView.builder(
+        return ListView.separated(
+          separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.01),
           padding: EdgeInsets.only(top: context.screenHeight * 0.02),
           itemCount: results.length,
           itemBuilder: (context, index) {
             final app = results[index];
             final isFav = favIds.contains(app.id);
 
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: context.screenHeight * 0.005,
-              ),
-              child: SizedBox(
-                width: context.screenWidth,
-                height: context.h(64),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Theme.of(context).cardColor),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: context.screenWidth * 0.02,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            AppsGroupMiniAppsCardWidgets(
-                              width: context.w(48.09228515625),
-                              height: context.h(48.09228515625),
-                              iconHeight: context.h(37.73630905151367),
-                              iconWidth: context.w(37.73630905151367),
-                              isTextRemove: true,
-                              iconPath: app.iconPath,
-                            ),
-                            SizedBox(width: context.screenWidth * 0.02),
-                            CustomSubHeadingText(
-                              width: context.w(192),
-                              height: context.h(30),
-                              text: app.name,
-                              fontColor: Theme.of(
-                                context,
-                              ).colorScheme.onSurface,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 15,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            CustomMiniAppSwitch(
+            return SizedBox(
+              key: ValueKey('search_${app.id}'),
+              width: context.screenWidth,
+              height: context.h(70),
+              child: Card(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.00),
+                  child: Row(
+                    children: [
+                      Row(
+                        children: [
+                          AppsGroupMiniAppsCardWidgets(
+                            isActive: isFav,
+                            width: context.w(48.09228515625),
+                            height: context.h(48.09228515625),
+                            iconHeight: context.h(37.73630905151367),
+                            iconWidth: context.w(37.73630905151367),
+                            isTextRemove: true,
+                            iconPath: app.iconPath,
+                            radius: 8,
+                          ),
+                          CustomSubHeadingText(
+                            isTextCenter: false,
+                            maxLines: 2,
+                            autoSizeMaxFont: 15,
+                            autoSizeMinFont: 9,
+
+                            width: context.w(192),
+                            height: context.h(30),
+                            text: app.name,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: CustomMiniAppSwitch(
                               isActive: isFav,
                               onChanged: (_) {
-                                context
-                                    .read<NewMiniAppLogicCubit>()
-                                    .toggleFavoriteLocal(app.id);
+                                context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(app.id);
                               },
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          if (isFav && !isSearching)
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+                              child: Icon(Icons.drag_handle_rounded, color: Color(0XFF9DA4AE), size: 20),
+                            ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),

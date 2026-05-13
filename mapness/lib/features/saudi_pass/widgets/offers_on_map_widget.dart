@@ -99,7 +99,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       isVisible: true,
       icon: SvgMarkerIcon(
         svgPath: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
+          BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icOffers.keyName,
           _ => Assets.icons.svg.placesNew.light.icOffers.keyName,
         },
         width: _kMarkerWidth,
@@ -112,7 +112,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
         icon: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+          BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
           _ => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
         }.markerIcon(size: _kClusterIconSize),
         text: objectCount.toString(),
@@ -140,7 +140,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             elevation: 0,
           ),
           icon: switch (context.read<ThemeController>().currentTheme) {
-            BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+            BaladyAppThemes.darkDGA => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
             _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
           },
           id: offerPoiPinId,
@@ -178,7 +178,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         text: text,
         textStyle: options.textStyle,
         icon: switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+          BaladyAppThemes.darkDGA => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
           _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
         },
         id: offerPoiPinId,

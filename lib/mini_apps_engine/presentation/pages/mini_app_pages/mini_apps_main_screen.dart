@@ -105,7 +105,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
           appBar: AppBar(
             title: Text(
-              data.name ?? " ",
+              data.name,
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: GeneralKey.appFontType),
@@ -121,8 +121,8 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                     // final audioProvider = ref.read(streamAudioProvider);
                     // audioProvider.setInWeb(false);
                     // audioProvider.setFloatingPlayerVisibility(true);
-                    Navigator.of(context).pop();
-                  }
+                    Navigator.of(context).pop();  
+                }
                 },
               ),
             ],

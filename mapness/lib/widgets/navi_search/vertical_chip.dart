@@ -6,23 +6,25 @@ class VerticalChip extends StatelessWidget {
   final String title;
   final IconData icon;
   final VoidCallback? onTap;
+  final double? width;
+  final double? height;
+  const VerticalChip({required this.title, required this.icon, this.onTap,this.width,this.height, super.key});
 
-  const VerticalChip({required this.title, required this.icon, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) => GestureDetector(
     onTap: onTap,
     child: Container(
-      width: 94,
-      height: 70,
+      width: width?? 94,
+      height: height??70,
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x, vertical: Spacing.$3x),
       decoration: BoxDecoration(
-        color: context.colors.accentSecondaryContainerSoft.withOpacity(.05),
+        color: context.colors.accentDefault.withOpacity(.09),
         borderRadius: BorderRadius.circular(RadiusBorder.m),
       ),
       child: Column(
         children: [
-          Icon(icon, size: 24, color: context.colors.accentSecondaryDefault),
+          Icon(icon, size: 18, color: context.colors.accentDefault),
           const SizedBox(height: Spacing.$1x),
           Text(
             title,
