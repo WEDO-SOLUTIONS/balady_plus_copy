@@ -22,7 +22,7 @@ class MoreFilterChip extends StatelessWidget {
         height: 56,
         decoration: BoxDecoration(
           color: context.colors.accentSecondaryContainerSoft.withOpacity(.05),
-          borderRadius: BorderRadius.circular(56),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
