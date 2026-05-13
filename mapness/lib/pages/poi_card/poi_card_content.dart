@@ -172,10 +172,17 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     // either switched to another POI or closed the card and there's nothing
     // left on screen to show the result. `keepAlive: true` on the notifier
     // means its own `onDispose` wouldn't fire here.
+    //
+    // The cancel mutates notifier state, which makes its listeners rebuild.
+    // Doing that synchronously inside `dispose()` trips Flutter framework
+    // assertions when listeners are still in the disposing subtree (the
+    // POI card's own AiSummarySection). Defer to a microtask so the
+    // dispose pipeline finishes first.
     if (_aiSummaryTriggered) {
       final language = ref.read(appLanguageProvider);
       final poiId = widget.objectId.toString();
-      ref.read(aiSummaryProvider(poiId, language).notifier).cancel(reason: 'POI card closed or switched');
+      final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+      Future<void>.microtask(() => notifier.cancel(reason: 'POI card closed or switched'));
     }
     _tabController.dispose();
     _tabType.dispose();
