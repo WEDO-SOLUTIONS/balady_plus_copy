@@ -186,6 +186,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final orientation = MediaQuery.of(context).orientation;
     if (orientation != _orientation) {
       _orientation = orientation;
+      sheetController.close();
       // BALADY-3591: HACK: after orientation change [sheetController.sheetHeight] is returned wrong on the first
       // build(), so we trigger another one to get the right value
       WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
