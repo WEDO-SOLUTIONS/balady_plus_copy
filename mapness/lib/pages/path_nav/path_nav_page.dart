@@ -108,7 +108,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Timer? timer;
 
   late ToggleSheetController sheetController;
-  Orientation _orientation = Orientation.portrait;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -179,18 +178,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
     context.changeSystemNavBar();
-  }
-
-  @override
-  void didChangeMetrics() {
-    final orientation = MediaQuery.of(context).orientation;
-    if (orientation != _orientation) {
-      _orientation = orientation;
-      sheetController.close();
-      // BALADY-3591: HACK: after orientation change [sheetController.sheetHeight] is returned wrong on the first
-      // build(), so we trigger another one to get the right value
-      WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    }
   }
 
   @override
