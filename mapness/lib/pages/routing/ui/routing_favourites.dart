@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'widgets/routing_favourites_button.dart';
@@ -99,14 +100,17 @@ class RoutingFavourites extends ConsumerWidget {
             _FavButton(
               icon: SystemIcons.bookmark,
               onTap: onFavouritesTap,
+              semanticsLabel: context.l10n.favourites,
             ),
           _FavButton(
             icon: GeneralIcons.home,
             onTap: onHomeTap,
+            semanticsLabel: context.l10n.home,
           ),
           _FavButton(
             icon: GeneralIcons.briefcase,
             onTap: onWorkTap,
+            semanticsLabel: context.l10n.work,
           ),
         ].insertBetween(Spacing.$3x.widthBox).toList()),
       ),

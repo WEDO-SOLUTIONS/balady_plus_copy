@@ -30,17 +30,19 @@ class DimensionControl extends ConsumerWidget {
         width: iconSize,
         height: iconSize,
         child: Center(
-          child: mapDimensionsState == MapDimensionsState.twoDimensional
-              ? Assets.icons.svg.ic3d.svg(
-                  width: iconSize,
-                  height: iconSize,
-                  colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
-                )
-              : Assets.icons.svg.ic2d.svg(
-                  width: iconSize,
-                  height: iconSize,
-                  colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
-                ),
+          child: ExcludeSemantics(
+            child: mapDimensionsState == MapDimensionsState.twoDimensional
+                ? Assets.icons.svg.ic3d.svg(
+                    width: iconSize,
+                    height: iconSize,
+                    colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
+                  )
+                : Assets.icons.svg.ic2d.svg(
+                    width: iconSize,
+                    height: iconSize,
+                    colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
+                  ),
+          ),
         ),
       ),
     );

@@ -5,18 +5,25 @@ part of '../routing_favourites.dart';
 class _FavButton extends StatelessWidget {
   final VoidCallback onTap;
   final IconData icon;
+  final String semanticsLabel;
 
-  const _FavButton({required this.onTap, required this.icon});
+  const _FavButton({required this.onTap, required this.icon, required this.semanticsLabel});
 
   @override
   Widget build(BuildContext context) => Expanded(
     child: SizedBox(
       height: 48,
-      child: AppButton(
-        buttonColorScheme: ButtonColorScheme.accentSecondary,
-        buttonType: ButtonType.secondary,
-        primaryIcon: icon,
-        onTap: onTap,
+      child: Semantics(
+        button: true,
+        label: semanticsLabel,
+        child: ExcludeSemantics(
+          child: AppButton(
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonType: ButtonType.secondary,
+            primaryIcon: icon,
+            onTap: onTap,
+          ),
+        ),
       ),
     ),
   );

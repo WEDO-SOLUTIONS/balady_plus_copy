@@ -66,6 +66,7 @@ class _MapButtonState extends State<MapButton> {
 
     if (widget.semanticsLabel != null) {
       return Semantics(
+        button: true,
         label: widget.semanticsLabel,
         child: inner,
       );

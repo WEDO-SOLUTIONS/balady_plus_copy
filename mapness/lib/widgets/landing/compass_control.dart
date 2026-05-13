@@ -50,13 +50,16 @@ class CompassControl extends HookConsumerWidget {
             scale: animation,
             child: MapButton(
               borderRadius: BorderRadius.circular(24),
+              semanticsLabel: context.l10n.a11yCompass,
               onTap: () {
                 ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
                 bearingNotifier.onCompassTap();
               },
               child: Transform.rotate(
                 angle: bearingState.angle - pi - pi / 4,
-                child: SvgPicture.asset(compass(context), semanticsLabel: context.l10n.a11yCompass),
+                child: ExcludeSemantics(
+                  child: SvgPicture.asset(compass(context)),
+                ),
               ),
             ),
           ),

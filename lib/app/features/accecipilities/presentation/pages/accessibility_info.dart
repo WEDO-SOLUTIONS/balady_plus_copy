@@ -69,9 +69,15 @@ class AccessibilityInfo extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(
-                      child: Image(
-                        image: AssetImage('assets/images/voice_reader.png'),
+                    Center(
+                      child: Semantics(
+                        label: 'a11yImage'.tr(),
+                        image: true,
+                        child: ExcludeSemantics(
+                          child: Image(
+                            image: const AssetImage('assets/images/voice_reader.png'),
+                          ),
+                        ),
                       ),
                     ),
                     Spacing.$5x.heightBox,

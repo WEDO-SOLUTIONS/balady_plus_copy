@@ -22,6 +22,7 @@ class PathNavFollowControl extends ConsumerWidget {
         : context.colors.foregroundDefault;
 
     return MapButton(
+      semanticsLabel: context.l10n.a11yFollowNavigation,
       onTap: () async {
         //BSA-1375: Fix the issue with the follow button. The button should work as expected in all types.
         final cameraPosition = ref.read(cameraPositionProvider);
@@ -39,10 +40,11 @@ class PathNavFollowControl extends ConsumerWidget {
         }
         await dgisController.followNavigation();
       },
-      child: SvgPicture.asset(
-        Assets.icons.svg.icControlLocation.keyName,
-        semanticsLabel: context.l10n.a11yFollowNavigation,
-        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+      child: ExcludeSemantics(
+        child: SvgPicture.asset(
+          Assets.icons.svg.icControlLocation.keyName,
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+        ),
       ),
     );
   }

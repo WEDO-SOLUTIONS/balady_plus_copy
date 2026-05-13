@@ -22,6 +22,7 @@ class WeatherStateIcon extends ConsumerWidget {
     };
 
     return MapButton(
+      semanticsLabel: context.l10n.a11yWeather,
       onTap: () {
         ref
             .read(weatherMapControllerProvider().notifier)
@@ -30,10 +31,11 @@ class WeatherStateIcon extends ConsumerWidget {
               type: type == WeatherMapType.temperature ? WeatherMapType.precipitation : WeatherMapType.temperature,
             );
       },
-      child: SvgPicture.asset(
-        iconRes,
-        semanticsLabel: context.l10n.a11yWeather,
-        color: context.colors.foregroundDefault,
+      child: ExcludeSemantics(
+        child: SvgPicture.asset(
+          iconRes,
+          color: context.colors.foregroundDefault,
+        ),
       ),
     );
   }
