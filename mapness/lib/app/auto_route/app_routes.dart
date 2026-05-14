@@ -202,9 +202,12 @@ class AppRouter extends RootStackRouter {
           path: 'navi_search_favorites',
           page: NaviFavoritesRoute.page,
         ),
-        CustomRoute(
-          path: 'search',
+        AppRoute(
+          path: 'favourites_search',
           page: FavouritesSearchRoute.page,
+          durationInMilliseconds: 150,
+          reverseDurationInMilliseconds: 150,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           page: DeleteAllContentRoute.page,
