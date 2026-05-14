@@ -37,8 +37,7 @@ class FavouritesSuggestList extends ConsumerWidget {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
     final contentColor = context.colors.backgroundSurface1;
-    final searchText =
-        ref.read(searchProvider(context.read<SearchScope>().value)).searchText;
+    final searchText = ref.read(searchProvider(context.read<SearchScope>().value)).searchText;
 
     Future<void> onObjectTap(DirectoryObjectMessage object) async {
       final objectId = object.id?.objectId;
@@ -51,15 +50,15 @@ class FavouritesSuggestList extends ConsumerWidget {
         );
 
         final favItem = object.mapToFavourite();
+        FocusManager.instance.primaryFocus?.unfocus();
         final repo = ref.read(favouriteCacheProvider.notifier);
         unawaited(switch (markerType) {
-          FavouriteItemMarkerType.unknown ||
-          FavouriteItemMarkerType.place => repo.addItem(favItem),
+          FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
           FavouriteItemMarkerType.home => repo.setHome(favItem),
           FavouriteItemMarkerType.work => repo.setWork(favItem),
         });
         if (context.mounted && context.router.canPop()) {
-          context.router.pop();
+          context.router.pop(favItem);
         }
       }
     }
@@ -92,24 +91,21 @@ class FavouritesSuggestList extends ConsumerWidget {
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x),
                 physics: const NeverScrollableScrollPhysics(),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                itemBuilder:
-                    (context, index) => SuggestItem(
-                      suggest: suggests[index],
-                      index: index,
-                      suggestList: BssSuggestList(size: suggests.length),
-                      searchRequest: BssSearchRequest(text: searchText),
-                      myLocation:
-                          myLocation == null
-                              ? null
-                              : GeoPointMessage(
-                                latitude: myLocation.latitude,
-                                longitude: myLocation.longitude,
-                              ),
-                      isLast: index == suggests.length - 1,
-                      onObjectTap: onObjectTap,
-                    ),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                itemBuilder: (context, index) => SuggestItem(
+                  suggest: suggests[index],
+                  index: index,
+                  suggestList: BssSuggestList(size: suggests.length),
+                  searchRequest: BssSearchRequest(text: searchText),
+                  myLocation: myLocation == null
+                      ? null
+                      : GeoPointMessage(
+                          latitude: myLocation.latitude,
+                          longitude: myLocation.longitude,
+                        ),
+                  isLast: index == suggests.length - 1,
+                  onObjectTap: onObjectTap,
+                ),
                 itemCount: suggests.length,
               ),
             ),
