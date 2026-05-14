@@ -110,10 +110,7 @@ class JeddahBusLayer extends _$JeddahBusLayer {
           options: PolylineOptionsMessage(
             points: geoPoints,
             width: 5,
-            // borderWidth: 0,
-            // borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
             color: line.color,
-            // zIndex: 0,
           ),
         ),
       );

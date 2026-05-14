@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:equatable/equatable.dart';
 
 class BusStation extends Equatable {
@@ -7,7 +5,7 @@ class BusStation extends Equatable {
   final String nameEn;
   final String nameAr;
   final BusCoordinates coordinates;
-  final List<String> lineIds;
+  final List<BusLineId> lineIds;
 
   const BusStation({
     required this.stationId,
@@ -22,6 +20,7 @@ class BusStation extends Equatable {
 }
 
 class BusLine extends Equatable {
+  final BusLineId id;
   final String routeNameEn;
   final String routeNameAr;
   final List<BusStation> stations;
@@ -29,6 +28,7 @@ class BusLine extends Equatable {
   final int color;
 
   const BusLine({
+    required this.id,
     required this.routeNameEn,
     required this.routeNameAr,
     required this.stations,
@@ -37,7 +37,7 @@ class BusLine extends Equatable {
   });
 
   @override
-  List<Object?> get props => [routeNameEn, routeNameAr, stations, polylineCoordinates, color];
+  List<Object?> get props => [id, routeNameEn, routeNameAr, stations, polylineCoordinates, color];
 }
 
 class BusCoordinates extends Equatable {
@@ -53,4 +53,31 @@ class BusCoordinates extends Equatable {
 
   @override
   List<Object?> get props => [latitude, longitude];
+}
+
+class BusLineId extends Equatable {
+  final String name;
+  final BusLineDirection direction;
+
+  const BusLineId({
+    required this.name,
+    required this.direction,
+  });
+
+  @override
+  List<Object?> get props => [name, direction];
+}
+
+enum BusLineDirection {
+  forward,
+  backward;
+
+  static BusLineDirection fromString(String s) {
+    for (final v in values) {
+      if (v.name == s) {
+        return v;
+      }
+    }
+    throw UnimplementedError();
+  }
 }
