@@ -230,7 +230,7 @@ class BaseDashboardContent extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: Spacing.$4x),
-            const DriveBackHomeCard(),
+            DriveBackHomeCard(bottomSheetController: bottomSheetController),
             const SizedBox(height: Spacing.$6x),
             const DashboardOffersRow(),
             const SizedBox(height: Spacing.$6x),
