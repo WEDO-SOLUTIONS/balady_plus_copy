@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/entities/makkah_buses/model.dart';
+import 'package:mapness/entities/bus/model.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
 import 'package:mapness/features/jeddah_bus/visible_provider.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -18,7 +18,7 @@ class JeddahBusLayer extends _$JeddahBusLayer {
   bool _isDisposed = false;
 
   @override
-  Future<List<MakkahBusModel>> build() async {
+  Future<List<BusLine>> build() async {
     _isDisposed = false;
     ref
       ..onDispose(() => _isDisposed = true)
@@ -29,9 +29,10 @@ class JeddahBusLayer extends _$JeddahBusLayer {
         ),
       );
 
-    final list = await ref.watch(jeddahBusLayerRepoProvider.future);
+    final busModel = await ref.watch(jeddahBusLayerRepoProvider.future);
+    final lines = busModel.lines.values.toList();
     if (_isDisposed) {
-      return list;
+      return lines;
     }
 
     bool isDrawn = false;
@@ -66,13 +67,13 @@ class JeddahBusLayer extends _$JeddahBusLayer {
     final isShown = ref.read(jeddahBusLayerVisibleProvider);
     if (isShown) {
       isDrawn = true;
-      unawaited(show(data: list));
+      unawaited(show(data: lines));
     }
 
-    return list;
+    return lines;
   }
 
-  Future<void> show({List<MakkahBusModel>? data}) async {
+  Future<void> show({List<BusLine>? data}) async {
     final list = data ?? state.value;
     if (list == null || list.isEmpty) {
       return;
@@ -93,38 +94,25 @@ class JeddahBusLayer extends _$JeddahBusLayer {
     final List<Polyline> polylines = [];
 
     for (int i = 0; i < list.length; i++) {
-      final bus = list[i];
-      final coordinates = bus.coordinates;
-      final colorCode = bus.colorCode;
+      final line = list[i];
 
-      if (coordinates == null || coordinates.isEmpty) {
+      final geoPoints = line.polylineCoordinates
+          .map((c) => GeoPointMessage(latitude: c.latitude, longitude: c.longitude))
+          .toList();
+
+      if (geoPoints.isEmpty) {
         continue;
       }
 
-      int colorValue = 0xFF000000;
-      if (colorCode != null && colorCode.isNotEmpty) {
-        try {
-          colorValue = int.parse(colorCode.replaceAll('#', '0xFF'));
-        } catch (e) {
-          colorValue = 0xFF000000;
-        }
-      }
-
-      final geoPoints = coordinates.map((coord) {
-        final lon = coord[0];
-        final lat = coord[1];
-        return GeoPointMessage(latitude: lat, longitude: lon);
-      }).toList();
-
       polylines.add(
         Polyline(
-          id: 'jeddah_bus_${bus.id ?? i}',
+          id: 'jeddah_bus_${line.routeNameEn}',
           options: PolylineOptionsMessage(
             points: geoPoints,
             width: 5,
             // borderWidth: 0,
             // borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
-            color: colorValue,
+            color: line.color,
             // zIndex: 0,
           ),
         ),
