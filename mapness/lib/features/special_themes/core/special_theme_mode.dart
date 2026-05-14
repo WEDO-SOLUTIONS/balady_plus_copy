@@ -5,8 +5,6 @@ import 'package:mapness/features/special_themes/core/places_activation_config.da
 import 'package:mapness/features/special_themes/modes/foundation_day/foundation_day.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -133,7 +131,8 @@ SpecialThemeMode specialThemeMode(Ref ref) {
   final hajjConfig = ref.watch(placesActivationHajjProvider);
 
   // Foundation Day: force_enabled OR debug OR (enabled AND conditions met)
-  final isFoundationDay = foundationDayConfig.forceEnabled ||
+  final isFoundationDay =
+      foundationDayConfig.forceEnabled ||
       isFoundationDayDebug ||
       (foundationDayConfig.enabled && ref.watch(foundationDayProvider));
 
@@ -145,18 +144,14 @@ SpecialThemeMode specialThemeMode(Ref ref) {
   final isHajjSeason =
       hajjConfig.forceEnabled || isHajjSeasonDebug || (hajjConfig.enabled && _isInDateRange(hajjConfig));
 
-  // Makkah base: force_enabled OR (enabled AND in Makkah area) OR debug
-  // Also implicitly enabled when Ramadan/Hajj debug is on (since they require Makkah)
-  // Special: During Feb 6-8, 2026 launch window, use hardcoded coordinates
-  // After launch window: use config-based location and date range check
-  final isInLaunchWindow = _isMekkahLaunchWindow();
+  // Makkah base: force_enabled OR (enabled AND in Makkah area AND in date range) OR debug.
+  // Also implicitly enabled when Ramadan/Hajj debug is on (since they require Makkah).
   final isInMakkahArea = ref.watch(mekkahBaseThemeProvider);
-  final isInLaunchWindowArea = _isInLaunchWindowArea(ref);
-  final isMekkahBase = mekkahConfig.forceEnabled ||
+  final isMekkahBase =
+      mekkahConfig.forceEnabled ||
       isMekkahBaseDebug ||
       isRamadanSeasonDebug ||
       isHajjSeasonDebug ||
-      (mekkahConfig.enabled && isInLaunchWindowArea && isInLaunchWindow) ||
       (mekkahConfig.enabled && isInMakkahArea && _isInDateRange(mekkahConfig));
 
   // 1. Makkah seasonal Ramadan/Hajj
@@ -205,38 +200,4 @@ bool _isInDateRange(ThemeConfig config) {
 
   // Check if within end date
   return !today.isAfter(config.endDate!);
-}
-
-/// Launch window: Feb 6-8, 2026
-bool _isMekkahLaunchWindow() {
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final launchStart = DateTime(2026, 2, 6);
-  final launchEnd = DateTime(2026, 2, 8);
-
-  return !today.isBefore(launchStart) && !today.isAfter(launchEnd);
-}
-
-/// Hardcoded Makkah area for launch window (Feb 6-8, 2026)
-/// Center: 21.4225098°N, 39.8261707°E, radius: 25km
-bool _isInLaunchWindowArea(Ref ref) {
-  // Early return if not in launch window - avoid watching locationProvider unnecessarily
-  // This prevents theme flickering due to location changes when launch window is not active
-  if (!_isMekkahLaunchWindow()) return false;
-
-  const launchLat = 21.4225098;
-  const launchLon = 39.8261707;
-  const launchRadiusKm = 25.0;
-
-  final location = ref.watch(locationProvider);
-  if (location == null) return false;
-
-  final distanceKm = CommonFunctions.distance(
-    location.latitude,
-    location.longitude,
-    launchLat,
-    launchLon,
-  );
-
-  return distanceKm <= launchRadiusKm;
 }
