@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/special_themes/core/places_activation_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/founding_day/dashboard_bg.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
@@ -13,6 +16,7 @@ import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_confi
 import 'package:mapness/widgets/landing/dashboard_offers_row.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:mapness/widgets/landing/drive_back_home_card.dart';
+import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
 import 'package:mapness/widgets/landing/place_preview.dart';
 import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
@@ -39,6 +43,7 @@ class BaseDashboardContent extends ConsumerWidget {
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final isFoundingday = activeEvent?.isFoundingDay ?? false;
+    final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -72,6 +77,20 @@ class BaseDashboardContent extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: Spacing.$6x),
+            if (pilgrimFeature != null) ...[
+              KaabaVirtualJourneyCard(
+                onTap: () {
+                  Metrics.logEventAdvanced(
+                    MetricsConstants.kaabaTourKeys.cardTapped,
+                    group: MetricsConstants.kaabaTourTag,
+                    action: MetricAction.tap.name,
+                    props: const {'theme': 'base'},
+                  );
+                  context.router.push(const GaussianSplattingRoute());
+                },
+              ),
+              const SizedBox(height: Spacing.$6x),
+            ],
             DashboardTitle(context.l10n.quickActions),
             const SizedBox(height: Spacing.$4x),
             ScrollConfiguration(
