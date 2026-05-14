@@ -20330,19 +20330,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -20511,19 +20511,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -20692,19 +20692,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -20873,19 +20873,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -21054,19 +21054,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -21235,19 +21235,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -21416,19 +21416,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -21597,19 +21597,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -21778,19 +21778,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -21959,19 +21959,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -22140,19 +22140,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -22321,19 +22321,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -22502,19 +22502,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -22683,19 +22683,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff4E994D;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffFABC00;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ffBA2121;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff8D1010;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -57881,7 +57881,7 @@
 							raster_set: day_poi_islamic_i_anchor_x0_5y0_5_545728515;
 						>
 						[g_z_level >= 15.1][g_z_level < 21] <
-							font: Noto_Sans;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -59244,7 +59244,7 @@
 						raster_set: day_poi_airport_i_anchor_x0_5y0_5_2052572608;
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -59331,7 +59331,7 @@
 						raster_set: day_poi_railwaystation_i_anchor_x0_5y0_5_842633226;
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -59418,7 +59418,7 @@
 						raster_set: day_poi_busstation_i_anchor_x0_5y0_5_201367923;
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -59505,7 +59505,7 @@
 						raster_set: day_poi_port_i_anchor_x0_5y0_5_738823104;
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -59516,7 +59516,7 @@
 			[db_sublayer = Small_street_caption] {
 				phase: s_797;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1.1;
 				label_group_priority: 30;
@@ -59559,7 +59559,7 @@
 			[db_sublayer = Main_street_caption] {
 				phase: s_798;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1.1;
 				label_group_priority: 31;
@@ -59602,7 +59602,7 @@
 			[db_sublayer = Magistral_street_caption] {
 				phase: s_799;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 40;
@@ -59649,7 +59649,7 @@
 			[db_sublayer = Intercity_street_caption] {
 				phase: s_800;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 50;
@@ -59696,7 +59696,7 @@
 			[db_sublayer = Federal_street_caption] {
 				phase: s_801;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 81;
@@ -61487,7 +61487,7 @@
 					font_color: #ff353a3d;
 					poi_label_offset: 0;
 					[g_z_level >= 11][g_z_level < 14.5] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -61604,7 +61604,7 @@
 						raster_set: day_electrichka_i_anchor_x0_5y0_5_1641454891;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -61672,7 +61672,7 @@
 						raster_set: day_avtobus_i_anchor_x0_5y0_5_888049926;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -61740,7 +61740,7 @@
 						raster_set: day_sea_i_anchor_x0_5y0_5_109310073;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -61808,7 +61808,7 @@
 						raster_set: day_tramvay_i_anchor_x0_5y0_5_1026668206;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -61876,7 +61876,7 @@
 						raster_set: day_monorels_i_anchor_x0_5y0_5_1479486201;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -61944,7 +61944,7 @@
 						raster_set: day_funroad_i_anchor_x0_5y0_5_283997513;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -62012,7 +62012,7 @@
 						raster_set: day_kanat_i_anchor_x0_5y0_5_939734731;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -62080,7 +62080,7 @@
 						raster_set: day_chairlift_i_anchor_x0_5y0_5_396750022;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -77149,7 +77149,7 @@
 							raster_set: day_poi_airport_i_anchor_x0_5y0_5_2052572608;
 						>
 						[g_z_level >= 7.5][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -77289,7 +77289,7 @@
 							raster_set: day_poi_busstation_i_anchor_x0_5y0_5_201367923;
 						>
 						[g_z_level >= 11][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -77359,7 +77359,7 @@
 							raster_set: day_poi_busstation_i_anchor_x0_5y0_5_201367923;
 						>
 						[g_z_level >= 12][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -77429,7 +77429,7 @@
 							raster_set: day_poi_railwaystation_i_anchor_x0_5y0_5_842633226;
 						>
 						[g_z_level >= 7.5][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -93796,19 +93796,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -93977,19 +93977,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -94158,19 +94158,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -94339,19 +94339,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -94520,19 +94520,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -94701,19 +94701,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -94882,19 +94882,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -95063,19 +95063,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -95244,19 +95244,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -95425,19 +95425,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -95606,19 +95606,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -95787,19 +95787,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -95968,19 +95968,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -96149,19 +96149,19 @@
 								symbol: shifted_line_symbol;
 							>
 							[traffic_color = 0] <
-								color: #ff406428;
+								color: #ff2AB3A9;
 							>
 							[traffic_color = 1] <
-								color: #ffA4802A;
+								color: #ffF5DE1D;
 							>
 							[traffic_color = 2] <
-								color: #ff75202B;
+								color: #ffFF4431;
 							>
 							[traffic_color = 4] <
-								color: #ff2A0608;
+								color: #ff042734;
 							>
 							[traffic_color = 5] <
-								color: #ff441820;
+								color: #ffAA2416;
 							>
 							[traffic_road_class = 3] <
 								width_zpt: {
@@ -130440,7 +130440,7 @@
 						};
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -130542,7 +130542,7 @@
 						};
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -130644,7 +130644,7 @@
 						};
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -130746,7 +130746,7 @@
 						};
 					>
 					[g_z_level >= 15][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -130757,7 +130757,7 @@
 			[db_sublayer = Small_street_caption] {
 				phase: s_1804;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 30;
@@ -130800,7 +130800,7 @@
 			[db_sublayer = Main_street_caption] {
 				phase: s_1805;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 31;
@@ -130847,7 +130847,7 @@
 			[db_sublayer = Magistral_street_caption] {
 				phase: s_1806;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 40;
@@ -130894,7 +130894,7 @@
 			[db_sublayer = Intercity_street_caption] {
 				phase: s_1807;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 50;
@@ -130941,7 +130941,7 @@
 			[db_sublayer = Federal_street_caption] {
 				phase: s_1808;
 				symbol: label_line_symbol;
-				font: Noto_Sans;
+				font: Noto_Sans_Arabic_Regular_1473402161;
 				letter_spacing: 0;
 				halo_radius_zpt: 1;
 				label_group_priority: 81;
@@ -132839,7 +132839,7 @@
 						raster_set: night_electrichka_i_anchor_x0_5y0_5_1641454891;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -132907,7 +132907,7 @@
 						raster_set: night_avtobus_i_anchor_x0_5y0_5_888049926;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -133043,7 +133043,7 @@
 						raster_set: night_tramvay_i_anchor_x0_5y0_5_1026668206;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -133111,7 +133111,7 @@
 						raster_set: night_monorels_i_anchor_x0_5y0_5_1479486201;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -133179,7 +133179,7 @@
 						raster_set: night_funroad_i_anchor_x0_5y0_5_283997513;
 					>
 					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -133247,7 +133247,7 @@
 						raster_set: night_kanat_i_anchor_x0_5y0_5_939734731;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -133315,7 +133315,7 @@
 						raster_set: night_chairlift_i_anchor_x0_5y0_5_396750022;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -133383,7 +133383,7 @@
 						raster_set: night_bugel_i_anchor_x0_5y0_5_228896581;
 					>
 					[g_z_level >= 14.5][g_z_level < 21] <
-						font: Noto_Sans;
+						font: Noto_Sans_Arabic_Regular_1473402161;
 					>
 					 {
 					}
@@ -148164,7 +148164,7 @@
 							icon_width_zpt: 21;
 						>
 						[g_z_level >= 7.5][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -148234,7 +148234,7 @@
 							icon_width_zpt: 21;
 						>
 						[g_z_level >= 11][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -148304,7 +148304,7 @@
 							icon_width_zpt: 21;
 						>
 						[g_z_level >= 11][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -148374,7 +148374,7 @@
 							icon_width_zpt: 21;
 						>
 						[g_z_level >= 12][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
@@ -148444,7 +148444,7 @@
 							icon_width_zpt: 21;
 						>
 						[g_z_level >= 7.5][g_z_level < 15] <
-							font: Noto_Sans_Semibold;
+							font: Noto_Sans_Arabic_Regular_1473402161;
 						>
 						 {
 						}
