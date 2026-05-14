@@ -15,7 +15,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/stream_audio/ui/pages/stream_audio_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -163,6 +162,7 @@ class AppWidgetState extends State<AppWidget> {
                         BotToastNavigatorObserver(),
                         FlutterUxcamNavigatorObserver(),
                         MapnessRouteObserver(),
+                        MapnessBytePlusObserver(),
                       ],
                       localizationsDelegates: translator.delegates.toList()..add(CountryLocalizations.delegate),
                       locale: translator.activeLocale,
