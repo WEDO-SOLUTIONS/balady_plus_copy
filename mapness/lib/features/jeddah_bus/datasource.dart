@@ -1,208 +1,120 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/bus/model.dart';
 import 'package:mapness/entities/makkah_buses/model.dart';
-import 'package:proj4dart/proj4dart.dart';
 
-double _toDouble(val) {
-  if (val is num) {
-    return val.toDouble();
-  }
-  if (val is String) {
-    return double.tryParse(val) ?? 0.0;
-  }
-  return 0.0;
-}
+List<BusLineDtoFeature> _parseLines(String jsonInput) => BusLineDto.fromJson(jsonDecode(jsonInput)).features;
 
-final _wgs84 = Projection.get('EPSG:4326')!;
+List<BusStationDtoFeature> _parseStations(String jsonInput) => BusStationDto.fromJson(jsonDecode(jsonInput)).features;
 
-final Map<int, Projection> _utmCache = {};
+class JeddahBusData extends Equatable {
+  final Map<int, BusStation> stations;
+  final Map<String, BusLine> lines;
 
-Projection _getUtmProjection(int zone) => _utmCache.putIfAbsent(
-  zone,
-  () {
-    final key = 'EPSG:326$zone';
-    Projection.add(
-      key,
-      '+proj=utm +zone=$zone +datum=WGS84 +units=m +no_defs +type=crs',
-    );
-    return Projection.get(key)!;
-  },
-);
+  const JeddahBusData({this.stations = const {}, this.lines = const {}});
 
-List<double> _utmToWgs84(double easting, double northing, {int zone = 37}) {
-  final result = _getUtmProjection(zone).transform(
-    _wgs84,
-    Point(x: easting, y: northing),
-  );
-  return [result.x, result.y];
-}
-
-/// Check if coordinates are in UTM (large values) vs WGS84 (small degree values).
-bool _isUtmCoordinates(List<dynamic> rawCoords, String? geomType) {
-  try {
-    List<dynamic>? firstPoint;
-    if (geomType == 'LineString' && rawCoords.isNotEmpty) {
-      firstPoint = rawCoords[0] as List<dynamic>?;
-    } else if (geomType == 'MultiLineString' && rawCoords.isNotEmpty) {
-      final firstLine = rawCoords[0] as List<dynamic>?;
-      if (firstLine != null && firstLine.isNotEmpty) {
-        firstPoint = firstLine[0] as List<dynamic>?;
-      }
-    }
-    if (firstPoint != null && firstPoint.length >= 2) {
-      final x = _toDouble(firstPoint[0]);
-      final y = _toDouble(firstPoint[1]);
-      return x.abs() > 1000 || y.abs() > 1000;
-    }
-  } catch (_) {}
-  return false;
-}
-
-/// Convert a raw coordinate point, applying UTM→WGS84 if needed.
-List<double> _convertPoint(point, bool isUtm) {
-  if (point is! List<dynamic> || point.length < 2) {
-    return [];
-  }
-  final x = _toDouble(point[0]);
-  final y = _toDouble(point[1]);
-  if (isUtm) {
-    return _utmToWgs84(x, y);
-  }
-  return [x, y];
-}
-
-/// Read property value trying both underscore and space-separated keys.
-String? _prop(Map<String, dynamic> attrs, String underscored) {
-  final val = attrs[underscored];
-  if (val != null) {
-    return val.toString();
-  }
-  // Try space-separated variant: "Name_Arabic" → "Name Arabic"
-  final spaced = underscored.replaceAll('_', ' ');
-  return attrs[spaced]?.toString();
-}
-
-// compute function to parse json
-List<MakkahBusModel> _parse(String jsonInput) {
-  final List<MakkahBusModel> result = [];
-  try {
-    final Map<String, dynamic> json = jsonDecode(jsonInput);
-    final features = json['features'] as List<dynamic>? ?? [];
-
-    for (final item in features) {
-      if (item is! Map<String, dynamic>) {
-        continue;
-      }
-
-      final attributes = item['properties'] as Map<String, dynamic>? ?? {};
-      final geometry = item['geometry'] as Map<String, dynamic>? ?? {};
-      final id = attributes['OBJECTID']?.toString();
-      final nameArabic = _prop(attributes, 'Name_Arabic');
-      final nameEnglish = _prop(attributes, 'Name_English');
-      final colorCode = _prop(attributes, 'Color_Code') ?? _prop(attributes, 'Color Code');
-      final colorName =
-          _prop(attributes, 'Color') ?? _prop(attributes, 'Color_Name') ?? _prop(attributes, 'Color Name');
-      final geomType = geometry['type'] as String?;
-      final rawCoords = geometry['coordinates'] as List<dynamic>? ?? [];
-
-      final isUtm = _isUtmCoordinates(rawCoords, geomType);
-
-      if (geomType == 'MultiLineString') {
-        int lineIndex = 0;
-        for (final line in rawCoords) {
-          if (line is! List<dynamic>) {
-            continue;
-          }
-          final List<List<double>> lineCoordinates = [];
-          for (final point in line) {
-            final converted = _convertPoint(point, isUtm);
-            if (converted.length == 2) {
-              lineCoordinates.add(converted);
-            }
-          }
-          if (lineCoordinates.isNotEmpty) {
-            result.add(
-              MakkahBusModel(
-                id: id != null ? '${id}_$lineIndex' : null,
-                nameArabic: nameArabic,
-                nameEnglish: nameEnglish,
-                colorName: colorName,
-                colorCode: colorCode,
-                coordinates: lineCoordinates,
-              ),
-            );
-            lineIndex++;
-          }
-        }
-      } else if (geomType == 'LineString') {
-        final List<List<double>> coordinates = [];
-        for (final point in rawCoords) {
-          final converted = _convertPoint(point, isUtm);
-          if (converted.length == 2) {
-            coordinates.add(converted);
-          }
-        }
-        if (coordinates.isNotEmpty) {
-          result.add(
-            MakkahBusModel(
-              id: id,
-              nameArabic: nameArabic,
-              nameEnglish: nameEnglish,
-              colorName: colorName,
-              colorCode: colorCode,
-              coordinates: coordinates,
-            ),
-          );
-        }
-      }
-    }
-  } catch (e) {
-    debugPrint('Error parsing jeddah buses JSON: $e');
-  }
-
-  return result;
+  @override
+  List<Object?> get props => [stations, lines];
 }
 
 abstract class JeddahBusJsonDatasource {
-  Future<List<MakkahBusModel>> getInfo();
+  Future<JeddahBusData> getInfo() async {
+    try {
+      final srcLines = await _getLines();
+      final srcStations = await _getStations();
+
+      // combine lines and stations responses into cosy model
+      final stationToCoordinatesMap = <BusCoordinates, BusStation>{};
+      for (final s in srcStations) {
+        final stationId = int.tryParse(s.properties.stationId);
+        if (stationId == null) {
+          debugPrint('failed to parse station id for station\n$s');
+          continue;
+        }
+        final station = BusStation(
+          stationId: stationId,
+          nameEn: s.properties.stationNameEn,
+          nameAr: s.properties.stationNameAr,
+          coordinates: BusCoordinates.list(s.geometry.coordinates),
+          lineIds: s.properties.routesNamesEnList,
+        );
+        stationToCoordinatesMap[station.coordinates] = station;
+      }
+
+      final lines = srcLines
+          .map(
+            (e) => BusLine(
+              color: e.properties.colorCode.intColorCode ?? 0xFF000000,
+              routeNameAr: e.properties.routeNameAr,
+              routeNameEn: e.properties.routeNameEn,
+              stations: e.geometry.coordinates
+                  .map((e) => stationToCoordinatesMap[BusCoordinates.list(e)])
+                  .nonNulls
+                  .toList(),
+              polylineCoordinates: e.geometry.coordinates.map((e) => BusCoordinates.list(e)).toList(),
+            ),
+          )
+          .toList();
+
+      return JeddahBusData(
+        stations: stationToCoordinatesMap.map((_, station) => MapEntry(station.stationId, station)),
+        lines: Map.fromEntries(lines.map((e) => MapEntry(e.routeNameEn, e))),
+      );
+    } catch (e) {
+      debugPrint('failed to get Jeddah bus data: $e');
+      return const JeddahBusData();
+    }
+  }
+
+  Future<List<BusLineDtoFeature>> _getLines();
+
+  Future<List<BusStationDtoFeature>> _getStations();
 }
 
-class JeddahBusJsonDatasourceAsset implements JeddahBusJsonDatasource {
+class JeddahBusJsonDatasourceAsset extends JeddahBusJsonDatasource {
   @override
-  Future<List<MakkahBusModel>> getInfo() async {
-    try {
-      final jsonOutput = await rootBundle.loadString(Assets.maps.buses.jeddahBus);
-      final result = await compute(_parse, jsonOutput);
-      return result;
-    } catch (ex) {
-      return [];
-    }
+  Future<List<BusLineDtoFeature>> _getLines() async {
+    final linesJson = await rootBundle.loadString(Assets.maps.buses.jeddahBusLines);
+    return compute(_parseLines, linesJson);
+  }
+
+  @override
+  Future<List<BusStationDtoFeature>> _getStations() async {
+    final linesJson = await rootBundle.loadString(Assets.maps.buses.jeddahBusStations);
+    return compute(_parseStations, linesJson);
   }
 }
 
-class JeddahBusJsonDatasourceGist implements JeddahBusJsonDatasource {
-  @override
-  Future<List<MakkahBusModel>> getInfo() async {
-    try {
-      final dio = Dio();
-      final response = await dio.get(
-        'https://api.github.com/gists/b19bedbb11c713abf5d2798dcb24f615',
-      );
-      final files = (response.data as Map<String, dynamic>?)?['files'] as Map<String, dynamic>?;
-      final firstFile = files?['gistfile1.txt'] as Map<String, dynamic>?;
-      final fileContent = firstFile?['content'] as String?;
-      if (fileContent == null) {
-        throw Exception('no file content in response: ${response.data}');
-      }
+class JeddahBusJsonDatasourceGist extends JeddahBusJsonDatasource {
+  final Dio dio = Dio();
 
-      return await compute(_parse, fileContent);
-    } catch (e) {
-      debugPrint('Failed to load Jeddah bus geojson from gist: $e');
-      return [];
+  @override
+  Future<List<BusLineDtoFeature>> _getLines() async {
+    final fileContent = await _getFileContents('b19bedbb11c713abf5d2798dcb24f615');
+    return compute(_parseLines, fileContent);
+  }
+
+  @override
+  Future<List<BusStationDtoFeature>> _getStations() async {
+    final fileContent = await _getFileContents('dbf5290d2d898bbd94d28f4d8c809662');
+    return compute(_parseStations, fileContent);
+  }
+
+  Future<String> _getFileContents(String gistId) async {
+    final linesResponse = await dio.get(
+      'https://api.github.com/gists/$gistId',
+    );
+    final files = (linesResponse.data as Map<String, dynamic>?)?['files'] as Map<String, dynamic>?;
+    final firstFile = files?['gistfile1.txt'] as Map<String, dynamic>?;
+    final fileContent = firstFile?['content'] as String?;
+    if (fileContent == null) {
+      throw Exception('no file content in linesResponse: ${linesResponse.data}');
     }
+    return fileContent;
   }
 }

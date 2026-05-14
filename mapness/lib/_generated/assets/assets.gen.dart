@@ -1109,8 +1109,11 @@ class $AssetsImagesSvgSaudiPassGen {
 class $AssetsMapsBusesGen {
   const $AssetsMapsBusesGen();
 
-  /// File path: assets/maps/buses/jeddah_bus.geojson
-  String get jeddahBus => 'packages/mapness/assets/maps/buses/jeddah_bus.geojson';
+  /// File path: assets/maps/buses/jeddah_bus_lines.geojson
+  String get jeddahBusLines => 'packages/mapness/assets/maps/buses/jeddah_bus_lines.geojson';
+
+  /// File path: assets/maps/buses/jeddah_bus_stations.geojson
+  String get jeddahBusStations => 'packages/mapness/assets/maps/buses/jeddah_bus_stations.geojson';
 
   /// File path: assets/maps/buses/makkah_bus.geojson
   String get makkahBus => 'packages/mapness/assets/maps/buses/makkah_bus.geojson';
@@ -1119,7 +1122,7 @@ class $AssetsMapsBusesGen {
   String get shuttleBus => 'packages/mapness/assets/maps/buses/shuttle_bus.geojson';
 
   /// List of all assets
-  List<String> get values => [jeddahBus, makkahBus, shuttleBus];
+  List<String> get values => [jeddahBusLines, jeddahBusStations, makkahBus, shuttleBus];
 }
 
 class $AssetsMapsConfigsGen {
