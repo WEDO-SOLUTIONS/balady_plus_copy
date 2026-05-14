@@ -141,6 +141,16 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
   @override
   void dispose() {
+    // Mirror `_ContentState.dispose()` — cancel any AI Summary inflight when
+    // the founding-day POI card goes away. Deferred via a microtask so the
+    // notifier state mutation doesn't race the disposing subtree (see the
+    // sibling state for the full rationale).
+    if (_aiSummaryTriggered) {
+      final language = ref.read(appLanguageProvider);
+      final poiId = widget.objectId.toString();
+      final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+      Future<void>.microtask(() => notifier.cancel(reason: 'Founding-day POI card closed or switched'));
+    }
     _tabController.dispose();
     _tabType.dispose();
     super.dispose();
@@ -149,6 +159,11 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
   /// Mirrors `_ContentState._maybeTriggerAiSummary`.
   void _maybeTriggerAiSummary() {
     if (_aiSummaryTriggered) {
+      return;
+    }
+    final types = widget.data.types.map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
       return;
     }
     _aiSummaryTriggered = true;
@@ -166,8 +181,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
         }
         _aiSummaryTriggered = false;
         final currentState = _bottomSheetController.state;
-        if (currentState == PoiCardBottomSheetState.open ||
-            currentState == PoiCardBottomSheetState.expanded) {
+        if (currentState == PoiCardBottomSheetState.open || currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })

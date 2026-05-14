@@ -44,6 +44,26 @@ class AiSummaryNotifier extends _$AiSummaryNotifier {
     return const AsyncValue.data(null);
   }
 
+  /// Cancel any in-flight fetch for this notifier without disposing it.
+  ///
+  /// Called by POI-card widgets in their `dispose()` so a switch to another
+  /// POI (or closing the card) doesn't leave the previous request running
+  /// to completion. `keepAlive: true` means `onDispose` wouldn't fire here
+  /// even though no widget is watching us any more, so we need explicit
+  /// cancellation.
+  ///
+  /// State is reset to `data(null)` only if the request was still in flight;
+  /// a successfully loaded summary stays in `state` so a fast re-open of the
+  /// same POI can show it immediately from this notifier without re-asking
+  /// the cache.
+  void cancel({String reason = 'Cancelled by caller'}) {
+    _cancelToken?.cancel(reason);
+    _cancelToken = null;
+    if (state.isLoading) {
+      state = const AsyncValue.data(null);
+    }
+  }
+
   /// Trigger the fetch. Safe to call multiple times — a cache
   /// hit returns immediately without a network round-trip.
   Future<void> load() async {
