@@ -136,6 +136,10 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                       const SizedBox(width: 4),
                       Text(
                         context.l10n.pilgrimVirtualTourBackButton,
+                        // Force LTR rendering so the `+` glyph sits on the
+                        // same side of the word in both languages (right of
+                        // the brand name, mirroring `Balady+`).
+                        textDirection: TextDirection.ltr,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
