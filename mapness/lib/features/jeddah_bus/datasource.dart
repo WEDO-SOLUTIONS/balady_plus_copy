@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -14,7 +15,7 @@ List<BusStationDtoFeature> _parseStations(String jsonInput) => BusStationDto.fro
 
 class JeddahBusData extends Equatable {
   final Map<int, BusStation> stations;
-  final Map<String, BusLine> lines;
+  final Map<BusLineId, BusLine> lines;
 
   const JeddahBusData({this.stations = const {}, this.lines = const {}});
 
@@ -29,6 +30,23 @@ abstract class JeddahBusJsonDatasource {
       final srcStations = await _getStations();
 
       // combine lines and stations responses into cosy model
+      final lineTypeToCoordinatesMap = <BusCoordinates, Set<BusLineId>>{};
+      for (final line in srcLines) {
+        final lineId = BusLineId(
+          name: line.properties.routeNameEn,
+          direction: BusLineDirection.fromString(line.properties.directionType),
+        );
+
+        for (final c in line.geometry.coordinates) {
+          final coordinates = BusCoordinates.list(c);
+          if (lineTypeToCoordinatesMap.containsKey(coordinates)) {
+            lineTypeToCoordinatesMap[coordinates]!.add(lineId);
+          } else {
+            lineTypeToCoordinatesMap[coordinates] = {lineId};
+          }
+        }
+      }
+
       final stationToCoordinatesMap = <BusCoordinates, BusStation>{};
       for (final s in srcStations) {
         final stationId = int.tryParse(s.properties.stationId);
@@ -36,12 +54,19 @@ abstract class JeddahBusJsonDatasource {
           debugPrint('failed to parse station id for station\n$s');
           continue;
         }
+        final coordinates = BusCoordinates.list(s.geometry.coordinates);
+        final lineId = lineTypeToCoordinatesMap[coordinates];
+        if (lineId == null) {
+          debugPrint('failed to get line id for station\n$s');
+          continue;
+        }
+
         final station = BusStation(
           stationId: stationId,
           nameEn: s.properties.stationNameEn,
           nameAr: s.properties.stationNameAr,
           coordinates: BusCoordinates.list(s.geometry.coordinates),
-          lineIds: s.properties.routesNamesEnList,
+          lineIds: lineId.toList().sorted((a, b) => a.name.compareTo(b.name)),
         );
         stationToCoordinatesMap[station.coordinates] = station;
       }
@@ -49,6 +74,10 @@ abstract class JeddahBusJsonDatasource {
       final lines = srcLines
           .map(
             (e) => BusLine(
+              id: BusLineId(
+                name: e.properties.routeNameEn,
+                direction: BusLineDirection.fromString(e.properties.directionType),
+              ),
               color: e.properties.colorCode.intColorCode ?? 0xFF000000,
               routeNameAr: e.properties.routeNameAr,
               routeNameEn: e.properties.routeNameEn,
@@ -63,7 +92,7 @@ abstract class JeddahBusJsonDatasource {
 
       return JeddahBusData(
         stations: stationToCoordinatesMap.map((_, station) => MapEntry(station.stationId, station)),
-        lines: Map.fromEntries(lines.map((e) => MapEntry(e.routeNameEn, e))),
+        lines: Map.fromEntries(lines.map((e) => MapEntry(e.id, e))),
       );
     } catch (e) {
       debugPrint('failed to get Jeddah bus data: $e');
