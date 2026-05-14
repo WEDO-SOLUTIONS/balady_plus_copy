@@ -14,9 +14,7 @@ class GaussianSplattingPage extends ConsumerWidget {
   const GaussianSplattingPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return _GaussianSplattingPageWidget(ref: ref);
-  }
+  Widget build(BuildContext context, WidgetRef ref) => _GaussianSplattingPageWidget(ref: ref);
 }
 
 class _GaussianSplattingPageWidget extends StatefulWidget {
@@ -117,10 +115,12 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
         WebViewWidget(controller: _controller),
         if (_isLoading) const Center(child: CircularProgressIndicator()),
 
-        // balady back button
+        // balady back button — pinned close to the safe-area top edge so it
+        // doesn't sit over the webview's own UI (the virtual-tour controls
+        // hover ~24-32px below the system status bar).
         SafeArea(
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(start: 24, top: 24),
+            padding: const EdgeInsetsDirectional.only(start: 16, top: 4),
             child: Align(
               alignment: AlignmentDirectional.topStart,
               child: GestureDetector(
