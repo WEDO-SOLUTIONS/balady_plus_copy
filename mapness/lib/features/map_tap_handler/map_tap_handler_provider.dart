@@ -6,9 +6,11 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/makkah_places/makkah_places_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -95,6 +97,9 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
 
   OnMapTapHandler? _priorityMapTapHandler;
 
+  DateTime? _makkahMarkerTapAt;
+  static const Duration _makkahTapSuppressionWindow = Duration(milliseconds: 800);
+
   late final StreamController<TapEvent> _currentMapHandlers = StreamController.broadcast();
 
   @override
@@ -122,6 +127,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   /// Resets the previously set priority map tap handler, reverting to default behavior.
   void resetPriorityMapTapHandler() {
     _priorityMapTapHandler = null;
+  }
+
+  void notifyMakkahMarkerTapped() {
+    _makkahMarkerTapAt = DateTime.now();
   }
 
   /// Registers a callback to handle tap events on the map.
@@ -158,6 +167,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleObjectTapEvent(ObjectTapEvent event) {
+    if (_isPhantomTapAfterMakkahMarker() || _isPhantomTapOverMakkahPlace(event)) {
+      return;
+    }
+
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.map,
       group: MetricsConstants.poiTag,
@@ -174,6 +187,41 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
           ),
           toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
         );
+  }
+
+  bool _isPhantomTapAfterMakkahMarker() {
+    final lastTap = _makkahMarkerTapAt;
+    if (lastTap == null) return false;
+    return DateTime.now().difference(lastTap) < _makkahTapSuppressionWindow;
+  }
+
+  bool _isPhantomTapOverMakkahPlace(ObjectTapEvent event) {
+    final specialMode = ref.read(specialThemeModeProvider);
+    final isMakkahMode = specialMode == SpecialThemeMode.mekkahBase || specialMode == SpecialThemeMode.ramadan;
+    if (!isMakkahMode) {
+      return false;
+    }
+    final places = ref.read(makkahPlacesRepositoryProvider).value;
+    if (places == null || places.isEmpty) {
+      return false;
+    }
+    // ~0.00045 degrees ≈ 50m at the equator; slightly less at Makkah latitude
+    // (~21°N), which is the conservative direction for this check.
+    const thresholdDeg = 0.00045;
+    const thresholdSquared = thresholdDeg * thresholdDeg;
+    final tapLat = event.latLng.latitude;
+    final tapLng = event.latLng.longitude;
+    for (final place in places) {
+      final lat = place.lat;
+      final lng = place.lon;
+      if (lat == null || lng == null) continue;
+      final dLat = tapLat - lat;
+      final dLng = tapLng - lng;
+      if (dLat * dLat + dLng * dLng <= thresholdSquared) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void _handleRoadEventTapEvent(RoadEventTapEvent event) {
