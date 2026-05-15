@@ -54,8 +54,8 @@ bool isPilgrimVisibleForTheme({
 ///     AND `today >= options.start_date_default` (or `start_date_default` is null).
 ///
 /// Returns `null` when the feature is disabled or fails the gates above.
-/// `options.start_date` is parsed for backward compatibility only and no longer
-/// affects visibility.
+/// The legacy `options.start_date` field stays in remote config for older
+/// builds but is no longer read here.
 @riverpod
 FeatureConfig? showPilgrimFeature(Ref ref) {
   final config = ref.watch(placesActivationProvider);

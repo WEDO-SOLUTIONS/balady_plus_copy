@@ -107,7 +107,6 @@ class FeatureConfig {
     required this.code,
     required this.enabled,
     this.url,
-    this.startDate,
     this.themeDefault = false,
     this.themeMakkah = false,
     this.startDateDefault,
@@ -117,10 +116,6 @@ class FeatureConfig {
   final String code;
   final bool enabled;
   final String? url;
-
-  /// Legacy `options.start_date`. Parsed for backward compatibility but no
-  /// longer consulted by [showPilgrimFeature] — superseded by per-theme dates.
-  final DateTime? startDate;
 
   /// Whether the feature is allowed on themes other than Makkah.
   final bool themeDefault;
@@ -148,7 +143,6 @@ class FeatureConfig {
       code: json['code'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? false,
       url: options['url'] as String?,
-      startDate: parseDate('start_date'),
       themeDefault: options['theme_default'] as bool? ?? false,
       themeMakkah: options['theme_makkah'] as bool? ?? false,
       startDateDefault: parseDate('start_date_default'),

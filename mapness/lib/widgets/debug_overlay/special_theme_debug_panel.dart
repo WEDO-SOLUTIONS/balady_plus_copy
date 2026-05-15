@@ -1241,7 +1241,7 @@ class _FeatureItem extends ConsumerWidget {
     final inactiveReason = _getInactiveReason(mode, debugOverride);
     final scheduleChipDate = _isPilgrimFeature
         ? (isMakkahTheme(mode) ? feature.startDateMakkah : feature.startDateDefault)
-        : feature.startDate;
+        : null;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
