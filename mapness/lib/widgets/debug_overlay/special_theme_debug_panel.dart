@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/special_themes/core/pilgrim_feature.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
@@ -1190,45 +1191,57 @@ class _FeatureItem extends ConsumerWidget {
 
   final FeatureConfig feature;
 
-  /// Mirrors [showPilgrimFeatureProvider]: when `show_pilgrim` has a `start_date`,
-  /// it's also gated on being inside the Makkah area.
-  bool _pilgrimNeedsMakkahArea() => feature.code == 'show_pilgrim' && feature.startDate != null;
+  bool get _isPilgrimFeature => feature.code == 'show_pilgrim';
 
-  /// Returns true if the feature is effectively active (enabled AND past start_date,
-  /// plus the Makkah-area gate for scoped pilgrim).
-  bool _isEffectivelyActive(WidgetRef ref, bool debugOverride) {
+  /// For `show_pilgrim`, mirrors [showPilgrimFeature]: visibility depends on
+  /// the current theme flavour (Makkah vs default) and the matching per-theme
+  /// flag + start date. For any other feature, falls back to the simple
+  /// `enabled` gate.
+  bool _isEffectivelyActive(SpecialThemeMode mode, bool debugOverride) {
     if (debugOverride) return true;
     if (!feature.enabled) return false;
-    if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
-      return false;
-    }
-    if (_pilgrimNeedsMakkahArea()) {
-      return ref.watch(mekkahBaseThemeProvider);
+    if (_isPilgrimFeature) {
+      return isPilgrimVisibleForTheme(
+        feature: feature,
+        isMakkahTheme: isMakkahTheme(mode),
+      );
     }
     return true;
   }
 
-  /// Returns the reason why feature is not active
-  String? _getInactiveReason(WidgetRef ref, bool debugOverride) {
+  /// Short explanation for why `show_pilgrim` is currently inactive — null when
+  /// it's active or when the gate doesn't apply.
+  String? _getInactiveReason(SpecialThemeMode mode, bool debugOverride) {
     if (debugOverride) return null;
     if (!feature.enabled) return null;
-    if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
-      return 'Starts ${_formatDate(feature.startDate!)}';
+    if (!_isPilgrimFeature) return null;
+    final isMakkah = isMakkahTheme(mode);
+    if (isMakkah) {
+      if (!feature.themeMakkah) return 'theme_makkah=false';
+      final date = feature.startDateMakkah;
+      if (date != null && DateTime.now().isBefore(date)) {
+        return 'Starts ${_formatDate(date)} (makkah)';
+      }
+      return null;
     }
-    if (_pilgrimNeedsMakkahArea() && !ref.watch(mekkahBaseThemeProvider)) {
-      return 'Outside Makkah area';
+    if (!feature.themeDefault) return 'theme_default=false';
+    final date = feature.startDateDefault;
+    if (date != null && DateTime.now().isBefore(date)) {
+      return 'Starts ${_formatDate(date)} (default)';
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Check if this feature has a debug override
-    final isPilgrimFeature = feature.code == 'show_pilgrim';
-    final debugOverride = isPilgrimFeature ? ref.watch(pilgrimFeatureDebugProvider) : false;
+    final debugOverride = _isPilgrimFeature ? ref.watch(pilgrimFeatureDebugProvider) : false;
+    final mode = ref.watch(specialThemeModeProvider);
 
-    final isActive = _isEffectivelyActive(ref, debugOverride);
-    final inactiveReason = _getInactiveReason(ref, debugOverride);
+    final isActive = _isEffectivelyActive(mode, debugOverride);
+    final inactiveReason = _getInactiveReason(mode, debugOverride);
+    final scheduleChipDate = _isPilgrimFeature
+        ? (isMakkahTheme(mode) ? feature.startDateMakkah : feature.startDateDefault)
+        : feature.startDate;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -1288,7 +1301,7 @@ class _FeatureItem extends ConsumerWidget {
               ),
             ],
           ),
-          if (feature.url != null || feature.startDate != null || inactiveReason != null) ...[
+          if (feature.url != null || scheduleChipDate != null || inactiveReason != null) ...[
             const SizedBox(height: 8),
             Wrap(
               spacing: 10,
@@ -1299,10 +1312,10 @@ class _FeatureItem extends ConsumerWidget {
                     icon: Icons.schedule_rounded,
                     label: inactiveReason,
                   ),
-                if (feature.startDate != null && inactiveReason == null)
+                if (scheduleChipDate != null && inactiveReason == null)
                   _InfoChip(
                     icon: Icons.event_rounded,
-                    label: _formatDate(feature.startDate!),
+                    label: _formatDate(scheduleChipDate),
                   ),
                 if (feature.url != null)
                   _InfoChip(
@@ -1511,13 +1524,13 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
 }
 
 /// Diagnostics card for the `show_pilgrim` feature. Mirrors [_MakkahDiagnosticsCard]
-/// in shape and surfaces the gates that [showPilgrimFeatureProvider] applies:
+/// in shape and surfaces the gates that [showPilgrimFeature] applies:
 ///
 ///   - debug override
 ///   - config enabled
-///   - past start date
-///   - scope (Global if `start_date` is absent, Makkah-only if present)
-///   - in-Makkah-area gate (only relevant when scoped to Makkah)
+///   - active theme branch (Makkah vs default)
+///   - per-branch flag (`theme_makkah` / `theme_default`)
+///   - per-branch start date (`start_date_makkah` / `start_date_default`)
 class _PilgrimDiagnosticsCard extends ConsumerWidget {
   const _PilgrimDiagnosticsCard();
 
@@ -1529,20 +1542,21 @@ class _PilgrimDiagnosticsCard extends ConsumerWidget {
       orElse: () => null,
     );
     final debugOverride = ref.watch(pilgrimFeatureDebugProvider);
-    final isInMakkahArea = ref.watch(mekkahBaseThemeProvider);
+    final mode = ref.watch(specialThemeModeProvider);
+    final isMakkah = isMakkahTheme(mode);
 
-    final hasStartDate = feature?.startDate != null;
-    final isPastStartDate = !hasStartDate || !DateTime.now().isBefore(feature!.startDate!);
-    final scopeLabel = hasStartDate ? 'Makkah-only' : 'Global';
-    final scopeIcon = hasStartDate ? Icons.location_on_rounded : Icons.public_rounded;
-    final scopeDescription = hasStartDate
-        ? 'start_date present → shown only to users in Makkah area, from that date'
-        : 'start_date absent → shown globally to every user, immediately';
+    final themeFlag = isMakkah ? (feature?.themeMakkah ?? false) : (feature?.themeDefault ?? false);
+    final branchDate = isMakkah ? feature?.startDateMakkah : feature?.startDateDefault;
+    final isPastBranchDate = branchDate == null || !DateTime.now().isBefore(branchDate);
 
-    // Mirrors [showPilgrimFeatureProvider]: debug override wins; otherwise feature
-    // must be enabled, past start date, and — when scoped — inside Makkah area.
-    final isEffective =
-        debugOverride || (feature != null && feature.enabled && isPastStartDate && (!hasStartDate || isInMakkahArea));
+    final branchLabel = isMakkah ? 'Makkah branch' : 'Default branch';
+    final branchIcon = isMakkah ? Icons.location_on_rounded : Icons.public_rounded;
+    final branchFlagKey = isMakkah ? 'theme_makkah' : 'theme_default';
+    final branchDateKey = isMakkah ? 'start_date_makkah' : 'start_date_default';
+
+    final isEffective = debugOverride ||
+        (feature != null &&
+            isPilgrimVisibleForTheme(feature: feature, isMakkahTheme: isMakkah));
 
     return _GlassCard(
       child: Column(
@@ -1564,14 +1578,13 @@ class _PilgrimDiagnosticsCard extends ConsumerWidget {
             detail: feature == null ? 'no feature in config' : null,
           ),
           _DiagRow(
-            label: 'Past start date',
-            value: isPastStartDate,
-            detail: hasStartDate ? _formatDate(feature!.startDate!) : 'no start date',
+            label: branchFlagKey,
+            value: themeFlag,
           ),
           _DiagRow(
-            label: 'In Makkah area',
-            value: isInMakkahArea,
-            detail: hasStartDate ? null : 'not required (global)',
+            label: 'Past $branchDateKey',
+            value: isPastBranchDate,
+            detail: branchDate != null ? _formatDate(branchDate) : 'not set',
           ),
           const SizedBox(height: 10),
           Container(
@@ -1584,7 +1597,7 @@ class _PilgrimDiagnosticsCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'SCOPE',
+                  'ACTIVE BRANCH',
                   style: context.textStyles.captionSmallMedium.copyWith(
                     color: _DebugColors.textMuted,
                     fontSize: 9,
@@ -1595,23 +1608,33 @@ class _PilgrimDiagnosticsCard extends ConsumerWidget {
                 Row(
                   children: [
                     Icon(
-                      scopeIcon,
+                      branchIcon,
                       size: 14,
                       color: _DebugColors.textSecondary,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      scopeLabel,
+                      branchLabel,
                       style: context.textStyles.captionSmallSemiBold.copyWith(
                         color: _DebugColors.textPrimary,
                         fontSize: 11,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '(theme=${mode.name})',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: _DebugColors.textMuted,
+                        fontSize: 10,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  scopeDescription,
+                  isMakkah
+                      ? 'On a Makkah theme: gated by theme_makkah + start_date_makkah.'
+                      : 'On a non-Makkah theme: gated by theme_default + start_date_default.',
                   style: context.textStyles.captionSmallRegular.copyWith(
                     color: _DebugColors.textMuted,
                     fontSize: 10,

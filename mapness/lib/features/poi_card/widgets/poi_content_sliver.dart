@@ -29,8 +29,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_bus.
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_container.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
-import 'package:mapness/features/special_themes/core/places_activation_config.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/core/pilgrim_feature.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -64,7 +63,6 @@ class PoiContentSliver extends ConsumerWidget {
     }
     const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
 
-    final specialThemeMode = ref.watch(specialThemeModeProvider);
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
     const kaabaLat = 21.422421;
     const kaabaLon = 39.826168;
@@ -75,16 +73,9 @@ class PoiContentSliver extends ConsumerWidget {
         (markerPosition.latitude - kaabaLat).abs() < eps &&
         (markerPosition.longitude - kaabaLon).abs() < eps;
 
-    // Check if pilgrim feature is enabled and active based on dates
-    final isPilgrimFeatureActive =
-        pilgrimFeature != null &&
-        pilgrimFeature.enabled &&
-        (pilgrimFeature.startDate == null || !DateTime.now().isBefore(pilgrimFeature.startDate!));
-
-    final shouldShowMakkahPreview =
-        (specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan) &&
-        isKaaba &&
-        isPilgrimFeatureActive;
+    // `pilgrimFeature` is already null unless the current theme + dates permit
+    // the banner (see [showPilgrimFeature]).
+    final shouldShowMakkahPreview = isKaaba && pilgrimFeature != null;
 
     final offers = ref.watch(poiOffersProvider);
     final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());

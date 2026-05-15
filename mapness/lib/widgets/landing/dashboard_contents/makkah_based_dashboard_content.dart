@@ -7,6 +7,7 @@ import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart'
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
+import 'package:mapness/features/special_themes/core/pilgrim_feature.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';

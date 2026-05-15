@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -109,20 +108,51 @@ class FeatureConfig {
     required this.enabled,
     this.url,
     this.startDate,
+    this.themeDefault = false,
+    this.themeMakkah = false,
+    this.startDateDefault,
+    this.startDateMakkah,
   });
 
   final String code;
   final bool enabled;
   final String? url;
+
+  /// Legacy `options.start_date`. Parsed for backward compatibility but no
+  /// longer consulted by [showPilgrimFeature] — superseded by per-theme dates.
   final DateTime? startDate;
+
+  /// Whether the feature is allowed on themes other than Makkah.
+  final bool themeDefault;
+
+  /// Whether the feature is allowed on Makkah-based themes.
+  final bool themeMakkah;
+
+  /// When set, the feature only becomes visible on default themes on/after this
+  /// date. When null, the default-theme gate is open immediately.
+  final DateTime? startDateDefault;
+
+  /// When set, the feature only becomes visible on Makkah themes on/after this
+  /// date. When null, the Makkah-theme gate is open immediately.
+  final DateTime? startDateMakkah;
 
   factory FeatureConfig.fromJson(Map<String, dynamic> json) {
     final options = json['options'] as Map<String, dynamic>? ?? {};
+    DateTime? parseDate(String key) {
+      final raw = options[key];
+      if (raw is! String) return null;
+      return DateTime.tryParse(raw);
+    }
+
     return FeatureConfig(
       code: json['code'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? false,
       url: options['url'] as String?,
-      startDate: options['start_date'] != null ? DateTime.tryParse(options['start_date'] as String) : null,
+      startDate: parseDate('start_date'),
+      themeDefault: options['theme_default'] as bool? ?? false,
+      themeMakkah: options['theme_makkah'] as bool? ?? false,
+      startDateDefault: parseDate('start_date_default'),
+      startDateMakkah: parseDate('start_date_makkah'),
     );
   }
 
@@ -443,65 +473,3 @@ ThemeConfig placesActivationHajj(Ref ref) {
   );
 }
 
-/// Debug override for pilgrim feature (Kaaba virtual tour).
-///
-/// When enabled, bypasses the start_date check for the show_pilgrim feature,
-/// allowing the Kaaba virtual journey card to be shown regardless of date.
-@Riverpod(keepAlive: true)
-class PilgrimFeatureDebug extends _$PilgrimFeatureDebug {
-  @override
-  bool build() => false;
-
-  void set(bool value) {
-    state = value;
-  }
-}
-
-/// Check if current date is past the feature's start date.
-///
-/// If the feature has no `start_date`, the gate is open immediately.
-bool _isPastStartDate(FeatureConfig? feature) {
-  if (feature?.startDate == null) return true;
-  return !DateTime.now().isBefore(feature!.startDate!);
-}
-
-/// Pilgrim ("Kaaba virtual journey") feature provider.
-///
-/// Scope is encoded by the presence of `start_date` on the `show_pilgrim`
-/// feature entry in remote config:
-///   - `start_date` absent  → feature shown **globally** to every user, immediately.
-///   - `start_date` present → feature shown **only to users in the Makkah area**
-///                            (via [mekkahBaseThemeProvider]) and only on/after that date.
-///
-/// Returns `null` when the feature is disabled, before its start date, or
-/// scoped to Makkah and the user is outside the Makkah area.
-@riverpod
-FeatureConfig? showPilgrimFeature(Ref ref) {
-  final config = ref.watch(placesActivationProvider);
-  final debugOverride = ref.watch(pilgrimFeatureDebugProvider);
-
-  final feature = config.maybeWhen(
-    data: (data) => data.getFeature('show_pilgrim'),
-    orElse: () => null,
-  );
-
-  // Debug override bypasses every gate and returns an enabled feature.
-  if (debugOverride) {
-    return FeatureConfig(
-      code: feature?.code ?? 'show_pilgrim',
-      enabled: true,
-      url: feature?.url ?? 'https://pilgrim.thedatum.ai/kaaba',
-    );
-  }
-
-  if (feature == null || !feature.enabled) return null;
-
-  // Scope: start_date present → Makkah-only, gated by area and start date.
-  if (feature.startDate != null) {
-    if (!_isPastStartDate(feature)) return null;
-    return ref.watch(mekkahBaseThemeProvider) ? feature : null;
-  }
-
-  // Scope: start_date absent → global, immediate.
-  return feature;
-}

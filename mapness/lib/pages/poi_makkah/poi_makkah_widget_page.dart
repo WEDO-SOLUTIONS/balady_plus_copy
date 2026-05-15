@@ -31,6 +31,7 @@ import 'package:mapness/features/poi_card/widgets/photos_header/header_component
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photos_stories.dart';
+import 'package:mapness/features/special_themes/core/pilgrim_feature.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
