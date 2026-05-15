@@ -8,6 +8,7 @@ import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 import '../../../shared/providers/base_dio.dart';
+import '../../../shared/providers/dgis_environment.dart';
 
 part 'ai_summary_repository_provider.g.dart';
 
@@ -28,11 +29,12 @@ const _aiSummaryAuthKey = '28ed92f1-de4b-4060-b159-2dc19e9b8bf5';
 @Riverpod(keepAlive: true)
 Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   const timeout = Duration(seconds: 30);
-  final  baseDio = ref.read(baseDioProvider);
+  final env = await ref.watch(dgisEnvironmentProvider.future);
 
+  print('amr env.url ${env.url}');
   final dio = Dio(
     BaseOptions(
-      baseUrl: baseDio.options.baseUrl,
+      baseUrl: env.url,
       connectTimeout: timeout,
       sendTimeout: timeout,
       receiveTimeout: timeout,
@@ -50,3 +52,4 @@ Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   }
   return HttpAiSummaryRepository(dio);
 }
+
