@@ -117,14 +117,35 @@ class DynamicPoiLayer extends _$DynamicPoiLayer {
         final z = ref.read(cameraPositionProvider)?.zoom ?? 0;
         _rebuildAtZoom(manager, z, isArabic: isArabic, isDark: isDark, selectedId: next);
       })
-      // Hide the 2GIS shared `selectedMarker` (purple pin) whenever it gets
-      // added while a dynamic POI is selected — our promoted `large + accent
-      // dot` is enough indication. The SDK pin lives in a separate
-      // MapObjectManager, so zIndex doesn't put us above it; we have to
-      // explicitly clear it. Reactive (not delayed) so the pin never flashes.
       ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
-        if (next != null && ref.read(selectedDynamicPoiIdProvider) != null) {
+        if (next == null) return;
+        final selectedId = ref.read(selectedDynamicPoiIdProvider);
+        if (selectedId == null) return;
+
+        DynamicPoi? selectedPoi;
+        for (final p in _lastPois) {
+          if (p.id == selectedId) {
+            selectedPoi = p;
+            break;
+          }
+        }
+        if (selectedPoi == null) {
+          ref.read(selectedDynamicPoiIdProvider.notifier).select(null);
+          return;
+        }
+
+        // ~0.0001 degrees ≈ 11m; the SDK reports the same coordinates for
+        // each tap on a given POI, so this tolerance is just numerical
+        // safety, not a "nearby POI" matcher.
+        final dLat = (next.options.position.latitude - selectedPoi.lat).abs();
+        final dLng = (next.options.position.longitude - selectedPoi.lon).abs();
+        const sameSpotTolerance = 0.0001;
+        final isSamePoi = dLat < sameSpotTolerance && dLng < sameSpotTolerance;
+
+        if (isSamePoi) {
           ref.read(selectedMarkerProvider.notifier).clear();
+        } else {
+          ref.read(selectedDynamicPoiIdProvider.notifier).select(null);
         }
       });
 
