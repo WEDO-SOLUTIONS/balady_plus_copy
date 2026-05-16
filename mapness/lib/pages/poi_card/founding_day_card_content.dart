@@ -27,6 +27,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
   /// See `_ContentState._aiSummaryTriggered` for the rationale.
   bool _aiSummaryTriggered = false;
+  AiSummaryNotifier? _aiSummaryNotifier;
 
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
@@ -145,10 +146,8 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     // the founding-day POI card goes away. Deferred via a microtask so the
     // notifier state mutation doesn't race the disposing subtree (see the
     // sibling state for the full rationale).
-    if (_aiSummaryTriggered) {
-      final language = ref.read(appLanguageProvider);
-      final poiId = widget.objectId.toString();
-      final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    final notifier = _aiSummaryNotifier;
+    if (_aiSummaryTriggered && notifier != null) {
       Future<void>.microtask(() => notifier.cancel(reason: 'Founding-day POI card closed or switched'));
     }
     _tabController.dispose();
@@ -169,7 +168,9 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
-    ref.read(aiSummaryProvider(poiId, language).notifier).load();
+    final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    _aiSummaryNotifier = notifier;
+    notifier.load();
   }
 
   @override

@@ -16,14 +16,21 @@ part 'interesting_places.g.dart';
 
 @riverpod
 class InterestingPlaces extends _$InterestingPlaces {
+  CancelToken? _cancelToken;
+  int _requestId = 0;
+
   @override
   Future<List<InterestingPlace>> build() async {
     state = const AsyncValue.loading();
+    ref.onDispose(() => _cancelToken?.cancel('interestingPlacesProvider disposed'));
 
     final dio = await ref.watch(dGisNetworkProvider.future);
+    if (!ref.mounted) {
+      return const [];
+    }
 
-    final subscription = ref.read(dgisControllerProvider.notifier).visibleRectSubject.listen((event) async {
-      await _update(dio, event?.visibleRect);
+    final subscription = ref.read(dgisControllerProvider.notifier).visibleRectSubject.listen((event) {
+      unawaited(_update(dio, event?.visibleRect));
     });
 
     ref.onDispose(subscription.cancel);
@@ -33,23 +40,34 @@ class InterestingPlaces extends _$InterestingPlaces {
   }
 
   Future<void> _update(Dio dio, [VisibleRect? rect]) async {
+    final requestId = ++_requestId;
     final polygon = rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
-    final data = await _fetch(dio, polygon);
+    _cancelToken?.cancel('Superseded by a newer interesting places request');
+    final cancelToken = CancelToken();
+    _cancelToken = cancelToken;
+    final data = await _fetch(dio, polygon, cancelToken);
+    if (!ref.mounted || cancelToken.isCancelled || requestId != _requestId) {
+      return;
+    }
     state = AsyncValue.data(data);
   }
 
-  Future<List<InterestingPlace>> _fetch(Dio dio, [gb.Polygon? polygon]) async {
+  Future<List<InterestingPlace>> _fetch(Dio dio, [gb.Polygon? polygon, CancelToken? cancelToken]) async {
     final wkt = polygon != null ? polygon.toText(format: gb.WKT.geometry) : '';
 
     try {
       final response = await dio.get(
         wkt.isNotEmpty ? '/interesting-places?bound=$wkt' : '/interesting-places',
         options: defaultCacheOptions,
+        cancelToken: cancelToken,
       );
       final places = InterestingPlacesResponse.fromBuffer(response.data as List<int>).interestingPlaces;
       return places;
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {
+      if (error is DioException && CancelToken.isCancel(error)) {
+        return state.value ?? [];
+      }
       return [];
     }
   }
