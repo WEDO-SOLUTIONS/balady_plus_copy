@@ -65,7 +65,8 @@ class SelectedLayer extends _$SelectedLayer {
 
 enum LayersType { lifestyle, business }
 
-enum LayersPanelType { layers, parking }
+// todo need new type?
+enum LayersPanelType { layers, busLayers, parking }
 
 class LayersState {
   LayersState({
@@ -220,6 +221,9 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         toggleMetro();
         break;
+      case LayerType.busSubMenu:
+        toggleBusSubMenu();
+        break;
       case LayerType.makkahBus:
         toggleMakkahBuses();
         break;
@@ -344,6 +348,11 @@ class LayersControls extends _$LayersControls {
       ref.read(jeddahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.jeddahBus);
     }
+  }
+
+  void toggleBusSubMenu() {
+    // TODO(jeddah_bus): open menu or do nothing
+    ref.read(appRouterProvider).push(const BusLayersSheetRoute());
   }
 
   void update({
@@ -665,6 +674,9 @@ class LayersControls extends _$LayersControls {
 
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).hideMetro();
+        break;
+      case LayerType.busSubMenu:
+        // no op
         break;
       case LayerType.makkahBus:
         await ref.read(makkahBusLayerProvider.notifier).hide();

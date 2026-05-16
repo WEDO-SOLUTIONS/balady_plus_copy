@@ -4,6 +4,7 @@ enum LayerType {
   buildings,
   parkingLots,
   metro,
+  busSubMenu,
   makkahBus,
   shuttleBus,
   jeddahBus,
@@ -13,13 +14,13 @@ enum LayerType {
   // roadEvents;
 
   static List<LayerType> get lifestyle => [
-        LayerType.favourites,
-        LayerType.parkingLots,
-        LayerType.metro,
-        LayerType.makkahBus,
-        LayerType.shuttleBus,
-        LayerType.jeddahBus,
-      ];
+    LayerType.favourites,
+    LayerType.parkingLots,
+    LayerType.metro,
+    LayerType.makkahBus,
+    LayerType.shuttleBus,
+    LayerType.jeddahBus,
+  ];
 
   static List<LayerType> get business => [
     LayerType.invest,
@@ -31,11 +32,15 @@ enum LayerType {
     LayerType.traffic,
     LayerType.metro,
     LayerType.parkingLots,
+    LayerType.busSubMenu,
+    // LayerType.roadEvents,
+    LayerType.favourites,
+  ];
+
+  static List<LayerType> get bus => [
     LayerType.makkahBus,
     LayerType.shuttleBus,
     LayerType.jeddahBus,
-    // LayerType.roadEvents,
-    LayerType.favourites,
   ];
 }
 
