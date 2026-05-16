@@ -34,6 +34,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   /// off for this POI. The spec says the request fires exactly
   /// once, on the first collapsed → expanded transition.
   bool _aiSummaryTriggered = false;
+  AiSummaryNotifier? _aiSummaryNotifier;
 
   bool get isGooglePoi => widget.poiCardDataFromGoogle != null;
 
@@ -178,10 +179,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     // assertions when listeners are still in the disposing subtree (the
     // POI card's own AiSummarySection). Defer to a microtask so the
     // dispose pipeline finishes first.
-    if (_aiSummaryTriggered) {
-      final language = ref.read(appLanguageProvider);
-      final poiId = widget.objectId.toString();
-      final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    final notifier = _aiSummaryNotifier;
+    if (_aiSummaryTriggered && notifier != null) {
       Future<void>.microtask(() => notifier.cancel(reason: 'POI card closed or switched'));
     }
     _tabController.dispose();
@@ -210,7 +209,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
-    ref.read(aiSummaryProvider(poiId, language).notifier).load();
+    final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    _aiSummaryNotifier = notifier;
+    notifier.load();
   }
 
   @override
