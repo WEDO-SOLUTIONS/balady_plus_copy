@@ -232,8 +232,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
+    await _naviEventsListener?.cancel();
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
-    if (widget.initAction == PathNavPageInitAction.restoreFromState) {
+
+    if (widget.initAction == PathNavPageInitAction.restoreFromState || _navigationState.value == PathNavState.running) {
       await restoreNavigationState();
       // After restore, move camera close without forcing follow to avoid zoom flicker
       await _moveCameraToUser(followAfter: false);
@@ -376,6 +378,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               unawaited(_endTripAndShowHome());
             }
           }
+        }
+      })
+      ..listen(dgisControllerProvider, (previous, next) {
+        if (next.hasValue && previous?.value != next.value) {
+          _initNavigation();
         }
       });
 
