@@ -9,6 +9,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension LayerTypeExt on LayerType {
   GISMapLayers? getGISLayerType() => switch (this) {
+    LayerType.busSubMenu => null,
     LayerType.makkahBus => null,
     LayerType.shuttleBus => null,
     LayerType.jeddahBus => null,
@@ -31,6 +32,7 @@ extension LayerTypeExt on LayerType {
     LayerType.invest => GeneralIcons.invest,
     LayerType.buildings => GeneralIcons.buildings,
     LayerType.fencing => GeneralIcons.fence,
+    LayerType.busSubMenu => PlacesIcons.qibla,
     LayerType.makkahBus => PlacesIcons.qibla,
     LayerType.shuttleBus => PlacesIcons.qibla,
     LayerType.jeddahBus => PlacesIcons.qibla,
@@ -47,11 +49,10 @@ extension LayerTypeExt on LayerType {
     LayerType.fencing => '',
     LayerType.favourites => Assets.imagesSvg.layers.favourites.keyName,
     LayerType.metro => Assets.imagesSvg.layers.metro.keyName,
+    LayerType.busSubMenu => Assets.imagesSvg.layers.busSubMenu.keyName,
     LayerType.makkahBus => Assets.imagesSvg.layers.makkahBus.keyName,
     LayerType.shuttleBus => Assets.imagesSvg.layers.shuttleBus.keyName,
-    // TODO(jeddah_bus): valid icon needed
-    // TODO(jeddah_bus): also think about uniting bus logic to dynamically add more buses in the future
-    LayerType.jeddahBus => Assets.imagesSvg.layers.makkahBus.keyName,
+    LayerType.jeddahBus => Assets.imagesSvg.layers.jeddahBus.keyName,
     LayerType.parkingLots => Assets.imagesSvg.layers.parking.keyName,
     LayerType.traffic => Assets.imagesSvg.layers.traffic.keyName,
     LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
@@ -64,6 +65,7 @@ extension LayerTypeExt on LayerType {
     LayerType.invest => l10n.investmentOpportunities,
     LayerType.buildings => l10n.compilanceBuildings,
     LayerType.fencing => l10n.fencingVacantLands,
+    LayerType.busSubMenu => l10n.bus,
     LayerType.makkahBus => l10n.makkahBus,
     LayerType.shuttleBus => l10n.shuttleBus,
     LayerType.jeddahBus => l10n.jeddahBus,

@@ -1,3 +1,5 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart' show BuildContextExt;
 import 'package:dgis_map/library.dart';
@@ -16,9 +18,14 @@ import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 class LayerSwitcherCard extends ConsumerWidget {
   final layers_state.LayerType value;
   final LayersState layersState;
-  final VoidCallback tapOnParkingLotsMenu;
+  final ValueChanged<layers_state.LayerType>? tapOnParkingLotsMenu;
 
-  const LayerSwitcherCard(this.value, this.layersState, this.tapOnParkingLotsMenu, {super.key});
+  const LayerSwitcherCard(
+    this.value,
+    this.layersState,
+    this.tapOnParkingLotsMenu, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -71,34 +78,10 @@ class LayerSwitcherCard extends ConsumerWidget {
         const SizedBox(height: Spacing.$1_5x),
         // BE-153: when this is the parking layer card, the whole title row
         // (text + chevron) opens the parking menu — not only the chevron icon.
-        if (value == layers_state.LayerType.parkingLots)
-          GestureDetector(
-            onTap: tapOnParkingLotsMenu,
-            behavior: HitTestBehavior.opaque,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(
-                    value.titleLocale(context.l10n),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: textStyles.bodySmallMedium.copyWith(
-                      color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  size: 22,
-                  color: colors.foregroundSoft,
-                ),
-              ],
-            ),
-          )
-        else
-          Row(
+        GestureDetector(
+          onTap: tapOnParkingLotsMenu != null ? () => tapOnParkingLotsMenu?.call(value) : null,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(
@@ -112,8 +95,15 @@ class LayerSwitcherCard extends ConsumerWidget {
                   ),
                 ),
               ),
+              if (tapOnParkingLotsMenu != null)
+                Icon(
+                  Icons.chevron_right,
+                  size: 22,
+                  color: colors.foregroundSoft,
+                ),
             ],
           ),
+        ),
       ],
     );
   }

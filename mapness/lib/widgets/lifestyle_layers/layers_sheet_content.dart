@@ -75,7 +75,11 @@ class LayersSheetContent extends ConsumerWidget {
           //   ),
           // ),
           LayerSliverList(
-            tapOnParkingLotsMenu: tapOnParkingLotsMenu,
+            tapOnParkingLotsMenu: (layerType) {
+              if (layerType == layers_state.LayerType.parkingLots) {
+                tapOnParkingLotsMenu();
+              }
+            },
             layerType: layers_state.LayerType.v1,
             layersState: state,
           ),

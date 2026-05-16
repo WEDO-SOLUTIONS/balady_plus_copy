@@ -6,6 +6,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
+import 'package:mapness/widgets/lifestyle_layers/bus/bus_details_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
 import 'package:sheetify/sheetify.dart';
@@ -21,7 +22,9 @@ class LayersSheetPage extends StatefulHookConsumerWidget {
 class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTickerProviderStateMixin {
   late final ToggleSheetController _layersController;
   late final ToggleSheetController _parkingLotsController;
+  late final ToggleSheetController _busSubMenuController;
   bool _isParkingSheetMounted = false;
+  bool _isBusSubMenuSheetMounted = false;
   bool _isClosingRoute = false;
 
   late final barrierColorDelegate = ToggleSheetDelegateFunction(
@@ -47,6 +50,17 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
         if (mounted && _isParkingSheetMounted) {
           setState(() {
             _isParkingSheetMounted = false;
+          });
+        }
+        _layersController.open();
+      },
+    );
+    _busSubMenuController = ToggleSheetController(
+      durationMultiplier: 2,
+      onClose: (_) {
+        if (mounted && _isBusSubMenuSheetMounted) {
+          setState(() {
+            _isBusSubMenuSheetMounted = false;
           });
         }
         _layersController.open();
@@ -122,6 +136,19 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
                 },
               ),
             ),
+          if (_isBusSubMenuSheetMounted)
+            ToggleSheet(
+              scrollController: _busSubMenuController,
+              backgroundColor: context.colors.backgroundSurface4,
+              safeAreaColor: context.colors.backgroundSurface4,
+              dragger: const SheetDragger(),
+              startConfig: ToggleSheetStart.closed,
+              barrierColorDelegate: barrierColorDelegate,
+              sliver: BusDetailsContent(
+                onTitlePressed: _showBusSubMenuPanel,
+                onPanelClose: _showLayersPanel,
+              ),
+            ),
         ],
       ),
     );
@@ -156,6 +183,25 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
     _parkingLotsController.open();
   }
 
+  void _showBusSubMenuPanel() {
+    ref.read(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.busLayers);
+    if (!_isBusSubMenuSheetMounted) {
+      setState(() {
+        _isBusSubMenuSheetMounted = true;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _layersController.close();
+        _busSubMenuController.open();
+      });
+      return;
+    }
+    _layersController.close();
+    _busSubMenuController.open();
+  }
+
   void _closeRouteWithoutSheetPopScope() {
     if (!mounted || _isClosingRoute) {
       return;
@@ -164,6 +210,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
     setState(() {
       _isClosingRoute = true;
       _isParkingSheetMounted = false;
+      _isBusSubMenuSheetMounted = false;
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
