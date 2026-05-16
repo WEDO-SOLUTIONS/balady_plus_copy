@@ -168,6 +168,22 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
   @override
   void dispose() {
+    // Cancel any AI Summary request that's still in flight — the user has
+    // either switched to another POI or closed the card and there's nothing
+    // left on screen to show the result. `keepAlive: true` on the notifier
+    // means its own `onDispose` wouldn't fire here.
+    //
+    // The cancel mutates notifier state, which makes its listeners rebuild.
+    // Doing that synchronously inside `dispose()` trips Flutter framework
+    // assertions when listeners are still in the disposing subtree (the
+    // POI card's own AiSummarySection). Defer to a microtask so the
+    // dispose pipeline finishes first.
+    if (_aiSummaryTriggered) {
+      final language = ref.read(appLanguageProvider);
+      final poiId = widget.objectId.toString();
+      final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+      Future<void>.microtask(() => notifier.cancel(reason: 'POI card closed or switched'));
+    }
     _tabController.dispose();
     _tabType.dispose();
     _stateNotifier.dispose();
@@ -181,6 +197,14 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   /// in the [PoiCardBottomSheetState.expanded] state.
   void _maybeTriggerAiSummary() {
     if (_aiSummaryTriggered) {
+      return;
+    }
+    // Skip both fetch and UI for POIs whose type is outside the allowed
+    // scope — same gate as `AiSummarySection`, applied here so the network
+    // request never fires for off-scope POIs.
+    final types = (poiCardState?.gisObjectIdMessage?.types ?? widget.data.types).map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
       return;
     }
     _aiSummaryTriggered = true;
@@ -203,8 +227,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         }
         _aiSummaryTriggered = false;
         final currentState = _bottomSheetController.state;
-        if (currentState == PoiCardBottomSheetState.open ||
-            currentState == PoiCardBottomSheetState.expanded) {
+        if (currentState == PoiCardBottomSheetState.open || currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })
@@ -374,7 +397,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   subTitle:
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
-                          ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
+                          ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
                           : (widget.data.subtitle == 'تسوية' ? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[

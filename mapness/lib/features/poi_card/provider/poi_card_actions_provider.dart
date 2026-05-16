@@ -87,7 +87,11 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   Future<void> launch(String value) async {
-    final url = Uri.parse(value);
+    String urlString = value;
+    if (value.contains('wa.me/') || value.contains('api.whatsapp.com/')) {
+      urlString = urlString.replaceFirst(RegExp(r'[?&]text=[^&]*'), '');
+    }
+    final url = Uri.parse(urlString);
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     }

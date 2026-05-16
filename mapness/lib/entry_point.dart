@@ -431,8 +431,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(darkModeProvider, (prev, next) async {
-      _themeChanged(isDark: next.value?.isDark == true);
+    ref.listen(darkModeProvider, (prev, next) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _themeChanged(isDark: next.value?.isDark == true);
+      });
     });
 
     final language = ref.watch(appLanguageProvider);

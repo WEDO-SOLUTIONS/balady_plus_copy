@@ -26,7 +26,7 @@ class MapPage extends ConsumerStatefulWidget {
 }
 
 class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  final int _keyIndex = 0;
+  int _keyIndex = 0;
   bool _needRefresh = false;
 
   @override
@@ -51,6 +51,8 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
     if (_needRefresh && state == AppLifecycleState.resumed) {
       setState(() {
         _needRefresh = false;
+        _keyIndex++;
+        ref.invalidate(dgisControllerProvider);
       });
     }
   }

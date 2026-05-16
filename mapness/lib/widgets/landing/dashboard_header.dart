@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
@@ -179,33 +180,36 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
       ),
       child: GestureDetector(
         onTap: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.searchField,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-          BssService.instance.sendEvent(
-            const BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(name: BssUIElementNames.searchField),
-            ),
-          );
-
-          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
-
           // Here we clean the search query on tap on the search field
           // So the user can see the search history, not previous search results
           final text = ref.read(searchProvider(_scope)).searchText;
           ref.read(searchProvider(_scope).notifier).clear();
 
-          ref
-              .read(urbiAnalyticsProvider.notifier)
-              .trackWithPrint(
-                '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-              );
+          // Push the route first so the transition starts on the next frame.
+          // Analytics/method-channel work happens after, in a microtask, so it
+          // doesn't extend the frame that handles the tap.
+          unawaited(context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)));
 
-          context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text));
+          scheduleMicrotask(() {
+            Metrics.logEventAdvanced(
+              MetricsConstants.exploreKeys.searchField,
+              action: MetricAction.tap.name,
+              group: MetricsConstants.exploreTag,
+            );
+            BssService.instance.sendEvent(
+              const BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: BssUIElement(name: BssUIElementNames.searchField),
+              ),
+            );
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+            ref
+                .read(urbiAnalyticsProvider.notifier)
+                .trackWithPrint(
+                  '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+                );
+          });
         },
         child: AbsorbPointer(
           child: BaladyTextInput.search(

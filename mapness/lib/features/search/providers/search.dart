@@ -15,6 +15,7 @@ import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
@@ -594,18 +595,28 @@ class Search extends _$Search {
       }
     }
 
-    if (results.representativeArea != null && points.length > 1) {
-      await _animateToRepresentativeArea(results: results);
-      return;
-    }
+    final userLocation = ref.read(locationProvider);
+    final orderedPoints = userLocation == null
+        ? points
+        : (points.toList()
+          ..sort((a, b) {
+            final dA = _squaredDistance(a, userLocation.latitude, userLocation.longitude);
+            final dB = _squaredDistance(b, userLocation.latitude, userLocation.longitude);
+            return dA.compareTo(dB);
+          }));
 
     await ref
         .read(cameraPositionProvider.notifier)
         .animateToGeoPoints(
-          points.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
+          orderedPoints.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
           options: _quickFilterCameraOptions(),
-          keepCameraPositionPoint: true,
         );
+  }
+
+  double _squaredDistance(GeoPointMessage point, double lat, double lng) {
+    final dLat = point.latitude - lat;
+    final dLng = point.longitude - lng;
+    return dLat * dLat + dLng * dLng;
   }
 
   List<GeoPointMessage> _uniqueResultPoints(SearchResultMessage results) {

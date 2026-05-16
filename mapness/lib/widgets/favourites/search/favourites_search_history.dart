@@ -34,8 +34,36 @@ class FavouritesSearchHistory extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
 
+    Future<void> sendHistoryTapEvent(
+      SearchHistoryDirectoryObjectMessage item,
+      int index,
+      BssHistoryList? historyList,
+    ) async {
+      final bssHistoryHandlingType = item.id?.objectId != null
+          ? BssHistoryHandlingType.openRecord
+          : BssHistoryHandlingType.searchSuggestedText;
+      await BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.historyItem,
+            ownerName: BssUIElementNames.historyList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            searchRequest: BssSearchRequest(text: item.title),
+            historyItem: item.toBss(bssHistoryHandlingType),
+            historyList: historyList,
+          ),
+        ),
+      );
+    }
+
     return ui.SearchHistory(
       onTap: (item, index, historyList) async {
+        FocusManager.instance.primaryFocus?.unfocus();
+
         if (item.id?.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
           try {
@@ -56,15 +84,19 @@ class FavouritesSearchHistory extends ConsumerWidget {
             final favItem = object.mapToFavourite();
             final repo = ref.read(favouriteCacheProvider.notifier);
             unawaited(switch (markerType) {
-              FavouriteItemMarkerType.unknown ||
-              FavouriteItemMarkerType.place => repo.addItem(favItem),
+              FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
               FavouriteItemMarkerType.home => repo.setHome(favItem),
               FavouriteItemMarkerType.work => repo.setWork(favItem),
             });
+            await sendHistoryTapEvent(item, index, historyList);
             if (context.mounted && context.router.canPop()) {
-              context.router.pop();
+              context.router.pop(favItem);
             }
+            return;
           } catch (e) {
+            if (!context.mounted) {
+              return;
+            }
             final result = await context.router.push(
               ErrorSheetDialogRoute(
                 buttonLabel: context.l10n.tryAgain,
@@ -82,27 +114,8 @@ class FavouritesSearchHistory extends ConsumerWidget {
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
-        final bssHistoryHandlingType = item.id?.objectId != null
-            ? BssHistoryHandlingType.openRecord
-            : BssHistoryHandlingType.searchSuggestedText;
-        await BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: BssUIElement(
-              name: BssUIElementNames.historyItem,
-              ownerName: BssUIElementNames.historyList,
-              position: index + 1,
-            ),
-            payload: BssPayload(
-              searchRequest: BssSearchRequest(text: item.title),
-              historyItem: item.toBss(bssHistoryHandlingType),
-              historyList: historyList,
-            ),
-          ),
-        );
+        await sendHistoryTapEvent(item, index, historyList);
       },
     );
   }
 }
-

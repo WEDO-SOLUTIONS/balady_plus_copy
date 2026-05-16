@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 @RoutePage()
@@ -47,11 +49,11 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
     final direction = ref.watch(uiDirectionProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: Scaffold(
         backgroundColor: context.colors.backgroundSurface1,
         appBar: AppBar(
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
+          systemOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
           backgroundColor: context.colors.backgroundSurface1,
           elevation: 0,
           centerTitle: true,

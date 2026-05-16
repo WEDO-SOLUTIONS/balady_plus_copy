@@ -160,8 +160,8 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
     final androidInfo = isAndroid ? await DeviceInfoPlugin().androidInfo : null;
     final iOSInfo = isAndroid ? null : await DeviceInfoPlugin().iosInfo;
 
-    final androidModel = androidInfo?.data['model'];
-    final iosModel = iOSInfo?.data['machine'];
+    final androidModel = androidInfo?.data['model'] as String? ?? 'unknown';
+    final iosModel = iOSInfo?.data['machine'] as String? ?? 'unknown';
 
     await FlutterInsider.Instance.tagEvent('device_type_detected')
         .addParameterWithString('event_name', 'device_type_detected')

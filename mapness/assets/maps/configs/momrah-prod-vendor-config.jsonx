@@ -4,14 +4,14 @@
     "comment": "",
     "overrides": {
       "dgis/native-sdk/keys/user_web_api_key_for_on_premise": "28ed92f1-de4b-4060-b159-2dc19e9b8bf5",
-      "dgis/native-sdk/map/tileserver_url": "https://urbi-lifestyle.momrah.gov.sa",
+      "dgis/native-sdk/map/tileserver_url": "https://urbi-lifestyle.momah.gov.sa",
       "dgis/native-sdk/map/tileserver_tileset": "native",
-      "dgis/native-sdk/map/OnlineIndoorBuildingFetcher/indoor_base_url": "https://urbi-lifestyle.momrah.gov.sa",
-      "Modules/directory/webapi_url": "https://urbi-lifestyle.momrah.gov.sa",
-      "dgis/native-sdk/directory/webapi_url": "https://urbi-lifestyle.momrah.gov.sa",
-      "dgis/native-sdk/routing/car_routing_server_url": "https://urbi-lifestyle.momrah.gov.sa",
-      "Modules/traffic/regions/regions_base_webapi_url": "https://urbi-lifestyle.momrah.gov.sa/2.0/region",
-      "Modules/twins/webapi_url": "https://urbi-lifestyle.momrah.gov.sa/v1/twins/search/dgis",
+      "dgis/native-sdk/map/OnlineIndoorBuildingFetcher/indoor_base_url": "https://urbi-lifestyle.momah.gov.sa",
+      "Modules/directory/webapi_url": "https://urbi-lifestyle.momah.gov.sa",
+      "dgis/native-sdk/directory/webapi_url": "https://urbi-lifestyle.momah.gov.sa",
+      "dgis/native-sdk/routing/car_routing_server_url": "https://urbi-lifestyle.momah.gov.sa",
+      "Modules/traffic/regions/regions_base_webapi_url": "https://urbi-lifestyle.momah.gov.sa/2.0/region",
+      "Modules/twins/webapi_url": "https://urbi-lifestyle.momah.gov.sa/v1/twins/search/dgis",
       "bss/server_url": "https://s1.bss.urbi.ae/bss/3",
       "Modules/traffic/score_base_webapi_url": "https://jam.api.urbi.ae",
       "Modules/traffic/TrafficCollector/server_url": "https://tjam.mis.urbi.ae/traffic-jam/0",
@@ -49,7 +49,7 @@
       "LegacyApplicationSettings/NetworkModule/RegionServerUrl14": "https://nsdk-s14.uss.urbi.ae/ver4/",
       "LegacyApplicationSettings/NetworkModule/RegionServerUrl15": "https://nsdk-s15.uss.urbi.ae/ver4/",
       "LegacyApplicationSettings/NetworkModule/RegionServerUrl16": "https://nsdk-s16.uss.urbi.ae/ver4/",
-      "dgis/native-sdk/routing/free_roam_server_url": "urbi-lifestyle.momrah.gov.sa/freeroam"
+      "dgis/native-sdk/routing/free_roam_server_url": "urbi-lifestyle.momah.gov.sa/freeroam"
     }
   }
 ]
