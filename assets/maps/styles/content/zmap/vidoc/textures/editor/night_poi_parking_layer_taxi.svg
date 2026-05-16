@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
- <path d="m0 10c0-5.5228 4.4772-10 10-10h30c5.5228 0 10 4.4772 10 10v30c0 5.5228-4.4772 10-10 10h-30c-5.5228 0-10-4.4772-10-10v-30z" fill="#3D89F5"/>
- <path d="m13 17h8v8h-8v-8zm0 8v8h-8v-8h8zm16 0v8h-8v-8h8zm8 0v-8h-8v8h8zm0 0v8h8v-8h-8z" clip-rule="evenodd" fill="#fff" fill-rule="evenodd"/>
-</svg>
