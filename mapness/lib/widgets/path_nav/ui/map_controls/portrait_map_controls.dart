@@ -67,11 +67,6 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                 padding: widget.padding,
                                 child: const DimensionControl(),
                               ),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              Padding(
-                                padding: widget.padding,
-                                child: const SoundControl(),
-                              ),
                             ],
                           ),
                         ),
@@ -99,33 +94,39 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            AnimatedOpacity(
-                              opacity: isVisible ? 1 : 0,
-                              duration: const Duration(milliseconds: 250),
-                              child: IgnorePointer(
-                                ignoring: !isVisible,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // TODO: MBC - Uncomment for next release
-                                    // const RadioContextualButton(),
-                                    const SizedBox(height: 10),
-                                    ValueListenableBuilder(
-                                      valueListenable: widget.navigationState,
-                                      builder: (context, state, _) {
-                                        if (state == PathNavState.finished ||
-                                            state == PathNavState.paused ||
-                                            widget.onRoutePressed == null) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return RouteControl(
-                                          onTap: widget.onRoutePressed!,
-                                        );
-                                      },
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AnimatedOpacity(
+                                  opacity: isVisible ? 1 : 0,
+                                  duration: const Duration(milliseconds: 250),
+                                  child: IgnorePointer(
+                                    ignoring: !isVisible,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // TODO: MBC - Uncomment for next release
+                                        // const RadioContextualButton(),
+                                        const SizedBox(height: 10),
+                                        ValueListenableBuilder(
+                                          valueListenable: widget.navigationState,
+                                          builder: (context, state, _) {
+                                            if (state == PathNavState.finished ||
+                                                state == PathNavState.paused ||
+                                                widget.onRoutePressed == null) {
+                                              return const SizedBox.shrink();
+                                            }
+                                            return RouteControl(
+                                              onTap: widget.onRoutePressed!,
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                const SoundControl(),
+                              ],
                             ),
                             const Spacer(),
                             Column(

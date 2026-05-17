@@ -20,6 +20,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
+import 'package:mapness/widgets/landing/sound_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:sheetify/sheetify.dart';
@@ -173,59 +174,68 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                 ),
                 const SizedBox(height: uikit.Spacing.$3x),
                 Expanded(
-                  child: AnimatedOpacity(
-                    opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    child: IgnorePointer(
-                      ignoring: !isControlsActive,
-                      child: GestureDetector(
-                        onTap: () {
-                          timer?.cancel();
-                          timer = null;
-                          wasSetActive = true;
-                          isControlsActive = true;
-                          startControlsDisapearTimer();
-                        },
-                        child: Padding(
-                          padding: padding,
-                          child: isPortrait
-                              ? const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    TrafficParkingControl(),
-                                    SizedBox(height: uikit.Spacing.$2x),
-                                    DimensionControl(),
-                                    Spacer(),
-                                    Row(
+                  child: Stack(
+                    children: [
+                      AnimatedOpacity(
+                        opacity: isControlsActive ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: IgnorePointer(
+                          ignoring: !isControlsActive,
+                          child: GestureDetector(
+                            onTap: () {
+                              timer?.cancel();
+                              timer = null;
+                              wasSetActive = true;
+                              isControlsActive = true;
+                              startControlsDisapearTimer();
+                            },
+                            child: Padding(
+                              padding: padding,
+                              child: isPortrait
+                                  ? const Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        IndoorControl(),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    CompassControl(),
-                                    SizedBox(height: uikit.Spacing.$2x),
-                                    FollowControl(),
-                                    SizedBox(height: uikit.Spacing.$3x),
-                                  ],
-                                )
-                              : const Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
+                                        TrafficParkingControl(),
+                                        SizedBox(height: uikit.Spacing.$2x),
+                                        DimensionControl(),
                                         Spacer(),
-                                        Padding(
-                                          padding: padding,
-                                          child: IndoorControl(),
+                                        Row(
+                                          children: [
+                                            IndoorControl(),
+                                          ],
                                         ),
-                                        Spacer(flex: 3),
+                                        Spacer(),
+                                        CompassControl(),
+                                        SizedBox(height: uikit.Spacing.$2x),
+                                        FollowControl(),
+                                        SizedBox(height: uikit.Spacing.$3x),
+                                      ],
+                                    )
+                                  : const Row(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Spacer(),
+                                            Padding(
+                                              padding: padding,
+                                              child: IndoorControl(),
+                                            ),
+                                            Spacer(flex: 3),
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ],
-                                ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      const Positioned(
+                        bottom: uikit.Spacing.$3x,
+                        left: uikit.Spacing.$3x,
+                        child: SoundControl(),
+                      ),
+                    ],
                   ),
                 ),
                 Directionality(
