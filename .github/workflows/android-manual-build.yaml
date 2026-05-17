@@ -10,16 +10,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - "core"
-      - "release/*"
-    paths-ignore:
-      - "**.md"
-      - "doc/**"
-      - ".git/"
-      - ".vscode/"
   workflow_dispatch:
     inputs:
       branch:
@@ -44,8 +34,7 @@ jobs:
     runs-on: ubuntu-latest # [self-hosted, macOS, ARM64]
     timeout-minutes: 60
 
-    # For PR: run only when merged. For manual: always.
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Resolve build context (branch/env/ref)
