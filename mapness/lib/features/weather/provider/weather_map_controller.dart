@@ -13,9 +13,9 @@ class WeatherMapState {
   final bool? isEnabled;
 
   WeatherMapState copy({WeatherMapType? type, bool? isEnabled}) => WeatherMapState(
-        type: type ?? this.type,
-        isEnabled: isEnabled ?? this.isEnabled,
-      );
+    type: type ?? this.type,
+    isEnabled: isEnabled ?? this.isEnabled,
+  );
 }
 
 @riverpod
@@ -45,6 +45,9 @@ class WeatherMapController extends _$WeatherMapController {
           enabled: enable,
         ),
       );
+      if (!ref.mounted) {
+        return;
+      }
       state = state.copy(type: type, isEnabled: result);
 
       if (type case WeatherMapType.precipitation) {
@@ -63,9 +66,10 @@ class WeatherMapController extends _$WeatherMapController {
       }
     });
 
-    ref.onDispose(
-      listener.cancel,
-    );
+    ref.onDispose(() {
+      listener.cancel();
+      sub.close();
+    });
     return WeatherMapState(
       type: WeatherMapType.temperature,
     );

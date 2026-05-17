@@ -74,6 +74,9 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
 }
 
 class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
+  MapTapHandler? _mapTapHandler;
+  Object? _mapTapDisableOwner;
+
   final shapeDelegate = ToggleSheetDelegate.func(
     (controller) => SmoothRectangleBorder(
       borderRadius: BorderRadius.vertical(
@@ -106,14 +109,31 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   void initState() {
     super.initState();
     if (ref.read(mediaQueryInfoProvider)?.orientation == Orientation.landscape) {
-      ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+      final mapTapHandler = ref.read(mapTapHandlerProvider.notifier);
+      _mapTapHandler = mapTapHandler;
+      _mapTapDisableOwner = mapTapHandler.acquireTapDisableOwner();
     }
   }
 
   @override
   void deactivate() {
-    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = false;
+    _releaseMapTapDisable();
     super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _releaseMapTapDisable();
+    super.dispose();
+  }
+
+  void _releaseMapTapDisable() {
+    final owner = _mapTapDisableOwner;
+    if (owner == null) {
+      return;
+    }
+    _mapTapDisableOwner = null;
+    _mapTapHandler?.releaseTapDisableOwner(owner);
   }
 
   @override

@@ -3,12 +3,14 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/founding_day/dashboard_bg.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
@@ -66,9 +68,25 @@ class BaseDashboardContent extends ConsumerWidget {
               width: double.infinity,
               child: FeedbackBannerCardV2(
                 path: themeConfig.feedbackBannerAssetPath,
-                onTap: () {
+                onTap: () async {
+                  final router = ref.read(appRouterProvider);
+                  dashboardFreezeTrace(
+                    'Contribute tap sheetState=${bottomSheetController.state} '
+                    'closest=${bottomSheetController.closestState} enabled=${bottomSheetController.isEnabled} '
+                    'positions=${bottomSheetController.positions.length}',
+                  );
                   ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-                  context.router.push(const ContributeRoute());
+                  if (bottomSheetController.closestState != ThreeStateSheet.hidden) {
+                    bottomSheetController.setState(
+                      ThreeStateSheet.hidden,
+                      duration: const Duration(milliseconds: 1),
+                    );
+                    dashboardFreezeTrace('Contribute requested sheet hidden');
+                  }
+                  await Future<void>.delayed(const Duration(milliseconds: 32));
+                  dashboardFreezeTrace('Contribute push start');
+                  await router.push(const ContributeRoute());
+                  dashboardFreezeTrace('Contribute push completed');
                 },
                 gradientColors: themeConfig.feedbackBannerGradient,
                 title: context.l10n.contribute,

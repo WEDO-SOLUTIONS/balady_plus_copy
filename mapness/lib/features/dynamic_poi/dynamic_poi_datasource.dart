@@ -41,7 +41,7 @@ class DynamicPoiDatasource {
 
   Future<List<DynamicPoi>> fetchMarkers({
     required String locale,
-    int pageSize = 2000,
+    int pageSize = 500,
     DynamicPoiBbox? bbox,
     CancelToken? cancelToken,
   }) async {

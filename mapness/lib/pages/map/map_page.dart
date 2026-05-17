@@ -16,6 +16,7 @@ import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 
 @RoutePage()
 class MapPage extends ConsumerStatefulWidget {
@@ -25,13 +26,15 @@ class MapPage extends ConsumerStatefulWidget {
   ConsumerState<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
-  int _keyIndex = 0;
+class _MapPageState extends ConsumerState<MapPage>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, AutoRouteAwareStateMixin<MapPage> {
+  final int _keyIndex = 0;
   bool _needRefresh = false;
 
   @override
   void initState() {
     super.initState();
+    _trace('initState');
     WidgetsBinding.instance.addObserver(this);
     // We show toast on the map (not in MapnessEntryPoint) because it must be shown only when the map is visible
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -41,28 +44,40 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
   @override
   void dispose() {
+    _trace('dispose');
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
+  void didPushNext() {
+    _trace('didPushNext');
+  }
+
+  @override
+  void didPopNext() {
+    _trace('didPopNext');
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+    _trace('appLifecycle=$state');
     if (_needRefresh && state == AppLifecycleState.resumed) {
       setState(() {
         _needRefresh = false;
-        _keyIndex++;
-        ref.invalidate(dgisControllerProvider);
       });
     }
   }
 
   @override
   void didHaveMemoryPressure() {
+    _trace('memoryPressure-before');
     setState(() {
       _needRefresh = true;
     });
     super.didHaveMemoryPressure();
+    _trace('memoryPressure-after');
   }
 
   @override
@@ -86,15 +101,23 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
         children: [
           Listener(
             behavior: HitTestBehavior.translucent,
-            onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            onPointerDown: (_) {
+              _trace('pointerDown android');
+              ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
+            },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
               key: ValueKey(_keyIndex),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
+                _trace('onMapCreated android start controller=${identityHashCode(controller)}');
                 await dgisController.onMapCreated(controller);
+                _trace('onMapCreated android done controller=${identityHashCode(controller)}');
                 Future.delayed(const Duration(seconds: 3), () {
-                  if (!mounted) return;
+                  if (!mounted) {
+                    return;
+                  }
+                  _trace('showActiveLayerOnMap android');
                   ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
                 });
               },
@@ -120,15 +143,23 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
         children: [
           Listener(
             behavior: HitTestBehavior.translucent,
-            onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            onPointerDown: (_) {
+              _trace('pointerDown ios');
+              ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
+            },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
               key: ValueKey(_keyIndex),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
+                _trace('onMapCreated ios start controller=${identityHashCode(controller)}');
                 await dgisController.onMapCreated(controller);
+                _trace('onMapCreated ios done controller=${identityHashCode(controller)}');
                 Future.delayed(const Duration(seconds: 3), () {
-                  if (!mounted) return;
+                  if (!mounted) {
+                    return;
+                  }
+                  _trace('showActiveLayerOnMap ios');
                   ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
                 });
               },
@@ -142,6 +173,12 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
   @override
   bool get wantKeepAlive => true;
+
+  void _trace(String event) {
+    dashboardFreezeTrace(
+      'MapPage $event mounted=$mounted needRefresh=$_needRefresh keyIndex=$_keyIndex hash=$hashCode',
+    );
+  }
 
   Future<void> _initToastMessage() async {
     final isFirstStart = ref.read(firstStartProvider);
