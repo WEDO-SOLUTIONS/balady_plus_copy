@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/saudi_pass/repo/verifying_key_interceptor.dart';
 import 'package:mapness/shared/lib/auth/auth_token_interceptors.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -32,8 +33,7 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
 
     final dio = Dio(
       BaseOptions(
-        baseUrl:
-            '${env.saudiPassApi}v1/balady-business-saudi-pass-services/user/',
+        baseUrl: '${env.saudiPassApi}v1/balady-business-saudi-pass-services/user/',
         sendTimeout: timeout,
         receiveTimeout: timeout,
         connectTimeout: timeout,
@@ -49,9 +49,10 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
     );
     dio.interceptors.addAll(
       [
-        PrettyDioLogger(
-          responseBody: false,
-        ),
+        if (kDebugMode)
+          PrettyDioLogger(
+            responseBody: false,
+          ),
         AuthTokenInterceptor.tokenInterceptor(
           ref,
           BaseOptions(
@@ -66,7 +67,9 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
         RetryInterceptor(
           dio: dio,
           logPrint: (message) {
-            log('RETRY LOG: $message');
+            if (kDebugMode) {
+              log('RETRY LOG: $message');
+            }
           }, // specify log function (optional)
           retries: 2, // retry count (optional)
           retryDelays: const [

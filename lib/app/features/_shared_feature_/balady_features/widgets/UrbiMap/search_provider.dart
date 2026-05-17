@@ -15,7 +15,7 @@ class UrbiSearchProvider extends ChangeNotifier {
   Future<List<UrbiLocationModel>> search(String query, LatLng location) async {
     Response? response;
     try {
-      String url = "https://urbi-lifestyle.momrah.gov.sa/3.0/suggests";
+      String url = "https://urbi-lifestyle.momah.gov.sa/3.0/suggests";
 
       WebService webService = sl();
       Map<String, dynamic> formMap = {

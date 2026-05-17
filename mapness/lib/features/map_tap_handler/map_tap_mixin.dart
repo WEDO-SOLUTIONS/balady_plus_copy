@@ -1,13 +1,44 @@
 part of 'map_tap_handler_provider.dart';
 
 mixin GuardTapEventMixin on _$MapTapHandler {
-  bool _isDisabledTapHandler = false;
+  static final Object _legacyTapDisableOwner = Object();
+  final Set<Object> _tapDisableOwners = <Object>{};
 
-  /// Disables the default tap handler, preventing it from being called.
+  /// Disables the default tap handler for a specific owner.
+  ///
+  /// The returned token must be released by [releaseTapDisableOwner]. This keeps
+  /// multiple screens from racing on one global boolean and leaving the map
+  /// permanently non-interactive.
+  Object acquireTapDisableOwner() {
+    final owner = Object();
+    _tapDisableOwners.add(owner);
+    return owner;
+  }
+
+  void releaseTapDisableOwner(Object? owner) {
+    if (owner == null) {
+      return;
+    }
+    _tapDisableOwners.remove(owner);
+  }
+
+  /// Legacy compatibility for existing call sites.
+  ///
+  /// Prefer [acquireTapDisableOwner]/[releaseTapDisableOwner] for new code.
   // ignore: avoid_setters_without_getters
-  set disableTapOnMap(bool value) => _isDisabledTapHandler = value;
+  set disableTapOnMap(bool value) {
+    if (value) {
+      _tapDisableOwners.add(_legacyTapDisableOwner);
+    } else {
+      _tapDisableOwners.remove(_legacyTapDisableOwner);
+    }
+  }
 
-  bool get isDisabledTapHandler => _isDisabledTapHandler;
+  bool get isDisabledTapHandler => _tapDisableOwners.isNotEmpty;
+
+  void _clearTapDisableOwners() {
+    _tapDisableOwners.clear();
+  }
 
   /// Processes map tap events if no priority handler is set,
   /// including navigation and metrics logging.

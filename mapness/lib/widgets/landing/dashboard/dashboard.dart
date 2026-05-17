@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/widgets/arrow_dragger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -50,9 +50,8 @@ class Dashboard extends ConsumerStatefulWidget {
 // Using TickerProviderStateMixin here as SingleTickerProviderStateMixin throws,
 // probably because DashboardHeaderDelegate is recreated
 class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateMixin, WidgetsBindingObserver {
-  final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
-
   late FreeRoamStartState freeRoamState;
+  ThreeStateSheet? _lastMapControlsSheetState;
 
   StatefulSheetDelegateFunction<double, ThreeStateSheet> _buildOutsideOpacityDelegate(bool isMakkahTheme) {
     const threshold = 0.4;
@@ -141,7 +140,9 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
             config: config.logoConfig!,
             fireworksController: widget.fireworksController,
             onTap: () {
-              print('amr activeEvent $activeEvent');
+              if (kDebugMode) {
+                debugPrint('amr activeEvent $activeEvent');
+              }
               if (activeEvent == CityEventType.foundingDay) {
                 ref.read(foundingDayUrbiProvider.notifier).openThePlace();
               }
@@ -157,114 +158,52 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
           children: [
             Directionality(
               textDirection: Directionality.of(context),
-              child: ListenableBuilder(
-                listenable: widget.bottomSheetController,
-                builder: (context, child) => MultiStateSheet<ThreeStateSheet>(
-                  animateOpening: false,
-                  keepContentBehindFooter: true,
-                  useSafeArea: false,
-                  scrollController: widget.bottomSheetController,
-                  topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
-                  topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
-                  offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
+              child: MultiStateSheet<ThreeStateSheet>(
+                animateOpening: false,
+                keepContentBehindFooter: true,
+                useSafeArea: false,
+                scrollController: widget.bottomSheetController,
+                topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+                topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
+                offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
+                backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
+                dragger: SheetDragger(
                   backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                  dragger: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 450),
-                    transitionBuilder: (child, animation) => FadeTransition(
-                      opacity: animation,
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        child: child,
-                      ),
-                    ),
-                    child: widget.bottomSheetController.closestState == ThreeStateSheet.hidden
-                        ? ArrowDragger(
-                            key: const ValueKey('arrow'),
-                            backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                          )
-                        : SheetDragger(
-                            key: const ValueKey('line'),
-                            backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                          ),
-                  ),
-                  footer: IgnorePointer(
-                    child: SizedBox(
-                      height: Spacing.$16x + Spacing.$5x,
-                      width: double.infinity,
-                      child: FadeTransition(
-                        opacity: Animation.fromValueListenable(footerOpacity),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            backgroundBlendMode: BlendMode.srcOver,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                context.colors.gradientBackgroundSurface4opacity0,
-                                context.colors.gradientBackgroundSurface4opacity80,
-                              ],
-                            ),
-                          ),
+                ),
+                footer: IgnorePointer(
+                  child: SizedBox(
+                    height: Spacing.$16x + Spacing.$5x,
+                    width: double.infinity,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        backgroundBlendMode: BlendMode.srcOver,
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            context.colors.gradientBackgroundSurface4opacity0,
+                            context.colors.gradientBackgroundSurface4opacity80,
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  barrierColorDelegate: barrierColorDelegate,
-                  outside: MapDashboardControls(
-                    widget.bottomSheetController,
-                    key: const ValueKey('MapDashboardControls'),
-                  ),
-                  outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
-                  content: [
-                    _buildDashboardContent(specialThemeMode, themeConfig),
-                  ],
                 ),
+                barrierColorDelegate: barrierColorDelegate,
+                outside: MapDashboardControls(
+                  widget.bottomSheetController,
+                  key: const ValueKey('MapDashboardControls'),
+                ),
+                outsideOpacityDelegate: _buildOutsideOpacityDelegate(isMakkahTheme),
+                content: [
+                  _buildDashboardContent(specialThemeMode, themeConfig),
+                ],
               ),
             ),
             if (eventLogo != null)
-              AnimatedBuilder(
-                animation: widget.bottomSheetController,
-                builder: (context, snapshot) {
-                  final fraction = widget.bottomSheetController.fraction;
-                  // Direction-agnostic visibility windows:
-                  // Opening:  0.91 → 0.96  (becomes fully invisible at >= 0.96)
-                  // Closing:  0.19 → 0.11  (becomes fully invisible at <= 0.11)
-                  const double openStart = 0.91;
-                  const double openEnd = 0.96; // fully invisible here
-                  const double closeStart = 0.19;
-                  const double closeEnd = 0.11; // fully invisible here
-                  const double eps = 1e-6;
-
-                  // Compute shrink amount independently for both windows and take the stronger effect.
-                  final double openT = ((fraction - openStart) / (openEnd - openStart)).clamp(0.0, 1.0);
-                  final double closeT = ((closeStart - fraction) / (closeStart - closeEnd)).clamp(0.0, 1.0);
-                  final double shrink = max(openT, closeT); // 0.0..1.0
-                  double scaleValue = 1.0 - shrink; // 1.0..0.0
-
-                  // Hard clamp to 0 when we are beyond the full-invisible bounds.
-                  if (fraction >= openEnd - eps || fraction <= closeEnd + eps) {
-                    scaleValue = 0.0;
-                  }
-
-                  final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
-                    0.0,
-                    double.infinity,
-                  );
-                  return Positioned(
-                    bottom: _baseBottom,
-                    child: scaleValue <= 0.0
-                        ? const SizedBox.shrink()
-                        : Opacity(
-                            opacity: scaleValue,
-                            // fade together with scale to avoid subpixel artifacts
-                            child: Transform.scale(
-                              scale: scaleValue,
-                              alignment: Alignment.bottomCenter,
-                              child: eventLogo,
-                            ),
-                          ),
-                  );
-                },
+              Positioned(
+                bottom: (widget.bottomSheetController.sheetHeight + 50).clamp(0.0, double.infinity),
+                child: eventLogo,
               ),
           ],
         ),
@@ -273,10 +212,21 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
+    if (!mounted) {
+      return;
+    }
+
+    final sheetState = widget.bottomSheetController.state;
+    if (_lastMapControlsSheetState == sheetState) {
+      return;
+    }
+    _lastMapControlsSheetState = sheetState;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
+      if (!mounted || _lastMapControlsSheetState != sheetState) {
+        return;
+      }
+      if (sheetState != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
       } else {
         ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());

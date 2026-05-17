@@ -1,0 +1,14 @@
+{
+  "version": 1,
+
+  "overrides_by_data_type": {
+    "immersive_roads": {
+      "immersive_roads_loaded": true
+    }
+  },
+  "global_overrides_by_data_type": {
+    "immersive_roads": {
+      "immersive_roads_loaded": true
+    }
+  }
+}

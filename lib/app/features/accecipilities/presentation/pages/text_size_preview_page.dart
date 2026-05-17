@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 class TextSizePreviewPage extends StatefulWidget {
   const TextSizePreviewPage({super.key});
@@ -20,10 +20,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
   @override
   void initState() {
     super.initState();
-    final controller = Provider.of<AccessibilityController>(
-      context,
-      listen: false,
-    );
+    final controller = Provider.of<AccessibilityController>(context, listen: false);
     _fontSize = 16 * controller.textScale;
   }
 
@@ -35,7 +32,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
       backgroundColor: context.colors.backgroundSurface4,
 
       appBar: BaladyTopBar.iconAndText(
-        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         title: 'fontSize'.tr(),
         colorEnabled: context.colors.accentDefault,
         leading: ActionModel(
@@ -60,23 +57,13 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 'Main text will look like this.\n'
                 '1234567890!@#%&*()_+-=',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: _fontSize,
-                  height: 1.4,
-                  color: context.colors.foregroundDefault,
-                ),
+                style: TextStyle(fontSize: _fontSize, height: 1.4, color: context.colors.foregroundDefault),
               ),
             ),
             const SizedBox(height: 32),
             Row(
               children: [
-                Text(
-                  'A',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
+                Text('A', style: TextStyle(fontSize: 12, color: context.colors.foregroundDefault)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: SliderTheme(
@@ -86,13 +73,9 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                       inactiveTrackColor: context.colors.backgroundSurface1,
                       thumbColor: const Color(0xFF4DB6AC),
                       overlayColor: const Color(0xFF4DB6AC).withOpacity(0.15),
-                      tickMarkShape: const RoundSliderTickMarkShape(
-                        tickMarkRadius: 2,
-                      ),
+                      tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 2),
                       activeTickMarkColor: Colors.transparent,
-                      inactiveTickMarkColor: const Color(
-                        0xFF4DB6AC,
-                      ).withOpacity(0.4),
+                      inactiveTickMarkColor: const Color(0xFF4DB6AC).withOpacity(0.4),
                     ),
                     child: Slider(
                       value: _fontSize,
@@ -107,13 +90,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'A',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
+                Text('A', style: TextStyle(fontSize: 24, color: context.colors.foregroundDefault)),
               ],
             ),
             const Padding(

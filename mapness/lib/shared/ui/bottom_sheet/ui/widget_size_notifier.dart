@@ -30,7 +30,11 @@ class DgisRenderWidgetSizeNotifier extends RenderProxyBox {
     if (_oldSize != size) {
       _oldSize = size;
       WidgetsBinding.instance.addPostFrameCallback(
-        (_) => onSizeChanged(_oldSize),
+        (_) {
+          if (attached) {
+            onSizeChanged(_oldSize);
+          }
+        },
       );
     }
   }

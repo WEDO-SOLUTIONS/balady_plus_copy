@@ -181,18 +181,33 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     PersistentSafeAreaBottom.startObserving();
     ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        return;
+      }
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       // Init camera position point
       await initCameraPositionPoint();
+      if (!mounted) {
+        return;
+      }
       // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
       // restoreState();
       await clearCache();
+      if (!mounted) {
+        return;
+      }
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
       // Initialization of BSS and Search Region singleton services
       await _initBssService();
+      if (!mounted) {
+        return;
+      }
       await ref.read(initializeSearchRegionServiceProvider.future);
+      if (!mounted) {
+        return;
+      }
       unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
@@ -200,8 +215,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         track: track,
       );
       await AdvancedMetrics.instance.startMeasureBattery();
+      if (!mounted) {
+        return;
+      }
       await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
+      if (!mounted) {
+        return;
+      }
       await ref.read(foundingDayUrbiProvider.notifier).initializeGlobalMarker();
+      if (!mounted) {
+        return;
+      }
       final mapStyle = ref.read(activeCityEventProvider)?.stylePath;
 
       if (mapStyle != null) {
@@ -218,6 +242,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (!mounted) {
+        return;
+      }
       if (message != null && message.data.containsKey('url')) {
         final url = message.data['url'];
         openAppLink(url);
@@ -337,7 +364,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -356,7 +385,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarkerFoundingDay(WidgetRef ref) async {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(foundingDayUrbiProvider.notifier);
@@ -395,10 +426,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _themeChanged({bool isDark = false}) async {
+    if (!mounted) {
+      return;
+    }
+
     final themeController = context.read<ThemeController>();
     final baladyTheme = context.read<BaladyThemeNotifier>();
     final specialThemeMode = ref.read(specialThemeModeProvider);
-    debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
+    if (kDebugMode) {
+      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
+    }
     baladyTheme.toggleTheme(isDark);
     if (isDark) {
       await themeController.setTheme(BaladyAppThemes.dark);
@@ -431,8 +468,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(darkModeProvider, (prev, next) async {
-      _themeChanged(isDark: next.value?.isDark == true);
+    ref.listen(darkModeProvider, (prev, next) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _themeChanged(isDark: next.value?.isDark == true);
+      });
     });
 
     final language = ref.watch(appLanguageProvider);
@@ -445,7 +484,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // Track theme changes for analytics
     ref
       ..listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
-        debugPrint('[DarkThemeDebug] specialThemeMode transition prev=$prev next=$next');
+        if (kDebugMode) {
+          debugPrint('[DarkThemeDebug] specialThemeMode transition prev=$prev next=$next');
+        }
 
         if (prev == next) {
           return;
@@ -607,11 +648,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         '2d045d85e25087812e92c62b84d6fbc3',
         trackAutomaticEvents: true,
       );
-      mixpanel?.setLoggingEnabled(true);
+      mixpanel?.setLoggingEnabled(kDebugMode);
       logger.log('Mixpanel initialized successfully');
     } catch (e, stackTrace) {
-      logger.log('Error initializing Mixpanel: $e', logLevel: MapnessLogLevel.error);
-      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      logger
+        ..log('Error initializing Mixpanel: $e', logLevel: MapnessLogLevel.error)
+        ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     }
 
     try {
@@ -619,15 +661,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         enableAdvancedGestureRecognition: true,
         enableCrashHandling: true,
         enableMultiSessionRecord: true,
-        enableNetworkLogging: true,
+        enableNetworkLogging: kDebugMode,
         userAppKey: '2w1otnta9bvvhzo',
         enableAutomaticScreenNameTagging: false,
       );
       await FlutterUxcam.startWithConfiguration(config);
       logger.log('UXCam started with configuration');
     } catch (e, stackTrace) {
-      logger.log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error);
-      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      logger
+        ..log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error)
+        ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
       // Continue without UXCam - it's not critical for app functionality
     }
   }
@@ -647,9 +690,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
     _navigationEventsListener = dgisController.navigationEvents.listen((
       event,
     ) async {
+      if (!mounted) {
+        return;
+      }
       final segments = ref.read(appRouterProvider).currentSegments;
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
@@ -657,6 +706,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final isNavPage = currentRouteName == PathNavRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      if (!mounted) {
+        return;
+      }
       final isFreeroam = navigation && routeSearchOptions == null;
       if (navigation && !isFreeroam && !isNavPage) {
         await ref
@@ -696,8 +748,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       switch (type) {
         case InsiderCallbackAction.NOTIFICATION_OPEN:
           // if(Platform.isIOS) {
-          if (data != null && data.containsKey('url')) {
-            final url = Uri.parse(data['url']);
+          final payload = data is Map ? data : null;
+          final rawUrl = payload?['url'];
+          if (rawUrl is String) {
+            final url = Uri.parse(rawUrl);
             openAppLink(url);
             return;
           }
@@ -705,10 +759,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           //  }
           break;
         case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
-          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          _startupLog('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
           break;
         default:
-          print('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
+          _startupLog('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
           break;
       }
     });
@@ -1165,7 +1219,9 @@ Future<void> setupMapness(EnvType envType) async {
 Future<void> enableInsiderGeofenceAfterConsent() async {
   //! Ensure OS permissions
   final locationEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!locationEnabled) return;
+  if (!locationEnabled) {
+    return;
+  }
 
   LocationPermission perm = await Geolocator.checkPermission();
   if (perm == LocationPermission.denied) {
@@ -1190,6 +1246,12 @@ Future<void> enableInsiderGeofenceAfterConsent() async {
   await FlutterInsider.Instance.startTrackingGeofence();
 }
 
+void _startupLog(String message) {
+  if (kDebugMode) {
+    debugPrint(message);
+  }
+}
+
 Future<void> runMapnessApp(
   EnvType envType,
   FutureOr<void> Function() main,
@@ -1197,38 +1259,37 @@ Future<void> runMapnessApp(
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    print('runMapnessApp: Starting initialization...');
+    _startupLog('runMapnessApp: Starting initialization...');
     await initHive();
-    print('runMapnessApp: Hive initialized');
+    _startupLog('runMapnessApp: Hive initialized');
 
     final hostFlutterApi = _HostFlutterApi();
     HostFlutterApi.setUp(hostFlutterApi);
-    print('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
+    _startupLog('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
 
     await AppConfigLoader.init(envType);
-    print('runMapnessApp: AppConfigLoader initialized');
+    _startupLog('runMapnessApp: AppConfigLoader initialized');
 
     // Add timeout to prevent infinite waiting
     await hostFlutterApi.appRunCompleter.future.timeout(
       const Duration(seconds: 10),
       onTimeout: () {
-        print('runMapnessApp: WARNING - Timeout waiting for runMain() from native side');
+        _startupLog('runMapnessApp: WARNING - Timeout waiting for runMain() from native side');
         // Complete manually if timeout occurs (this might indicate the native side already called it)
         if (!hostFlutterApi.appRunCompleter.isCompleted) {
           hostFlutterApi.appRunCompleter.complete();
         }
       },
     );
-    print('runMapnessApp: runMain() received, proceeding to main()');
+    _startupLog('runMapnessApp: runMain() received, proceeding to main()');
 
     await main();
-    print('runMapnessApp: main() completed');
+    _startupLog('runMapnessApp: main() completed');
   } catch (e, stackTrace) {
-    print('runMapnessApp: ERROR - $e');
-    print('runMapnessApp: StackTrace - $stackTrace');
     try {
-      logger.log('Error in runMapnessApp: $e', logLevel: MapnessLogLevel.error);
-      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      logger
+        ..log('Error in runMapnessApp: $e', logLevel: MapnessLogLevel.error)
+        ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     } catch (_) {
       // Logger might not be initialized yet
     }
@@ -1238,22 +1299,21 @@ Future<void> runMapnessApp(
 
 Future<void> initHive() async {
   try {
-    print('initHive: Starting Hive initialization...');
+    _startupLog('initHive: Starting Hive initialization...');
     await Hive.initFlutter();
-    print('initHive: Hive.initFlutter() completed');
+    _startupLog('initHive: Hive.initFlutter() completed');
     Hive
       ..registerAdapter(SearchHistoryItemAdapter())
       ..registerAdapter(FavoriteCacheItemAdapter())
       ..registerAdapter(HiveCoordinatesAdapter())
       ..registerAdapter(HiveFavouriteItemEntityAdapter())
       ..registerAdapter(FavoriteCacheStateAdapter());
-    print('initHive: All adapters registered');
+    _startupLog('initHive: All adapters registered');
   } catch (e, stackTrace) {
-    print('initHive: ERROR - $e');
-    print('initHive: StackTrace - $stackTrace');
     try {
-      logger.log('Error initializing Hive: $e', logLevel: MapnessLogLevel.error);
-      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      logger
+        ..log('Error initializing Hive: $e', logLevel: MapnessLogLevel.error)
+        ..log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
     } catch (_) {
       // Logger might not be initialized yet
     }
@@ -1276,13 +1336,13 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void runMain() {
-    print('_HostFlutterApi.runMain() called from native side');
+    _startupLog('_HostFlutterApi.runMain() called from native side');
     isAppRun = true;
     if (!appRunCompleter.isCompleted) {
       appRunCompleter.complete();
-      print('_HostFlutterApi.runMain() - completer completed');
+      _startupLog('_HostFlutterApi.runMain() - completer completed');
     } else {
-      print('_HostFlutterApi.runMain() - completer already completed');
+      _startupLog('_HostFlutterApi.runMain() - completer already completed');
     }
   }
 

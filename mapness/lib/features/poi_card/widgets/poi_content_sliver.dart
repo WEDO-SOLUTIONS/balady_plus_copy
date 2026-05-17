@@ -259,7 +259,10 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               ),
             ),
-            AiSummarySection(poiId: data.id!.objectId.toString()),
+            AiSummarySection(
+              poiId: data.id!.objectId.toString(),
+              objectTypes: data.types.map((t) => t.type).toList(growable: false),
+            ),
             if (shouldShowMakkahPreview)
               Padding(
                 padding: const EdgeInsets.only(bottom: Spacing.$3x),

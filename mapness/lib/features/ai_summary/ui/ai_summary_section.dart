@@ -1,5 +1,7 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/ai_summary/domain/ai_summary_scope.dart';
 import 'package:mapness/features/ai_summary/state/ai_summary_notifier.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_card.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -23,10 +25,19 @@ import 'package:mapness/shared/providers/app_language.dart';
 class AiSummarySection extends ConsumerWidget {
   final String poiId;
 
-  const AiSummarySection({required this.poiId, super.key});
+  /// Object types of the POI being shown. The section is rendered only if
+  /// at least one of them is in [aiSummaryAllowedObjectTypes] (OR semantics).
+  /// Off-scope POIs short-circuit before watching the notifier, so neither
+  /// the network fetch nor a skeleton ever appears for them.
+  final List<ObjectTypeMessage> objectTypes;
+
+  const AiSummarySection({required this.poiId, required this.objectTypes, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    if (!isAiSummaryAllowed(objectTypes)) {
+      return const SizedBox.shrink();
+    }
     final language = ref.watch(appLanguageProvider);
     final state = ref.watch(aiSummaryProvider(poiId, language));
 
@@ -38,9 +49,8 @@ class AiSummarySection extends ConsumerWidget {
     debugPrint('[AiSummaryDebug] section.build poi=$poiId locale=${language.languageCode} state=$stateLabel');
 
     return state.when(
-      data: (summary) => summary == null
-          ? const SizedBox.shrink()
-          : AiSummaryCard(summary: summary, language: language),
+      data: (summary) =>
+          summary == null ? const SizedBox.shrink() : AiSummaryCard(summary: summary, language: language),
       loading: () => AiSummaryCard.skeleton(language: language),
       error: (_, __) => const SizedBox.shrink(),
     );
