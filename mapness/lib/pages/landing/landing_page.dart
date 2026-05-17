@@ -232,12 +232,8 @@ class _LandingPageState extends ConsumerState<LandingPage>
       ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier)
       ..watch(activeCityEventProvider);
 
-    if (_routeCovered) {
-      return const SizedBox.shrink();
-    }
-
     final confettiConfig = getConfettiConfig(context);
-    return HajjWrapperListeners(
+    final content = HajjWrapperListeners(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: context.watch<ThemeController>().systemOverlayStyle,
         child: Directionality(
@@ -272,6 +268,17 @@ class _LandingPageState extends ConsumerState<LandingPage>
               ],
             ),
           ),
+        ),
+      ),
+    );
+
+    return Offstage(
+      offstage: _routeCovered,
+      child: TickerMode(
+        enabled: !_routeCovered,
+        child: IgnorePointer(
+          ignoring: _routeCovered,
+          child: content,
         ),
       ),
     );
