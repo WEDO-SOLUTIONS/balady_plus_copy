@@ -16,7 +16,7 @@ class AuthMethods extends _$AuthMethods {
   static StreamSubscription<EntryPointState>? _authSubscription;
 
   Timer? _loginScreenPoppedSubscription;
-  void _initializeLoginScreenPoppedSubscription() {
+  void _initializeLoginScreenPoppedSubscription({VoidCallback? onPopped}) {
     _loginScreenPoppedSubscription?.cancel();
     _loginScreenPoppedSubscription = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (BaladyRouteObserver.loginScreenPopped) {
@@ -24,6 +24,7 @@ class AuthMethods extends _$AuthMethods {
         _authSubscription = null;
         _loginScreenPoppedSubscription?.cancel();
         _loginScreenPoppedSubscription = null;
+        onPopped?.call();
       }
     });
   }
@@ -33,7 +34,7 @@ class AuthMethods extends _$AuthMethods {
 
   Future<void> authOrOpen(
     BuildContext context, {
-    VoidCallback? callback,
+    FutureOr<void> Function()? callback,
   }) async {
     if (!state) {
       if (context.mounted) {
@@ -43,40 +44,73 @@ class AuthMethods extends _$AuthMethods {
     }
 
     if (state) {
-      callback?.call();
+      await callback?.call();
     }
   }
 
   Future<void> authAndOpen(
     BuildContext context, {
-    VoidCallback? callback,
+    FutureOr<void> Function()? callback,
   }) async {
     await _authSubscription?.cancel();
     _loginScreenPoppedSubscription?.cancel();
     if (!state) {
-      if (context.mounted) {
-        Metrics.logEventAdvanced(
-          MetricsConstants.loginKeys.signIn,
-          group: MetricsConstants.loginTag,
-          action: MetricAction.tap.toString(),
-        );
+      if (!context.mounted) {
+        return;
+      }
 
-        await ref.read(authProvider.notifier).doAuth();
-        if (!context.mounted) {
+      final completion = Completer<void>();
+      var callbackStarted = false;
+      Future<void> runCallback() async {
+        if (callbackStarted) {
           return;
         }
+        callbackStarted = true;
+        state = CommonProperties.isLoggedIn;
+        try {
+          await callback?.call();
+        } finally {
+          await _authSubscription?.cancel();
+          _authSubscription = null;
+          _loginScreenPoppedSubscription?.cancel();
+          _loginScreenPoppedSubscription = null;
+          if (!completion.isCompleted) {
+            completion.complete();
+          }
+        }
+      }
+
+      Metrics.logEventAdvanced(
+        MetricsConstants.loginKeys.signIn,
+        group: MetricsConstants.loginTag,
+        action: MetricAction.tap.toString(),
+      );
+
+      await ref.read(authProvider.notifier).doAuth();
+      if (!context.mounted) {
+        return;
+      }
+
+      if (CommonProperties.isLoggedIn) {
+        await runCallback();
+        return;
       }
 
       _authSubscription = CommonProperties.userStateStream.listen((event) {
         if (event.userInfo != null) {
-          callback?.call();
-          state = CommonProperties.isLoggedIn;
-          _authSubscription?.cancel();
+          unawaited(runCallback());
         }
       });
-      _initializeLoginScreenPoppedSubscription();
+      _initializeLoginScreenPoppedSubscription(
+        onPopped: () {
+          if (!completion.isCompleted) {
+            completion.complete();
+          }
+        },
+      );
+      await completion.future;
     } else {
-      callback?.call();
+      await callback?.call();
     }
   }
 }

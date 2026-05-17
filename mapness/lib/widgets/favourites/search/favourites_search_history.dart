@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -83,11 +81,11 @@ class FavouritesSearchHistory extends ConsumerWidget {
 
             final favItem = object.mapToFavourite();
             final repo = ref.read(favouriteCacheProvider.notifier);
-            unawaited(switch (markerType) {
+            await switch (markerType) {
               FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
               FavouriteItemMarkerType.home => repo.setHome(favItem),
               FavouriteItemMarkerType.work => repo.setWork(favItem),
-            });
+            };
             await sendHistoryTapEvent(item, index, historyList);
             if (context.mounted && context.router.canPop()) {
               context.router.pop(favItem);
