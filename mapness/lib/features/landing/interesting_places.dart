@@ -22,7 +22,9 @@ class InterestingPlaces extends _$InterestingPlaces {
   @override
   Future<List<InterestingPlace>> build() async {
     state = const AsyncValue.loading();
-    ref.onDispose(() => _cancelToken?.cancel('interestingPlacesProvider disposed'));
+    ref.onDispose(() {
+      _cancelActiveRequest('interestingPlacesProvider disposed');
+    });
 
     final dio = await ref.watch(dGisNetworkProvider.future);
     if (!ref.mounted) {
@@ -36,13 +38,20 @@ class InterestingPlaces extends _$InterestingPlaces {
     ref.onDispose(subscription.cancel);
 
     await _update(dio);
+    if (!ref.mounted) {
+      return const [];
+    }
     return state.value ?? [];
   }
 
   Future<void> _update(Dio dio, [VisibleRect? rect]) async {
+    if (!ref.mounted) {
+      return;
+    }
+
     final requestId = ++_requestId;
     final polygon = rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
-    _cancelToken?.cancel('Superseded by a newer interesting places request');
+    _cancelActiveRequest('Superseded by a newer interesting places request');
     final cancelToken = CancelToken();
     _cancelToken = cancelToken;
     final data = await _fetch(dio, polygon, cancelToken);
@@ -50,6 +59,14 @@ class InterestingPlaces extends _$InterestingPlaces {
       return;
     }
     state = AsyncValue.data(data);
+  }
+
+  void _cancelActiveRequest(String reason) {
+    final cancelToken = _cancelToken;
+    _cancelToken = null;
+    if (cancelToken != null && !cancelToken.isCancelled) {
+      cancelToken.cancel(reason);
+    }
   }
 
   Future<List<InterestingPlace>> _fetch(Dio dio, [gb.Polygon? polygon, CancelToken? cancelToken]) async {
@@ -66,7 +83,7 @@ class InterestingPlaces extends _$InterestingPlaces {
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {
       if (error is DioException && CancelToken.isCancel(error)) {
-        return state.value ?? [];
+        return const [];
       }
       return [];
     }

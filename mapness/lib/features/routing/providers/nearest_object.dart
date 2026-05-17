@@ -30,22 +30,31 @@ class _NearestObject extends _$NearestObject {
 
   @override
   Future<NearestObject> build() async {
+    final cameraPadding = ref.read(cameraPaddingProvider.notifier);
     ref
       ..onDispose(() {
-        ref.read(cameraPaddingProvider.notifier).resetPadding();
+        _loadOperation?.cancel();
+        cameraPadding.resetPadding();
       })
       ..listen(cameraStateProvider, (prev, next) {
         if (next == CameraState.free) {
-          _load().then((value) => state = value);
+          _load().then((value) {
+            if (!ref.mounted) {
+              return;
+            }
+            state = value;
+          });
         } else {
           _loadOperation?.cancel();
-          state = const AsyncValue.loading();
+          if (ref.mounted) {
+            state = const AsyncValue.loading();
+          }
         }
       });
 
     final nearest = await _load();
 
-    return nearest.value!;
+    return nearest.requireValue;
   }
 
   Future<AsyncValue<NearestObject>> _load() {
@@ -58,7 +67,13 @@ class _NearestObject extends _$NearestObject {
 
   Future<AsyncValue<NearestObject>> _loadNearest() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!ref.mounted) {
+      return AsyncValue.error(StateError('nearestObjectProvider disposed'), StackTrace.current);
+    }
     final objects = await dgisController.getNearestObjects();
+    if (!ref.mounted) {
+      return AsyncValue.error(StateError('nearestObjectProvider disposed'), StackTrace.current);
+    }
     final dgisObjects = Stream.fromIterable(objects).asyncMap(
       (e) async => (e, await dgisController.searchByObjectId(e.objectId)),
     );
@@ -67,8 +82,12 @@ class _NearestObject extends _$NearestObject {
           (element) => element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv,
         )
         .toList();
+    if (!ref.mounted) {
+      return AsyncValue.error(StateError('nearestObjectProvider disposed'), StackTrace.current);
+    }
     if (filteredObjects.isEmpty) {
-      if (ref.read(cameraPositionProvider) == null) {
+      final cameraPosition = ref.read(cameraPositionProvider);
+      if (cameraPosition == null) {
         return AsyncValue.error(
           'No suitable objects found',
           StackTrace.current,
@@ -77,7 +96,7 @@ class _NearestObject extends _$NearestObject {
 
       return AsyncValue.data(
         CooridnatesNearestObject(
-          ref.read(cameraPositionProvider)!.point,
+          cameraPosition.point,
         ),
       );
     }

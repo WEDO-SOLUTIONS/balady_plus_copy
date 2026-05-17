@@ -29,6 +29,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final ValueNotifier<PoiCardBottomSheetState> _stateNotifier;
 
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController;
+  late final VoidCallback _bottomSheetControllerListener;
 
   /// Tracks whether the AI Summary fetch has already been kicked
   /// off for this POI. The spec says the request fires exactly
@@ -111,52 +112,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       );
     });
 
-    _bottomSheetController.addListener(() {
-      final isInitial = _bottomSheetPreviousState == null;
-      final state = _bottomSheetController.state;
-      if (state == _bottomSheetPreviousState) {
-        return;
-      }
-      _bottomSheetPreviousState = state;
-      _stateNotifier.value = state;
-
-      // Kick off the AI summary fetch as soon as the sheet leaves
-      // the preview states (hidden / halfOpen) — i.e. when the
-      // card is visually "expanded" per the spec. The enum has
-      // two such states (open, expanded) because of the snapping
-      // ladder; either one shows the detail content, so both
-      // should trigger the request. Runs for the initial
-      // transition too, covering the deep-link case.
-      if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
-        _maybeTriggerAiSummary();
-      }
-
-      if (!isInitial) {
-        BssUIElementNames? uiElementName;
-        switch (state) {
-          case PoiCardBottomSheetState.hidden:
-            uiElementName = BssUIElementNames.placeCardHidden;
-            // Show Makkah place markers again when POI card is hidden
-            // ignore: avoid_print
-            print('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
-            ref.read(regularPoiActiveProvider.notifier).setActive(false);
-          case PoiCardBottomSheetState.open:
-            uiElementName = BssUIElementNames.placeCardTwoThird;
-          case PoiCardBottomSheetState.expanded:
-            uiElementName = BssUIElementNames.placeCardFull;
-          case PoiCardBottomSheetState.halfOpen:
-            uiElementName = BssUIElementNames.placeCardOneThird;
-        }
-
-        BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.view,
-            uiElement: BssUIElement(name: uiElementName, ownerName: BssUIElementNames.directoryObjectCardScreen),
-            payload: BssPayload(placeItem: widget.data.toBss()),
-          ),
-        );
-      }
-    });
+    _bottomSheetControllerListener = _handleBottomSheetControllerChanged;
+    _bottomSheetController.addListener(_bottomSheetControllerListener);
 
     Future.delayed(const Duration(milliseconds: 250), () {
       // Fix bug with Exception when calling ref after dispose
@@ -186,8 +143,61 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     _tabController.dispose();
     _tabType.dispose();
     _stateNotifier.dispose();
-    _bottomSheetController.dispose();
+    _bottomSheetController
+      ..removeListener(_bottomSheetControllerListener)
+      ..dispose();
     super.dispose();
+  }
+
+  void _handleBottomSheetControllerChanged() {
+    if (!mounted) {
+      return;
+    }
+
+    final isInitial = _bottomSheetPreviousState == null;
+    final state = _bottomSheetController.state;
+    if (state == _bottomSheetPreviousState) {
+      return;
+    }
+    _bottomSheetPreviousState = state;
+    _stateNotifier.value = state;
+
+    // Kick off the AI summary fetch as soon as the sheet leaves
+    // the preview states (hidden / halfOpen) — i.e. when the
+    // card is visually "expanded" per the spec. The enum has
+    // two such states (open, expanded) because of the snapping
+    // ladder; either one shows the detail content, so both
+    // should trigger the request. Runs for the initial
+    // transition too, covering the deep-link case.
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+      _maybeTriggerAiSummary();
+    }
+
+    if (!isInitial) {
+      BssUIElementNames? uiElementName;
+      switch (state) {
+        case PoiCardBottomSheetState.hidden:
+          uiElementName = BssUIElementNames.placeCardHidden;
+          if (kDebugMode) {
+            logger.log('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
+          }
+          ref.read(regularPoiActiveProvider.notifier).setActive(false);
+        case PoiCardBottomSheetState.open:
+          uiElementName = BssUIElementNames.placeCardTwoThird;
+        case PoiCardBottomSheetState.expanded:
+          uiElementName = BssUIElementNames.placeCardFull;
+        case PoiCardBottomSheetState.halfOpen:
+          uiElementName = BssUIElementNames.placeCardOneThird;
+      }
+
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(name: uiElementName, ownerName: BssUIElementNames.directoryObjectCardScreen),
+          payload: BssPayload(placeItem: widget.data.toBss()),
+        ),
+      );
+    }
   }
 
   /// Kick off the AI summary fetch on the first expand for this
