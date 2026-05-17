@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -52,11 +50,11 @@ class FavouritesSuggestList extends ConsumerWidget {
         final favItem = object.mapToFavourite();
         FocusManager.instance.primaryFocus?.unfocus();
         final repo = ref.read(favouriteCacheProvider.notifier);
-        unawaited(switch (markerType) {
+        await switch (markerType) {
           FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => repo.addItem(favItem),
           FavouriteItemMarkerType.home => repo.setHome(favItem),
           FavouriteItemMarkerType.work => repo.setWork(favItem),
-        });
+        };
         if (context.mounted && context.router.canPop()) {
           context.router.pop(favItem);
         }
