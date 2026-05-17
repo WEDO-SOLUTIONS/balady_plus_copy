@@ -36,7 +36,7 @@ on:
 jobs:
   build:
     name: Build Android (manual or PR merged)
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: ubuntu-latest # [self-hosted, macOS, ARM64]
     timeout-minutes: 60
 
     # For PR: run only when merged. For manual: always.
