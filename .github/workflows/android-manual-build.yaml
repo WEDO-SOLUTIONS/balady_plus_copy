@@ -142,9 +142,15 @@ jobs:
         with:
           just-version: "1.25.2"
 
+      - name: Install Localazy CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/localazy/cli/master/install.sh | sudo bash
+
       - name: "Prebuild"
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+          LOCALAZY_READ_KEY: ${{ secrets.LOCALAZY_READ_KEY }}
+          LOCALAZY_WRITE_KEY: ${{ secrets.LOCALAZY_WRITE_KEY }}
         run: |
           just locale_gen
 
