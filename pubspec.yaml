@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.3+565
+version: 3.30.3+567
 #version: 3.13.0+447
 
 environment:
@@ -200,7 +200,7 @@ dependencies:
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.0.9
+    version: ^1.0.12
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
