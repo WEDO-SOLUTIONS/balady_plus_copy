@@ -42,7 +42,7 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
               padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
               child: widget.maneuverAndLimitWidget,
             ),
-            const SizedBox(height: 24),
+             const SizedBox(height: uikit.Spacing.$6x),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(

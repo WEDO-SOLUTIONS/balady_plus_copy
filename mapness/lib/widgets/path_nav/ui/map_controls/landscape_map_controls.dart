@@ -43,7 +43,7 @@ class _LandscapeLayout extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   maneuverAndLimitWidget,
-                  const SizedBox(height: 24),
+                  const SizedBox(height: uikit.Spacing.$6x),
                   const SoundControl(),
                   const Spacer(),
                   ValueListenableBuilder(

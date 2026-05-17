@@ -172,7 +172,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                   padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                   child: ManeuverWidget(),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: uikit.Spacing.$6x),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
