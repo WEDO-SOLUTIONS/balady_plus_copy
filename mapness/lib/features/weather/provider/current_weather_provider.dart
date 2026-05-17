@@ -18,17 +18,30 @@ class _CurrentWeather extends _$CurrentWeather {
     final cancelToken = CancelToken();
 
     Future<void> listener(CameraPositionMessage event) async {
+      if (!ref.mounted || cancelToken.isCancelled) {
+        return;
+      }
       final latitude = event.point.latitude;
       final longitude = event.point.longitude;
 
-      final result = await repository.getForecastWeather(
-        latitude: latitude,
-        longitude: longitude,
-        numberOfDays: 1,
-        cancelToken: cancelToken,
-      );
+      try {
+        final result = await repository.getForecastWeather(
+          latitude: latitude,
+          longitude: longitude,
+          numberOfDays: 1,
+          cancelToken: cancelToken,
+        );
 
-      state = result;
+        if (!ref.mounted || cancelToken.isCancelled) {
+          return;
+        }
+        state = result;
+      } on DioException catch (error) {
+        if (cancelToken.isCancelled || CancelToken.isCancel(error)) {
+          return;
+        }
+        rethrow;
+      }
     }
 
     final subscription = controller?.cameraPositionEvents.debounceTime(const Duration(seconds: 1)).listen(listener);

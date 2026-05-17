@@ -15,11 +15,15 @@ class SearchInRect extends _$SearchInRect {
   SearchInRectState build(String scope) {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
-    final subscription =
-        dgisController?.visibleRectEvents.debounceTime(const Duration(milliseconds: 300)).listen((event) async {
+    final subscription = dgisController?.visibleRectEvents.debounceTime(const Duration(milliseconds: 300)).listen((
+      event,
+    ) async {
+      if (!ref.mounted) {
+        return;
+      }
       _setDefaultValue(event);
 
-      final isSearchRunning = ref.watch(searchProvider(scope).notifier).isSearchRunning;
+      final isSearchRunning = ref.read(searchProvider(scope).notifier).isSearchRunning;
       if (!isSearchRunning) {
         state = SearchInRectState(
           rect: event.visibleRect.geoRectMessage(),
@@ -27,11 +31,12 @@ class SearchInRect extends _$SearchInRect {
         );
       } else {
         state = SearchInRectState(
-            rect: state.rect,
-            isButtonVisible: _buttonVisible(
-              state.rect,
-              event.visibleRect.geoRectMessage(),
-            ));
+          rect: state.rect,
+          isButtonVisible: _buttonVisible(
+            state.rect,
+            event.visibleRect.geoRectMessage(),
+          ),
+        );
       }
     });
     ref.onDispose(() {
@@ -45,7 +50,7 @@ class SearchInRect extends _$SearchInRect {
   }
 
   void _setDefaultValue(VisibleRectEvent event) {
-    if (state.rect == null) {
+    if (ref.mounted && state.rect == null) {
       state = SearchInRectState(
         rect: event.visibleRect.geoRectMessage(),
         isButtonVisible: state.isButtonVisible,
@@ -54,6 +59,9 @@ class SearchInRect extends _$SearchInRect {
   }
 
   void update() {
+    if (!ref.mounted) {
+      return;
+    }
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     state = SearchInRectState(
@@ -63,6 +71,9 @@ class SearchInRect extends _$SearchInRect {
   }
 
   void searchInThisAreaSwitch({required bool value}) {
+    if (!ref.mounted) {
+      return;
+    }
     state = state.copyWith(isSearchInThisAreaRequest: value);
   }
 
@@ -73,7 +84,8 @@ class SearchInRect extends _$SearchInRect {
     }
 
     // Check if the new rectangle is entirely within the old rectangle
-    final bool isNextInsidePrev = newRect.northEast.latitude <= oldRect.northEast.latitude &&
+    final bool isNextInsidePrev =
+        newRect.northEast.latitude <= oldRect.northEast.latitude &&
         newRect.northEast.longitude <= oldRect.northEast.longitude &&
         newRect.southWest.latitude >= oldRect.southWest.latitude &&
         newRect.southWest.longitude >= oldRect.southWest.longitude;

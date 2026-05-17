@@ -23,6 +23,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -118,46 +119,91 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final locationLabel = context.l10n.myLocation;
     final homeLabel = context.l10n.home;
     final router = ref.read(appRouterProvider);
+    dashboardFreezeTrace(
+      'DriveBack tap mounted=$mounted sheetState=${widget.bottomSheetController.state} '
+      'closest=${widget.bottomSheetController.closestState} enabled=${widget.bottomSheetController.isEnabled} '
+      'positions=${widget.bottomSheetController.positions.length}',
+    );
 
     debouncer.debounce(
-      () async => ref
-          .read(authMethodsProvider.notifier)
-          .authAndOpen(
-            context,
-            callback: () async => authAndOpenNavigator(
-              ref,
-              router,
-              locationLabel,
-              homeLabel,
-            ),
-          ),
+      () async {
+        dashboardFreezeTrace('DriveBack debounce fired mounted=$mounted');
+        hideLandingSheet();
+        await waitForLandingSheetToSettle();
+        if (!mounted || !context.mounted) {
+          dashboardFreezeTrace(
+            'DriveBack stopped before authAndOpen: mounted=$mounted contextMounted=${context.mounted}',
+          );
+          return;
+        }
+        dashboardFreezeTrace('DriveBack authAndOpen start after sheet settle mounted=$mounted');
+        await ref
+            .read(authMethodsProvider.notifier)
+            .authAndOpen(
+              context,
+              callback: () async => authAndOpenNavigator(
+                ref,
+                router,
+                locationLabel,
+                homeLabel,
+              ),
+            );
+        dashboardFreezeTrace('DriveBack authAndOpen returned mounted=$mounted');
+      },
     );
   }
 
   Future<void> authAndOpenNavigator(WidgetRef ref, StackRouter router, String locationLabel, String homeLabel) async {
+    dashboardFreezeTrace('DriveBack authAndOpenNavigator start mounted=$mounted');
+
     /// Force update authProvider when the user was not authenticated to get relavant favorites.
     final isAuth = ref.read(authProvider).value != null;
+    dashboardFreezeTrace('DriveBack isAuth=$isAuth mounted=$mounted');
     if (!isAuth) {
       await ref.read(authProvider.notifier).forceUpdate();
+      if (!mounted) {
+        dashboardFreezeTrace('DriveBack stopped after forceUpdate: unmounted');
+        return;
+      }
     }
 
     final home = await getHome(router);
+    if (!mounted) {
+      dashboardFreezeTrace('DriveBack stopped after getHome: unmounted');
+      return;
+    }
+    dashboardFreezeTrace('DriveBack getHome result=${home != null}');
 
     /// If no home, exit from the function and not openning navigator to driving back home.
     if (home == null) {
+      dashboardFreezeTrace('DriveBack stopped: home=null');
       return;
     }
 
     /// If no navigation points, exit from the function and not openning navigator to driving back home.
     final locations = getNavigationPoints(home);
     if (locations == null) {
+      dashboardFreezeTrace('DriveBack stopped: locations=null');
       return;
     }
 
     final (startLocation, finishLocation) = locations;
 
+    hideLandingSheet();
+    await waitForLandingSheetToSettle();
+    if (!mounted) {
+      dashboardFreezeTrace('DriveBack stopped after sheet settle: unmounted');
+      return;
+    }
+
     await setupMap(ref);
+    if (!mounted) {
+      dashboardFreezeTrace('DriveBack stopped after setupMap: unmounted');
+      return;
+    }
+    dashboardFreezeTrace('DriveBack push route start');
     await openNavigation(router, locationLabel, homeLabel, startLocation, finishLocation);
+    dashboardFreezeTrace('DriveBack push route completed');
   }
 
   Future<FavouriteItem?> getHome(StackRouter router) async {
@@ -167,13 +213,20 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
     /// If there is no home ask user to add it.
     if (home == null) {
+      dashboardFreezeTrace('DriveBack no home: open favourites search');
       hideLandingSheet();
+      await waitForLandingSheetToSettle();
+      if (!mounted) {
+        dashboardFreezeTrace('DriveBack no home stopped after sheet settle: unmounted');
+        return null;
+      }
       final selectedHome = await router.push<FavouriteItem>(
         FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home),
       );
       if (selectedHome != null) {
         await Future<void>.delayed(const Duration(milliseconds: 200));
       }
+      dashboardFreezeTrace('DriveBack favourites search result=${selectedHome != null}');
       return selectedHome;
     }
     return home;
@@ -221,10 +274,23 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   );
 
   void hideLandingSheet() {
+    dashboardFreezeTrace(
+      'DriveBack hideLandingSheet before state=${widget.bottomSheetController.state} '
+      'closest=${widget.bottomSheetController.closestState}',
+    );
     if (widget.bottomSheetController.closestState != ThreeStateSheet.hidden) {
-      widget.bottomSheetController.setState(ThreeStateSheet.hidden);
+      widget.bottomSheetController.setState(
+        ThreeStateSheet.hidden,
+        duration: const Duration(milliseconds: 1),
+      );
     }
+    dashboardFreezeTrace(
+      'DriveBack hideLandingSheet after state=${widget.bottomSheetController.state} '
+      'closest=${widget.bottomSheetController.closestState}',
+    );
   }
+
+  Future<void> waitForLandingSheetToSettle() => Future<void>.delayed(const Duration(milliseconds: 32));
 
   Future<void> setupMap(WidgetRef ref) async {
     final mapSetting = MapObjectManagerSettings.search();

@@ -19,6 +19,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,8 @@ class LandingPage extends ConsumerStatefulWidget {
   ConsumerState<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver, TickerProviderStateMixin {
+class _LandingPageState extends ConsumerState<LandingPage>
+    with WidgetsBindingObserver, TickerProviderStateMixin, AutoRouteAwareStateMixin<LandingPage> {
   late final bottomSheetController = ref.read(bottomSheetControllerProvider.notifier).state.controller;
 
   ThreeStateSheet? get bottomSheetState => bottomSheetController?.state;
@@ -63,26 +65,44 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   // Only first time when sheet is open
   bool _sheetExpanded = false;
+  bool _routeCovered = false;
+  bool _sheetOverlayVisible = false;
+  ThreeStateSheet? _lastTracedSheetState;
+  ThreeStateSheet? _lastTracedClosestSheetState;
 
   @override
   void initState() {
     super.initState();
+    dashboardFreezeTrace('LandingPage initState hash=$hashCode');
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
+    _sheetOverlayVisible = bottomSheetState != ThreeStateSheet.hidden;
     bottomSheetController?.addListener(_bottomsheetListener);
+    _traceSheet('init');
 
     _setupTapListener();
   }
 
   Future<void> _setupTapListener() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       _calculatePadding();
     });
   }
 
   void _calculatePadding() {
+    final bottomSheetController = this.bottomSheetController;
+    if (!mounted || bottomSheetController == null) {
+      return;
+    }
+
     ref
         .read(cameraPaddingProvider.notifier)
         .resetPadding(
@@ -90,15 +110,23 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: bottomSheetController!.sheetHeight.toInt(),
+            bottomPadding: bottomSheetController.sheetHeight.toInt(),
           ),
         );
   }
 
   void _bottomsheetListener() {
+    final state = bottomSheetController?.state;
+    final closestState = bottomSheetController?.closestState;
+    if (state != _lastTracedSheetState || closestState != _lastTracedClosestSheetState) {
+      _lastTracedSheetState = state;
+      _lastTracedClosestSheetState = closestState;
+      _traceSheet('sheet-listener');
+    }
+
     if (bottomSheetController?.state == ThreeStateSheet.expanded && !_sheetExpanded) {
       _sheetExpanded = true;
-      final isFoundingDayToday = ref.watch(foundingDayUrbiProvider);
+      final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
       if (isFoundingDayToday) {
         confettiController
           ..value = 0
@@ -106,16 +134,69 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       }
     }
 
+    _syncSheetOverlayVisibility();
     _calculatePadding();
   }
 
   @override
   void dispose() {
+    dashboardFreezeTrace('LandingPage dispose hash=$hashCode');
+    _traceSheet('dispose');
     bottomSheetController?.removeListener(_bottomsheetListener);
 
     WidgetsBinding.instance.removeObserver(this);
+    confettiController.dispose();
 
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    dashboardFreezeTrace('LandingPage didPushNext hash=$hashCode');
+    _setRouteCovered(true);
+  }
+
+  @override
+  void didPopNext() {
+    dashboardFreezeTrace('LandingPage didPopNext hash=$hashCode');
+    _setRouteCovered(false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _calculatePadding();
+      }
+    });
+  }
+
+  void _setRouteCovered(bool value) {
+    if (_routeCovered == value || !mounted) {
+      return;
+    }
+
+    dashboardFreezeTrace('LandingPage routeCovered $_routeCovered -> $value hash=$hashCode');
+    setState(() {
+      _routeCovered = value;
+      if (!value) {
+        _sheetOverlayVisible = bottomSheetState != ThreeStateSheet.hidden;
+      }
+    });
+  }
+
+  void _syncSheetOverlayVisibility() {
+    if (!mounted || _routeCovered) {
+      return;
+    }
+
+    final isVisible = bottomSheetState != ThreeStateSheet.hidden;
+    if (_sheetOverlayVisible == isVisible) {
+      return;
+    }
+
+    dashboardFreezeTrace(
+      'LandingPage overlay $_sheetOverlayVisible -> $isVisible routeCovered=$_routeCovered hash=$hashCode',
+    );
+    setState(() {
+      _sheetOverlayVisible = isVisible;
+    });
   }
 
   @override
@@ -151,6 +232,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier)
       ..watch(activeCityEventProvider);
 
+    if (_routeCovered) {
+      return const SizedBox.shrink();
+    }
+
     final confettiConfig = getConfettiConfig(context);
     return HajjWrapperListeners(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -161,20 +246,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             type: MaterialType.transparency,
             child: Stack(
               children: [
-                ListenableBuilder(
-                  listenable: bottomSheetController!,
-                  builder: (_, __) {
-                    if (bottomSheetController?.state == ThreeStateSheet.hidden) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return GestureDetector(
+                if (_sheetOverlayVisible)
+                  Positioned.fill(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTapDown: (_) => _hideBottomSheet(),
                       onTapUp: (_) => _hideBottomSheet(),
                       onTap: _hideBottomSheet,
-                    );
-                  },
-                ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(top: Spacing.$3x),
                   child: Dashboard(
@@ -198,8 +278,26 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _hideBottomSheet() {
+    _traceSheet('hideBottomSheet-before');
     if (bottomSheetState != ThreeStateSheet.hidden) {
       bottomSheetController?.setState(ThreeStateSheet.hidden);
     }
+    _syncSheetOverlayVisibility();
+    _traceSheet('hideBottomSheet-after');
+  }
+
+  void _traceSheet(String event) {
+    final controller = bottomSheetController;
+    if (controller == null) {
+      dashboardFreezeTrace('LandingPage $event controller=null mounted=$mounted hash=$hashCode');
+      return;
+    }
+
+    dashboardFreezeTrace(
+      'LandingPage $event mounted=$mounted routeCovered=$_routeCovered overlay=$_sheetOverlayVisible '
+      'enabled=${controller.isEnabled} positions=${controller.positions.length} '
+      'state=${controller.state} closest=${controller.closestState} fraction=${controller.fraction.toStringAsFixed(3)} '
+      'height=${controller.sheetHeight.toStringAsFixed(1)} hash=$hashCode',
+    );
   }
 }

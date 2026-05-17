@@ -12,7 +12,7 @@ import './env.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
-  unhandledExceptionBaladyLogs(() async {
+  await unhandledExceptionBaladyLogs(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
     final themeNotifier = BaladyThemeNotifier();

@@ -45,12 +45,14 @@ class RoutingRoutesPage extends StatefulHookConsumerWidget {
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
+  DgisMapController? _dgisController;
   bool _permissionRequested = false;
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
+    _dgisController = ref.read(dgisControllerProvider).value;
 
     if (!_permissionRequested && widget.points.any((p) => p.value == null)) {
       _permissionRequested = true;
@@ -68,7 +70,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider).value?.hideRoutes();
+    _dgisController?.hideRoutes();
     super.deactivate();
   }
 

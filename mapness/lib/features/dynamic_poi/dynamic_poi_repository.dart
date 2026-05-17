@@ -66,7 +66,11 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
     // away to populate the layer. The viewport-driven fetches above then
     // refine with a real bbox once the user pans/zooms.
     try {
-      return await datasource.fetchMarkers(locale: locale);
+      final pois = await datasource.fetchMarkers(locale: locale);
+      if (!ref.mounted) {
+        return const [];
+      }
+      return pois;
     } on Object {
       // Keep the layer alive with an empty set on a transient initial-fetch
       // failure; viewport-driven retries will recover.
@@ -94,6 +98,9 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
         bbox: bbox,
         cancelToken: cancel,
       );
+      if (!ref.mounted || cancel.isCancelled || !identical(_cancelToken, cancel)) {
+        return;
+      }
       state = AsyncData(pois);
     } on Object {
       if (cancel.isCancelled) {
@@ -115,5 +122,3 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
         (aRect.southWestLon - bRect.southWestLon).abs() < epsilon;
   }
 }
-
-
