@@ -146,10 +146,8 @@ jobs:
             fi
           done < <(yq -r '.mergers[]' "$MERGERS_FILE")
 
-          MESSAGE="${MENTION_TEXT}
-👀 PR ready to merge
-
-<b><a href=\"${PR_URL}\">${PR_TITLE}</a></b> by <b>${PR_AUTHOR}</b> has received <b>${APPROVALS}</b> approvals. Please review and merge it."
+          MESSAGE="$(printf '%s\n👀 PR ready to merge\n\n<b><a href="%s">%s</a></b> by <b>%s</b> has received <b>%s</b> approvals. Please review and merge it.' \
+            "$MENTION_TEXT" "$PR_URL" "$PR_TITLE" "$PR_AUTHOR" "$APPROVALS")"
 
           payload=$(jq -n \
             --arg chat_id "$TELEGRAM_CHAT_ID" \
@@ -272,9 +270,8 @@ jobs:
           REVIEW_STATE="${{ github.event.review.state }}"
           REVIEWER="${{ github.event.review.user.login }}"
 
-          MSG="🔔 New PR review
-
-<a href=\"tg://user?id=${TG_ID}\">${PR_AUTHOR}</a> your PR <b><a href=\"${PR_URL}\">${PR_TITLE}</a></b> got a new review (<b>${REVIEW_STATE}</b>) from <b>${REVIEWER}</b>."
+          MSG="$(printf '🔔 New PR review\n\n<a href="tg://user?id=%s">%s</a> your PR <b><a href="%s">%s</a></b> got a new review (<b>%s</b>) from <b>%s</b>.' \
+            "$TG_ID" "$PR_AUTHOR" "$PR_URL" "$PR_TITLE" "$REVIEW_STATE" "$REVIEWER")"
 
           payload=$(jq -n \
             --arg chat_id "$TELEGRAM_CHAT_ID" \
