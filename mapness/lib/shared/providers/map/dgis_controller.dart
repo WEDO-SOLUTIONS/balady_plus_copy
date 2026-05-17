@@ -11,7 +11,6 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
-import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -48,7 +47,6 @@ class DgisController extends _$DgisController {
 
   @override
   Future<DgisMapController> build() {
-    dashboardFreezeTrace('DgisController build hash=$hashCode');
     _completer = Completer();
     _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
@@ -57,7 +55,6 @@ class DgisController extends _$DgisController {
     ref
       ..onDispose(_visibleRectSubject.close)
       ..onDispose(() {
-        dashboardFreezeTrace('DgisController dispose hash=$hashCode active=${activeDgisController != null}');
         activeDgisController = null;
       });
 
@@ -65,9 +62,6 @@ class DgisController extends _$DgisController {
   }
 
   Future<void> onMapCreated(DgisMapController controller) async {
-    dashboardFreezeTrace(
-      'DgisController onMapCreated start controller=${identityHashCode(controller)} completed=${_completer.isCompleted}',
-    );
     // publish the controller to the top-level cache *before*
     // running the long async _initialize chain. _initialize awaits
     // darkModeProvider, which in turn awaits locationProvider, and the
@@ -78,21 +72,16 @@ class DgisController extends _$DgisController {
     await _initialize(controller);
     if (!_completer.isCompleted) {
       _completer.complete(controller);
-      dashboardFreezeTrace('DgisController completer completed controller=${identityHashCode(controller)}');
     }
-    dashboardFreezeTrace('DgisController onMapCreated done controller=${identityHashCode(controller)}');
   }
 
   Future<void> _initialize(DgisMapController controller) async {
-    dashboardFreezeTrace('DgisController initialize start controller=${identityHashCode(controller)}');
     await _setupControllerItself(controller);
     await _setupLocation(controller);
     await _setupVisibleRectUpdates(controller);
-    dashboardFreezeTrace('DgisController initialize done controller=${identityHashCode(controller)}');
   }
 
   Future<void> _setupControllerItself(DgisMapController controller) async {
-    dashboardFreezeTrace('DgisController setupController start controller=${identityHashCode(controller)}');
     await controller.initialize();
 
     await controller.loadStyles(MapnessConstants.mapStylesPath);
@@ -119,11 +108,9 @@ class DgisController extends _$DgisController {
     } on PlatformException catch (e) {
       logger.log('Voice installation error: $e');
     }
-    dashboardFreezeTrace('DgisController setupController done controller=${identityHashCode(controller)}');
   }
 
   Future<void> _setupLocation(DgisMapController controller) async {
-    dashboardFreezeTrace('DgisController setupLocation start controller=${identityHashCode(controller)}');
     await _setDefaultLocation(controller);
 
     _locationHelper = LocationSetupHelper(controller);
@@ -131,7 +118,6 @@ class DgisController extends _$DgisController {
 
     await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
     await controller.toggleFollowState();
-    dashboardFreezeTrace('DgisController setupLocation done controller=${identityHashCode(controller)}');
   }
 
   /// Moves camera on Riyadh Tower
@@ -169,7 +155,6 @@ class DgisController extends _$DgisController {
   Future<PolygonGeometryMessage> getVisibleArea(DgisMapController controller) async => controller.getVisibleArea();
 
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
-    dashboardFreezeTrace('DgisController visibleRectUpdates start controller=${identityHashCode(controller)}');
     final visibleRectSubscription = controller.visibleRectEvents
         .debounceTime(const Duration(seconds: 1))
         .listen(_listenVisibleRectangle);
@@ -179,7 +164,6 @@ class DgisController extends _$DgisController {
   }
 
   void _listenVisibleRectangle(VisibleRectEvent event) {
-    dashboardFreezeTrace('DgisController visibleRect event hash=${identityHashCode(event)}');
     ref.read(urbiAnalyticsProvider).track('mapInteraction');
     if (!_visibleRectSubject.isClosed) {
       _visibleRectSubject.add(event);

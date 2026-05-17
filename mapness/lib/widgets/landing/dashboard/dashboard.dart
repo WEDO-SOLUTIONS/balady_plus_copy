@@ -25,7 +25,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/base_dashboard_content.dart';
@@ -99,13 +98,11 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    dashboardFreezeTrace('Dashboard initState hash=$hashCode controller=${widget.bottomSheetController.hashCode}');
     widget.bottomSheetController.addListener(_scrollListenHandler);
   }
 
   @override
   void dispose() {
-    dashboardFreezeTrace('Dashboard dispose hash=$hashCode controller=${widget.bottomSheetController.hashCode}');
     widget.bottomSheetController.removeListener(_scrollListenHandler);
     super.dispose();
   }
@@ -224,18 +221,9 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
       return;
     }
     _lastMapControlsSheetState = sheetState;
-    dashboardFreezeTrace(
-      'Dashboard sheet-state=$sheetState closest=${widget.bottomSheetController.closestState} '
-      'enabled=${widget.bottomSheetController.isEnabled} positions=${widget.bottomSheetController.positions.length} '
-      'fraction=${widget.bottomSheetController.fraction.toStringAsFixed(3)} hash=$hashCode',
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted || _lastMapControlsSheetState != sheetState) {
-        dashboardFreezeTrace(
-          'Dashboard mapControls skipped mounted=$mounted expected=$sheetState latest=$_lastMapControlsSheetState '
-          'hash=$hashCode',
-        );
         return;
       }
       if (sheetState != ThreeStateSheet.hidden) {
