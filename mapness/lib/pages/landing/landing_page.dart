@@ -19,7 +19,6 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +72,6 @@ class _LandingPageState extends ConsumerState<LandingPage>
   @override
   void initState() {
     super.initState();
-    dashboardFreezeTrace('LandingPage initState hash=$hashCode');
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
@@ -140,7 +138,6 @@ class _LandingPageState extends ConsumerState<LandingPage>
 
   @override
   void dispose() {
-    dashboardFreezeTrace('LandingPage dispose hash=$hashCode');
     _traceSheet('dispose');
     bottomSheetController?.removeListener(_bottomsheetListener);
 
@@ -152,13 +149,11 @@ class _LandingPageState extends ConsumerState<LandingPage>
 
   @override
   void didPushNext() {
-    dashboardFreezeTrace('LandingPage didPushNext hash=$hashCode');
     _setRouteCovered(true);
   }
 
   @override
   void didPopNext() {
-    dashboardFreezeTrace('LandingPage didPopNext hash=$hashCode');
     _setRouteCovered(false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -171,8 +166,6 @@ class _LandingPageState extends ConsumerState<LandingPage>
     if (_routeCovered == value || !mounted) {
       return;
     }
-
-    dashboardFreezeTrace('LandingPage routeCovered $_routeCovered -> $value hash=$hashCode');
     setState(() {
       _routeCovered = value;
       if (!value) {
@@ -190,10 +183,6 @@ class _LandingPageState extends ConsumerState<LandingPage>
     if (_sheetOverlayVisible == isVisible) {
       return;
     }
-
-    dashboardFreezeTrace(
-      'LandingPage overlay $_sheetOverlayVisible -> $isVisible routeCovered=$_routeCovered hash=$hashCode',
-    );
     setState(() {
       _sheetOverlayVisible = isVisible;
     });
@@ -296,15 +285,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
   void _traceSheet(String event) {
     final controller = bottomSheetController;
     if (controller == null) {
-      dashboardFreezeTrace('LandingPage $event controller=null mounted=$mounted hash=$hashCode');
       return;
     }
-
-    dashboardFreezeTrace(
-      'LandingPage $event mounted=$mounted routeCovered=$_routeCovered overlay=$_sheetOverlayVisible '
-      'enabled=${controller.isEnabled} positions=${controller.positions.length} '
-      'state=${controller.state} closest=${controller.closestState} fraction=${controller.fraction.toStringAsFixed(3)} '
-      'height=${controller.sheetHeight.toStringAsFixed(1)} hash=$hashCode',
-    );
   }
 }

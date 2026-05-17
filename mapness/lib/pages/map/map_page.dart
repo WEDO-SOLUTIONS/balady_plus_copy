@@ -16,7 +16,6 @@ import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/shared/utils/dashboard_freeze_trace.dart';
 
 @RoutePage()
 class MapPage extends ConsumerStatefulWidget {
@@ -175,9 +174,6 @@ class _MapPageState extends ConsumerState<MapPage>
   bool get wantKeepAlive => true;
 
   void _trace(String event) {
-    dashboardFreezeTrace(
-      'MapPage $event mounted=$mounted needRefresh=$_needRefresh keyIndex=$_keyIndex hash=$hashCode',
-    );
   }
 
   Future<void> _initToastMessage() async {
