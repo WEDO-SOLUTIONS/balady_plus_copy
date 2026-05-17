@@ -32,6 +32,11 @@ on:
         required: true
         type: choice
         options: [stg, prod, pre]
+      build_label:
+        description: "Custom build label (e.g. 'fix-login', 'release-candidate')"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   build:
@@ -85,7 +90,6 @@ jobs:
       - name: 🧹 Free disk space
         run: |
           sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android/sdk/ndk
           sudo rm -rf /opt/ghc
           sudo rm -rf /opt/hostedtoolcache/CodeQL
           sudo docker image prune -af || true
@@ -126,8 +130,14 @@ jobs:
           # Generate a safe slug from branch name (replace non-alnum with '-')
           CI_GIT_BRANCH_SLUG=$(printf '%s' "$CI_GIT_BRANCH" \
             | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
-          # Artifact suffix: [optional pr-] + branch slug + timestamp
-          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
+          # Artifact suffix: [optional label] + [optional pr-] + branch slug + timestamp
+          BUILD_LABEL="${{ inputs.build_label }}"
+          BUILD_LABEL_SLUG=$(printf '%s' "$BUILD_LABEL" | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
+          if [ -n "$BUILD_LABEL_SLUG" ]; then
+            echo "CI_ARTIFACT_SUFFIX=${BUILD_LABEL_SLUG}-${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
+          else
+            echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
+          fi
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
