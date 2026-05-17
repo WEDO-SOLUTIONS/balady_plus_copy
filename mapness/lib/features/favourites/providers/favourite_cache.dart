@@ -46,6 +46,35 @@ class _FavouriteCache extends _$FavouriteCache {
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
+  bool _isEmpty(FavouritesState data) => data.home == null && data.work == null && data.items.isEmpty;
+
+  List<String> _missingIds(FavouritesState data, List<FavouriteItem> items) {
+    final ids = {
+      data.home?.id,
+      data.work?.id,
+      ...data.items.map((item) => item.id),
+    };
+
+    return items.map((item) => item.id).where((id) => !ids.contains(id)).toList();
+  }
+
+  FavouritesState _readCache(Box<dynamic> favoritesBox) {
+    final cache = favoritesBox.get(_keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
+    return cache?.toDomain() ?? const FavouritesState(items: []);
+  }
+
+  List<FavoriteCacheItem> _readSyncItems(Box<dynamic> favoritesBox, String key) {
+    final rawItems = favoritesBox.get(key, defaultValue: <FavoriteCacheItem>[]);
+    if (rawItems is! List) {
+      return [];
+    }
+
+    return rawItems.cast<FavoriteCacheItem>();
+  }
+
+  bool _hasPendingSync(Box<dynamic> favoritesBox) =>
+      _readSyncItems(favoritesBox, _keyDeleteSync).isNotEmpty || _readSyncItems(favoritesBox, _keyAddSync).isNotEmpty;
+
   List<FavouriteItem?> _getAllItems(FavouritesState favouriteState) => [
     ...favouriteState.items,
     favouriteState.home,
@@ -97,11 +126,14 @@ class _FavouriteCache extends _$FavouriteCache {
 
     const newState = FavouritesState(items: []);
     await _updateState(newState);
+    await _removeFromAddSync(items);
+    await _addToDeletionSync(items);
 
     try {
       await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
+      await _removeFromDeletionSync(items);
     } on Exception catch (_) {
-      await _addToDeletionSync(items);
+      // Keep delete_sync queued for the next app start.
     }
   }
 
@@ -121,13 +153,16 @@ class _FavouriteCache extends _$FavouriteCache {
     );
 
     await _updateState(newState);
+    await _removeFromAddSync([item]);
+    await _addToDeletionSync([item]);
 
     try {
       await _deleteRequest(items: [item], workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
+      await _removeFromDeletionSync([item]);
 
       ref.invalidate(favouriteMarkersProvider);
     } on Exception catch (_) {
-      await _addToDeletionSync([item]);
+      // Keep delete_sync queued for the next app start.
     }
   }
 
@@ -146,32 +181,56 @@ class _FavouriteCache extends _$FavouriteCache {
     final newState = FavouritesState(items: filteredItems, work: work, home: home);
 
     await _updateState(newState);
+    await _removeFromAddSync(items);
+    await _addToDeletionSync(items);
 
     try {
       await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
+      await _removeFromDeletionSync(items);
     } on Exception catch (_) {
-      await _addToDeletionSync(items);
+      // Keep delete_sync queued for the next app start.
     }
   }
 
   Future<void> _addToDeletionSync(List<FavouriteItem> items) async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final deleteSync =
-        (await favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
-            .cast<FavoriteCacheItem>()
-          ..addAll(items.map((e) => e.toHive()));
-
-    await favoritesBox.put(_keyDeleteSync, deleteSync);
+    await _addToSyncQueue(key: _keyDeleteSync, items: items);
   }
 
   Future<void> _addToAddSync(FavouriteItem item) async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final addSync =
-        (await favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
-            .cast<FavoriteCacheItem>()
-          ..add(item.toHive());
+    await _addToSyncQueue(key: _keyAddSync, items: [item]);
+  }
 
-    await favoritesBox.put(_keyAddSync, addSync);
+  Future<void> _addToSyncQueue({required String key, required List<FavouriteItem> items}) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final byId = {
+      for (final item in _readSyncItems(favoritesBox, key)) item.id: item,
+    };
+
+    for (final item in items) {
+      byId[item.id] = item.toHive();
+    }
+
+    await favoritesBox.put(key, byId.values.toList());
+  }
+
+  Future<void> _removeFromAddSync(List<FavouriteItem> items) async {
+    await _removeFromSyncQueue(key: _keyAddSync, items: items);
+  }
+
+  Future<void> _removeFromDeletionSync(List<FavouriteItem> items) async {
+    await _removeFromSyncQueue(key: _keyDeleteSync, items: items);
+  }
+
+  Future<void> _removeFromSyncQueue({required String key, required List<FavouriteItem> items}) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final ids = items.map((e) => e.id).toSet();
+    final updated = _readSyncItems(favoritesBox, key).where((item) => !ids.contains(item.id)).toList();
+
+    if (updated.isEmpty) {
+      await favoritesBox.delete(key);
+    } else {
+      await favoritesBox.put(key, updated);
+    }
   }
 
   Future<void> setHome(FavouriteItem item) async {
@@ -234,11 +293,13 @@ class _FavouriteCache extends _$FavouriteCache {
 
   Future<void> _addItem(FavouriteItem item, FavouritesState state) async {
     await _updateState(state);
+    await _addToAddSync(item);
 
     try {
       await _addItemsRequest(items: [item], workId: state.work?.id, homeId: state.home?.id);
+      await _removeFromAddSync([item]);
     } on Exception catch (_) {
-      await _addToAddSync(item);
+      // Keep add_sync queued for the next app start.
     }
   }
 
@@ -256,9 +317,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final homeId = cache?.home?.toDomain().id;
 
     try {
-      final deleteSync =
-          (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
-              .cast<FavoriteCacheItem>();
+      final deleteSync = _readSyncItems(favoritesBox, _keyDeleteSync);
 
       if (deleteSync.isNotEmpty) {
         await _deleteRequest(items: deleteSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
@@ -269,9 +328,7 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     try {
-      final addSync =
-          (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
-              .cast<FavoriteCacheItem>();
+      final addSync = _readSyncItems(favoritesBox, _keyAddSync);
 
       if (addSync.isNotEmpty) {
         await _addItemsRequest(items: addSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
@@ -323,6 +380,15 @@ class _FavouriteCache extends _$FavouriteCache {
     try {
       final raw = await dio.post('favourites', data: request.writeToBuffer());
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
+      final missingIds = _missingIds(newState, items);
+      if (missingIds.isNotEmpty) {
+        final message = 'Add favourites response misses added items $missingIds; keeping local cache';
+        logger.log(
+          message,
+          logLevel: MapnessLogLevel.warning,
+        );
+        throw StateError(message);
+      }
       await _updateState(newState);
     } on DioException catch (e) {
       if (e.response?.data != null) {
@@ -360,6 +426,9 @@ class _FavouriteCache extends _$FavouriteCache {
 
   @override
   Future<FavouritesState> build() async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final localState = _readCache(favoritesBox);
+
     final authState = await ref
         .watch(authProvider.future)
         .timeout(
@@ -370,28 +439,35 @@ class _FavouriteCache extends _$FavouriteCache {
           },
         );
     if (authState == null) {
-      return const FavouritesState(items: []);
+      return localState;
     }
 
     // sync uncommitted changes
     await _sync();
-
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final hasPendingSync = _hasPendingSync(favoritesBox);
 
     FavouritesState result;
     try {
       if (_isForceRefresh || !isCacheValid) {
         final apiData = await _fetchFavourites();
-        await favoritesBox.put(_keyCache, apiData.toHive());
-        _lastUpdate = DateTime.now();
-        await _notifyMapAboutFavourites(apiData);
-        result = apiData;
+        if (hasPendingSync && !_isEmpty(localState) && _isEmpty(apiData)) {
+          logger.log(
+            'Skipping empty favourites response because local cache has data and pending sync exists',
+            logLevel: MapnessLogLevel.warning,
+          );
+          result = localState;
+        } else {
+          await favoritesBox.put(_keyCache, apiData.toHive());
+          _lastUpdate = DateTime.now();
+          await _notifyMapAboutFavourites(apiData);
+          result = apiData;
+        }
       } else {
-        result = await getFavouritesStateFromHive();
+        result = localState;
       }
     } on Exception catch (e) {
       logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
-      result = await getFavouritesStateFromHive();
+      result = localState;
     }
 
     final link = ref.keepAlive();
