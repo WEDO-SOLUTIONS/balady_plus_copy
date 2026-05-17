@@ -40,13 +40,15 @@ DgisMapController? activeDgisController;
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
   late LocationSetupHelper _locationHelper;
-  final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+  // Non-final so build() can replace it with a fresh open subject on each rebuild.
+  BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
 
   @override
   Future<DgisMapController> build() {
     _completer = Completer();
+    _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
     ref.onDispose(_visibleRectSubject.close);
     // clear the top-level cache when this provider is disposed
