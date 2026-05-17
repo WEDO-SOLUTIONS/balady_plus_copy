@@ -12,6 +12,10 @@ class CameraPadding extends _$CameraPadding {
   CameraSetPaddingMessage? build() => null;
 
   Future<void> resetPadding({CameraSetPaddingMessage? defaultPadding}) async {
+    if (!ref.mounted) {
+      return;
+    }
+
     if (defaultPadding != null) {
       await setPadding(defaultPadding);
     } else {
@@ -31,6 +35,10 @@ class CameraPadding extends _$CameraPadding {
   }
 
   Future<void> setPadding(CameraSetPaddingMessage padding) async {
+    if (!ref.mounted) {
+      return;
+    }
+
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
     state = padding;

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -105,7 +104,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final isSwitchingToFoot = ValueNotifier(false);
 
   StreamSubscription? _naviEventsListener;
-  bool _hasInitialized = false;
   bool wasSetActive = true;
   Timer? timer;
 
@@ -199,28 +197,57 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> saveNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
 
     final state = await dgisController.saveNavigationState();
+    if (!mounted) {
+      return;
+    }
+
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
   }
 
-  Future<void> restoreNavigationState() async {
+  Future<bool> restoreNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-
-    final raw = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
-    if (raw == null) {
-      context.router.pop();
-      return;
+    if (!mounted) {
+      return false;
     }
-    try {
-      await dgisController.restoreNavigationState(
-        base64.decode(raw),
-        NavigationConstants.navigationSpeedRangeZooms,
-      );
-    } catch (e) {
+
+    final savedState = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    if (savedState == null) {
+      final navState = await dgisController.getCurrentNavigationState();
+      if (!mounted) {
+        return false;
+      }
+
+      final hasActiveNavigation = navState.state == NavigationState.navigation && navState.routeSearchOptions != null;
+      if (hasActiveNavigation) {
+        return true;
+      }
+
       await clearNavigationState();
-      context.router.pop();
+      if (mounted && context.router.canPop()) {
+        context.router.pop();
+      }
+      return false;
+    }
+
+    final state = base64.decode(savedState);
+    try {
+      await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
+      return true;
+    } catch (e) {
+      if (!mounted) {
+        return false;
+      }
+      await clearNavigationState();
+      if (mounted && context.router.canPop()) {
+        context.router.pop();
+      }
+      return false;
     }
   }
 
@@ -240,33 +267,42 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    try {
-      await _naviEventsListener?.cancel();
-    } catch (e) {
-      log("Can't cancel _naviEventsListener $e");
+    if (!mounted) {
+      return;
     }
+
+    await _naviEventsListener?.cancel();
+    if (!mounted) {
+      return;
+    }
+
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
 
-    // On the first call, honour initAction strictly.
-    // On re-inits (DGis controller recreated mid-trip), restore if still running.
-    final shouldRestore =
-        widget.initAction == PathNavPageInitAction.restoreFromState ||
-        (_hasInitialized && _navigationState.value == PathNavState.running);
-    _hasInitialized = true;
-
-    if (shouldRestore) {
-      await restoreNavigationState();
-      // After restore, move camera close without forcing follow to avoid zoom flicker
-      await _moveCameraToUser(followAfter: false);
-    } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
+    if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
       // Ensure any in-app stream audio is paused while navigation is active.
       // iOS doesn't reliably provide per-instruction callbacks from the SDK,
       // so we pause at navigation start and resume when the trip ends.
       unawaited(AudioService().pause());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
+      if (!mounted) {
+        return;
+      }
       await _moveCameraToUser();
+      if (!mounted) {
+        return;
+      }
       await saveNavigationState();
+    } else {
+      final restored = await restoreNavigationState();
+      if (!mounted) {
+        return;
+      }
+      if (!restored) {
+        return;
+      }
+      // After restore, move camera close without forcing follow to avoid zoom flicker
+      await _moveCameraToUser(followAfter: false);
     }
 
     if (widget.navType == RouteSearchOptionsMessage.car) {

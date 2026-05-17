@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -34,7 +36,7 @@ class _NearestObject extends _$NearestObject {
     ref
       ..onDispose(() {
         _loadOperation?.cancel();
-        cameraPadding.resetPadding();
+        unawaited(Future<void>.microtask(cameraPadding.resetPadding));
       })
       ..listen(cameraStateProvider, (prev, next) {
         if (next == CameraState.free) {
