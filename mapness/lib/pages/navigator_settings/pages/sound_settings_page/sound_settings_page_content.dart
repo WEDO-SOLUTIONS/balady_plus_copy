@@ -61,6 +61,8 @@ class SoundSettingsPageContent extends ConsumerWidget {
                       }
                     },
                     initialIndex: soundSettingsModel.voiceInstructionIndex,
+                    activeColor: colors.accentDefault,
+                    activeTextColor: colors.foregroundDefaultInversion,
                   ),
                 ),
                 Padding(
@@ -108,6 +110,8 @@ class SoundSettingsPageContent extends ConsumerWidget {
                       }
                     },
                     initialIndex: soundSettingsModel.promptsVolumeIndex,
+                    activeColor: colors.accentDefault,
+                    activeTextColor: colors.foregroundDefaultInversion,
                   ),
                 ),
               ],
