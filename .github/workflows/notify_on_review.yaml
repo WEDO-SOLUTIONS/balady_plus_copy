@@ -1,4 +1,4 @@
-name: Notify on review (Teams)
+name: Notify on review (Teams + Telegram)
 
 on:
   pull_request_review:
@@ -38,11 +38,10 @@ jobs:
 
           JSON='${{ steps.reviews.outputs.data }}'
 
-          # Count APPROVED reviews by taking the latest review state per reviewer (GitHub shows multiple reviews per person)
           APPROVALS=$(
             echo "$JSON" | jq -r '
-              sort_by(.submitted_at)                                  # ensure chronological
-              | reduce .[] as $r ({}; .[$r.user.login] = $r.state)    # keep latest state per user
+              sort_by(.submitted_at)
+              | reduce .[] as $r ({}; .[$r.user.login] = $r.state)
               | to_entries
               | map(select(.value == "APPROVED"))
               | length
@@ -66,7 +65,7 @@ jobs:
 
           MERGERS_FILE="${{ github.workspace }}/.github/mergers.yml"
           TEAMS_MAPPING_FILE="${{ github.workspace }}/.github/teams_mapping.yml"
-  
+
           MENTION_TEXT=""
           ENTITIES="[]"
 
@@ -86,11 +85,9 @@ jobs:
                 }]
               ')
             else
-              # если нет id — хотя бы напишем именем
               MENTION_TEXT="${MENTION_TEXT}${gh} "
             fi
           done < <(yq -r '.mergers[]' "$MERGERS_FILE")
-
 
           MESSAGE="${MENTION_TEXT}PR **[${PR_TITLE}](${PR_URL})** by **${PR_AUTHOR}** has received **${APPROVALS}** approvals. Please review and merge it."
 
@@ -118,6 +115,57 @@ jobs:
 
           curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$TEAMS_WEBHOOK_URL"
 
+      - name: Send Telegram notification if PR has 2 approvals
+        if: steps.approvals.outputs.approval >= 2
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          APPROVALS="${{ steps.approvals.outputs.approval }}"
+
+          MERGERS_FILE="${{ github.workspace }}/.github/mergers.yml"
+          TG_MAPPING_FILE="${{ github.workspace }}/.github/tg_mapping.yml"
+
+          MENTION_TEXT=""
+
+          while IFS= read -r gh; do
+            [ -z "$gh" ] && continue
+
+            tid=$(yq -r ".\"$gh\" // \"\"" "$TG_MAPPING_FILE" || true)
+            echo "merger='$gh' -> tg_id='$tid'"
+
+            if [ -n "$tid" ] && [ "$tid" != "null" ]; then
+              MENTION_TEXT="${MENTION_TEXT}<a href=\"tg://user?id=${tid}\">${gh}</a> "
+            else
+              MENTION_TEXT="${MENTION_TEXT}${gh} "
+            fi
+          done < <(yq -r '.mergers[]' "$MERGERS_FILE")
+
+          MESSAGE="${MENTION_TEXT}
+👀 PR ready to merge
+
+<b><a href=\"${PR_URL}\">${PR_TITLE}</a></b> by <b>${PR_AUTHOR}</b> has received <b>${APPROVALS}</b> approvals. Please review and merge it."
+
+          payload=$(jq -n \
+            --arg chat_id "$TELEGRAM_CHAT_ID" \
+            --arg text "$MESSAGE" \
+            '{
+              "chat_id": $chat_id,
+              "text": $text,
+              "parse_mode": "HTML",
+              "disable_web_page_preview": true
+            }')
+
+          curl -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            --data "$payload"
+
   notify-pr-author:
     name: Notify author of PR about new review
     runs-on: ubuntu-latest
@@ -136,7 +184,7 @@ jobs:
           yq --version
 
       - name: Map PR author to Teams user id
-        id: map
+        id: map_teams
         run: |
           set -euo pipefail
 
@@ -148,21 +196,33 @@ jobs:
           echo "PR author = $PR_AUTHOR"
           echo "teams_id=$teams_id" >> "$GITHUB_OUTPUT"
 
+      - name: Map PR author to Telegram user id
+        id: map_tg
+        run: |
+          set -euo pipefail
+
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          TG_MAPPING_FILE="${{ github.workspace }}/.github/tg_mapping.yml"
+
+          tg_id=$(yq -r ".\"$PR_AUTHOR\" // \"\"" "$TG_MAPPING_FILE" || true)
+
+          echo "PR author = $PR_AUTHOR"
+          echo "tg_id=$tg_id" >> "$GITHUB_OUTPUT"
+
       - name: Send Teams notification to PR author
-        if: steps.map.outputs.teams_id != ''
+        if: steps.map_teams.outputs.teams_id != ''
         env:
           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL_PR }}
         run: |
           set -euo pipefail
 
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-          TEAMS_ID="${{ steps.map.outputs.teams_id }}"
+          TEAMS_ID="${{ steps.map_teams.outputs.teams_id }}"
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
           REVIEW_STATE="${{ github.event.review.state }}"
           REVIEWER="${{ github.event.review.user.login }}"
 
-          # Mention author
           ENTITIES=$(jq -n --arg id "$TEAMS_ID" --arg name "$PR_AUTHOR" '
             [{
               "type":"mention",
@@ -197,7 +257,41 @@ jobs:
 
           curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$TEAMS_WEBHOOK_URL"
 
-      - name: Can't map PR author to Teams
-        if: steps.map.outputs.teams_id == ''
+      - name: Send Telegram notification to PR author
+        if: steps.map_tg.outputs.tg_id != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          echo "Can't convert GitHub username '${{ github.event.pull_request.user.login }}' to Teams user id (teams_mapping.yml missing?)"
+          set -euo pipefail
+
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          TG_ID="${{ steps.map_tg.outputs.tg_id }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          REVIEW_STATE="${{ github.event.review.state }}"
+          REVIEWER="${{ github.event.review.user.login }}"
+
+          MSG="🔔 New PR review
+
+<a href=\"tg://user?id=${TG_ID}\">${PR_AUTHOR}</a> your PR <b><a href=\"${PR_URL}\">${PR_TITLE}</a></b> got a new review (<b>${REVIEW_STATE}</b>) from <b>${REVIEWER}</b>."
+
+          payload=$(jq -n \
+            --arg chat_id "$TELEGRAM_CHAT_ID" \
+            --arg text "$MSG" \
+            '{
+              "chat_id": $chat_id,
+              "text": $text,
+              "parse_mode": "HTML",
+              "disable_web_page_preview": true
+            }')
+
+          curl -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            --data "$payload"
+
+      - name: Can't map PR author to Teams or Telegram
+        if: steps.map_teams.outputs.teams_id == '' && steps.map_tg.outputs.tg_id == ''
+        run: |
+          echo "Can't convert GitHub username '${{ github.event.pull_request.user.login }}' to Teams or Telegram user id"
