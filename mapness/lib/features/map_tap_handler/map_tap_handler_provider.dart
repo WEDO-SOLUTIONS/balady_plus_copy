@@ -116,6 +116,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       _baseStreamSubscription?.cancel();
       _poiPageClosingSubscription?.close();
       _pendingMakkahSuppressionTimer?.cancel();
+      _clearTapDisableOwners();
       _currentMapHandlers.close();
     });
   }
@@ -144,7 +145,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   /// Handles all incoming tap events, passing them to the priority handler or the default one.
   void _onNewEvent(TapEvent event) {
     /// If the tap handler is disabled, do not process the event.
-    if (_isDisabledTapHandler) {
+    if (isDisabledTapHandler) {
       return;
     }
 
@@ -195,7 +196,9 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   bool _consumePendingMakkahSuppression() {
-    if (_pendingMakkahSuppression <= 0) return false;
+    if (_pendingMakkahSuppression <= 0) {
+      return false;
+    }
     _pendingMakkahSuppression--;
     if (_pendingMakkahSuppression == 0) {
       _pendingMakkahSuppressionTimer?.cancel();

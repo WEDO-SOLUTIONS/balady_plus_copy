@@ -36,31 +36,51 @@ class EtaRoutePage extends ConsumerStatefulWidget {
 
 class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
   Timer? _etaExpiredTimer;
+  MapTapHandler? _mapTapHandler;
+  Object? _mapTapDisableOwner;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       ref.read(cameraPaddingProvider.notifier).resetPadding();
       // Prevents the user from interacting with the map
       if (ref.read(mediaQueryInfoProvider)?.orientation == Orientation.landscape) {
-        ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+        final mapTapHandler = ref.read(mapTapHandlerProvider.notifier);
+        _mapTapHandler = mapTapHandler;
+        _mapTapDisableOwner ??= mapTapHandler.acquireTapDisableOwner();
       }
     });
   }
 
   @override
   void deactivate() {
-    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = false;
+    _releaseMapTapDisable();
     super.deactivate();
   }
 
   @override
   void dispose() {
+    _releaseMapTapDisable();
     _etaExpiredTimer?.cancel();
     _etaExpiredTimer = null;
-    ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
+    final rootContext = rootNavigatorKey.currentContext;
+    if (rootContext != null) {
+      ToastOverlay.of(rootContext).hide();
+    }
     super.dispose();
+  }
+
+  void _releaseMapTapDisable() {
+    final owner = _mapTapDisableOwner;
+    if (owner == null) {
+      return;
+    }
+    _mapTapDisableOwner = null;
+    _mapTapHandler?.releaseTapDisableOwner(owner);
   }
 
   @override
