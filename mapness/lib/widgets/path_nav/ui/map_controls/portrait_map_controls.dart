@@ -67,6 +67,11 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                 padding: widget.padding,
                                 child: const DimensionControl(),
                               ),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              Padding(
+                                padding: widget.padding,
+                                child: const SoundControl(),
+                              ),
                             ],
                           ),
                         ),
