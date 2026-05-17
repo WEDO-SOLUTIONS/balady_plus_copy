@@ -172,70 +172,68 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                   padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                   child: ManeuverWidget(),
                 ),
-                const SizedBox(height: uikit.Spacing.$3x),
+                const SizedBox(height: 24),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: uikit.Spacing.$3x),
+                    child: SoundControl(),
+                  ),
+                ),
                 Expanded(
-                  child: Stack(
-                    children: [
-                      AnimatedOpacity(
-                        opacity: isControlsActive ? 1 : 0,
-                        duration: const Duration(milliseconds: 250),
-                        child: IgnorePointer(
-                          ignoring: !isControlsActive,
-                          child: GestureDetector(
-                            onTap: () {
-                              timer?.cancel();
-                              timer = null;
-                              wasSetActive = true;
-                              isControlsActive = true;
-                              startControlsDisapearTimer();
-                            },
-                            child: Padding(
-                              padding: padding,
-                              child: isPortrait
-                                  ? const Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                  child: AnimatedOpacity(
+                    opacity: isControlsActive ? 1 : 0,
+                    duration: const Duration(milliseconds: 250),
+                    child: IgnorePointer(
+                      ignoring: !isControlsActive,
+                      child: GestureDetector(
+                        onTap: () {
+                          timer?.cancel();
+                          timer = null;
+                          wasSetActive = true;
+                          isControlsActive = true;
+                          startControlsDisapearTimer();
+                        },
+                        child: Padding(
+                          padding: padding,
+                          child: isPortrait
+                              ? const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    TrafficParkingControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    DimensionControl(),
+                                    Spacer(),
+                                    Row(
                                       children: [
-                                        TrafficParkingControl(),
-                                        SizedBox(height: uikit.Spacing.$2x),
-                                        DimensionControl(),
-                                        Spacer(),
-                                        Row(
-                                          children: [
-                                            IndoorControl(),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        CompassControl(),
-                                        SizedBox(height: uikit.Spacing.$2x),
-                                        FollowControl(),
-                                        SizedBox(height: uikit.Spacing.$3x),
-                                      ],
-                                    )
-                                  : const Row(
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Spacer(),
-                                            Padding(
-                                              padding: padding,
-                                              child: IndoorControl(),
-                                            ),
-                                            Spacer(flex: 3),
-                                          ],
-                                        ),
+                                        IndoorControl(),
                                       ],
                                     ),
-                            ),
-                          ),
+                                    Spacer(),
+                                    CompassControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    FollowControl(),
+                                    SizedBox(height: uikit.Spacing.$3x),
+                                  ],
+                                )
+                              : const Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Spacer(),
+                                        Padding(
+                                          padding: padding,
+                                          child: IndoorControl(),
+                                        ),
+                                        Spacer(flex: 3),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                         ),
                       ),
-                      const Positioned(
-                        bottom: uikit.Spacing.$3x,
-                        left: uikit.Spacing.$3x,
-                        child: SoundControl(),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
                 Directionality(

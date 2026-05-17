@@ -43,6 +43,8 @@ class _LandscapeLayout extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   maneuverAndLimitWidget,
+                  const SizedBox(height: 24),
+                  const SoundControl(),
                   const Spacer(),
                   ValueListenableBuilder(
                     valueListenable: showControls,
@@ -57,7 +59,6 @@ class _LandscapeLayout extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SoundControl(),
                   const SizedBox(height: 60),
                 ],
               ),
