@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -103,7 +104,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final isControlsActive = ValueNotifier(true);
   final isSwitchingToFoot = ValueNotifier(false);
 
-  late StreamSubscription? _naviEventsListener;
+  StreamSubscription? _naviEventsListener;
+  bool _hasInitialized = false;
   bool wasSetActive = true;
   Timer? timer;
 
@@ -206,9 +208,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> restoreNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
-    final state = base64.decode(ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!);
+    final raw = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    if (raw == null) {
+      context.router.pop();
+      return;
+    }
     try {
-      await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
+      await dgisController.restoreNavigationState(
+        base64.decode(raw),
+        NavigationConstants.navigationSpeedRangeZooms,
+      );
     } catch (e) {
       await clearNavigationState();
       context.router.pop();
@@ -231,11 +240,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-
-    await _naviEventsListener?.cancel();
+    try {
+      await _naviEventsListener?.cancel();
+    } catch (e) {
+      log("Can't cancel _naviEventsListener $e");
+    }
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
 
-    if (widget.initAction == PathNavPageInitAction.restoreFromState || _navigationState.value == PathNavState.running) {
+    // On the first call, honour initAction strictly.
+    // On re-inits (DGis controller recreated mid-trip), restore if still running.
+    final shouldRestore =
+        widget.initAction == PathNavPageInitAction.restoreFromState ||
+        (_hasInitialized && _navigationState.value == PathNavState.running);
+    _hasInitialized = true;
+
+    if (shouldRestore) {
       await restoreNavigationState();
       // After restore, move camera close without forcing follow to avoid zoom flicker
       await _moveCameraToUser(followAfter: false);

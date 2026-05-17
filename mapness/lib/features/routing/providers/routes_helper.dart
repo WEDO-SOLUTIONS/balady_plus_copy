@@ -7,8 +7,9 @@ part 'routes_helper.g.dart';
 class RoutesHelper extends _$RoutesHelper {
   @override
   void build() {
-    ref.onDispose(() {
-      ref.read(cameraPaddingProvider.notifier).resetPadding();
-    });
+    final padding = ref.read(cameraPaddingProvider.notifier);
+    // resetPadding uses ref.read() internally; defer past the dispose cycle
+    // to avoid Riverpod's "Cannot use Ref inside life-cycles" assertion.
+    ref.onDispose(() => Future.microtask(padding.resetPadding));
   }
 }
