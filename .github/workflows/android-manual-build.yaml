@@ -143,8 +143,7 @@ jobs:
           just-version: "1.25.2"
 
       - name: Install Localazy CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/localazy/cli/master/install.sh | sudo bash
+        run: npm install -g @localazy/cli
 
       - name: "Prebuild"
         env:
