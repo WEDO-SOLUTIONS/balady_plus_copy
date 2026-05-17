@@ -228,14 +228,8 @@ jobs:
             fi
           done
 
-          MSG="👀 PR review request
-
-${MENTION_TEXT}
-<b>${HEADER}</b>
-
-<b>PR:</b> <a href=\"${PR_URL}\">${PR_TITLE}</a>
-<b>Branch:</b> ${PR_BRANCH}
-<b>Author:</b> ${PR_AUTHOR}"
+          MSG="$(printf '👀 PR review request\n\n%s\n<b>%s</b>\n\n<b>PR:</b> <a href="%s">%s</a>\n<b>Branch:</b> %s\n<b>Author:</b> %s' \
+            "$MENTION_TEXT" "$HEADER" "$PR_URL" "$PR_TITLE" "$PR_BRANCH" "$PR_AUTHOR")"
 
           payload=$(jq -n \
             --arg chat_id "$TELEGRAM_CHAT_ID" \

@@ -252,13 +252,12 @@ jobs:
             exit 1
           fi
 
+          NOTES="Branch: ${CI_GIT_BRANCH}"$'\n'"Environment: ${{ steps.ctx.outputs.environment }}"$'\n'"Author: ${{ github.actor }}"$'\n'"Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
           echo "Creating release $TAG..."
           gh release create "$TAG" \
             --title "$ARTIFACT_NAME" \
-            --notes "Branch: ${CI_GIT_BRANCH}
-Environment: ${{ steps.ctx.outputs.environment }}
-Author: ${{ github.actor }}
-Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --notes "$NOTES" \
             --prerelease \
             "$LOCAL_FILE"
 
@@ -306,8 +305,7 @@ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.r
           if [ "$JOB_STATUS" = "success" ]; then
             ICON="✅"
             TOPIC_NAME="${ARTIFACT_NAME}"
-            DOWNLOAD_LINE="
-📥 <a href=\"${RELEASE_URL}\">Download APK</a>"
+            DOWNLOAD_LINE="$(printf '\n📥 <a href="%s">Download APK</a>' "$RELEASE_URL")"
           else
             ICON="❌"
             TOPIC_NAME="❌ ${{ steps.select.outputs.build_name_prefix }}-${CI_ARTIFACT_SUFFIX}"
@@ -316,8 +314,7 @@ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.r
 
           PR_LINE=""
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            PR_LINE="
-🔗 PR: ${{ github.event.pull_request.html_url }}"
+            PR_LINE="$(printf '\n🔗 PR: %s' '${{ github.event.pull_request.html_url }}')"
           fi
 
           # Create forum topic
@@ -333,12 +330,8 @@ Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.r
             exit 1
           fi
 
-          MSG="${ICON} <b>Android build ${JOB_STATUS}</b>
-
-🌿 Branch: <code>${BRANCH}</code>
-👤 Author: ${ACTOR}
-🔧 Environment: ${{ steps.ctx.outputs.environment }}${PR_LINE}${DOWNLOAD_LINE}
-▶️ <a href=\"${RUN_URL}\">Open run</a>"
+          MSG="$(printf '%s <b>Android build %s</b>\n\n🌿 Branch: <code>%s</code>\n👤 Author: %s\n🔧 Environment: %s%s%s\n▶️ <a href="%s">Open run</a>' \
+            "$ICON" "$JOB_STATUS" "$BRANCH" "$ACTOR" "${{ steps.ctx.outputs.environment }}" "$PR_LINE" "$DOWNLOAD_LINE" "$RUN_URL")"
 
           curl -sS -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
