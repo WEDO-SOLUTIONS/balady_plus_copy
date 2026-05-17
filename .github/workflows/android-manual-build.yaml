@@ -122,6 +122,9 @@ jobs:
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
+      - name: Setup FVM
+        uses: leoafarias/fvm-action@v1
+
       - name: Setup Flutter
         run: |
           fvm install
