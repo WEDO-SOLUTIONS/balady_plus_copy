@@ -1194,7 +1194,7 @@ Future<void> setupMapness(EnvType envType) async {
       RangersApplogFlutterPlugin.initRangersAppLog(
         appId,
         channel,
-        false,         // enableAb
+        true,         // enableAb
         false,         // enableEncrypt
         !isProduction, // enableLog: true on stg/dev, false on prod
         'https://balady.finder-snssdk.bytepluses.com',
