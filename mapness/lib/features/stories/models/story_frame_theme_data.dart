@@ -52,12 +52,10 @@ class StoryFrameThemeData {
       titleStyle: textTheme.h2SemiBold.copyWith(
         color: AppColor.black,
         fontSize: 26,
-        height: 17 / 26,
       ),
       descriptionStyle: textTheme.bodyLargeRegular.copyWith(
         color: AppColor.black,
         fontSize: 14,
-        height: 17 / 14,
       ),
       actionTheme: actionTheme.copyWith(
         textColor: const Color(0xFFFFFFFF),
