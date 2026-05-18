@@ -1195,9 +1195,9 @@ Future<void> setupMapness(EnvType envType) async {
         appId,
         channel,
         false,         // enableAb
-        false,         // enableEncrypt
+        true,         // enableEncrypt
         !isProduction, // enableLog: true on stg/dev, false on prod
-        null,          // host: null = default BytePlus endpoint
+        'https://balady.finder-snssdk.bytepluses.com',
       );
       debugPrint('[BytePlus] RangersAppLog initialized — AppID=$appId, channel=$channel');
     } catch (e) {
