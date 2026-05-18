@@ -36,7 +36,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final isDGA =
         context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
-            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -69,7 +69,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         children: const [NotificationsSettingCell()],
                       ),
                       ContentWrapper(
-                        color: isDGA ? context.colors.accentSecondarySoft :  context.colors.backgroundSurface1,
+                        color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                         children: const [AuthQuickAccessBiometricWidget()],
                       ),
                     ],
@@ -97,7 +97,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ],
                     ),
                     ContentWrapper(
-                      color: isDGA ? context.colors.accentSecondarySoft :  context.colors.backgroundSurface1,
+                      color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () => context.router.push(
@@ -119,7 +119,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ],
                     ),
                     ContentWrapper(
-                      color: isDGA ? context.colors.accentSecondarySoft :  context.colors.backgroundSurface1,
+                      color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () => Navigator.of(context).push(

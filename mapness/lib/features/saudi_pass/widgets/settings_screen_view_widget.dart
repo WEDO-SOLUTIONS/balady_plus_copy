@@ -88,7 +88,7 @@ class SettingsCardWidget extends StatelessWidget {
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
     child: ColoredBox(
-      color: context.colors.backgroundSurface1,
+      color: context.profileCardColor,
       child: Padding(
         padding: const EdgeInsets.all(Spacing.$4x),
         child: Column(
@@ -115,7 +115,7 @@ class SettingsCategoryCardWidget extends StatelessWidget {
   Widget build(BuildContext context) => ClipRRect(
     borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
     child: ColoredBox(
-      color: context.colors.backgroundSurface1,
+      color: context.profileCardColor,
       child: Padding(
         padding: const EdgeInsets.all(Spacing.$4x),
         child: Column(
@@ -175,7 +175,8 @@ class CategoryChipWidget extends StatelessWidget {
     final backgroundColor = isHighlighted
         ? context.colors.accentSecondaryDefault
         : context.colors.neutralContainerDefault;
-    final textColor = isHighlighted ? context.colors.backgroundSurface1 : context.colors.foregroundDefault;
+    final textColor = isHighlighted ? context.colors.accentOnAccent : context.colors.foregroundDefault;
+    final countColor = isHighlighted ? context.colors.accentOnAccent : context.colors.accentSecondaryMuted;
 
     return GestureDetector(
       onTap: onTap,
@@ -194,7 +195,7 @@ class CategoryChipWidget extends StatelessWidget {
                   const SizedBox(width: Spacing.$1x),
                   Text(
                     count.toString(),
-                    style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.accentSecondaryMuted),
+                    style: context.textStyles.bodySmallMedium.copyWith(color: countColor),
                   ),
                 ],
               ],

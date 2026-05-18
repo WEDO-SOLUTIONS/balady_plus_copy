@@ -143,9 +143,12 @@ class SortingItemViewWidget extends StatelessWidget {
           backgroundColor: context.colors.backgroundSurface1,
           trailing: ContentRowCustomTrailingOptions(
             builder: (context) => view.isHighlighted
-                ? const Padding(
-                    padding: EdgeInsetsDirectional.only(end: Spacing.$4x),
-                    child: Icon(SystemIcons.checkmark),
+                ? Padding(
+                    padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                    child: Icon(
+                      SystemIcons.checkmark,
+                      color: context.colors.accentDefault,
+                    ),
                   )
                 : nothing,
           ),

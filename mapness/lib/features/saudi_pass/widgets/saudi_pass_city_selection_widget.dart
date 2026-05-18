@@ -19,7 +19,7 @@ class SaudiPassCitySelection extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.$4x),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: context.colors.backgroundSurface1,
+          color: context.profileCardColor,
           borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
         ),
         child: Column(
