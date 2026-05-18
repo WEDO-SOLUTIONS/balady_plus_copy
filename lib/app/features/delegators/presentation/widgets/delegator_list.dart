@@ -10,8 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../../core/utils/utils_exports.dart'
-    show AppFontWeight, CommonFunctions, CommonProperties;
+import '../../../../core/utils/utils_exports.dart' show AppFontWeight, CommonFunctions, CommonProperties;
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetWithActions, CustomTextWidget, CustomVerticalSpace, ShimmerEffectWidget;
@@ -45,8 +44,8 @@ class _DelegatorListState extends State<DelegatorList> {
       child: Consumer<BaladyThemeNotifier>(
         builder: (context, themeNotifier, _) {
           return BottomSheetWithActions(
-            withoutClose: true,
-            backgroundColor: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
+            withoutClose: false,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             title: "switch_account".tr(),
             body: BlocBuilder<DelegatorsCubit, DelegatorsState>(
               builder: (context, state) {
@@ -72,13 +71,13 @@ class _DelegatorListState extends State<DelegatorList> {
                       if (state.delegators.isNotEmpty || state.agents.isNotEmpty) ...[
                         // const ProfileHeader(),
                         Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
+                          padding: const EdgeInsets.all(0),
+                          // decoration: ShapeDecoration(
+                          //   shape: RoundedRectangleBorder(
+                          //     side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
+                          //     borderRadius: BorderRadius.circular(16),
+                          //   ),
+                          // ),
                           child: state.tab == 0
                               ? DelegatorsBody(delegatorsCubit: widget._delegatorsCubit, groupId: widget.groupId)
                               : AgentsBody(delegatorsCubit: widget._delegatorsCubit, groupId: widget.groupId),
@@ -115,7 +114,11 @@ class _DelegatorListState extends State<DelegatorList> {
           const SizedBox(height: 16),
           Text(
             "no_business_access_title".tr(),
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.grey[400] : Color(0xFF27272A)),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: isDarkMode ? Colors.grey[400] : Color(0xFF27272A),
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
@@ -153,19 +156,19 @@ class _DelegatorListState extends State<DelegatorList> {
 
     // Navigate to personal group after a short delay
     // Future.delayed(const Duration(milliseconds: 500), () {
-      if (context.mounted) {
-        // Close current group and navigate to personal group
-        Navigator.of(context).pop(); // Close current AppsGroupPage
+    if (context.mounted) {
+      // Close current group and navigate to personal group
+      Navigator.of(context).pop(); // Close current AppsGroupPage
 
-        // Navigate to personal group (business group will auto-disappear from list due to listener)
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            barrierColor: Colors.transparent,
-            pageBuilder: (_, __, ___) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId, ),
-          ),
-        );
-      }
+      // Navigate to personal group (business group will auto-disappear from list due to listener)
+      Navigator.of(context).push(
+        PageRouteBuilder(
+          opaque: false,
+          barrierColor: Colors.transparent,
+          pageBuilder: (_, __, ___) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId),
+        ),
+      );
+    }
     // });
   }
 }

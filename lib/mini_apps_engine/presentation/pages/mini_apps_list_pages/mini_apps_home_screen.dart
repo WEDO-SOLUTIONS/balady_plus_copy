@@ -572,8 +572,9 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                   final groupName = CommonFunctions.isAppAR
                                                       ? appGroup.nameAr
                                                       : appGroup.nameEn;
+                                                  final groupIcon = appGroup.apps.last.iconPath;
                                                   return CustomLargMoreApps(
-                                                    categoryIconPath: appGroup.apps.first.iconPath,
+                                                    categoryIconPath: groupIcon,
                                                     categoryName: groupName,
                                                     withCardEffect: true,
                                                     text: groupName,
