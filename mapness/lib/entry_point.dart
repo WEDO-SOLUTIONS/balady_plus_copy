@@ -1195,7 +1195,7 @@ Future<void> setupMapness(EnvType envType) async {
         appId,
         channel,
         false,         // enableAb
-        true,         // enableEncrypt
+        false,         // enableEncrypt
         !isProduction, // enableLog: true on stg/dev, false on prod
         'https://balady.finder-snssdk.bytepluses.com',
       );
