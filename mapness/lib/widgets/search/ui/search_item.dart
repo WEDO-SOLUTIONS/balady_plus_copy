@@ -71,7 +71,7 @@ class SearchItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String subtitle =(result.id?.objectId == 70030077050725730
         ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
-        : (result.subtitle == 'تسوية' ? 'نطاق' : result.subtitle));
+        : (['تسوية','مستوطنة'].contains(result.subtitle ) ? 'نطاق' : result.subtitle));
     // String subtitle = result.subtitle;
     List<String> photosUrls = [];
     List<Item> photoItems = [];
