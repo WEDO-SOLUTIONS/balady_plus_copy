@@ -65,7 +65,6 @@ class SelectedLayer extends _$SelectedLayer {
 
 enum LayersType { lifestyle, business }
 
-// todo need new type?
 enum LayersPanelType { layers, busLayers, parking }
 
 class LayersState {
