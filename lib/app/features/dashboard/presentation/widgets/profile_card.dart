@@ -28,6 +28,7 @@ class ProfileCard extends StatelessWidget {
   final bool selected;
   final bool isListItem;
   final String? groupId;
+  final bool isIndividual;
 
   const ProfileCard({
     super.key,
@@ -37,6 +38,7 @@ class ProfileCard extends StatelessWidget {
     this.selected = false,
     this.isListItem = true,
     this.groupId,
+    required this.isIndividual,
   });
 
   @override
@@ -104,151 +106,251 @@ class ProfileCard extends StatelessWidget {
           child: SizedBox(
             // width: context.w(461),
             // height: context.h(130),
-            child: Card(
-              elevation: 1,
-              shadowColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: Colors.transparent),
-                borderRadius: BorderRadius.circular(8),
-              ),
+            //! Individual card ....
+            child: isIndividual
+                ? Card(
+                    elevation: 0,
+                    shadowColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
 
-              // margin: isListItem ? const EdgeInsets.symmetric(vertical: 1) : const EdgeInsets.all(16),
-              // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              // decoration: ShapeDecoration(
-              //   color: isIndivisual
-              //       ? Colors.transparent
-              //       : themeNotifier.isDarkMode
-              //       ? Color(0xFF00202D)
-              //       : const Color(0xFFFAFAFA),
-              //   shape: RoundedRectangleBorder(
-              //     side: BorderSide(width: 1, color: selected ? const Color(0xFF2AB3A9) : Colors.transparent),
-              //     borderRadius: BorderRadius.circular(16),
-              //   ),
-              // ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // if (!isIndivisual)
-                    //   CircleIcon(
-                    //     circleSize: 32,
-                    //     iconSize: 16,
-                    //     showShadow: false,
-                    //     icon: IconPath.profileIcon,
-                    //     backgroundColor: Theme.of(context).colorScheme.surface,
-                    //     iconColor: agentTextColor,
-                    //   ),
-                    // const SizedBox(width: 16),
-                    Expanded(
-                      flex: 8,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: double.infinity,
-                            child: AutoSizeText(
-                              maxFontSize: 16,
-                              minFontSize: 12,
-                              isIndivisual ? 'indivisual_account'.tr() : name,
-                              maxLines: 2,
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontFamily: GeneralKey.appFontType,
-                                fontWeight: FontWeight.w400,
-                                wordSpacing: 0,
-                                height: 0,
-                              ),
-                            ),
-                          ),
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // width: double.infinity,
+                                      child: AutoSizeText(
+                                        maxFontSize: 16,
+                                        minFontSize: 12,
+                                        isIndivisual ? 'indivisual_account'.tr() : name,
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          fontFamily: GeneralKey.appFontType,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16,
+                                          wordSpacing: 0,
+                                          height: 0,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 22, // Match the design height
+                                      width: 22,
+                                      alignment: Alignment.center, // Centers the inner circle
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.transparent, // Background of the radio
+                                        border: Border.all(
+                                          color: selected
+                                              ? Theme.of(context).primaryColor
+                                              : Theme.of(context).colorScheme.onSurface,
+                                          width: 1, // Thinner border as per design
+                                        ),
+                                      ),
+                                      child: selected
+                                          ? Container(
+                                              width: 14,
+                                              height: 14,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context).primaryColor,
+                                                shape: BoxShape.circle,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ],
+                                ),
 
-                          if (!isIndivisual) SizedBox(height: context.screenHeight * 0.01),
-                          Text(
-                            type,
-                            style: TextStyle(
-                              color: themeNotifier.isDarkMode
-                                  ? Colors.white.withValues(alpha: 0.6)
-                                  : const Color(0x993C3C43),
-                              fontSize: 12,
-                              fontFamily: GeneralKey.appFontType,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          if (!isIndivisual) SizedBox(height: context.screenHeight * 0.01),
-                          Container(
-                            width: context.w(90),
-                            height: context.h(30),
-                            decoration: BoxDecoration(color: agentBgColor, borderRadius: BorderRadius.circular(50)),
-                            // alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    width: context.w(10),
-                                    height: context.h(10),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                                  child: SizedBox(
+                                    width: context.screenWidth,
+                                    height: context.screenHeight * 0.08,
                                     child: DecoratedBox(
-                                      decoration: BoxDecoration(color: agentTextColor, shape: BoxShape.circle),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.onPrimaryFixedVariant,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                            child: Text(
+                                              name,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface,
+                                                fontSize: 16,
+                                                fontFamily: GeneralKey.appFontType,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                            child: Text(
+                                              type,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+                                                fontSize: 14,
+                                                fontFamily: GeneralKey.appFontType,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    agentType,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      color: agentTextColor,
-                                      fontSize: 14,
-                                      fontFamily: GeneralKey.appFontType,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        height: 22, // Match the design height
-                        width: 22,
-                        alignment: Alignment.center, // Centers the inner circle
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.transparent, // Background of the radio
-                          border: Border.all(
-                            color: selected ? Theme.of(context).primaryColor : Theme.of(context).colorScheme.onSurface,
-                            width: 1, // Thinner border as per design
-                          ),
-                        ),
-                        child: selected
-                            ? Container(
-                                width: 14,
-                                height: 14,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  shape: BoxShape.circle,
-                                ),
-                              )
-                            : null,
-                      ),
+                  )
+                //! Business card ....
+                : Card(
+                    color: Theme.of(context).colorScheme.onPrimaryFixedVariant,
+                    elevation: 0,
+                    shadowColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(8),
                     ),
 
-                    // if (!isListItem && (userInfo != null || delegator != null))
-                    //   SvgPicture.asset(
-                    //     IconPath.arrowDown,
-                    //     width: 16,
-                    //     height: 16,
-                    //     placeholderBuilder: (context) =>
-                    //         Icon(Icons.keyboard_arrow_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
-                    //   ),
-                  ],
-                ),
-              ),
-            ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: AutoSizeText(
+                                    maxFontSize: 16,
+                                    minFontSize: 12,
+                                    isIndivisual ? 'indivisual_account'.tr() : name,
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      fontFamily: GeneralKey.appFontType,
+                                      fontWeight: FontWeight.w400,
+                                      wordSpacing: 0,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
+
+                                Text(
+                                  type,
+                                  style: TextStyle(
+                                    color: themeNotifier.isDarkMode
+                                        ? Colors.white.withValues(alpha: 0.6)
+                                        : const Color(0x993C3C43),
+                                    fontSize: 12,
+                                    fontFamily: GeneralKey.appFontType,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(height: context.screenHeight * 0.01),
+                                Container(
+                                  // width: context.w(90), // 1. Removed this fixed width to allow auto-expansion
+                                  height: context.h(30),
+                                  decoration: BoxDecoration(
+                                    color: agentBgColor,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0,
+                                    ), // 2. Changed to symmetric horizontal padding for uniform looks
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize
+                                          .min, // 3. CRITICAL: Tells the Row to only take up as much space as its children need
+                                      children: [
+                                        SizedBox(
+                                          width: context.w(10),
+                                          height: context.h(10),
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(color: agentTextColor, shape: BoxShape.circle),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 6,
+                                        ), // 4. Replaced spaceEvenly with a fixed spacer for stable layout
+                                        Text(
+                                          agentType,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            color: agentTextColor,
+                                            fontSize: 14,
+                                            fontFamily: GeneralKey.appFontType,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 22, // Match the design height
+                              width: 22,
+                              alignment: Alignment.center, // Centers the inner circle
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent, // Background of the radio
+                                border: Border.all(
+                                  color: selected
+                                      ? Theme.of(context).primaryColor
+                                      : Theme.of(context).colorScheme.onSurface,
+                                  width: 1, // Thinner border as per design
+                                ),
+                              ),
+                              child: selected
+                                  ? Container(
+                                      width: 14,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
           ),
         );
       },
