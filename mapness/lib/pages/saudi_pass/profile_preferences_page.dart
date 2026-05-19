@@ -220,7 +220,7 @@ class _EditAccount extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(Spacing.$4x),
       decoration: BoxDecoration(
-        color: context.colors.backgroundSurface1,
+        color: context.profileCardColor,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
       ),
       child: Column(

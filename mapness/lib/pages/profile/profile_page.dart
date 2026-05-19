@@ -51,12 +51,9 @@ class ProfilePage extends HookConsumerWidget {
     final isDGA =
         context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
         context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
-    final isDGALightMode = context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
     final activeEvent = ref.watch(activeCityEventProvider);
     final isFoundingDay = activeEvent == CityEventType.foundingDay;
-    final backgroundColor = isDGALightMode
-        ? const Color(0xff005937)
-        : isAuth
+    final backgroundColor = isAuth
         ? context.colors.backgroundSurface1
         : isFoundingDay
         ? const Color(0xFFDFC6A8)
