@@ -122,7 +122,6 @@ class ObjectTapHandler {
 
             switch tappedObject {
             case is Marker:
-                NSLog("[DynamicPoiDebug.iOS] object long-press hit Marker")
                 self.onMarkerTap(tappedObject as! Marker)
                 return
             case let polygon as Polygon:
@@ -195,13 +194,14 @@ class ObjectTapHandler {
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
         let tappedObject = objectInfo.item.item
 
-        // Markers now require long-press (handled in objectLongTapListener) per
-        // dynamic-POI iter4 UX. Short taps on markers fall through silently
-        // instead of opening the POI card. Other object types are handled in
-        // their respective tap streams.
+        // Dynamic-POI markers open the POI card on short tap (and update
+        // the selected-state). All other markers stay on the long-press-only
+        // contract introduced in iter4 — short taps on them fall through.
         switch tappedObject {
-        case is Marker:
-            NSLog("[DynamicPoiDebug.iOS] short tap on Marker — ignored, long-press required")
+        case let marker as Marker:
+            if let markerId = (marker.userData as? MarkerId)?.id, markerId.hasPrefix("dynamic_poi_") {
+                self.onMarkerTap(marker)
+            }
             return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
@@ -446,9 +446,6 @@ class ObjectTapHandler {
             self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
         }
         if let isVisible = options.isVisible {
-            if id.hasPrefix("dynamic_poi_") {
-                NSLog("[DynamicPoiDebug.iOS] setMarkerOptions id=\(id) isVisible=\(isVisible) found=\(self.markers[id] != nil)")
-            }
             self.markers[id]?.0.isVisible = isVisible
         }
     }

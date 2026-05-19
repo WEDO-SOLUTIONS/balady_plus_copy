@@ -4,9 +4,8 @@ import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter_insider/flutter_insider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_insider/flutter_insider.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_contain/dto/location_point.dart';
@@ -32,12 +31,23 @@ class _Location extends _$Location {
 
   @override
   Position? build() {
+    // do NOT register any Riverpod edge to dgisControllerProvider
+    // here. `dgisControllerProvider` depends on darkModeProvider → ... →
+    // locationProvider during its own build, so any reverse `ref.watch` /
+    // `ref.listen` / `ref.read` from this provider back to
+    // dgisControllerProvider closes a graph cycle. The Geolocator stream
+    // listener and other async callsites read the controller from the plain
+    // top-level [activeDgisController] cache (populated by
+    // DgisController.onMapCreated) — invisible to Riverpod's graph analysis.
     checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
-      if (!permitted) {
+      if (!ref.mounted || !permitted) {
         return;
       }
       final isGmsAvailable = await CommonFunctions.isGmsAvailable();
       final isHMS = await CommonFunctions.isHuaweiDevice();
+      if (!ref.mounted) {
+        return;
+      }
 
       // gms is not available on iOS so we use the standard library in the case
       if (isGmsAvailable || Platform.isIOS) {
@@ -53,7 +63,11 @@ class _Location extends _$Location {
                 }
               })
               .listen((event) async {
-                state = await _getLocation(event);
+                final location = await _getLocation(event);
+                if (!ref.mounted) {
+                  return;
+                }
+                state = location;
               });
           ref.onDispose(locationSubscription.cancel);
 
@@ -63,23 +77,26 @@ class _Location extends _$Location {
         }
       } else if (isHMS) {
         try {
-          final locationSubscription = CommonFunctions.listenToHMSStream()
-              ?.listen((event) async {
-                state = await _getLocation(
-                  Position(
-                    longitude: event.longitude!,
-                    latitude: event.latitude!,
-                    timestamp: DateTime.now(),
-                    accuracy: event.horizontalAccuracyMeters ?? 0,
-                    altitude: event.altitude ?? 0,
-                    altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
-                    heading: event.bearing ?? 0,
-                    headingAccuracy: event.bearingAccuracyDegrees ?? 0,
-                    speed: event.speed ?? 0,
-                    speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
-                  ),
-                );
-              });
+          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen((event) async {
+            final location = await _getLocation(
+              Position(
+                longitude: event.longitude!,
+                latitude: event.latitude!,
+                timestamp: DateTime.now(),
+                accuracy: event.horizontalAccuracyMeters ?? 0,
+                altitude: event.altitude ?? 0,
+                altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
+                heading: event.bearing ?? 0,
+                headingAccuracy: event.bearingAccuracyDegrees ?? 0,
+                speed: event.speed ?? 0,
+                speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
+              ),
+            );
+            if (!ref.mounted) {
+              return;
+            }
+            state = location;
+          });
           if (locationSubscription != null) {
             ref.onDispose(locationSubscription.cancel);
           }
@@ -93,7 +110,9 @@ class _Location extends _$Location {
   }
 
   Future<void> _startInsiderGeofenceIfNeeded() async {
-    if (_insiderGeofenceStarted) return;
+    if (_insiderGeofenceStarted) {
+      return;
+    }
     _insiderGeofenceStarted = true;
 
     // IMPORTANT:
@@ -102,8 +121,7 @@ class _Location extends _$Location {
     // So we verify with Geolocator's permission state:
     final geoPerm = await Geolocator.checkPermission();
     if (geoPerm != LocationPermission.always) {
-      _insiderGeofenceStarted =
-          false; // allow retry later if user upgrades to Always
+      _insiderGeofenceStarted = false; // allow retry later if user upgrades to Always
       return;
     }
 
@@ -123,6 +141,9 @@ class _Location extends _$Location {
     const routeLocation = '/request_location';
     final router = ref.read(appRouterProvider);
     final serviceStatus = await perm.Permission.location.serviceStatus;
+    if (!ref.mounted) {
+      return false;
+    }
 
     if (CommonFunctions.locationDialogShowed || router.isPathActive(routeLocation)) {
       return false;
@@ -130,11 +151,17 @@ class _Location extends _$Location {
     try {
       if (serviceStatus != perm.ServiceStatus.disabled) {
         final status = await perm.Permission.location.request();
+        if (!ref.mounted) {
+          return false;
+        }
         if (status == perm.PermissionStatus.granted) {
           unawaited(_startInsiderGeofenceIfNeeded());
           if (state == null) {
             final isGmsAvailable = await CommonFunctions.isGmsAvailable();
             final isHuawei = await CommonFunctions.isHuaweiDevice();
+            if (!ref.mounted) {
+              return false;
+            }
             Position? userLocation;
 
             if (isGmsAvailable || Platform.isIOS) {
@@ -142,7 +169,7 @@ class _Location extends _$Location {
             } else if (isHuawei) {
               userLocation = await CommonFunctions.getLastLocationHuawei();
             }
-            state = await _getLocation(
+            final location = await _getLocation(
               userLocation != null
                   ? Position(
                       latitude: userLocation.latitude,
@@ -158,6 +185,10 @@ class _Location extends _$Location {
                     )
                   : null,
             );
+            if (!ref.mounted) {
+              return false;
+            }
+            state = location;
           }
 
           return true;
@@ -199,7 +230,16 @@ class _Location extends _$Location {
     final status = await perm.Permission.location.status;
 
     if (status.isGranted) {
-      final dgisController = await ref.read(dgisControllerProvider.future);
+      // prefer the top-level [activeDgisController] cache so we
+      // don't go through Riverpod (which would close the graph cycle —
+      // dgisControllerProvider transitively depends on locationProvider).
+      // Fall back to `ref.read(dgisControllerProvider.future)` only if the
+      // cache is empty; in that case we're by definition outside the
+      // initialization window where the cycle could trip.
+      final DgisMapController dgisController = activeDgisController ?? await ref.read(dgisControllerProvider.future);
+      if (!ref.mounted) {
+        return false;
+      }
       unawaited(dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
 
       CommonFunctions.locationDialogShowed = false;
@@ -220,6 +260,9 @@ class _Location extends _$Location {
   Future<void> refreshLocation() async {
     try {
       final status = await perm.Permission.location.status;
+      if (!ref.mounted) {
+        return;
+      }
       if (!status.isGranted) {
         logger.log('Location permission not granted, cannot refresh');
         return;
@@ -227,6 +270,9 @@ class _Location extends _$Location {
 
       final isGmsAvailable = await CommonFunctions.isGmsAvailable();
       final isHuawei = await CommonFunctions.isHuaweiDevice();
+      if (!ref.mounted) {
+        return;
+      }
       Position? userLocation;
 
       if (isGmsAvailable) {
@@ -239,7 +285,11 @@ class _Location extends _$Location {
       }
 
       if (userLocation != null) {
-        state = await _getLocation(userLocation);
+        final location = await _getLocation(userLocation);
+        if (!ref.mounted) {
+          return;
+        }
+        state = location;
       }
     } catch (ex) {
       logger.log('Error refreshing location: ${ex.toString()}');
@@ -252,8 +302,12 @@ class _Location extends _$Location {
       return null;
     }
 
-    final controllerAsync = ref.read(dgisControllerProvider);
-    final controller = controllerAsync.value;
+    // read the controller from the plain top-level cache
+    // [activeDgisController]. We can't use `ref.read(dgisControllerProvider)`
+    // because dgisControllerProvider transitively depends on this provider
+    // (via darkModeProvider → LocationWithPrecision → us) and any reverse
+    // Riverpod read closes a graph cycle. See [activeDgisController] doc.
+    final controller = activeDgisController;
     if (controller == null) {
       return userLocation;
     }
@@ -262,6 +316,9 @@ class _Location extends _$Location {
       _saRect,
       GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
     );
+    if (!ref.mounted) {
+      return null;
+    }
     return isLocationInsideKSA
         ? userLocation
         : Position(
@@ -294,7 +351,6 @@ class LocationWithPrecision extends _$LocationWithPrecision {
   @override
   LocationPoint? build({required int decimalPlaces}) {
     final location = ref.watch(locationProvider);
-    debugPrint('LocationWithPrecision build: $location');
     if (location == null) {
       return null;
     }

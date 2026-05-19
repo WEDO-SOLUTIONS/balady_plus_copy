@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -111,25 +112,42 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Text(context.l10n.aiSummaryLabel, style: palette.labelTextStyle),
-      const SizedBox(width: AiSummaryTokens.headerSpacing),
-      Container(
-        padding: AiSummaryTokens.badgePadding,
-        decoration: BoxDecoration(
-          gradient: palette.badgeGradient,
-          borderRadius: BorderRadius.circular(AiSummaryTokens.badgeBorderRadius),
+      Flexible(
+        child: AutoSizeText(
+          context.l10n.aiSummaryLabel,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: palette.labelTextStyle,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.auto_awesome,
-              size: AiSummaryTokens.sparkleSize,
-              color: palette.sparkleColor,
-            ),
-            const SizedBox(width: AiSummaryTokens.badgeIconToTextSpacing),
-            Text(context.l10n.aiSummaryBaladyBadge, style: palette.badgeTextStyle),
-          ],
+      ),
+      const SizedBox(width: AiSummaryTokens.headerSpacing),
+      Flexible(
+        child: Container(
+          padding: AiSummaryTokens.badgePadding,
+          decoration: BoxDecoration(
+            gradient: palette.badgeGradient,
+            borderRadius: BorderRadius.circular(AiSummaryTokens.badgeBorderRadius),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.auto_awesome,
+                size: AiSummaryTokens.sparkleSize,
+                color: palette.sparkleColor,
+              ),
+              const SizedBox(width: AiSummaryTokens.badgeIconToTextSpacing),
+              Flexible(
+                child: AutoSizeText(
+                  context.l10n.aiSummaryBaladyBadge,
+                  maxLines: 1,
+                  minFontSize: 9,
+                  overflow: TextOverflow.ellipsis,
+                  style: palette.badgeTextStyle,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     ],

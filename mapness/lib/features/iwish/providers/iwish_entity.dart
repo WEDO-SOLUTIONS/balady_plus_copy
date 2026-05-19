@@ -57,24 +57,33 @@ class _IwishEntity extends _$IwishEntity {
   @override
   Future<IwishEntity> build(String iwishId) async {
     final dio = await ref.read(dGisNetworkProvider.future);
+    if (!ref.mounted) {
+      throw StateError('iwishEntityProvider disposed');
+    }
 
     final raw = await dio.get('iwish/$iwishId');
+    if (!ref.mounted) {
+      throw StateError('iwishEntityProvider disposed');
+    }
 
     final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
     final point = response.location.point;
-    logger.log('${response.toProto3Json()}');
+    if (kDebugMode) {
+      logger.log('${response.toProto3Json()}');
+    }
     final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
-    await ref.read(selectedMarkerProvider.notifier).showMarker(
-          Markers.pinMarker(
-            GeoPointWithElevationMessage(latitude: point.latitude, longitude: point.longitude, elevation: 1),
-            id: iwishPinId,
-            activeCityEvent: ref.read(activeCityEventProvider),
-            isDark: isDark,
-          ),
-        );
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    await selectedMarker.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(latitude: point.latitude, longitude: point.longitude, elevation: 1),
+        id: iwishPinId,
+        activeCityEvent: activeCityEvent,
+        isDark: isDark,
+      ),
+    );
     ref.onDispose(() async {
-      final read = ref.read(selectedMarkerProvider.notifier);
-      await read.removeMarker(iwishPinId);
+      await selectedMarker.removeMarker(iwishPinId);
     });
 
     return response.toDomain();

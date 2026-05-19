@@ -7,6 +7,7 @@ import 'package:mapness/entities/makkah_places/makkah_place_model.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/makkah_places/makkah_places_json_datasource.dart';
 import 'package:mapness/features/makkah_places/makkah_places_repository.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
@@ -120,6 +121,7 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
         Marker(
           id: markerId,
           onTap: () async {
+            ref.read(mapTapHandlerProvider.notifier).notifyMakkahMarkerTapped();
             // Track marker tap
             Metrics.logEventAdvanced(
               MetricsConstants.makkahPlacesKeys.mapMarkerTapped,

@@ -119,6 +119,11 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
             .toList() ??
         [],
   );
+  static const _broadAreaDrilldownTypes = {
+    'region',
+    'district_area',
+    'district',
+  };
 
   bool get hasHighlightableType {
     final hasBroadAreaType = types.any(
@@ -135,6 +140,8 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         ObjectTypeMessage.admDivSettlement ||
         ObjectTypeMessage.road ||
         ObjectTypeMessage.street => true,
+        ObjectTypeMessage.unknown =>
+          address?.drilldown.any((item) => _broadAreaDrilldownTypes.contains(item.type)) ?? false,
         _ => false,
       },
     );

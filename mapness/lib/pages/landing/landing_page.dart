@@ -34,7 +34,8 @@ class LandingPage extends ConsumerStatefulWidget {
   ConsumerState<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver, TickerProviderStateMixin {
+class _LandingPageState extends ConsumerState<LandingPage>
+    with WidgetsBindingObserver, TickerProviderStateMixin, AutoRouteAwareStateMixin<LandingPage> {
   late final bottomSheetController = ref.read(bottomSheetControllerProvider.notifier).state.controller;
 
   ThreeStateSheet? get bottomSheetState => bottomSheetController?.state;
@@ -63,26 +64,43 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   // Only first time when sheet is open
   bool _sheetExpanded = false;
+  bool _routeCovered = false;
+  bool _sheetOverlayVisible = false;
+  ThreeStateSheet? _lastTracedSheetState;
+  ThreeStateSheet? _lastTracedClosestSheetState;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
+    _sheetOverlayVisible = bottomSheetState != ThreeStateSheet.hidden;
     bottomSheetController?.addListener(_bottomsheetListener);
+    _traceSheet('init');
 
     _setupTapListener();
   }
 
   Future<void> _setupTapListener() async {
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
       _calculatePadding();
     });
   }
 
   void _calculatePadding() {
+    final bottomSheetController = this.bottomSheetController;
+    if (!mounted || bottomSheetController == null) {
+      return;
+    }
+
     ref
         .read(cameraPaddingProvider.notifier)
         .resetPadding(
@@ -90,15 +108,23 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: bottomSheetController!.sheetHeight.toInt(),
+            bottomPadding: bottomSheetController.sheetHeight.toInt(),
           ),
         );
   }
 
   void _bottomsheetListener() {
+    final state = bottomSheetController?.state;
+    final closestState = bottomSheetController?.closestState;
+    if (state != _lastTracedSheetState || closestState != _lastTracedClosestSheetState) {
+      _lastTracedSheetState = state;
+      _lastTracedClosestSheetState = closestState;
+      _traceSheet('sheet-listener');
+    }
+
     if (bottomSheetController?.state == ThreeStateSheet.expanded && !_sheetExpanded) {
       _sheetExpanded = true;
-      final isFoundingDayToday = ref.watch(foundingDayUrbiProvider);
+      final isFoundingDayToday = ref.read(foundingDayUrbiProvider);
       if (isFoundingDayToday) {
         confettiController
           ..value = 0
@@ -106,16 +132,60 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       }
     }
 
+    _syncSheetOverlayVisibility();
     _calculatePadding();
   }
 
   @override
   void dispose() {
+    _traceSheet('dispose');
     bottomSheetController?.removeListener(_bottomsheetListener);
 
     WidgetsBinding.instance.removeObserver(this);
+    confettiController.dispose();
 
     super.dispose();
+  }
+
+  @override
+  void didPushNext() {
+    _setRouteCovered(true);
+  }
+
+  @override
+  void didPopNext() {
+    _setRouteCovered(false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _calculatePadding();
+      }
+    });
+  }
+
+  void _setRouteCovered(bool value) {
+    if (_routeCovered == value || !mounted) {
+      return;
+    }
+    setState(() {
+      _routeCovered = value;
+      if (!value) {
+        _sheetOverlayVisible = bottomSheetState != ThreeStateSheet.hidden;
+      }
+    });
+  }
+
+  void _syncSheetOverlayVisibility() {
+    if (!mounted || _routeCovered) {
+      return;
+    }
+
+    final isVisible = bottomSheetState != ThreeStateSheet.hidden;
+    if (_sheetOverlayVisible == isVisible) {
+      return;
+    }
+    setState(() {
+      _sheetOverlayVisible = isVisible;
+    });
   }
 
   @override
@@ -152,7 +222,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(activeCityEventProvider);
 
     final confettiConfig = getConfettiConfig(context);
-    return HajjWrapperListeners(
+    final content = HajjWrapperListeners(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: context.watch<ThemeController>().systemOverlayStyle,
         child: Directionality(
@@ -161,20 +231,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             type: MaterialType.transparency,
             child: Stack(
               children: [
-                ListenableBuilder(
-                  listenable: bottomSheetController!,
-                  builder: (_, __) {
-                    if (bottomSheetController?.state == ThreeStateSheet.hidden) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return GestureDetector(
+                if (_sheetOverlayVisible)
+                  Positioned.fill(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
                       onTapDown: (_) => _hideBottomSheet(),
                       onTapUp: (_) => _hideBottomSheet(),
                       onTap: _hideBottomSheet,
-                    );
-                  },
-                ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(top: Spacing.$3x),
                   child: Dashboard(
@@ -195,11 +260,32 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         ),
       ),
     );
+
+    return Offstage(
+      offstage: _routeCovered,
+      child: TickerMode(
+        enabled: !_routeCovered,
+        child: IgnorePointer(
+          ignoring: _routeCovered,
+          child: content,
+        ),
+      ),
+    );
   }
 
   void _hideBottomSheet() {
+    _traceSheet('hideBottomSheet-before');
     if (bottomSheetState != ThreeStateSheet.hidden) {
       bottomSheetController?.setState(ThreeStateSheet.hidden);
+    }
+    _syncSheetOverlayVisibility();
+    _traceSheet('hideBottomSheet-after');
+  }
+
+  void _traceSheet(String event) {
+    final controller = bottomSheetController;
+    if (controller == null) {
+      return;
     }
   }
 }
