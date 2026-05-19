@@ -45,8 +45,6 @@ import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 
-// todo highlight current bus stop on POI lines
-
 class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
   final void Function()? onEntrancesTap;
