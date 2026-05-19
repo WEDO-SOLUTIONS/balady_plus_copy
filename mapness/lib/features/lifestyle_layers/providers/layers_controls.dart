@@ -23,17 +23,17 @@ import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
-import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
-import 'package:mapness/features/shuttle_bus/provider.dart';
-import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/makkah_bus/provider.dart';
 import 'package:mapness/features/makkah_bus/repo.dart';
+import 'package:mapness/features/makkah_bus/visible_provider.dart';
+import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
-import 'package:mapness/features/makkah_bus/visible_provider.dart';
-import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
+import 'package:mapness/features/shuttle_bus/provider.dart';
+import 'package:mapness/features/shuttle_bus/repo.dart';
+import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -222,7 +222,7 @@ class LayersControls extends _$LayersControls {
         toggleMetro();
         break;
       case LayerType.busSubMenu:
-        toggleBusSubMenu();
+        // no op
         break;
       case LayerType.makkahBus:
         toggleMakkahBuses();
@@ -348,11 +348,6 @@ class LayersControls extends _$LayersControls {
       ref.read(jeddahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.jeddahBus);
     }
-  }
-
-  void toggleBusSubMenu() {
-    // TODO(jeddah_bus): open menu or do nothing
-    ref.read(appRouterProvider).push(const BusLayersSheetRoute());
   }
 
   void update({

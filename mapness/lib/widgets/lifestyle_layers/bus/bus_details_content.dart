@@ -60,12 +60,7 @@ class BusDetailsContent extends ConsumerWidget {
             ),
           ),
           LayerSliverList(
-            tapOnParkingLotsMenu: (layerType) {
-              if (layerType == layers_state.LayerType.busSubMenu) {
-                onTitlePressed();
-              }
-            },
-            layerType: layers_state.LayerType.v1,
+            layerType: layers_state.LayerType.bus,
             layersState: state,
           ),
         ],

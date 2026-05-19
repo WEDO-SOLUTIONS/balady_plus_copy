@@ -12,12 +12,14 @@ import 'layer_switcher_card.dart';
 class LayerSliverList extends ConsumerWidget {
   final List<layers_state.LayerType> layerType;
   final LayersState layersState;
-  final ValueChanged<layers_state.LayerType>? tapOnParkingLotsMenu;
+  final ValueChanged<layers_state.LayerType>? onIconTap;
+  final Set<layers_state.LayerType> layerTapItems;
 
   const LayerSliverList({
     required this.layerType,
     required this.layersState,
-    this.tapOnParkingLotsMenu,
+    this.layerTapItems = const {},
+    this.onIconTap,
     super.key,
   });
 
@@ -70,7 +72,7 @@ class LayerSliverList extends ConsumerWidget {
               }
             }
           },
-          child: LayerSwitcherCard(value, layersState, tapOnParkingLotsMenu),
+          child: LayerSwitcherCard(value, layersState, onIconTap, layerTapItems),
         );
       },
     );

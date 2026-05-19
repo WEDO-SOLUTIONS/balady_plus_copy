@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:equatable/equatable.dart';
 
 class BusStation extends Equatable {
@@ -38,6 +40,8 @@ class BusLine extends Equatable {
 
   @override
   List<Object?> get props => [id, routeNameEn, routeNameAr, stations, polylineCoordinates, color];
+
+  Color get flutterColor => Color(color);
 }
 
 class BusCoordinates extends Equatable {
