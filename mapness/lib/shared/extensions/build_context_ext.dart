@@ -12,8 +12,18 @@ extension BuildContextExt on BuildContext {
 
   /// Card surface used across profile/settings screens (matches Settings page).
   Color get profileCardColor {
-    final theme = read<ThemeController>().currentTheme;
+    final themeController = read<ThemeController>();
+    final palette = themeController.colors;
+    final theme = themeController.currentTheme;
     final isDGA = theme == BaladyAppThemes.darkDGA || theme == BaladyAppThemes.lightDGA;
-    return isDGA ? colors.accentSecondarySoft : colors.backgroundSurface1;
+    return isDGA ? palette.accentSecondarySoft : palette.backgroundSurface1;
+  }
+
+  /// Field fill inside [profileCardColor] cards (gray on light cards, dark on dark cards).
+  Color get profileFieldFillColor {
+    final palette = read<ThemeController>().colors;
+    return profileCardColor.computeLuminance() > 0.5
+        ? palette.backgroundSurface4
+        : palette.backgroundSurface1;
   }
 }

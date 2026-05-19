@@ -81,17 +81,30 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     print('📱 Loaded user data - Email: $_activeEmail, isEmailVerified: $_isEmailVerified');
   }
 
-  Future<void> _fetchLatestUserInfo() async {
+  Future<void> _fetchLatestUserInfo({
+    bool updateAuthProvider = true,
+    String? overrideFirstName,
+    String? overrideLastName,
+  }) async {
     try {
       final userInfoJson = await _service.getUserInfo();
       // `/api/user/userinfo` does NOT return `complete_profile` — that flag
       // only comes from `MobileLoginVerifyOtp` at login time. Preserve the
       // original value captured on the existing `widget.userInfo` so the
       // edit/read-only gating doesn't get reset to the default after a refresh.
-      final freshUserInfo = SsoUserInfo.fromJson(userInfoJson).copyWith(
-        completeProfile: widget.userInfo.completeProfile,
-        loginType: widget.userInfo.loginType,
+      final previousAuth = ref.read(authProvider).value;
+      var freshUserInfo = SsoUserInfo.fromJson(userInfoJson).copyWith(
+        completeProfile: previousAuth?.completeProfile ?? widget.userInfo.completeProfile,
+        loginType: previousAuth?.loginType ?? widget.userInfo.loginType,
+        isEmailEditable: previousAuth?.isEmailEditable ?? widget.userInfo.isEmailEditable,
+        isSSOLocked: previousAuth?.isSSOLocked ?? widget.userInfo.isSSOLocked,
       );
+
+      if (overrideFirstName != null && overrideLastName != null) {
+        final fullName = '$overrideFirstName $overrideLastName'.trim();
+        freshUserInfo = freshUserInfo.copyWith(arName: fullName, enName: fullName);
+      }
+
       final language = ref.read(appLanguageProvider);
 
       print(
@@ -116,7 +129,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _initialLastName = _currentLastName;
       });
 
-      await ref.read(authProvider.notifier).forceUpdate();
+      if (updateAuthProvider) {
+        await ref.read(authProvider.notifier).updateUserInfo(freshUserInfo);
+      }
     } catch (e) {
       print('❌ Failed to fetch fresh user info: $e');
     }
@@ -212,7 +227,12 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         if (!emailChanged) completeProfileData['email'] = _activeEmail;
 
         await _service.updateUserProfile(changes: completeProfileData);
-        await _fetchLatestUserInfo();
+        // Avoid auth-provider rebuild while opening the OTP sheet (can dispose this widget).
+        await _fetchLatestUserInfo(
+          updateAuthProvider: !emailChanged,
+          overrideFirstName: nameChanged ? newFirstName : null,
+          overrideLastName: nameChanged ? newLastName : null,
+        );
 
         setState(() {
           _currentFirstName = newFirstName;
@@ -238,6 +258,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
       if (emailChanged && newEmail.isNotEmpty && _canEditEmail) {
         final sessionId = await _service.sendVerificationEmail(newEmail);
+        if (!mounted) return;
         setState(() {
           _sessionId = sessionId;
           _otpPending = true;
@@ -246,12 +267,13 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           _errorText = null;
           _isLoading = false;
         });
-        if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('verification_code_sent'.tr())),
           );
-        }
-        _showOtpBottomSheet();
+          _showOtpBottomSheet();
+        });
       } else if (!emailChanged && nameChanged) {
         setState(() => _isLoading = false);
       } else {
@@ -261,6 +283,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       _handleDioError(e);
       setState(() => _isLoading = false);
     } catch (e) {
+      if (kDebugMode) {
+        print('❌ Profile save failed: $e');
+      }
+      if (!mounted) return;
       setState(() {
         _errorText = 'account_error_save_failed'.tr();
         _isLoading = false;
@@ -286,7 +312,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         },
       );
 
-      await _fetchLatestUserInfo();
+      await _fetchLatestUserInfo(
+        overrideFirstName: currentFirstName,
+        overrideLastName: currentLastName,
+      );
 
       setState(() {
         _activeEmail = _pendingEmail ?? _activeEmail;
@@ -316,10 +345,14 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   void _showOtpBottomSheet() {
+    // Use listen:false — this runs from async save / post-frame callbacks.
+    final colors = context.themeRead.colors;
+    final sheetBackground = context.profileCardColor;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: sheetBackground,
+      barrierColor: colors.screenOverlayDimming40,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -483,8 +516,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     final colors = context.colors;
     final textStyles = context.textStyles;
 
-    final hasFieldErrors =
-        _firstNameError != null || _lastNameError != null || _emailError != null;
+    final hasFieldErrors = _firstNameError != null || _lastNameError != null || _emailError != null;
     final hasChanges = _hasUnsavedChanges();
     // When saving, use a no-op onPressed so the button stays in the "enabled" style;
     // `onPressed: null` would apply disabled styling and fade the white saving text.
@@ -499,7 +531,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           ),
           child: Container(
             decoration: BoxDecoration(
-              color: colors.backgroundSurface1,
+              color: context.profileCardColor,
               borderRadius: BorderRadius.circular(16),
             ),
             padding: const EdgeInsets.all(16),
@@ -768,7 +800,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: colors.neutralContainerSoft,
+        color: context.profileFieldFillColor,
         borderRadius: BorderRadius.circular(_kFieldRadius),
       ),
       child: Text(
@@ -803,7 +835,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         hintText: hintText,
         hintStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundMuted),
         filled: true,
-        fillColor: colors.neutralContainerSoft,
+        fillColor: context.profileFieldFillColor,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(_kFieldRadius),
@@ -811,9 +843,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(_kFieldRadius),
-          borderSide: hasError
-              ? BorderSide(color: colors.errorDefault, width: 1.5)
-              : BorderSide.none,
+          borderSide: hasError ? BorderSide(color: colors.errorDefault, width: 1.5) : BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(_kFieldRadius),
@@ -861,7 +891,7 @@ class _GenderToggle extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: colors.backgroundSurface1,
+              color: context.profileFieldFillColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isSelected ? colors.accentDefault : colors.borderSoft,
@@ -1002,7 +1032,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: colors.neutralContainerSoft,
+                    color: context.profileFieldFillColor,
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Icon(Icons.close, size: 16, color: colors.foregroundSoft),
@@ -1055,7 +1085,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: colors.neutralContainerSoft,
+                  color: context.profileFieldFillColor,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: boxError
@@ -1085,13 +1115,11 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
             width: double.infinity,
             height: 52,
             child: FilledButton(
-              onPressed: _isVerifying || widget.resendAttemptsLeft <= 0
-                  ? null
-                  : widget.onResend,
+              onPressed: _isVerifying || widget.resendAttemptsLeft <= 0 ? null : widget.onResend,
               style: FilledButton.styleFrom(
                 backgroundColor: colors.accentDefault,
                 disabledBackgroundColor: colors.neutralContainerMuted,
-                foregroundColor: colors.staticWhite,
+                foregroundColor: colors.accentOnAccent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(_kFieldRadius),
                 ),
@@ -1102,12 +1130,12 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(colors.staticWhite),
+                        valueColor: AlwaysStoppedAnimation<Color>(colors.accentOnAccent),
                       ),
                     )
                   : Text(
                       'account_resend_code'.tr(),
-                      style: textStyles.buttonM.copyWith(color: colors.staticWhite),
+                      style: textStyles.buttonM.copyWith(color: colors.accentOnAccent),
                     ),
             ),
           ),
@@ -1183,6 +1211,7 @@ class _NumPad extends StatelessWidget {
                       child: Container(
                         height: 52,
                         decoration: BoxDecoration(
+                          color: isEmpty ? null : context.profileFieldFillColor,
                           border: Border(
                             top: borderSide,
                             right: borderSide,

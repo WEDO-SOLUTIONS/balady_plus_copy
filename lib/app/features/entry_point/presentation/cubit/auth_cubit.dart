@@ -478,6 +478,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     EasyLoading.dismiss();
   }
 
+  /// Persists and broadcasts profile edits (e.g. OTP user name changes from mapness).
+  Future<void> applyUserInfo(SsoUserInfo userInfo) async {
+    final failureOrSuccess = await _saveSSOProfile(userInfo);
+    if (failureOrSuccess.isRight()) {
+      emit(state.copyWith(userInfo: userInfo));
+    }
+  }
+
   Future<void> refreshSSOProfile() async {
     try {
       AuthenticatedState authState =
