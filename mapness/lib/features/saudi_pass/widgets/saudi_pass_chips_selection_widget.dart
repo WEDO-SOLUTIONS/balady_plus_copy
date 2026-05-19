@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/entities/selection.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SaudiPassChipsSelectionWidget<T> extends StatelessWidget {
   final String title;
@@ -19,7 +20,7 @@ class SaudiPassChipsSelectionWidget<T> extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.$4x),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: context.colors.backgroundSurface1,
+        color: context.profileCardColor,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
       ),
       child: Column(

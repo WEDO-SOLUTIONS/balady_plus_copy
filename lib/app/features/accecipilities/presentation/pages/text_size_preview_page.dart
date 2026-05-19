@@ -30,14 +30,20 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<AccessibilityController>(context);
+    final colors = context.colors;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bodyTextColor = isDark ? colors.accentDefault : colors.foregroundDefault;
+    final titleStyle = context.textStyles.bodyLargeSemiBold.copyWith(color: bodyTextColor);
+    final accent = colors.accentDefault;
 
     return Scaffold(
-      backgroundColor: context.colors.backgroundSurface4,
+      backgroundColor: colors.backgroundSurface4,
 
       appBar: BaladyTopBar.iconAndText(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         title: 'fontSize'.tr(),
-        colorEnabled: context.colors.accentDefault,
+        textStyle: titleStyle,
+        colorEnabled: accent,
         leading: ActionModel(
           onPressed: () {
             context.router.pop();
@@ -53,7 +59,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
               decoration: BoxDecoration(
-                color: context.colors.backgroundSurface1,
+                color: colors.backgroundSurface1,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Text(
@@ -63,7 +69,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 style: TextStyle(
                   fontSize: _fontSize,
                   height: 1.4,
-                  color: context.colors.foregroundDefault,
+                  color: bodyTextColor,
                 ),
               ),
             ),
@@ -74,7 +80,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                   'A',
                   style: TextStyle(
                     fontSize: 12,
-                    color: context.colors.foregroundDefault,
+                    color: bodyTextColor,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -82,17 +88,15 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                   child: SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       trackHeight: 4,
-                      activeTrackColor: const Color(0xFF4DB6AC),
-                      inactiveTrackColor: context.colors.backgroundSurface1,
-                      thumbColor: const Color(0xFF4DB6AC),
-                      overlayColor: const Color(0xFF4DB6AC).withOpacity(0.15),
+                      activeTrackColor: accent,
+                      inactiveTrackColor: colors.backgroundSurface1,
+                      thumbColor: accent,
+                      overlayColor: accent.withOpacity(0.15),
                       tickMarkShape: const RoundSliderTickMarkShape(
                         tickMarkRadius: 2,
                       ),
                       activeTickMarkColor: Colors.transparent,
-                      inactiveTickMarkColor: const Color(
-                        0xFF4DB6AC,
-                      ).withOpacity(0.4),
+                      inactiveTickMarkColor: accent.withOpacity(0.4),
                     ),
                     child: Slider(
                       value: _fontSize,
@@ -111,18 +115,28 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                   'A',
                   style: TextStyle(
                     fontSize: 24,
-                    color: context.colors.foregroundDefault,
+                    color: bodyTextColor,
                   ),
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('12px', style: TextStyle(color: Colors.grey)),
-                  Text('24px', style: TextStyle(color: Colors.grey)),
+                  Text(
+                    '12px',
+                    style: TextStyle(
+                      color: isDark ? accent : Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    '24px',
+                    style: TextStyle(
+                      color: isDark ? accent : Colors.grey,
+                    ),
+                  ),
                 ],
               ),
             ),

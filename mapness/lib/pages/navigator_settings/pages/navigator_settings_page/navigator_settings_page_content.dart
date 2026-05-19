@@ -25,6 +25,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
     final navigatorCamerasSettingsNotifier = ref.read(navigatorSpeedCamerasSettingsProvider.notifier);
     final navigatorRouteSettingsNotifier = ref.read(navigatorRouteSettingsProvider.notifier);
     final betterRouteSettingsNotifier = ref.read(betterRouteSuggestionsProvider.notifier);
+    final cardColor = context.profileCardColor;
 
     return SingleChildScrollView(
       child: Padding(
@@ -35,13 +36,9 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
             ContentColumn(
               headerTitle: context.l10n.navigation,
               content: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(RadiusBorder.l),
-                    color: context.colors.backgroundSurface1,
-                  ),
-                  child: Column(
-                    children: [
+                ContentWrapper(
+                  color: cardColor,
+                  children: [
                       Consumer(
                         builder: (context, ref, _) {
                           final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
@@ -129,8 +126,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                           );
                         },
                       ),
-                    ],
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -141,7 +137,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                   ContentRow(
                     onTap: () => context.router.push(const DarkMapRoute()),
                     options: ContentRowOptions(
-                      wrapperColor: context.colors.backgroundSurface1,
+                      wrapperColor: cardColor,
                       wrapperEnabled: true,
                       title: context.l10n.darkMap,
                       titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
@@ -162,7 +158,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                   onTap: () => context.router.push(const SoundSettingsRoute()),
                   options: ContentRowOptions(
                     titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
-                    wrapperColor: context.colors.backgroundSurface1,
+                    wrapperColor: cardColor,
                     wrapperEnabled: true,
                     leadingIcon: mappness.Assets.icons.svg.icNotification.svg(color: context.colors.accentDefault),
                     title: context.l10n.soundSettings,
@@ -185,7 +181,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
 
                     return ContentRow(
                       options: ContentRowOptions(
-                        wrapperColor: context.colors.backgroundSurface1,
+                        wrapperColor: cardColor,
                         wrapperEnabled: true,
                         leadingIcon: Assets.icons.maneuver.roadEventCam.svg(package: packageName, fit: BoxFit.fill),
                         title: context.l10n.speedCameras,

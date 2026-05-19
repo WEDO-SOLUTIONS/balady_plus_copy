@@ -173,7 +173,11 @@ class CategoryHeader extends StatelessWidget {
   final bool isHighlighted;
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) {
+    final isLightTheme = context.colors.backgroundSurface4.computeLuminance() > 0.5;
+    final titleColor = isLightTheme ? context.colors.foregroundDefault : context.colors.foregroundSoft;
+
+    return Padding(
     padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, bottom: Spacing.$1x, end: Spacing.$8x),
     child: ContentRow(
       key: ValueKey<bool>(isHighlighted),
@@ -185,7 +189,7 @@ class CategoryHeader extends StatelessWidget {
         titleOptions: ContentRowTextOption(
           builder: (context) => Text(
             category.name,
-            style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.bodySmallMedium.copyWith(color: titleColor),
           ),
         ),
       ),
@@ -198,7 +202,8 @@ class CategoryHeader extends StatelessWidget {
         ),
       ),
     ),
-  );
+    );
+  }
 }
 
 class SubCategoriesWidget extends StatelessWidget {
@@ -230,11 +235,11 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsetsDirectional.only(top: Spacing.$2_5x, bottom: Spacing.$2_5x),
+    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$2_5x),
     margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-      color: context.colors.backgroundSurface1,
+      color: context.profileCardColor,
     ),
     child: child,
   );
@@ -251,8 +256,10 @@ class SubCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: view,
-    builder: (context, _) => Container(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+    builder: (context, _) => Padding(
+      padding: categoryId != null
+          ? const EdgeInsets.symmetric(horizontal: Spacing.$4x)
+          : EdgeInsets.zero,
       child: ContentRow(
         key: ValueKey<bool>(view.isHighlighted),
         leading: categoryId != null ? getCategorySvg(categoryId!, context) : null,
@@ -276,10 +283,7 @@ class SubCategoryWidget extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Transform.translate(
-                      offset: const Offset(-Spacing.$4x, 0),
-                      child: Text(view.title, style: baseStyle),
-                    );
+                  : Text(view.title, style: baseStyle);
             },
           ),
         ),

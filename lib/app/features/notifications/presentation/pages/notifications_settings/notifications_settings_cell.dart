@@ -2,9 +2,9 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_settings/notifications_list_settings_cubit.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/constants/app_style.dart';
@@ -121,12 +121,7 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                                 ),
                                 const Spacer(),
                                 IgnorePointer(
-                                  child: CupertinoSwitch(
-                                    activeTrackColor:
-                                        context.colors.accentActive,
-                                    onChanged: (bool value) {},
-                                    value: cubit.isChecked,
-                                  ),
+                                  child: Toggle(value: cubit.isChecked),
                                 ),
                               ],
                             ),
