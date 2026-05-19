@@ -95,6 +95,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
 
   OnMapTapHandler? _priorityMapTapHandler;
 
+  int _pendingMakkahSuppression = 0;
+  Timer? _pendingMakkahSuppressionTimer;
+  static const Duration _makkahTapSuppressionWindow = Duration(milliseconds: 400);
+
   late final StreamController<TapEvent> _currentMapHandlers = StreamController.broadcast();
 
   @override
@@ -111,6 +115,8 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     ref.onDispose(() {
       _baseStreamSubscription?.cancel();
       _poiPageClosingSubscription?.close();
+      _pendingMakkahSuppressionTimer?.cancel();
+      _clearTapDisableOwners();
       _currentMapHandlers.close();
     });
   }
@@ -124,13 +130,22 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     _priorityMapTapHandler = null;
   }
 
+  void notifyMakkahMarkerTapped() {
+    _pendingMakkahSuppression = 2;
+    _pendingMakkahSuppressionTimer?.cancel();
+    _pendingMakkahSuppressionTimer = Timer(_makkahTapSuppressionWindow, () {
+      _pendingMakkahSuppression = 0;
+      _pendingMakkahSuppressionTimer = null;
+    });
+  }
+
   /// Registers a callback to handle tap events on the map.
   StreamSubscription<TapEvent> listen(OnMapTapHandler handler) => _currentMapHandlers.stream.listen(handler);
 
   /// Handles all incoming tap events, passing them to the priority handler or the default one.
   void _onNewEvent(TapEvent event) {
     /// If the tap handler is disabled, do not process the event.
-    if (_isDisabledTapHandler) {
+    if (isDisabledTapHandler) {
       return;
     }
 
@@ -158,6 +173,10 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleObjectTapEvent(ObjectTapEvent event) {
+    if (_consumePendingMakkahSuppression()) {
+      return;
+    }
+
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.map,
       group: MetricsConstants.poiTag,
@@ -174,6 +193,18 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
           ),
           toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
         );
+  }
+
+  bool _consumePendingMakkahSuppression() {
+    if (_pendingMakkahSuppression <= 0) {
+      return false;
+    }
+    _pendingMakkahSuppression--;
+    if (_pendingMakkahSuppression == 0) {
+      _pendingMakkahSuppressionTimer?.cancel();
+      _pendingMakkahSuppressionTimer = null;
+    }
+    return true;
   }
 
   void _handleRoadEventTapEvent(RoadEventTapEvent event) {

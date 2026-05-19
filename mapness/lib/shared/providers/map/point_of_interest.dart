@@ -108,8 +108,20 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final highlightController = ref.watch(highlightProvider.notifier);
   await highlightController.removeAll();
 
-  if (directoryObject.hasHighlightableType) {
+  const haramZone = 70030077050725730;
+  const holySites = 70030077050669177;
+  const arafat = 70030076872378603;
+  const mina = 70030077051689430;
+
+  if (objectId.objectId == haramZone ||
+      objectId.objectId == holySites ||
+      objectId.objectId == arafat ||
+      objectId.objectId == mina) {
     await highlightController.addHighlight(objectId.toMessage());
+  } else {
+    if (directoryObject.hasHighlightableType) {
+      await highlightController.addHighlight(objectId.toMessage());
+    }
   }
 
   return directoryObject;

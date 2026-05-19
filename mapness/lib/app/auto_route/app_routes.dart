@@ -61,34 +61,16 @@ class AppRouter extends RootStackRouter {
           page: PathNavRoute.page,
           fullscreenDialog: true,
         ),
-        // BE-153: replaced default slide-from-bottom transition with a
-        // fade so the search sheet appears in-place (matches Google Maps).
+        // BE-153: fade so the search sheet appears in-place (matches Google Maps),
+        // instead of the default cupertino slide. Short duration keeps the tap → keyboard
+        // path snappy and avoids competing with the keyboard animation.
         AppRoute(
           path: 'search',
           page: SearchRoute.page,
+          durationInMilliseconds: 150,
+          reverseDurationInMilliseconds: 150,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
-        // CustomRoute(
-        //   path: 'search',
-        //   page: SearchRoute.page,
-        //   durationInMilliseconds: 180,
-        //   reverseDurationInMilliseconds: 180,
-        //   transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(
-        //     opacity: animation,
-        //     child: ScaleTransition(
-        //       scale:
-        //           Tween<double>(
-        //             begin: 0.98,
-        //             end: 1.0,
-        //           ).animate(
-        //             CurvedAnimation(
-        //               parent: animation,
-        //               curve: Curves.easeOut,
-        //             ),
-        //           ),
-        //       child: child,
-        //     ),
-        //   ),
-        // ),
         AppRoute(
           path: 'navi_search',
           page: NaviSearchRoute.page,
@@ -220,9 +202,12 @@ class AppRouter extends RootStackRouter {
           path: 'navi_search_favorites',
           page: NaviFavoritesRoute.page,
         ),
-        CustomRoute(
-          path: 'search',
+        AppRoute(
+          path: 'favourites_search',
           page: FavouritesSearchRoute.page,
+          durationInMilliseconds: 150,
+          reverseDurationInMilliseconds: 150,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           page: DeleteAllContentRoute.page,

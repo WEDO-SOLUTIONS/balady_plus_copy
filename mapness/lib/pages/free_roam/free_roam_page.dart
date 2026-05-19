@@ -48,6 +48,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   Timer? timer;
 
   StreamSubscription? _naviEventsListener;
+  late final VoidCallback _deactivateFreeRoam;
 
   late final ToggleSheetController _bottomSheetController = ToggleSheetController(
     onClose: (_) => _bottomSheetController.close,
@@ -66,7 +67,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
         ]);
       })
       ..addObserver(this);
-    ref.read(freeRoamManagerProvider.notifier).initFreeRoam().then((_) {
+    final freeRoamManager = ref.read(freeRoamManagerProvider.notifier);
+    _deactivateFreeRoam = freeRoamManager.deactivate;
+    freeRoamManager.initFreeRoam().then((_) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         isLoading = false;
       });
@@ -82,11 +88,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
+    context.changeSystemNavBar();
   }
 
   @override
   void deactivate() {
-    ref.read(freeRoamManagerProvider.notifier).deactivate();
+    _deactivateFreeRoam();
     super.deactivate();
   }
 
@@ -105,8 +112,11 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   Future<void> _listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
     _naviEventsListener = dgisController.navigationEvents.listen((event) {
-      if (event == NavigationEvent.disabled && context.mounted) {
+      if (event == NavigationEvent.disabled && context.mounted && mounted) {
         ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
       }
     });

@@ -1,0 +1,12 @@
+[
+  {
+    "Regex" : ".*\\.(tc|png)$",
+    "CompressionMethod" : "plain"
+  },
+  {
+    "Regex" : ".*",
+    "CompressionMethod" : "deflate",
+    "CompressionLevel" : "default"
+  }
+]
+

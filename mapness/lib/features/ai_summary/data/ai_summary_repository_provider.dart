@@ -7,6 +7,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
+import '../../../shared/providers/base_dio.dart';
+import '../../../shared/providers/dgis_environment.dart';
+
 part 'ai_summary_repository_provider.g.dart';
 
 /// Auth key for the Momrah AI Summary endpoint.
@@ -17,19 +20,6 @@ part 'ai_summary_repository_provider.g.dart';
 /// per-environment keys.
 const _aiSummaryAuthKey = '28ed92f1-de4b-4060-b159-2dc19e9b8bf5';
 
-/// Pinned AI Summary host.
-///
-/// Today only the Momrah staging cluster has the endpoint deployed:
-/// * prod (`urbi-lifestyle.momrah.gov.sa`) returns nginx 404 for
-///   any path under `/1.0/ai-summary/`.
-/// * dev (`momrah-balady-dev.iaas.urbi-sa.com`) responds, but its
-///   catalog is empty for the prod-shape syncodes the app sees.
-///
-/// The hardcoded auth key above is staging-issued, so coupling the
-/// host to it here keeps the wiring consistent. Switch to a
-/// per-environment URL once the backend team rolls the endpoint
-/// out to prod.
-const _aiSummaryBaseUrl = 'https://urbi-lifestyle-stg.momrah.gov.sa/1.0/';
 
 /// Dependency-injection seam for the [AiSummaryRepository].
 ///
@@ -39,9 +29,12 @@ const _aiSummaryBaseUrl = 'https://urbi-lifestyle-stg.momrah.gov.sa/1.0/';
 @Riverpod(keepAlive: true)
 Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   const timeout = Duration(seconds: 30);
+  final env = await ref.watch(dgisEnvironmentProvider.future);
+
+  print('amr env.url ${env.url}');
   final dio = Dio(
     BaseOptions(
-      baseUrl: _aiSummaryBaseUrl,
+      baseUrl: env.url,
       connectTimeout: timeout,
       sendTimeout: timeout,
       receiveTimeout: timeout,
@@ -59,3 +52,4 @@ Future<AiSummaryRepository> aiSummaryRepository(Ref ref) async {
   }
   return HttpAiSummaryRepository(dio);
 }
+
