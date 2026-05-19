@@ -26,6 +26,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_container.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_jeddah_bus.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
@@ -328,14 +329,20 @@ class PoiContentSliver extends ConsumerWidget {
                 contentPadding: itemPadding,
               ),
             if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
-            ...routeInfos
-                .map(
-                  (e) => Padding(
-                    padding: itemPadding,
-                    child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
-                  ),
-                )
-                .toList(),
+            if (jeddahBusStation != null)
+              PoiLinesJeddahBus(
+                station: jeddahBusStation,
+                lines: jeddahBusStationLines,
+              )
+            else
+              ...routeInfos
+                  .map(
+                    (e) => Padding(
+                      padding: itemPadding,
+                      child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
+                    ),
+                  )
+                  .toList(),
             PoiLinesContainer(
               model: makkahDeparturesModel,
             ),
@@ -360,7 +367,7 @@ class PoiContentSliver extends ConsumerWidget {
               padding: itemPadding,
               child: PoiContentDataIncorrectCard(data: feedback),
             ),
-            if (license != null) //
+            if (license != null)
               Padding(
                 padding: itemPadding,
                 child: PoiContentLicenseCard(license: license),

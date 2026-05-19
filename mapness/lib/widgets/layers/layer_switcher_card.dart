@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart' show BuildContextExt;
 import 'package:dgis_map/library.dart';
@@ -18,12 +16,14 @@ import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 class LayerSwitcherCard extends ConsumerWidget {
   final layers_state.LayerType value;
   final LayersState layersState;
-  final ValueChanged<layers_state.LayerType>? tapOnParkingLotsMenu;
+  final ValueChanged<layers_state.LayerType>? onIconTap;
+  final Set<layers_state.LayerType> layerTapItems;
 
   const LayerSwitcherCard(
     this.value,
     this.layersState,
-    this.tapOnParkingLotsMenu, {
+    this.onIconTap,
+    this.layerTapItems, {
     super.key,
   });
 
@@ -48,6 +48,8 @@ class LayerSwitcherCard extends ConsumerWidget {
       final trafficState = ref.watch(traffic.trafficStateProvider);
       isSelected = trafficState.status == TrafficControlStatus.enabled;
     }
+
+    final withIcon = onIconTap != null && layerTapItems.contains(value);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -79,7 +81,7 @@ class LayerSwitcherCard extends ConsumerWidget {
         // BE-153: when this is the parking layer card, the whole title row
         // (text + chevron) opens the parking menu — not only the chevron icon.
         GestureDetector(
-          onTap: tapOnParkingLotsMenu != null ? () => tapOnParkingLotsMenu?.call(value) : null,
+          onTap: withIcon ? () => onIconTap?.call(value) : null,
           behavior: HitTestBehavior.opaque,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -95,7 +97,7 @@ class LayerSwitcherCard extends ConsumerWidget {
                   ),
                 ),
               ),
-              if (tapOnParkingLotsMenu != null)
+              if (withIcon)
                 Icon(
                   Icons.chevron_right,
                   size: 22,
