@@ -169,7 +169,10 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    path: ../balady_uikit
+    git:
+      url: https://tfs.momra.gov.sa/tfs/MOMRACollection/BaladyPlus/_git/balady_uikit
+      ref: feature/52113_dga_theme
+ #   path: ../balady_uikit
 #    hosted: https://baladyapp-unpub.urbi.ae/
 #    version: 5.0.11
 
