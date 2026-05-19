@@ -366,10 +366,6 @@ class AppRouter extends RootStackRouter {
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
-        AppRoute(
-          path: 'profile_preferences',
-          page: ProfilePreferencesRoute.page,
-        ),
       ],
     ),
     CustomRoute(
