@@ -2,10 +2,12 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
@@ -54,6 +56,8 @@ class _DashboardOffersRowState extends ConsumerState<DashboardOffersRow> {
   @override
   Widget build(BuildContext context) {
     final ref = this.ref;
+    final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -110,7 +114,7 @@ class _DashboardOffersRowState extends ConsumerState<DashboardOffersRow> {
                     ///todo must fix this with real color
                     //? context.colors.staticBlack
                         ? context.colors.accentDefault
-                        : context.colors.borderMuted,
+                        : isDGADark?context.colors.staticWhite: context.colors.borderMuted,
                   ),
                 ),
               ),
@@ -120,6 +124,7 @@ class _DashboardOffersRowState extends ConsumerState<DashboardOffersRow> {
     );
   }
 }
+
 
 class _DashboardOffersCard extends StatelessWidget {
   static const height = 134.0;

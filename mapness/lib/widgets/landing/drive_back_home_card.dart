@@ -51,10 +51,12 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
           height: 123,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              // color: context.colors.backgroundSurface5,
+
+             //  color: context.colors.backgroundSurface5,
               // borderRadius: BorderRadius.circular(RadiusBorder.xl),
               // boxShadow: Shadows.s,
               image: DecorationImage(
+
                 image: activeCityEvent.getDriveHomeBackground(isDark: isDark),
                 matchTextDirection: true,
                 fit: BoxFit.cover,
@@ -63,6 +65,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
             ),
             child: Stack(
               children: [
+
                 if (showBlueCircles) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(RadiusBorder.xl),

@@ -171,6 +171,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           isDisposed: false,
           focusNode: _focusNode,
+          fillColor: isDark?context.colors.neutralMuted: context.colors.staticWhite,
+
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
@@ -237,7 +239,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             _safeFocusAction(_focusNode.requestFocus);
           },
           hintText: context.l10n.searchPlaceOrAddress,
-          fillColor: isDark?context.colors.staticBlack: context.colors.staticWhite,
           hintColor: context.colors.foregroundSoft,
           textStyle: context.textStyles.bodySmallRegular,
         ),
@@ -251,7 +252,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
     final borderedSearchField = Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
+        borderRadius: BorderRadius.circular(8),
         color: isDark?context.colors.staticBlack: context.colors.staticWhite,
         border: Border.all(
           color: context.colors.borderSoft,
@@ -259,7 +260,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         ),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.xxl),
+        borderRadius:  BorderRadius.circular(5),
+
         child: searchField,
       ),
     );

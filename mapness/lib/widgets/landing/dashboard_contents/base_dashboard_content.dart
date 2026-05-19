@@ -53,6 +53,23 @@ class BaseDashboardContent extends ConsumerWidget {
           children: [
             Column(
               children: [
+
+                // 1. Feedback Banner (ساهم معنا)
+                SizedBox(
+                  width: double.infinity,
+                  child: FeedbackBannerCardV2(
+                    path: themeConfig.feedbackBannerAssetPath,
+                    onTap: () {
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
+                      context.router.push(const ContributeRoute());
+                    },
+                    gradientColors: themeConfig.feedbackBannerGradient,
+                    title: context.l10n.contribute,
+                    subtitle: context.l10n.buildBaladyTogether,
+                    imageSizeCalculator: themeConfig.imageSizeCalculator,
+                  ),
+                ),
+                const SizedBox(height: Spacing.$6x),
                 StoriesWidget(
                   titleWidget: Padding(
                     padding: const EdgeInsets.only(bottom: Spacing.$3x),
@@ -61,22 +78,8 @@ class BaseDashboardContent extends ConsumerWidget {
                 ),
               ],
             ),
-             const SizedBox(height: Spacing.$6x),
-            // 1. Feedback Banner (ساهم معنا)
-            SizedBox(
-              width: double.infinity,
-              child: FeedbackBannerCardV2(
-                path: themeConfig.feedbackBannerAssetPath,
-                onTap: () {
-                  ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-                  context.router.push(const ContributeRoute());
-                },
-                gradientColors: themeConfig.feedbackBannerGradient,
-                title: context.l10n.contribute,
-                subtitle: context.l10n.buildBaladyTogether,
-                imageSizeCalculator: themeConfig.imageSizeCalculator,
-              ),
-            ),
+
+
             //
             // StoriesWidget(
             //   titleWidget: Padding(

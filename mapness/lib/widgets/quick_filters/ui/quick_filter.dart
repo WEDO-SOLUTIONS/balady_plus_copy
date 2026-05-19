@@ -63,9 +63,9 @@ class QuickFilter extends ConsumerWidget {
       }
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
           border: Border.all(
-            color: context.colors.borderMuted,
+            color: context.colors.borderDefault,
             width: 1,
           ),
         ),
@@ -80,9 +80,10 @@ class QuickFilter extends ConsumerWidget {
     }
     return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+
           border: Border.all(
-            color: context.colors.borderMuted,
+            color: context.colors.borderDefault,
             width: 1,
           ),
         ),

@@ -178,63 +178,56 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     final headerBackgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
     final headerHintColor = themeConfig.searchHintColor ?? context.colors.foregroundSoft;
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        boxShadow: Shadows.s,
-        borderRadius: BorderRadius.circular(RadiusBorder.m),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.searchField,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-          BssService.instance.sendEvent(
-            const BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(name: BssUIElementNames.searchField),
-            ),
-          );
-
-          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
-
-          // Here we clean the search query on tap on the search field
-          // So the user can see the search history, not previous search results
-          final text = ref.read(searchProvider(_scope)).searchText;
-          ref.read(searchProvider(_scope).notifier).clear();
-
-          ref
-              .read(urbiAnalyticsProvider.notifier)
-              .trackWithPrint(
-                '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-              );
-
-          context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text));
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: isDark?context.colors.staticBlack: context.colors.staticWhite,
-            border: Border.all(
-              color: context.colors.borderDefault,
-              width: 1,
-            ),
+    return GestureDetector(
+      onTap: () {
+        Metrics.logEventAdvanced(
+          MetricsConstants.exploreKeys.searchField,
+          action: MetricAction.tap.name,
+          group: MetricsConstants.exploreTag,
+        );
+        BssService.instance.sendEvent(
+          const BssRequest(
+            eventType: BSSEventType.action,
+            actionType: BSSActionType.tap,
+            uiElement: BssUIElement(name: BssUIElementNames.searchField),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.xxl),
-            child: AbsorbPointer(
-              child: BaladyTextInput.search(
-                controller: ctrl,
-                inputState: BaladyInputState.readOnly,
-                config: BaladyInputConfig(
-                  hintText: context.l10n.searchPlaceOrAddress,
-                  fillColor: context.colors.backgroundSurface2,
-                  hintColor: headerHintColor,
-                  textStyle: context.textStyles.bodySmallRegular,
-                ),
+        );
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+        // Here we clean the search query on tap on the search field
+        // So the user can see the search history, not previous search results
+        final text = ref.read(searchProvider(_scope)).searchText;
+        ref.read(searchProvider(_scope).notifier).clear();
+
+        ref
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint(
+              '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+            );
+
+        context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+
+          border: Border.all(
+            color: context.colors.borderDefault,
+            width: 1,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          child: AbsorbPointer(
+            child: BaladyTextInput.search(
+              controller: ctrl,
+              inputState: BaladyInputState.readOnly,
+              config: BaladyInputConfig(
+                hintText: context.l10n.searchPlaceOrAddress,
+                fillColor: context.colors.backgroundSurface2,
+                hintColor: headerHintColor,
+                textStyle: context.textStyles.bodySmallRegular,
               ),
             ),
           ),

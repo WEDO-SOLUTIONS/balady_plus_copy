@@ -928,6 +928,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
@@ -938,11 +939,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: 18,
-            tilt: 90,
+            zoom: 17.5,
+            tilt: 50,
             bearing: 0,
           ),
         );
+
       }
     }
 
@@ -953,8 +955,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           await cameraProvider.animateTo(
             CameraPositionMessage(
               point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-              zoom: 18,
-              tilt: 90,
+              zoom: 17.5,
+              tilt: 50,
               bearing: 0,
             ),
           );
