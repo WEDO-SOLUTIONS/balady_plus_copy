@@ -8,7 +8,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 const _borderColor = Color(0xff003449);
-const _expandAnimationDuration = Duration(milliseconds: 300);
 
 class PoiLinesJeddahBus extends StatelessWidget {
   final BusStation station;
@@ -59,49 +58,37 @@ class PoiLinesJeddahBus extends StatelessWidget {
   }
 }
 
-class _ExpandableLine extends ConsumerStatefulWidget {
+class _ExpandableLine extends ConsumerWidget {
   final BusStation station;
   final BusLine line;
 
   const _ExpandableLine(this.station, this.line);
 
   @override
-  ConsumerState<_ExpandableLine> createState() => _ExpandableLineState();
-}
-
-class _ExpandableLineState extends ConsumerState<_ExpandableLine> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final lang = ref.read(appLanguageProvider);
 
     final routeNameShort = switch (lang) {
-      Language.english => widget.line.routeNameEn,
-      Language.arabic => widget.line.routeNameAr,
+      Language.english => line.routeNameEn,
+      Language.arabic => line.routeNameAr,
     };
     // TODO(jeddah_bus): need to add full name to geojson
     final routeNameFull = switch (lang) {
-      Language.english => widget.line.routeNameEn,
-      Language.arabic => widget.line.routeNameAr,
+      Language.english => line.routeNameEn,
+      Language.arabic => line.routeNameAr,
     };
 
-    return GestureDetector(
-      onTap: _onTap,
-      child: Container(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        decoration: BoxDecoration(
-          color: context.colors.backgroundSurface5,
-          borderRadius: BorderRadius.circular(Spacing.$4x),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+    return ContentWrapper(
+      color: context.colors.backgroundSurface5,
+      children: [
+        ContentRowExpandable(
+          expandIconColor: line.stations.isEmpty ? Colors.transparent : context.colors.foregroundMuted,
+          options: ContentRowOptions(
+            titleBuilder: (context) => Row(
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: widget.line.flutterColor,
+                    color: line.flutterColor,
                     borderRadius: BorderRadius.circular(Spacing.$1x),
                     border: Border.all(color: _borderColor),
                   ),
@@ -125,34 +112,16 @@ class _ExpandableLineState extends ConsumerState<_ExpandableLine> {
                   routeNameFull,
                   style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                 ),
-                const Spacer(),
-                AnimatedRotation(
-                  duration: _expandAnimationDuration,
-                  turns: _expanded ? 0.5 : 0,
-                  child: Icon(SystemIcons.arrowCornerDownSmall, size: 24, color: context.colors.foregroundMuted),
-                ),
               ],
             ),
-            AnimatedSize(
-              duration: _expandAnimationDuration,
-              curve: Curves.easeInOut,
-              child: _expanded
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: Spacing.$4x),
-                      child: _LineStationList(widget.station, widget.line),
-                    )
-                  : const SizedBox(width: double.infinity), // Нулевой размер, когда скрыто
-            ),
-          ],
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$2x),
+            child: _LineStationList(station, line),
+          ),
         ),
-      ),
+      ],
     );
-  }
-
-  void _onTap() {
-    setState(() {
-      _expanded = !_expanded;
-    });
   }
 }
 
@@ -212,10 +181,6 @@ class _LineStationListItem extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$3x).copyWith(left: Spacing.$2x),
       height: 44,
-      foregroundDecoration: BoxDecoration(
-        // TODO(jeddah_bus): handle current station decoration properly when design is ready
-        color: isCurrent ? Colors.black.withValues(alpha: 0.1) : null,
-      ),
       child: Row(
         children: [
           Container(
@@ -230,7 +195,10 @@ class _LineStationListItem extends ConsumerWidget {
           const SizedBox(width: 17),
           Text(
             stationName,
-            style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+            style: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.foregroundDefault,
+              fontWeight: isCurrent ? FontWeight.w600 : null,
+            ),
             maxLines: 1,
           ),
         ],
