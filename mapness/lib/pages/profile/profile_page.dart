@@ -132,26 +132,6 @@ class ProfilePage extends HookConsumerWidget {
                                   ],
                                 ),
                               ),
-                              if (isAuth)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: Spacing.$4x),
-                                  child: ContentWrapper(
-                                    color: context.colors.backgroundSurface1,
-                                    children: [
-                                      ContentRowV2(
-                                        isDividerEnabled: true,
-                                        trailing: trailing,
-                                        leading: Assets.icons.svg.percent.svg(
-                                          colorFilter: ColorFilter.mode(
-                                            context.colors.accentDefault,
-                                            BlendMode.srcATop,
-                                          ),
-                                        ),
-                                        text: ContentRowTextOptions(title: context.l10n.preferences),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               const SizedBox(height: Spacing.$4x),
                               ContentWrapper(
                                 color: context.colors.backgroundSurface1,
