@@ -140,7 +140,6 @@ class ProfilePage extends HookConsumerWidget {
                                     children: [
                                       ContentRowV2(
                                         isDividerEnabled: true,
-                                        onTap: () => context.router.push(const ProfilePreferencesRoute()),
                                         trailing: trailing,
                                         leading: Assets.icons.svg.percent.svg(
                                           colorFilter: ColorFilter.mode(
@@ -149,12 +148,6 @@ class ProfilePage extends HookConsumerWidget {
                                           ),
                                         ),
                                         text: ContentRowTextOptions(title: context.l10n.preferences),
-                                      ),
-                                      ContentRowV2(
-                                        onTap: () => context.router.push(const FavouriteOffersScreenViewRoute()),
-                                        trailing: trailing,
-                                        leading: leadingIconBuilder(GeneralIcons.heart),
-                                        text: ContentRowTextOptions(title: context.l10n.favoriteOffers),
                                       ),
                                     ],
                                   ),

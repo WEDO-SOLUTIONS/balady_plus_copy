@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
-import 'package:mapness/features/saudi_pass/widgets/favorite_dialog_menu.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/dismissible/app_dismissible.dart';
 
@@ -72,7 +71,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(RadiusBorder.l),
                 onTap: _onTap,
-                onLongPress: _onLongPress,
+                // onLongPress: _onLongPress,
                 child: ContentRow(
                   options: ContentRowOptions(
                     leadingIcon: widget.icon ?? SystemIcons.bookmarkFill.icon(color: context.colors.accentDefault),
@@ -116,26 +115,26 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
     }
   }
 
-  Future<void> _showBottomSheet(BuildContext context) async {
-    await showDialog(
-      context: context,
-      useSafeArea: false,
-      builder: (_) => FavoriteDialogMenu(
-        onDelete: widget.onDelete,
-        onTapRoute: widget.onRouteTap,
-        onTapShare: widget.onShareTap,
-        delete: context.l10n.delete,
-        route: context.l10n.route,
-        share: context.l10n.share,
-        title: context.l10n.action,
-        close: context.l10n.saudiPassTermAndConditionsClose,
-      ),
-    );
-  }
+  // Future<void> _showBottomSheet(BuildContext context) async {
+  //   await showDialog(
+  //     context: context,
+  //     useSafeArea: false,
+  //     builder: (_) => FavoriteDialogMenu(
+  //       onDelete: widget.onDelete,
+  //       onTapRoute: widget.onRouteTap,
+  //       onTapShare: widget.onShareTap,
+  //       delete: context.l10n.delete,
+  //       route: context.l10n.route,
+  //       share: context.l10n.share,
+  //       title: context.l10n.action,
+  //       close: context.l10n.saudiPassTermAndConditionsClose,
+  //     ),
+  //   );
+  // }
 
-  void _onLongPress() {
-    if (!widget.isEditing && widget.isLongPressEnabled) {
-      _showBottomSheet(context);
-    }
-  }
+  // void _onLongPress() {
+  //   if (!widget.isEditing && widget.isLongPressEnabled) {
+  //     _showBottomSheet(context);
+  //   }
+  // }
 }
