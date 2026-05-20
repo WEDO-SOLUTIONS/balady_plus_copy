@@ -168,5 +168,10 @@ configurations.all {
     resolutionStrategy {
         // هذا السطر يمنع التضارب بين مكتبات هواوي المختلٝة
         force 'com.huawei.hms:common:6.10.0.300'
+        // Pin glance to the stable version declared above — prevents transitive deps
+        // from pulling alpha versions that require compileSdk 37 / AGP 9.1.0.
+        force 'androidx.glance:glance:1.0.0'
+        force 'androidx.glance:glance-appwidget:1.0.0'
+        force 'androidx.glance:glance-appwidget-proto:1.0.0'
     }
 }
