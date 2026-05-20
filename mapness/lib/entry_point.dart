@@ -779,7 +779,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (url.path.startsWith('/1.0/short/link')) {
       final fullLinkUrl = await _getFullLink(url.pathSegments.last);
       if (fullLinkUrl != null) {
-        return _handleAppLink(url, isFirstRun: isFirstRun);
+        return _handleAppLink(fullLinkUrl, isFirstRun: isFirstRun);
       }
     }
 
