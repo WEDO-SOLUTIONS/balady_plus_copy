@@ -12,10 +12,12 @@ import androidx.car.app.model.SearchTemplate.SearchCallback
 import androidx.car.app.model.Template
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.R
+import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.directory.SearchHistory
 import ru.dgis.sdk.directory.SearchHistoryItem
 import ru.dgis.sdk.directory.SearchHistoryPage
 import ru.dgis.sdk.directory.Suggest
+import java.util.Locale
 
 class SearchScreen(
     carContext: CarContext,
@@ -32,7 +34,7 @@ class SearchScreen(
 
     init {
         if (initialQuery != null) {
-            search(initialQuery)
+            searchSuggestions(initialQuery)
         } else {
             loadHistory()
         }
@@ -43,9 +45,20 @@ class SearchScreen(
             object : SearchCallback {
                 override fun onSearchTextChanged(searchText: String) {
                     if (searchText.isNotEmpty()) {
-                        search(searchText)
+                        val splShortAddress = searchText.normalizedSplShortAddress()
+                        if (splShortAddress != null) {
+                            searchByText(splShortAddress)
+                        } else {
+                            searchSuggestions(searchText)
+                        }
                     } else {
                         loadHistory()
+                    }
+                }
+
+                override fun onSearchSubmitted(searchText: String) {
+                    if (searchText.isNotBlank()) {
+                        searchByText(searchText.normalizedSplShortAddress() ?: searchText)
                     }
                 }
             })
@@ -86,13 +99,41 @@ class SearchScreen(
         return template.build()
     }
 
-    private fun search(queryText: String) {
+    private fun searchSuggestions(queryText: String) {
         state = SearchScreenState.Loading
         invalidate()
         mapController.suggest(
             queryText,
             searchItemsLimit,
             resultCallback = ::handleSearchResult,
+            errorCallback = {
+                state = SearchScreenState.Error
+                invalidate()
+            }
+        )
+    }
+
+    private fun searchByText(queryText: String) {
+        state = SearchScreenState.Loading
+        invalidate()
+        mapController.search(
+            queryText,
+            searchItemsLimit,
+            resultCallback = ::handleDirectorySearchResult,
+            errorCallback = {
+                state = SearchScreenState.Error
+                invalidate()
+            }
+        )
+    }
+
+    private fun searchByText(queryText: String) {
+        state = SearchScreenState.Loading
+        invalidate()
+        mapController.search(
+            queryText,
+            searchItemsLimit,
+            resultCallback = ::handleDirectorySearchResult,
             errorCallback = {
                 state = SearchScreenState.Error
                 invalidate()
@@ -171,6 +212,46 @@ class SearchScreen(
 
         state = SearchScreenState.Result(itemList.build())
         invalidate()
+    }
+
+    private fun handleDirectorySearchResult(directoryObjects: List<DirectoryObject>) {
+        val items = directoryObjects.filter { it.markerPosition != null }
+        val itemList = ItemList.Builder()
+
+        if (items.isEmpty()) {
+            itemList.setNoItemsMessage(getString(R.string.search_nothing_found))
+        } else {
+            for (item in items) {
+                itemList.addItem(
+                    Row.Builder().setTitle(item.title).addText(item.makeAddressString())
+                        .setOnClickListener {
+                            searchHistory.addItem(SearchHistoryItem(item))
+                            carContext.getCarService(ScreenManager::class.java).push(
+                                RoutePreviewScreen(
+                                    carContext,
+                                    mapController,
+                                    item.toRoutePreviewParams(),
+                                )
+                            )
+                        }.build()
+                )
+            }
+        }
+
+        state = SearchScreenState.Result(itemList.build())
+        invalidate()
+    }
+
+    private fun String.normalizedSplShortAddress(): String? {
+        val normalized = trim()
+            .replace(Regex("[\\s-]"), "")
+            .uppercase(Locale.US)
+
+        return normalized.takeIf { splShortAddressRegex.matches(it) }
+    }
+
+    private companion object {
+        private val splShortAddressRegex = Regex("^[A-Z]{4}[0-9]{4}$")
     }
 }
 
