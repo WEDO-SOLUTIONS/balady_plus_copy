@@ -102,8 +102,7 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // TODO: MBC - Uncomment for next release
-                                    // const RadioContextualButton(),
+                                    const RadioContextualButton(),
                                     const SizedBox(height: 10),
                                     ValueListenableBuilder(
                                       valueListenable: widget.navigationState,
