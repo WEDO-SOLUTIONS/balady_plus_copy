@@ -35,6 +35,7 @@ class _FavouriteCache extends _$FavouriteCache {
   static const _keyCache = 'cache';
   static const _keyDeleteSync = 'delete_sync';
   static const _keyAddSync = 'add_sync';
+  static const _keyLastUpdate = 'last_update';
 
   static const _tag = MetricsConstants.favoriteTag;
 
@@ -45,6 +46,25 @@ class _FavouriteCache extends _$FavouriteCache {
   bool _isForceRefresh = false;
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
+
+
+  // Load _lastUpdate from Hive on init
+  Future<void> _initLastUpdate() async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final stored = favoritesBox.get(_keyLastUpdate) as int?;
+    if (stored != null) {
+      _lastUpdate = DateTime.fromMillisecondsSinceEpoch(stored);
+    }
+  }
+
+  // Save _lastUpdate to Hive when updated
+  Future<void> _saveLastUpdate() async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    if (_lastUpdate != null) {
+      await favoritesBox.put(_keyLastUpdate, _lastUpdate!.millisecondsSinceEpoch);
+    }
+  }
+
 
   List<FavouriteItem?> _getAllItems(FavouritesState favouriteState) => [
     ...favouriteState.items,
@@ -373,6 +393,9 @@ class _FavouriteCache extends _$FavouriteCache {
       return const FavouritesState(items: []);
     }
 
+    // Initialize last update from Hive
+    await _initLastUpdate();
+
     // sync uncommitted changes
     await _sync();
 
@@ -384,6 +407,7 @@ class _FavouriteCache extends _$FavouriteCache {
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
+        await _saveLastUpdate();
         await _notifyMapAboutFavourites(apiData);
         result = apiData;
       } else {
