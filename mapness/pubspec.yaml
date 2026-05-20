@@ -148,9 +148,9 @@ dependencies:
   talker_flutter: ^5.1.10
 
   map_styles:
-    path: ../../map_styles
-#    hosted: https://baladyapp-unpub.urbi.ae/
-#    version: 1.3.3
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 1.3.4
+
   equatable: ^2.0.8
   flutter_insider: ^4.0.6+nh
   visibility_detector: ^0.4.0+2
