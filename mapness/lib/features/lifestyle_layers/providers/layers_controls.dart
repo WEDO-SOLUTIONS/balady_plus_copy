@@ -9,6 +9,9 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/features/jeddah_bus/provider.dart';
+import 'package:mapness/features/jeddah_bus/repo.dart';
+import 'package:mapness/features/jeddah_bus/visible_provider.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
 import 'package:mapness/features/lifestyle_layers/models/building_compliance_certificate.dart';
@@ -20,17 +23,17 @@ import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
-import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
-import 'package:mapness/features/shuttle_bus/provider.dart';
-import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/makkah_bus/provider.dart';
 import 'package:mapness/features/makkah_bus/repo.dart';
+import 'package:mapness/features/makkah_bus/visible_provider.dart';
+import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
-import 'package:mapness/features/makkah_bus/visible_provider.dart';
-import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
+import 'package:mapness/features/shuttle_bus/provider.dart';
+import 'package:mapness/features/shuttle_bus/repo.dart';
+import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -62,7 +65,7 @@ class SelectedLayer extends _$SelectedLayer {
 
 enum LayersType { lifestyle, business }
 
-enum LayersPanelType { layers, parking }
+enum LayersPanelType { layers, busLayers, parking }
 
 class LayersState {
   LayersState({
@@ -217,11 +220,17 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         toggleMetro();
         break;
+      case LayerType.busSubMenu:
+        // no op
+        break;
       case LayerType.makkahBus:
         toggleMakkahBuses();
         break;
       case LayerType.shuttleBus:
         toggleHaramShuttle();
+        break;
+      case LayerType.jeddahBus:
+        toggleJeddahBuses();
         break;
       // case LayerType.joy:
       //   await toggleIwish();
@@ -246,6 +255,9 @@ class LayersControls extends _$LayersControls {
     } else if (layerType case LayerType.shuttleBus) {
       ref.read(shuttleBusLayerRepoProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
+    } else if (layerType case LayerType.jeddahBus) {
+      ref.read(jeddahBusLayerRepoProvider.notifier).show();
+      setSelection(selectedType: LayerType.jeddahBus);
     }
   }
 
@@ -285,7 +297,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-
   void toggleMetro() {
     final isVisible = ref.read(metroLayerVisibleProvider);
     if (isVisible) {
@@ -322,6 +333,19 @@ class LayersControls extends _$LayersControls {
     } else {
       ref.read(shuttleBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
+    }
+  }
+
+  void toggleJeddahBuses() {
+    final isVisible = ref.read(jeddahBusLayerVisibleProvider);
+    if (isVisible) {
+      ref.read(jeddahBusLayerProvider.notifier).hide();
+      if (state.selectedType == LayerType.jeddahBus) {
+        setSelection();
+      }
+    } else {
+      ref.read(jeddahBusLayerProvider.notifier).show();
+      setSelection(selectedType: LayerType.jeddahBus);
     }
   }
 
@@ -645,11 +669,17 @@ class LayersControls extends _$LayersControls {
       case LayerType.metro:
         await ref.read(metroLayerProvider.notifier).hideMetro();
         break;
+      case LayerType.busSubMenu:
+        // no op
+        break;
       case LayerType.makkahBus:
         await ref.read(makkahBusLayerProvider.notifier).hide();
         break;
       case LayerType.shuttleBus:
         await ref.read(shuttleBusLayerProvider.notifier).hide();
+        break;
+      case LayerType.jeddahBus:
+        await ref.read(jeddahBusLayerProvider.notifier).hide();
         break;
       case LayerType.traffic:
         final trafficNotifier = ref.read(trafficStateProvider.notifier);

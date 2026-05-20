@@ -4,20 +4,23 @@ enum LayerType {
   buildings,
   parkingLots,
   metro,
+  busSubMenu,
   makkahBus,
   shuttleBus,
+  jeddahBus,
   fencing,
   traffic,
   three3D;
   // roadEvents;
 
   static List<LayerType> get lifestyle => [
-        LayerType.favourites,
-        LayerType.parkingLots,
-        LayerType.metro,
-        LayerType.makkahBus,
-        LayerType.shuttleBus,
-      ];
+    LayerType.favourites,
+    LayerType.parkingLots,
+    LayerType.metro,
+    LayerType.makkahBus,
+    LayerType.shuttleBus,
+    LayerType.jeddahBus,
+  ];
 
   static List<LayerType> get business => [
     LayerType.invest,
@@ -29,10 +32,15 @@ enum LayerType {
     LayerType.traffic,
     LayerType.metro,
     LayerType.parkingLots,
-    LayerType.makkahBus,
-    LayerType.shuttleBus,
+    LayerType.busSubMenu,
     // LayerType.roadEvents,
     LayerType.favourites,
+  ];
+
+  static List<LayerType> get bus => [
+    LayerType.makkahBus,
+    LayerType.shuttleBus,
+    LayerType.jeddahBus,
   ];
 }
 
@@ -46,6 +54,7 @@ extension LayerTypeEx on LayerType {
     'metro' => LayerType.metro,
     'makkahBus' => LayerType.makkahBus,
     'shuttleBus' => LayerType.shuttleBus,
+    'jeddahBus' => LayerType.jeddahBus,
     'traffic' => LayerType.traffic,
     'three3D' => LayerType.three3D,
     _ => null,
