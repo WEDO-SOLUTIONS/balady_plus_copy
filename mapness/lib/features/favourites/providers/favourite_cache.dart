@@ -36,6 +36,7 @@ class _FavouriteCache extends _$FavouriteCache {
   static const _keyDeleteSync = 'delete_sync';
   static const _keyAddSync = 'add_sync';
   static const _keyLastUpdate = 'last_update';
+  static const _keyLastUserId = 'last_user_id';
 
   static const _tag = MetricsConstants.favoriteTag;
 
@@ -57,12 +58,38 @@ class _FavouriteCache extends _$FavouriteCache {
     }
   }
 
-  // Save _lastUpdate to Hive when updated
-  Future<void> _saveLastUpdate() async {
+  // Save _lastUpdate and _lastUserId to Hive when updated
+  Future<void> _saveLastUpdate(String? userId) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     if (_lastUpdate != null) {
       await favoritesBox.put(_keyLastUpdate, _lastUpdate!.millisecondsSinceEpoch);
     }
+    if (userId != null) {
+      await favoritesBox.put(_keyLastUserId, userId);
+    }
+  }
+
+  // Check if user has changed
+  Future<bool> _hasUserChanged(String? currentUserId) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final storedUserId = favoritesBox.get(_keyLastUserId) as String?;
+
+    // If no stored user or user is different, cache is invalid
+    if (storedUserId == null || storedUserId != currentUserId) {
+      return true;
+    }
+    return false;
+  }
+
+  // Clear cache when user changes
+  Future<void> _clearCacheForUserChange() async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    _lastUpdate = null;
+    await favoritesBox.delete(_keyLastUpdate);
+    await favoritesBox.delete(_keyLastUserId);
+    // Also clear the sync queues to avoid syncing old user's data
+    await favoritesBox.delete(_keyAddSync);
+    await favoritesBox.delete(_keyDeleteSync);
   }
 
 
@@ -393,8 +420,23 @@ class _FavouriteCache extends _$FavouriteCache {
       return const FavouritesState(items: []);
     }
 
-    // Initialize last update from Hive
-    await _initLastUpdate();
+    //  'idNo' from auth state
+    final currentUserId = authState.idNo ??  '';
+
+    // Check if user has changed BEFORE initializing last update
+    final userHasChanged = await _hasUserChanged(currentUserId);
+    if (userHasChanged) {
+      logger.log('User changed from previous session, clearing all favorites cache for user: $currentUserId', logLevel: MapnessLogLevel.info);
+      await _clearCacheForUserChange();
+      // Also clear the main cache for the new user
+      final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+      await favoritesBox.delete(_keyCache);
+      _lastUpdate = null;
+      _isForceRefresh = true;
+    } else {
+      // Only initialize last update if user hasn't changed
+      await _initLastUpdate();
+    }
 
     // sync uncommitted changes
     await _sync();
@@ -404,18 +446,28 @@ class _FavouriteCache extends _$FavouriteCache {
     FavouritesState result;
     try {
       if (_isForceRefresh || !isCacheValid) {
+        logger.log('Fetching favorites from API for user: $currentUserId (forceRefresh: $_isForceRefresh, cacheValid: $isCacheValid)', logLevel: MapnessLogLevel.info);
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
-        await _saveLastUpdate();
+        await _saveLastUpdate(currentUserId);
         await _notifyMapAboutFavourites(apiData);
         result = apiData;
+        logger.log('Successfully fetched ${result.items.length} favorites from API', logLevel: MapnessLogLevel.info);
       } else {
+        logger.log('Using cached favorites for user: $currentUserId', logLevel: MapnessLogLevel.info);
         result = await getFavouritesStateFromHive();
       }
     } on Exception catch (e) {
-      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
-      result = await getFavouritesStateFromHive();
+      logger.log('Error fetching favorites: $e', logLevel: MapnessLogLevel.critical);
+      // If user just changed, return empty state instead of stale cached data
+      if (userHasChanged) {
+        result = const FavouritesState(items: []);
+        logger.log('User changed but failed to fetch favorites from API, returning empty state', logLevel: MapnessLogLevel.warning);
+      } else {
+        // For existing users, fall back to cache
+        result = await getFavouritesStateFromHive();
+      }
     }
 
     final link = ref.keepAlive();
