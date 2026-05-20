@@ -23,23 +23,36 @@ class BusStation extends Equatable {
 
 class BusLine extends Equatable {
   final BusLineId id;
-  final String routeNameEn;
-  final String routeNameAr;
+  final String routeShortNameEn;
+  final String routeShortNameAr;
+  final String routeLongNameEn;
+  final String routeLongNameAr;
   final List<BusStation> stations;
   final List<BusCoordinates> polylineCoordinates;
   final int color;
 
   const BusLine({
     required this.id,
-    required this.routeNameEn,
-    required this.routeNameAr,
+    required this.routeShortNameEn,
+    required this.routeShortNameAr,
+    required this.routeLongNameEn,
+    required this.routeLongNameAr,
     required this.stations,
     required this.polylineCoordinates,
     required this.color,
   });
 
   @override
-  List<Object?> get props => [id, routeNameEn, routeNameAr, stations, polylineCoordinates, color];
+  List<Object?> get props => [
+    id,
+    routeShortNameEn,
+    routeShortNameAr,
+    routeLongNameEn,
+    routeLongNameAr,
+    stations,
+    polylineCoordinates,
+    color,
+  ];
 
   Color get flutterColor => Color(color);
 }

@@ -33,7 +33,7 @@ abstract class JeddahBusJsonDatasource {
       final lineTypeToCoordinatesMap = <BusCoordinates, Set<BusLineId>>{};
       for (final line in srcLines) {
         final lineId = BusLineId(
-          name: line.properties.routeNameEn,
+          name: line.properties.routeShortNameEn,
           direction: BusLineDirection.fromString(line.properties.directionType),
         );
 
@@ -75,12 +75,14 @@ abstract class JeddahBusJsonDatasource {
           .map(
             (e) => BusLine(
               id: BusLineId(
-                name: e.properties.routeNameEn,
+                name: e.properties.routeShortNameEn,
                 direction: BusLineDirection.fromString(e.properties.directionType),
               ),
               color: e.properties.colorCode.intColorCode ?? 0xFF000000,
-              routeNameAr: e.properties.routeNameAr,
-              routeNameEn: e.properties.routeNameEn,
+              routeShortNameEn: e.properties.routeShortNameEn,
+              routeShortNameAr: e.properties.routeShortNameAr,
+              routeLongNameEn: e.properties.routeLongNameEn,
+              routeLongNameAr: e.properties.routeLongNameAr,
               stations: e.geometry.coordinates
                   .map((e) => stationToCoordinatesMap[BusCoordinates.list(e)])
                   .nonNulls

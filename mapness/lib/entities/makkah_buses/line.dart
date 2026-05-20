@@ -39,8 +39,10 @@ abstract class BusLineDtoGeometry with _$BusLineDtoGeometry {
 abstract class BusLineDtoProperties with _$BusLineDtoProperties {
   const factory BusLineDtoProperties({
     @JsonKey(name: 'OBJECTID') required int objectId,
-    @JsonKey(name: 'route_name_en') required String routeNameEn,
-    @JsonKey(name: 'route_name_ar') required String routeNameAr,
+    @JsonKey(name: 'route_short_name_en') required String routeShortNameEn,
+    @JsonKey(name: 'route_short_name_ar') required String routeShortNameAr,
+    @JsonKey(name: 'route_long_name_en') required String routeLongNameEn,
+    @JsonKey(name: 'route_long_name_ar') required String routeLongNameAr,
     @JsonKey(name: 'from_name_en') required String fromNameEn,
     @JsonKey(name: 'from_name_ar') required String fromNameAr,
     @JsonKey(name: 'to_name_en') required String toNameEn,

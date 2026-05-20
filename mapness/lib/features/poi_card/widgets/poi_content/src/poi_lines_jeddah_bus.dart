@@ -69,13 +69,12 @@ class _ExpandableLine extends ConsumerWidget {
     final lang = ref.read(appLanguageProvider);
 
     final routeNameShort = switch (lang) {
-      Language.english => line.routeNameEn,
-      Language.arabic => line.routeNameAr,
+      Language.english => line.routeShortNameEn,
+      Language.arabic => line.routeShortNameAr,
     };
-    // TODO(jeddah_bus): need to add full name to geojson
     final routeNameFull = switch (lang) {
-      Language.english => line.routeNameEn,
-      Language.arabic => line.routeNameAr,
+      Language.english => line.routeLongNameEn,
+      Language.arabic => line.routeLongNameAr,
     };
 
     return ContentWrapper(
