@@ -15,7 +15,6 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
-
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -86,6 +85,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
@@ -94,6 +94,7 @@ import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
@@ -102,7 +103,6 @@ import 'features/search/ui/search_scope.dart';
 import 'features/special_themes/core/special_theme_mode.dart';
 import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'features/wrc/wrc.dart';
-import 'package:provider/provider.dart' as p;
 
 Mixpanel? mixpanel;
 
@@ -774,9 +774,26 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
+    final url = _getValidAppLink(uri);
+
+    if (url.path.startsWith('/1.0/short/link')) {
+      final fullLinkUrl = await _getFullLink(url.pathSegments.last);
+      if (fullLinkUrl != null) {
+        return _handleAppLink(url, isFirstRun: isFirstRun);
+      }
+    }
+
+    _handleAppLink(url, isFirstRun: isFirstRun);
+  }
+
+  Uri _getValidAppLink(Uri uri) {
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
-    final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
+    return parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
+  }
+
+  Future<void> _handleAppLink(Uri uri, {bool isFirstRun = false}) async {
+    final url = _getValidAppLink(uri);
 
     final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
     final latString = url.queryParameters[BaldayDeeplink.latitudeKey];
@@ -927,6 +944,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
       await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
     });
+  }
+
+  Future<Uri?> _getFullLink(String shortCode) async {
+    try {
+      return ref.read(shortLinkRepositoryProvider).resolveLink(shortCode);
+    } catch (e) {
+      logger.log(
+        'Failed to resolve short link for code($shortCode): $e',
+        logLevel: MapnessLogLevel.error,
+      );
+      return null;
+    }
   }
 
   Future<void> _freeRoam() async {
