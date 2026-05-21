@@ -6,6 +6,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/features/jeddah_bus/repo.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
@@ -16,8 +17,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
-import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
+import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
@@ -87,6 +88,9 @@ class PoiHeader extends ConsumerWidget {
     final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
     final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
 
+    final isStationDirectoryObject =
+        ref.watch(jeddahBusLayerRepoProvider).value?.isStationDirectoryObject(data) ?? false;
+
     return HeaderInfoWrapper(
       text: closedStatus,
       backgroundColor: closedStatusColors?.background,
@@ -148,7 +152,8 @@ class PoiHeader extends ConsumerWidget {
                       subTitle: CardHeaderWidget(
                         child: SubtitleComponent(
                           subtitle: _subTitle,
-                          routeInfo: _data?.routeInfos,
+                          // do not show route info for manually managed stations
+                          routeInfo: isStationDirectoryObject ? null : _data?.routeInfos,
                           inlineSpans: subTitleExtraInlineSpans,
                           title: _data?.title,
                         ),

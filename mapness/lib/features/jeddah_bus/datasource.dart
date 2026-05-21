@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +22,11 @@ class JeddahBusData extends Equatable {
 
   @override
   List<Object?> get props => [stations, lines];
+
+  bool isStationDirectoryObject(DirectoryObjectMessage? object) {
+    final busStationObjectId = object?.group.firstWhereOrNull((g) => g.type == ObjectTypeMessage.station)?.id.objectId;
+    return stations.containsKey(busStationObjectId);
+  }
 }
 
 abstract class JeddahBusJsonDatasource {
