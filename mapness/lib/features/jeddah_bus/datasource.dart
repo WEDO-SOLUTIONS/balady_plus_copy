@@ -55,18 +55,20 @@ abstract class JeddahBusJsonDatasource {
           continue;
         }
         final coordinates = BusCoordinates.list(s.geometry.coordinates);
-        final lineId = lineTypeToCoordinatesMap[coordinates];
-        if (lineId == null) {
+        final lineIds = lineTypeToCoordinatesMap[coordinates];
+        if (lineIds == null) {
           debugPrint('failed to get line id for station\n$s');
           continue;
         }
+
+        final uniqueLineIds = Map.fromEntries(lineIds.map((e) => MapEntry(e.name, e))).values;
 
         final station = BusStation(
           stationId: stationId,
           nameEn: s.properties.stationNameEn,
           nameAr: s.properties.stationNameAr,
           coordinates: BusCoordinates.list(s.geometry.coordinates),
-          lineIds: lineId.toList().sorted((a, b) => a.name.compareTo(b.name)),
+          lineIds: uniqueLineIds.sorted((a, b) => a.name.compareTo(b.name)),
         );
         stationToCoordinatesMap[station.coordinates] = station;
       }
