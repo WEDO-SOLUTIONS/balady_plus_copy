@@ -20,6 +20,7 @@ class EnvironmentConfig {
   final String? proxy;
   final String baseApiDomain;
   final String shareEtaApi;
+  final String? shortLinkUrl;
   final String? shortLinkApiKey;
 
   // TODO(Demezy): very probably will be changed in the future
@@ -42,6 +43,7 @@ class EnvironmentConfig {
     required this.twinsApi,
     required this.baseApiDomain,
     required this.shareEtaApi,
+    required this.shortLinkUrl,
     required this.shortLinkApiKey,
     required this.feedbackApi,
     required this.proxy,
@@ -73,6 +75,7 @@ class EnvironmentConfig {
     twinsApi: json['twinsApi'] as String,
     baseApiDomain: json['baseApiDomain'] as String,
     shareEtaApi: json['shareEtaApi'] as String,
+    shortLinkUrl: json['shortLinkUrl'] as String? ?? 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: json['shortLinkApiKey'] as String?,
     feedbackApi: json['feedbackApi'] as String,
     appFeedbackEnable: json['appFeedbackEnable'] as bool,
@@ -124,6 +127,7 @@ class EnvironmentConfig {
     twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+    shortLinkUrl: 'https://momrah-balady-dev.iaas.urbi-sa.com/1.0/short/link',
     shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
 
     /// swagger: https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/docs/
@@ -147,6 +151,7 @@ class EnvironmentConfig {
     twinsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momah.gov.sa',
+    shortLinkUrl: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
     feedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api/2.0/',
     appFeedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api',
@@ -169,6 +174,7 @@ class EnvironmentConfig {
     twinsApi: 'https://urbi-lifestyle.momah.gov.sa/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://geostream-urbi-lifestyle.momah.gov.sa',
+    shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
     feedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api/2.0/',
     appFeedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api',
@@ -192,6 +198,7 @@ class EnvironmentConfig {
     twinsApi: 'https://momrah-twins-api.iaas.urbi-sa.com/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://momrah-balady-dev-geo.iaas.urbi-sa.com',
+    shortLinkUrl: 'https://sa1.ops.2gis.dev/1.0/short/link',
     shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
 
     /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
