@@ -127,20 +127,6 @@ class SearchScreen(
         )
     }
 
-    private fun searchByText(queryText: String) {
-        state = SearchScreenState.Loading
-        invalidate()
-        mapController.search(
-            queryText,
-            searchItemsLimit,
-            resultCallback = ::handleDirectorySearchResult,
-            errorCallback = {
-                state = SearchScreenState.Error
-                invalidate()
-            }
-        )
-    }
-
     private fun loadHistory() {
         val history = searchHistory.items(
             SearchHistoryPage(limit = searchItemsLimit.toLong())
