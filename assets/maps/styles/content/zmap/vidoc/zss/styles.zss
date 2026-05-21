@@ -29669,7 +29669,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Administrative_house]|[db_sublayer = Floor_plan_house] {
 				[db_recolor != 8] {
 					[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
@@ -32158,7 +32158,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Building_model] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_462;
@@ -32180,7 +32180,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model]|[db_sublayer = Immersive_model_multipart] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_463;
@@ -32202,7 +32202,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_baladi] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_464;
@@ -32224,7 +32224,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_medina] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_465;
@@ -61671,8 +61671,11 @@
 					[selected = true] <
 						raster_set: day_avtobus_i_anchor_x0_5y0_5_888049926;
 					>
-					[g_z_level >= 15.5][g_z_level < 21] <
-						font: Noto_Sans_Arabic_Regular_1473402161;
+					[g_z_level >= 15.5][g_z_level < 17.9] <
+						font: Frutiger_LT_Arabic_65_Bold_1470790304;
+					>
+					[g_z_level >= 17.9][g_z_level < 21] <
+						font: Frutiger_LT_Arabic_65_Bold_1470790304;
 					>
 					 {
 					}
@@ -103120,7 +103123,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Administrative_house]|[db_sublayer = Floor_plan_house] {
 				[db_recolor != 8] {
 					[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
@@ -105609,7 +105612,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Building_model] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_1488;
@@ -105631,7 +105634,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model]|[db_sublayer = Immersive_model_multipart] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_1489;
@@ -105653,7 +105656,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_baladi] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_1490;
@@ -105675,7 +105678,7 @@
 				}
 			}
 		}
-		[g_z_level >= 16][g_z_level < 21] {
+		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_medina] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
 					phase: s_1491;
