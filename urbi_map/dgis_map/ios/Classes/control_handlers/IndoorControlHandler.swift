@@ -75,6 +75,10 @@ class IndoorControlHandler {
     func selectIndoorLevel(index: UInt64) {
         self.focusedBuilding?.activeLevelIndex = index
     }
+
+    func setIndoorFloorPlansEnabled(enabled: Bool) {
+        manager.setIndoorState(newState: enabled ? .enabled : .disabled)
+    }
     
     func cancel() {
         cancelable.forEach { $0.cancel() }
