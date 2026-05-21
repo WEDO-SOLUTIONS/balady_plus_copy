@@ -87,7 +87,7 @@ extension WorkingHoursStrings on WorkingHours {
     if (_isTomorrowDate(now, value)) {
       return '${appLocalizations.closedUntilOnly} ${appLocalizations.tomorrow} ';
     }
-    return '${appLocalizations.closedUntil} ${value.weekday.weekDayNameShort(appLocalizations)} ';
+    return '${appLocalizations.closedUntilOnly} ${value.weekday.weekDayNameShort(appLocalizations)} ${appLocalizations.hour} ';
   }
 }
 

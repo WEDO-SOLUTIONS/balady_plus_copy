@@ -7,6 +7,7 @@ import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/shared/extensions/marker_icons_ext.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -17,8 +18,12 @@ part 'show_map_offers_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class ShowMapOffers extends _$ShowMapOffers {
+  static const _pageSize = 20;
+  static const _maxMapPages = 5;
+
   final _hidePoi = 'hidePoi';
   final _settings = MapObjectManagerSettings.selectedMarker();
+  int _requestId = 0;
 
   bool toggleShowMap = false;
   Marker? _hiddenMarker;
@@ -30,8 +35,9 @@ class ShowMapOffers extends _$ShowMapOffers {
 
   @override
   List<Offer> build() {
+    final dgis = ref.read(dgisControllerProvider).value;
     ref.onDispose(() {
-      final dgis = ref.read(dgisControllerProvider).value;
+      _requestId++;
       unawaited(dgis?.setMapAttributeBool(_hidePoi, value: false));
       unawaited(mapObjectManager?.removeAllMarkers());
     });
@@ -51,7 +57,9 @@ class ShowMapOffers extends _$ShowMapOffers {
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.toBigIcon(isDark: isDarkMode);
+      if (marker.options.icon?.svgPath == Markers.defaultPinNew) {
+        marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.toBigIcon(isDark: isDarkMode);
+      }
       _hideMarker(currentSearchMarker);
     }
 
@@ -94,6 +102,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     Set<SubCategory>? subCategory,
     Set<RecommendedType>? promotionsType,
   }) async {
+    final requestId = ++_requestId;
     toggleShowMap = enabled;
 
     final dgis = ref.read(dgisControllerProvider).value;
@@ -105,9 +114,15 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
 
     final saudiPassRepository = await ref.read(saudiPassRepositoryProvider.future);
+    if (!_isCurrentRequest(requestId)) {
+      return;
+    }
     Preferences? preferences;
     try {
       preferences = await saudiPassRepository.getPreferences();
+      if (!_isCurrentRequest(requestId)) {
+        return;
+      }
     } catch (e) {
       log('Error fetching preferences: ${e.toString()}');
     }
@@ -125,39 +140,55 @@ class ShowMapOffers extends _$ShowMapOffers {
               if (preferences?.cities.isEmpty ?? true)
                 cityId, // Fall back to location-based city if no city in preferences
             };
-      final updatedState = List<Offer>.from([]);
-      final Promotions promotions;
+      final GeoPointMessage mapPoint;
+      final int range;
       if (visibleRect != null) {
         final rect = visibleRect;
         final center = rect.center();
-        promotions = await saudiPassRepository.getPromotions(
-          cityIds: cities,
-          categories: categories,
-          recommendedTypes: recommendedTypes,
-          pageSize: null,
-          mapPoint: GeoPointMessage(latitude: center.latitude, longitude: center.longitude),
-          range: rect.distanceToNW().toInt(),
-        );
+        mapPoint = GeoPointMessage(latitude: center.latitude, longitude: center.longitude);
+        range = rect.distanceToNW().toInt();
       } else {
         final controller = await ref.read(dgisControllerProvider.future);
+        if (!_isCurrentRequest(requestId)) {
+          return;
+        }
         final cameraPosition = await controller.getCameraPosition();
-        promotions = await saudiPassRepository.getPromotions(
+        if (!_isCurrentRequest(requestId)) {
+          return;
+        }
+        mapPoint = cameraPosition.point;
+        range = 10000;
+      }
+
+      final uniqueOffers = <String, Offer>{};
+      var pageNumber = 0;
+      var pagesCount = 1;
+      do {
+        final promotions = await saudiPassRepository.getPromotions(
           cityIds: cities,
           categories: categories,
           subCategories: subCategories,
           recommendedTypes: recommendedTypes,
-          pageSize: null,
-          mapPoint: cameraPosition.point,
+          pageNumber: pageNumber,
+          pageSize: _pageSize,
+          mapPoint: mapPoint,
+          range: range,
         );
+        if (!_isCurrentRequest(requestId)) {
+          return;
+        }
+        for (final offer in promotions.records) {
+          uniqueOffers[offer.id] = offer;
+        }
+        pagesCount = promotions.pagingStatus.pagesCount;
+        pageNumber++;
+      } while (pageNumber < pagesCount && pageNumber < _maxMapPages);
+
+      if (!_isCurrentRequest(requestId)) {
+        return;
       }
 
-      final uniqueOffers = <String, Offer>{};
-      for (final offer in promotions.records) {
-        uniqueOffers[offer.id] = offer;
-      }
-      updatedState.addAll(uniqueOffers.values);
-
-      state = updatedState;
+      state = uniqueOffers.values.toList(growable: false);
     } catch (e) {
       log('Error fetching offers: ${e.toString()}');
     }
@@ -168,4 +199,6 @@ class ShowMapOffers extends _$ShowMapOffers {
 
     await switchOffersVisibility(enabled: toggleShowMap, isAll: isAll, cityId: cityId);
   }
+
+  bool _isCurrentRequest(int requestId) => ref.mounted && requestId == _requestId && toggleShowMap;
 }

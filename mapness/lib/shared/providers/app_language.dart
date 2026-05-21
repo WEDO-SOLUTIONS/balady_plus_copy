@@ -111,8 +111,12 @@ class AppLanguage extends _$AppLanguage {
 
     state = value;
 
-    // Invalidate weather provider after state update to avoid circular dependency
-    Future.microtask(() => ref.invalidate(forecastWeatherProvider));
+    // Invalidate weather provider after the current frame to avoid circular
+    // dependency (appLanguage → forecastWeather → weatherRepository → appLanguage).
+    // Using the container directly so the invalidation is not tracked as a
+    // dependency of AppLanguage.
+    final container = ref.container;
+    Future.microtask(() => container.invalidate(forecastWeatherProvider));
   }
 
   /*

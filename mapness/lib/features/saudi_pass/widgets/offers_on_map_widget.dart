@@ -15,7 +15,6 @@ import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_b
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/simple_map_object_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -24,7 +23,6 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -56,7 +54,6 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   static const double _kMarkerWidth = 32.0;
   static const double _kClusterLogicalPixel = 40;
   static const double _kClusterMaxZoom = 20;
-  static const double _kClusterFitPaddingDp = 40.0;
   static const double _kClusterIconSize = 32.0;
   final ValueNotifier<List<Offer>> _notifierOffers = ValueNotifier([]);
 
@@ -124,46 +121,33 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
       );
 
-  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject, CameraPosition cameraPosition) async {
-    final media = ref.read(mediaQueryInfoProvider);
-    final _cameraPosition = ref.read(cameraPositionProvider);
-    final dpr = media?.devicePixelRatio ?? 1.0;
-    final padding = (_kClusterFitPaddingDp * dpr).ceil();
+  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject) async {
+    if (!mounted) return;
 
-    if (_cameraPosition?.zoom == null || (_cameraPosition?.zoom ?? 0) > 16) {
-      final showMapOffers = ref.read(showMapOffersProvider.notifier);
-      await showMapOffers.showMarker(
-        Markers.pinMarker(
-          GeoPointWithElevationMessage(
-            latitude: simpleClusterObject.position.latitude,
-            longitude: simpleClusterObject.position.longitude,
-            elevation: 0,
-          ),
-          icon: switch (context.read<ThemeController>().currentTheme) {
-            BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
-            _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
-          },
-          id: offerPoiPinId,
-        ),
-        context.read<ThemeController>().currentTheme,
-      );
+    final theme = context.read<ThemeController>().currentTheme;
+    final showMapOffers = ref.read(showMapOffersProvider.notifier);
 
-      final offersInState = ref.read(showMapOffersProvider);
-      final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
-      _notifierOffers.value = offersInState.where((o) => ids.contains(o.id)).toList();
-    } else {
-      await cameraPosition.animateToMarkers(
-        simpleClusterObject.markers.toMarkers(),
-        options: CalcPositionOptionsMessage(
-          screenArea: CameraSetPaddingMessage(
-            leftPadding: padding * 2,
-            topPadding: padding,
-            rightPadding: padding * 2,
-            bottomPadding: padding,
-          ),
+    await showMapOffers.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: simpleClusterObject.position.latitude,
+          longitude: simpleClusterObject.position.longitude,
+          elevation: 0,
         ),
-      );
-    }
+        icon: switch (theme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+          _ => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+        },
+        id: offerPoiPinId,
+      ),
+      theme,
+    );
+
+    if (!mounted) return;
+
+    final offersInState = ref.read(showMapOffersProvider);
+    final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
+    _notifierOffers.value = offersInState.where((o) => ids.contains(o.id)).toList();
   }
 
   Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
@@ -227,7 +211,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             logicalPixel: _kClusterLogicalPixel,
             maxZoom: _kClusterMaxZoom,
           ),
-          onTap: (cluster) => _onClusterTap(cluster, cameraPosition),
+          onTap: (cluster) => _onClusterTap(cluster),
           renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
         ),
       ).notifier,

@@ -33,6 +33,8 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
   late final AnimationController _controller;
   late final Animation<Offset> _animation;
   late final List<ToastAction> _actions;
+  Timer? _hideTimer;
+  bool _isHiding = false;
 
   @override
   void initState() {
@@ -47,25 +49,31 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
     ).animate(_controller);
     _controller.forward();
     _actions = widget.actions?.map((e) => e.copyWith(onTap: () => _onActionTap(e))).nonNulls.toList() ?? [];
-    Future.delayed(widget.displayDuration, _hide);
+    _hideTimer = Timer(widget.displayDuration, () => unawaited(_hide()));
   }
 
   Future<void> _hide() async {
-    if (mounted) {
-      await _controller.reverse();
+    if (_isHiding || !mounted) {
+      return;
     }
-    if (_controller.isCompleted || _controller.isDismissed) {
+
+    _isHiding = true;
+    _hideTimer?.cancel();
+
+    await _controller.reverse();
+    if (mounted) {
       widget.hide();
     }
   }
 
   void _onActionTap(ToastAction action) {
-    _hide();
+    unawaited(_hide());
     action.onTap?.call();
   }
 
   @override
   void dispose() {
+    _hideTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }

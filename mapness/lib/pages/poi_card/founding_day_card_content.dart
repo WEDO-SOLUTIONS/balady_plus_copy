@@ -25,6 +25,10 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
   late final PoiCardState? poiCardState = widget.poiCardState;
   PoiCardBottomSheetState? _bottomSheetPreviousState;
 
+  /// See `_ContentState._aiSummaryTriggered` for the rationale.
+  bool _aiSummaryTriggered = false;
+  AiSummaryNotifier? _aiSummaryNotifier;
+
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
       models: [
@@ -95,6 +99,15 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
         return;
       }
       _bottomSheetPreviousState = state;
+
+      // Same rule as `_ContentState`: kick off the AI summary
+      // fetch the first time the sheet leaves preview states
+      // (hidden / halfOpen). Both `open` and `expanded` show the
+      // detail content.
+      if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+        _maybeTriggerAiSummary();
+      }
+
       if (!isInitial) {
         BssUIElementNames? uiElementName;
         switch (state) {
@@ -129,19 +142,56 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
   @override
   void dispose() {
+    // Mirror `_ContentState.dispose()` — cancel any AI Summary inflight when
+    // the founding-day POI card goes away. Deferred via a microtask so the
+    // notifier state mutation doesn't race the disposing subtree (see the
+    // sibling state for the full rationale).
+    final notifier = _aiSummaryNotifier;
+    if (_aiSummaryTriggered && notifier != null) {
+      Future<void>.microtask(() => notifier.cancel(reason: 'Founding-day POI card closed or switched'));
+    }
     _tabController.dispose();
     _tabType.dispose();
     super.dispose();
   }
 
+  /// Mirrors `_ContentState._maybeTriggerAiSummary`.
+  void _maybeTriggerAiSummary() {
+    if (_aiSummaryTriggered) {
+      return;
+    }
+    final types = widget.data.types.map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
+      return;
+    }
+    _aiSummaryTriggered = true;
+    final language = ref.read(appLanguageProvider);
+    final poiId = widget.objectId.toString();
+    final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    _aiSummaryNotifier = notifier;
+    notifier.load();
+  }
+
   @override
   Widget build(BuildContext context) {
-    /// has value
-    ref.listen(poiPhotoProvider(widget.objectId), (previous, next) {
-      if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
-        return;
-      }
-    });
+    ref
+      ..listen(appLanguageProvider, (previous, next) {
+        if (previous == next) {
+          return;
+        }
+        _aiSummaryTriggered = false;
+        final currentState = _bottomSheetController.state;
+        if (currentState == PoiCardBottomSheetState.open || currentState == PoiCardBottomSheetState.expanded) {
+          _maybeTriggerAiSummary();
+        }
+      })
+      ..listen(poiPhotoProvider(widget.objectId), (previous, next) {
+        /// has value
+        if (next.hasValue == true && next.value?.items.isNotEmpty == true) {
+          return;
+        }
+      });
 
     final parkingPoi = widget.objectId == parkingObjectId;
 

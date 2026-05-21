@@ -1,28 +1,32 @@
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
+import 'package:provider/provider.dart';
 
-import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
+import './app/core/utils/utils_exports.dart' show EnvType;
 import './env.dart';
 
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
 void main() async {
-  unhandledExceptionBaladyLogs(() async {
+  await unhandledExceptionBaladyLogs(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    final themeNotifier = BaladyThemeNotifier();
+
+    await themeNotifier.init();
     await runMapnessApp(EnvType.prod, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
 
       runApp(
-        const MapnessProviderScope(
-          child: LocalizedApp(
-            child: App(),
-          ),
+        MultiProvider(
+          providers: [ChangeNotifierProvider(create: (_) => themeNotifier)],
+          child: const MapnessProviderScope(child: LocalizedApp(child: App())),
         ),
       );
       // await SentryFlutter.init(

@@ -78,6 +78,16 @@ class AppConfigLoader {
     return config?.getValue(RemoteConfigConstants.thermalConfig).asString();
   }
 
+  /// Returns the JSON string for dynamic-POI per-geometry-type zoom windows.
+  /// Expected shape:
+  /// `{"marker": {"min_zoom": 13, "max_zoom": 22},
+  ///   "polygon": {"min_zoom": 10, "max_zoom": 18}}`.
+  /// Callers must fall back to a hardcoded default if null/empty/malformed.
+  static Future<String?> getDynamicPoiVisibility() async {
+    final config = await _config?.future;
+    return config?.getValue(RemoteConfigConstants.dynamicPoiVisibility).asString();
+  }
+
   static Future<void> _saveAppConfig(FirebaseRemoteConfig? remoteConfig, EnvType envType) async {
     /// Fetch the vendor configuration for the current environment type
     final vendorConfigResponse = remoteConfig?.getValue(envType.vendorConfigKey()).asString();
