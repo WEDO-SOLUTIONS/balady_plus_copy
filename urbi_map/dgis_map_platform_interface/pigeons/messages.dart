@@ -1485,6 +1485,9 @@ abstract class MapApi {
   void selectIndoorLevel(int index);
 
   @async
+  void setIndoorFloorPlansEnabled(bool enabled);
+
+  @async
   void loadStyles(String asset);
 
   @async
