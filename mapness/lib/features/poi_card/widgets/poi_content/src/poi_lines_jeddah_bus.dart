@@ -146,9 +146,10 @@ class _LineStationList extends StatelessWidget {
             )
             .toList(),
       ),
-      Positioned.fill(
-        left: 14.5,
-        right: null,
+      PositionedDirectional(
+        start: 14.5,
+        top: 0,
+        bottom: 0,
         child: CustomPaint(
           painter: _DashedLinePainter(
             color: context.colors.foregroundDefault,
@@ -180,7 +181,7 @@ class _LineStationListItem extends ConsumerWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x).copyWith(left: Spacing.$2x),
+      padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x).copyWith(start: Spacing.$2x),
       height: 44,
       child: Row(
         children: [
