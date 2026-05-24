@@ -7,8 +7,6 @@ import 'package:mapness/entities/bus/model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
-const _borderColor = Color(0xff003449);
-
 class PoiLinesJeddahBus extends StatelessWidget {
   final BusStation station;
   final List<BusLine>? lines;
@@ -35,7 +33,11 @@ class PoiLinesJeddahBus extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(TransportIcons.bus, size: 24),
+              Icon(
+                TransportIcons.bus,
+                size: 24,
+                color: context.colors.foregroundDefault,
+              ),
               Spacing.$3x.widthBox,
               Text(
                 context.l10n.jeddahBus,
@@ -89,7 +91,7 @@ class _ExpandableLine extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: line.flutterColor,
                     borderRadius: BorderRadius.circular(Spacing.$1x),
-                    border: Border.all(color: _borderColor),
+                    border: Border.all(color: context.colors.foregroundDefault),
                   ),
                   constraints: const BoxConstraints(
                     minWidth: 32,
@@ -144,12 +146,13 @@ class _LineStationList extends StatelessWidget {
             )
             .toList(),
       ),
-      Positioned.fill(
-        left: 14.5,
-        right: null,
+      PositionedDirectional(
+        start: 14.5,
+        top: 0,
+        bottom: 0,
         child: CustomPaint(
           painter: _DashedLinePainter(
-            color: _borderColor,
+            color: context.colors.foregroundDefault,
             startY: 34,
             dashGap: 5 * 2 + 13,
             dashHeight: 21,
@@ -178,7 +181,7 @@ class _LineStationListItem extends ConsumerWidget {
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x).copyWith(left: Spacing.$2x),
+      padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x).copyWith(start: Spacing.$2x),
       height: 44,
       child: Row(
         children: [
@@ -188,7 +191,7 @@ class _LineStationListItem extends ConsumerWidget {
             decoration: BoxDecoration(
               color: color,
               shape: BoxShape.circle,
-              border: Border.all(color: _borderColor),
+              border: Border.all(color: context.colors.foregroundDefault),
             ),
           ),
           const SizedBox(width: 17),
