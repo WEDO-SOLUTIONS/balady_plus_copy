@@ -106,7 +106,7 @@ class JeddahBusLayer extends _$JeddahBusLayer {
 
       polylines.add(
         Polyline(
-          id: 'jeddah_bus_${line.id}',
+          id: 'jeddah_bus_${line.id.name}_${line.id.direction.name}',
           options: PolylineOptionsMessage(
             points: geoPoints,
             width: 5,
