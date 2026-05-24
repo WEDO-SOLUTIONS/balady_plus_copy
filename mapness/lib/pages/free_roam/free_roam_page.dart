@@ -20,6 +20,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
+import 'package:mapness/widgets/landing/sound_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:sheetify/sheetify.dart';
@@ -180,7 +181,14 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                   padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                   child: ManeuverWidget(),
                 ),
-                const SizedBox(height: uikit.Spacing.$3x),
+                const SizedBox(height: uikit.Spacing.$6x),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: uikit.Spacing.$3x),
+                    child: SoundControl(),
+                  ),
+                ),
                 Expanded(
                   child: AnimatedOpacity(
                     opacity: isControlsActive ? 1 : 0,
