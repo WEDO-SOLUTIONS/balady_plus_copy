@@ -12,9 +12,8 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 class BusDetailsContent extends ConsumerWidget {
   final VoidCallback onPanelClose;
-  final VoidCallback onTitlePressed;
 
-  const BusDetailsContent({required this.onPanelClose, required this.onTitlePressed, super.key});
+  const BusDetailsContent({required this.onPanelClose, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +34,7 @@ class BusDetailsContent extends ConsumerWidget {
               child: Row(
                 children: [
                   Text(
-                    context.l10n.layersOnTheMap,
+                    context.l10n.bus,
                     style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
                   ),
                   const Spacer(),
