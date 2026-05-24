@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -118,6 +119,26 @@ class DgisController extends _$DgisController {
 
     await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
     await controller.toggleFollowState();
+    _moveToUserLocationOnFirstFix(controller);
+  }
+
+  /// After the Kingdom Tower intro animation, waits for the first real GPS fix
+  /// and snaps the camera there so the user sees their actual position.
+  void _moveToUserLocationOnFirstFix(DgisMapController controller) {
+    Geolocator.getPositionStream(locationSettings: const LocationSettings())
+        .take(1)
+        .listen(
+          (position) => controller.setCameraPosition(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+              zoom: 17,
+              tilt: 0,
+              bearing: 0,
+            ),
+          ),
+          onError: (Object e) => logger.log('First GPS fix error: $e'),
+          cancelOnError: true,
+        );
   }
 
   /// Moves camera on Riyadh Tower
