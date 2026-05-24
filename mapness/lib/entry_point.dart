@@ -85,7 +85,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
@@ -774,26 +773,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
-    final url = _getValidAppLink(uri);
-
-    if (url.path.startsWith('/1.0/short/link')) {
-      final fullLinkUrl = await _getFullLink(url.pathSegments.last);
-      if (fullLinkUrl != null) {
-        return _handleAppLink(fullLinkUrl, isFirstRun: isFirstRun);
-      }
-    }
-
-    _handleAppLink(url, isFirstRun: isFirstRun);
-  }
-
-  Uri _getValidAppLink(Uri uri) {
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
-    return parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
-  }
-
-  Future<void> _handleAppLink(Uri uri, {bool isFirstRun = false}) async {
-    final url = _getValidAppLink(uri);
+    final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
 
     final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
     final latString = url.queryParameters[BaldayDeeplink.latitudeKey];
@@ -944,18 +926,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
       await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
     });
-  }
-
-  Future<Uri?> _getFullLink(String shortCode) async {
-    try {
-      return ref.read(shortLinkRepositoryProvider).resolveLink(shortCode);
-    } catch (e) {
-      logger.log(
-        'Failed to resolve short link for code($shortCode): $e',
-        logLevel: MapnessLogLevel.error,
-      );
-      return null;
-    }
   }
 
   Future<void> _freeRoam() async {

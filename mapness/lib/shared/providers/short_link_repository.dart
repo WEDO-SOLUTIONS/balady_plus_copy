@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'app_language.dart';
 import 'base_dio.dart';
 import 'dgis_environment.dart';
 
+part 'short_link_repository.freezed.dart';
 part 'short_link_repository.g.dart';
 
 @riverpod
@@ -31,32 +35,56 @@ class ShortLinkRepository extends _$ShortLinkRepository {
     );
   }
 
-  Future<String> createLink(String poiId) async {
+  Future<String> createLink(ShortLinkRequest data) async {
     final dio = await _dio();
-    final response = await dio.post<Map<String, dynamic>>('/');
+    final responseJson = await dio.post<Map<String, dynamic>>(
+      '/',
+      data: jsonEncode(data.toJson()),
+      options: Options(contentType: Headers.jsonContentType),
+    );
 
-    final shortUrl = response.data?['shortUrl'] as String?;
-    if (shortUrl == null || shortUrl.isEmpty) {
-      throw Exception('Response does not contain shortUrl');
+    final responseData = responseJson.data;
+    if (responseData == null) {
+      throw Exception('Response is empty');
     }
 
-    return shortUrl;
+    final response = ShortLinkResponse.fromJson(responseData);
+    return response.shortUrl;
   }
+}
 
-  Future<Uri?> resolveLink(String shortCode) async {
-    final dio = await _dio();
-    final response = await dio.get<Map<String, dynamic>>('/$shortCode');
+@freezed
+abstract class ShortLinkRequest with _$ShortLinkRequest {
+  const factory ShortLinkRequest({
+    required String poiId,
+    double? lat,
+    double? lon,
+  }) = _ShortLinkRequest;
 
-    final longUrl = response.data?['longUrl'] as String?;
-    if (longUrl == null || longUrl.isEmpty) {
-      throw Exception('Response does not contain longUrl');
-    }
+  factory ShortLinkRequest.fromJson(Map<String, dynamic> json) => _$ShortLinkRequestFromJson(json);
+}
 
-    final resolved = Uri.tryParse(longUrl);
-    if (resolved == null) {
-      throw Exception('Invalid longUrl format: $longUrl');
-    }
+@freezed
+abstract class ShortLinkResponse with _$ShortLinkResponse {
+  const factory ShortLinkResponse({
+    required String code,
+    required String shortUrl,
+    required ShortLinkPayload payload,
+    required String longUrl,
+    required DateTime createdAt,
+    required bool isDeleted,
+  }) = _ShortLinkResponse;
 
-    return resolved;
-  }
+  factory ShortLinkResponse.fromJson(Map<String, dynamic> json) => _$ShortLinkResponseFromJson(json);
+}
+
+@freezed
+abstract class ShortLinkPayload with _$ShortLinkPayload {
+  const factory ShortLinkPayload({
+    required String poiId,
+    double? lat,
+    double? lon,
+  }) = _ShortLinkPayload;
+
+  factory ShortLinkPayload.fromJson(Map<String, dynamic> json) => _$ShortLinkPayloadFromJson(json);
 }

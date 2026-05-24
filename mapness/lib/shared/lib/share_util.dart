@@ -20,7 +20,15 @@ class ShareUtil {
         throw ArgumentError('Object id is null');
       }
       final container = ProviderScope.containerOf(context, listen: false);
-      shareUrl = await container.read(shortLinkRepositoryProvider).createLink(objectId);
+      shareUrl = await container
+          .read(shortLinkRepositoryProvider)
+          .createLink(
+            ShortLinkRequest(
+              poiId: objectId,
+              lat: markerCoords?.latitude,
+              lon: markerCoords?.longitude,
+            ),
+          );
     } catch (e) {
       logger.log(
         'Failed to create short link: $e',
