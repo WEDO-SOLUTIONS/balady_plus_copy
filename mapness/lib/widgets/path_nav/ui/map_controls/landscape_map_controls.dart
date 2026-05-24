@@ -45,7 +45,7 @@ class _LandscapeLayout extends StatelessWidget {
                   maneuverAndLimitWidget,
                   const SizedBox(height: uikit.Spacing.$6x),
                   const Padding(
-                    padding: EdgeInsetsDirectional.only(start: uikit.Spacing.$3x),
+                    padding: EdgeInsetsDirectional.only(start: uikit.Spacing.$3x, top: uikit.Spacing.$6x),
                     child: SoundControl(),
                   ),
                   const Spacer(),
