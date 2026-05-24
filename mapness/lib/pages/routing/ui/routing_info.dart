@@ -425,6 +425,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         await ref.read(dgisControllerProvider).value?.stopNavigation();
       }
 
+      await ref.read(dgisControllerProvider).value?.freeRoamController.stop();
+
       final mapSetting = MapObjectManagerSettings.search();
       final markerSettings = MapObjectManagerSettings.selectedMarker();
       final intermediateStopsSetting = MapObjectManagerSettings.intermediateStops();
@@ -436,27 +438,27 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
               .removeAllMarkers(),
       ]);
 
-    ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
+      ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
 
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionGoButton,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-    );
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.routeSelectionGoButton,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+      );
 
-    // log advert analytics event
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.journeyStartedUnique, isUniquePerSession: true);
+      // log advert analytics event
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
+      ref
+          .read(advertMetricsProvider.notifier)
+          .sendEvent(AdvertMetricsKeys.journeyStartedUnique, isUniquePerSession: true);
 
       unawaited(_sendNavigationStartedAnalytics(route, navigatingType));
 
-    unawaited(
-      ref
-          .read(urbiAnalyticsProvider)
-          .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
-    );
+      unawaited(
+        ref
+            .read(urbiAnalyticsProvider)
+            .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
+      );
 
       await ref
           .read(currentRouteProvider.notifier)
