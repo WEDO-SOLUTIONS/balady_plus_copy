@@ -61,7 +61,7 @@ class LayerSliverList extends ConsumerWidget {
                       layersControl.handleTap(value);
                     },
                   );
-            } else {
+            } else if (value != layers_state.LayerType.busSubMenu) {
               layersControl.handleTap(value);
             }
 
