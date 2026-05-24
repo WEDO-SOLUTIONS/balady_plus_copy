@@ -15,7 +15,6 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
-
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -28,6 +27,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:http/http.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -94,6 +94,7 @@ import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
@@ -102,7 +103,6 @@ import 'features/search/ui/search_scope.dart';
 import 'features/special_themes/core/special_theme_mode.dart';
 import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'features/wrc/wrc.dart';
-import 'package:provider/provider.dart' as p;
 
 Mixpanel? mixpanel;
 
@@ -772,8 +772,39 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
+  Future<Uri> getFinalRedirectUri(Uri uri) async {
+    final client = Client();
+    var currentUri = uri;
+    const redirectStatuses = {301, 302, 303, 307, 308};
+
+    try {
+      while (true) {
+        final request = Request('GET', currentUri)..followRedirects = false;
+
+        final response = await client.send(request);
+        if (redirectStatuses.contains(response.statusCode)) {
+          final location = response.headers['location'];
+          if (location != null && location.isNotEmpty) {
+            currentUri = currentUri.resolve(location);
+            continue;
+          }
+        }
+
+        // If it's not a redirect status code, we have reached the end of the chain
+        break;
+      }
+    } catch (e) {
+      logger.log('Error tracking redirect: $e', logLevel: MapnessLogLevel.error);
+    } finally {
+      client.close();
+    }
+
+    return currentUri;
+  }
+
+  Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
+    final uri = await getFinalRedirectUri(sourceUri);
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;

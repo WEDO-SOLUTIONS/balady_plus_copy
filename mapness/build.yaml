@@ -19,6 +19,7 @@ targets:
         generate_for:
           - "lib/features/**/*.dart"
           - "lib/entities/**/*.dart"
+          - "lib/shared/**/*.dart"
           - "lib/_features/poi_card/domain/dto/dgis_photos_dto.dart"
 
       riverpod_generator:

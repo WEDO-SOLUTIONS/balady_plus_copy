@@ -205,7 +205,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   ),
                                 );
                               },
-                              onTapShare: () => ShareUtil.share(objectId?.toString(), context: context),
+                              onTapShare: () => ShareUtil.sharePOI(
+                                objectId?.toString(),
+                                context: context,
+                                markerCoords: home?.coordinates,
+                              ),
                               onTapChange: () {
                                 context.router.push(
                                   FavouritesSearchRoute(
@@ -265,7 +269,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   ),
                                 );
                               },
-                              onTapShare: () => ShareUtil.share(objectId?.toString(), context: context),
+                              onTapShare: () => ShareUtil.sharePOI(
+                                objectId?.toString(),
+                                context: context,
+                                markerCoords: work?.coordinates,
+                              ),
                               onTapChange: () {
                                 context.router.push(FavouritesSearchRoute(markerType: FavouriteItemMarkerType.work));
                               },
@@ -353,9 +361,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             }
                           });
                         },
-                        onShareTap: () => ShareUtil.share(
+                        onShareTap: () => ShareUtil.sharePOI(
                           parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
                           context: context,
+                          markerCoords: item.coordinates,
                         ),
                         onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
