@@ -18,7 +18,6 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
-import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_header.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
@@ -184,7 +183,6 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               scrollController: _multiStateSheetController,
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
-              outside: NaviSearchSheetControls(_multiStateSheetController),
               safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
                   ? context.colors.backgroundSurface1
                   : context.colors.backgroundSurface4,
