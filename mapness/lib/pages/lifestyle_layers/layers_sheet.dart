@@ -160,10 +160,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> {
               dragger: const SheetDragger(),
               startConfig: ToggleSheetStart.closed,
               barrierColorDelegate: barrierColorDelegate,
-              sliver: BusDetailsContent(
-                onTitlePressed: _showBusSubMenuPanel,
-                onPanelClose: _showLayersPanel,
-              ),
+              sliver: BusDetailsContent(onPanelClose: _showLayersPanel),
             ),
           ),
         ],
