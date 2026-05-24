@@ -26,7 +26,7 @@ class _SoundControlState extends ConsumerState<SoundControl> {
     }
 
     final isRtl = Directionality.of(context) == TextDirection.rtl;
-    final iconData = isMuted ? SystemIcons.notificationFill:SystemIcons.notification;
+    final iconData = isMuted ? SystemIcons.notificationFill : SystemIcons.notification;
 
     return MapButton(
       onTap: () {
