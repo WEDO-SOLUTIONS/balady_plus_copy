@@ -199,7 +199,19 @@
             </intent-filter>
 
             <!-- Deep linking -->
-            <!-- <meta-data android:name="flutter_deeplinking_enabled" android:value="true" /> -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="plus.balady.sa" />
+            </intent-filter>
+
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -209,9 +221,28 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="balady.gov.sa" />
-                <data android:host="apps.balady.gov.sa" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="go.balady.sa" />
-                <data android:host="plus.balady.sa" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="apps.balady.gov.sa" />
             </intent-filter>
 
             <intent-filter>
