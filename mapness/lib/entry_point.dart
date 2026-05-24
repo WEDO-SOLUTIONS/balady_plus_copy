@@ -27,6 +27,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:http/http.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -771,8 +772,39 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
+  Future<Uri> getFinalRedirectUri(Uri uri) async {
+    final client = Client();
+    var currentUri = uri;
+    const redirectStatuses = {301, 302, 303, 307, 308};
+
+    try {
+      while (true) {
+        final request = Request('GET', currentUri)..followRedirects = false;
+
+        final response = await client.send(request);
+        if (redirectStatuses.contains(response.statusCode)) {
+          final location = response.headers['location'];
+          if (location != null && location.isNotEmpty) {
+            currentUri = currentUri.resolve(location);
+            continue;
+          }
+        }
+
+        // If it's not a redirect status code, we have reached the end of the chain
+        break;
+      }
+    } catch (e) {
+      logger.log('Error tracking redirect: $e', logLevel: MapnessLogLevel.error);
+    } finally {
+      client.close();
+    }
+
+    return currentUri;
+  }
+
+  Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
+    final uri = await getFinalRedirectUri(sourceUri);
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
