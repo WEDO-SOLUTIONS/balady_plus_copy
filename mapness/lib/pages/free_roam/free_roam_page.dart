@@ -209,7 +209,9 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                               ? const Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    TrafficParkingControl(),
+                                    TrafficParkingControl(
+                                      trafficVisible: false,
+                                    ),
                                     SizedBox(height: uikit.Spacing.$2x),
                                     DimensionControl(),
                                     Spacer(),
