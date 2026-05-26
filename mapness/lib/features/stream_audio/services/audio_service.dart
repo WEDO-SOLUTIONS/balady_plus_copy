@@ -374,15 +374,24 @@ class AudioService extends ChangeNotifier {
         'expectsToBePlaying: $_expectsToBePlaying, '
         'isPlaying: $_isPlaying');
 
-    // Set flag immediately so the dismissal debounce timer (1200ms) is blocked
-    // even if navigationVoiceStarted arrives via native bridge a few ms later.
     _isInterrupted = true;
     _wasPlayingBeforeInterruption = _isPlaying || _isLoading;
+
+    // Android: duck volume instead of pausing when 2GIS navigation voice speaks.
+    if (Platform.isAndroid && event.type == AudioInterruptionType.duck && _player != null) {
+      _player!.setVolume(0.15);
+    }
   }
 
   void _handleInterruptionEnded(AudioInterruptionEvent event) {
     debugPrint('AudioService: ▶️ INTERRUPTION ENDED - wasPlaying: $_wasPlayingBeforeInterruption');
     _isInterrupted = false;
+
+    if (Platform.isAndroid && event.type == AudioInterruptionType.duck && _player != null) {
+      // Restore volume after navigation voice ends.
+      _player!.setVolume(1.0);
+      return;
+    }
 
     if (Platform.isIOS && _wasPlayingBeforeInterruption && _expectsToBePlaying) {
       // ignore: discarded_futures
