@@ -1,9 +1,12 @@
 import 'dart:collection';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 const Duration kDefaultWorkingHoursSoonThreshold = Duration(hours: 2);
+
+/// We consider an inter-interval duration as a 'Close' if it is greater than [kDefaultWorkingHoursBreakHoursThreshold]
+/// and as a 'Break' otherwise
+const Duration kDefaultWorkingHoursBreakHoursThreshold = Duration(hours: 2);
 
 enum WorkingHoursStatusType {
   hidden,
@@ -125,7 +128,7 @@ class WorkingHours {
       return false;
     }
 
-    return _sameDate(current.end, next.start);
+    return next.start.difference(current.end) < kDefaultWorkingHoursBreakHoursThreshold;
   }
 
   /// Shows next working hours start
