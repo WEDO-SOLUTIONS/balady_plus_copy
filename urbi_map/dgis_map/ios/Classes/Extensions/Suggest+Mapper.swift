@@ -17,11 +17,9 @@ extension SuggestHandler {
         switch self {
         case .objectHandler(let objectHandler):
             return SuggestHandlerMessage(
-                objectHandler: objectHandler.map {
-                    return SuggestObjectHandlerMessage(
-                        item: $0.item.toMessage()
-                    )
-                },
+                objectHandler: SuggestObjectHandlerMessage(
+                    item: objectHandler.item.toMessage()
+                ),
                 performSearchHandler: nil,
                 incompleteTextHandler: nil
             )
@@ -39,11 +37,9 @@ extension SuggestHandler {
             return SuggestHandlerMessage(
                 objectHandler: nil,
                 performSearchHandler: nil,
-                incompleteTextHandler: incompleteText.map {
-                    IncompleteTextHandlerMessage(
-                        queryText: $0.queryText
-                    )
-                }
+                incompleteTextHandler: IncompleteTextHandlerMessage(
+                    queryText: incompleteText.queryText
+                )
             )
         }
     }

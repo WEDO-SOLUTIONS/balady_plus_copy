@@ -31,8 +31,8 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
             parkingInfo = this.parkingInfo?.toMessage(),
             workStatus = this.workStatus?.toMessage(),
             levelId = this.levelId?.value,
-            buildingLevels = this.buildingLevels?.toMessage(),
-            buildingInfo = this.buildingInfo.toMessage(),
+            buildingLevels = this.buildingInfo?.buildingLevels?.toMessage(),
+            buildingInfo = this.buildingInfo?.toMessage() ?: BuildingInfoMessage(),
             entrances = this.entrances.map { it.toMessage() },
             tradeLicense = this.tradeLicense?.toMessage(),
             rubricIds = this.rubricIds.map { it.value },
@@ -235,7 +235,7 @@ fun BuildingInfo.toMessage(): BuildingInfoMessage {
 }
 
 fun LevelInfo.toMessage(): LevelInfoMessage {
-    return LevelInfoMessage(id = this.id.value, name = this.name)
+    return LevelInfoMessage(id = this.id?.value ?: 0L, name = this.name)
 }
 
 fun EntranceInfo.toMessage(): EntranceInfoMessage {
@@ -307,7 +307,7 @@ fun PublicTransportDirectoryRouteInfo.toMessage(): PublicTransportDirectoryRoute
     return PublicTransportDirectoryRouteInfoMessage(
             id = this.id.toMessage(),
             name = this.name,
-            color = this.color?.toLong(),
+            color = this.color?.argb?.toLong(),
             fromToStationNames = this.fromToStationNames?.toMessage(),
             directions = this.directions.map { it.toMessage() }
     )
@@ -374,7 +374,7 @@ fun PublicTransportPlatformTransition.toMessage(): PublicTransportPlatformTransi
             routeId = this.routeId.toMessage(),
             routeName = this.routeName,
             routeType = this.routeType.toMessage(),
-            color = this.color?.toLong(),
+            color = this.color?.argb?.toLong(),
             stationId = this.stationId.toMessage(),
             stationName = this.stationName
     )
@@ -446,7 +446,7 @@ fun PublicTransportTransfer.toMessage(): PublicTransportTransferMessage {
 fun PublicTransportInfo.toMessage(): PublicTransportInfoMessage {
     return PublicTransportInfoMessage(
         type = this.type.toMessage(),
-        names = this.names,
+        names = this.routeInfos.map { it.name },
         suggestedCarNumbers = this.suggestedCarNumbers.map { it.toLong() },
         boardingSuggest = this.boardingSuggest,
         color = this.color?.toLong(),

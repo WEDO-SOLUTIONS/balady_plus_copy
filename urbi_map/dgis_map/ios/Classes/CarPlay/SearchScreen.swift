@@ -18,7 +18,7 @@ class SearchScreen {
         self.searchManager = try! SearchManager.createOnlineManager(
             context: try! sdk.context
         )
-        self.searchHistory = SearchHistory(context: try! sdk.context)
+        self.searchHistory = SearchHistory.instance(context: try! sdk.context)
     }
     
     private lazy var gridTemplate = CPGridTemplate(

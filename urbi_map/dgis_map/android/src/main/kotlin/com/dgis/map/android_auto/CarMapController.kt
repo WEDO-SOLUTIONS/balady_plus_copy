@@ -161,7 +161,7 @@ class CarMapController(
 
     private fun setStyle() {
         val builder = StyleBuilder(sdkContext)
-        val stylePath = flutterLoader.getLookupKeyForAsset("packages/map_styles/src/styles.2gis")
+        val stylePath = flutterLoader.getLookupKeyForAsset("assets/maps/styles/styles.2gis")
         closeables.add(
             builder.loadStyle(
                 File.fromAsset(sdkContext, stylePath)

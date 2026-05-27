@@ -147,12 +147,15 @@ class NavigationHandler(
                                                                 .routeDistanceMillimeters
                                                                 .toLong()
                                         ),
+                                roadClassesStyleZooms = emptyMap(),
+                                roadClassesTilts = emptyMap(),
                                 styleZoom =
                                         StyleZoom(
                                                 value =
                                                         speedRangeZoom.styleZoomValue
                                                                 .toFloat()
-                                        )
+                                        ),
+                                styleTilt = Tilt(0f),
                         )
                 }
                 navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = zooms

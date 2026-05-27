@@ -16,10 +16,32 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url "https://artifactory.2gis.dev/sdk-maven-release"
+            content {
+                includeGroup "ru.dgis.sdk"
+            }
+        }
         google()
         mavenCentral()
         maven { url 'https://developer.huawei.com/repo/' }
         maven {url "https://mobilesdk.useinsider.com/android"}
+    }
+
+    repositories.configureEach { repo ->
+        if (repo instanceof org.gradle.api.artifacts.repositories.MavenArtifactRepository) {
+            def repoUrl = repo.url.toString()
+            if (repoUrl == "https://artifactory.2gis.dev/sdk-maven-release") {
+                repo.content {
+                    includeGroup "ru.dgis.sdk"
+                }
+            }
+            if (repoUrl == "https://mobilesdk.useinsider.com/android") {
+                repo.content {
+                    includeGroup "com.useinsider"
+                }
+            }
+        }
     }
 
     subprojects {

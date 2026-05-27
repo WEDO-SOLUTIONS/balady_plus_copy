@@ -11,14 +11,16 @@ class VisibleRectHandler {
     private var cancelable: Array<Cancellable> = []
     
     init(map: Map, eventChannel: DgisStreamHandler) {
-        cancelable.append(map.camera.visibleRectChannel.sink { [weak self] value in
-            self?.visibleRectChanged(map: map, eventChannel: eventChannel)
-        })
-        cancelable.append(map.camera.positionChannel.sink { [weak self] value in
-            self?.cameraPositionChanged(position: value, eventChannel: eventChannel)
-        })
-        cancelable.append(map.camera.stateChannel.sink { [weak self] value in
-            self?.stateChanged(state: value, eventChannel: eventChannel)
+        cancelable.append(map.camera.changed.sink { [weak self] change in
+            if change.changeReasons.contains(.visibleRect) {
+                self?.visibleRectChanged(map: map, eventChannel: eventChannel)
+            }
+            if change.changeReasons.contains(.position) {
+                self?.cameraPositionChanged(position: map.camera.position, eventChannel: eventChannel)
+            }
+            if change.changeReasons.contains(.state) {
+                self?.stateChanged(state: map.camera.state, eventChannel: eventChannel)
+            }
         })
     }
     

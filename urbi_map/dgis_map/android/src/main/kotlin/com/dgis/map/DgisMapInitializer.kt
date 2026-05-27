@@ -6,6 +6,8 @@ import com.dgis.map.map_api.*
 import ru.dgis.sdk.DGis
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.map.CalloutVisualizationMode
+import ru.dgis.sdk.map.GlobalMapOptions
+import ru.dgis.sdk.map.GraphicsApi
 import ru.dgis.sdk.navigation.NavigationManager
 import ru.dgis.sdk.platform.HttpOptions
 import ru.dgis.sdk.platform.LogLevel
@@ -62,6 +64,8 @@ object DgisMapInitializer {
                 systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR
             ),
             httpOptions = HttpOptions(useCache = true),
+            // Keep the renderer explicit while Android/iOS rendering parity is being verified.
+            mapOptions = GlobalMapOptions(graphicsApi = GraphicsApi.OPEN_GL),
         )
 
         if (locationSource == null) {

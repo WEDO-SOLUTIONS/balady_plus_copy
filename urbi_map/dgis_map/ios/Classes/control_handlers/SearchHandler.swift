@@ -388,7 +388,7 @@ class SearchHandler: NSObject {
                     (index, suggest) in
                     var queryId: String? = nil
                     
-                    if case .performSearchHandler(let handler) = suggest.handler, let handler = handler {
+                    if case .performSearchHandler(let handler) = suggest.handler {
                         queryId = UUID().uuidString
                         self.queries[queryId!] = handler.searchQuery
                     }

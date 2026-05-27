@@ -11,6 +11,7 @@ import com.dgis.map.R
 import com.dgis.map.views.util.FadeAnimator
 import ru.dgis.sdk.MutableStatefulChannel
 import ru.dgis.sdk.StatefulChannel
+import ru.dgis.sdk.map.CameraChangeReason
 import ru.dgis.sdk.map.CameraState
 import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MapControl
@@ -100,8 +101,11 @@ class MapControls @JvmOverloads constructor(
     override fun attachToMap(map: Map) {
         val camera = map.camera
         closeables.add(camera)
-        closeables.add(camera.stateChannel.connect {
-            if (it == CameraState.BUSY) {
+        closeables.add(camera.changed.connect {
+            if (!it.changeReasons.contains(CameraChangeReason.STATE)) {
+                return@connect
+            }
+            if (camera.state == CameraState.BUSY) {
                 setVisible(true)
                 hideHandler.removeCallbacksAndMessages(null)
             }

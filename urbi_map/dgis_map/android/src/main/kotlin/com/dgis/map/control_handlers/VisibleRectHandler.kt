@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers
 
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.map.CameraChangeReason
 import ru.dgis.sdk.map.CameraPosition
 import ru.dgis.sdk.map.CameraState
 import ru.dgis.sdk.map.Map
@@ -14,14 +15,16 @@ class VisibleRectHandler(
     private val closeables = mutableListOf<AutoCloseable>()
 
     init {
-        closeables.add(map.camera.visibleRectChannel.connect {
-            visibleRectChanged()
-        })
-        closeables.add(map.camera.positionChannel.connect {
-            positionChanged(it)
-        })
-        closeables.add(map.camera.stateChannel.connect {
-            stateChanged(it)
+        closeables.add(map.camera.changed.connect { change ->
+            if (change.changeReasons.contains(CameraChangeReason.VISIBLE_RECT)) {
+                visibleRectChanged()
+            }
+            if (change.changeReasons.contains(CameraChangeReason.POSITION)) {
+                positionChanged(map.camera.position)
+            }
+            if (change.changeReasons.contains(CameraChangeReason.STATE)) {
+                stateChanged(map.camera.state)
+            }
         })
     }
 

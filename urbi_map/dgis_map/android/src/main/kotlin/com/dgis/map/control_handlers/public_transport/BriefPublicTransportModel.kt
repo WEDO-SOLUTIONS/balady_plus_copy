@@ -6,6 +6,9 @@ import ru.dgis.sdk.map.*
 import ru.dgis.sdk.routing.*
 import kotlin.math.max
 
+internal val PublicTransportInfo.names: List<String>
+    get() = routeInfos.map { it.name }
+
 class BriefPublicTransportModel(route: TrafficRoute) {
     private val _transfers: List<PublicTransportTransferRouteLongEntry> =
         route.route.publicTransportTransfers.entries

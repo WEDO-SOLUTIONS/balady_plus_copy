@@ -147,8 +147,8 @@ class DgisCarPlayMapView: UIViewController {
         let model = DgisMapInitializer.shared.getNavigationManager().uiModel
         let navigationViewFactory =
             (try! DgisMapInitializer.shared.getSdkContainer()
-            .makeNavigationViewFactory()).makeNavigationViewControlsFactory()
-        let speedControl = navigationViewFactory.makeSpeedControl(
+            .makeNavigationUIViewFactory()).makeNavigationUIControlsFactory()
+        let speedControl = navigationViewFactory.makeSpeedUIControl(
             uiModel: model
         )
         speedControl.translatesAutoresizingMaskIntoConstraints = false
@@ -245,7 +245,7 @@ extension UIView {
 
 extension Map {
     func loadStyle(styleFactory: DGis.IStyleFactory) -> DGis.Cancellable? {
-        let stylePath = FlutterDartProject.lookupKey(forAsset: "packages/map_styles/src/styles.2gis")
+        let stylePath = FlutterDartProject.lookupKey(forAsset: "assets/maps/styles/styles.2gis")
         guard let assetPath = Bundle.main.path(forResource: stylePath, ofType: nil) else { return nil }
         return styleFactory.loadFile(path: assetPath).sink(
             receiveValue: { style in

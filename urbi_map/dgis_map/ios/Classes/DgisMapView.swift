@@ -40,6 +40,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var weatherHandler: WeatherHandler?
 
     private var objectTapHandler: ObjectTapHandler?
+    private var objectTappedCallback: MapObjectTappedCallback?
+    private var objectLongPressCallback: MapObjectTappedCallback?
     private var visibleRectHandler: VisibleRectHandler?
     
     private var compassControlHandler: CompassControlHandler?
@@ -134,7 +136,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
-            searchHistory: SearchHistory(context: try! sdk.context),
+            searchHistory: SearchHistory.instance(context: try! sdk.context),
             map: map,
             sdkContext: self.sdk
         )
@@ -225,7 +227,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
         
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else {
+            completion(Result.failure(FlutterError(
+                code: "FileNotFoundException",
+                message: "Failed to find style asset <\(asset)> with key <\(assetKey)>.",
+                details: nil
+            )))
+            return
+        }
         
         let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
         cancelable.append(
@@ -892,10 +901,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         self.map = map
         self.mapFactory = mapFactory
-        let mapView = mapFactory.mapView
+        let mapView = MainActor.assumeIsolated {
+            mapFactory.mapUIView
+        }
         
         // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
-        mapView.gestureView?.doubleTapAndPanGestureRecognizer?.isEnabled = false
+        MainActor.assumeIsolated {
+            mapView.gestureUIView?.doubleTapAndPanGestureRecognizer?.isEnabled = false
+        }
         
         mapView.translatesAutoresizingMaskIntoConstraints = false
         self._view.addSubview(mapView)
@@ -945,12 +958,18 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             registrar: self.registrar
         )
         
-        mapView.addObjectTappedCallback(callback: MapObjectTappedCallback(
-            callback: objectTapHandler.objectTapListener(_:)))
-
-
-        mapView.addObjectLongPressCallback(callback: MapObjectTappedCallback(
-            callback: objectTapHandler.objectLongTapListener(_:)))
+        let objectTappedCallback = MapObjectTappedCallback(
+            callback: objectTapHandler.objectTapListener(_:)
+        )
+        let objectLongPressCallback = MapObjectTappedCallback(
+            callback: objectTapHandler.objectLongTapListener(_:)
+        )
+        
+        self.objectTappedCallback = objectTappedCallback
+        self.objectLongPressCallback = objectLongPressCallback
+        
+        mapView.addObjectTappedCallback(callback: objectTappedCallback)
+        mapView.addObjectLongPressCallback(callback: objectLongPressCallback)
 
 
         self.objectTapHandler = objectTapHandler
@@ -1097,11 +1116,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         switch appearance {
         case .day:
-            mapView.appearance = .universal("day")
+            mapView.appearance = .universal(Theme(name: "day"))
         case .night:
-            mapView.appearance = .universal("night")
+            mapView.appearance = .universal(Theme(name: "night"))
         case .system:
-            mapView.appearance = .automatic(light: "day", dark: "night")
+            mapView.appearance = .automatic(light: Theme(name: "day"), dark: Theme(name: "night"))
         }
         
          completion(Result.success(()))

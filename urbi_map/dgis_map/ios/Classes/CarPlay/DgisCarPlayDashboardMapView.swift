@@ -21,7 +21,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
         }
         
         let map = mapFactory.map
-        let mapView = mapFactory.mapView
+        let mapView = mapFactory.mapUIView
         try? map.camera.setPositionPoint(positionPoint: DgisCarPlayMapView.defaultCameraPositionPoint)
         
         myLocationControlModel = MyLocationControlModel(map: map)
@@ -90,8 +90,8 @@ class DgisCarPlayDashboardMapView: UIViewController {
     
     func addSpeedControl() {
         let model = DgisMapInitializer.shared.getNavigationManager().uiModel
-        let navigationViewFactory = (try? DgisMapInitializer.shared.getSdkContainer().makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
-        if let speedControl = navigationViewFactory?.makeSpeedControl(uiModel: model) {
+        let navigationViewFactory = (try? DgisMapInitializer.shared.getSdkContainer().makeNavigationUIViewFactory())?.makeNavigationUIControlsFactory()
+        if let speedControl = navigationViewFactory?.makeSpeedUIControl(uiModel: model) {
             speedControl.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(speedControl)
 

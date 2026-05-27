@@ -25,12 +25,12 @@ extension DirectoryObject {
             parkingInfo: self.parkingInfo?.toMessage(),
             workStatus: self.workStatus?.toMessage(),
             levelId: self.levelId?.value != nil ? Int64(self.levelId!.value): nil,
-            buildingLevels: self.buildingLevels?.toMessage(),
+            buildingLevels: self.buildingInfo?.buildingLevels?.toMessage(),
             entrances: self.entrances.map {
                 $0.toMessage()
             },
             tradeLicense: self.tradeLicense?.toMessage(),
-            buildingInfo: self.buildingInfo.toMessage(),
+            buildingInfo: self.buildingInfo?.toMessage() ?? BuildingInfoMessage(),
             rubricIds: self.rubricIds.map {
                 Int64($0.value)
             },
@@ -471,7 +471,7 @@ extension BuildingLevels {
 extension LevelInfo {
     fileprivate func toMessage() -> LevelInfoMessage {
         LevelInfoMessage(
-            id: Int64(self.id.value),
+            id: Int64(self.id?.value ?? 0),
             name: self.name
         )
     }
@@ -534,7 +534,7 @@ extension PublicTransportDirectoryRouteInfo {
         PublicTransportDirectoryRouteInfoMessage(
             id: self.id.toMessage(),
             name: self.name,
-            color: self.color != nil ? Int64(self.color!) : nil,
+            color: self.color.map { Int64($0.argb) },
             fromToStationNames: self.fromToStationNames?.toMessage(),
             directions: self.directions.map { $0.toMessage() }
         )
@@ -614,7 +614,7 @@ extension PublicTransportPlatformTransition {
             routeId: self.routeId.toMessage(),
             routeName: self.routeName,
             routeType: self.routeType.toMessage(),
-            color: self.color != nil ? Int64(self.color!) : nil,
+            color: self.color.map { Int64($0.argb) },
             stationId: self.stationId.toMessage(),
             stationName: self.stationName
         )

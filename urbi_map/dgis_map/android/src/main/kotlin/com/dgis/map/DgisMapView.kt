@@ -1163,7 +1163,7 @@ class DgisMapView(
                         map,
                         SearchManager.createOnlineManager(sdkContext),
                         locationSource,
-                        SearchHistory(DgisMapInitializer.getSdkContext()),
+                        SearchHistory.instance(DgisMapInitializer.getSdkContext()),
                 )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler =

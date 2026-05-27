@@ -50,7 +50,7 @@ class SearchHistoryScreen(
             .setTitle(getString(R.string.search_history)).build()
     }
 
-    private val searchHistory = SearchHistory(DgisMapInitializer.getSdkContext())
+    private val searchHistory = SearchHistory.instance(DgisMapInitializer.getSdkContext())
 
     init {
         val history = searchHistory.items(

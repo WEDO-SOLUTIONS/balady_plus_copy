@@ -405,7 +405,10 @@ class CarNavigationHandler(
                                 range = SpeedRange(0.0, 16.67), // 0–60 km/h
                                 minDistanceToManeuver = RouteDistance(0),
                                 maxDistanceToManeuver = RouteDistance(maneuverZoneMm),
-                                styleZoom = StyleZoom(19.3f) // visually this will look like ~16.5
+                                roadClassesStyleZooms = emptyMap(),
+                                roadClassesTilts = emptyMap(),
+                                styleZoom = StyleZoom(19.3f), // visually this will look like ~16.5
+                                styleTilt = Tilt(0f),
                         ),
 
                         // NEAR MODE:
@@ -414,7 +417,10 @@ class CarNavigationHandler(
                                 range = SpeedRange(0.0, 16.67), // 0–60 km/h
                                 minDistanceToManeuver = RouteDistance(maneuverZoneMm),
                                 maxDistanceToManeuver = RouteDistance(farMm),
-                                styleZoom = StyleZoom(19.3f) // still near mode
+                                roadClassesStyleZooms = emptyMap(),
+                                roadClassesTilts = emptyMap(),
+                                styleZoom = StyleZoom(19.3f), // still near mode
+                                styleTilt = Tilt(0f),
                         ),
 
                         // FAR MODE (normal navigation):
@@ -423,7 +429,10 @@ class CarNavigationHandler(
                                 range = SpeedRange(16.67, 1000.0), // 60+ km/h
                                 minDistanceToManeuver = RouteDistance(0),
                                 maxDistanceToManeuver = RouteDistance(farMm),
-                                styleZoom = StyleZoom(15.8f) // visually this will look like ~14
+                                roadClassesStyleZooms = emptyMap(),
+                                roadClassesTilts = emptyMap(),
+                                styleZoom = StyleZoom(15.8f), // visually this will look like ~14
+                                styleTilt = Tilt(0f),
                         )
                 )
 
