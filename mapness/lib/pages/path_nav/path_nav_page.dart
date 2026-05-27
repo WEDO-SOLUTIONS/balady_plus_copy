@@ -350,6 +350,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
 
     void onSheetHeightChanged() {
+      if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+        return;
+      }
       if (isPortrait) {
         final sheetHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
@@ -375,7 +378,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     useEffect(() {
       sheetController.addListener(onSheetHeightChanged);
 
-      if (isPortrait) {
+      if (isPortrait && widget.navType != RouteSearchOptionsMessage.publicTransport) {
         final bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
         _bottomHeightNotifier.value = bottomHeight;
       }
@@ -496,6 +499,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                       value: RouteParamsPoint(latitude: destination.lat ?? 0, longitude: destination.lon ?? 0),
                     ),
                     publicTransportRoutes: [publicRoute],
+                    onSheetHeightChanged: isPortrait
+                        ? (height) {
+                            final totalHeight = height + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+                            if (_bottomHeightNotifier.value != totalHeight) {
+                              _bottomHeightNotifier.value = totalHeight;
+                              _setPaddingToCamera(_bottomHeightNotifier.value);
+                            }
+                          }
+                        : null,
                     onPressed: () async {
                       // Remove route from the map for public transport
                       await ref.read(dgisControllerProvider).value?.hideRoutes();
