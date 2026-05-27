@@ -80,7 +80,7 @@ class _LandscapeLayout extends StatelessWidget {
                         child: const Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            TrafficParkingControl(parkingVisible: false),
+                            TrafficParkingControl(trafficVisible: false, parkingVisible: false),
                             SizedBox(height: uikit.Spacing.$2x),
                             DimensionControl(),
                           ],
