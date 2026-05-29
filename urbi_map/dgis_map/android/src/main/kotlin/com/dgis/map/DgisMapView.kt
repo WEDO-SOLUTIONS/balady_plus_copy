@@ -31,7 +31,7 @@ import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.map.Map as DgisMap
 import ru.dgis.sdk.platform.Locale
-import ru.dgis.sdk.platform.getLocaleManager
+import ru.dgis.sdk.platform.LocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
@@ -224,7 +224,7 @@ class DgisMapView(
     }
 
     override fun overrideLocales(locales: List<String>, callback: (Result<Unit>) -> Unit) {
-        getLocaleManager(sdkContext)
+        LocaleManager.instance(sdkContext)
                 .overrideLocales(
                         locales.map {
                             val parts = it.split("-")
@@ -495,7 +495,13 @@ class DgisMapView(
             objectId: DgisObjectIdMessage,
             callback: (Result<DirectoryObjectMessage>) -> Unit
     ) {
-        searchHandler?.searchByDirectoryObjectId(
+        val searchHandler = searchHandler
+        if (searchHandler == null) {
+            callback(Result.failure(IllegalStateException("Map was not initialized properly")))
+            return
+        }
+
+        searchHandler.searchByDirectoryObjectId(
                 DgisObjectId(objectId = objectId.objectId, entranceId = objectId.entranceId),
                 callback,
         )

@@ -2,7 +2,7 @@ package com.dgis.map.extensions
 
 import com.dgis.map.map_api.MarkerTextStyleMessage
 import com.dgis.map.map_api.TextPlacementMessage
-import ru.dgis.sdk.map.Color
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.map.LogicalPixel
 import ru.dgis.sdk.map.TextPlacement
 import ru.dgis.sdk.map.TextStyle

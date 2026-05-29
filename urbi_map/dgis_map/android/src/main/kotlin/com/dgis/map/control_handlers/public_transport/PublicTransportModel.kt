@@ -1,7 +1,7 @@
 package com.dgis.map.control_handlers.public_transport
 
 import ru.dgis.sdk.Duration
-import ru.dgis.sdk.map.Color
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.routing.*
 import java.util.*
 

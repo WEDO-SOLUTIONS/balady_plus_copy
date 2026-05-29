@@ -21,9 +21,11 @@ import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.Executors
 import ru.dgis.sdk.Context
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.Meter
+import ru.dgis.sdk.ScreenDistance
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint

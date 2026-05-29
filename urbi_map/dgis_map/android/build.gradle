@@ -66,7 +66,7 @@ dependencies {
     implementation"com.google.android.gms:play-services-location:21.0.1"
     implementation 'androidx.car.app:app:1.7.0'
     // Dgis sdk
-    implementation "ru.dgis.sdk:sdk-full:13.2.0"
+    implementation "ru.dgis.sdk:sdk-full:13.3.1"
     // implementation (name: 'sdk-full-latest', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.8.0'

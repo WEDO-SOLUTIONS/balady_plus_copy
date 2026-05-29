@@ -59,7 +59,11 @@ class SearchHandler(
                     return@onResult
                 }
 
-                callback(Result.success(response.toMessage()))
+                try {
+                    callback(Result.success(response.toMessage()))
+                } catch (error: Throwable) {
+                    callback(Result.failure(error))
+                }
             }
             onError { callback(Result.failure(it)) }
         }
