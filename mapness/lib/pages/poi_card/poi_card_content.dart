@@ -216,6 +216,14 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       _aiSummaryTriggered = true;
       return;
     }
+    // Skip both fetch and UI for POIs whose type is outside the allowed
+    // scope — same gate as `AiSummarySection`, applied here so the network
+    // request never fires for off-scope POIs.
+    final types = (poiCardState?.gisObjectIdMessage?.types ?? widget.data.types).map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
+      return;
+    }
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
@@ -407,7 +415,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
                           ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
-                          : (widget.data.subtitle == 'تسوية' ? 'نطاق' : widget.data.subtitle)),
+                          : (['تسوية','مستوطنة'].contains(widget.data.subtitle )? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
                       const TextSpan(text: ' • '),

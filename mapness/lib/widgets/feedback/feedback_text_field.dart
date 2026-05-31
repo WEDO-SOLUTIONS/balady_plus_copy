@@ -71,7 +71,20 @@ class FeedbackInput extends HookWidget {
               : field.type == FeedbackTextType.multilineText
                   ? 5
                   : 1,
-          onChanged: fieldState.didChange,
+          onChanged: (value) {
+            final trimmedStart = value.replaceFirst(RegExp(r'^\s+'), '');
+
+            if (trimmedStart != value) {
+              controller.value = TextEditingValue(
+                text: trimmedStart,
+                selection: TextSelection.collapsed(
+                  offset: trimmedStart.length,
+                ),
+              );
+            }
+
+            fieldState.didChange(trimmedStart);
+          },
           type: field.type,
         );
         return Column(

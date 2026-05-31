@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/bus_departures/model.dart';
 
@@ -11,7 +10,7 @@ class PoiLinesContainer extends StatelessWidget {
   final TransitSystem? model;
   final bool isShuttle;
 
-  const PoiLinesContainer({this.model,this.isShuttle=false, super.key});
+  const PoiLinesContainer({this.model, this.isShuttle = false, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,31 +27,31 @@ class PoiLinesContainer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-            child: Row(
-              children: [
-                Icon(
-                   model!.id=='makkah_bus'?PlacesIcons.qibla:Icons.directions_bus_filled_sharp,
+          Row(
+            children: [
+              Icon(
+                model?.id == 'haram_shuttle' ? PlacesIcons.qibla : TransportIcons.bus,
+                size: 24,
+                color: context.colors.foregroundDefault,
+              ),
+              Spacing.$3x.widthBox,
+              Text(
+                model!.label,
+                style: context.textStyles.bodyLargeMedium.copyWith(
                   color: context.colors.foregroundDefault,
-                  size: Spacing.$5x,
                 ),
-                Spacing.$1x.widthBox,
-                Text(
-                  model!.label,
-                  style: context.textStyles.bodyLargeMedium.copyWith(
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           Spacing.$4x.heightBox,
           ...List.generate(
             model!.routes.length,
             (index) => Padding(
-              padding: EdgeInsets.only(bottom: model!.routes.length-1== index? 0 : Spacing.$2x),
-              child: PoiLinesMakkahBus(routeInfo: model!.routes[index],isShuttle: isShuttle,),
+              padding: EdgeInsets.only(bottom: model!.routes.length - 1 == index ? 0 : Spacing.$2x),
+              child: PoiLinesMakkahBus(
+                routeInfo: model!.routes[index],
+                isShuttle: isShuttle,
+              ),
             ),
           ),
         ],

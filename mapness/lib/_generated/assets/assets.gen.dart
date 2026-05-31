@@ -1056,8 +1056,14 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/3D.svg
   SvgGenImage get a3D => const SvgGenImage('assets/images_svg/layers/3D.svg');
 
+  /// File path: assets/images_svg/layers/bus_sub_menu.svg
+  SvgGenImage get busSubMenu => const SvgGenImage('assets/images_svg/layers/bus_sub_menu.svg');
+
   /// File path: assets/images_svg/layers/favourites.svg
   SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
+
+  /// File path: assets/images_svg/layers/jeddah_bus.svg
+  SvgGenImage get jeddahBus => const SvgGenImage('assets/images_svg/layers/jeddah_bus.svg');
 
   /// File path: assets/images_svg/layers/makkah_bus.svg
   SvgGenImage get makkahBus => const SvgGenImage('assets/images_svg/layers/makkah_bus.svg');
@@ -1078,7 +1084,18 @@ class $AssetsImagesSvgLayersGen {
   SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [a3D, favourites, makkahBus, metro, parking, roadEvents, shuttleBus, traffic];
+  List<SvgGenImage> get values => [
+    a3D,
+    busSubMenu,
+    favourites,
+    jeddahBus,
+    makkahBus,
+    metro,
+    parking,
+    roadEvents,
+    shuttleBus,
+    traffic,
+  ];
 }
 
 class $AssetsImagesSvgSaudiPassGen {
@@ -1109,6 +1126,12 @@ class $AssetsImagesSvgSaudiPassGen {
 class $AssetsMapsBusesGen {
   const $AssetsMapsBusesGen();
 
+  /// File path: assets/maps/buses/jeddah_bus_lines.geojson
+  String get jeddahBusLines => 'packages/mapness/assets/maps/buses/jeddah_bus_lines.geojson';
+
+  /// File path: assets/maps/buses/jeddah_bus_stations.geojson
+  String get jeddahBusStations => 'packages/mapness/assets/maps/buses/jeddah_bus_stations.geojson';
+
   /// File path: assets/maps/buses/makkah_bus.geojson
   String get makkahBus => 'packages/mapness/assets/maps/buses/makkah_bus.geojson';
 
@@ -1116,7 +1139,7 @@ class $AssetsMapsBusesGen {
   String get shuttleBus => 'packages/mapness/assets/maps/buses/shuttle_bus.geojson';
 
   /// List of all assets
-  List<String> get values => [makkahBus, shuttleBus];
+  List<String> get values => [jeddahBusLines, jeddahBusStations, makkahBus, shuttleBus];
 }
 
 class $AssetsMapsConfigsGen {
