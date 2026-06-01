@@ -776,6 +776,13 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.startNavigation(speedRangeZoom);
   }
 
+  /// Apply any subset of navigation-camera controls (tilt, zoom-by-speed, follow toggles,
+  /// zoom restrictions, follow-return delay, maneuver-zoom tuning). Null fields on [settings]
+  /// leave the corresponding SDK value unchanged.
+  Future<void> setNavigationCameraSettings(NavigationCameraSettings settings) {
+    return _api.setNavigationCameraSettings(settings);
+  }
+
   /// Start navigation simulation.
   Future<void> startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom) {
     return _api.startNavigationSimulation(speedRangeZoom);

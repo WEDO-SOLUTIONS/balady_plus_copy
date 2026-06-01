@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/free_roam/navigation_camera_settings_controller.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
@@ -15,7 +16,7 @@ class DebugNavigationControll extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.navigation_rounded,
             title: 'Navigation Simulation',
             subtitle: 'Start simulated navigation',
@@ -26,9 +27,18 @@ class DebugNavigationControll extends ConsumerWidget {
             label: 'Start Simulation',
             icon: Icons.play_arrow_rounded,
             gradient: DebugTheme.gradientBlue,
-            onPressed: () => controller.value?.startNavigationSimulation(
-              NavigationConstants.navigationSpeedRangeZooms,
-            ),
+            onPressed: () async {
+              final dgisController = controller.value;
+              if (dgisController == null) {
+                return;
+              }
+              await dgisController.startNavigationSimulation(
+                NavigationConstants.navigationSpeedRangeZooms,
+              );
+              await dgisController.setNavigationCameraSettings(
+                ref.read(navigationCameraSettingsControllerProvider).toMessage(),
+              );
+            },
           ),
         ],
       ),
