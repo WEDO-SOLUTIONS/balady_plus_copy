@@ -723,7 +723,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
       ToastOverlay.of(context).show(
-        displayDuration: const Duration(seconds: 15),
+        displayDuration: const Duration(seconds: 3),
         title: ctx.l10n.youWantSaveParking,
         actions: [
           ToastAction(title: ctx.l10n.feedbackBreaksSheetClose),
