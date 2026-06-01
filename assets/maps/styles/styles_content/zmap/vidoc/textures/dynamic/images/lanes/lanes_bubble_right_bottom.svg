@@ -1,0 +1,15 @@
+<svg width="144" height="137" viewBox="0 0 144 137" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="bubble" d="M18.9089 127C12.3322 127 6.99978 121.633 6.99976 115.014V19C6.18259 12.373 3.88584 8.06607 0.153076 3.18555C-0.214041 2.70507 0.120269 2 0.719482 2C0.898587 2.00003 1.07239 2.06983 1.20386 2.19238C6.07464 6.72745 8.12567 9.12209 15.7712 10.0254L17.8103 10L126.091 10.1328C132.667 10.1328 138 15.4997 138 22.1191V115.014C138 121.633 132.667 127 126.091 127H18.9089Z" fill="black" fill-opacity="0.8"/>
+<g transform="translate(18 22)">
+      <rect id="lanes_container" width="108" height="36" rx="0" ry="0" fill="#f2f2f2"/>
+  </g>
+  <g transform="translate(18 62)">
+      <rect id="exit_1" width="108" height="15" fill="#800000"/>
+  </g>
+  <g transform="translate(18 81)">
+      <rect id="exit_2" width="108" height="15" fill="#008000"/>
+  </g>
+  <g transform="translate(18 100)">
+      <rect id="exit_3" width="108" height="15" fill="#00f"/>
+  </g>
+</svg>

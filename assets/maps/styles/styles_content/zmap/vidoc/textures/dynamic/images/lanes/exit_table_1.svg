@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="15px" viewBox="0 0 50 15" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <path id="background" fill="#474747" opacity="1.0" d="M 50,0 50,15 4,15 A 4,4,0,0,1,0,11 L 0,4 A 4,4,0,0,1,4,0 z"/>
+    <g transform="translate(4, 2.5)">
+        <rect id="icon" width="10" height="10" fill="#ff0000"/>
+    </g>
+    <text id="label" font-family="Suisse Int'l" font-size="10" fill="#FFFFFF" x="18" y="10.5" letter-spacing="0.4" kerning="0.02" font-weight="500">
+        <tspan>e1t1</tspan>
+    </text>
+</svg>
