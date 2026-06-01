@@ -22,6 +22,14 @@ import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CalloutVisualizationMode
 import ru.dgis.sdk.map.CameraBehaviour
+import ru.dgis.sdk.map.CameraZoomRestrictions
+import ru.dgis.sdk.map.FollowBearing
+import ru.dgis.sdk.map.FollowPosition
+import ru.dgis.sdk.map.FollowStyleZoom
+import ru.dgis.sdk.map.FollowTilt
+import ru.dgis.sdk.map.StyleZoomToTiltRelation
+import ru.dgis.sdk.map.TiltFollowController
+import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MyLocationControllerSettings
 import ru.dgis.sdk.map.MyLocationMapObjectSource
@@ -59,6 +67,10 @@ class NavigationHandler(
         private var prevCameraBehaviour: CameraBehaviour? = null
         private var prevGraphicsPreset: GraphicsPreset? = null
         private var oldSource: Source? = null
+
+        // Active tilt-by-zoom controller added via [applyCameraSettings]; tracked so it can be
+        // replaced/removed cleanly.
+        private var tiltFollowController: TiltFollowController? = null
 
         var isNavigating: Boolean = false
                 private set
@@ -162,6 +174,129 @@ class NavigationHandler(
                 navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = zooms
         }
 
+        /**
+         * Applies any subset of navigation-camera controls. Every field of [settings] is optional:
+         * a null field leaves the corresponding SDK behavior untouched, so this can be used both to
+         * configure the full camera at navigation start and to tweak a single parameter live.
+         */
+        fun applyCameraSettings(settings: NavigationCameraSettings) {
+                val zoomFollowSettings = navigationManager.zoomFollowSettings
+
+                settings.speedZoomRules?.let { rules ->
+                        zoomFollowSettings.speedRangeToStyleZoomSequence = rules.map(::toSpeedRangeToStyleZoom)
+                }
+                settings.freeRoamSpeedZoomRules?.let { rules ->
+                        zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence =
+                                rules.map(::toSpeedRangeToStyleZoom)
+                }
+
+                settings.zoomTuning?.let { tuning ->
+                        tuning.styleZoomSpeedRangesAnimationMs?.let {
+                                zoomFollowSettings.styleZoomSpeedRangesAnimationDuration =
+                                        Duration.ofMilliseconds(it)
+                        }
+                        tuning.zoomInBeforeManeuverAnimationMs?.let {
+                                zoomFollowSettings.zoomInBeforeManeuverAnimationDuration =
+                                        Duration.ofMilliseconds(it)
+                        }
+                        tuning.zoomOutAfterManeuverAnimationMs?.let {
+                                zoomFollowSettings.zoomOutAfterManeuverAnimationDuration =
+                                        Duration.ofMilliseconds(it)
+                        }
+                        tuning.distanceGapToManeuverMm?.let {
+                                zoomFollowSettings.distanceGapToManeuver = RouteDistance(it.toLong())
+                        }
+                        tuning.minSpeedToConsiderInZoomInBeforeManeuver?.let {
+                                zoomFollowSettings.minSpeedToConsiderInZoomInBeforeManeuverAnimation = it
+                        }
+                        tuning.zoomInBeforeManeuverAnimationAcceleration?.let {
+                                zoomFollowSettings.zoomInBeforeManeuverAnimationAcceleration = it
+                        }
+                        tuning.minAnimationMs?.let {
+                                zoomFollowSettings.minAnimationDuration = Duration.ofMilliseconds(it)
+                        }
+                }
+
+                settings.followBehaviour?.let { behaviour ->
+                        val cameraBehaviour =
+                                CameraBehaviour(
+                                        position =
+                                                FollowPosition(
+                                                        bearing =
+                                                                if (behaviour.followBearing) FollowBearing.ON
+                                                                else FollowBearing.OFF,
+                                                        styleZoom =
+                                                                if (behaviour.followStyleZoom) FollowStyleZoom.ON
+                                                                else FollowStyleZoom.OFF,
+                                                ),
+                                        tilt =
+                                                if (behaviour.followTilt) FollowTilt.ON
+                                                else FollowTilt.OFF,
+                                )
+                        navigationManager.mapFollowController.cameraBehaviour = cameraBehaviour
+                        map.camera.setBehaviour(cameraBehaviour)
+                }
+
+                settings.tiltRelation?.let { points ->
+                        tiltFollowController?.let { map.camera.removeFollowController(it) }
+                        val controller = TiltFollowController(tiltRelationOf(points))
+                        map.camera.addFollowController(controller)
+                        tiltFollowController = controller
+                }
+
+                settings.maxTiltRelation?.let { points ->
+                        map.camera.maxTiltRestriction = tiltRelationOf(points)
+                }
+
+                if (settings.minZoom != null || settings.maxZoom != null) {
+                        val current = map.camera.zoomRestrictions
+                        map.camera.zoomRestrictions =
+                                CameraZoomRestrictions(
+                                        minZoom = settings.minZoom?.let { Zoom(it.toFloat()) }
+                                                ?: current.minZoom,
+                                        maxZoom = settings.maxZoom?.let { Zoom(it.toFloat()) }
+                                                ?: current.maxZoom,
+                                )
+                }
+
+                settings.followReturnDelaySeconds?.let {
+                        navigationManager.mapFollowController.followReturnDelay = Duration.ofSeconds(it)
+                }
+        }
+
+        private fun toSpeedRangeToStyleZoom(rule: SpeedZoomRule): SpeedRangeToStyleZoom =
+                SpeedRangeToStyleZoom(
+                        range = SpeedRange(minSpeed = rule.minSpeed, maxSpeed = rule.maxSpeed),
+                        minDistanceToManeuver =
+                                RouteDistance(millimeters = rule.minDistanceToManeuverMm.toLong()),
+                        maxDistanceToManeuver =
+                                RouteDistance(millimeters = rule.maxDistanceToManeuverMm.toLong()),
+                        styleZoom = StyleZoom(value = rule.styleZoom.toFloat()),
+                )
+
+        private fun tiltRelationOf(points: List<StyleZoomTiltPoint>): StyleZoomToTiltRelation =
+                object : StyleZoomToTiltRelation {
+                        override fun styleZoomToTilt(styleZoom: StyleZoom): Tilt =
+                                Tilt(interpolateTilt(points, styleZoom.value.toDouble()))
+                }
+
+        /** Linear interpolation of tilt across the zoom→tilt curve, clamped at the endpoints. */
+        private fun interpolateTilt(points: List<StyleZoomTiltPoint>, zoom: Double): Float {
+                if (points.isEmpty()) return 0f
+                val sorted = points.sortedBy { it.styleZoom }
+                if (zoom <= sorted.first().styleZoom) return sorted.first().tiltDegrees.toFloat()
+                if (zoom >= sorted.last().styleZoom) return sorted.last().tiltDegrees.toFloat()
+                for (i in 0 until sorted.size - 1) {
+                        val a = sorted[i]
+                        val b = sorted[i + 1]
+                        if (zoom in a.styleZoom..b.styleZoom) {
+                                val t = (zoom - a.styleZoom) / (b.styleZoom - a.styleZoom)
+                                return (a.tiltDegrees + t * (b.tiltDegrees - a.tiltDegrees)).toFloat()
+                        }
+                }
+                return sorted.last().tiltDegrees.toFloat()
+        }
+
         fun followNavigation() {
                 map.camera.setBehaviour(
                         behaviour = navigationManager.mapFollowController.cameraBehaviour
@@ -184,6 +319,11 @@ class NavigationHandler(
         }
 
         fun resetCamera() {
+                // Drop the navigation tilt-by-zoom controller so the chase pitch does not leak into
+                // normal map mode after navigation ends.
+                tiltFollowController?.let { map.camera.removeFollowController(it) }
+                tiltFollowController = null
+
                 if (this.prevCameraBehaviour != null) {
                         map.camera.setBehaviour(this.prevCameraBehaviour!!)
                 }

@@ -9,6 +9,7 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
+import 'package:mapness/widgets/debug_overlay/camera_controls_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
@@ -85,6 +86,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     const BetterRouteSettingsWidget(),
                     const SliderSpeed(),
                     const DebugNavigationControll(),
+                    const CameraControlsDebugPanel(),
                     const ShowOnboardingButton(),
                     const ShowSaudiDayButton(),
                     SizedBox(

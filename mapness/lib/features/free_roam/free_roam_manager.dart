@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/free_roam/navigation_camera_settings_controller.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
@@ -36,6 +37,9 @@ class _FreeRoamManager extends _$FreeRoamManager {
     await dgisController.freeRoamController.start(
       NavigationConstants.navigationSpeedRangeZooms,
     );
+    await dgisController.setNavigationCameraSettings(
+      ref.read(navigationCameraSettingsControllerProvider).toMessage(),
+    );
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     await dgisController.followNavigation();
     await dgisController.setMapAttributeBool(_navigatorOn, value: true);
@@ -59,6 +63,9 @@ class _FreeRoamManager extends _$FreeRoamManager {
       await dgisController.restoreNavigationState(
         state,
         NavigationConstants.navigationSpeedRangeZooms,
+      );
+      await dgisController.setNavigationCameraSettings(
+        ref.read(navigationCameraSettingsControllerProvider).toMessage(),
       );
     } catch (e) {
       onError();

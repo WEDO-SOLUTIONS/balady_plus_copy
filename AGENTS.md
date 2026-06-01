@@ -38,6 +38,7 @@ Allowed types: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`
 ## Project shape
 
 - **Main Flutter module:** `mapness/`. Sibling modules: `urbi_map/`, `smart_advisor/`, plus the root workspace `pubspec.yaml`.
+- **Map / navigation:** the 2GIS SDK is wrapped by the `urbi_map/dgis_map` plugin (Kotlin + Swift) behind a [pigeon](https://pub.dev/packages/pigeon)-generated platform interface (`urbi_map/dgis_map_platform_interface`). See `urbi_map/dgis_map/AGENTS.md`.
 - **State management:** Riverpod (`flutter_riverpod` + `riverpod_annotation`, generates `*.g.dart`).
 - **Routing:** `auto_route` (generates `*.gr.dart`, e.g. `mapness/lib/app/auto_route/app_routes.gr.dart`).
 - **Bottom sheets:** `sheetify` — see `MultiStateSheet` patterns in `mapness/lib/pages/landing/` and `mapness/lib/pages/map_search/`.
@@ -52,6 +53,19 @@ Run `just prebuild` (or `fvm dart run build_runner build --delete-conflicting-ou
 - `@RoutePage()` annotations on a page class.
 
 Editing the **route list** in `app_routes.dart` (transitions, durations, guards) does **not** require regeneration — the generated `*.gr.dart` only carries `@RoutePage` metadata.
+
+### Pigeon (platform channels for `dgis_map`)
+
+The 2GIS plugin's Dart↔native contract lives in `urbi_map/dgis_map_platform_interface/pigeons/messages.dart`. After editing it, regenerate from that package directory (or run `just build_pigeon`):
+
+```bash
+cd urbi_map/dgis_map_platform_interface
+fvm dart pub run pigeon --input pigeons/messages.dart --package_name dgis_map_platform_interface
+```
+
+- The `--package_name` flag is **required** on pigeon ≥ 26.2 — without it the run fails with *"Unable to deduce package name"*.
+- Generated outputs — `lib/src/pigeons/messages.g.dart` (Dart), `urbi_map/dgis_map/android/.../map_api/Messages.kt`, `urbi_map/dgis_map/ios/Classes/Messages.swift` — are **git-ignored** and rebuilt by the codegen step. Never hand-edit them; edit `messages.dart` and regenerate.
+- A new `@HostApi()` method must be implemented in **both** `MapApi` conformers: `DgisMapView.kt` (Android) and `DgisMapView.swift` (iOS).
 
 ## Safety
 
