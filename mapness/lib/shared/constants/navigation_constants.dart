@@ -39,7 +39,8 @@ class NavigationConstants {
   /// [DgisMapController.setNavigationCameraSettings]. Unlike
   /// [navigationSpeedRangeZooms] it uses real maneuver-distance windows (so the
   /// camera zooms in before a turn), drives tilt from zoom, and configures the
-  /// follow behaviour and animation timings. Speeds are in m/s; distances in mm.
+  /// follow behaviour and animation timings. Speed thresholds are authored in
+  /// km/h (converted to the SDK's m/s); distances are in mm.
   static final NavigationCameraSettings defaultNavigationCameraSettings = NavigationCameraSettings(
     speedZoomRules: _defaultSpeedZoomRules,
     freeRoamSpeedZoomRules: _defaultSpeedZoomRules,
@@ -58,21 +59,34 @@ class NavigationConstants {
     ),
   );
 
-  /// Zoom→tilt curve: flatter (more top-down) when zoomed in near a maneuver,
-  /// steeper 3D chase when zoomed out at speed. Tilt in degrees.
+  /// Zoom→tilt curve. 2GIS `Tilt` is measured from top-down: **0° = straight
+  /// down, higher = toward the horizon = more road visible ahead**. The curve is
+  /// decreasing in zoom. Combined with the speed→zoom table below (faster → lower
+  /// zoom) it gives the requested behaviour: **faster → zoomed out + tilted toward
+  /// the horizon (more road ahead); slower → zoomed in + closer to top-down
+  /// (detail for maneuvers)**. Tilt in degrees.
   static final List<StyleZoomTiltPoint> defaultTiltRelation = [
-    StyleZoomTiltPoint(styleZoom: 15, tiltDegrees: 55),
-    StyleZoomTiltPoint(styleZoom: 17, tiltDegrees: 45),
-    StyleZoomTiltPoint(styleZoom: 19, tiltDegrees: 35),
-    StyleZoomTiltPoint(styleZoom: 23, tiltDegrees: 20),
+    StyleZoomTiltPoint(styleZoom: 16, tiltDegrees: 60), // fast / zoomed out → toward horizon (road ahead)
+    StyleZoomTiltPoint(styleZoom: 18, tiltDegrees: 50),
+    StyleZoomTiltPoint(styleZoom: 20, tiltDegrees: 38),
+    StyleZoomTiltPoint(styleZoom: 22, tiltDegrees: 28),
+    StyleZoomTiltPoint(styleZoom: 23, tiltDegrees: 22), // slow / zoomed in → closer to top-down
   ];
 
-  /// Per speed band: a "near maneuver" rule (zoomed in) and a "cruising" rule.
+  /// Converts km/h to the m/s used by the SDK's [SpeedRange].
+  static double _kmh(double kmh) => kmh / 3.6;
+
+  /// Speed→zoom rules. Thresholds are written in **km/h** and converted to the
+  /// SDK's m/s [SpeedRange] via [_kmh], with finer granularity in the 0–60 km/h
+  /// city range. **Faster → lower zoom (zooms out)**, which via
+  /// [defaultTiltRelation] tilts the camera toward the horizon for more road
+  /// ahead; slower → higher zoom (zooms in) + closer to top-down.
   static final List<SpeedZoomRule> _defaultSpeedZoomRules = [
-    ..._bandRules(minSpeed: 0, maxSpeed: 5, cruiseZoom: 22),
-    ..._bandRules(minSpeed: 5, maxSpeed: 20, cruiseZoom: 20),
-    ..._bandRules(minSpeed: 20, maxSpeed: 60, cruiseZoom: 18),
-    ..._bandRules(minSpeed: 60, maxSpeed: 200, cruiseZoom: 16.5),
+    ..._bandRules(minSpeed: _kmh(0), maxSpeed: _kmh(20), cruiseZoom: 20),
+    ..._bandRules(minSpeed: _kmh(20), maxSpeed: _kmh(40), cruiseZoom: 19),
+    ..._bandRules(minSpeed: _kmh(40), maxSpeed: _kmh(60), cruiseZoom: 18),
+    ..._bandRules(minSpeed: _kmh(60), maxSpeed: _kmh(90), cruiseZoom: 17),
+    ..._bandRules(minSpeed: _kmh(90), maxSpeed: _kmh(250), cruiseZoom: 16),
   ];
 
   static List<SpeedZoomRule> _bandRules({

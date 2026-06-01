@@ -1,28 +1,21 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/features/free_roam/simulation_speed_controller.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
-class SliderSpeed extends ConsumerStatefulWidget {
+class SliderSpeed extends ConsumerWidget {
   const SliderSpeed({super.key});
 
   @override
-  ConsumerState<SliderSpeed> createState() => _SliderSpeedState();
-}
-
-class _SliderSpeedState extends ConsumerState<SliderSpeed> {
-  double speed = 70;
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = ref.watch(dgisControllerProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final speed = ref.watch(simulationSpeedProvider);
 
     return DebugCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DebugSectionHeader(
+          const DebugSectionHeader(
             icon: Icons.speed_rounded,
             title: 'Simulation Speed',
             subtitle: 'Adjust navigation simulation speed',
@@ -83,12 +76,7 @@ class _SliderSpeedState extends ConsumerState<SliderSpeed> {
                     min: 5,
                     max: 230,
                     divisions: 45,
-                    onChanged: (val) {
-                      setState(() {
-                        speed = val;
-                        controller.value?.simulationSpeed(speed / 3.6);
-                      });
-                    },
+                    onChanged: (val) => ref.read(simulationSpeedProvider.notifier).setKmh(val),
                   ),
                 ),
                 Row(
