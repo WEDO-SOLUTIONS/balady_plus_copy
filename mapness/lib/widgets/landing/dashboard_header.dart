@@ -211,7 +211,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
             '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
           );
         });
-      }
+      },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.m),
