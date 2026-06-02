@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -20,24 +21,55 @@ part 'dgis_controller.g.dart';
 
 final GeoPointMessage _kingdomTower = GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
 
+/// Plain top-level reference to the live [DgisMapController].
+///
+/// this exists so consumers like `locationProvider` can read the
+/// controller without registering a Riverpod dependency edge. Previously
+/// `locationProvider` used `ref.listen(dgisControllerProvider, ...)`, but
+/// `dgisControllerProvider` itself depends on `darkModeProvider →
+/// LocationWithPrecision → locationProvider` during its own build, so any
+/// reverse Riverpod edge from `locationProvider` back to
+/// `dgisControllerProvider` closes a graph cycle and trips
+/// `CircularDependencyError`. A plain mutable variable is invisible to
+/// Riverpod's graph analysis, so reads from it never trip the check.
+///
+/// Set in [DgisController.onMapCreated] (as soon as the native map is ready)
+/// and cleared in build's onDispose.
+DgisMapController? activeDgisController;
+
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
   late LocationSetupHelper _locationHelper;
-  final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+  // Non-final so build() can replace it with a fresh open subject on each rebuild.
+  BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
 
   @override
   Future<DgisMapController> build() {
     _completer = Completer();
+    _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
-    ref.onDispose(_visibleRectSubject.close);
+    // clear the top-level cache when this provider is disposed
+    // so stale references can't be observed across re-creation.
+    ref
+      ..onDispose(_visibleRectSubject.close)
+      ..onDispose(() {
+        activeDgisController = null;
+      });
 
     return _completer.future;
   }
 
   Future<void> onMapCreated(DgisMapController controller) async {
+    // publish the controller to the top-level cache *before*
+    // running the long async _initialize chain. _initialize awaits
+    // darkModeProvider, which in turn awaits locationProvider, and the
+    // Geolocator stream listener inside locationProvider needs to read this
+    // controller without going through Riverpod (any Riverpod read would
+    // close a graph cycle — see [activeDgisController] doc).
+    activeDgisController = controller;
     await _initialize(controller);
     if (!_completer.isCompleted) {
       _completer.complete(controller);
@@ -87,6 +119,26 @@ class DgisController extends _$DgisController {
 
     await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
     await controller.toggleFollowState();
+    _moveToUserLocationOnFirstFix(controller);
+  }
+
+  /// After the Kingdom Tower intro animation, waits for the first real GPS fix
+  /// and snaps the camera there so the user sees their actual position.
+  void _moveToUserLocationOnFirstFix(DgisMapController controller) {
+    Geolocator.getPositionStream(locationSettings: const LocationSettings())
+        .take(1)
+        .listen(
+          (position) => controller.setCameraPosition(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+              zoom: 17,
+              tilt: 0,
+              bearing: 0,
+            ),
+          ),
+          onError: (Object e) => logger.log('First GPS fix error: $e'),
+          cancelOnError: true,
+        );
   }
 
   /// Moves camera on Riyadh Tower

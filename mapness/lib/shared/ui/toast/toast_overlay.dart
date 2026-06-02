@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
@@ -72,8 +74,10 @@ class ToastOverlayState extends State<ToastOverlay> {
     Duration displayDuration = const Duration(seconds: 10),
     Duration transitionDuration = const Duration(milliseconds: 200),
   }) {
-    _overlayEntry?.remove();
-    _overlayEntry = OverlayEntry(
+    hide();
+
+    late final OverlayEntry overlayEntry;
+    overlayEntry = OverlayEntry(
       canSizeOverlay: true,
       builder: (_) => ProviderScope(
         child: Positioned(
@@ -86,7 +90,7 @@ class ToastOverlayState extends State<ToastOverlay> {
               isDismissible: isDismissible,
               isClosable: isClosable,
               isFlipped: isFlipped,
-              hide: hide,
+              hide: () => _removeEntry(overlayEntry),
               title: title,
               titleStyle: titleStyle,
               actions: actions,
@@ -99,7 +103,8 @@ class ToastOverlayState extends State<ToastOverlay> {
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+    _overlayEntry = overlayEntry;
+    Overlay.of(context).insert(overlayEntry);
   }
 
   /// Displays a base error toast overlay.
@@ -194,8 +199,20 @@ class ToastOverlayState extends State<ToastOverlay> {
 
   /// Hides the toast overlay by removing the [_overlayEntry].
   void hide() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
+    final overlayEntry = _overlayEntry;
+    if (overlayEntry != null) {
+      _removeEntry(overlayEntry);
+    }
+  }
+
+  void _removeEntry(OverlayEntry overlayEntry) {
+    if (_overlayEntry == overlayEntry) {
+      _overlayEntry = null;
+    }
+
+    if (overlayEntry.mounted) {
+      overlayEntry.remove();
+    }
   }
 
   @override

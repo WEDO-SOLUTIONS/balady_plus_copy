@@ -92,11 +92,15 @@ class ObjectTapHandler(
         //            else -> eventSink.error("ClassCastException", "tapped object class is not
         // supported", null)
         //        }
-        // Markers now require long-press (handled in objectLongTapListener) per
-        // dynamic-POI iter4 UX. Short taps on markers fall through silently.
+        // Dynamic-POI markers open the POI card on short tap (and update
+        // the selected-state). All other markers stay on the long-press-only
+        // contract introduced in iter4 — short taps on them fall through.
         when (val tappedObject = roi.item.item) {
             is Marker -> {
-                Log.d("DynamicPoiDebug.Android", "short tap on Marker — ignored, long-press required")
+                val markerId = (tappedObject.userData as? MarkerId)?.id
+                if (markerId != null && markerId.startsWith("dynamic_poi_")) {
+                    onMarkerTap(tappedObject)
+                }
                 return
             }
             is SimpleClusterObject -> {
@@ -121,7 +125,6 @@ class ObjectTapHandler(
     fun objectLongTapListener(roi: RenderedObjectInfo) {
         when (val tappedObject = roi.item.item) {
             is Marker -> {
-                Log.d("DynamicPoiDebug.Android", "object long-press hit Marker")
                 onMarkerTap(tappedObject)
                 return
             }
@@ -416,12 +419,6 @@ class ObjectTapHandler(
             markers[id]?.first?.animatedAppearance = animatedAppearance
         }
         options.isVisible?.let { isVisible ->
-            if (id.startsWith("dynamic_poi_")) {
-                Log.d(
-                    "DynamicPoiDebug.Android",
-                    "setMarkerOptions id=$id isVisible=$isVisible found=${markers[id] != null}"
-                )
-            }
             markers[id]?.first?.isVisible = isVisible
         }
     }

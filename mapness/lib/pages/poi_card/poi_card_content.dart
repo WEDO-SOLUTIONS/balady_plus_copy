@@ -29,11 +29,13 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final ValueNotifier<PoiCardBottomSheetState> _stateNotifier;
 
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController;
+  late final VoidCallback _bottomSheetControllerListener;
 
   /// Tracks whether the AI Summary fetch has already been kicked
   /// off for this POI. The spec says the request fires exactly
   /// once, on the first collapsed → expanded transition.
   bool _aiSummaryTriggered = false;
+  AiSummaryNotifier? _aiSummaryNotifier;
 
   bool get isGooglePoi => widget.poiCardDataFromGoogle != null;
 
@@ -110,52 +112,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       );
     });
 
-    _bottomSheetController.addListener(() {
-      final isInitial = _bottomSheetPreviousState == null;
-      final state = _bottomSheetController.state;
-      if (state == _bottomSheetPreviousState) {
-        return;
-      }
-      _bottomSheetPreviousState = state;
-      _stateNotifier.value = state;
-
-      // Kick off the AI summary fetch as soon as the sheet leaves
-      // the preview states (hidden / halfOpen) — i.e. when the
-      // card is visually "expanded" per the spec. The enum has
-      // two such states (open, expanded) because of the snapping
-      // ladder; either one shows the detail content, so both
-      // should trigger the request. Runs for the initial
-      // transition too, covering the deep-link case.
-      if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
-        _maybeTriggerAiSummary();
-      }
-
-      if (!isInitial) {
-        BssUIElementNames? uiElementName;
-        switch (state) {
-          case PoiCardBottomSheetState.hidden:
-            uiElementName = BssUIElementNames.placeCardHidden;
-            // Show Makkah place markers again when POI card is hidden
-            // ignore: avoid_print
-            print('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
-            ref.read(regularPoiActiveProvider.notifier).setActive(false);
-          case PoiCardBottomSheetState.open:
-            uiElementName = BssUIElementNames.placeCardTwoThird;
-          case PoiCardBottomSheetState.expanded:
-            uiElementName = BssUIElementNames.placeCardFull;
-          case PoiCardBottomSheetState.halfOpen:
-            uiElementName = BssUIElementNames.placeCardOneThird;
-        }
-
-        BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.view,
-            uiElement: BssUIElement(name: uiElementName, ownerName: BssUIElementNames.directoryObjectCardScreen),
-            payload: BssPayload(placeItem: widget.data.toBss()),
-          ),
-        );
-      }
-    });
+    _bottomSheetControllerListener = _handleBottomSheetControllerChanged;
+    _bottomSheetController.addListener(_bottomSheetControllerListener);
 
     Future.delayed(const Duration(milliseconds: 250), () {
       // Fix bug with Exception when calling ref after dispose
@@ -168,11 +126,78 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
   @override
   void dispose() {
+    // Cancel any AI Summary request that's still in flight — the user has
+    // either switched to another POI or closed the card and there's nothing
+    // left on screen to show the result. `keepAlive: true` on the notifier
+    // means its own `onDispose` wouldn't fire here.
+    //
+    // The cancel mutates notifier state, which makes its listeners rebuild.
+    // Doing that synchronously inside `dispose()` trips Flutter framework
+    // assertions when listeners are still in the disposing subtree (the
+    // POI card's own AiSummarySection). Defer to a microtask so the
+    // dispose pipeline finishes first.
+    final notifier = _aiSummaryNotifier;
+    if (_aiSummaryTriggered && notifier != null) {
+      Future<void>.microtask(() => notifier.cancel(reason: 'POI card closed or switched'));
+    }
     _tabController.dispose();
     _tabType.dispose();
     _stateNotifier.dispose();
-    _bottomSheetController.dispose();
+    _bottomSheetController
+      ..removeListener(_bottomSheetControllerListener)
+      ..dispose();
     super.dispose();
+  }
+
+  void _handleBottomSheetControllerChanged() {
+    if (!mounted) {
+      return;
+    }
+
+    final isInitial = _bottomSheetPreviousState == null;
+    final state = _bottomSheetController.state;
+    if (state == _bottomSheetPreviousState) {
+      return;
+    }
+    _bottomSheetPreviousState = state;
+    _stateNotifier.value = state;
+
+    // Kick off the AI summary fetch as soon as the sheet leaves
+    // the preview states (hidden / halfOpen) — i.e. when the
+    // card is visually "expanded" per the spec. The enum has
+    // two such states (open, expanded) because of the snapping
+    // ladder; either one shows the detail content, so both
+    // should trigger the request. Runs for the initial
+    // transition too, covering the deep-link case.
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+      _maybeTriggerAiSummary();
+    }
+
+    if (!isInitial) {
+      BssUIElementNames? uiElementName;
+      switch (state) {
+        case PoiCardBottomSheetState.hidden:
+          uiElementName = BssUIElementNames.placeCardHidden;
+          if (kDebugMode) {
+            logger.log('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
+          }
+          ref.read(regularPoiActiveProvider.notifier).setActive(false);
+        case PoiCardBottomSheetState.open:
+          uiElementName = BssUIElementNames.placeCardTwoThird;
+        case PoiCardBottomSheetState.expanded:
+          uiElementName = BssUIElementNames.placeCardFull;
+        case PoiCardBottomSheetState.halfOpen:
+          uiElementName = BssUIElementNames.placeCardOneThird;
+      }
+
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(name: uiElementName, ownerName: BssUIElementNames.directoryObjectCardScreen),
+          payload: BssPayload(placeItem: widget.data.toBss()),
+        ),
+      );
+    }
   }
 
   /// Kick off the AI summary fetch on the first expand for this
@@ -183,10 +208,20 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     if (_aiSummaryTriggered) {
       return;
     }
+    // Skip both fetch and UI for POIs whose type is outside the allowed
+    // scope — same gate as `AiSummarySection`, applied here so the network
+    // request never fires for off-scope POIs.
+    final types = (poiCardState?.gisObjectIdMessage?.types ?? widget.data.types).map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
+      return;
+    }
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
-    ref.read(aiSummaryProvider(poiId, language).notifier).load();
+    final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    _aiSummaryNotifier = notifier;
+    notifier.load();
   }
 
   @override
@@ -203,8 +238,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         }
         _aiSummaryTriggered = false;
         final currentState = _bottomSheetController.state;
-        if (currentState == PoiCardBottomSheetState.open ||
-            currentState == PoiCardBottomSheetState.expanded) {
+        if (currentState == PoiCardBottomSheetState.open || currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })
@@ -262,8 +296,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       'Will show in subtitle: ${poiHeaderSubTitle != null}',
     );
 
-    final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     return Directionality(
       textDirection: Directionality.of(context),
@@ -374,8 +406,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   subTitle:
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
-                          ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
-                          : (widget.data.subtitle == 'تسوية' ? 'نطاق' : widget.data.subtitle)),
+                          ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
+                          : (['تسوية','مستوطنة'].contains(widget.data.subtitle )? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
                       const TextSpan(text: ' • '),
@@ -400,20 +432,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       baseline: TextBaseline.ideographic,
                       alignment: PlaceholderAlignment.middle,
                     ),
-                    if (hasOffers) ...[
-                      const TextSpan(text: ' • '),
-                      WidgetSpan(
-                        child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
-                        baseline: TextBaseline.ideographic,
-                        alignment: PlaceholderAlignment.middle,
-                      ),
-                      TextSpan(
-                        text: ' ${context.l10n.offer}',
-                        style: context.textStyleV3.bodySmallRegular.copyWith(
-                          color: context.colorsV3.warningOnContainer,
-                        ),
-                      ),
-                    ],
                   ],
                   parkingInfo: widget.data.parkingInfo,
                   poiCardState: poiCardState,

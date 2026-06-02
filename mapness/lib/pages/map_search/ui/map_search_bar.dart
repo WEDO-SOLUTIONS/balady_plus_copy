@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -36,12 +35,19 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final bool showLeadingBackButton;
   final VoidCallback? onLeadingBackPressed;
 
+  /// Fires synchronously on every tap on the field, before focus / keyboard work.
+  /// Parents use this to expand the enclosing bottom sheet without waiting for
+  /// `flutter_keyboard_visibility`, whose `onChange` signal is unreliable on
+  /// Android when the keyboard reopens on the same screen (BALADY-3580).
+  final VoidCallback? onTap;
+
   const MapSearchBar({
     required this.requestFocus,
     required this.onClose,
     this.isCloseButton = false,
     this.showLeadingBackButton = false,
     this.onLeadingBackPressed,
+    this.onTap,
     super.key,
     this.initialState,
   });
@@ -55,6 +61,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
+  bool _initialFocusScheduled = false;
+  Animation<double>? _routeAnimation;
+  void Function(AnimationStatus)? _routeAnimationStatusListener;
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -77,18 +86,43 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.initState();
     _controller = _MapSearchTextEditingController();
     _focusNode = FocusNode();
-    if (widget.requestFocus) {
-      _safeFocusAction(_focusNode.requestFocus);
-    }
     if (widget.initialState != null) {
       _updateText(widget.initialState!);
       ref.read(searchProvider(_scope).notifier).fetchSuggest(_controller.text);
     }
   }
 
+  /// Defers initial keyboard until the page transition animation completes —
+  /// otherwise the keyboard fights the route animation and the user perceives lag.
+  void _scheduleInitialFocus() {
+    if (_initialFocusScheduled || !widget.requestFocus) {
+      return;
+    }
+    _initialFocusScheduled = true;
+    final animation = ModalRoute.of(context)?.animation;
+    if (animation == null || animation.status == AnimationStatus.completed) {
+      _safeFocusAction(_focusNode.requestFocus);
+      return;
+    }
+    void listener(AnimationStatus status) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        animation.removeStatusListener(listener);
+        _routeAnimation = null;
+        _routeAnimationStatusListener = null;
+        if (mounted && status == AnimationStatus.completed) {
+          _safeFocusAction(_focusNode.requestFocus);
+        }
+      }
+    }
+    _routeAnimation = animation;
+    _routeAnimationStatusListener = listener;
+    animation.addStatusListener(listener);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _scheduleInitialFocus();
     _searchSubscription?.close();
     final scope = context.read<SearchScope>();
     _searchSubscription = ref.listenManual<SearchState>(
@@ -125,6 +159,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
+    final listener = _routeAnimationStatusListener;
+    if (listener != null) {
+      _routeAnimation?.removeStatusListener(listener);
+    }
+    _routeAnimation = null;
+    _routeAnimationStatusListener = null;
     _searchSubscription?.close();
     _controller.dispose();
     _focusNode.dispose();
@@ -152,8 +192,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
-
-    ref.watch(poiOffersProvider.select((_) => null));
 
     return _buildSearchRow(context, scope, searcher);
   }
@@ -195,6 +233,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
+            // Notify parent first so it can synchronously expand the enclosing
+            // bottom sheet — this is the reliable signal on Android, instead of
+            // waiting for `flutter_keyboard_visibility` (BALADY-3580).
+            widget.onTap?.call();
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             BssService.instance.sendEvent(
               const BssRequest(

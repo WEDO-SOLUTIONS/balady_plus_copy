@@ -95,7 +95,10 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
                     child: Column(
                       children: [
                         if (userData != null)
-                          PersonalData(userInfo: userData),
+                          PersonalData(
+                            userInfo: userData,
+                            showImpl: kPersonalDataShowImpl,
+                          ),
                       ],
                     ),
                   ),

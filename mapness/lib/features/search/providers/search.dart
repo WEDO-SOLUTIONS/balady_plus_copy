@@ -6,7 +6,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -15,6 +14,7 @@ import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
@@ -594,18 +594,28 @@ class Search extends _$Search {
       }
     }
 
-    if (results.representativeArea != null && points.length > 1) {
-      await _animateToRepresentativeArea(results: results);
-      return;
-    }
+    final userLocation = ref.read(locationProvider);
+    final orderedPoints = userLocation == null
+        ? points
+        : (points.toList()
+          ..sort((a, b) {
+            final dA = _squaredDistance(a, userLocation.latitude, userLocation.longitude);
+            final dB = _squaredDistance(b, userLocation.latitude, userLocation.longitude);
+            return dA.compareTo(dB);
+          }));
 
     await ref
         .read(cameraPositionProvider.notifier)
         .animateToGeoPoints(
-          points.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
+          orderedPoints.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
           options: _quickFilterCameraOptions(),
-          keepCameraPositionPoint: true,
         );
+  }
+
+  double _squaredDistance(GeoPointMessage point, double lat, double lng) {
+    final dLat = point.latitude - lat;
+    final dLng = point.longitude - lng;
+    return dLat * dLat + dLng * dLng;
   }
 
   List<GeoPointMessage> _uniqueResultPoints(SearchResultMessage results) {
@@ -666,10 +676,6 @@ class Search extends _$Search {
     MapMarkersType? markerType,
   }) async {
     final licenseIds = results.firstPage?.items.map((e) => e.tradeLicense?.license.trim()).nonNulls.toSet();
-
-    if (licenseIds != null && licenseIds.isNotEmpty) {
-      unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
-    }
     return SearchStateResults(
       results: results,
       searchText: searchQuery,

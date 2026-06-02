@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:talker_flutter/talker_flutter.dart';
@@ -16,7 +17,9 @@ class TalkerMapnessLogger implements IMapnessLogger {
   @override
   void log(String line, {MapnessLogLevel logLevel = MapnessLogLevel.info}) {
     _talker.log(line, logLevel: _toTalkerLogLevel(logLevel));
-    debugPrint(line);
+    if (kDebugMode) {
+      debugPrint(line);
+    }
   }
 
   @override

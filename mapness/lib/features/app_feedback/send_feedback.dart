@@ -4,7 +4,6 @@ import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_dio.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
-import 'package:mapness/features/saudi_pass/providers/send_offer_feedback_provider.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -47,11 +46,7 @@ class SendFeedback extends _$SendFeedback {
     try {
       state = AppFeedbackState.loading;
 
-      if (source is FeedbackSourceOffer) {
-        await _sendOfferFeedback(source.id, payload.review.stars, payload.review.text);
-      } else {
-        await _sendAppFeedback(payload);
-      }
+      await _sendAppFeedback(payload);
 
       state = AppFeedbackState.success;
     } catch (e, st) {
@@ -67,10 +62,5 @@ class SendFeedback extends _$SendFeedback {
       '/1.0/feedbacks',
       data: payload.toJson(),
     );
-  }
-
-  Future<void> _sendOfferFeedback(String offerId, int rating, String? text) async {
-    final sendOfferFeedback = ref.watch(sendOfferFeedbackProvider(offerId).notifier);
-    await sendOfferFeedback.send(rating, text);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:balady_uikit/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -31,9 +30,7 @@ class RoutingSearchContent extends ConsumerWidget {
   ) {
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
-    ref
-      ..watch(poiOffersProvider.select((e) => null))
-      ..listen(searchProvider(scope.value), (_oldState, newState) {
+    ref.listen(searchProvider(scope.value), (_oldState, newState) {
         if (newState is SearchStateEmpty) {
           ref.read(urbiAnalyticsProvider).track(
             'searchFailed',

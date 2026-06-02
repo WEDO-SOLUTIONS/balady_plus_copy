@@ -14,6 +14,8 @@ part 'find_brief_route_info_v2.g.dart';
 /// the original provider.
 @riverpod
 class BriefRouteInfoV2 extends _$BriefRouteInfoV2 {
+  int _requestId = 0;
+
   @override
   List<BriefRouteInfoMessage>? build({
     required RouteSearchPoint? finishPoint,
@@ -33,11 +35,18 @@ class BriefRouteInfoV2 extends _$BriefRouteInfoV2 {
       });
     }
 
+    List<BriefRouteInfoMessage>? previous;
+    try {
+      previous = state;
+    } catch (_) {}
+
     _loadData(controller.value);
-    return null;
+    return previous;
   }
 
   void _loadData(DgisMapController? controller) {
+    final requestId = ++_requestId;
+
     controller
         ?.findBriefRouteInfos(
           startPoint: startPoint?.toMessage(),
@@ -45,8 +54,17 @@ class BriefRouteInfoV2 extends _$BriefRouteInfoV2 {
           finishPoint: finishPoint?.toMessage(),
         )
         .then((value) {
+          if (!ref.mounted || requestId != _requestId) {
+            return;
+          }
           state = value.whereType<BriefRouteInfoMessage>().toList();
         })
-        .onError((error, stackTrace) => state = null);
+        .onError((error, stackTrace) {
+          if (!ref.mounted || requestId != _requestId) {
+            return null;
+          }
+          state = null;
+          return null;
+        });
   }
 }

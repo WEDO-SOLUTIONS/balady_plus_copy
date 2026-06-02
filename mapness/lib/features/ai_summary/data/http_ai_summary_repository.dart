@@ -44,7 +44,7 @@ class HttpAiSummaryRepository implements AiSummaryRepository {
   const HttpAiSummaryRepository(this._dio);
 
   @override
-  Future<AiSummary?> fetchSummary(String poiId, Language locale) async {
+  Future<AiSummary?> fetchSummary(String poiId, Language locale, {CancelToken? cancelToken}) async {
     final body = <String, dynamic>{
       'syncode': poiId,
       'locale': locale.languageCode,
@@ -59,6 +59,7 @@ class HttpAiSummaryRepository implements AiSummaryRepository {
       final response = await _dio.post<Map<String, dynamic>>(
         'ai-summary/$poiId',
         data: body,
+        cancelToken: cancelToken,
         options: Options(
           headers: {
             'Accept-Language': locale == Language.arabic ? 'ar-SA' : 'en-SA',
@@ -82,6 +83,9 @@ class HttpAiSummaryRepository implements AiSummaryRepository {
       }
       return summary;
     } on DioException catch (e) {
+      if (CancelToken.isCancel(e)) {
+        rethrow;
+      }
       if (e.response?.statusCode == 404) {
         if (kDebugMode) {
           debugPrint('[AiSummaryDebug] 404 for $poiId — insufficient data');

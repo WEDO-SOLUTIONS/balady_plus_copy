@@ -53,6 +53,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   /// Subscribes to object tap events on the map
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
+  MultiStateSheetController<ThreeStateSheet>? _bottomSheetController;
+  VoidCallback? _removeFooterOpacityListener;
+  VoidCallback? _clearBottomSheetController;
 
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
@@ -63,19 +66,28 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   @override
   void initState() {
     _setupTapListener();
-    ref.read(bottomSheetControllerProvider.notifier).state.controller?.addListener(updateFooterOpacity);
+    final bottomSheetControllerWrapper = ref.read(bottomSheetControllerProvider.notifier).state;
+    final bottomSheetController = bottomSheetControllerWrapper.controller;
+    _bottomSheetController = bottomSheetController;
+    bottomSheetController?.addListener(updateFooterOpacity);
+    _removeFooterOpacityListener = () => bottomSheetController?.removeListener(updateFooterOpacity);
+    _clearBottomSheetController = () {
+      if (identical(bottomSheetControllerWrapper.controller, bottomSheetController)) {
+        bottomSheetControllerWrapper.controller = null;
+      }
+    };
     super.initState();
   }
 
   void updateFooterOpacity() => footerOpacity.value = min(
     1.0,
-    (1 - ref.read(bottomSheetControllerProvider.notifier).state.controller!.fraction) * 2,
+    (1 - _bottomSheetController!.fraction) * 2,
   );
 
   @override
   void dispose() {
-    ref.read(bottomSheetControllerProvider.notifier).state.controller?.removeListener(updateFooterOpacity);
-    ref.read(bottomSheetControllerProvider.notifier).state.controller = null;
+    _removeFooterOpacityListener?.call();
+    _clearBottomSheetController?.call();
     footerOpacity.dispose();
     super.dispose();
   }

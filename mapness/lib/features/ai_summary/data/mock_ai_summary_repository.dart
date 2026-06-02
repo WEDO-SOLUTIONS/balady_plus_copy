@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:mapness/features/ai_summary/data/ai_summary_repository.dart';
 import 'package:mapness/features/ai_summary/domain/ai_summary.dart';
 import 'package:mapness/features/ai_summary/ui/_preview_fixtures.dart';
@@ -30,8 +31,15 @@ class MockAiSummaryRepository implements AiSummaryRepository {
   });
 
   @override
-  Future<AiSummary?> fetchSummary(String poiId, Language locale) async {
+  Future<AiSummary?> fetchSummary(String poiId, Language locale, {CancelToken? cancelToken}) async {
     await Future<void>.delayed(latency);
+
+    if (cancelToken?.isCancelled ?? false) {
+      throw DioException.requestCancelled(
+        requestOptions: RequestOptions(path: 'ai-summary/$poiId'),
+        reason: cancelToken!.cancelError?.error ?? 'cancelled',
+      );
+    }
 
     if (simulateOffline) {
       throw const SocketException('Mock: simulated offline');

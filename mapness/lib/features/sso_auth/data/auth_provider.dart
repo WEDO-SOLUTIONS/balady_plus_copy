@@ -70,6 +70,9 @@ class Auth extends _$Auth {
       await Future.delayed(const Duration(milliseconds: 250));
     }
 
+    bool disposed = false;
+    ref.onDispose(() => disposed = true);
+
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
       // TODO: When authorized send it to [authorizedNotifier]
       final previousUserInfo = state.value;
@@ -85,10 +88,25 @@ class Auth extends _$Auth {
       }
 
       state = AsyncValue.data(newUserInfo);
-      ref
-        ..invalidate(favouriteCacheProvider)
-        ..invalidate(profileImageProvider)
-        ..invalidate(authMethodsProvider);
+
+      // defer the cascade invalidations to the next event-loop
+      // tick. EntryPointCubit's stream replays its current state on every
+      // new subscription; that replay arrives while [favouriteCacheProvider]
+      // is still awaiting our `.future` inside its build, and invalidating
+      // it synchronously re-enters its own build stack →
+      // [CircularDependencyError]. Deferring lets the in-flight build
+      // settle before downstream rebuilds are triggered.
+      Future(() {
+        if (disposed) return;
+        try {
+          ref
+            ..invalidate(favouriteCacheProvider)
+            ..invalidate(profileImageProvider)
+            ..invalidate(authMethodsProvider);
+        } catch (_) {
+          // Ref disposed between scheduling and execution — nothing to do.
+        }
+      });
     });
     ref.onDispose(authSubscription.cancel);
 

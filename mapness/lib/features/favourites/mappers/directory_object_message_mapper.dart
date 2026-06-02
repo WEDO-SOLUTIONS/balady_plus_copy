@@ -35,7 +35,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
   bool get isDroppedPin {
     // HARDCODE for Makkah - Mosque in the "Place to visit"
     // Need to fix in the future = bad practice
-    if (id?.objectId == 70030076255291035) {
+    if (id?.objectId == 70030076255291035 || id?.objectId == 70030076209992609) {
       return false;
     }
     final isDrop = title.contains('- $subtitle');

@@ -20,6 +20,9 @@ class _VisibleRect extends _$VisibleRect {
   }
 
   void _visibleRectListener(VisibleRectEvent event) {
+    if (!ref.mounted) {
+      return;
+    }
     state = event.visibleRect;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -48,11 +49,13 @@ class MekkahBaseTheme extends _$MekkahBaseTheme {
     );
     final isInMakkah = distanceKm <= area.radiusKm;
 
-    logger.log(
-      '[MekkahBaseTheme] location=(${location.latitude.toStringAsFixed(4)}, ${location.longitude.toStringAsFixed(4)}) '
-      'distance=${distanceKm.toStringAsFixed(2)}km isInMakkah=$isInMakkah '
-      'lastValue=$_lastValue isThrottled=$_isThrottled',
-    );
+    if (kDebugMode) {
+      logger.log(
+        '[MekkahBaseTheme] location=(${location.latitude.toStringAsFixed(4)}, ${location.longitude.toStringAsFixed(4)}) '
+        'distance=${distanceKm.toStringAsFixed(2)}km isInMakkah=$isInMakkah '
+        'lastValue=$_lastValue isThrottled=$_isThrottled',
+      );
+    }
 
     // On first build, initialize and return
     if (_lastValue == null) {
@@ -67,12 +70,16 @@ class MekkahBaseTheme extends _$MekkahBaseTheme {
 
     // Value changed - check if we should apply throttling
     if (_isThrottled) {
-      logger.log('[MekkahBaseTheme] THROTTLED - ignoring change from $_lastValue to $isInMakkah');
+      if (kDebugMode) {
+        logger.log('[MekkahBaseTheme] THROTTLED - ignoring change from $_lastValue to $isInMakkah');
+      }
       return _lastValue!;
     }
 
     // Value changed and not throttled - start throttle and return new value
-    logger.log('[MekkahBaseTheme] Changing theme from $_lastValue to $isInMakkah');
+    if (kDebugMode) {
+      logger.log('[MekkahBaseTheme] Changing theme from $_lastValue to $isInMakkah');
+    }
     _startThrottle();
     _lastValue = isInMakkah;
     return isInMakkah;

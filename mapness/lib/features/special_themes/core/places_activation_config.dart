@@ -7,11 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/makkah_config_staging.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -31,10 +29,10 @@ class MakkahAreaConfig {
   final double radiusKm;
 
   factory MakkahAreaConfig.fromJson(Map<String, dynamic> json) => MakkahAreaConfig(
-        latitude: (json['latitude'] as num?)?.toDouble() ?? 21.3891,
-        longitude: (json['longitude'] as num?)?.toDouble() ?? 39.8579,
-        radiusKm: (json['radius_km'] as num?)?.toDouble() ?? 25.0,
-      );
+    latitude: (json['latitude'] as num?)?.toDouble() ?? 21.3891,
+    longitude: (json['longitude'] as num?)?.toDouble() ?? 39.8579,
+    radiusKm: (json['radius_km'] as num?)?.toDouble() ?? 25.0,
+  );
 
   static const MakkahAreaConfig defaultConfig = MakkahAreaConfig(
     latitude: 21.3891,
@@ -459,42 +457,24 @@ class PilgrimFeatureDebug extends _$PilgrimFeatureDebug {
   }
 }
 
-/// Launch window: Feb 6-8, 2026 - skip config date check during this period
-bool _isPilgrimLaunchWindow() {
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final launchStart = DateTime(2026, 2, 6);
-  final launchEnd = DateTime(2026, 2, 8);
-
-  return !today.isBefore(launchStart) && !today.isAfter(launchEnd);
-}
-
-/// Hardcoded Makkah area for launch window (Feb 6-8, 2026)
-/// Center: 21.4225098°N, 39.8261707°E, radius: 25km
-bool _isInPilgrimLaunchWindowArea(Ref ref) {
-  const launchLat = 21.4225098;
-  const launchLon = 39.8261707;
-  const launchRadiusKm = 25.0;
-
-  final location = ref.watch(locationProvider);
-  if (location == null) return false;
-
-  final distanceKm = CommonFunctions.distance(
-    location.latitude,
-    location.longitude,
-    launchLat,
-    launchLon,
-  );
-
-  return distanceKm <= launchRadiusKm;
-}
-
-/// Check if current date is past the feature's start date
+/// Check if current date is past the feature's start date.
+///
+/// If the feature has no `start_date`, the gate is open immediately.
 bool _isPastStartDate(FeatureConfig? feature) {
   if (feature?.startDate == null) return true;
   return !DateTime.now().isBefore(feature!.startDate!);
 }
 
+/// Pilgrim ("Kaaba virtual journey") feature provider.
+///
+/// Scope is encoded by the presence of `start_date` on the `show_pilgrim`
+/// feature entry in remote config:
+///   - `start_date` absent  → feature shown **globally** to every user, immediately.
+///   - `start_date` present → feature shown **only to users in the Makkah area**
+///                            (via [mekkahBaseThemeProvider]) and only on/after that date.
+///
+/// Returns `null` when the feature is disabled, before its start date, or
+/// scoped to Makkah and the user is outside the Makkah area.
 @riverpod
 FeatureConfig? showPilgrimFeature(Ref ref) {
   final config = ref.watch(placesActivationProvider);
@@ -505,7 +485,7 @@ FeatureConfig? showPilgrimFeature(Ref ref) {
     orElse: () => null,
   );
 
-  // If debug override is enabled, bypass all checks and return enabled feature
+  // Debug override bypasses every gate and returns an enabled feature.
   if (debugOverride) {
     return FeatureConfig(
       code: feature?.code ?? 'show_pilgrim',
@@ -514,32 +494,14 @@ FeatureConfig? showPilgrimFeature(Ref ref) {
     );
   }
 
-  // Feature must be enabled
-  if (feature == null || !feature.enabled) {
-    return null;
+  if (feature == null || !feature.enabled) return null;
+
+  // Scope: start_date present → Makkah-only, gated by area and start date.
+  if (feature.startDate != null) {
+    if (!_isPastStartDate(feature)) return null;
+    return ref.watch(mekkahBaseThemeProvider) ? feature : null;
   }
 
-  final isInLaunchWindow = _isPilgrimLaunchWindow();
-
-  // During launch window (Feb 6-8, 2026): use hardcoded area, skip date check
-  if (isInLaunchWindow) {
-    final isInLaunchArea = _isInPilgrimLaunchWindowArea(ref);
-    if (isInLaunchArea) {
-      return feature;
-    }
-    return null;
-  }
-
-  // After launch window: use config-based location check
-  final isInMakkahArea = ref.watch(mekkahBaseThemeProvider);
-  if (!isInMakkahArea) {
-    return null;
-  }
-
-  // Check config date range
-  if (_isPastStartDate(feature)) {
-    return feature;
-  }
-
-  return null;
+  // Scope: start_date absent → global, immediate.
+  return feature;
 }
