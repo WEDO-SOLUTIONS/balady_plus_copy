@@ -110,7 +110,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 Text('A', style: TextStyle(fontSize: 24, color: bodyTextColor)),
               ],
             ),
-            const Padding(
+             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

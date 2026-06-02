@@ -34,128 +34,154 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final isDGA =
-        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
-            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+        context
+            .read<ThemeController>()
+            .currentTheme == BaladyAppThemes.darkDGA ||
+            context
+                .read<ThemeController>()
+                .currentTheme == BaladyAppThemes.lightDGA;
 
-    return  AnnotatedRegion<SystemUiOverlayStyle>(
-    value: context.read<ThemeController>().systemOverlayStyle,
-    child: Directionality(
-      textDirection: ref.watch(uiDirectionProvider),
-      child: Material(
-        color: context.colors.backgroundSurface4,
-        child: Padding(
-          padding: const EdgeInsets.only(top: Spacing.$4x),
-          child: Scaffold(
-            appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
-              title: context.l10n.settings,
-              colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(
-                onPressed: () => context.router.pop(),
-                icon: SystemIcons.arrowCornerLeftLarge,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: context
+          .read<ThemeController>()
+          .systemOverlayStyle,
+      child: Directionality(
+        textDirection: ref.watch(uiDirectionProvider),
+        child: Material(
+          color: context.colors.backgroundSurface4,
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x),
+            child: Scaffold(
+              appBar: BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: context
+                    .read<ThemeController>()
+                    .systemOverlayStyle,
+                title: context.l10n.settings,
+                colorEnabled: context.colors.accentDefault,
+                leading: ActionModel(
+                  onPressed: () => context.router.pop(),
+                  icon: SystemIcons.arrowCornerLeftLarge,
+                ),
               ),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(Spacing.$4x),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // I added this check here because those widgets take up zero space and we can not determine if
-                  // there is any data and decide whether we need add spacers after them
-                  if (CommonProperties.isLoggedInMunicipality) ...[
+              body: Padding(
+                padding: const EdgeInsets.all(Spacing.$4x),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // I added this check here because those widgets take up zero space and we can not determine if
+                    // there is any data and decide whether we need add spacers after them
+                    if (CommonProperties.isLoggedInMunicipality) ...[
+                      ContentWrapper(
+                        color: isDGA
+                            ? context.colors.accentSecondarySoft
+                            : context.colors.backgroundSurface1,
+                        children: const [NotificationsSettingCell()],
+                      ),
+                      ContentWrapper(
+                        color: isDGA
+                            ? context.colors.accentSecondarySoft
+                            : context.colors.backgroundSurface1,
+                        children: const [AuthQuickAccessBiometricWidget()],
+                      ),
+                    ],
                     ContentWrapper(
-                      color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
-                      children: const [NotificationsSettingCell()],
-                    ),
-                    ContentWrapper(
-                      color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
-                      children: const [AuthQuickAccessBiometricWidget()],
-                    ),
-                  ],
-                  ContentWrapper(
-                    color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
-                    children: [
-                      ContentRow(
-                        onTap: () => context.router.push(const DarkMapRoute()),
-                        options: ContentRowOptions(
-                          wrapperColor: context.colors.backgroundSurface1,
-                          wrapperEnabled: true,
-                          title: context.l10n.darkMode,
-                          leadingIcon: AppIcons(
-                            iconData: GeneralIcons.darkMode,
-                            color: context.colors.accentDefault,
-                            size: 24,
-                          ),
-                          titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                          actionWidget: ContentRowActionOptions(
-                            actionIcon: AppIcons(
-                              iconData: SystemIcons.arrowCornerRightLarge,
-                              color: context.colors.foregroundSoft,
+                      color: isDGA
+                          ? context.colors.accentSecondarySoft
+                          : context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () =>
+                              context.router.push(const DarkMapRoute()),
+                          options: ContentRowOptions(
+                            wrapperColor: context.colors.backgroundSurface1,
+                            wrapperEnabled: true,
+                            title: context.l10n.darkMode,
+                            leadingIcon: AppIcons(
+                              iconData: GeneralIcons.darkMode,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            titleStyle: context.textStyle.text.copyWith(
+                                color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundSoft,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  ContentWrapper(
-                    color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
-                    children: [
-                      ContentRow(
-                        onTap: () => context.router.push(
-                          NavigatorSettingsRoute(showDarkModeSection: false),
-                        ),
-                        leading: AppIcons(
-                          iconData: TransportIcons.locationFullLTR,
-                          color: context.colors.accentDefault,
-                          size: 24,
-                        ),
-                        text: ContentRowTextOptions(
-                          title: context.l10n.navigatorSettings,
-                        ),
-                        trailing: ContentRowTextTrailingOptions(
-                          icon: SystemIcons.arrowCornerRightLarge,
-                          iconColor: context.colors.foregroundSoft,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ContentWrapper(
-                    color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
-                    children: [
-                      ContentRow(
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const AccessibilitySettingsPage(),
-                          ),
-                        ),
-                        options: ContentRowOptions(
-                          leadingIcon: AppIcons(
-                            iconData: GeneralIcons.accessibilityWheels,
+                      ],
+                    ),
+                    ContentWrapper(
+                      color: isDGA
+                          ? context.colors.accentSecondarySoft
+                          : context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () =>
+                              context.router.push(
+                                NavigatorSettingsRoute(
+                                    showDarkModeSection: false),
+                              ),
+                          leading: AppIcons(
+                            iconData: TransportIcons.locationFullLTR,
                             color: context.colors.accentDefault,
                             size: 24,
                           ),
-                          title: context.l10n.accessibility,
-                          actionWidget: ContentRowActionOptions(
-                            actionIcon: AppIcons(
-                              iconData: SystemIcons.arrowCornerRightLarge,
-                              color: context.colors.foregroundSoft,
+                          text: ContentRowTextOptions(
+                            title: context.l10n.navigatorSettings,
+                          ),
+                          trailing: ContentRowTextTrailingOptions(
+                            icon: SystemIcons.arrowCornerRightLarge,
+                            iconColor: context.colors.foregroundSoft,
+                          ),
+                        ),
+                      ],
+                    ),
+                    ContentWrapper(
+                      color: isDGA
+                          ? context.colors.accentSecondarySoft
+                          : context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () =>
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (
+                                      context) => const AccessibilitySettingsPage(),
+                                ),
+                              ),
+                          options: ContentRowOptions(
+                            leadingIcon: AppIcons(
+                              iconData: GeneralIcons.accessibilityWheels,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            title: context.l10n.accessibility,
+                            actionWidget: ContentRowActionOptions(
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundSoft,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final language = ref.watch(appLanguageProvider);
-                      return ContentWrapper(
-                        color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
-                        children: [
-                          ContentRowExpandable(
-                            options: ContentRowOptions(
-                              title: context.l10n.language,
-                              subtitle: language.title,
-                              leadingIcon: leadingIcon(language),
+                      ],
+                    ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final language = ref.watch(appLanguageProvider);
+                        return ContentWrapper(
+                          color: isDGA
+                              ? context.colors.accentSecondarySoft
+                              : context.colors.backgroundSurface1,
+                          children: [
+                            ContentRowExpandable(
+                              options: ContentRowOptions(
+                                title: context.l10n.language,
+                                subtitle: language.title,
+                                leadingIcon: leadingIcon(language),
                             ),
                             content: const LanguagePicker(),
                             expandIconColor: context.colors.foregroundSoft,
