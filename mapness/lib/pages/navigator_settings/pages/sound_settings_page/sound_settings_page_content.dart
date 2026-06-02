@@ -30,7 +30,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ContentWrapper(
-              color: colors.backgroundSurface1,
+              color: context.profileCardColor,
               children: [
                 ContentRow(
                   options: ContentRowOptions(
@@ -61,6 +61,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                       }
                     },
                     initialIndex: soundSettingsModel.voiceInstructionIndex,
+                    activeColor: colors.accentDefault,
                   ),
                 ),
                 Padding(
@@ -70,7 +71,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                 ContentRow(
                   onTap: () => context.router.push(const VoiceSettingsRoute()),
                   options: ContentRowOptions(
-                    wrapperColor: colors.backgroundSurface1,
+                    wrapperColor: context.profileCardColor,
                     wrapperEnabled: true,
                     padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
                     title: l10n.voice,
@@ -85,7 +86,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
               ],
             ),
             ContentWrapper(
-              color: colors.backgroundSurface1,
+              color: context.profileCardColor,
               children: [
                 ContentRow(
                   options: ContentRowOptions(
@@ -108,6 +109,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                       }
                     },
                     initialIndex: soundSettingsModel.promptsVolumeIndex,
+                    activeColor: colors.accentDefault,
                   ),
                 ),
               ],
@@ -116,7 +118,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
               headerTitle: l10n.eventAlert,
               content: [
                 ContentWrapper(
-                  color: colors.backgroundSurface1,
+                  color: context.profileCardColor,
                   children: [
                     ContentRow(
                       onToggle: (value) {

@@ -71,13 +71,17 @@ class AccessibilityInfo extends StatelessWidget {
                             height: 24,
                             width: 24,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF003449),
+                              color: context.colors.accentDefault,
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Center(
                               child: Text(
                                 '${index + 1}',
-                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: Colors.white),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  color: context.colors.accentOnAccent,
+                                ),
                               ),
                             ),
                           ),

@@ -217,7 +217,7 @@ the logic conceptually looks like this:
 final mode = ref.watch(specialThemeModeProvider);
 
 final theme = switch (mode) {
-  SpecialThemeMode.none        => BaladyAppThemes.light,
+  SpecialThemeMode.none        => BaladyAppThemes.lightDGA,
   SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
   SpecialThemeMode.ramadan     => BaladyAppThemes.ramadan,
   SpecialThemeMode.mekkah      => BaladyAppThemes.mekkah,

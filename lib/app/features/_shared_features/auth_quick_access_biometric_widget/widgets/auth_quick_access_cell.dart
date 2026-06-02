@@ -3,8 +3,8 @@ import 'package:balady_authorization/src/authentication/bloc/authentication_bloc
 import 'package:balady_authorization/src/shared/authentication_routes/authentication_route_names.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_config.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -63,11 +63,7 @@ class AuthQuickAccessCell extends StatelessWidget {
                     ),
                     const Spacer(),
                     IgnorePointer(
-                      child: CupertinoSwitch(
-                        onChanged: (bool value) {},
-                        value: isQuickAccess,
-                        activeTrackColor: context.colors.accentActive,
-                      ),
+                      child: Toggle(value: isQuickAccess),
                     ),
                   ],
                 ),

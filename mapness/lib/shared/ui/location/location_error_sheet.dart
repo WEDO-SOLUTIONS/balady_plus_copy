@@ -62,7 +62,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
   }
 
   String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.imagesSvg.lostLocationDark.keyName,
+    BaladyAppThemes.darkDGA => Assets.imagesSvg.lostLocationDark.keyName,
     BaladyAppThemes.saudiDay => Assets.imagesSvg.lostLocation.keyName,
     _ => Assets.imagesSvg.lostLocation.keyName,
   };

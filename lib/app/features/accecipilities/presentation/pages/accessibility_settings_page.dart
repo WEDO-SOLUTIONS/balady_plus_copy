@@ -6,7 +6,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -78,7 +77,8 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                       children: [
                         ContentRow(
                           onTap: () => controller.toggleGrayscale(!controller.grayscale),
-                          options: ContentRowOptions(
+                          onToggle: (value) => controller.toggleGrayscale(value),
+                         options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.color_lens_outlined,
                               color: context.colors.accentDefault,
@@ -96,6 +96,8 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                                   activeTrackColor: context.colors.accentDefault,
                                 );
                               },
+                              enabledToggle: true,
+                              toggleInitialValue: controller.grayscale ?? false,
                             ),
                           ),
                         ),
@@ -118,7 +120,15 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                             ),
                           ),
                           options: ContentRowOptions(
-                            leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
+                            leadingIcon: SvgPicture.asset(
+                              'assets/icons/svg/voice_reader_icon.svg',
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                context.colors.accentDefault,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                             title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(

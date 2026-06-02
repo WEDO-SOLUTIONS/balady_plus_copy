@@ -32,7 +32,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   static const showFlags = false;
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) {
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
+    return  AnnotatedRegion<SystemUiOverlayStyle>(
     value: context.read<ThemeController>().systemOverlayStyle,
     child: Directionality(
       textDirection: ref.watch(uiDirectionProvider),
@@ -59,16 +64,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   // there is any data and decide whether we need add spacers after them
                   if (CommonProperties.isLoggedInMunicipality) ...[
                     ContentWrapper(
-                      color: context.colors.backgroundSurface1,
+                      color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                       children: const [NotificationsSettingCell()],
                     ),
                     ContentWrapper(
-                      color: context.colors.backgroundSurface1,
+                      color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                       children: const [AuthQuickAccessBiometricWidget()],
                     ),
                   ],
                   ContentWrapper(
-                    color: context.colors.backgroundSurface1,
+                    color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                     children: [
                       ContentRow(
                         onTap: () => context.router.push(const DarkMapRoute()),
@@ -93,7 +98,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ],
                   ),
                   ContentWrapper(
-                    color: context.colors.backgroundSurface1,
+                    color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                     children: [
                       ContentRow(
                         onTap: () => context.router.push(
@@ -115,7 +120,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ],
                   ),
                   ContentWrapper(
-                    color: context.colors.backgroundSurface1,
+                    color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                     children: [
                       ContentRow(
                         onTap: () => Navigator.of(context).push(
@@ -144,7 +149,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     builder: (context, ref, child) {
                       final language = ref.watch(appLanguageProvider);
                       return ContentWrapper(
-                        color: context.colors.backgroundSurface1,
+                        color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                         children: [
                           ContentRowExpandable(
                             options: ContentRowOptions(
@@ -167,6 +172,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ),
     ),
   );
+
+  }
 
   Widget? leadingIcon(Language language) => showFlags
       ? SvgPicture.asset(
