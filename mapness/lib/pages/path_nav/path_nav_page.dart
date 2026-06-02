@@ -743,8 +743,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           ),
         ],
         icon: ToastIconAsset(switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          BaladyAppThemes.darkDGA => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
+          BaladyAppThemes.lightDGA => Assets.icons.svg.placesBigNew.light.icParking.keyName,
           _ => Assets.icons.svg.placesBigNew.light.icParking.keyName,
         }),
       );
@@ -996,6 +996,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
@@ -1011,6 +1012,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             bearing: 0,
           ),
         );
+
       }
     }
 

@@ -16,6 +16,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
@@ -196,6 +197,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   }
 
   Widget _buildSearchRow(BuildContext context, SearchScope scope, Search searcher) {
+    late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
     // Always keep BaladySearch under Expanded — never swap between "bare" vs Row+Expanded.
     // Otherwise toggling showLeadingBackButton disposes the text field; if uikit disposes the
     // passed controller, our State still owns a dead controller and crashes next sync.
@@ -206,6 +209,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           isDisposed: false,
           focusNode: _focusNode,
+          fillColor: isDark?context.colors.neutralMuted: context.colors.staticWhite,
+
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
@@ -276,20 +281,48 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             _safeFocusAction(_focusNode.requestFocus);
           },
           hintText: context.l10n.searchPlaceOrAddress,
-          fillColor: context.colors.neutralContainerDefault,
           hintColor: context.colors.foregroundSoft,
           textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
-      option: widget.showLeadingBackButton
-          ? null
-          : widget.isCloseButton
-          ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
-          : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
+      // option: widget.showLeadingBackButton
+      //     ? null
+      //     : widget.isCloseButton
+      //     ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
+      //     : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
     );
 
+    final borderedSearchField = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+        border: Border.all(
+          color: context.colors.borderSoft,
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius:  BorderRadius.circular(5),
+
+        child: searchField,
+      ),
+    );
     if (!widget.showLeadingBackButton) {
-      return searchField;
+      return Row(
+        children: [
+          Expanded(child: borderedSearchField),
+          const SizedBox(width: Spacing.$3x),
+          GestureDetector(
+            onTap: () => _onBackPressed(searcher),
+            child: Text(
+              context.l10n.cancel,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.accentDefault,
+              ),
+            ),
+          ),
+        ],
+      );
     }
 
     return Row(
@@ -303,8 +336,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         ),
         const SizedBox(width: Spacing.$3x),
-        Expanded(child: searchField),
-      ],
+        Expanded(child: borderedSearchField),      ],
     );
   }
 

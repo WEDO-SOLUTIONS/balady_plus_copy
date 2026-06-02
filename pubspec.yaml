@@ -170,7 +170,8 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.11
+    version: 5.1.3
+
 
   sheetify: ^1.1.3
 
@@ -386,4 +387,9 @@ sentry:
   upload_sources: true          # <— optional: also upload .dart/.js sources
   wait_for_processing: true     # optional
   log_level: debug              # optional
+
+dependency_overrides:
+  # Pin to avoid objective_c FFI crash on iOS Simulator
+  # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
+  path_provider_foundation: 2.4.0
 

@@ -33,6 +33,8 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   static const headerHeight = 24.0;
 
+
+
   DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
   @override
@@ -55,6 +57,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
+
   @override
   double get maxExtent => headerHeight + QuickFilters.defaultHeight;
 
@@ -76,6 +79,7 @@ class _DashboardMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$2x * 2;
+
     final remainingSpaceForQuickFilters = max(
       0.0,
       heightOfQuickFilters - shrinkOffset,
@@ -107,6 +111,7 @@ class _DashboardMenu extends ConsumerWidget {
 
 class MapQuickFiltersDefault extends ConsumerWidget {
   final bool forMap;
+
   const MapQuickFiltersDefault({this.forMap = false, super.key});
 
   @override
@@ -117,7 +122,7 @@ class MapQuickFiltersDefault extends ConsumerWidget {
       customFilters: [
         FilterItemConfig(
           filterType: FilterType.custom,
-          icon: TransportIcons.locationDirectionNavigator,
+          icon: TransportIcons.newlocationDirectionNavigator,
           onTap: () async {
             final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
             if (isAllowed) {
@@ -144,6 +149,7 @@ class DashboardHeader extends ConsumerStatefulWidget {
 
 class DashboardHeaderState extends ConsumerState<DashboardHeader> {
   final _scope = SearchScopeEnum.map.value;
+
   final TextEditingController ctrl = TextEditingController();
 
   @override
@@ -154,6 +160,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
 
   @override
   Widget build(BuildContext context) {
+
     ref.listen<SearchState>(
       searchProvider(_scope),
       (previous, next) {
@@ -172,54 +179,61 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     final headerBackgroundColor = themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
     final headerHintColor = themeConfig.searchHintColor ?? context.colors.foregroundSoft;
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        boxShadow: Shadows.s,
-        borderRadius: BorderRadius.circular(RadiusBorder.m),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          // Here we clean the search query on tap on the search field
-          // So the user can see the search history, not previous search results
-          final text = ref.read(searchProvider(_scope)).searchText;
-          ref.read(searchProvider(_scope).notifier).clear();
+    return GestureDetector(
+      onTap: (){
+        // Here we clean the search query on tap on the search field
+        // So the user can see the search history, not previous search results
+        final text = ref.read(searchProvider(_scope)).searchText;
+        ref.read(searchProvider(_scope).notifier).clear();
 
-          // Push the route first so the transition starts on the next frame.
-          // Analytics/method-channel work happens after, in a microtask, so it
-          // doesn't extend the frame that handles the tap.
-          unawaited(context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)));
+        // Push the route first so the transition starts on the next frame.
+        // Analytics/method-channel work happens after, in a microtask, so it
+        // doesn't extend the frame that handles the tap.
+        unawaited(context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)));
 
-          scheduleMicrotask(() {
-            Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys.searchField,
-              action: MetricAction.tap.name,
-              group: MetricsConstants.exploreTag,
-            );
-            BssService.instance.sendEvent(
-              const BssRequest(
-                eventType: BSSEventType.action,
-                actionType: BSSActionType.tap,
-                uiElement: BssUIElement(name: BssUIElementNames.searchField),
+        scheduleMicrotask(() {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.searchField,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+          BssService.instance.sendEvent(
+            const BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(name: BssUIElementNames.searchField),
+            ),
+          );
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+          ref
+              .read(urbiAnalyticsProvider.notifier)
+              .trackWithPrint(
+            '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+          );
+        });
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+
+          border: Border.all(
+            color: context.colors.borderDefault,
+            width: 1,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          child: AbsorbPointer(
+            child: BaladyTextInput.search(
+              controller: ctrl,
+              inputState: BaladyInputState.readOnly,
+              config: BaladyInputConfig(
+                hintText: context.l10n.searchPlaceOrAddress,
+                fillColor: context.colors.backgroundSurface2,
+                hintColor: headerHintColor,
+                textStyle: context.textStyles.bodySmallRegular,
               ),
-            );
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
-            ref
-                .read(urbiAnalyticsProvider.notifier)
-                .trackWithPrint(
-                  '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-                );
-          });
-        },
-        child: AbsorbPointer(
-          child: BaladyTextInput.search(
-            controller: ctrl,
-            inputState: BaladyInputState.readOnly,
-            config: BaladyInputConfig(
-              hintText: context.l10n.searchPlaceOrAddress,
-              fillColor: context.colors.backgroundSurface2,
-              hintColor: headerHintColor,
-              textStyle: context.textStyles.bodySmallRegular,
             ),
           ),
         ),

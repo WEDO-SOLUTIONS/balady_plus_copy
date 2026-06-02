@@ -27,11 +27,11 @@ class ParkingDetailsContent extends ConsumerWidget {
               Text(
                 context.l10n.parkingLots,
                 style: context.textStyles.h4SemiBold.copyWith(
-                  color: context.colors.foregroundDefault,
+                    color: context.colors.foregroundDefault,
                 ),
               ),
               const Spacer(),
-              AppButton.close(
+              AppButton.close(color: context.colors.backgroundSurface1,
                 onTap: () {
                   onPanelClose();
                   Metrics.logEventAdvanced(
@@ -49,16 +49,18 @@ class ParkingDetailsContent extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: Spacing.$2x),
-          const ContentWrapper(
-            color: Colors.transparent,
+           ContentWrapper(
+            color: context.colors.backgroundSurface1,
             children:  [
-              ParkingLotRow(
+              const ParkingLotRow(
                 type: ParkingFilter.all,
               ),
-              ParkingLotRow(
+              Divider(color: context.colors.borderDefault,endIndent: 10,indent: 10,),
+              const ParkingLotRow(
                 type: ParkingFilter.free,
               ),
-              ParkingLotRow(type: ParkingFilter.paid),
+              Divider(color: context.colors.borderDefault,endIndent: 10,indent: 10,),
+              const ParkingLotRow(type: ParkingFilter.paid),
             ],
           ),
           const SizedBox(height: Spacing.$9x),

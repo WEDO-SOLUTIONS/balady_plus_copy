@@ -438,13 +438,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
     baladyTheme.toggleTheme(isDark);
     if (isDark) {
-      await themeController.setTheme(BaladyAppThemes.dark);
+      await themeController.setTheme(BaladyAppThemes.darkDGA);
     } else {
       final theme = switch (specialThemeMode) {
         SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
         SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
         SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
-        _ => BaladyAppThemes.light,
+        _ => BaladyAppThemes.lightDGA,
       };
 
       await themeController.setTheme(theme);
@@ -585,7 +585,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                       SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
                       SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
                       SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
-                      _ => BaladyAppThemes.light,
+                      _ => BaladyAppThemes.lightDGA,
                     },
                   ),
                   AppStaticColorsThemeExt.palette(),

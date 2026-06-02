@@ -51,17 +51,8 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
-            Column(
-              children: [
-                StoriesWidget(
-                  titleWidget: Padding(
-                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: Spacing.$3x),
+
+            // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
               child: FeedbackBannerCardV2(
@@ -84,6 +75,19 @@ class BaseDashboardContent extends ConsumerWidget {
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
               ),
             ),
+
+            const SizedBox(height: Spacing.$3x),
+            Column(
+              children: [
+                StoriesWidget(
+                  titleWidget: Padding(
+                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
+                  ),
+                ),
+              ],
+            ),
+
             const SizedBox(height: Spacing.$6x),
             if (pilgrimFeature != null) ...[
               KaabaVirtualJourneyCard(
@@ -99,6 +103,8 @@ class BaseDashboardContent extends ConsumerWidget {
               ),
               const SizedBox(height: Spacing.$6x),
             ],
+
+            // 2. Quick Actions (إجراءات سريعة)
             DashboardTitle(context.l10n.quickActions),
             const SizedBox(height: Spacing.$4x),
             ScrollConfiguration(
@@ -113,6 +119,7 @@ class BaseDashboardContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+
                     QuickActionButton(
                       text: context.l10n.sendLocation,
                       icon: General32Icons.locationAction,
@@ -121,7 +128,7 @@ class BaseDashboardContent extends ConsumerWidget {
                     const SizedBox(width: Spacing.$2x),
                     QuickActionButton(
                       text: context.l10n.freeRoam,
-                      icon: TransportIcons.locationDirectionNavigator,
+                      icon: TransportIcons.newlocationDirectionNavigator,
                       onTap: () => actions.openFreeRoam(context),
                     ),
                     const SizedBox(width: Spacing.$2x),
@@ -259,11 +266,11 @@ class BaseDashboardContent extends ConsumerWidget {
                   ),
                   image: themeConfig.exploreBackgroundImageBuilder != null
                       ? DecorationImage(
-                          image: themeConfig.exploreBackgroundImageBuilder!(),
-                          matchTextDirection: true,
-                          fit: BoxFit.cover,
-                          alignment: AlignmentDirectional.centerEnd,
-                        )
+                    image: themeConfig.exploreBackgroundImageBuilder!(),
+                    matchTextDirection: true,
+                    fit: BoxFit.cover,
+                    alignment: AlignmentDirectional.centerEnd,
+                  )
                       : null,
                 ),
                 child: Column(

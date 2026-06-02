@@ -1,9 +1,11 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
@@ -72,6 +74,10 @@ class SearchItem extends ConsumerWidget {
     List<String> photosUrls = [];
     List<Item> photoItems = [];
 
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
     final objectId = result.id?.objectId ?? 0;
     final photos = ref.watch(poiPhotoProvider(objectId));
 
@@ -117,7 +123,9 @@ class SearchItem extends ConsumerWidget {
         }
       },
       child: Material(
-        color: contentColor ?? context.colors.backgroundSurface1,
+        color:  isDGA
+            ? context.colors.accentSecondarySoft
+            : contentColor ?? context.colors.backgroundSurface1,
         shape: smoothBorder(RadiusBorder.xl),
         child: SearchTapHandler(
           onTap: onTap,
@@ -161,7 +169,7 @@ class SearchItem extends ConsumerWidget {
                           if (closedStatus.isNotEmpty)
                             Text(
                               closedStatus,
-                              style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
+                              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                             ),
                         ],
                       ),
