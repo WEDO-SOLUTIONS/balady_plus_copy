@@ -1,9 +1,21 @@
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/entities/metrics/logger/metrics_logger.dart';
 
 enum MetricAction { tap, longPress, swipe, scroll, drag, type }
 
 class Metrics {
   static void logEvent(String eventName, {Map<String, dynamic>? extras, Type? object}) {
+    metricsLogger.sendEvent(
+      eventType: eventName,
+      services: [MetricsLoggerService.uxCam],
+      payload: extras != null || object != null
+          ? {
+              ...?extras,
+              if (object != null) 'object': object,
+            }
+          : null,
+    );
+
     final str = StringBuffer();
 
     if (object != null) {
@@ -27,6 +39,18 @@ class Metrics {
     String? action,
     Map<String, dynamic>? props,
   }) {
+    metricsLogger.sendEvent(
+      eventType: eventName,
+      services: [MetricsLoggerService.uxCam],
+      payload: props != null || group != null || screen != null || action != null
+          ? {
+              ...?props,
+              if (group != null) 'group': group,
+              if (screen != null) 'screen': screen,
+              if (action != null) 'action': action,
+            }
+          : null,
+    );
     final str = StringBuffer();
 
     if (group != null) {

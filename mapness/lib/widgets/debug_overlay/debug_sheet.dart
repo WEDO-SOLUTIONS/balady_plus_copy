@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/entities/metrics/logger/metrics_logger.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_preview_page.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
@@ -361,6 +362,25 @@ class _QuickActionsCard extends StatelessWidget {
                   logger.share();
                 },
               ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            DebugButton(
+              label: 'Share metrics log',
+              icon: Icons.article_outlined,
+              gradient: DebugTheme.gradientPink,
+              onPressed: () => metricsLogger.shareFile(),
+            ),
+            const SizedBox(width: 10),
+            DebugButton(
+              label: 'Clear metrics log',
+              icon: Icons.article_outlined,
+              gradient: DebugTheme.gradientAmber,
+              onPressed: () => metricsLogger.deleteFile(),
             ),
           ],
         ),

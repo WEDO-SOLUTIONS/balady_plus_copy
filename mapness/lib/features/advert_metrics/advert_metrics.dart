@@ -1,6 +1,7 @@
 import 'package:adjust_sdk/adjust.dart';
 import 'package:adjust_sdk/adjust_event.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/entities/metrics/logger/metrics_logger.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,7 +25,6 @@ enum AdvertMetricsKeys {
 
   /// event: navigation_routing_halfway-journey
   navigationRoutingHalfway,
-
   onboardingStoriesCompleted,
 
   /// event: add_poi_banner
@@ -54,22 +54,22 @@ enum AdvertMetricsKeys {
 
 extension AdvertMetricsKeysEx on AdvertMetricsKeys {
   String get event => switch (this) {
-        AdvertMetricsKeys.exploreLandingEngagement => 'g1f5nk',
-        AdvertMetricsKeys.exploreLandingRoute => 'g1f5nk',
-        AdvertMetricsKeys.exploreSearch => 'wldgmt',
-        AdvertMetricsKeys.navigationRoutingStartedJorney => '5yfcni',
-        AdvertMetricsKeys.navigationRoutingCompleted => '9fxp9f',
-        AdvertMetricsKeys.navigationRoutingHalfway => 'dgxg78',
-        AdvertMetricsKeys.onboardingStoriesCompleted => 'f54acw',
-        AdvertMetricsKeys.addPoiBanner => 'unqoza',
-        AdvertMetricsKeys.addPoiStories => '5s2ddu',
-        AdvertMetricsKeys.addPoiSearch => 'n0d96o',
-        AdvertMetricsKeys.poiSubmitted => 'vkqfwl',
-        AdvertMetricsKeys.journeySearch => 'pysar1',
-        AdvertMetricsKeys.journeyStartedUnique => 'pjpkj9',
-        AdvertMetricsKeys.journeyHalfwayUnique => 'uj1ybw',
-        AdvertMetricsKeys.journeyCompleteUnique => 'vps1sz',
-      };
+    AdvertMetricsKeys.exploreLandingEngagement => 'g1f5nk',
+    AdvertMetricsKeys.exploreLandingRoute => 'g1f5nk',
+    AdvertMetricsKeys.exploreSearch => 'wldgmt',
+    AdvertMetricsKeys.navigationRoutingStartedJorney => '5yfcni',
+    AdvertMetricsKeys.navigationRoutingCompleted => '9fxp9f',
+    AdvertMetricsKeys.navigationRoutingHalfway => 'dgxg78',
+    AdvertMetricsKeys.onboardingStoriesCompleted => 'f54acw',
+    AdvertMetricsKeys.addPoiBanner => 'unqoza',
+    AdvertMetricsKeys.addPoiStories => '5s2ddu',
+    AdvertMetricsKeys.addPoiSearch => 'n0d96o',
+    AdvertMetricsKeys.poiSubmitted => 'vkqfwl',
+    AdvertMetricsKeys.journeySearch => 'pysar1',
+    AdvertMetricsKeys.journeyStartedUnique => 'pjpkj9',
+    AdvertMetricsKeys.journeyHalfwayUnique => 'uj1ybw',
+    AdvertMetricsKeys.journeyCompleteUnique => 'vps1sz',
+  };
 }
 
 @riverpod
@@ -88,6 +88,8 @@ class AdvertMetrics extends _$AdvertMetrics {
     } else {
       sendTextEvent(event.event);
     }
+
+    metricsLogger.sendEvent(eventType: event.name, services: [MetricsLoggerService.adjust]);
   }
 
   bool _checkIfUnique(AdvertMetricsKeys event) {

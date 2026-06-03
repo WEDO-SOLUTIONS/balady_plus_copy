@@ -34,6 +34,7 @@ import 'package:http/http.dart' as http;
 import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/entities/metrics/logger/metrics_logger.dart';
 import 'package:mapness/export/mapness_functions.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:open_filex/open_filex.dart';
@@ -392,6 +393,11 @@ class CommonFunctions {
         ),
       );
     }
+
+    metricsLogger.sendEvent(
+      eventType: event,
+      services: [MetricsLoggerService.firebase],
+    );
   }
 
   static Future<String> fileToBase64(
@@ -1790,7 +1796,6 @@ class CommonFunctions {
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
 
-
     // Trigger load only if not already loaded or in progress
     await sl<NewMiniAppLogicCubit>().loadMiniApps(forceRefresh: true);
     // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
@@ -1812,6 +1817,11 @@ class CommonFunctions {
         ),
       );
     }
+
+    metricsLogger.sendEvent(
+      eventType: event,
+      services: [MetricsLoggerService.uxCam, MetricsLoggerService.sentry],
+    );
   }
 
   static void sendUXCamEventWithProperties(

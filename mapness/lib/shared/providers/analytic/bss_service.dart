@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mapness/entities/metrics/logger/metrics_logger.dart';
 import 'package:mapness/features/search/providers/search_region.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
@@ -13,6 +14,7 @@ import 'package:rxdart/rxdart.dart';
 
 class BssService {
   static BssService? _instance;
+
   static BssService get instance {
     _instance ??= BssService._internal();
     return _instance!;
@@ -122,6 +124,16 @@ class BssService {
   Future<void> sendEvent(BssRequest request) async {
     // Add event to the stack instead of sending immediately
     _eventStack.add(request);
+
+    metricsLogger.sendEvent(
+      eventType: request.eventType.name,
+      services: [MetricsLoggerService.bss],
+      payload: <String, dynamic>{
+        'uiElement': request.uiElement.toJson(),
+        if (request.payload != null) 'payload': request.payload?.toJson(),
+        if (request.actionType != null) 'actionType': request.actionType?.name,
+      },
+    );
   }
 
   void dispose() {
