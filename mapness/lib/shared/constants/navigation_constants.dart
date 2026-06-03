@@ -3,31 +3,19 @@ import 'package:dgis_map/library.dart';
 class NavigationConstants {
   NavigationConstants._();
 
+  // NB: THIS legacy list is what actually drives the in-navigation zoom. It is
+  // applied in the native `setupCamera` right before `navigationManager.start*`,
+  // and the SDK captures the speed→zoom sequence at that moment. A later
+  // `setNavigationCameraSettings` only re-tilts live (TiltFollowController) — its
+  // speedZoomRules do NOT override the zoom once navigation has started. So the
+  // zoom sequence must be set here. Speed numbers match the simulation-speed
+  // slider (km/h). TEST sequence: zoom RISES with speed (10 → 20).
   static final List<SpeedRangeZoom> navigationSpeedRangeZooms = [
-    SpeedRangeZoom(
-      maxSpeedRange: 5,
-      minSpeedRange: 0,
-      routeDistanceMillimeters: 0,
-      styleZoomValue: 22,
-    ),
-    SpeedRangeZoom(
-      maxSpeedRange: 20,
-      minSpeedRange: 5,
-      routeDistanceMillimeters: 20,
-      styleZoomValue: 20,
-    ),
-    SpeedRangeZoom(
-      maxSpeedRange: 60,
-      minSpeedRange: 20,
-      routeDistanceMillimeters: 100,
-      styleZoomValue: 18,
-    ),
-    SpeedRangeZoom(
-      maxSpeedRange: 200,
-      minSpeedRange: 60,
-      routeDistanceMillimeters: 300,
-      styleZoomValue: 16.5,
-    ),
+    SpeedRangeZoom(minSpeedRange: 0, maxSpeedRange: 20, routeDistanceMillimeters: 0, styleZoomValue: 10),
+    SpeedRangeZoom(minSpeedRange: 20, maxSpeedRange: 40, routeDistanceMillimeters: 0, styleZoomValue: 13),
+    SpeedRangeZoom(minSpeedRange: 40, maxSpeedRange: 60, routeDistanceMillimeters: 0, styleZoomValue: 15),
+    SpeedRangeZoom(minSpeedRange: 60, maxSpeedRange: 90, routeDistanceMillimeters: 0, styleZoomValue: 20),
+    SpeedRangeZoom(minSpeedRange: 90, maxSpeedRange: 250, routeDistanceMillimeters: 0, styleZoomValue: 20),
   ];
 
   /// Maneuver-distance window edge (mm) used to split each speed band into a
@@ -45,6 +33,11 @@ class NavigationConstants {
     speedZoomRules: _defaultSpeedZoomRules,
     freeRoamSpeedZoomRules: _defaultSpeedZoomRules,
     tiltRelation: defaultTiltRelation,
+    // NB: do NOT set minZoom/maxZoom here. CameraZoomRestrictions freezes the
+    // navigation zoom-follow (observed: zoom pinned at ~18.9 regardless of
+    // speed). The high-speed zoom floor that keeps the camera out of the SDK's
+    // tilt-flatten zone (below ~z16 the SDK clamps tilt toward top-down) is
+    // enforced via the speed→zoom bands in [_defaultSpeedZoomRules] instead.
     followBehaviour: CameraFollowBehaviourMessage(
       followBearing: true,
       followStyleZoom: true,
@@ -66,11 +59,12 @@ class NavigationConstants {
   /// the horizon (more road ahead); slower → zoomed in + closer to top-down
   /// (detail for maneuvers)**. Tilt in degrees.
   static final List<StyleZoomTiltPoint> defaultTiltRelation = [
-    StyleZoomTiltPoint(styleZoom: 16, tiltDegrees: 60), // fast / zoomed out → toward horizon (road ahead)
-    StyleZoomTiltPoint(styleZoom: 18, tiltDegrees: 50),
-    StyleZoomTiltPoint(styleZoom: 20, tiltDegrees: 38),
-    StyleZoomTiltPoint(styleZoom: 22, tiltDegrees: 28),
-    StyleZoomTiltPoint(styleZoom: 23, tiltDegrees: 22), // slow / zoomed in → closer to top-down
+    // TEST sequence (requested): tilt rises with zoom so high-zoom/high-speed
+    // bands lean toward the horizon. NB: the SDK caps tilt at very low zoom, so
+    // zoom 10 will likely render flatter than 38°.
+    StyleZoomTiltPoint(styleZoom: 10, tiltDegrees: 38),
+    StyleZoomTiltPoint(styleZoom: 15, tiltDegrees: 50),
+    StyleZoomTiltPoint(styleZoom: 20, tiltDegrees: 58),
   ];
 
   /// Converts km/h to the m/s used by the SDK's [SpeedRange].
@@ -82,11 +76,14 @@ class NavigationConstants {
   /// [defaultTiltRelation] tilts the camera toward the horizon for more road
   /// ahead; slower → higher zoom (zooms in) + closer to top-down.
   static final List<SpeedZoomRule> _defaultSpeedZoomRules = [
-    ..._bandRules(minSpeed: _kmh(0), maxSpeed: _kmh(20), cruiseZoom: 20),
-    ..._bandRules(minSpeed: _kmh(20), maxSpeed: _kmh(40), cruiseZoom: 19),
-    ..._bandRules(minSpeed: _kmh(40), maxSpeed: _kmh(60), cruiseZoom: 18),
-    ..._bandRules(minSpeed: _kmh(60), maxSpeed: _kmh(90), cruiseZoom: 17),
-    ..._bandRules(minSpeed: _kmh(90), maxSpeed: _kmh(250), cruiseZoom: 16),
+    // TEST sequence (requested): zoom RISES with speed (10 → 20). Keeps the
+    // high-speed bands at high zoom, where the SDK still allows a high tilt, so
+    // the speed→zoom→tilt chain is obvious on screen / in the side-view.
+    ..._bandRules(minSpeed: _kmh(0), maxSpeed: _kmh(20), cruiseZoom: 10),
+    ..._bandRules(minSpeed: _kmh(20), maxSpeed: _kmh(40), cruiseZoom: 13),
+    ..._bandRules(minSpeed: _kmh(40), maxSpeed: _kmh(60), cruiseZoom: 15),
+    ..._bandRules(minSpeed: _kmh(60), maxSpeed: _kmh(90), cruiseZoom: 20),
+    ..._bandRules(minSpeed: _kmh(90), maxSpeed: _kmh(250), cruiseZoom: 20),
   ];
 
   static List<SpeedZoomRule> _bandRules({
