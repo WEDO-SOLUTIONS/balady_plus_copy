@@ -227,14 +227,31 @@ class Data extends ConsumerWidget {
                                       SizedBox(
                                         height: 100,
                                         width: 110,
-                                        child: Center(
-                                          child: SvgPicture.asset(
-                                            isDay == true
-                                                ? Assets.icons.svg.weather.sunNew.keyName
-                                                : Assets.icons.svg.weather.moon.keyName,
-                                            height: 75,
-                                            width: 75,
-                                          ),
+                                        child: Stack(
+                                          children: [
+                                            SvgPicture.asset(
+                                              isDay == true
+                                                  ? Assets.icons.svg.weather.sunNew.keyName
+                                                  : Assets.icons.svg.weather.moon.keyName,
+                                              height: 75,
+                                              width: 75,
+                                            ),
+                                            Align(
+                                              alignment: AlignmentDirectional.topEnd,
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$1x),
+                                                decoration: BoxDecoration(
+                                                  color: context.colors.accentSecondaryDefault,
+                                                  borderRadius: BorderRadius.circular(RadiusBorder.full),
+                                                ),
+                                                child: AutoSizeText(
+                                                  condition,
+                                                  maxLines: 1,
+                                                  style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.staticWhite),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
@@ -276,22 +293,6 @@ class Data extends ConsumerWidget {
                                         ),
                                 ),
                               ],
-                            ),
-                          ),
-                          Positioned(
-                            top: Spacing.$4x,
-                            right: Spacing.$4x,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$1x),
-                              decoration: BoxDecoration(
-                                color: context.colors.accentSecondaryDefault,
-                                borderRadius: BorderRadius.circular(RadiusBorder.full),
-                              ),
-                              child: AutoSizeText(
-                                condition,
-                                maxLines: 1,
-                                style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.staticWhite),
-                              ),
                             ),
                           ),
                         ],

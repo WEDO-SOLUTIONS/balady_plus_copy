@@ -21,11 +21,13 @@ class ParkingState extends _$ParkingState {
   @override
   ParkingStateEvent build() {
     final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
+    final controllerFuture = ref.read(dgisControllerProvider.future);
 
     ref.onDispose(
-      () async {
-        final controller = await ref.read(dgisControllerProvider.future);
-        await controller.setMapAttributeBool(attributeParkingOn, value: false);
+      () {
+        unawaited(
+          controllerFuture.then((controller) => controller.setMapAttributeBool(attributeParkingOn, value: false)),
+        );
       },
     );
 
@@ -37,12 +39,18 @@ class ParkingState extends _$ParkingState {
 
   Future<void> showParking() async {
     final controller = await ref.read(dgisControllerProvider.future);
+    if (!ref.mounted) {
+      return;
+    }
     final prefs = ref.read(sharedPrefsProvider);
     final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
     final activeLayersNotifier = ref.read(activeLayerProvider.notifier);
 
     await activeLayersNotifier.setActiveLayer(LayerType.parkingLots);
+    if (!ref.mounted) {
+      return;
+    }
 
     state = ParkingStateEvent(
       filter: parkingFilter,
@@ -56,12 +64,18 @@ class ParkingState extends _$ParkingState {
 
   Future<void> hideParking() async {
     final controller = await ref.read(dgisControllerProvider.future);
+    if (!ref.mounted) {
+      return;
+    }
     final prefs = ref.read(sharedPrefsProvider);
     final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
     final activeLayersNotifier = ref.read(activeLayerProvider.notifier);
 
     await activeLayersNotifier.removeActiveLayer();
+    if (!ref.mounted) {
+      return;
+    }
     state = ParkingStateEvent(
       filter: parkingFilter,
       visible: false,

@@ -25,7 +25,7 @@ class AddPlaceItem extends StatelessWidget {
         const SizedBox(height: Spacing.$3x),
         Text(
           context.l10n.searchDidntFind,
-          style: context.textStyles.bodyLargeSemiBold,
+          style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: Spacing.$1x),

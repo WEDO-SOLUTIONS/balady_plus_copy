@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +15,14 @@ class SearchHistoryEmpty extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
+    final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: SizedBox(
         width: double.infinity,
         child: ContentWrapper.single(
-          color: context.colors.backgroundSurface1,
+          color: isDGADark?context.colors.neutralMuted : context.colors.backgroundSurface1,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
             child: Text.rich(

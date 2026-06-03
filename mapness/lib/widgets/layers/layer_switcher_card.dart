@@ -8,7 +8,6 @@ import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
-import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
@@ -16,9 +15,16 @@ import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 class LayerSwitcherCard extends ConsumerWidget {
   final layers_state.LayerType value;
   final LayersState layersState;
-  final VoidCallback tapOnParkingLotsMenu;
+  final ValueChanged<layers_state.LayerType>? onIconTap;
+  final Set<layers_state.LayerType> layerTapItems;
 
-  const LayerSwitcherCard(this.value, this.layersState, this.tapOnParkingLotsMenu, {super.key});
+  const LayerSwitcherCard(
+    this.value,
+    this.layersState,
+    this.onIconTap,
+    this.layerTapItems, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,6 +47,13 @@ class LayerSwitcherCard extends ConsumerWidget {
       final trafficState = ref.watch(traffic.trafficStateProvider);
       isSelected = trafficState.status == TrafficControlStatus.enabled;
     }
+
+    if (value == layers_state.LayerType.busSubMenu) {
+      final trafficState = ref.watch(traffic.trafficStateProvider);
+      isSelected = layers_state.LayerType.bus.contains(layersState.selectedType);
+    }
+
+    final withIcon = onIconTap != null && layerTapItems.contains(value);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -70,32 +83,33 @@ class LayerSwitcherCard extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: Text(
-                value.titleLocale(context.l10n),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: textStyles.bodySmallMedium.copyWith(
-                  color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+        // BE-153: when this is the parking layer card, the whole title row
+        // (text + chevron) opens the parking menu — not only the chevron icon.
+        GestureDetector(
+          onTap: withIcon ? () => onIconTap?.call(value) : null,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  value.titleLocale(context.l10n),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: textStyles.bodySmallMedium.copyWith(
+                    color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                  ),
                 ),
               ),
-            ),
-            if (value == layers_state.LayerType.parkingLots) ...[
-              GestureDetector(
-                onTap: tapOnParkingLotsMenu,
-                behavior: HitTestBehavior.opaque,
-                child: Icon(
+              if (withIcon)
+                Icon(
                   Icons.chevron_right,
                   size: 22,
                   color: colors.foregroundSoft,
                 ),
-              ),
             ],
-          ],
+          ),
         ),
       ],
     );

@@ -14,9 +14,7 @@ class GaussianSplattingPage extends ConsumerWidget {
   const GaussianSplattingPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return _GaussianSplattingPageWidget(ref: ref);
-  }
+  Widget build(BuildContext context, WidgetRef ref) => _GaussianSplattingPageWidget(ref: ref);
 }
 
 class _GaussianSplattingPageWidget extends StatefulWidget {
@@ -110,17 +108,20 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: context.colors.backgroundSurface4,
-        body: Stack(
-          children: [
-            WebViewWidget(controller: _controller),
-            if (_isLoading) const Center(child: CircularProgressIndicator()),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Semantics(
+    backgroundColor: context.colors.backgroundSurface4,
+    resizeToAvoidBottomInset: false,
+    body: Stack(
+      children: [
+        WebViewWidget(controller: _controller),
+        if (_isLoading) const Center(child: CircularProgressIndicator()),
+
+        // balady back button
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(start: 24, top: 24),
+            child: Align(
+              alignment: AlignmentDirectional.topStart,
+              child: Semantics(
                     label: context.l10n.a11yBack,
                     button: true,
                     child: GestureDetector(
@@ -130,16 +131,20 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
                         color: Colors.black54,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.arrow_back, color: Colors.white, size: 18),
-                          const SizedBox(width: 4),
-                          const Text(
-                            'Balady',
-                            style: TextStyle(
+                        borderRadius: BorderRadius.circular(32),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.arrow_back, color: Colors.white, size: 18),
+                      const SizedBox(width: 4),
+                      Text(
+                        context.l10n.pilgrimVirtualTourBackButton,
+                        // Force LTR rendering so the `+` glyph sits on the
+                        // same side of the word in both languages (right of
+                        // the brand name, mirroring `Balady+`).
+                        textDirection: TextDirection.ltr,
+                        style: constTextStyle(
                               color: Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,

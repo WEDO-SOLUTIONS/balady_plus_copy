@@ -15,11 +15,10 @@ class LevelsState {
   LevelsState copyWith({
     List<IndoorLevel>? levels,
     int? active,
-  }) =>
-      LevelsState(
-        levels ?? this.levels,
-        active ?? this.active,
-      );
+  }) => LevelsState(
+    levels ?? this.levels,
+    active ?? this.active,
+  );
 }
 
 /// Provider of indoor levels information. If [objectId] is passed, provider will handle [IndoorLevelsEvent] with this [objectId] only
@@ -28,6 +27,7 @@ class IndoorLevels extends _$IndoorLevels {
   StreamSubscription? _levelsSubscription;
   StreamSubscription? _indexSubscription;
   StreamSubscription? _hideLevelsSubscription;
+  StreamSubscription<NavigationEvent>? _freeRoamSubscription;
 
   @override
   LevelsState? build({int? objectId}) {
@@ -39,7 +39,8 @@ class IndoorLevels extends _$IndoorLevels {
     final lastIndoorLevelNames = dgisController.value?.lastIndoorLevelNames;
     final lastIndoorActiveLevel = dgisController.value?.lastIndoorActiveLevel;
 
-    state = lastIndoorLevelNames != null &&
+    state =
+        lastIndoorLevelNames != null &&
             lastIndoorActiveLevel != null &&
             (objectId == null || lastIndoorLevelNames.objectId == objectId)
         ? LevelsState(
@@ -74,6 +75,13 @@ class IndoorLevels extends _$IndoorLevels {
     _levelsSubscription = dgisController.value?.indoorLevelNames.listen(_levelsListener);
     _indexSubscription = dgisController.value?.indoorActiveIndex.listen(_indexListener);
     _hideLevelsSubscription = dgisController.value?.hideIndoorLevels.listen((_) => state = null);
+    _freeRoamSubscription = dgisController.value?.freeRoamController.events.listen((freeRoamState) {
+      // there's a bug that SDK won't emit level data event when moving camera on free roam start
+      // so we turn it off manually
+      if (freeRoamState == NavigationEvent.navigation || freeRoamState == NavigationEvent.routeSearch) {
+        state = null;
+      }
+    });
   }
 
   void _cancelSubscriptions() {
@@ -83,5 +91,7 @@ class IndoorLevels extends _$IndoorLevels {
     _indexSubscription = null;
     _hideLevelsSubscription?.cancel();
     _hideLevelsSubscription = null;
+    _freeRoamSubscription?.cancel();
+    _freeRoamSubscription = null;
   }
 }

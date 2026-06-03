@@ -143,9 +143,9 @@ class _MakkahPoiSubtitle extends ConsumerWidget {
     MakkahPlace? makkahPlace,
   ) {
     final textStyle = context.textStyles.bodySmallRegular.copyWith(
-      color: const Color(0xFF4A3016).withOpacity(0.8),
+      color: colors.secondaryTextColor,
     );
-    final iconColor = const Color(0xFF4A3016).withOpacity(0.8);
+    final iconColor = colors.secondaryTextColor;
 
     final isArabic = Directionality.of(context) == TextDirection.rtl;
     final generalTag = isArabic ? makkahPlace?.generalTagAr : makkahPlace?.generalTagEn;

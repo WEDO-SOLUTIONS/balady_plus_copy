@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/accecipilities/accessibility_controller
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_info.dart';
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/text_size_preview_page.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart' as p;
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 class AccessibilitySettingsPage extends ConsumerStatefulWidget {
   const AccessibilitySettingsPage({super.key});
@@ -134,7 +135,15 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                             ),
                           ),
                           options: ContentRowOptions(
-                            leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
+                            leadingIcon: SvgPicture.asset(
+                              'assets/icons/svg/voice_reader_icon.svg',
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                context.colors.accentDefault,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                             title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(

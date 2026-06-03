@@ -63,6 +63,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
 
+  /// File path: assets/images/dashboard_bg_pattern.png
+  AssetGenImage get dashboardBgPattern => const AssetGenImage('assets/images/dashboard_bg_pattern.png');
+
   /// File path: assets/images/driveHomeArrowFoundingDay.png
   AssetGenImage get driveHomeArrowFoundingDay => const AssetGenImage('assets/images/driveHomeArrowFoundingDay.png');
 
@@ -142,6 +145,22 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/founding_day_national_museum.png
   AssetGenImage get foundingDayNationalMuseum => const AssetGenImage('assets/images/founding_day_national_museum.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_dark_ar.png
+  AssetGenImage get gaussianSplattingEntryPointDarkAr =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_ar.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_dark_en.png
+  AssetGenImage get gaussianSplattingEntryPointDarkEn =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_dark_en.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_light_ar.png
+  AssetGenImage get gaussianSplattingEntryPointLightAr =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_ar.png');
+
+  /// File path: assets/images/gaussian_splatting_entry_point_light_en.png
+  AssetGenImage get gaussianSplattingEntryPointLightEn =>
+      const AssetGenImage('assets/images/gaussian_splatting_entry_point_light_en.png');
 
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
@@ -234,6 +253,7 @@ class $AssetsImagesGen {
     cityExpertSaudiDay,
     cityscapeGlobal,
     darkMapPreview,
+    dashboardBgPattern,
     driveHomeArrowFoundingDay,
     driveHomeArrow,
     driveHomeArrowSaudiday,
@@ -258,6 +278,10 @@ class $AssetsImagesGen {
     foundingDayHistoricalDirYiyah,
     foundingDayLogo,
     foundingDayNationalMuseum,
+    gaussianSplattingEntryPointDarkAr,
+    gaussianSplattingEntryPointDarkEn,
+    gaussianSplattingEntryPointLightAr,
+    gaussianSplattingEntryPointLightEn,
     icArrowFeedback,
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,
@@ -462,6 +486,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/dark_car_active.svg
   SvgGenImage get darkCarActive => const SvgGenImage('assets/icons/svg/dark_car_active.svg');
+
+  /// Directory path: assets/icons/svg/dynamic_poi
+  $AssetsIconsSvgDynamicPoiGen get dynamicPoi => const $AssetsIconsSvgDynamicPoiGen();
 
   /// File path: assets/icons/svg/founding_day_profile.svg
   SvgGenImage get foundingDayProfile => const SvgGenImage('assets/icons/svg/founding_day_profile.svg');
@@ -919,6 +946,9 @@ class $AssetsImagesMakkahQuickActionsGen {
   /// File path: assets/images/makkah_quick_actions/athkar.png
   AssetGenImage get athkar => const AssetGenImage('assets/images/makkah_quick_actions/athkar.png');
 
+  /// Directory path: assets/images/makkah_quick_actions/dark
+  $AssetsImagesMakkahQuickActionsDarkGen get dark => const $AssetsImagesMakkahQuickActionsDarkGen();
+
   /// File path: assets/images/makkah_quick_actions/free_roam.png
   AssetGenImage get freeRoam => const AssetGenImage('assets/images/makkah_quick_actions/free_roam.png');
 
@@ -1026,8 +1056,14 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/3D.svg
   SvgGenImage get a3D => const SvgGenImage('assets/images_svg/layers/3D.svg');
 
+  /// File path: assets/images_svg/layers/bus_sub_menu.svg
+  SvgGenImage get busSubMenu => const SvgGenImage('assets/images_svg/layers/bus_sub_menu.svg');
+
   /// File path: assets/images_svg/layers/favourites.svg
   SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
+
+  /// File path: assets/images_svg/layers/jeddah_bus.svg
+  SvgGenImage get jeddahBus => const SvgGenImage('assets/images_svg/layers/jeddah_bus.svg');
 
   /// File path: assets/images_svg/layers/makkah_bus.svg
   SvgGenImage get makkahBus => const SvgGenImage('assets/images_svg/layers/makkah_bus.svg');
@@ -1048,7 +1084,18 @@ class $AssetsImagesSvgLayersGen {
   SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [a3D, favourites, makkahBus, metro, parking, roadEvents, shuttleBus, traffic];
+  List<SvgGenImage> get values => [
+    a3D,
+    busSubMenu,
+    favourites,
+    jeddahBus,
+    makkahBus,
+    metro,
+    parking,
+    roadEvents,
+    shuttleBus,
+    traffic,
+  ];
 }
 
 class $AssetsImagesSvgSaudiPassGen {
@@ -1079,6 +1126,12 @@ class $AssetsImagesSvgSaudiPassGen {
 class $AssetsMapsBusesGen {
   const $AssetsMapsBusesGen();
 
+  /// File path: assets/maps/buses/jeddah_bus_lines.geojson
+  String get jeddahBusLines => 'packages/mapness/assets/maps/buses/jeddah_bus_lines.geojson';
+
+  /// File path: assets/maps/buses/jeddah_bus_stations.geojson
+  String get jeddahBusStations => 'packages/mapness/assets/maps/buses/jeddah_bus_stations.geojson';
+
   /// File path: assets/maps/buses/makkah_bus.geojson
   String get makkahBus => 'packages/mapness/assets/maps/buses/makkah_bus.geojson';
 
@@ -1086,7 +1139,7 @@ class $AssetsMapsBusesGen {
   String get shuttleBus => 'packages/mapness/assets/maps/buses/shuttle_bus.geojson';
 
   /// List of all assets
-  List<String> get values => [makkahBus, shuttleBus];
+  List<String> get values => [jeddahBusLines, jeddahBusStations, makkahBus, shuttleBus];
 }
 
 class $AssetsMapsConfigsGen {
@@ -1147,6 +1200,13 @@ class $AssetsIconsSvgAudioGen {
     seekForward,
     waves,
   ];
+}
+
+class $AssetsIconsSvgDynamicPoiGen {
+  const $AssetsIconsSvgDynamicPoiGen();
+
+  /// Directory path: assets/icons/svg/dynamic_poi/glyphs
+  $AssetsIconsSvgDynamicPoiGlyphsGen get glyphs => const $AssetsIconsSvgDynamicPoiGlyphsGen();
 }
 
 class $AssetsIconsSvgIntermediateStopNumbersGen {
@@ -2182,6 +2242,129 @@ class $AssetsImagesAudioPlaceholdersArrivingSoonGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [appleCarPlay, baladyContent, mbcVideoNews, onDemand, speedAlerts];
+}
+
+class $AssetsImagesMakkahQuickActionsDarkGen {
+  const $AssetsImagesMakkahQuickActionsDarkGen();
+
+  /// File path: assets/images/makkah_quick_actions/dark/athkar.png
+  AssetGenImage get athkar => const AssetGenImage('assets/images/makkah_quick_actions/dark/athkar.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/free_roam.png
+  AssetGenImage get freeRoam => const AssetGenImage('assets/images/makkah_quick_actions/dark/free_roam.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/parking.png
+  AssetGenImage get parking => const AssetGenImage('assets/images/makkah_quick_actions/dark/parking.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/qibla.png
+  AssetGenImage get qibla => const AssetGenImage('assets/images/makkah_quick_actions/dark/qibla.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/quaran.png
+  AssetGenImage get quaran => const AssetGenImage('assets/images/makkah_quick_actions/dark/quaran.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/road_event.png
+  AssetGenImage get roadEvent => const AssetGenImage('assets/images/makkah_quick_actions/dark/road_event.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/send_location.png
+  AssetGenImage get sendLocation => const AssetGenImage('assets/images/makkah_quick_actions/dark/send_location.png');
+
+  /// File path: assets/images/makkah_quick_actions/dark/snap_and_send.png
+  AssetGenImage get snapAndSend => const AssetGenImage('assets/images/makkah_quick_actions/dark/snap_and_send.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [athkar, freeRoam, parking, qibla, quaran, roadEvent, sendLocation, snapAndSend];
+}
+
+class $AssetsIconsSvgDynamicPoiGlyphsGen {
+  const $AssetsIconsSvgDynamicPoiGlyphsGen();
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900001_medical_help.svg
+  SvgGenImage get a900001MedicalHelp =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900001_medical_help.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900002_lost_and_found.svg
+  SvgGenImage get a900002LostAndFound =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900002_lost_and_found.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900003_hajj_support.svg
+  SvgGenImage get a900003HajjSupport =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900003_hajj_support.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900004_kiosk_and_pos.svg
+  SvgGenImage get a900004KioskAndPos =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900004_kiosk_and_pos.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900005_additional_category.svg
+  SvgGenImage get a900005AdditionalCategory =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900005_additional_category.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900006_stair.svg
+  SvgGenImage get a900006Stair => const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900006_stair.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900007_service.svg
+  SvgGenImage get a900007Service => const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900007_service.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900008_gate.svg
+  SvgGenImage get a900008Gate => const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900008_gate.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900009_prayer_hall.svg
+  SvgGenImage get a900009PrayerHall => const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900009_prayer_hall.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900010_landmark.svg
+  SvgGenImage get a900010Landmark => const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900010_landmark.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900011_luggage_storage.svg
+  SvgGenImage get a900011LuggageStorage =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900011_luggage_storage.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900012_wheelchairs_carts.svg
+  SvgGenImage get a900012WheelchairsCarts =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900012_wheelchairs_carts.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900013_prayer_area_disabled.svg
+  SvgGenImage get a900013PrayerAreaDisabled =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900013_prayer_area_disabled.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900014_emergency_assembly.svg
+  SvgGenImage get a900014EmergencyAssembly =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900014_emergency_assembly.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900015_restricted_zone.svg
+  SvgGenImage get a900015RestrictedZone =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900015_restricted_zone.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900016_volunteer_point.svg
+  SvgGenImage get a900016VolunteerPoint =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900016_volunteer_point.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900017_free_wifi.svg
+  SvgGenImage get a900017FreeWifi => const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900017_free_wifi.svg');
+
+  /// File path: assets/icons/svg/dynamic_poi/glyphs/900018_pilgrim_camp.svg
+  SvgGenImage get a900018PilgrimCamp =>
+      const SvgGenImage('assets/icons/svg/dynamic_poi/glyphs/900018_pilgrim_camp.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+    a900001MedicalHelp,
+    a900002LostAndFound,
+    a900003HajjSupport,
+    a900004KioskAndPos,
+    a900005AdditionalCategory,
+    a900006Stair,
+    a900007Service,
+    a900008Gate,
+    a900009PrayerHall,
+    a900010Landmark,
+    a900011LuggageStorage,
+    a900012WheelchairsCarts,
+    a900013PrayerAreaDisabled,
+    a900014EmergencyAssembly,
+    a900015RestrictedZone,
+    a900016VolunteerPoint,
+    a900017FreeWifi,
+    a900018PilgrimCamp,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewDarkGen {

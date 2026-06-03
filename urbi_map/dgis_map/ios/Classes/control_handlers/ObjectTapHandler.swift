@@ -121,6 +121,9 @@ class ObjectTapHandler {
             let tappedObject = objectInfo.item.item
 
             switch tappedObject {
+            case is Marker:
+                self.onMarkerTap(tappedObject as! Marker)
+                return
             case let polygon as Polygon:
                 if let id = polygon.userData as? PolygonId {
                     eventChannel.success([
@@ -190,10 +193,15 @@ class ObjectTapHandler {
 
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
         let tappedObject = objectInfo.item.item
-        
+
+        // Dynamic-POI markers open the POI card on short tap (and update
+        // the selected-state). All other markers stay on the long-press-only
+        // contract introduced in iter4 — short taps on them fall through.
         switch tappedObject {
-        case is Marker:
-            self.onMarkerTap(tappedObject as! Marker)
+        case let marker as Marker:
+            if let markerId = (marker.userData as? MarkerId)?.id, markerId.hasPrefix("dynamic_poi_") {
+                self.onMarkerTap(marker)
+            }
             return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
@@ -206,6 +214,7 @@ class ObjectTapHandler {
                 ] as [String : Any])
             }
             return
+
         default:
             self.eventChannel.error(code: Events.objectTapError)
         }
@@ -268,9 +277,20 @@ class ObjectTapHandler {
                 image = imageFactory.make(svgData: data, size: size)
             }
         } else {
-            image = imageFactory.make(pngData: data, size: size)
+            // PNG path: route through UIImage at the device's native pixel scale
+            // and hand the SDK a `make(image:)` factory call. The (pngData:size:)
+            // overload either silently fails (`.zero`) or rasterises in raw pixels
+            // (logical-pt size) — both produced the clipped/zoomed Al Masjid Al
+            // Haram bug. UIImage(data:scale:) carries the correct logical-px ↔
+            // physical-px ratio, and SDK's `make(image:)` honours it.
+            let scale = UIScreen.main.scale > 0 ? UIScreen.main.scale : 1.0
+            if let uiImage = UIImage(data: data, scale: scale) {
+                image = imageFactory.make(image: uiImage)
+            } else {
+                image = imageFactory.make(pngData: data, size: size)
+            }
         }
-        
+
         iconCache[assetPath] = image
         return image
     }
@@ -282,16 +302,26 @@ class ObjectTapHandler {
             markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
         }
         else if let pngPath = marker.options.icon?.pngPath {
-            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
-                width: marker.options.icon!.width,
-                height: marker.options.icon!.width
-            ), completion: completion)
+            // Rasterize the PNG at the device's physical pixel resolution that
+            // matches the marker's logical iconWidth. Passing the logical width
+            // alone (as the SDK did before) decoded the bitmap at logical size,
+            // which the SDK then upscaled 2-3× on hi-DPI screens — clipped /
+            // zoomed marker. Passing .zero loads nothing on the iOS factory.
+            // Multiplying by UIScreen.scale gives a 1:1 px → logical-pt mapping.
+            let scale = UIScreen.main.scale
+            let pixelSize = CGSize(
+                width: marker.options.icon!.width * Double(scale),
+                height: marker.options.icon!.width * Double(scale)
+            )
+            NSLog("[MakkahPinDebug.iOS] addMarker pngPath=\(pngPath) width=\(marker.options.icon!.width) px=\(pixelSize)")
+            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: pixelSize, completion: completion)
         }
         else if let pngData = marker.options.icon?.pngData {
             let data = pngData.data
+            let scale = UIScreen.main.scale
             markerImage = imageFactory.make(pngData: data, size: CGSize(
-                width: marker.options.icon!.width,
-                height: marker.options.icon!.width
+                width: marker.options.icon!.width * Double(scale),
+                height: marker.options.icon!.width * Double(scale)
             ))
         }
         else {
@@ -324,7 +354,17 @@ class ObjectTapHandler {
         )
         
         do {
-            return try Marker(options: options)
+            let createdMarker = try Marker(options: options)
+            // Honor isVisible at construction time. Android already does this
+            // (`visible = (marker.options.isVisible ?: true)`); the iOS pigeon
+            // constructor does not accept an isVisible argument, so apply it
+            // immediately after creation. Without this, dynamic-POI markers
+            // briefly flash visible at low zoom before the post-add visibility
+            // sweep can hide them.
+            if let isVisible = marker.options.isVisible {
+                createdMarker.isVisible = isVisible
+            }
+            return createdMarker
         } catch {
             completion(
                 Result.failure(
@@ -335,10 +375,10 @@ class ObjectTapHandler {
                 ))
             )
         }
-        
+
         return nil
     }
-    
+
     func addMarker(_ marker: MarkerMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let markerObject = mapMarker(marker, completion: completion) else {
             return
@@ -358,16 +398,20 @@ class ObjectTapHandler {
             markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
         }
         else if let pngPath = options.icon?.pngPath {
-            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
-                width: options.icon!.width,
-                height: options.icon!.width
-            ), completion: completion)
+            let scale = UIScreen.main.scale
+            let pixelSize = CGSize(
+                width: options.icon!.width * Double(scale),
+                height: options.icon!.width * Double(scale)
+            )
+            NSLog("[MakkahPinDebug.iOS] setMarkerOptions pngPath=\(pngPath) width=\(options.icon!.width) px=\(pixelSize)")
+            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: pixelSize, completion: completion)
         }
         else if let pngData = options.icon?.pngData {
             let data = pngData.data
+            let scale = UIScreen.main.scale
             markerImage = imageFactory.make(pngData: data, size: CGSize(
-                width: options.icon!.width,
-                height: options.icon!.width
+                width: options.icon!.width * Double(scale),
+                height: options.icon!.width * Double(scale)
             ))
         }
         

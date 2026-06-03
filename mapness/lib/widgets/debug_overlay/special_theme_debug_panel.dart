@@ -75,6 +75,8 @@ class SpecialThemeDebugPanel extends ConsumerWidget {
                 const SizedBox(height: 12),
                 _MakkahDiagnosticsCard(),
                 const SizedBox(height: 12),
+                _PilgrimDiagnosticsCard(),
+                const SizedBox(height: 12),
                 _SplashTestCard(),
                 const SizedBox(height: 12),
                 _RemoteConfigCard(),
@@ -454,15 +456,15 @@ class _DebugTogglesCard extends ConsumerWidget {
           //   },
           //   gradient: _DebugColors.gradientBlue,
           // ),
-          // _ToggleRow(
-          //   label: 'Kaaba Virtual Tour',
-          //   value: pilgrimFeature,
-          //   onChanged: (v) {
-          //     _trackDebugToggle('kaabaTour', v);
-          //     ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
-          //   },
-          //   gradient: _DebugColors.gradientGreen,
-          // ),
+          _ToggleRow(
+            label: 'Pilgrim Feature',
+            value: pilgrimFeature,
+            onChanged: (v) {
+              _trackDebugToggle('pilgrim', v);
+              ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
+            },
+            gradient: _DebugColors.gradientGreen,
+          ),
           const SizedBox(height: 14),
           _LocationRefreshRow(),
         ],
@@ -1188,20 +1190,33 @@ class _FeatureItem extends ConsumerWidget {
 
   final FeatureConfig feature;
 
-  /// Returns true if the feature is effectively active (enabled AND past start_date)
-  bool _isEffectivelyActive(bool debugOverride) {
+  /// Mirrors [showPilgrimFeatureProvider]: when `show_pilgrim` has a `start_date`,
+  /// it's also gated on being inside the Makkah area.
+  bool _pilgrimNeedsMakkahArea() => feature.code == 'show_pilgrim' && feature.startDate != null;
+
+  /// Returns true if the feature is effectively active (enabled AND past start_date,
+  /// plus the Makkah-area gate for scoped pilgrim).
+  bool _isEffectivelyActive(WidgetRef ref, bool debugOverride) {
     if (debugOverride) return true;
     if (!feature.enabled) return false;
-    if (feature.startDate == null) return true;
-    return !DateTime.now().isBefore(feature.startDate!);
+    if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
+      return false;
+    }
+    if (_pilgrimNeedsMakkahArea()) {
+      return ref.watch(mekkahBaseThemeProvider);
+    }
+    return true;
   }
 
   /// Returns the reason why feature is not active
-  String? _getInactiveReason(bool debugOverride) {
+  String? _getInactiveReason(WidgetRef ref, bool debugOverride) {
     if (debugOverride) return null;
     if (!feature.enabled) return null;
     if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
       return 'Starts ${_formatDate(feature.startDate!)}';
+    }
+    if (_pilgrimNeedsMakkahArea() && !ref.watch(mekkahBaseThemeProvider)) {
+      return 'Outside Makkah area';
     }
     return null;
   }
@@ -1212,8 +1227,8 @@ class _FeatureItem extends ConsumerWidget {
     final isPilgrimFeature = feature.code == 'show_pilgrim';
     final debugOverride = isPilgrimFeature ? ref.watch(pilgrimFeatureDebugProvider) : false;
 
-    final isActive = _isEffectivelyActive(debugOverride);
-    final inactiveReason = _getInactiveReason(debugOverride);
+    final isActive = _isEffectivelyActive(ref, debugOverride);
+    final inactiveReason = _getInactiveReason(ref, debugOverride);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -1225,8 +1240,8 @@ class _FeatureItem extends ConsumerWidget {
           color: debugOverride
               ? _DebugColors.warning.withOpacity(0.5)
               : isActive
-                  ? _DebugColors.info.withOpacity(0.2)
-                  : _DebugColors.border,
+              ? _DebugColors.info.withOpacity(0.2)
+              : _DebugColors.border,
           width: debugOverride ? 2 : 1,
         ),
       ),
@@ -1479,6 +1494,142 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
                         color: _DebugColors.textMuted,
                         fontSize: 10,
                       ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}';
+  }
+}
+
+/// Diagnostics card for the `show_pilgrim` feature. Mirrors [_MakkahDiagnosticsCard]
+/// in shape and surfaces the gates that [showPilgrimFeatureProvider] applies:
+///
+///   - debug override
+///   - config enabled
+///   - past start date
+///   - scope (Global if `start_date` is absent, Makkah-only if present)
+///   - in-Makkah-area gate (only relevant when scoped to Makkah)
+class _PilgrimDiagnosticsCard extends ConsumerWidget {
+  const _PilgrimDiagnosticsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final config = ref.watch(placesActivationProvider);
+    final feature = config.maybeWhen(
+      data: (data) => data.getFeature('show_pilgrim'),
+      orElse: () => null,
+    );
+    final debugOverride = ref.watch(pilgrimFeatureDebugProvider);
+    final isInMakkahArea = ref.watch(mekkahBaseThemeProvider);
+
+    final hasStartDate = feature?.startDate != null;
+    final isPastStartDate = !hasStartDate || !DateTime.now().isBefore(feature!.startDate!);
+    final scopeLabel = hasStartDate ? 'Makkah-only' : 'Global';
+    final scopeIcon = hasStartDate ? Icons.location_on_rounded : Icons.public_rounded;
+    final scopeDescription = hasStartDate
+        ? 'start_date present → shown only to users in Makkah area, from that date'
+        : 'start_date absent → shown globally to every user, immediately';
+
+    // Mirrors [showPilgrimFeatureProvider]: debug override wins; otherwise feature
+    // must be enabled, past start date, and — when scoped — inside Makkah area.
+    final isEffective =
+        debugOverride || (feature != null && feature.enabled && isPastStartDate && (!hasStartDate || isInMakkahArea));
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            icon: Icons.troubleshoot_rounded,
+            title: 'Pilgrim Diagnostics',
+            iconGradient: _DebugColors.gradientGreen,
+          ),
+          const SizedBox(height: 14),
+          _DiagRow(
+            label: 'Debug override',
+            value: debugOverride,
+          ),
+          _DiagRow(
+            label: 'Config enabled',
+            value: feature?.enabled ?? false,
+            detail: feature == null ? 'no feature in config' : null,
+          ),
+          _DiagRow(
+            label: 'Past start date',
+            value: isPastStartDate,
+            detail: hasStartDate ? _formatDate(feature!.startDate!) : 'no start date',
+          ),
+          _DiagRow(
+            label: 'In Makkah area',
+            value: isInMakkahArea,
+            detail: hasStartDate ? null : 'not required (global)',
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: _DebugColors.surfaceLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'SCOPE',
+                  style: context.textStyles.captionSmallMedium.copyWith(
+                    color: _DebugColors.textMuted,
+                    fontSize: 9,
+                    letterSpacing: 1,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(
+                      scopeIcon,
+                      size: 14,
+                      color: _DebugColors.textSecondary,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      scopeLabel,
+                      style: context.textStyles.captionSmallSemiBold.copyWith(
+                        color: _DebugColors.textPrimary,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  scopeDescription,
+                  style: context.textStyles.captionSmallRegular.copyWith(
+                    color: _DebugColors.textMuted,
+                    fontSize: 10,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      'Effective: ',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: _DebugColors.textSecondary,
+                        fontSize: 10,
+                      ),
+                    ),
+                    _StatusPill(
+                      label: isEffective ? 'ACTIVE' : 'INACTIVE',
+                      isActive: isEffective,
                     ),
                   ],
                 ),

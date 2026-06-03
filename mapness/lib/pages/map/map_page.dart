@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -23,13 +25,15 @@ class MapPage extends ConsumerStatefulWidget {
   ConsumerState<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class _MapPageState extends ConsumerState<MapPage>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, AutoRouteAwareStateMixin<MapPage> {
   final int _keyIndex = 0;
   bool _needRefresh = false;
 
   @override
   void initState() {
     super.initState();
+    _trace('initState');
     WidgetsBinding.instance.addObserver(this);
     // We show toast on the map (not in MapnessEntryPoint) because it must be shown only when the map is visible
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -39,13 +43,25 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
   @override
   void dispose() {
+    _trace('dispose');
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
+  void didPushNext() {
+    _trace('didPushNext');
+  }
+
+  @override
+  void didPopNext() {
+    _trace('didPopNext');
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+    _trace('appLifecycle=$state');
     if (_needRefresh && state == AppLifecycleState.resumed) {
       setState(() {
         _needRefresh = false;
@@ -55,10 +71,12 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
   @override
   void didHaveMemoryPressure() {
+    _trace('memoryPressure-before');
     setState(() {
       _needRefresh = true;
     });
     super.didHaveMemoryPressure();
+    _trace('memoryPressure-after');
   }
 
   @override
@@ -76,32 +94,87 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
       ).notifier,
     );
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
-          onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
-          child: DgisMap(
-            key: ValueKey(_keyIndex),
-            androidUseExpensive: true,
-            onMapCreated: (controller) async {
-              await dgisController.onMapCreated(controller);
-              Future.delayed(const Duration(seconds: 3), () {
-                if (!mounted) return;
-                ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
-              });
+    if (Platform.isAndroid) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _trace('pointerDown android');
+              ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
             },
+            onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            child: DgisMap(
+              key: ValueKey(_keyIndex),
+              androidUseExpensive: true,
+              onMapCreated: (controller) async {
+                _trace('onMapCreated android start controller=${identityHashCode(controller)}');
+                await dgisController.onMapCreated(controller);
+                _trace('onMapCreated android done controller=${identityHashCode(controller)}');
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (!mounted) {
+                    return;
+                  }
+                  _trace('showActiveLayerOnMap android');
+                  ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+                });
+              },
+            ),
           ),
-        ),
-        const AutoRouter(),
-      ],
-    );
+          Positioned.fill(
+            top: null,
+            child: Container(
+              color: context.colors.backgroundSurface2,
+              height: MediaQuery.of(context).viewPadding.bottom,
+            ),
+          ),
+
+          const SafeArea(
+            top: false,
+            child: AutoRouter(),
+          ),
+        ],
+      );
+    } else {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _trace('pointerDown ios');
+              ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction();
+            },
+            onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
+            child: DgisMap(
+              key: ValueKey(_keyIndex),
+              androidUseExpensive: true,
+              onMapCreated: (controller) async {
+                _trace('onMapCreated ios start controller=${identityHashCode(controller)}');
+                await dgisController.onMapCreated(controller);
+                _trace('onMapCreated ios done controller=${identityHashCode(controller)}');
+                Future.delayed(const Duration(seconds: 3), () {
+                  if (!mounted) {
+                    return;
+                  }
+                  _trace('showActiveLayerOnMap ios');
+                  ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+                });
+              },
+            ),
+          ),
+          const AutoRouter(),
+        ],
+      );
+    }
   }
 
   @override
   bool get wantKeepAlive => true;
+
+  void _trace(String event) {
+  }
 
   Future<void> _initToastMessage() async {
     final isFirstStart = ref.read(firstStartProvider);
@@ -111,7 +184,6 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
 
     ToastOverlay.of(context).show(
       title: context.l10n.darkModeToastMessage,
-      displayDuration: const Duration(seconds: 10),
       isDismissible: true,
       actions: [
         ToastAction(

@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -19,8 +17,9 @@ import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
+import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
@@ -229,7 +228,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 Spacing.$0_5x.heightBox,
                 Center(
                   child: Text(
-                    context.l10n.dataStoredFor,
+                    context.l10n.dataWillStore,
                     style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ),
@@ -307,11 +306,11 @@ class ParkingSpotPage extends HookConsumerWidget {
       ),
     );
 
-    callToast(context, latLng);
+    callToast(context, ref, latLng);
     await context.router.maybePop();
   }
 
-  void callToast(BuildContext context, ValueNotifier<LatLng?> latLng) {
+  void callToast(BuildContext context, WidgetRef ref, ValueNotifier<LatLng?> latLng) {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
       icon: ToastIconAsset(Assets.icons.svg.parkingControl.keyName),
@@ -320,25 +319,11 @@ class ParkingSpotPage extends HookConsumerWidget {
         ToastAction(
           title: context.l10n.share,
           onTap: () async {
-            if (latLng.value == null) {
-              return;
-            }
-
-            final baseUri = BaldayDeeplink.basePoiUri;
-            final query = <String, String>{};
-
-            query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
-
-            query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
-            query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
-
-            final context = rootNavigatorKey.currentContext;
-            if (context != null) {
-              await safeShareText(
-                '${context.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
-                context: context,
-              );
-            }
+            final markerCoords = latLng.value;
+            final coordinates = markerCoords == null
+                ? null
+                : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
+            ShareUtil.sharePOI(parkingObjectId.toString(), context: context, markerCoords: coordinates);
           },
         ),
       ],

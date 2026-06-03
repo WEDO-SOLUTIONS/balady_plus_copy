@@ -60,6 +60,31 @@ class MakkahPoiConstants {
   static const Color previewCardOverlayColor = Color(0xFF6E5945);
 
   // ============================================================================
+  // Dark variant tokens (Figma "Makkah theme Dark", node 1412:36442)
+  // ============================================================================
+
+  /// Sheet / chrome surface (search bar, chip, quick-action tile, close button)
+  static const Color darkSheet = Color(0xFF01222E);
+
+  /// Sunken card surface (head card, body cards, bottom action bar)
+  static const Color darkSunken = Color(0xFF00141C);
+
+  /// Accent teal (fact-tile icon bg, Directions CTA, ribbon gradient peak)
+  static const Color darkAccentTeal = Color(0xFF31CDC2);
+
+  /// Muted slate (place-card pill tag bg, virtual-tour CTA text)
+  static const Color darkMutedSlate = Color(0xFF809AA4);
+
+  /// Dark variant title text
+  static const Color darkPrimaryTextColor = Color(0xFFFFFFFF);
+
+  /// Dark variant secondary/subtitle text (white at 0.8 alpha)
+  static Color get darkSecondaryTextColor => const Color(0xFFFFFFFF).withOpacity(0.8);
+
+  /// Place preview card bottom gradient overlay color (dark variant)
+  static const Color darkPreviewCardOverlayColor = Color(0xFF00232F);
+
+  // ============================================================================
   // Layout & Sizing
   // ============================================================================
 

@@ -153,6 +153,10 @@ class DashboardControlModel(
 
         val updatedCategories = when (toggleType) {
             SoundToggleType.NONE -> {
+                // Request then immediately abandon transient audio focus so the TTS
+                // engine (which holds focus while speaking) receives AUDIOFOCUS_LOSS_TRANSIENT
+                // and stops the current utterance before new categories take effect.
+                stopCurrentSpeech()
                 EnumSet.noneOf(SoundCategory::class.java).apply {
                     addAll(currentCategories)
                     removeAll(EnumSet.allOf(SoundCategory::class.java))
@@ -171,6 +175,31 @@ class DashboardControlModel(
         }
 
         this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
+    }
+
+    private fun stopCurrentSpeech() {
+        val am = audioManager ?: return
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val attrs = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+                val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+                    .setAudioAttributes(attrs)
+                    .setOnAudioFocusChangeListener {}
+                    .build()
+                am.requestAudioFocus(req)
+                am.abandonAudioFocusRequest(req)
+            } else {
+                @Suppress("DEPRECATION")
+                am.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
+                @Suppress("DEPRECATION")
+                am.abandonAudioFocus(null)
+            }
+        } catch (e: Exception) {
+            Log.w("DashboardControlModel", "stopCurrentSpeech failed: ${e.message}")
+        }
     }
 
     fun toggleOverSpeeding(overSpeeding: Boolean) {

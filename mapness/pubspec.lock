@@ -247,7 +247,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+504"
+    version: "3.30.3+565"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -2192,10 +2192,9 @@ packages:
   map_styles:
     dependency: "direct main"
     description:
-      name: map_styles
-      sha256: "322da2783e117fc90baf7be536ed22c7420a9e19ffc1871332fa2ac942ed9867"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
+      path: "../../map_styles"
+      relative: true
+    source: path
     version: "1.3.3"
   matcher:
     dependency: transitive

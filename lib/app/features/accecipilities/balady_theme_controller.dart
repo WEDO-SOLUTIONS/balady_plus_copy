@@ -35,26 +35,22 @@ class BaladyThemeNotifier extends ChangeNotifier {
 
   /// Constructor
   /// Automatically loads saved theme settings
-  BaladyThemeNotifier() {
-    _loadThemePreference();
-  }
-
+  // BaladyThemeNotifier() {
+  //   init();
+  // }
 
   /// -------------------------------------------------------------------------
   /// 🔄 Load Theme Preference
   /// -------------------------------------------------------------------------
   /// Retrieves the persisted theme mode from local storage.
   /// Defaults to light mode if no value is found.
-  Future<void> _loadThemePreference() async {
+  Future<void> init() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final savedMode = prefs.getString(_themeModeKey);
 
       if (savedMode != null) {
-        _themeMode = ThemeMode.values.firstWhere(
-              (e) => e.name == savedMode,
-          orElse: () => ThemeMode.system,
-        );
+        _themeMode = ThemeMode.values.firstWhere((e) => e.name == savedMode, orElse: () => ThemeMode.system);
       } else {
         // Migration: check for the old boolean key
         final oldDarkMode = prefs.getBool('balady_dark_mode');
@@ -106,7 +102,6 @@ class BaladyThemeNotifier extends ChangeNotifier {
   void toggleTheme(bool enableDarkMode) {
     updateThemeMode(enableDarkMode ? ThemeMode.dark : ThemeMode.light);
   }
-
 
   /// -------------------------------------------------------------------------
   /// ♻️ Reset Theme Settings

@@ -81,7 +81,6 @@ class MapDimensionsControl extends _$MapDimensionsControl {
 
     await _cameraMoveOperation?.cancel();
     _cameraMoveOperation = null;
-
     // switch logic here
     if (newState == MapDimensionsState.threeDimensional) {
       _cameraMoveOperation = CancelableOperation.fromFuture(
@@ -89,7 +88,8 @@ class MapDimensionsControl extends _$MapDimensionsControl {
             .read(cameraPositionProvider.notifier)
             .animateTo(
               cameraPoint.copyWith(
-                tilt: 45,
+                tilt: 50,
+                zoom: 17.5,
               ),
             ),
       );

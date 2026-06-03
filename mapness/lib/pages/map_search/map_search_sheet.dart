@@ -60,7 +60,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
+  late final MultiStateSheetController<ThreeStateSheet>  _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -70,7 +70,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
   bool _showMoreQuickFilters = false;
 
@@ -94,6 +93,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     super.initState();
 
     _multiStateSheetController = MultiStateSheetController(
+      forceMultiplier: 2,
       initialState: ThreeStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
@@ -103,21 +103,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       ),
       stateMapper: const LandingStateMapper(),
     );
-    _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  void _onSheetChanged() {
-    if (!mounted) {
-      return;
-    }
-    final newState = _multiStateSheetController.state;
-    if (newState != _sheetState) {
-      setState(() {
-        _sheetState = newState;
-      });
-    }
   }
 
   @override
@@ -142,9 +129,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
-    _multiStateSheetController
-      ..removeListener(_onSheetChanged)
-      ..dispose();
+    _multiStateSheetController.dispose();
     _keyboardVisible.cancel();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -206,19 +191,25 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onLongPress: _onMapAreaLongPress,
-            ),
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _unfocusSearchField();
+              _collapseBottomSheet();
+            },
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
+              // Sheet is already wrapped in a fade route transition (see SearchRoute
+              // in app_routes.dart), so suppress sheetify's own slide-up open animation.
+              // Otherwise the sheet would slide ~700–900 ms from the bottom on top of
+              // the route fade, dominating perceived latency.
+              animateOpening: false,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
+              safeAreaColor: _showMoreQuickFilters
                   ? switch (searchState) {
                       SearchStateEmpty() ||
                       SearchStateLoading() ||
@@ -274,14 +265,18 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                     isCloseButton: isCloseButton,
                     showLeadingBackButton: _showMoreQuickFilters,
                     onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
+                    onTap: _expandSheet,
                   ),
                 ),
               },
-              outside: MapSearchSheetControls(
-                onClose: onClose,
-                currentSize: currentSize,
-                collapsedSize: collapsedHeight,
-                sheetState: _sheetState,
+              outside: ListenableBuilder(
+                listenable: _multiStateSheetController,
+                builder: (context, _) => MapSearchSheetControls(
+                  onClose: onClose,
+                  currentSize: currentSize,
+                  collapsedSize: collapsedHeight,
+                  sheetState: _multiStateSheetController.state,
+                ),
               ),
               sliver: SliverToBoxAdapter(
                 child: MapSearchContent(
@@ -292,6 +287,16 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               ),
             ),
           ),
+          if (MediaQuery.paddingOf(context).bottom > 0)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+                child: ColoredBox(color: containerColor),
+              ),
+            ),
         ],
       ),
     );
@@ -353,7 +358,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
     icon: switch (context.read<ThemeController>().currentTheme) {
-      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
+      BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
       BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
       BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewFoundingDay.icDefault.keyName.markerIcon(),
       _ => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),
@@ -391,10 +396,19 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
+    if (kbState) {
+      _expandSheet();
+    }
+  }
+
+  /// Snaps the sheet to `expanded`. Wired both to the field tap (synchronous,
+  /// reliable on Android — BALADY-3580) and to the keyboard visibility signal
+  /// (fallback for programmatic focus requests, e.g. after Loading → Results).
+  /// Idempotent: a no-op if the sheet is already at expanded.
+  void _expandSheet() {
+    if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
-
     _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
@@ -421,18 +435,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     context.router.pop();
   }
 
-  void _onMapAreaLongPress() {
-    if (!mounted) {
-      return;
-    }
-    _unfocusSearchField();
-    ref.read(searchProvider(_scope).notifier).clear();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      _removeAllMarkersAndPop();
-    });
+  void _collapseBottomSheet() {
+    _multiStateSheetController.setState(ThreeStateSheet.hidden);
   }
 
   void _setShowMoreQuickFilters(bool value) {

@@ -61,10 +61,12 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
   final DirectoryObjectMessage data;
   final LatLng? closestPoint;
   final MakkahPlace? makkahPlace;
+  final _MakkahPoiColors colors;
 
   const _MakkahPoiFooterPlaceholder({
     required this.bottomSheetController,
     required this.data,
+    required this.colors,
     this.closestPoint,
     this.makkahPlace,
   });
@@ -193,8 +195,14 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
 
   void _onShareTap(BuildContext context) {
     // Prefer makkahPlace.dgisId for sharing, fall back to data.id.objectId
+
     final shareId = makkahPlace?.dgisId ?? data.id?.objectId.toString();
-    if (shareId == null || shareId == '0') return;
+    final lat = makkahPlace?.lat ?? data.markerPosition?.latitude;
+    final lon = makkahPlace?.lon ?? data.markerPosition?.longitude;
+    final coordinates = lat != null && lon != null ? Coordinates(latitude: lat, longitude: lon) : null;
+    if (shareId == null || shareId == '0') {
+      return;
+    }
 
     // Track Makkah places share
     Metrics.logEventAdvanced(
@@ -207,7 +215,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
       },
     );
 
-    ShareUtil.share(shareId, context: context);
+    ShareUtil.sharePOI(shareId, context: context, markerCoords: coordinates);
   }
 
   @override
@@ -233,32 +241,38 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
         svgAsset: MakkahPoiConstants.bookmarkIconPath,
         isFilled: isFavourite,
         onPressed: () => _onBookmarkTap(context, ref),
+        colors: colors,
       ),
       if (canShare)
         _MakkahFooterSquareButton(
           svgAsset: MakkahPoiConstants.shareIconPath,
           onPressed: () => _onShareTap(context),
+          colors: colors,
         ),
       _MakkahFooterSquareButton(
         onPressed: () => _onParkingTap(context, ref),
         svgAsset: MakkahPoiConstants.parkingAddIconPath,
         isFilled: hasParking,
         matchTextDirection: false,
+        colors: colors,
       ),
       if (hasInstagram)
         _MakkahFooterSquareButton(
           svgAsset: MakkahPoiConstants.instagramIconPath,
           onPressed: () => _onInstagramTap(website),
+          colors: colors,
         ),
       if (hasPhone)
         _MakkahFooterSquareButton(
           svgAsset: MakkahPoiConstants.phoneIconPath,
           onPressed: () => _onPhoneTap(phone),
+          colors: colors,
         ),
       if (hasWebsite && !hasInstagram)
         _MakkahFooterSquareButton(
           svgAsset: MakkahPoiConstants.webIconPath,
           onPressed: () => _onWebsiteTap(website),
+          colors: colors,
         ),
     ];
 
@@ -270,8 +284,11 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     // Add end padding so last button doesn't touch screen edge
     spacedButtons.add(const SizedBox(width: Spacing.$4x));
 
+    final barColor = colors.headerBackground;
+    final directionsBg = colors.directionsButtonBackground;
+    final directionsFg = colors.directionsButtonForeground;
     return ColoredBox(
-      color: Colors.white,
+      color: barColor,
       child: Container(
         padding: const EdgeInsetsDirectional.only(
           start: Spacing.$4x,
@@ -279,7 +296,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
           bottom: Spacing.$3x,
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: barColor,
           boxShadow: [
             BoxShadow(
               blurRadius: 16,
@@ -306,16 +323,16 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
                   'assets/icons/makkah/directions.svg',
                   width: 24,
                   height: 24,
-                  colorFilter: const ColorFilter.mode(
-                    Colors.white,
+                  colorFilter: ColorFilter.mode(
+                    directionsFg,
                     BlendMode.srcIn,
                   ),
                   matchTextDirection: true,
                 ),
                 primaryLabel: context.l10n.poiCardDirections,
-                color: const Color(0xFF307457),
-                textColor: Colors.white,
-                iconColor: Colors.white,
+                color: directionsBg,
+                textColor: directionsFg,
+                iconColor: directionsFg,
                 innerPadding: const EdgeInsets.symmetric(
                   vertical: Spacing.$2x,
                   horizontal: Spacing.$3x,
@@ -343,9 +360,11 @@ class _MakkahFooterSquareButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isFilled;
   final bool matchTextDirection;
+  final _MakkahPoiColors colors;
 
   const _MakkahFooterSquareButton({
     required this.onPressed,
+    required this.colors,
     this.svgAsset,
     this.isFilled = false,
     this.matchTextDirection = true,
@@ -353,7 +372,11 @@ class _MakkahFooterSquareButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = isFilled ? MakkahPoiConstants.filledActionIconColor : MakkahPoiConstants.normalActionIconColor;
+    final iconColor = isFilled
+        ? (colors.actionButtonIconColor == MakkahPoiConstants.normalActionIconColor
+              ? MakkahPoiConstants.filledActionIconColor
+              : colors.actionButtonIconColor)
+        : colors.actionButtonIconColor;
     return AppButton(
       buttonColorScheme: ButtonColorScheme.neutral,
       buttonType: ButtonType.secondary,
@@ -366,8 +389,8 @@ class _MakkahFooterSquareButton extends StatelessWidget {
               color: iconColor,
               matchTextDirection: matchTextDirection,
             ),
-      color: const Color(0xFFF3EEE7),
-      iconColor: context.colors.foregroundDefault,
+      color: colors.actionButtonBackground,
+      iconColor: iconColor,
       padding: EdgeInsets.zero,
       innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
     );

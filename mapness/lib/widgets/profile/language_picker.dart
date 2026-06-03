@@ -37,6 +37,21 @@ class LanguageRow extends ConsumerWidget {
     const radiusZero = Radius.circular(0);
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
+      child: InkWell(
+        borderRadius: BorderRadius.only(
+          bottomLeft: border ? radius12 : radiusZero,
+          bottomRight: (border ? radius12 : radiusZero),
+        ),
+        onTap: () {
+          ref.read(appLanguageProvider.notifier).update(language);
+        },
+        child: ContentRowV2(
+          leading: leadingIcon,
+          isDividerEnabled: true,
+          text: ContentRowTextOptions(title: language.title),
+          trailing: ContentRowTextTrailingOptions(
+            icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+            iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
       child: Material(
         color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.only(

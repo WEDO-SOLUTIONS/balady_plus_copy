@@ -11,6 +11,7 @@ part 'find_brief_route_info.g.dart';
 @riverpod
 class BriefRouteInfo extends _$BriefRouteInfo {
   static const _refreshInterval = Duration(minutes: 10);
+  int _requestId = 0;
 
   @override
   List<BriefRouteInfoMessage>? build({
@@ -34,6 +35,8 @@ class BriefRouteInfo extends _$BriefRouteInfo {
       previous = state;
     } catch (_) {}
 
+    final requestId = ++_requestId;
+
     controller.value
         ?.findBriefRouteInfos(
           startPoint: startPoint?.toMessage(),
@@ -41,9 +44,18 @@ class BriefRouteInfo extends _$BriefRouteInfo {
           finishPoint: finishPoint?.toMessage(),
         )
         .then((value) {
+          if (!ref.mounted || requestId != _requestId) {
+            return;
+          }
           state = value.whereType<BriefRouteInfoMessage>().toList();
         })
-        .onError((error, stackTrace) => state = null);
+        .onError((error, stackTrace) {
+          if (!ref.mounted || requestId != _requestId) {
+            return null;
+          }
+          state = null;
+          return null;
+        });
 
     return previous;
   }
