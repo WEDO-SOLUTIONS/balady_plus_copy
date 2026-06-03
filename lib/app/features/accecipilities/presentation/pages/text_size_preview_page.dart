@@ -42,7 +42,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
         onLeadingPressed: () {
           context.router.pop();
         },
-        leading:Semantics(
+        leading: Semantics(
           label: 'a11yBack'.tr(),
           button: true,
           child: ExcludeSemantics(
@@ -57,12 +57,6 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
           ),
         ),
         textStyle: titleStyle,
-        colorEnabled: accent,
-        leading: ActionModel(
-          onPressed: () {
-            context.router.pop();
-          },
-          icon: SystemIcons.arrowCornerLeftLarge,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

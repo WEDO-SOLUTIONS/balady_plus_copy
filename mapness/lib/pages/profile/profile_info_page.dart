@@ -84,23 +84,6 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
                 leading: ActionModel(
                   onPressed: () => context.router.pop(),
                   icon: SystemIcons.arrowCornerLeftLarge,
-                onLeadingPressed: () => context.router.pop(),
-                leading: Semantics(
-                  label: context.l10n.a11yBack,
-                  button: true,
-                  child: ExcludeSemantics(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(width: Spacing.$4x),
-                        Icon(
-                          SystemIcons.arrowCornerLeftLarge,
-                          color: context.colors.accentDefault,
-                        ),
-                        const SizedBox(width: Spacing.$4x),
-                      ],
-                    ),
-                  ),
                 ),
               ),
               body: _isLoading

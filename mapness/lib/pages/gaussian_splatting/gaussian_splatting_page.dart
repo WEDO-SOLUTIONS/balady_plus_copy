@@ -144,7 +144,7 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                         // same side of the word in both languages (right of
                         // the brand name, mirroring `Balady+`).
                         textDirection: TextDirection.ltr,
-                        style: constTextStyle(
+                        style: const TextStyle(
                               color: Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
