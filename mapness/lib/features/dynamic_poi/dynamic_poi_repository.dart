@@ -43,7 +43,10 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
     final controller = ref.watch(dgisControllerProvider.notifier);
 
     ref.onDispose(() {
-      _cancelToken?.cancel('DynamicPoiRepository disposed');
+      final token = _cancelToken;
+      if (token != null && !token.isCancelled) {
+        token.cancel('DynamicPoiRepository disposed');
+      }
       _subscription?.cancel();
     });
 
@@ -64,18 +67,22 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
     // refine with a real bbox once the user pans/zooms.
     try {
       final pois = await datasource.fetchMarkers(locale: locale);
-      // ignore: avoid_print
-      print('[DynamicPoiDebug] initial fetch returned ${pois.length} pois');
+      if (!ref.mounted) {
+        return const [];
+      }
       return pois;
-    } catch (e, st) {
-      // ignore: avoid_print
-      print('[DynamicPoiDebug] initial fetch failed: $e\n$st');
+    } on Object {
+      // Keep the layer alive with an empty set on a transient initial-fetch
+      // failure; viewport-driven retries will recover.
       return const [];
     }
   }
 
   Future<void> _refresh(DynamicPoiDatasource ds, String locale, VisibleRect visibleRect) async {
-    _cancelToken?.cancel('superseded');
+    final oldToken = _cancelToken;
+    if (oldToken != null && !oldToken.isCancelled) {
+      oldToken.cancel('superseded');
+    }
     final cancel = _cancelToken = CancelToken();
 
     final bbox = DynamicPoiBbox(
@@ -91,16 +98,14 @@ class DynamicPoiRepository extends _$DynamicPoiRepository {
         bbox: bbox,
         cancelToken: cancel,
       );
-      // ignore: avoid_print
-      print('[DynamicPoiDebug] repository emitting ${pois.length} pois '
-          '(zoom=${visibleRect.zoom})');
+      if (!ref.mounted || cancel.isCancelled || !identical(_cancelToken, cancel)) {
+        return;
+      }
       state = AsyncData(pois);
-    } catch (e, st) {
+    } on Object {
       if (cancel.isCancelled) {
         return;
       }
-      // ignore: avoid_print
-      print('[DynamicPoiDebug] fetch failed: $e\n$st');
       // Keep prior data on transient failure to avoid a blank flash.
     }
   }

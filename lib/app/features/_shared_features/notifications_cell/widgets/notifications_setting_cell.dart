@@ -4,9 +4,9 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_settings/notifications_settings.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide IconPath;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -126,12 +126,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                 ),
 
                                 IgnorePointer(
-                                  child: CupertinoSwitch(
-                                    onChanged: (bool value) {},
-                                    value: state.isChecked,
-                                    activeTrackColor:
-                                        context.colors.accentActive,
-                                  ),
+                                  child: Toggle(value: state.isChecked),
                                 ),
                               ],
                             ),

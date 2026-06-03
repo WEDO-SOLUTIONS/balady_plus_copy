@@ -1,13 +1,16 @@
 import 'dart:math';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_larg_more_apps.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_nums_sub_category.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_sub_cards_sub_category.dart';
 import 'package:flutter/material.dart';
-import 'custom_nums_sub_category.dart';
-import 'custom_sub_cards_sub_category.dart';
 
 class CustomSubCategory extends StatelessWidget {
   final double? width;
@@ -51,7 +54,7 @@ class CustomSubCategory extends StatelessWidget {
     final remainingCount = totalAppCount - 3;
     final isArabic = CommonFunctions.isAppAR;
 
-    /// Helper: returns app cards aligned based on language
+    // / Helper: returns app cards aligned based on language
     List<Widget> buildTopRow() {
       final widgets = [
         displayApps.isNotEmpty
@@ -67,21 +70,13 @@ class CustomSubCategory extends StatelessWidget {
     List<Widget> buildBottomRow() {
       Widget thirdAppWidget = displayApps.length >= 3
           ? CustomSubCardsOfSubCategory(iconPath: displayApps[2].iconPath)
-          : const SizedBox(
-              width: 36,
-              height: 36,
-            );
+          : const SizedBox(width: 36, height: 36);
 
       Widget remainingWidget = remainingCount > 0
           ? CustomNumberOfSubs(count: remainingCount)
-          : const SizedBox(
-              width: 36,
-              height: 36,
-            );
+          : const SizedBox(width: 36, height: 36);
 
-      final widgets = isArabic
-          ? [remainingWidget, thirdAppWidget]
-          : [thirdAppWidget, remainingWidget];
+      final widgets = isArabic ? [remainingWidget, thirdAppWidget] : [thirdAppWidget, remainingWidget];
 
       return CommonFunctions.isAppAR ? widgets.reversed.toList() : widgets;
     }
@@ -90,13 +85,95 @@ class CustomSubCategory extends StatelessWidget {
       onTap: onTap,
       child: Column(
         children: [
-          Padding(
-            padding:
-                EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: borderRadius ?? BorderRadius.circular(16),
+          SizedBox(
+            width: context.w(100),
+            height: context.h(100),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Theme.of(context).colorScheme.onSurface.withAlpha(10)
+                  : Theme.of(context).primaryColorLight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                    children: buildTopRow(),
+                  ),
+                  SizedBox(height: context.screenHeight * 0.01),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+                    children: buildBottomRow(),
+                  ),
+                ],
               ),
+            ),
+          ),
+          SizedBox(
+            width: context.screenWidth * 0.25,
+            // height: context.screenHeight * 0.02,
+            child: AutoSizeText(
+              maxLines: 3,
+              maxFontSize: 14,
+              minFontSize: 10,
+              text ?? "",
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center, // Good practice for grid items
+              style: const TextStyle(fontFamily: GeneralKey.appFontType, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+ /* 
+               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomNetworkImageWidget(
+                    apps.first.iconPath,
+                    isVerifyingKey: true,
+                    imageFit: BoxFit.contain,
+                    imageWidth: context.w(51),
+                    imageHeight: context.h(51),
+                  ),
+                  // SizedBox(height: context.screenHeight * 0.02),
+                  SizedBox(
+                    width: context.screenWidth * 0.25,
+                    height: context.screenHeight * 0.02,
+                    child: AutoSizeText(
+                      maxLines: 3,
+                      maxFontSize: 14,
+                      minFontSize: 10,
+                      text ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center, // Good practice for grid items
+                      style: const TextStyle(fontFamily: GeneralKey.appFontType, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ],
+              ),
+              */
+
+
+
+
+
+               /*
+      Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+            child: DecoratedBox(
+              decoration: BoxDecoration(borderRadius: borderRadius ?? BorderRadius.circular(16)),
               child: SizedBox(
                 width: width ?? context.w(87),
                 height: height ?? context.h(87),
@@ -114,14 +191,12 @@ class CustomSubCategory extends StatelessWidget {
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          textDirection:
-                              isArabic ? TextDirection.rtl : TextDirection.ltr,
+                          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
                           children: buildTopRow(),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          textDirection:
-                              isArabic ? TextDirection.rtl : TextDirection.ltr,
+                          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
                           children: buildBottomRow(),
                         ),
                       ],
@@ -148,8 +223,7 @@ class CustomSubCategory extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
+          
         ],
       ),
-    );
-  }
-}
+      */

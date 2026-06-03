@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:balady_plus/app/events_logs/models/error_exception_model.dart';
 import 'controller/logs_controller.dart';
@@ -11,14 +11,14 @@ export 'models/error_exception_model.dart';
 export 'controller/logs_controller.dart';
 export 'events_names.dart';
 
-void unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
+Future<void> unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
   FlutterError.onError = (FlutterErrorDetails details) {
     //this line prints the default flutter gesture caught exception in console
     //FlutterError.dumpErrorToConsole(details);
-    print("Error From INSIDE FRAME_WORK");
-    print("--------------------------------");
-    print("Error :  ${details.exception}");
-    print("StackTrace :  ${details.stack}");
+    _debugLog('Error From INSIDE FRAME_WORK');
+    _debugLog('--------------------------------');
+    _debugLog('Error :  ${details.exception}');
+    _debugLog('StackTrace :  ${details.stack}');
 
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(
@@ -29,18 +29,18 @@ void unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
     );
   };
   ////////////////////////////////////////////////////
-  runZonedGuarded(
+  final guardedFuture = runZonedGuarded<Future<void>>(
     () async {
-      main();
+      await main();
     },
     (error, stackTrace) {
       // if (error is BadRequestException) {
       //   print("Response :  ${error.response}");
       // } else if (error is TypeError) {}
-      print("Error FROM OUT_SIDE FRAMEWORK ");
-      print("--------------------------------");
-      print("Error :  $error");
-      print("StackTrace :  $stackTrace");
+      _debugLog('Error FROM OUT_SIDE FRAMEWORK ');
+      _debugLog('--------------------------------');
+      _debugLog('Error :  $error');
+      _debugLog('StackTrace :  $stackTrace');
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.unhandledAsynchronousException,
@@ -50,12 +50,20 @@ void unhandledExceptionBaladyLogs(FutureOr<void> Function() main) async {
       );
     },
   );
+
+  if (guardedFuture != null) {
+    await guardedFuture;
+  }
 }
 
-
+void _debugLog(String message) {
+  if (kDebugMode) {
+    debugPrint(message);
+  }
+}
 
 String cURLRepresentation(RequestOptions options) {
-  try{
+  try {
     List<String> components = ['curl -i'];
     if (options.method.toUpperCase() != 'GET') {
       components.add('-X ${options.method}');

@@ -33,6 +33,7 @@ import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
@@ -102,7 +103,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final isControlsActive = ValueNotifier(true);
   final isSwitchingToFoot = ValueNotifier(false);
 
-  late StreamSubscription? _naviEventsListener;
+  StreamSubscription? _naviEventsListener;
   bool wasSetActive = true;
   Timer? timer;
 
@@ -176,6 +177,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
+    context.changeSystemNavBar();
   }
 
   @override
@@ -195,21 +197,57 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> saveNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
 
     final state = await dgisController.saveNavigationState();
+    if (!mounted) {
+      return;
+    }
+
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
     await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateTypeKey, widget.navType.name);
   }
 
-  Future<void> restoreNavigationState() async {
+  Future<bool> restoreNavigationState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return false;
+    }
 
-    final state = base64.decode(ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey)!);
+    final savedState = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    if (savedState == null) {
+      final navState = await dgisController.getCurrentNavigationState();
+      if (!mounted) {
+        return false;
+      }
+
+      final hasActiveNavigation = navState.state == NavigationState.navigation && navState.routeSearchOptions != null;
+      if (hasActiveNavigation) {
+        return true;
+      }
+
+      await clearNavigationState();
+      if (mounted && context.router.canPop()) {
+        context.router.pop();
+      }
+      return false;
+    }
+
+    final state = base64.decode(savedState);
     try {
       await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
+      return true;
     } catch (e) {
+      if (!mounted) {
+        return false;
+      }
       await clearNavigationState();
-      context.router.pop();
+      if (mounted && context.router.canPop()) {
+        context.router.pop();
+      }
+      return false;
     }
   }
 
@@ -229,21 +267,42 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted) {
+      return;
+    }
+
+    await _naviEventsListener?.cancel();
+    if (!mounted) {
+      return;
+    }
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
-    if (widget.initAction == PathNavPageInitAction.restoreFromState) {
-      await restoreNavigationState();
-      // After restore, move camera close without forcing follow to avoid zoom flicker
-      await _moveCameraToUser(followAfter: false);
-    } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
+
+    if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
       // Ensure any in-app stream audio is paused while navigation is active.
       // iOS doesn't reliably provide per-instruction callbacks from the SDK,
       // so we pause at navigation start and resume when the trip ends.
       unawaited(AudioService().pause());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
+      if (!mounted) {
+        return;
+      }
       await _moveCameraToUser();
+      if (!mounted) {
+        return;
+      }
       await saveNavigationState();
+    } else {
+      final restored = await restoreNavigationState();
+      if (!mounted) {
+        return;
+      }
+      if (!restored) {
+        return;
+      }
+      // After restore, move camera close without forcing follow to avoid zoom flicker
+      await _moveCameraToUser(followAfter: false);
     }
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
@@ -292,8 +351,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     void onSheetHeightChanged() {
       if (isPortrait) {
-        final sheetHeight =
-            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+        final sheetHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         if (_bottomHeightNotifier.value != sheetHeight) {
           _bottomHeightNotifier.value = sheetHeight;
@@ -318,8 +376,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       sheetController.addListener(onSheetHeightChanged);
 
       if (isPortrait) {
-        final bottomHeight =
-            sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+        final bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
         _bottomHeightNotifier.value = bottomHeight;
       }
 
@@ -335,7 +392,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref
       ..listen(
         betterRouteProvider,
-            (_, next) => next == null
+        (_, next) => next == null
             ? _betterRouteDurationProfit.value = null
             : _betterRouteDurationProfit.value = next.durationProfit,
       )
@@ -343,8 +400,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         final connected = next.value ?? false;
         final shouldEndTrip =
             connected &&
-                widget.navType != RouteSearchOptionsMessage.car &&
-                _navigationState.value != PathNavState.finished;
+            widget.navType != RouteSearchOptionsMessage.car &&
+            _navigationState.value != PathNavState.finished;
         if (shouldEndTrip) {
           unawaited(_endTripAndShowHome());
         }
@@ -376,6 +433,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               unawaited(_endTripAndShowHome());
             }
           }
+        }
+      })
+      ..listen(dgisControllerProvider, (previous, next) {
+        if (next.hasValue && previous?.value != next.value) {
+          _initNavigation();
         }
       });
 
@@ -499,7 +561,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
-    if (_isEndingTrip) return;
+    if (_isEndingTrip) {
+      return;
+    }
     _isEndingTrip = true;
     final route = ref.read(etaRouteInfoProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
@@ -558,7 +622,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     action?.call();
   }
 
-  Future<void> _sendNavigationCompletedAnalytics(route) async {
+  Future<void> _sendNavigationCompletedAnalytics(EtaRoute route) async {
     try {
       final pathInfo = ref.read(pathNavEtaProvider);
       final location = ref.read(cityByLocationProvider.notifier);
@@ -679,8 +743,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           ),
         ],
         icon: ToastIconAsset(switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          BaladyAppThemes.darkDGA => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
+          BaladyAppThemes.lightDGA => Assets.icons.svg.placesBigNew.light.icParking.keyName,
           _ => Assets.icons.svg.placesBigNew.light.icParking.keyName,
         }),
       );
@@ -751,7 +815,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   // Notify the listeners about the end of the trip
-  void _naviEvent(NavigationEvent event) async {
+  Future<void> _naviEvent(NavigationEvent event) async {
     switch (event) {
       case NavigationEvent.navigation:
       case NavigationEvent.routeSearch:
@@ -787,7 +851,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _sendAnalitycs();
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     ref.read(layersControlsProvider.notifier).hideParking();
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     ref.read(currentRouteProvider.notifier).clearRoute();
@@ -800,7 +866,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (streamAudioWasPlayingBeforeFinish) {
       unawaited(
         Future<void>.delayed(const Duration(seconds: 4), () async {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
           final streamAudio = ref.read(streamAudioProvider);
           if (!streamAudio.isEffectivelyPlaying && !streamAudio.isLoading) {
             await ref.read(streamAudioProvider).togglePlayPause();
@@ -815,14 +883,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ref
         .read(advertMetricsProvider.notifier)
         .sendEvent(
-      AdvertMetricsKeys.navigationRoutingCompleted,
-    );
+          AdvertMetricsKeys.navigationRoutingCompleted,
+        );
     ref
         .read(advertMetricsProvider.notifier)
         .sendEvent(
-      AdvertMetricsKeys.journeyCompleteUnique,
-      isUniquePerSession: true,
-    );
+          AdvertMetricsKeys.journeyCompleteUnique,
+          isUniquePerSession: true,
+        );
   }
 
   Future<void> _checkAndSwitchToPedestrian() async {
@@ -928,6 +996,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
@@ -938,16 +1007,29 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: targetZoom,
-            tilt: 0,
+            zoom: 17.5,
+            tilt: 50,
             bearing: 0,
           ),
         );
+
       }
     }
 
     if (followAfter) {
       await dgisController.startFollowNavigation();
+      if (position != null) {
+        if (_isLocationAccuracyAcceptable(position.latitude, position.longitude)) {
+          await cameraProvider.animateTo(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+              zoom: 17.5,
+              tilt: 50,
+              bearing: 0,
+            ),
+          );
+        }
+      }
     }
   }
 

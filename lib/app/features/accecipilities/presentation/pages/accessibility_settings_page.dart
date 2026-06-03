@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/accecipilities/accessibility_controller
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_info.dart';
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/text_size_preview_page.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart' as p;
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 class AccessibilitySettingsPage extends ConsumerStatefulWidget {
   const AccessibilitySettingsPage({super.key});
@@ -87,8 +88,7 @@ class _AccessibilitySettingsPageState
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              controller.toggleGrayscale(!controller.grayscale),
+                          onTap: () => controller.toggleGrayscale(!controller.grayscale),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.color_lens_outlined,
@@ -97,8 +97,8 @@ class _AccessibilitySettingsPageState
                             ),
                             title: 'grayScaleMode'.tr(),
                             actionWidget: ContentRowActionOptions(
-                              customToggleBuilder: (
-                                  {required onToggle, bool? initial}) {
+
+                              customToggleBuilder: ({required onToggle, bool? initial}) {
                                 return CupertinoSwitch(
                                   value: controller.grayscale ?? false,
                                   onChanged: (value) {
@@ -110,7 +110,7 @@ class _AccessibilitySettingsPageState
                               },
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$4x.heightBox,
@@ -118,18 +118,27 @@ class _AccessibilitySettingsPageState
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const AccessibilityInfo({
-                                  "0": "accessibilityStepOpenSettings",
-                                  "1": "accessibilityStepAccessibility",
-                                  "2": "accessibilityStepScreenReader",
-                                  "3": "accessibilityStepEnableReader",
-                                  // "4": "accessibilityStepFinishSetup",
-                                }),
-                              )),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const AccessibilityInfo({
+                                "0": "accessibilityStepOpenSettings",
+                                "1": "accessibilityStepAccessibility",
+                                "2": "accessibilityStepScreenReader",
+                                "3": "accessibilityStepEnableReader",
+                                // "4": "accessibilityStepFinishSetup",
+                              }),
+                            ),
+                          ),
                           options: ContentRowOptions(
-                            leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
+                            leadingIcon: SvgPicture.asset(
+                              'assets/icons/svg/voice_reader_icon.svg',
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                context.colors.accentDefault,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                             title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(
@@ -138,7 +147,7 @@ class _AccessibilitySettingsPageState
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$2x.heightBox,

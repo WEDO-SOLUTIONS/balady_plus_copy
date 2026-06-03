@@ -41,7 +41,7 @@ class DynamicPoiDatasource {
 
   Future<List<DynamicPoi>> fetchMarkers({
     required String locale,
-    int pageSize = 2000,
+    int pageSize = 500,
     DynamicPoiBbox? bbox,
     CancelToken? cancelToken,
   }) async {
@@ -62,9 +62,6 @@ class DynamicPoiDatasource {
       params['viewpoint2'] = '${bbox.eastLon},${bbox.southLat}';
     }
 
-    // ignore: avoid_print
-    print('[DynamicPoiDebug] GET $url params=$params');
-
     final response = await dio.get<dynamic>(
       url,
       queryParameters: params,
@@ -77,34 +74,25 @@ class DynamicPoiDatasource {
 
     final data = response.data;
     if (data is! Map<String, dynamic>) {
-      // ignore: avoid_print
-      print('[DynamicPoiDebug] unexpected response shape: ${data.runtimeType}');
       return const [];
     }
 
     final features = data['features'];
     if (features is! List) {
-      // ignore: avoid_print
-      print('[DynamicPoiDebug] no features array in response');
       return const [];
     }
 
     final pois = <DynamicPoi>[];
-    var skipped = 0;
     for (final raw in features) {
       if (raw is! Map<String, dynamic>) {
-        skipped++;
         continue;
       }
       final poi = DynamicPoi.fromGeoJson(raw);
       if (poi == null) {
-        skipped++;
         continue;
       }
       pois.add(poi);
     }
-    // ignore: avoid_print
-    print('[DynamicPoiDebug] parsed=${pois.length} skipped=$skipped');
     return pois;
   }
 }

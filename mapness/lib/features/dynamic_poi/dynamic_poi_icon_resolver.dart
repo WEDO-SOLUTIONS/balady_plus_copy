@@ -1,64 +1,87 @@
-/// Maps Momrah dynamic-POI rubric IDs to bundled SVG marker icons.
+import 'package:flutter/foundation.dart';
+
+/// One resolved glyph: the rubric id that matched (for cache keys / fallback
+/// reporting), the SVG asset path inside the `mapness` package, and the
+/// package name that owns the asset.
 ///
-/// Per task spec, unknown rubric IDs fall back to the Landmark disc.
-/// The 18 known dynamic-POI rubrics live under
-/// `assets/icons/svg/dynamic_poi/`; the asset paths use the
-/// `packages/mapness/...` prefix because mapness is a path dependency of
-/// the host `balady_plus` app.
+/// The asset is monochrome with `fill="currentColor"` — `DynamicPoiMarkerBitmap`
+/// passes the desired tint via `SvgTheme(currentColor: ...)`.
+@immutable
+class DynamicPoiGlyph {
+  const DynamicPoiGlyph({
+    required this.rubricId,
+    required this.assetPath,
+    required this.packageName,
+    required this.isFallback,
+  });
+
+  final String rubricId;
+  final String assetPath;
+  final String packageName;
+
+  /// `true` when no rubric in the input list matched and we fell back to the
+  /// Landmark glyph. Useful for telemetry / debug log "% unknown rubrics".
+  final bool isFallback;
+}
+
+/// Maps Momrah dynamic-POI rubric IDs to bundled monochrome glyph SVGs.
+///
+/// The 18 known dynamic-POI rubrics live in `assets/icons/svg/dynamic_poi/glyphs/`
+/// inside the `mapness` package. Unknown rubrics fall back to the Landmark
+/// glyph (900010), preserving the visual style established in iter5.
 class DynamicPoiIconResolver {
-  static const _packagePrefix = 'packages/mapness/assets/icons/svg';
+  const DynamicPoiIconResolver._();
 
-  static const String _dynamicPoiDir = '$_packagePrefix/dynamic_poi';
+  static const String packageName = 'mapness';
+  static const String _glyphDir = 'assets/icons/svg/dynamic_poi/glyphs';
 
-  /// Default disc icon for rubrics we don't recognize. Iter5 switched this
-  /// from the purple cityscape pin to the per-rubric Landmark disc so the
-  /// dynamic-POI layer renders a consistent visual style across known and
-  /// unknown rubrics.
-  static const String defaultIcon = '$_dynamicPoiDir/rubric_900010_landmark.svg';
+  /// Rubric used when none of the feature's `properties.rubric_id` entries
+  /// is in [_assetByRubricId]. Keeps the legacy "Landmark disc" fallback.
+  static const String fallbackRubricId = '900010';
+  static const String _fallbackAsset = '$_glyphDir/900010_landmark.svg';
 
-  /// Per-rubric icon table. Keys come from `properties.rubric_id` (a list of
-  /// strings on each feature). The first matching entry wins; absence falls
-  /// through to [defaultIcon].
-  static const Map<String, String> _byRubricId = {
-    '900001': '$_dynamicPoiDir/rubric_900001_medical_help.svg',
-    '900002': '$_dynamicPoiDir/rubric_900002_lost_and_found.svg',
-    '900003': '$_dynamicPoiDir/rubric_900003_hajj_support.svg',
-    '900004': '$_dynamicPoiDir/rubric_900004_kiosk_and_pos.svg',
-    '900005': '$_dynamicPoiDir/rubric_900005_additional_category.svg',
-    '900006': '$_dynamicPoiDir/rubric_900006_stair.svg',
-    '900007': '$_dynamicPoiDir/rubric_900007_service.svg',
-    '900008': '$_dynamicPoiDir/rubric_900008_gate.svg',
-    '900009': '$_dynamicPoiDir/rubric_900009_prayer_hall.svg',
-    '900010': '$_dynamicPoiDir/rubric_900010_landmark.svg',
-    '900011': '$_dynamicPoiDir/rubric_900011_luggage_storage.svg',
-    '900012': '$_dynamicPoiDir/rubric_900012_wheelchairs_carts_center.svg',
-    '900013': '$_dynamicPoiDir/rubric_900013_prayer_area_for_disabled.svg',
-    '900014': '$_dynamicPoiDir/rubric_900014_emergency_assembly_point.svg',
-    '900015': '$_dynamicPoiDir/rubric_900015_restricted_zone.svg',
-    '900016': '$_dynamicPoiDir/rubric_900016_volunteer_point.svg',
-    '900017': '$_dynamicPoiDir/rubric_900017_free_wifi_station.svg',
-    '900018': '$_dynamicPoiDir/rubric_900018_pilgrim_camp.svg',
+  /// Per-rubric glyph table. Filenames follow `<rubricId>_<slug>.svg`. Keep
+  /// in sync with `mapness/assets/icons/svg/dynamic_poi/glyphs/`.
+  static const Map<String, String> _assetByRubricId = {
+    '900001': '$_glyphDir/900001_medical_help.svg',
+    '900002': '$_glyphDir/900002_lost_and_found.svg',
+    '900003': '$_glyphDir/900003_hajj_support.svg',
+    '900004': '$_glyphDir/900004_kiosk_and_pos.svg',
+    '900005': '$_glyphDir/900005_additional_category.svg',
+    '900006': '$_glyphDir/900006_stair.svg',
+    '900007': '$_glyphDir/900007_service.svg',
+    '900008': '$_glyphDir/900008_gate.svg',
+    '900009': '$_glyphDir/900009_prayer_hall.svg',
+    '900010': _fallbackAsset,
+    '900011': '$_glyphDir/900011_luggage_storage.svg',
+    '900012': '$_glyphDir/900012_wheelchairs_carts.svg',
+    '900013': '$_glyphDir/900013_prayer_area_disabled.svg',
+    '900014': '$_glyphDir/900014_emergency_assembly.svg',
+    '900015': '$_glyphDir/900015_restricted_zone.svg',
+    '900016': '$_glyphDir/900016_volunteer_point.svg',
+    '900017': '$_glyphDir/900017_free_wifi.svg',
+    '900018': '$_glyphDir/900018_pilgrim_camp.svg',
   };
 
-  static String resolve(List<String> rubricIds) {
+  /// Returns the first rubric in [rubricIds] for which a glyph is registered,
+  /// or the Landmark fallback if none matched.
+  static DynamicPoiGlyph resolve(List<String> rubricIds) {
     for (final id in rubricIds) {
-      final hit = _byRubricId[id];
-      if (hit != null) {
-        return hit;
+      final asset = _assetByRubricId[id];
+      if (asset != null) {
+        return DynamicPoiGlyph(
+          rubricId: id,
+          assetPath: asset,
+          packageName: packageName,
+          isFallback: false,
+        );
       }
     }
-    return defaultIcon;
-  }
-
-  /// Same as [resolve], but also reports which path was chosen — used by the
-  /// layer to log fallback rate when assembling the marker set.
-  static ({String icon, bool isFallback}) resolveWithFallbackInfo(List<String> rubricIds) {
-    for (final id in rubricIds) {
-      final hit = _byRubricId[id];
-      if (hit != null) {
-        return (icon: hit, isFallback: false);
-      }
-    }
-    return (icon: defaultIcon, isFallback: true);
+    return const DynamicPoiGlyph(
+      rubricId: fallbackRubricId,
+      assetPath: _fallbackAsset,
+      packageName: packageName,
+      isFallback: true,
+    );
   }
 }

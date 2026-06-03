@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/domain/use_cases/get_gis_data.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -82,11 +83,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
        _getEkramPermission = GetEkramPermission(repository: sl()),
        // _getGisData = getGisData,
        super(const EntryPointState()) {
-    sl<LocationCubit>().getLocationInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sl<LocationCubit>().getLocationInit();
+      Permission.notification.request();
+    });
     refreshAPIGeeToken();
-    Permission.notification.request();
     // Restore authentication state on app startup (non-blocking)
-    unawaited(_restoreAuthState());
+   // unawaited(_restoreAuthState());
   }
 
   /// Restore authentication state from storage when app starts
@@ -235,20 +238,26 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         authState: authState,
       );
     } else {
-      final data = authState.profileData;
+      final profileData = authState.profileData;
+      // `complete_profile` comes from the OTP login API (`MobileLoginVerifyOtp`).
+      // - true  → user signed up via OTP only → personal data is editable.
+      // - false → user already has an SSO/Nafath account → profile is read-only.
+      final bool completeProfile =
+          authState.loginData.completeProfile;
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
           token: token,
           userInfo: SsoUserInfo(
-            name: data.firstNameArabic,
-            sname: data.lastNameArabic,
-            enName: data.enName,
-            arName: data.arName,
-            idNo: data.sub,
-            mail: data.email,
-            phone: data.phoneNumber,
+            name: profileData.firstNameArabic,
+            sname: profileData.lastNameArabic,
+            enName: profileData.enName,
+            arName: profileData.arName,
+            idNo: profileData.sub,
+            mail: profileData.email,
+            phone: profileData.phoneNumber,
             loginType: SsoLoginType.otp,
+            completeProfile: completeProfile,
           ),
           errorMessage: "",
         ),
@@ -256,9 +265,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       Sentry.configureScope((scope) {
         scope.setUser(
           SentryUser(
-            id: data.sub.toString(),
-            username: data.enName,
-            email: data.email,
+            id: profileData.sub.toString(),
+            username: profileData.enName,
+            email: profileData.email,
           ),
         );
       });
@@ -472,6 +481,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     EasyLoading.dismiss();
   }
 
+  /// Persists and broadcasts profile edits (e.g. OTP user name changes from mapness).
+  Future<void> applyUserInfo(SsoUserInfo userInfo) async {
+    final failureOrSuccess = await _saveSSOProfile(userInfo);
+    if (failureOrSuccess.isRight()) {
+      emit(state.copyWith(userInfo: userInfo));
+    }
+  }
+
   Future<void> refreshSSOProfile() async {
     try {
       AuthenticatedState authState =
@@ -481,9 +498,24 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         await failureOrSuccessForProfile.fold((failure) async {}, (
           success,
         ) async {
-          final failureOrSuccess = await _saveSSOProfile(success);
+          // `/connect/userinfo` does not return `complete_profile`,
+          // `loginType`, etc. Preserve them from the value captured at login
+          // (`MobileLoginVerifyOtp` / `_saveDataLogin`) so editing rules stay
+          // consistent across profile refreshes.
+          final previous = state.userInfo;
+          final merged = success.copyWith(
+            loginType: previous?.loginType ?? success.loginType,
+            completeProfile:
+                previous?.completeProfile ?? success.completeProfile,
+            isEmailVerified:
+                previous?.isEmailVerified ?? success.isEmailVerified,
+            isEmailEditable:
+                previous?.isEmailEditable ?? success.isEmailEditable,
+            isSSOLocked: previous?.isSSOLocked ?? success.isSSOLocked,
+          );
+          final failureOrSuccess = await _saveSSOProfile(merged);
           if (failureOrSuccess.isRight()) {
-            emit(state.copyWith(userInfo: success));
+            emit(state.copyWith(userInfo: merged));
           }
         });
       }
@@ -628,6 +660,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               mail: authState.profileData.email,
               phone: authState.profileData.phoneNumber,
               loginType: SsoLoginType.nationalId,
+              completeProfile: authState.loginData.completeProfile,
             ),
             errorMessage: "",
           ),

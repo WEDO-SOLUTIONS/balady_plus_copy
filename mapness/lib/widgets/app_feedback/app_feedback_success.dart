@@ -11,7 +11,7 @@ class AppFeedbackSuccess extends StatelessWidget {
   const AppFeedbackSuccess({super.key});
 
   String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
-    BaladyAppThemes.dark => Assets.images.successAppFeedbackDark.keyName,
+    BaladyAppThemes.darkDGA => Assets.images.successAppFeedbackDark.keyName,
     _ => Assets.images.successAppFeedback.keyName,
   };
 

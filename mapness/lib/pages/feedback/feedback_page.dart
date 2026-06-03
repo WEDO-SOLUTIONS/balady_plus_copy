@@ -110,7 +110,10 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     context.router.pushAndPopUntil(
       FeedbackSentRoute(payloadId: payloadId),
-      predicate: (route) => route.settings.name == BottomMenuRoute.name || route.settings.name == PathNavRoute.name,
+      predicate: (route) =>
+          route.settings.name == BottomMenuRoute.name ||
+          route.settings.name == PathNavRoute.name ||
+          route.settings.name == SearchRoute.name,
     );
   }
 

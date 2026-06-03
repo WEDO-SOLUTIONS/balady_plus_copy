@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/app_features.dart';
@@ -8,6 +9,7 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 
 class PoiCardMapControls extends StatelessWidget {
@@ -53,6 +55,10 @@ class PoiCardMapControls extends StatelessWidget {
 
                       const SizedBox(height: ui_kit.Spacing.$2x),
                       const DimensionControl(),
+                      if (kDebugMode) ...[
+                        const Spacer(),
+                        const ZoomControl(),
+                      ],
                       const Spacer(),
                       const CompassControl(),
                       ui_kit.Spacing.$3x.heightBox,

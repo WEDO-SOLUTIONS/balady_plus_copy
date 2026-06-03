@@ -25,7 +25,12 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
   int tapsToGo = 7;
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) {
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
     value: context.read<ThemeController>().systemOverlayStyle,
     child: Material(
       color: context.colors.backgroundSurface4,
@@ -44,7 +49,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ContentWrapper(
-                  color: context.colors.backgroundSurface1,
+                  color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                   children: [
                     ContentRow(
                       onTap: () => context.router.push(const MomraWebsiteRoute()),
@@ -89,4 +94,5 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
       ),
     ),
   );
+  }
 }

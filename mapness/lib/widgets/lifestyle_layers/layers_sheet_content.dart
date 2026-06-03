@@ -11,10 +11,11 @@ import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class LayersSheetContent extends ConsumerWidget {
-  final Function() tapOnParkingLotsMenu;
+  final ValueChanged<layers_state.LayerType>? onIconTap;
   final Function() onClose;
+  final Set<layers_state.LayerType> layerTapItems;
 
-  const LayersSheetContent({required this.tapOnParkingLotsMenu, required this.onClose, super.key});
+  const LayersSheetContent({required this.onIconTap, required this.onClose, this.layerTapItems = const {}, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -75,9 +76,10 @@ class LayersSheetContent extends ConsumerWidget {
           //   ),
           // ),
           LayerSliverList(
-            tapOnParkingLotsMenu: tapOnParkingLotsMenu,
+            onIconTap: onIconTap,
             layerType: layers_state.LayerType.v1,
             layersState: state,
+            layerTapItems: layerTapItems,
           ),
         ],
       ),

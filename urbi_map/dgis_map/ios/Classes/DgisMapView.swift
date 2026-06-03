@@ -1,6 +1,6 @@
-import Foundation
-import Flutter
 import DGis
+import Flutter
+import Foundation
 
 extension FlutterError: Error {}
 
@@ -1223,7 +1223,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func toggleVoiceInstruction( toggleType: SoundToggleType, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
         self.carPlayHandler?.toggleSounds(toggleType: toggleType)
-         completion(Result.success(()))
+        // sdk.audioSettings?.mute immediately silences the DGis audio pipeline
+        // (including any in-flight utterance) when muting, and re-enables it on unmute.
+        // This avoids AVAudioSession deactivation which leaves the DGis engine stopped.
+        try? sdk.audioSettings?.mute = (toggleType == .none)
+        completion(Result.success(()))
     }
     
     func authorizationNotification(isAuthorized: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {

@@ -61,34 +61,16 @@ class AppRouter extends RootStackRouter {
           page: PathNavRoute.page,
           fullscreenDialog: true,
         ),
-        // BE-153: replaced default slide-from-bottom transition with a
-        // fade so the search sheet appears in-place (matches Google Maps).
+        // BE-153: fade so the search sheet appears in-place (matches Google Maps),
+        // instead of the default cupertino slide. Short duration keeps the tap → keyboard
+        // path snappy and avoids competing with the keyboard animation.
         AppRoute(
           path: 'search',
           page: SearchRoute.page,
+          durationInMilliseconds: 150,
+          reverseDurationInMilliseconds: 150,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
-        // CustomRoute(
-        //   path: 'search',
-        //   page: SearchRoute.page,
-        //   durationInMilliseconds: 180,
-        //   reverseDurationInMilliseconds: 180,
-        //   transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(
-        //     opacity: animation,
-        //     child: ScaleTransition(
-        //       scale:
-        //           Tween<double>(
-        //             begin: 0.98,
-        //             end: 1.0,
-        //           ).animate(
-        //             CurvedAnimation(
-        //               parent: animation,
-        //               curve: Curves.easeOut,
-        //             ),
-        //           ),
-        //       child: child,
-        //     ),
-        //   ),
-        // ),
         AppRoute(
           path: 'navi_search',
           page: NaviSearchRoute.page,
@@ -220,9 +202,12 @@ class AppRouter extends RootStackRouter {
           path: 'navi_search_favorites',
           page: NaviFavoritesRoute.page,
         ),
-        CustomRoute(
-          path: 'search',
+        AppRoute(
+          path: 'favourites_search',
           page: FavouritesSearchRoute.page,
+          durationInMilliseconds: 150,
+          reverseDurationInMilliseconds: 150,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           page: DeleteAllContentRoute.page,
@@ -270,55 +255,6 @@ class AppRouter extends RootStackRouter {
           path: 'delete_parking',
           page: ParkingDialogRoute.page,
           opaque: false,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_offers_screen',
-          page: OffersScreenViewRoute.page,
-        ),
-        AppRoute(
-          path: 'saudi_pass_favourite_offers_screen',
-          page: FavouriteOffersScreenViewRoute.page,
-        ),
-        RedirectRoute(path: 'saudi_pass_profile_preferences_screen', redirectTo: 'profile_preferences'),
-        AppRoute(
-          path: 'saudi_pass_offers_on_map_screen',
-          page: OffersOnMapRoute.page,
-        ),
-        CustomRoute(
-          page: CitySelectionDialogViewRoute.page,
-          path: 'saudi_pass_city_selection_dialog',
-          opaque: false,
-          transitionsBuilder: TransitionsBuilders.slideBottom,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_type_selection_dialog',
-          page: TypeSelectionDialogViewRoute.page,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_all_categories_selection_dialog',
-          page: AllCategoriesSelectionDialogViewRoute.page,
-          opaque: false,
-          transitionsBuilder: TransitionsBuilders.slideBottom,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_sorting_selection_dialog',
-          page: SortingSelectionDialogRoute.page,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        AppRoute(
-          path: 'saudi_pass_settings_screen',
-          page: SettingsScreenViewRoute.page,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_offer_page',
-          page: OfferRoute.page,
-        ),
-        RedirectRoute(path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
-        CustomRoute(
-          path: 'saudi_pass_offer_favorites_removing_sheet',
-          page: OfferFavoritesRemovingSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
@@ -429,10 +365,6 @@ class AppRouter extends RootStackRouter {
           page: FeedbackAddressSuggester.page,
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
-        ),
-        AppRoute(
-          path: 'profile_preferences',
-          page: ProfilePreferencesRoute.page,
         ),
       ],
     ),

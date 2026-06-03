@@ -13,12 +13,12 @@ import './app/core/utils/utils_exports.dart' show EnvType;
 import './env.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  await unhandledExceptionBaladyLogs(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  final themeNotifier = BaladyThemeNotifier();
+    final themeNotifier = BaladyThemeNotifier();
 
-  await themeNotifier.init();
-  unhandledExceptionBaladyLogs(() async {
+    await themeNotifier.init();
     await runMapnessApp(EnvType.dev, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.dev);

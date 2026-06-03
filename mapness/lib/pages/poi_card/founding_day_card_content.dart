@@ -27,6 +27,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
   /// See `_ContentState._aiSummaryTriggered` for the rationale.
   bool _aiSummaryTriggered = false;
+  AiSummaryNotifier? _aiSummaryNotifier;
 
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
@@ -141,6 +142,14 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
   @override
   void dispose() {
+    // Mirror `_ContentState.dispose()` — cancel any AI Summary inflight when
+    // the founding-day POI card goes away. Deferred via a microtask so the
+    // notifier state mutation doesn't race the disposing subtree (see the
+    // sibling state for the full rationale).
+    final notifier = _aiSummaryNotifier;
+    if (_aiSummaryTriggered && notifier != null) {
+      Future<void>.microtask(() => notifier.cancel(reason: 'Founding-day POI card closed or switched'));
+    }
     _tabController.dispose();
     _tabType.dispose();
     super.dispose();
@@ -151,10 +160,17 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     if (_aiSummaryTriggered) {
       return;
     }
+    final types = widget.data.types.map((t) => t.type);
+    if (!isAiSummaryAllowed(types)) {
+      _aiSummaryTriggered = true;
+      return;
+    }
     _aiSummaryTriggered = true;
     final language = ref.read(appLanguageProvider);
     final poiId = widget.objectId.toString();
-    ref.read(aiSummaryProvider(poiId, language).notifier).load();
+    final notifier = ref.read(aiSummaryProvider(poiId, language).notifier);
+    _aiSummaryNotifier = notifier;
+    notifier.load();
   }
 
   @override
@@ -166,8 +182,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
         }
         _aiSummaryTriggered = false;
         final currentState = _bottomSheetController.state;
-        if (currentState == PoiCardBottomSheetState.open ||
-            currentState == PoiCardBottomSheetState.expanded) {
+        if (currentState == PoiCardBottomSheetState.open || currentState == PoiCardBottomSheetState.expanded) {
           _maybeTriggerAiSummary();
         }
       })
@@ -216,9 +231,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     }
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
-
-    final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     return Directionality(
       textDirection: Directionality.of(context),
@@ -322,18 +334,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
               baseline: TextBaseline.ideographic,
               alignment: PlaceholderAlignment.middle,
             ),
-            if (hasOffers) ...[
-              const TextSpan(text: ' • '),
-              WidgetSpan(
-                child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
-                baseline: TextBaseline.ideographic,
-                alignment: PlaceholderAlignment.middle,
-              ),
-              TextSpan(
-                text: ' ${context.l10n.offer}',
-                style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
-              ),
-            ],
           ],
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,

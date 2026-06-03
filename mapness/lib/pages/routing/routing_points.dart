@@ -53,6 +53,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   /// Subscribes to object tap events on the map
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
+  MultiStateSheetController<ThreeStateSheet>? _bottomSheetController;
+  VoidCallback? _removeFooterOpacityListener;
+  VoidCallback? _clearBottomSheetController;
 
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
@@ -63,19 +66,28 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   @override
   void initState() {
     _setupTapListener();
-    ref.read(bottomSheetControllerProvider.notifier).state.controller?.addListener(updateFooterOpacity);
+    final bottomSheetControllerWrapper = ref.read(bottomSheetControllerProvider.notifier).state;
+    final bottomSheetController = bottomSheetControllerWrapper.controller;
+    _bottomSheetController = bottomSheetController;
+    bottomSheetController?.addListener(updateFooterOpacity);
+    _removeFooterOpacityListener = () => bottomSheetController?.removeListener(updateFooterOpacity);
+    _clearBottomSheetController = () {
+      if (identical(bottomSheetControllerWrapper.controller, bottomSheetController)) {
+        bottomSheetControllerWrapper.controller = null;
+      }
+    };
     super.initState();
   }
 
   void updateFooterOpacity() => footerOpacity.value = min(
     1.0,
-    (1 - ref.read(bottomSheetControllerProvider.notifier).state.controller!.fraction) * 2,
+    (1 - _bottomSheetController!.fraction) * 2,
   );
 
   @override
   void dispose() {
-    ref.read(bottomSheetControllerProvider.notifier).state.controller?.removeListener(updateFooterOpacity);
-    ref.read(bottomSheetControllerProvider.notifier).state.controller = null;
+    _removeFooterOpacityListener?.call();
+    _clearBottomSheetController?.call();
     footerOpacity.dispose();
     super.dispose();
   }
@@ -88,6 +100,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
@@ -130,6 +146,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$4x),
             child: ABRoute(
+              backgroundColor: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
               stopByTitle: context.l10n.addStop,
               items: aBRouteModels.toList(),
               onTap: (i) => _onTap(i, context, ref),

@@ -3,11 +3,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/map_controls.dart';
-import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -32,30 +32,17 @@ class PoiCardActions extends _$PoiCardActions {
     }
   }
 
-  Future<void> share({required int? objectId, LatLng? markerCoords}) {
-    if (objectId == null) {
-      onError();
-      return Future.value();
-    }
-    final baseUri = BaldayDeeplink.basePoiUri;
-    final query = <String, String>{};
-
-    query[BaldayDeeplink.dgisObjectIdKey] = objectId.toString();
-
-    if (markerCoords != null) {
-      query[BaldayDeeplink.latitudeKey] = markerCoords.latitude.toString();
-      query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
-    }
-
+  Future<void> share({required int? objectId, LatLng? markerCoords}) async {
     final context = rootNavigatorKey.currentContext;
-    if (context == null) {
-      return Future.value();
+    if (objectId == null || context == null) {
+      onError();
+      return;
     }
-    final shareUrl = BaldayDeeplink.urlWithQuery(baseUri, query);
-    if (objectId == parkingObjectId) {
-      return balady_utils.safeShareText('${context.l10n.leftMyCarHere} $shareUrl', context: context);
-    }
-    return balady_utils.safeShareText(shareUrl, context: context);
+
+    final coordinates = markerCoords == null
+        ? null
+        : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
+    ShareUtil.sharePOI(objectId.toString(), context: context, markerCoords: coordinates);
   }
 
   String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
@@ -87,7 +74,11 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   Future<void> launch(String value) async {
-    final url = Uri.parse(value);
+    String urlString = value;
+    if (value.contains('wa.me/') || value.contains('api.whatsapp.com/')) {
+      urlString = urlString.replaceFirst(RegExp(r'[?&]text=[^&]*'), '');
+    }
+    final url = Uri.parse(urlString);
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     }

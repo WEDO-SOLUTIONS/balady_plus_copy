@@ -107,9 +107,12 @@ class PoiMyLocation extends _$PoiMyLocation {
             bearing: cameraConfig?.bearing ?? 0,
           ),
         );
-
+    final capturedController = ref.read(dgisControllerProvider).value;
+    final capturedManager = mapObjectManager.state.asData?.value;
     ref.onDispose(() async {
-      await mapObjectManager.removeAllMarkers();
+      if (capturedController != null && capturedManager != null) {
+        await capturedController.removeAllMarkers(fromManager: capturedManager);
+      }
     });
   }
 }

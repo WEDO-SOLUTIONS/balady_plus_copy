@@ -64,7 +64,9 @@ class BssService {
 
   Future<void> _sendEventImmediately(List<BssRequest> requests) async {
     if (_dio == null || _common == null || _visibleRectStream == null) {
-      debugPrint('BssService not initialized. Call init() first.');
+      if (kDebugMode) {
+        debugPrint('BssService not initialized. Call init() first.');
+      }
       return;
     }
 
@@ -86,8 +88,9 @@ class BssService {
           requestWithRegion = request.copyWith(
             payload: request.payload?.copyWith(
               placeItem: request.payload?.placeItem?.copyWith(
-                entity: request.payload?.placeItem?.entity
-                    .copyWith(segmentInfo: searchRegion != null ? BssSegmentInfo(segmentId: searchRegion.id) : null),
+                entity: request.payload?.placeItem?.entity.copyWith(
+                  segmentInfo: searchRegion != null ? BssSegmentInfo(segmentId: searchRegion.id) : null,
+                ),
               ),
             ),
           );
@@ -100,13 +103,19 @@ class BssService {
         );
         requestJsons.add(requestJson);
       }
-      debugPrint('BSS REQUEST: $requestJsons');
+      if (kDebugMode) {
+        debugPrint('BSS REQUEST: $requestJsons');
+      }
       final validateResponse = await _dio!.post('/bss/validate/3', data: requestJsons);
-      debugPrint('BSS VALIDATE RESPONSE: $validateResponse');
+      if (kDebugMode) {
+        debugPrint('BSS VALIDATE RESPONSE: $validateResponse');
+      }
       await _dio!.post('/bss/3', data: requestJsons);
       ordinalId++;
     } catch (e) {
-      debugPrint('Error sending event: $e');
+      if (kDebugMode) {
+        debugPrint('Error sending event: $e');
+      }
     }
   }
 
