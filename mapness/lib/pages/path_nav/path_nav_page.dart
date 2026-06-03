@@ -515,7 +515,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     },
                     onClose: () async {
                       await ref.read(dgisControllerProvider).value?.hideRoutes();
-                      await _endTripAndShowHome();
+                      await _endTripAndShowFeedback(context);
                     },
                     buttonLabel: context.l10n.endTrip,
                   );
