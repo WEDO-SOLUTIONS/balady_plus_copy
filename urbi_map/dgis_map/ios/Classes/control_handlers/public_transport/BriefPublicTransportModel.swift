@@ -114,7 +114,7 @@ extension PublicTransportTransfer {
             return []
         }
         
-        return Array(Set(routeParts.first!.transports.flatMap { $0.names }))
+        return Array(Set(routeParts.first!.transports.flatMap { $0.routeInfos.map { route in route.name } }))
     }
     
     var firstTransport: PublicTransportInfo? {
@@ -265,7 +265,7 @@ extension PublicTransportTransferRouteLongEntry {
                     "transports": routePart.transports.map { transport in
                         [
                             "type": transport.type.kotlinName,
-                            "names": transport.names,
+                            "names": transport.routeInfos.map { route in route.name },
                             "suggestedCarNumbers": transport.suggestedCarNumbers,
                             "boardingSuggest": transport.boardingSuggest,
                             "routeLogo": transport.routeLogo,
@@ -297,7 +297,7 @@ extension PublicTransportInfo {
     var toMessage: PublicTransportInfoMessage {
         return PublicTransportInfoMessage(
             type: self.type.toMessage,
-            names: self.names,
+            names: self.routeInfos.map { route in route.name },
             suggestedCarNumbers: self.suggestedCarNumbers.map { Int64.init(bitPattern: UInt64($0)) },
             boardingSuggest: self.boardingSuggest,
             routeLogo: self.routeLogo

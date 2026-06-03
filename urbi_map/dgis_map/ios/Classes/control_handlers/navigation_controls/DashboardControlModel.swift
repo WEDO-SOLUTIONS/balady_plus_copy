@@ -53,7 +53,7 @@ class DashboardControlModel {
         self.navigationManager = navigationManager
         
         cancelable.append(contentsOf: [
-            self.model.routePositionChannel.sink { [weak self] _ in
+            self.model.routePositionChannel.sinkOnMainThread { [weak self] _ in
                 self?.update()
             }
         ])

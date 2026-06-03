@@ -46,7 +46,7 @@ class SearchHandler: NSObject {
     }
 
     func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (Result<DirectoryObjectMessage, any Error>) -> Void) {
-        self.objectSearchCancelable = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
+        self.objectSearchCancelable = searchManager.searchByDirectoryObjectId(objectId: objectId).sinkOnMainThread {
             directoryObject in
             guard let response = directoryObject else {
                 completion(
@@ -188,7 +188,7 @@ class SearchHandler: NSObject {
         _ query: SearchQuery,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
-        self.searchCancelable = self.searchManager.search(query: query).sink(receiveValue: {
+        self.searchCancelable = self.searchManager.search(query: query).sinkOnMainThread(receiveValue: {
             [weak self] response in
             guard let self = self else {
                 completion(
@@ -197,7 +197,7 @@ class SearchHandler: NSObject {
                 return
             }
             
-            self.itemMarkerInfosCancellable = response.itemMarkerInfos.sink(receiveValue: { itemMarkerInfos in
+            self.itemMarkerInfosCancellable = response.itemMarkerInfos.sinkOnMainThread(receiveValue: { itemMarkerInfos in
                 let pageId = UUID().uuidString
                 if let page = response.firstPage {
                     self.pages[pageId] = page
@@ -249,7 +249,7 @@ class SearchHandler: NSObject {
             return
         }
         
-        self.searchCancelable = page.fetchNextPage().sink(receiveValue: { response in
+        self.searchCancelable = page.fetchNextPage().sinkOnMainThread(receiveValue: { response in
             let pageId = UUID().uuidString
             self.pages[pageId] = response
             
@@ -294,7 +294,7 @@ class SearchHandler: NSObject {
             return
         }
         
-        self.searchCancelable = page.fetchPrevPage().sink(receiveValue: { response in
+        self.searchCancelable = page.fetchPrevPage().sinkOnMainThread(receiveValue: { response in
             let pageId = UUID().uuidString
             self.pages[pageId] = response
             
@@ -376,7 +376,7 @@ class SearchHandler: NSObject {
         let suggestQuery = suggestQueryBuilder.build()
 
         suggestCancelable?.cancel()
-        suggestCancelable = searchManager.suggest(query: suggestQuery).sink(
+        suggestCancelable = searchManager.suggest(query: suggestQuery).sinkOnMainThread(
             receiveValue: {
                 [weak self] response in
                 guard let self = self else {

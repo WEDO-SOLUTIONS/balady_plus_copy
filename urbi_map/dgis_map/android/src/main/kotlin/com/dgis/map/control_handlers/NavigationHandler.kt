@@ -182,12 +182,14 @@ class NavigationHandler(
         fun applyCameraSettings(settings: NavigationCameraSettings) {
                 val zoomFollowSettings = navigationManager.zoomFollowSettings
 
+                val tiltPoints = settings.tiltRelation
                 settings.speedZoomRules?.let { rules ->
-                        zoomFollowSettings.speedRangeToStyleZoomSequence = rules.map(::toSpeedRangeToStyleZoom)
+                        zoomFollowSettings.speedRangeToStyleZoomSequence =
+                                rules.map { toSpeedRangeToStyleZoom(it, tiltPoints) }
                 }
                 settings.freeRoamSpeedZoomRules?.let { rules ->
                         zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence =
-                                rules.map(::toSpeedRangeToStyleZoom)
+                                rules.map { toSpeedRangeToStyleZoom(it, tiltPoints) }
                 }
 
                 settings.zoomTuning?.let { tuning ->
@@ -264,15 +266,27 @@ class NavigationHandler(
                 }
         }
 
-        private fun toSpeedRangeToStyleZoom(rule: SpeedZoomRule): SpeedRangeToStyleZoom =
-                SpeedRangeToStyleZoom(
+        private fun toSpeedRangeToStyleZoom(
+                rule: SpeedZoomRule,
+                tiltPoints: List<StyleZoomTiltPoint>?,
+        ): SpeedRangeToStyleZoom {
+                // SDK 13 carries tilt per speed range natively via styleTilt — drive it from the
+                // zoom→tilt curve so the camera leans toward the horizon at the rule's zoom.
+                val styleTilt =
+                        if (tiltPoints.isNullOrEmpty()) Tilt(55f)
+                        else Tilt(interpolateTilt(tiltPoints, rule.styleZoom.toDouble()))
+                return SpeedRangeToStyleZoom(
                         range = SpeedRange(minSpeed = rule.minSpeed, maxSpeed = rule.maxSpeed),
                         minDistanceToManeuver =
                                 RouteDistance(millimeters = rule.minDistanceToManeuverMm.toLong()),
                         maxDistanceToManeuver =
                                 RouteDistance(millimeters = rule.maxDistanceToManeuverMm.toLong()),
+                        roadClassesStyleZooms = emptyMap(),
+                        roadClassesTilts = emptyMap(),
                         styleZoom = StyleZoom(value = rule.styleZoom.toFloat()),
+                        styleTilt = styleTilt,
                 )
+        }
 
         private fun tiltRelationOf(points: List<StyleZoomTiltPoint>): StyleZoomToTiltRelation =
                 object : StyleZoomToTiltRelation {

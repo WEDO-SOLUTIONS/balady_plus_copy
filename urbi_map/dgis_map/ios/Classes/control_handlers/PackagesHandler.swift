@@ -24,14 +24,14 @@ class PackagesHandler {
     init(sdk: Context, eventChannel: DgisStreamHandler) {
         self.sdk = sdk
         self.eventChannel = eventChannel
-        self.packageManager = getPackageManager(context: sdk)
-        self.voiceManager = getVoiceManager(context: sdk)
+        self.packageManager = PackageManager.instance(context: sdk)
+        self.voiceManager = VoiceManager.instance(context: sdk)
         
         cancelable.append(
-            self.packageManager.packagesChannel.sink(receiveValue: checkInstallTasks)
+            self.packageManager.packagesChannel.sinkOnMainThread(checkInstallTasks)
         )
         cancelable.append(
-            self.voiceManager.voicesChannel.sink(receiveValue: checkInstallTasks)
+            self.voiceManager.voicesChannel.sinkOnMainThread(checkInstallTasks)
         )
         
         self.packageManager.autoupdateEnabled = true
@@ -88,14 +88,14 @@ class PackagesHandler {
     
     func installPackage(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         if let package = packageManager.packages.first(where: { $0.id == id }) {
-            cancelable.append(package.progressChannel.sink { [weak self] in
+            cancelable.append(package.progressChannel.sinkOnMainThread { [weak self] in
                 self?.eventChannel.success([
                     "event": Events.packageProgressEvent,
                     "packageId": id,
                     "progress": $0
                 ])
             })
-            cancelable.append(package.infoChannel.sink { [weak self] in
+            cancelable.append(package.infoChannel.sinkOnMainThread { [weak self] in
                 guard let self else { return }
 
                 self.eventChannel.success([
@@ -125,14 +125,14 @@ class PackagesHandler {
     
     func installVoice(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         if let package = voiceManager.voices.first(where: { $0.id == id }) {
-            cancelable.append(package.progressChannel.sink { [weak self] in
+            cancelable.append(package.progressChannel.sinkOnMainThread { [weak self] in
                 self?.eventChannel.success([
                     "event": Events.packageProgressEvent,
                     "packageId": id,
                     "progress": $0
                 ])
             })
-            cancelable.append(package.infoChannel.sink { [weak self] in
+            cancelable.append(package.infoChannel.sinkOnMainThread { [weak self] in
                 guard let self else { return }
                 self.eventChannel.success([
                     "event": Events.packageInfoChangedEvent,

@@ -20,7 +20,7 @@ class MessageControlModel {
         self.eventChannel = eventChannel
         
         cancelable.append(contentsOf: [
-            model.stateChannel.sink { [weak self] state in
+            model.stateChannel.sinkOnMainThread { [weak self] state in
                 if state == State.routeSearch && self?.prevState == .navigation {
                     self?.eventChannel.success([
                         "event": Events.messageEvent,
@@ -34,7 +34,7 @@ class MessageControlModel {
                 }
                 self?.prevState = state
             },
-            model.locationAvailableChannel.sink { [weak self] locationAvailable in
+            model.locationAvailableChannel.sinkOnMainThread { [weak self] locationAvailable in
                 if !locationAvailable && model.state != .finished && model.state != .disabled {
                     self?.eventChannel.success([
                         "event": Events.messageEvent,

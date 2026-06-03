@@ -13,14 +13,14 @@ class ZoomControlHandler {
     init(map: Map, eventChannel: DgisStreamHandler) {
         self.model = ZoomControlModel(map: map)
         
-        cancelable.append(model.isEnabled(button: .zoomOut).sink {
+        cancelable.append(model.isEnabled(button: .zoomOut).sinkOnMainThread {
             value in
             eventChannel.success([
                 "event": Events.zoomOutEvent,
                 "value": value
             ])
         })
-        cancelable.append(model.isEnabled(button: .zoomIn).sink {
+        cancelable.append(model.isEnabled(button: .zoomIn).sinkOnMainThread {
             value in
             eventChannel.success([
                 "event": Events.zoomInEvent,

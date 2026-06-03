@@ -41,7 +41,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
             let items = await withUnsafeContinuation { continuation in
                 cancellable = searchHistory.items(
                     page: SearchHistoryPage()
-                ).sink(receiveValue: {
+                ).sinkOnMainThread(receiveValue: {
                     result in
                     let listItems = result.items.map(self.mapCPListItem)
                     continuation.resume(returning: listItems)
@@ -125,7 +125,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
             .build()
 
         let directoryObjects: [DirectoryObject] = await withUnsafeContinuation { continuation in
-            cancellable = searchManager.search(query: query).sink(
+            cancellable = searchManager.search(query: query).sinkOnMainThread(
                 receiveValue: { searchResult in
                     continuation.resume(returning: searchResult.firstPage?.items ?? [])
                 },
@@ -211,7 +211,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
             continuation in
             cancellable = searchManager.searchByDirectoryObjectId(
                 objectId: dgisObjectId
-            ).sink(
+            ).sinkOnMainThread(
                 receiveValue: {
                     directoryObject in
                     continuation.resume(returning: directoryObject)

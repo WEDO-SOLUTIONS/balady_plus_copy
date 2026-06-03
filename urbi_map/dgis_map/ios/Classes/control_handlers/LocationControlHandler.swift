@@ -15,14 +15,14 @@ class LocationControlHandler {
         self.model = MyLocationControlModel(map: map)
         self.map = map
         
-        cancelable.append(model.isEnabledChannel.sink {
+        cancelable.append(model.isEnabledChannel.sinkOnMainThread {
             value in
             eventChannel.success([
                 "event": Events.locationEnabledEvent,
                 "value": value
             ])
         })
-        cancelable.append(model.followStateChannel.sink {
+        cancelable.append(model.followStateChannel.sinkOnMainThread {
             followState in
             eventChannel.success([
                 "event": Events.locationFollowEvent,

@@ -26,11 +26,11 @@ class SpeedControlModel {
         self.cameraNotifier = CameraNotifier(model: model)
         
         cancelable.append(contentsOf: [
-            self.model.locationChannel.sink(receiveValue: locationListener(_:)),
-            self.model.routeChannel.sink(receiveValue: routeInfoListener(_:)),
-            self.model.routePositionChannel.sink(receiveValue: positionListener(_:)),
-            self.model.exceedingMaxSpeedLimitChannel.sink(receiveValue: exceedLimitListener(_:)),
-            self.cameraNotifier.cameraProgressChannel.sink(receiveValue: cameraListener(_:))
+            self.model.locationChannel.sinkOnMainThread(locationListener(_:)),
+            self.model.routeChannel.sinkOnMainThread(routeInfoListener(_:)),
+            self.model.routePositionChannel.sinkOnMainThread(positionListener(_:)),
+            self.model.exceedingMaxSpeedLimitChannel.sinkOnMainThread(exceedLimitListener(_:)),
+            self.cameraNotifier.cameraProgressChannel.sinkOnMainThread(cameraListener(_:))
         ])
     }
     

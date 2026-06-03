@@ -38,7 +38,7 @@ class IndoorControlHandler {
                 _lastKnownLevelId = building.levels[index].id
             }
 
-            self.focusedBuildingChannel = building.activeLevelIndexChannel.sink {
+            self.focusedBuildingChannel = building.activeLevelIndexChannel.sinkOnMainThread {
                 [weak self] index in
                 self?.eventChannel?.success([
                     "event": Events.activeLevelIndex,
@@ -53,7 +53,7 @@ class IndoorControlHandler {
         self.manager = manager
         self.eventChannel = eventChannel
 
-        cancelable.append(manager.focusedBuildingChannel.sink {
+        cancelable.append(manager.focusedBuildingChannel.sinkOnMainThread {
             [weak self] building in
 
             self?.focusedBuilding = building

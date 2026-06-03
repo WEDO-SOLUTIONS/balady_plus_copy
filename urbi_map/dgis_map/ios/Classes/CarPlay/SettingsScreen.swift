@@ -105,8 +105,8 @@ class SettingsScreen: NSObject {
     }
     
     private func observeTrafficState() {
-        trafficStateCancellable = trafficControlModel.stateChannel.sink(
-            receiveValue: trafficStateChanged
+        trafficStateCancellable = trafficControlModel.stateChannel.sinkOnMainThread(
+            trafficStateChanged
         )
     }
     

@@ -60,13 +60,13 @@ class RouteHandler {
         
         /// Since future versions of the SDK will not support `sink`, we have to use `sinkOnMainThread`. More: https://docs.2gis.com/en/ios/sdk/examples/base#data-channels
         /// TODO: It is necessary to consider error handling for this method. See BSA-3348 issue
-        cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
+        cancelable.append(self.routeEditor.routesInfoChannel.sinkOnMainThread { [weak self] info in
             if case .publicTransport = self?.options {
                 self?.publicTransportHandler?.onRoutesChanged()
             }
             self?.onRoutesInfoChanged(info)
         })
-        cancelable.append(self.routeEditor.activeRouteIndexChannel.sink { [weak self] index in
+        cancelable.append(self.routeEditor.activeRouteIndexChannel.sinkOnMainThread { [weak self] index in
             if case .publicTransport = self?.options {
                 self?.publicTransportHandler?.onActiveRouteChanged()
             }
@@ -258,7 +258,7 @@ class RouteHandler {
         self.moveCameraCancellable?.cancel()
         self.moveCameraCancellable = self.map.camera.move(
             position: position
-        ).sink {_ in } failure: {_ in }
+        ).sinkOnMainThread {_ in } failure: {_ in }
         
         let mappedRoutes = routesInfo.routes.map(RouteHandler.mapRouteInfo)
         
@@ -306,7 +306,7 @@ class RouteHandler {
         self.moveCameraCancellable?.cancel()
         self.moveCameraCancellable = self.map.camera.move(
             position: updatedPosition
-        ).sink {_ in } failure: {_ in }
+        ).sinkOnMainThread {_ in } failure: {_ in }
     }
     
     
@@ -369,7 +369,7 @@ class RouteHandler {
             searchPoints: [briefRouteInfoSearchPoints],
             routeSearchOptions: routeSearchOptions
         )
-            .sink(receiveValue: {
+            .sinkOnMainThread(receiveValue: {
                 [weak self] response in
                 guard let self = self else {
                     completion(
@@ -419,7 +419,7 @@ class RouteHandler {
             intermediatePoints: intermediatePoints ?? []
         )
         
-        self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in
+        self.cancelable.append(routesFuture.sinkOnMainThread { (response: [TrafficRoute]) in
             let routeInfoMessages = response.map(self.routeInfoMessages)
             let result = FindRouteResultMessage(routes: routeInfoMessages)
             completion(Result.success(result))

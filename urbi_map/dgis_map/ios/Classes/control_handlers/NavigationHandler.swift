@@ -43,7 +43,7 @@ class NavigationHandler {
     
     private(set) var isNavigating: Bool = false
 
-    init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
+    init(map: Map, mapView: UIView & IMapUIView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
         self.context = try! sdk.context
         self.map = map
 
@@ -51,7 +51,7 @@ class NavigationHandler {
         self.navigationManager = DgisMapInitializer.shared.getNavigationManager()
         self.oldSource = nil
         
-        self.voiceManager = getVoiceManager(context: context)
+        self.voiceManager = try! sdk.voiceManager
 
         self.speedControlModel = SpeedControlModel(
             model: self.navigationManager.uiModel,
@@ -75,15 +75,15 @@ class NavigationHandler {
         )
 
         self.cancelable.append(
-            self.navigationManager.uiModel.stateChannel.sink(receiveValue: stateChannelListener)
+            self.navigationManager.uiModel.stateChannel.sinkOnMainThread(stateChannelListener)
         )
 
         self.cancelable.append(
-            self.navigationManager.uiModel.routeChannel.sink(receiveValue: routeInfoListener)
+            self.navigationManager.uiModel.routeChannel.sinkOnMainThread(routeInfoListener)
         )
         
         self.cancelable.append(
-            self.navigationManager.uiModel.betterRouteChannel.sink(receiveValue: betterRouteListener)
+            self.navigationManager.uiModel.betterRouteChannel.sinkOnMainThread(betterRouteListener)
         )
         
         navigationManager.mapManager.addMap(map: map)
@@ -233,7 +233,10 @@ class NavigationHandler {
             range: SpeedRange(minSpeed: Double(truncating: $0.minSpeedRange as NSNumber), maxSpeed: $0.maxSpeedRange),
             minDistanceToManeuver: RouteDistance(millimeters: Int64($0.routeDistanceMillimeters)),
             maxDistanceToManeuver: RouteDistance(millimeters: Int64($0.routeDistanceMillimeters)),
-            styleZoom: StyleZoom(value: Float($0.styleZoomValue))
+            roadClassesStyleZooms: [:],
+            roadClassesTilts: [:],
+            styleZoom: StyleZoom(value: Float($0.styleZoomValue)),
+            styleTilt: Tilt(value: 45)
         )})
     }
 
@@ -244,11 +247,14 @@ class NavigationHandler {
     func applyCameraSettings(_ settings: NavigationCameraSettings) {
         let zoomFollowSettings = self.navigationManager.zoomFollowSettings
 
+        let tiltPoints = settings.tiltRelation
         if let rules = settings.speedZoomRules {
-            zoomFollowSettings.speedRangeToStyleZoomSequence = rules.map(Self.toSpeedRangeToStyleZoom)
+            zoomFollowSettings.speedRangeToStyleZoomSequence =
+                rules.map { Self.toSpeedRangeToStyleZoom($0, tiltPoints: tiltPoints) }
         }
         if let rules = settings.freeRoamSpeedZoomRules {
-            zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = rules.map(Self.toSpeedRangeToStyleZoom)
+            zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence =
+                rules.map { Self.toSpeedRangeToStyleZoom($0, tiltPoints: tiltPoints) }
         }
 
         if let tuning = settings.zoomTuning {
@@ -315,12 +321,26 @@ class NavigationHandler {
         }
     }
 
-    private static func toSpeedRangeToStyleZoom(_ rule: SpeedZoomRule) -> SpeedRangeToStyleZoom {
-        SpeedRangeToStyleZoom(
+    private static func toSpeedRangeToStyleZoom(
+        _ rule: SpeedZoomRule,
+        tiltPoints: [StyleZoomTiltPoint]?
+    ) -> SpeedRangeToStyleZoom {
+        // SDK 13 carries tilt per speed range natively via styleTilt — drive it from the
+        // zoom→tilt curve so the camera leans toward the horizon at the rule's zoom.
+        let styleTilt: Tilt
+        if let pts = tiltPoints, !pts.isEmpty {
+            styleTilt = ZoomTiltRelation(points: pts).styleZoomToTilt(styleZoom: StyleZoom(value: Float(rule.styleZoom)))
+        } else {
+            styleTilt = Tilt(value: 55)
+        }
+        return SpeedRangeToStyleZoom(
             range: SpeedRange(minSpeed: rule.minSpeed, maxSpeed: rule.maxSpeed),
             minDistanceToManeuver: RouteDistance(millimeters: Int64(rule.minDistanceToManeuverMm)),
             maxDistanceToManeuver: RouteDistance(millimeters: Int64(rule.maxDistanceToManeuverMm)),
-            styleZoom: StyleZoom(value: Float(rule.styleZoom))
+            roadClassesStyleZooms: [:],
+            roadClassesTilts: [:],
+            styleZoom: StyleZoom(value: Float(rule.styleZoom)),
+            styleTilt: styleTilt
         )
     }
 

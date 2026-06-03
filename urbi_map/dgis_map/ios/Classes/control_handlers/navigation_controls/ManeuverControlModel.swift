@@ -27,9 +27,9 @@ class ManeuverControlModel {
         self.eventChannel = eventChannel
         
         self.cancelable.append(contentsOf: [
-            self.model.routeChannel.sink(receiveValue: routeListener(_:)),
-            self.model.routePositionChannel.sink(receiveValue: positionListener(_:)),
-            self.model.stateChannel.sink(receiveValue: stateListener(_:))
+            self.model.routeChannel.sinkOnMainThread(routeListener(_:)),
+            self.model.routePositionChannel.sinkOnMainThread(positionListener(_:)),
+            self.model.stateChannel.sinkOnMainThread(stateListener(_:))
         ])
     }
     

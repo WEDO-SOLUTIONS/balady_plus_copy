@@ -58,7 +58,7 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
     private func loadHistory() {
         let itemsFuture = searchHistory.items(page: SearchHistoryPage())
         self.searchHistoryCancellable?.cancel()
-        self.searchHistoryCancellable = itemsFuture.sink(
+        self.searchHistoryCancellable = itemsFuture.sinkOnMainThread(
             receiveValue: whenLoaded
         ) { _ in
 

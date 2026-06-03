@@ -36,7 +36,7 @@ class TrafficAndParkingControlHandler {
     }
     
     func onAttachToMap() {
-        self.cancelable.append(self.map.attributes.changed.sink { attributes in
+        self.cancelable.append(self.map.attributes.changed.sinkOnMainThread { attributes in
             if (attributes.contains(self.parkingAttrName) || attributes.contains(self.parkingFilterAttrName)) {
                 var filterAttribute: String?
                 if case let .string(value) = self.map.attributes.getAttributeValue(name: self.parkingFilterAttrName) {
@@ -50,7 +50,7 @@ class TrafficAndParkingControlHandler {
             }
         })
         
-        self.cancelable.append(self.trafficControlModel.stateChannel.sink { trafficState in
+        self.cancelable.append(self.trafficControlModel.stateChannel.sinkOnMainThread { trafficState in
             switch trafficState.status {
             case .enabled:
                 self.enableRoadEvents()

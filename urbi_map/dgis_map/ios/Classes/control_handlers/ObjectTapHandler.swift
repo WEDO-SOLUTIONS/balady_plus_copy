@@ -1203,7 +1203,7 @@ class ObjectTapHandler {
 
 
         self.cancelable.append(
-            map.getRenderedObjects(centerPoint: screenPoint, radius: ScreenDistance(value: 1)).sink { renderedObjects in
+            map.getRenderedObjects(centerPoint: screenPoint, radius: ScreenDistance(value: 1)).sinkOnMainThread { renderedObjects in
                 let objects = renderedObjects.filter {
                     $0.item.item is DgisMapObject
                 }.map {

@@ -181,7 +181,7 @@ extension PublicTransportTransfer {
                     value: "\($0.type)",
                     color: $0.type.isMetro ? color : nil
                 ),
-                names: $0.names
+                names: $0.routeInfos.map { route in route.name }
             )
         }
     }

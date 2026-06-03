@@ -6,7 +6,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
     var delegate: DgisCarPlayMapViewDelegate?
     
     private var map: Map?
-    private var mapView: (UIView & IMapView)?
+    private var mapView: (UIView & IMapUIView)?
     private var myLocationControlModel: MyLocationControlModel?
     private var myLocationSource: MyLocationMapObjectSource?
     
@@ -56,7 +56,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
                 zoom: pos.zoom,
                 tilt: Tilt(value: 45),
                 bearing: pos.bearing
-            ).sink(
+            ).sinkOnMainThread(
                 receiveValue: { _ in },
                 failure: { _ in }
             )

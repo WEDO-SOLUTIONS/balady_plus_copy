@@ -27,7 +27,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var cancelable: Array<Cancellable> = []
     
     private var map: Map?
-    private var mapView: (UIView & IMapView)?
+    private var mapView: (UIView & IMapUIView)?
     
     private var zoomControlHandler: ZoomControlHandler?
     private var locationControlHandler: LocationControlHandler?
@@ -238,7 +238,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
         cancelable.append(
-            styleFuture.sink (
+            styleFuture.sinkOnMainThread (
                 receiveValue: { [map = self.map] style in
                     map?.style = style
                      completion(Result.success(()))
@@ -256,7 +256,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
         
     func overrideLocales(locales: [String], completion: @escaping (Result<Void, any Error>) -> Void) {
-        let manager = getLocaleManager(context: try! sdk.context)
+        let manager = try! sdk.localeManager
         manager.overrideLocales(locales: locales.map {
             let parts = $0.components(separatedBy: "-")
             return Locale(language: parts[0], region: parts[1])
@@ -383,7 +383,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         
-        let moveCancelable = map.camera.move(position: cameraPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
+        let moveCancelable = map.camera.move(position: cameraPosition, time: duration, animationType: animationType).sinkOnMainThread(receiveValue: { _ in
              completion(Result.success(()))
             return
         }, failure: { error in

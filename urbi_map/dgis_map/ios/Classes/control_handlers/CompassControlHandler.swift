@@ -11,7 +11,7 @@ class CompassControlHandler {
     
     init(map: Map, eventChannel: DgisStreamHandler) {
         self.compassControlModel = CompassControlModel(map: map)
-        self.cancelable.append(self.compassControlModel!.bearingChannel.sink { bearing in
+        self.cancelable.append(self.compassControlModel!.bearingChannel.sinkOnMainThread { bearing in
             eventChannel.success([
                 "event": Events.compassBearingChanged,
                 "value": bearing.value,

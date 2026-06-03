@@ -8,7 +8,7 @@ extension Future {
 
         let result = try await withCheckedThrowingContinuation {
             continuation in
-            cancellable = sink {
+            cancellable = sinkOnMainThread {
                 value in
                 continuation.resume(returning: value)
             } failure: {

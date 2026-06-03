@@ -13,7 +13,7 @@ class DgisCarPlayMapView: UIViewController {
     static let defaultCameraZoom = Zoom(value: 17)
     
     private let map: Map
-    private let mapView: (UIView & IMapView)
+    private let mapView: (UIView & IMapUIView)
     private let cpWindow: CPWindow
     private lazy var speedControl = createSpeedControlView()
     
@@ -24,7 +24,7 @@ class DgisCarPlayMapView: UIViewController {
     
     init(
         map: Map,
-        mapView: (UIView & IMapView),
+        mapView: (UIView & IMapUIView),
         cpWindow: CPWindow
     ) {
         self.map = map
@@ -107,7 +107,7 @@ class DgisCarPlayMapView: UIViewController {
                 zoom: pos.zoom,
                 tilt: Tilt(value: 45),
                 bearing: pos.bearing
-            ).sink(
+            ).sinkOnMainThread(
                 receiveValue: { _ in },
                 failure: { _ in }
             )
@@ -208,7 +208,7 @@ class DgisCarPlayMapView: UIViewController {
                     zoom: Self.defaultCameraZoom,
                     tilt: tilt,
                     bearing: position.bearing
-                ).sink(
+                ).sinkOnMainThread(
                     receiveValue: { _ in
                         navigationManager.mapFollowController.setFollow(follow: true)
                     },
@@ -224,7 +224,7 @@ class DgisCarPlayMapView: UIViewController {
                 zoom: Self.defaultCameraZoom,
                 tilt: tilt,
                 bearing: position.bearing
-            ).sink(
+            ).sinkOnMainThread(
                 receiveValue: { _ in },
                 failure: { _ in }
             )
@@ -247,7 +247,7 @@ extension Map {
     func loadStyle(styleFactory: DGis.IStyleFactory) -> DGis.Cancellable? {
         let stylePath = FlutterDartProject.lookupKey(forAsset: "assets/maps/styles/styles.2gis")
         guard let assetPath = Bundle.main.path(forResource: stylePath, ofType: nil) else { return nil }
-        return styleFactory.loadFile(path: assetPath).sink(
+        return styleFactory.loadFile(path: assetPath).sinkOnMainThread(
             receiveValue: { style in
                 self.style = style
             },
