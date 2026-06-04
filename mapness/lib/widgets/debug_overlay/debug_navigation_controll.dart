@@ -32,9 +32,12 @@ class DebugNavigationControll extends ConsumerWidget {
               if (dgisController == null) {
                 return;
               }
-              await dgisController.startNavigationSimulation(
-                NavigationConstants.navigationSpeedRangeZooms,
+              final zooms = NavigationConstants.navigationSpeedRangeZooms;
+              debugPrint(
+                '[SIM] speed→zoom passed at start: '
+                '${zooms.map((e) => '${e.minSpeedRange.toInt()}-${e.maxSpeedRange.toInt()}:z${e.styleZoomValue}').toList()}',
               );
+              await dgisController.startNavigationSimulation(zooms);
               await dgisController.setNavigationCameraSettings(
                 ref.read(navigationCameraSettingsControllerProvider).toMessage(),
               );
