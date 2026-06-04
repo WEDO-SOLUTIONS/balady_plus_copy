@@ -115,6 +115,7 @@ class PoiCardWidgetPage extends StatelessWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
   final PoiCardDataFromGoogle? poiCardDataFromGoogle;
+  final bool showHighlight;
 
   const PoiCardWidgetPage({
     this.objectId,
@@ -122,6 +123,7 @@ class PoiCardWidgetPage extends StatelessWidget {
     this.closestPoint,
     this.cameraConfig,
     this.poiCardDataFromGoogle,
+    this.showHighlight = true,
     super.key,
   });
 
@@ -136,6 +138,7 @@ class PoiCardWidgetPage extends StatelessWidget {
       cameraConfig: cameraConfig,
       poiCardDataFromGoogle: poiCardDataFromGoogle,
       closestPoint: closestPoint,
+      showHighlight: showHighlight,
       key: key,
     ),
   );
