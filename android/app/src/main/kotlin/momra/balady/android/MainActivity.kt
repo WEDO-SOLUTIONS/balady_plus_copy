@@ -3,6 +3,7 @@ package momra.balady.android
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -52,6 +53,7 @@ class MainActivity : AudioServiceFragmentActivity() {
         FlutterProvider.getHostFlutterApi(this).runMain { }
         MainAppScreenStateNotifier.setState(MainAppScreenState.CREATED)
 
+        AppIconQuickActionChannel.captureFromIntent(intent)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as? AudioManager
     }
 
@@ -66,6 +68,13 @@ class MainActivity : AudioServiceFragmentActivity() {
 
         // Ensure we are listening for focus changes while the app is active.
         requestAudioFocusForCoordination()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Required for singleTask — home-screen shortcuts deliver a new intent on warm resume.
+        setIntent(intent)
+        AppIconQuickActionChannel.captureFromIntent(intent)
     }
 
     override fun onPause() {
@@ -112,6 +121,9 @@ class MainActivity : AudioServiceFragmentActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             "com.balady.audio_coordination"
         )
+
+        AppIconQuickActionChannel.register(flutterEngine.dartExecutor.binaryMessenger)
+        AppIconQuickActionChannel.captureFromIntent(getIntent())
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {

@@ -24,6 +24,9 @@ class MetricsConstants {
   static const Themes themesKeys = Themes();
   static const KaabaTour kaabaTourKeys = KaabaTour();
   static const MakkahPlaces makkahPlacesKeys = MakkahPlaces();
+  static const AppIconQuickActions appIconQuickActionsKeys = AppIconQuickActions();
+
+  static const String appIconQuickActionsTag = 'AppIconQuickActions';
 }
 
 class Favorites {
@@ -347,4 +350,15 @@ class MakkahPlaces {
   // Map interactions
   String get mapMarkerTapped => 'Map marker tapped';
   String get mapCameraAnimated => 'Map camera animated';
+}
+
+class AppIconQuickActions {
+  const AppIconQuickActions();
+
+  String get shortcutHandled => 'App icon quick action handled';
+  String get configFetchStarted => 'App icon quick actions config fetch started';
+  String get configFetchSuccess => 'App icon quick actions config fetch success';
+  String get configFetchFailed => 'App icon quick actions config fetch failed';
+  String get configCacheUsed => 'App icon quick actions config cache used';
+  String get configAssetFallback => 'App icon quick actions config asset fallback';
 }

@@ -3355,9 +3355,10 @@ class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+  static const String quickActionsConfig = 'packages/mapness/assets/quick_actions_config.json';
 
   /// List of all assets
-  static List<String> get values => [config];
+  static List<String> get values => [config, quickActionsConfig];
 }
 
 class AssetGenImage {

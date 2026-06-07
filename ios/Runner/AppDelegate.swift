@@ -25,11 +25,22 @@ import dgis_map
         // Setup iOS audio coordination → Flutter events (duck/restore).
         audioCoordinationManager = AudioCoordinationManager(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
+        AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
         }
 
         return true
+    }
+
+    override func application(
+        _ application: UIApplication,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        AppIconQuickActionChannel.store(shortcutItem.type)
+        completionHandler(true)
     }
 
     private func setupNativeOverlayChannel(with flutterEngine: FlutterEngine) {
