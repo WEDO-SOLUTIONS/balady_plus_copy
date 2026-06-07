@@ -2,6 +2,7 @@ package com.dgis.map
 
 import android.content.Context
 import android.view.LayoutInflater
+import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.*
@@ -42,6 +43,7 @@ class DgisMapView(
         private val id: Int,
         private val context: Context,
         private val locationSource: FusedLocationSource,
+        private val lifecycleOwner: LifecycleOwner?,
 ) : PlatformView, MapApi {
 
     private val mapView: MapView =
@@ -103,6 +105,8 @@ class DgisMapView(
     }
 
     init {
+        lifecycleOwner?.let { DgisLifecycleOwnerBridge.setViewTreeLifecycleOwner(mapView, it) }
+
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
 
