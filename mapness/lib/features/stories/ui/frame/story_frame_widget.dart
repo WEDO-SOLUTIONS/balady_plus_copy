@@ -210,6 +210,24 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                             ),
                           ),
                         ),
+                      const Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: kToolbarHeight + Spacing.$8x,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Color(0x66000000),
+                                Color(0x00000000),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       Positioned.fill(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
