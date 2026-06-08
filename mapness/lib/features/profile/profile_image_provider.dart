@@ -164,8 +164,5 @@ class ProfileImage extends _$ProfileImage {
     await _prefs.remove(_imagePrefsKey);
     state = const AsyncData(UserProfileData());
     _isUpdated = false;
-    // NOTE: do NOT call ref.invalidateSelf() here. Doing so would trigger build()
-    // while CommonProperties.isLoggedIn is still true (clearAuth hasn't run yet),
-    // causing _updateImageFromBackend() to re-download and re-save the photo.
   }
 }
