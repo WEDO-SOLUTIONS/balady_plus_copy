@@ -42,6 +42,7 @@ class SelectedMarker extends _$SelectedMarker {
     }
 
     await mapObjectManager.removeAllMarkers();
+    await mapObjectManager.removeAllModels();
     await mapObjectManager.addMarker(marker);
     state = marker;
   }
@@ -49,11 +50,13 @@ class SelectedMarker extends _$SelectedMarker {
   Future<void> removeMarker(String id) async {
     _showHiddenMarkerIfPresent();
     await mapObjectManager.removeMarkerById(id);
+    await mapObjectManager.removeAllModels();
     state = null;
   }
 
   Future<void> removeAllMarkers() async {
     await mapObjectManager.removeAllMarkers();
+    await mapObjectManager.removeAllModels();
     _showHiddenMarkerIfPresent();
     state = null;
   }
@@ -80,6 +83,7 @@ class SelectedMarker extends _$SelectedMarker {
 
   Future<void> clear() async {
     await mapObjectManager.removeAllMarkers();
+    await mapObjectManager.removeAllModels();
     _showHiddenMarkerIfPresent();
     state = null;
   }

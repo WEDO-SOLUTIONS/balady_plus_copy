@@ -5,11 +5,7 @@ import 'package:dgis_map_platform_interface/library.dart';
 /// Model corresponds render object on map
 class Marker {
   /// Base class constructor
-  const Marker({
-    required this.id,
-    required this.options,
-    this.onTap,
-  });
+  const Marker({required this.id, required this.options, this.onTap});
 
   /// Map render object's id
   final String id;
@@ -24,34 +20,46 @@ class Marker {
 /// SVG marker icon
 class SvgMarkerIcon extends MarkerIconMessage {
   /// SVG marker icon constructor
-  SvgMarkerIcon({
-    required super.svgPath,
-    required super.width,
-    super.iconOpacity,
-    super.iconMapDirection,
-  });
+  SvgMarkerIcon({required super.svgPath, required super.width, super.iconOpacity, super.iconMapDirection});
 }
 
 /// PNG marker icon
 class PngMarkerIcon extends MarkerIconMessage {
   /// PNG marker icon constructor
-  PngMarkerIcon({
-    required super.pngPath,
-    required super.width,
-    super.iconOpacity,
-    super.iconMapDirection,
-  });
+  PngMarkerIcon({required super.pngPath, required super.width, super.iconOpacity, super.iconMapDirection});
 }
 
 /// PNG marker icon from bytes
 class PngBytesMarkerIcon extends MarkerIconMessage {
   /// PNG marker icon constructor
-  PngBytesMarkerIcon({
-    required super.pngData,
-    required super.width,
-    super.iconOpacity,
-    super.iconMapDirection,
-  });
+  PngBytesMarkerIcon({required super.pngData, required super.width, super.iconOpacity, super.iconMapDirection});
+}
+
+/// 3D model with fixed screen size in logical pixels.
+class LogicalPixelModelSize extends ModelSizeMessage {
+  /// Base constructor.
+  LogicalPixelModelSize(double value) : super(value: value, type: ModelSizeTypeMessage.logicalPixel);
+}
+
+/// 3D model with size bound to map scale.
+class ScaleModelSize extends ModelSizeMessage {
+  /// Base constructor.
+  ScaleModelSize(double value) : super(value: value, type: ModelSizeTypeMessage.scale);
+}
+
+/// Model corresponds 3D render object on map.
+class ModelMapObject {
+  /// Base class constructor.
+  const ModelMapObject({required this.id, required this.options, this.onTap});
+
+  /// Map render object's id.
+  final String id;
+
+  /// Map render object's options.
+  final ModelMapObjectOptionsMessage options;
+
+  /// Map render object's onTap handler.
+  final void Function()? onTap;
 }
 
 /// Model corresponds render object on map
@@ -110,11 +118,7 @@ class SimpleClusterObject {
 /// Model corresponds render object on map
 class ClusteringMapObjectManager {
   /// Base class constructor
-  const ClusteringMapObjectManager({
-    required this.options,
-    required this.renderCluster,
-    this.onTap,
-  });
+  const ClusteringMapObjectManager({required this.options, required this.renderCluster, this.onTap});
 
   /// Map render object's options (such as position, color, anchor and etc)
   final ClusteringMapObjectManagerOptionsMessage options;
@@ -129,11 +133,7 @@ class ClusteringMapObjectManager {
 /// Model corresponds render object on map
 class Polygon {
   /// Base class constructor
-  const Polygon({
-    required this.id,
-    required this.options,
-    this.onTap,
-  });
+  const Polygon({required this.id, required this.options, this.onTap});
 
   /// Map render object's id
   final String id;
@@ -148,11 +148,7 @@ class Polygon {
 /// Model corresponds render object on map
 class Circle {
   /// Base class constructor
-  const Circle({
-    required this.id,
-    required this.options,
-    this.onTap,
-  });
+  const Circle({required this.id, required this.options, this.onTap});
 
   /// Map render object's id
   final String id;
@@ -167,11 +163,7 @@ class Circle {
 /// Model corresponds render object on map
 class Polyline {
   /// Base class constructor
-  const Polyline({
-    required this.id,
-    required this.options,
-    this.onTap,
-  });
+  const Polyline({required this.id, required this.options, this.onTap});
 
   /// Map render object's id
   final String id;

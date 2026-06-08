@@ -450,6 +450,16 @@ class $AssetsMapsGen {
   $AssetsMapsConfigsGen get configs => const $AssetsMapsConfigsGen();
 }
 
+class $AssetsModelsGen {
+  const $AssetsModelsGen();
+
+  /// File path: assets/models/LIGHT_THEME_CAR_MODEL.glb
+  String get lightThemeCarModel => 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
+
+  /// List of all assets
+  List<String> get values => [lightThemeCarModel];
+}
+
 class $AssetsIconsLottieGen {
   const $AssetsIconsLottieGen();
 
@@ -3375,6 +3385,7 @@ class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+  static const $AssetsModelsGen models = $AssetsModelsGen();
 
   /// List of all assets
   static List<String> get values => [config];

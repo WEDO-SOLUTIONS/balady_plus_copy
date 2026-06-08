@@ -222,6 +222,7 @@ flutter:
     - assets/images_svg/layers/
     - assets/maps/configs/
     - assets/maps/buses/
+    - assets/models/
     - packages/map_styles/src/styles.2gis
     - packages/map_styles/src/styles_saudi_day.2gis
   fonts:
