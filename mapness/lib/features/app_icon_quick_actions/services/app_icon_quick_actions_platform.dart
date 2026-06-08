@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -17,7 +18,27 @@ final List<String> _earlyPendingShortcutKeys = <String>[];
 AppIconQuickActionTapHandler? _shortcutTapHandler;
 bool _bridgeInitialized = false;
 
+String? _lastDispatchedShortcutKey;
+DateTime? _lastDispatchedAt;
+
+bool _shouldIgnoreDuplicateDispatch(String shortcutKey) {
+  final lastAt = _lastDispatchedAt;
+  if (_lastDispatchedShortcutKey == shortcutKey &&
+      lastAt != null &&
+      DateTime.now().difference(lastAt) < const Duration(seconds: 3)) {
+    return true;
+  }
+  _lastDispatchedShortcutKey = shortcutKey;
+  _lastDispatchedAt = DateTime.now();
+  return false;
+}
+
 void _dispatchShortcut(String shortcutKey) {
+  if (_shouldIgnoreDuplicateDispatch(shortcutKey)) {
+    _logBridge('ignoring duplicate shortcut dispatch: $shortcutKey');
+    return;
+  }
+
   _logBridge('shortcut received: $shortcutKey');
   final handler = _shortcutTapHandler;
   if (handler != null) {
@@ -43,16 +64,28 @@ Future<void> initAppIconQuickActionsBridge() async {
     _logBridge('plugin initialize failed (native bridge still active): $e\n$st');
   }
 
-  await pollAppIconQuickActionLaunch();
+  // Android/Huawei cold start: dispatch from native storage if getLaunchAction missed it.
+  if (Platform.isAndroid) {
+    final nativeKey = await AppIconQuickActionNativeBridge.peekPendingShortcut();
+    if (nativeKey != null && nativeKey.isNotEmpty) {
+      _dispatchShortcut(nativeKey);
+    }
+  }
+
   _logBridge('bridge initialized');
 }
 
 /// Reads shortcut key stored in native launch intent (pre-warmed engine safe).
-Future<void> pollAppIconQuickActionLaunch() async {
+Future<String?> pollAppIconQuickActionLaunch() async {
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    return null;
+  }
   final nativeKey = await AppIconQuickActionNativeBridge.consumePendingShortcut();
   if (nativeKey != null && nativeKey.isNotEmpty) {
-    _dispatchShortcut(nativeKey);
+    _logBridge('native cold-start shortcut: $nativeKey');
+    return nativeKey;
   }
+  return null;
 }
 
 /// Wires Riverpod handler and flushes shortcuts received before [ProviderScope] mounted.
@@ -63,10 +96,12 @@ void bindAppIconQuickActionsHandler(AppIconQuickActionTapHandler handler) {
   }
   final pending = List<String>.from(_earlyPendingShortcutKeys);
   _earlyPendingShortcutKeys.clear();
-  for (final shortcutKey in pending) {
-    _logBridge('flushing queued shortcut: $shortcutKey');
-    handler(shortcutKey);
-  }
+  scheduleMicrotask(() {
+    for (final shortcutKey in pending) {
+      _logBridge('flushing queued shortcut: $shortcutKey');
+      handler(shortcutKey);
+    }
+  });
 }
 
 void _logBridge(String message) {

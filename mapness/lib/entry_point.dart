@@ -224,7 +224,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         return;
       }
       await ref.read(appIconQuickActionsManagerProvider.future);
-      await ref.read(appIconQuickActionHandlerProvider.notifier).processPending();
+      await ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut();
       unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
@@ -296,8 +296,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).refresh());
-      unawaited(pollAppIconQuickActionLaunch());
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).processPending());
+      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).processPendingIfRouterReady());
     }
   }
 
@@ -721,7 +720,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       if (!mounted) {
         return;
       }
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).processPending());
+      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
     });
   }
 

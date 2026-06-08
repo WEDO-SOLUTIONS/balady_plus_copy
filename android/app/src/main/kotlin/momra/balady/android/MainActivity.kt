@@ -46,6 +46,9 @@ class MainActivity : AudioServiceFragmentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Capture before super.onCreate — FlutterFragmentActivity may attach plugins and read the intent.
+        AppIconQuickActionChannel.captureFromIntent(intent)
+
         super.onCreate(savedInstanceState)
         // Initialize Adjust OAID
         AdjustOaid.readOaid(applicationContext)
@@ -53,12 +56,13 @@ class MainActivity : AudioServiceFragmentActivity() {
         FlutterProvider.getHostFlutterApi(this).runMain { }
         MainAppScreenStateNotifier.setState(MainAppScreenState.CREATED)
 
-        AppIconQuickActionChannel.captureFromIntent(intent)
         audioManager = getSystemService(Context.AUDIO_SERVICE) as? AudioManager
     }
 
     override fun onStart() {
         super.onStart()
+        // Fallback for devices that deliver the shortcut intent after onCreate.
+        AppIconQuickActionChannel.captureFromIntent(intent)
         MainAppScreenStateNotifier.setState(MainAppScreenState.STARTED)
     }
 
@@ -123,7 +127,6 @@ class MainActivity : AudioServiceFragmentActivity() {
         )
 
         AppIconQuickActionChannel.register(flutterEngine.dartExecutor.binaryMessenger)
-        AppIconQuickActionChannel.captureFromIntent(getIntent())
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {

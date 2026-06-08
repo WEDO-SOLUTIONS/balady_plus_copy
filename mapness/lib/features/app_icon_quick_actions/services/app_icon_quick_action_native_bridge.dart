@@ -9,6 +9,20 @@ class AppIconQuickActionNativeBridge {
 
   static const MethodChannel _channel = MethodChannel('momra.balady/app_icon_quick_action');
 
+  static Future<String?> peekPendingShortcut() async {
+    if (!_isSupported) {
+      return null;
+    }
+    try {
+      return await _channel.invokeMethod<String>('peekPendingShortcut');
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('AppIconQuickActions: native peek failed: $e');
+      }
+      return null;
+    }
+  }
+
   static Future<String?> consumePendingShortcut() async {
     if (!_isSupported) {
       return null;

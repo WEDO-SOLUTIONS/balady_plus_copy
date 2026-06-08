@@ -10,7 +10,9 @@ import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_acti
 import 'package:mapness/features/app_icon_quick_actions/models/app_icon_quick_action.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_config.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_native_bridge.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_navigator.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -28,10 +30,36 @@ part 'app_icon_quick_action_handler.g.dart';
 
 @Riverpod(keepAlive: true)
 class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
+  String? _inFlightShortcutKey;
+  Completer<void>? _inFlightCompleter;
+
   @override
   void build() {}
 
   Future<void> handle(String shortcutKey, {bool isFirstRun = false}) async {
+    if (_inFlightShortcutKey == shortcutKey && _inFlightCompleter != null) {
+      logger.log('AppIconQuickActions: join in-flight handle($shortcutKey)');
+      return _inFlightCompleter!.future;
+    }
+
+    _inFlightShortcutKey = shortcutKey;
+    final inFlightCompleter = Completer<void>();
+    _inFlightCompleter = inFlightCompleter;
+
+    try {
+      await _handleShortcut(shortcutKey, isFirstRun: isFirstRun);
+    } finally {
+      if (_inFlightShortcutKey == shortcutKey) {
+        _inFlightShortcutKey = null;
+        _inFlightCompleter = null;
+      }
+      if (!inFlightCompleter.isCompleted) {
+        inFlightCompleter.complete();
+      }
+    }
+  }
+
+  Future<void> _handleShortcut(String shortcutKey, {bool isFirstRun = false}) async {
     logger.log('AppIconQuickActions: handle($shortcutKey, isFirstRun=$isFirstRun)');
 
     if (!await _waitForRouterReady()) {
@@ -101,11 +129,48 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     await handle(pending.shortcutKey, isFirstRun: pending.isFirstRun);
   }
 
+  /// Handles a warm-start shortcut when the router is already mounted.
+  Future<void> processPendingIfRouterReady() async {
+    if (!_isRouterReady) {
+      return;
+    }
+    await processPending();
+  }
+
+  /// Polls native launch storage and navigates once [rootNavigatorKey] is mounted (cold start).
+  Future<void> deliverColdStartShortcut() async {
+    var consumeNativeAfterQueue = false;
+    var nativeKey = await AppIconQuickActionNativeBridge.peekPendingShortcut();
+    if (nativeKey != null) {
+      consumeNativeAfterQueue = true;
+    } else {
+      nativeKey = await pollAppIconQuickActionLaunch();
+    }
+
+    if (nativeKey != null) {
+      ref.read(pendingAppIconQuickActionProvider.notifier).setPending(nativeKey, isFirstRun: true);
+      if (consumeNativeAfterQueue) {
+        await AppIconQuickActionNativeBridge.consumePendingShortcut();
+      }
+    }
+
+    if (!await _waitForRouterReady()) {
+      logger.log('AppIconQuickActions: router not ready, shortcut kept pending', logLevel: MapnessLogLevel.warning);
+      return;
+    }
+
+    await processPending();
+  }
+
+  bool get _isRouterReady {
+    final state = rootNavigatorKey.currentState;
+    return state != null && state.mounted;
+  }
+
   /// Waits until mapness [rootNavigatorKey] is mounted (cold start from home-screen shortcut).
   Future<bool> _waitForRouterReady() async {
-    for (var attempt = 0; attempt < 60; attempt++) {
-      final state = rootNavigatorKey.currentState;
-      if (state != null && state.mounted) {
+    for (var attempt = 0; attempt < 120; attempt++) {
+      if (_isRouterReady) {
         return true;
       }
       await Future<void>.delayed(const Duration(milliseconds: 100));

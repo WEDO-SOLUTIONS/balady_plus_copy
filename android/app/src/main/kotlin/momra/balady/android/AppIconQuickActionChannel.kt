@@ -20,21 +20,24 @@ object AppIconQuickActionChannel {
             channel.setMethodCallHandler { call, result ->
                 when (call.method) {
                     "consumePendingShortcut" -> result.success(consumePending())
+                    "peekPendingShortcut" -> result.success(peekPending())
                     else -> result.notImplemented()
                 }
             }
         }
     }
 
+    /// Stores the shortcut key without stripping the intent extra — [QuickActions.getLaunchAction] can still read it.
     fun captureFromIntent(intent: Intent?) {
         val key = intent?.getStringExtra(EXTRA_ACTION)?.takeIf { it.isNotEmpty() } ?: return
-        intent.removeExtra(EXTRA_ACTION)
         store(key)
     }
 
     fun store(key: String) {
         pendingShortcutKey = key
     }
+
+    private fun peekPending(): String? = pendingShortcutKey
 
     private fun consumePending(): String? {
         val key = pendingShortcutKey

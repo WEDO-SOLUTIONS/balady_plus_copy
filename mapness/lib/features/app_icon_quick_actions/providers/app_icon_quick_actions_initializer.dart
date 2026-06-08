@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -11,21 +12,14 @@ part 'app_icon_quick_actions_initializer.g.dart';
 @Riverpod(keepAlive: true)
 void appIconQuickActionsInitializer(Ref ref) {
   bindAppIconQuickActionsHandler((shortcutKey) {
-    logger.log('AppIconQuickActions: dispatching shortcut: $shortcutKey');
-    unawaited(
-      ref
-          .read(appIconQuickActionHandlerProvider.notifier)
-          .handle(
-            shortcutKey,
-            isFirstRun: true,
-          ),
-    );
+    // Defer — must not modify [pendingAppIconQuickActionProvider] during this provider's build.
+    scheduleMicrotask(() {
+      if (!ref.mounted) {
+        return;
+      }
+      logger.log('AppIconQuickActions: dispatching shortcut: $shortcutKey');
+      ref.read(pendingAppIconQuickActionProvider.notifier).setPending(shortcutKey, isFirstRun: true);
+      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).processPendingIfRouterReady());
+    });
   });
-
-  unawaited(
-    pollAppIconQuickActionLaunch().then((_) {
-      final handler = ref.read(appIconQuickActionHandlerProvider.notifier);
-      return handler.processPending();
-    }),
-  );
 }
