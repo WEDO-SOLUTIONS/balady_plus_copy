@@ -63,36 +63,25 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 'Main text will look like this.\n'
                 '1234567890!@#%&*()_+-=',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: _fontSize,
-                  height: 1.4,
-                  color: bodyTextColor,
-                ),
+                style: TextStyle(fontSize: _fontSize, height: 1.4, color:bodyTextColor),
               ),
             ),
             const SizedBox(height: 32),
             Row(
               children: [
-                Text(
-                  'A',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: bodyTextColor,
-                  ),
-                ),
+                Text('A', style: TextStyle(fontSize: 12, color: bodyTextColor)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       trackHeight: 4,
-                      activeTrackColor:accent,
+                      activeTrackColor: accent,
                       inactiveTrackColor: context.colors.backgroundSurface1,
                       thumbColor: accent,
                       overlayColor: accent.withOpacity(0.15),
                       tickMarkShape: const RoundSliderTickMarkShape(tickMarkRadius: 2),
                       activeTickMarkColor: Colors.transparent,
                       inactiveTickMarkColor: accent.withOpacity(0.4),
-
                     ),
                     child: Slider(
                       value: _fontSize,
@@ -110,13 +99,23 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 Text('A', style: TextStyle(fontSize: 24, color: bodyTextColor)),
               ],
             ),
-             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('12px', style: TextStyle(color: isDark ? accent : Colors.grey)),
-                  Text('24px', style: TextStyle(color:isDark ? accent : Colors.grey)),
+                  Text(
+                    '12px',
+                    style: TextStyle(
+                      color: isDark ? accent : Colors.grey,
+                    ),
+                  ),
+                  Text(
+                    '24px',
+                    style: TextStyle(
+                      color: isDark ? accent : Colors.grey,
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -51,6 +51,7 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
+
             // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
@@ -74,6 +75,7 @@ class BaseDashboardContent extends ConsumerWidget {
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
               ),
             ),
+
             const SizedBox(height: Spacing.$3x),
             Column(
               children: [
@@ -102,7 +104,7 @@ class BaseDashboardContent extends ConsumerWidget {
               const SizedBox(height: Spacing.$6x),
             ],
 
-            // 1. Feedback Banner (ساهم معنا)
+            // 2. Quick Actions (إجراءات سريعة)
             DashboardTitle(context.l10n.quickActions),
             const SizedBox(height: Spacing.$4x),
             ScrollConfiguration(

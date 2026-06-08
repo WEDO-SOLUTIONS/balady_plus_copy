@@ -20,31 +20,41 @@ class AccessibilitySettingsPage extends ConsumerStatefulWidget {
   const AccessibilitySettingsPage({super.key});
 
   @override
-  ConsumerState<AccessibilitySettingsPage> createState() => _AccessibilitySettingsPageState();
+  ConsumerState<AccessibilitySettingsPage> createState() =>
+      _AccessibilitySettingsPageState();
 }
 
-class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySettingsPage> {
+class _AccessibilitySettingsPageState
+    extends ConsumerState<AccessibilitySettingsPage> {
   @override
   Widget build(BuildContext context) {
     final controller = p.Provider.of<AccessibilityController>(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: context.read<ThemeController>().systemOverlayStyle,
+      value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
           color: context.colors.backgroundSurface4,
+
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.accessibility,
                 colorEnabled: context.colors.accentDefault,
-                leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+                leading: ActionModel(
+                  onPressed: () => context.router.pop(),
+                  icon: SystemIcons.arrowCornerLeftLarge,
+                ),
               ),
               body: Padding(
-                padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+                padding: const EdgeInsets.only(
+                  top: 12,
+                  left: 12,
+                  right: 12,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -52,9 +62,10 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () => Navigator.of(
-                            context,
-                          ).push(MaterialPageRoute(builder: (context) => const TextSizePreviewPage())),
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const TextSizePreviewPage(),
+                              )),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: GeneralIcons.messageTextLTR,
@@ -69,7 +80,7 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                               ),
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                     Spacing.$4x.heightBox,
@@ -78,8 +89,7 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                       children: [
                         ContentRow(
                           onTap: () => controller.toggleGrayscale(!controller.grayscale),
-                          onToggle: (value) => controller.toggleGrayscale(value),
-                         options: ContentRowOptions(
+                          options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.color_lens_outlined,
                               color: context.colors.accentDefault,
@@ -87,6 +97,7 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                             ),
                             title: 'grayScaleMode'.tr(),
                             actionWidget: ContentRowActionOptions(
+
                               customToggleBuilder: ({required onToggle, bool? initial}) {
                                 return CupertinoSwitch(
                                   value: controller.grayscale ?? false,
@@ -97,8 +108,6 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                                   activeTrackColor: context.colors.accentDefault,
                                 );
                               },
-                              enabledToggle: true,
-                              toggleInitialValue: controller.grayscale ?? false,
                             ),
                           ),
                         ),
