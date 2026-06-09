@@ -19,7 +19,7 @@ void appIconQuickActionsInitializer(Ref ref) {
       }
       logger.log('AppIconQuickActions: dispatching shortcut: $shortcutKey');
       ref.read(pendingAppIconQuickActionProvider.notifier).setPending(shortcutKey, isFirstRun: true);
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).processPendingIfRouterReady());
+      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
     });
   });
 }

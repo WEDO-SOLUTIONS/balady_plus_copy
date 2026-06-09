@@ -52,6 +52,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void
     ) {
+        // Custom SceneDelegate receives warm-start shortcuts; the quick_actions plugin may not.
         AppIconQuickActionChannel.store(shortcutItem.type)
         completionHandler(true)
     }

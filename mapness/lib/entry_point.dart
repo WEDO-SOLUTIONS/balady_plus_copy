@@ -296,7 +296,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).refresh());
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).processPendingIfRouterReady());
+      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
     }
   }
 

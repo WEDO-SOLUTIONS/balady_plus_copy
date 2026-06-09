@@ -14,6 +14,8 @@ final class AppIconQuickActionChannel {
             switch call.method {
             case "consumePendingShortcut":
                 result(consumePending())
+            case "peekPendingShortcut":
+                result(peekPending())
             default:
                 result(FlutterMethodNotImplemented)
             }
@@ -22,6 +24,10 @@ final class AppIconQuickActionChannel {
 
     static func store(_ key: String) {
         pendingShortcutKey = key
+    }
+
+    private static func peekPending() -> String? {
+        pendingShortcutKey
     }
 
     private static func consumePending() -> String? {

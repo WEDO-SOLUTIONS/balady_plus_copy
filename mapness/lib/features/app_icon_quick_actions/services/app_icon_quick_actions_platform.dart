@@ -64,8 +64,8 @@ Future<void> initAppIconQuickActionsBridge() async {
     _logBridge('plugin initialize failed (native bridge still active): $e\n$st');
   }
 
-  // Android/Huawei cold start: dispatch from native storage if getLaunchAction missed it.
-  if (Platform.isAndroid) {
+  // Cold start: dispatch from native storage if the plugin callback was not ready in time.
+  if (Platform.isAndroid || Platform.isIOS) {
     final nativeKey = await AppIconQuickActionNativeBridge.peekPendingShortcut();
     if (nativeKey != null && nativeKey.isNotEmpty) {
       _dispatchShortcut(nativeKey);
