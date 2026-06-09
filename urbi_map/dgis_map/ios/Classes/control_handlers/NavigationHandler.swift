@@ -29,6 +29,12 @@ class NavigationHandler {
     // Active tilt-by-zoom controller added via applyCameraSettings(_:); tracked so it can be
     // replaced/removed cleanly.
     private var tiltFollowController: TiltFollowController?
+    // Same, but for the CarPlay map (separate Map instance → separate controller).
+    private var carPlayTiltFollowController: TiltFollowController?
+
+    // Last navigation-camera settings tuned on the phone. Stored so the CarPlay map can
+    // pick them up when its scene connects after the phone has already applied them.
+    static var lastNavigationCameraSettings: NavigationCameraSettings?
 
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
@@ -199,6 +205,11 @@ class NavigationHandler {
 
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
             setupCamera(map: carPlayMap, speedRangeZoom: speedRangeZoom)
+            // Mirror the phone-tuned navigation camera onto the CarPlay map (its scene may have
+            // connected after the phone applied the settings, so pull the stored copy here).
+            if let settings = NavigationHandler.lastNavigationCameraSettings {
+                applyPerMapSettings(settings, to: carPlayMap, tiltController: &self.carPlayTiltFollowController)
+            }
         }
     }
     
@@ -242,6 +253,10 @@ class NavigationHandler {
     /// configure the full camera at navigation start and to tweak a single parameter live.
     /// Phone only — does not touch the CarPlay map.
     func applyCameraSettings(_ settings: NavigationCameraSettings) {
+        // Remember the latest phone-tuned settings so the CarPlay map can adopt them when its
+        // scene connects after the phone has already applied them (see setupCamera).
+        NavigationHandler.lastNavigationCameraSettings = settings
+
         let zoomFollowSettings = self.navigationManager.zoomFollowSettings
 
         if let rules = settings.speedZoomRules {
@@ -285,29 +300,15 @@ class NavigationHandler {
                 tilt: behaviour.followTilt ? .on : .off
             )
             self.navigationManager.mapFollowController.cameraBehaviour = cameraBehaviour
-            self.map.camera.setBehaviour(behaviour: cameraBehaviour)
         }
 
-        if let points = settings.tiltRelation {
-            if let existing = self.tiltFollowController {
-                self.map.camera.removeFollowController(followController: existing)
-            }
-            let controller = TiltFollowController(styleZoomToTilt: ZoomTiltRelation(points: points))
-            self.map.camera.addFollowController(followController: controller)
-            self.tiltFollowController = controller
-        }
-
-        if let points = settings.maxTiltRelation {
-            self.map.camera.maxTiltRestriction = ZoomTiltRelation(points: points)
-        }
-
-        if settings.minZoom != nil || settings.maxZoom != nil {
-            let current = self.map.camera.zoomRestrictions
-            let restrictions = CameraZoomRestrictions(
-                minZoom: settings.minZoom.map { Zoom(value: Float($0)) } ?? current.minZoom,
-                maxZoom: settings.maxZoom.map { Zoom(value: Float($0)) } ?? current.maxZoom
-            )
-            try? self.map.camera.setZoomRestrictions(zoomRestrictions: restrictions)
+        // Per-map controls (follow behaviour, tilt-by-zoom curve, max-tilt, zoom restriction).
+        // Applied to the phone map and — if its scene is connected — the CarPlay map, so the
+        // camera tuned on the phone is mirrored in CarPlay. (Speed→zoom lives on the shared
+        // navigationManager above, so it already propagates to CarPlay.)
+        applyPerMapSettings(settings, to: self.map, tiltController: &self.tiltFollowController)
+        if let carPlayMap = FlutterCarPlaySceneDelegate.map {
+            applyPerMapSettings(settings, to: carPlayMap, tiltController: &self.carPlayTiltFollowController)
         }
 
         if let seconds = settings.followReturnDelaySeconds {
@@ -315,6 +316,47 @@ class NavigationHandler {
         }
     }
 
+    /// Applies the per-map subset of [NavigationCameraSettings] (follow behaviour, tilt-by-zoom
+    /// curve, max-tilt restriction, zoom restriction) to a specific map. Used for both the phone
+    /// map and the CarPlay map so the phone-tuned camera is mirrored in CarPlay.
+    private func applyPerMapSettings(
+        _ settings: NavigationCameraSettings,
+        to map: Map,
+        tiltController: inout TiltFollowController?
+    ) {
+        if let behaviour = settings.followBehaviour {
+            map.camera.setBehaviour(behaviour: CameraBehaviour(
+                position: FollowPosition(
+                    bearing: behaviour.followBearing ? .on : .off,
+                    styleZoom: behaviour.followStyleZoom ? .on : .off
+                ),
+                tilt: behaviour.followTilt ? .on : .off
+            ))
+        }
+        if let points = settings.tiltRelation {
+            if let existing = tiltController {
+                map.camera.removeFollowController(followController: existing)
+            }
+            let controller = TiltFollowController(styleZoomToTilt: ZoomTiltRelation(points: points))
+            map.camera.addFollowController(followController: controller)
+            tiltController = controller
+        }
+        if let points = settings.maxTiltRelation {
+            map.camera.maxTiltRestriction = ZoomTiltRelation(points: points)
+        }
+        if settings.minZoom != nil || settings.maxZoom != nil {
+            let current = map.camera.zoomRestrictions
+            let restrictions = CameraZoomRestrictions(
+                minZoom: settings.minZoom.map { Zoom(value: Float($0)) } ?? current.minZoom,
+                maxZoom: settings.maxZoom.map { Zoom(value: Float($0)) } ?? current.maxZoom
+            )
+            try? map.camera.setZoomRestrictions(zoomRestrictions: restrictions)
+        }
+    }
+
+    // BE-193 is on SDK 12 → keep the 4-arg SpeedRangeToStyleZoom (no styleTilt / roadClasses,
+    // which only exist on SDK 13). Per-speed-band tilt is therefore not applied here; the tilt
+    // curve is driven via the TiltFollowController in applyPerMapSettings above.
     private static func toSpeedRangeToStyleZoom(_ rule: SpeedZoomRule) -> SpeedRangeToStyleZoom {
         SpeedRangeToStyleZoom(
             range: SpeedRange(minSpeed: rule.minSpeed, maxSpeed: rule.maxSpeed),
@@ -342,6 +384,10 @@ class NavigationHandler {
         }
 
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
+            if let existing = self.carPlayTiltFollowController {
+                carPlayMap.camera.removeFollowController(followController: existing)
+                self.carPlayTiltFollowController = nil
+            }
             resetCamera(map: carPlayMap)
         }
         

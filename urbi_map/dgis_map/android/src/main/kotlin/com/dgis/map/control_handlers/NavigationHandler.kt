@@ -177,6 +177,10 @@ class NavigationHandler(
          * configure the full camera at navigation start and to tweak a single parameter live.
          */
         fun applyCameraSettings(settings: NavigationCameraSettings) {
+                // Remember the phone-tuned settings so Android Auto can mirror the tilt-by-zoom
+                // curve / zoom restriction on its own map (see CarNavigationHandler).
+                com.dgis.map.DgisMapInitializer.lastNavigationCameraSettings = settings
+
                 val zoomFollowSettings = navigationManager.zoomFollowSettings
 
                 settings.speedZoomRules?.let { rules ->

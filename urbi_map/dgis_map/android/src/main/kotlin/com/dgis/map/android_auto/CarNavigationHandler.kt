@@ -3,6 +3,7 @@ package com.dgis.map.android_auto
 import androidx.car.app.model.DateTimeWithZone
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.map_api.SoundToggleType
+import com.dgis.map.map_api.StyleZoomTiltPoint
 import java.lang.Exception
 import java.util.Calendar
 import java.util.EnumSet
@@ -100,11 +101,16 @@ class CarNavigationHandler(
     fun addMap(map: Map) {
         this.map = map
         navigationManager.mapManager.addMap(map)
-        // Add TiltFollowController to keep a stable chase perspective without manual camera.move()
+        // Tilt-by-zoom: if the phone tuned a curve (setNavigationCameraSettings), mirror it here so
+        // the in-car camera matches the phone; otherwise keep the fixed near/far chase tilt driven
+        // by updateCarPlayStyleCameraTilt().
         val tiltRelation =
                 object : StyleZoomToTiltRelation {
                     override fun styleZoomToTilt(styleZoom: StyleZoom): Tilt {
-                        return Tilt(currentChaseTilt)
+                        val curve = DgisMapInitializer.lastNavigationCameraSettings?.tiltRelation
+                        return if (!curve.isNullOrEmpty())
+                                Tilt(interpolateTilt(curve, styleZoom.value.toDouble()))
+                        else Tilt(currentChaseTilt)
                     }
                 }
         val tiltController = TiltFollowController(tiltRelation)
@@ -453,6 +459,9 @@ class CarNavigationHandler(
      */
     private fun updateCarPlayStyleCameraTilt() {
         if (navigationManager.uiModel.state != State.NAVIGATION) return
+        // If the phone supplied a tilt-by-zoom curve, the TiltFollowController already drives tilt
+        // from zoom — don't override it with the fixed near/far chase tilt.
+        if (DgisMapInitializer.lastNavigationCameraSettings?.tiltRelation?.isNotEmpty() == true) return
 
         val speedKmph =
                 navigationManager.uiModel.location?.groundSpeed?.value?.let {
@@ -581,6 +590,23 @@ class CarNavigationHandler(
         const val maxDistanceToManeuver = 1000.0
         const val maxDistanceBetweenManeuvers = 50.0
         const val minDistanceToManeuver = 1.0
+
+        /** Linear interpolation of tilt across the phone's zoom→tilt curve, clamped at the ends. */
+        fun interpolateTilt(points: List<StyleZoomTiltPoint>, zoom: Double): Float {
+            if (points.isEmpty()) return 0f
+            val sorted = points.sortedBy { it.styleZoom }
+            if (zoom <= sorted.first().styleZoom) return sorted.first().tiltDegrees.toFloat()
+            if (zoom >= sorted.last().styleZoom) return sorted.last().tiltDegrees.toFloat()
+            for (i in 0 until sorted.size - 1) {
+                val a = sorted[i]
+                val b = sorted[i + 1]
+                if (zoom in a.styleZoom..b.styleZoom) {
+                    val t = (zoom - a.styleZoom) / (b.styleZoom - a.styleZoom)
+                    return (a.tiltDegrees + t * (b.tiltDegrees - a.tiltDegrees)).toFloat()
+                }
+            }
+            return sorted.last().tiltDegrees.toFloat()
+        }
 
         fun getDateTimeWithZone(calendar: GregorianCalendar): DateTimeWithZone {
             val date = calendar.time
