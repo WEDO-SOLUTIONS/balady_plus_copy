@@ -97,7 +97,10 @@ class RoutesCarousel extends ConsumerWidget {
         data: (ptRoutes) {
           // Filter out walking-only routes: routes where every segment has no transit stops
           final transitRoutes = ptRoutes
-              .where((route) => route.publicTransportTransferRouteLongEntry.any((entry) => entry.value.routeParts.isNotEmpty))
+              .where(
+                (route) =>
+                    route.publicTransportTransferRouteLongEntry.any((entry) => entry.value.routeParts.isNotEmpty),
+              )
               .toList();
 
           if (transitRoutes.isEmpty || publicTransportVisibility.hasError) {
