@@ -76,6 +76,8 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Debug3DModelPanel(),
+
                     _AppInfoCard(packageInfo: _packageInfo),
                     const SpecialThemeDebugPanel(),
                     const MakkahPlacesDebugPanel(),
@@ -83,7 +85,6 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       draggableController: widget._draggableController,
                     ),
                     const DebugStyleAttributesPanel(),
-                    const Debug3DModelPanel(),
                     const DebugServerUrl(),
                     const SsoCredentialView(),
                     const CityscapeDebugSwitcher(),

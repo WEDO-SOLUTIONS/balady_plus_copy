@@ -456,8 +456,11 @@ class $AssetsModelsGen {
   /// File path: assets/models/LIGHT_THEME_CAR_MODEL.glb
   String get lightThemeCarModel => 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
 
+  /// File path: assets/models/stadium.glb
+  String get stadium => 'packages/mapness/assets/models/stadium.glb';
+
   /// List of all assets
-  List<String> get values => [lightThemeCarModel];
+  List<String> get values => [lightThemeCarModel, stadium];
 }
 
 class $AssetsIconsLottieGen {
