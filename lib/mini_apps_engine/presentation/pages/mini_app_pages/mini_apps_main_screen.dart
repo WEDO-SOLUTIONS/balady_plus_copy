@@ -3,18 +3,18 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
-import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/audio_player_banner.dart';
 
@@ -33,14 +33,12 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void initState() {
     super.initState();
 
-    // TODO: MBC - Uncomment for next release
-    // Hide floating player and prepare for mini app navigation
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   final audioProvider = ref.read(streamAudioProvider);
-    //   audioProvider.setInWeb(true);
-    //   audioProvider.setFloatingPlayerVisibility(false);
-    //   audioProvider.prepareForMiniAppNavigation();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final audioProvider = ref.read(streamAudioProvider);
+      audioProvider.setInWeb(true);
+      audioProvider.setFloatingPlayerVisibility(false);
+      audioProvider.prepareForMiniAppNavigation();
+    });
   }
 
   Future<bool> _showExitConfirmationDialog() async {
@@ -91,11 +89,9 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           if (didPop) return;
           final shouldExit = await _showExitConfirmationDialog();
           if (shouldExit && context.mounted) {
-            // TODO: MBC - Uncomment for next release
-            // Show floating player when mini app is closed
-            // final audioProvider = ref.read(streamAudioProvider);
-            // audioProvider.setInWeb(false);
-            // audioProvider.setFloatingPlayerVisibility(true);
+            final audioProvider = ref.read(streamAudioProvider);
+            audioProvider.setInWeb(false);
+            audioProvider.setFloatingPlayerVisibility(true);
             Navigator.of(context).pop();
           }
         },
@@ -116,13 +112,11 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
                   if (shouldExit && context.mounted) {
-                    // TODO: MBC - Uncomment for next release
-                    // Show floating player when mini app is closed
-                    // final audioProvider = ref.read(streamAudioProvider);
-                    // audioProvider.setInWeb(false);
-                    // audioProvider.setFloatingPlayerVisibility(true);
-                    Navigator.of(context).pop();  
-                }
+                    final audioProvider = ref.read(streamAudioProvider);
+                    audioProvider.setInWeb(false);
+                    audioProvider.setFloatingPlayerVisibility(true);
+                    Navigator.of(context).pop();
+                  }
                 },
               ),
             ],
@@ -130,26 +124,22 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           ),
           body: Column(
             children: [
-              // TODO: MBC - Uncomment for next release
-              // // Audio Player Banner
-              // Consumer(
-              //   builder: (context, ref, child) {
-              //     final provider = ref.watch(streamAudioProvider);
-              //     if (provider.selectedChannel == null) {
-              //       return const SizedBox.shrink();
-              //     }
-              //     return AudioPlayerBanner(
-              //       onTap: () {
-              //         // Call togglePanel through the provider
-              //         ref.read(streamAudioProvider).togglePanel();
-              //       },
-              //       onClose: () async {
-              //         await ref.read(streamAudioProvider).exitPlayer();
-              //       },
-              //     );
-              //   },
-              // ),
-              // Main content
+              Consumer(
+                builder: (context, ref, child) {
+                  final provider = ref.watch(streamAudioProvider);
+                  if (provider.selectedChannel == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return AudioPlayerBanner(
+                    onTap: () {
+                      ref.read(streamAudioProvider).togglePanel();
+                    },
+                    onClose: () async {
+                      await ref.read(streamAudioProvider).exitPlayer();
+                    },
+                  );
+                },
+              ),
               Expanded(
                 child: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
                   builder: (contextBloc, state) {
@@ -219,16 +209,14 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void dispose() {
     debugPrint('MiniAppsMainScreen: Starting dispose');
 
-    // TODO: MBC - Uncomment for next release
-    // Restore audio provider and show floating player when mini app is closed
-    // if (mounted) {
-    //   try {
-    //     ref.read(streamAudioProvider).setInWeb(false);
-    //     ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
-    //   } catch (e) {
-    //     debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');
-    //   }
+    if (mounted) {
+      try {
+        ref.read(streamAudioProvider).setInWeb(false);
+        ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+      } catch (e) {
+        debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');
+      }
+    }
+    super.dispose();
   }
-
-  // super.dispose();
 }
