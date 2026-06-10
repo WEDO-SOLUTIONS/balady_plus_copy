@@ -56,9 +56,7 @@ class _LandscapeLayout extends StatelessWidget {
                       duration: const Duration(milliseconds: 250),
                       child: IgnorePointer(
                         ignoring: !isVisible,
-                        // TODO: MBC - Uncomment for next release
-                        // child: const RadioContextualButton(),
-                        child: const SizedBox.shrink(),
+                        child: const RadioContextualButton(),
                       ),
                     ),
                   ),
