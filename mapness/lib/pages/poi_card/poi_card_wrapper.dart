@@ -150,7 +150,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
           );
         },
       )
-      ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
           _clearPoiSelectionState();

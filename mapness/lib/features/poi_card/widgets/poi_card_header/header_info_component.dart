@@ -11,7 +11,6 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
@@ -44,20 +43,17 @@ class HeaderInfoComponent extends ConsumerWidget {
     );
 
     final workTime = data.getOpeningHoursHeader(context);
-    final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(data.tradeLicense?.license.trim());
 
     final fullAddress = data.getFullAddress(briefInfo, context.l10n);
-    return _HeaderInfoWidget(fullAddress: fullAddress, workTime: workTime, hasOffers: hasOffers);
+    return _HeaderInfoWidget(fullAddress: fullAddress, workTime: workTime);
   }
 }
 
 class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final PoiContentFullAddressModel fullAddress;
   final ContentWorkTimeModel? workTime;
-  final bool hasOffers;
 
-  const _HeaderInfoWidget({required this.fullAddress, required this.workTime, required this.hasOffers})
+  const _HeaderInfoWidget({required this.fullAddress, required this.workTime})
     : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
