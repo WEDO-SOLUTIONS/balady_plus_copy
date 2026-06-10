@@ -53,6 +53,11 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
             return items
         }
 
+        if let splShortAddress = normalizedSplShortAddress(searchText) {
+            let items = await searchByText(splShortAddress)
+            if !items.isEmpty { return items }
+        }
+
         let items = await withUnsafeContinuation { continuation in
             searchHandler.fetchSuggests(
                 queryText: searchText,
@@ -110,6 +115,44 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
         return listItem
     }
 
+    private func searchByText(_ queryText: String) async -> [CPListItem] {
+        var cancellable: Cancellable?
+        let query = SearchQueryBuilder.fromQueryText(queryText: queryText)
+            .setPageSize(pageSize: Int32(CPListTemplate.maximumItemCount))
+            .setSortingType(sortingType: .byRelevance)
+            .setAreaOfInterest(rect: map.camera.visibleRect)
+            .setSpatialRestriction(spatialRestriction: SearchHandler.saRestrictions)
+            .build()
+
+        let directoryObjects: [DirectoryObject] = await withUnsafeContinuation { continuation in
+            cancellable = searchManager.search(query: query).sink(
+                receiveValue: { searchResult in
+                    continuation.resume(returning: searchResult.firstPage?.items ?? [])
+                },
+                failure: { _ in
+                    continuation.resume(returning: [DirectoryObject]())
+                }
+            )
+        }
+
+        cancellable?.cancel()
+
+        return directoryObjects
+            .filter { $0.markerPosition != nil }
+            .map(createDirectoryObjectCPListItem)
+    }
+
+    private func createDirectoryObjectCPListItem(directoryObject: DirectoryObject)
+        -> CPListItem
+    {
+        let item = CPListItem(
+            text: directoryObject.title,
+            detailText: directoryObject.addressString
+        )
+        item.userInfo = directoryObject
+        return item
+    }
+
     func onHistoryTap(searchHistoryItem: SearchHistoryItem) {
         switch searchHistoryItem {
         case .directoryObject(let directoryObject):
@@ -140,6 +183,16 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
 
         if userInfo is SearchHistoryItem {
             onHistoryTap(searchHistoryItem: userInfo as! SearchHistoryItem)
+            return
+        }
+
+        if userInfo is DirectoryObject {
+            onFoundTap(directoryObject: userInfo as? DirectoryObject)
+            return
+        }
+
+        if userInfo is DirectoryObject {
+            onFoundTap(directoryObject: userInfo as? DirectoryObject)
             return
         }
 
@@ -186,5 +239,24 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
         searchHistory.addItem(
             item: SearchHistoryItem.directoryObject(directoryObject)
         )
+    }
+
+    private func normalizedSplShortAddress(_ queryText: String) -> String? {
+        let normalized = queryText
+            .replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "-", with: "")
+            .uppercased()
+
+        guard normalized.count == 8 else { return nil }
+
+        let scalars = Array(normalized.unicodeScalars)
+        let hasLetters = scalars.prefix(4).allSatisfy { scalar in
+            scalar.value >= 65 && scalar.value <= 90
+        }
+        let hasDigits = scalars.suffix(4).allSatisfy { scalar in
+            scalar.value >= 48 && scalar.value <= 57
+        }
+
+        return hasLetters && hasDigits ? normalized : nil
     }
 }

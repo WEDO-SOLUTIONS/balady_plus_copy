@@ -19,7 +19,6 @@ import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dar
 import 'package:mapness/widgets/founding_day/dashboard_bg.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
-import 'package:mapness/widgets/landing/dashboard_offers_row.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:mapness/widgets/landing/drive_back_home_card.dart';
 import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
@@ -249,8 +248,6 @@ class BaseDashboardContent extends ConsumerWidget {
             ),
             const SizedBox(height: Spacing.$4x),
             DriveBackHomeCard(bottomSheetController: bottomSheetController),
-            const SizedBox(height: Spacing.$6x),
-            const DashboardOffersRow(),
             const SizedBox(height: Spacing.$6x),
             if (!themeConfig.useThemedExploreBackground) ...[
               DashboardTitle(context.l10n.exploreNearby),

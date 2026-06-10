@@ -287,6 +287,16 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               ),
             ),
           ),
+          if (MediaQuery.paddingOf(context).bottom > 0)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+                child: ColoredBox(color: containerColor),
+              ),
+            ),
         ],
       ),
     );
@@ -386,10 +396,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
-      return;
+    if (kbState) {
+      _expandSheet();
     }
-    _expandSheet();
   }
 
   /// Snaps the sheet to `expanded`. Wired both to the field tap (synchronous,

@@ -8,8 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
-import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
-import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -48,7 +46,6 @@ class SearchItem extends ConsumerWidget {
   final Language language;
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
-  final List<Offer> offers;
   final Color? contentColor;
   final int index;
   final BssSearchResultList? searchResultList;
@@ -59,7 +56,6 @@ class SearchItem extends ConsumerWidget {
     required this.result,
     required this.onTap,
     required this.language,
-    required this.offers,
     this.myLocation,
     this.contentColor,
     this.index = 0,
@@ -71,7 +67,7 @@ class SearchItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     String subtitle =(result.id?.objectId == 70030077050725730
         ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
-        : (result.subtitle == 'تسوية' ? 'نطاق' : result.subtitle));
+        : (['تسوية','مستوطنة'].contains(result.subtitle ) ? 'نطاق' : result.subtitle));
     // String subtitle = result.subtitle;
     List<String> photosUrls = [];
     List<Item> photoItems = [];
@@ -184,11 +180,6 @@ class SearchItem extends ConsumerWidget {
                                     color: context.colors.foregroundSoft,
                                   ),
                                 ),
-                                if (offers.isNotEmpty)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: Spacing.$2x),
-                                    child: OffersBadge(),
-                                  ),
                               ],
                             ),
                           ),

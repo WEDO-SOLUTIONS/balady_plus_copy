@@ -10,37 +10,31 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - "urbi"
-      - "urbi-service/release-*"
-    paths-ignore:
-      - "**.md"
-      - "doc/**"
-      - ".git/"
-      - ".vscode/"
   workflow_dispatch:
     inputs:
       branch:
         description: "Git branch to build"
         required: true
-        default: "urbi"
+        default: "core"
         type: string
       environment:
         description: "Environment / flavor"
         required: true
         type: choice
         options: [stg, prod, pre]
+      build_label:
+        description: "Custom build label (e.g. 'fix-login', 'release-candidate')"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   build:
     name: Build Android (manual or PR merged)
-    runs-on: [self-hosted, macOS, ARM64]
+    runs-on: ubuntu-latest # [self-hosted, macOS, ARM64]
     timeout-minutes: 60
 
-    # For PR: run only when merged. For manual: always.
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Resolve build context (branch/env/ref)
@@ -82,6 +76,14 @@ jobs:
           [ -n "$BASE_BRANCH" ] && echo "  base_branch  = $BASE_BRANCH" || true
           [ -n "$HEAD_BRANCH" ] && echo "  head_branch  = $HEAD_BRANCH" || true
 
+      - name: 🧹 Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune -af || true
+          df -h
+
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
         with:
@@ -117,10 +119,26 @@ jobs:
           # Generate a safe slug from branch name (replace non-alnum with '-')
           CI_GIT_BRANCH_SLUG=$(printf '%s' "$CI_GIT_BRANCH" \
             | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
-          # Artifact suffix: [optional pr-] + branch slug + timestamp
-          echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
+          # Artifact suffix: [optional label] + [optional pr-] + branch slug + timestamp
+          BUILD_LABEL="${{ inputs.build_label }}"
+          BUILD_LABEL_SLUG=$(printf '%s' "$BUILD_LABEL" | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
+          if [ -n "$BUILD_LABEL_SLUG" ]; then
+            echo "CI_ARTIFACT_SUFFIX=${BUILD_LABEL_SLUG}-${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
+          else
+            echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
+          fi
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Setup FVM
+        run: |
+          dart pub global activate fvm
+          echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
       - name: Setup Flutter
         run: |
@@ -132,9 +150,14 @@ jobs:
         with:
           just-version: "1.25.2"
 
+      - name: Install Localazy CLI
+        run: npm install -g @localazy/cli
+
       - name: "Prebuild"
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+          LOCALAZY_READ_KEY: ${{ secrets.LOCALAZY_READ_KEY }}
+          LOCALAZY_WRITE_KEY: ${{ secrets.LOCALAZY_WRITE_KEY }}
         run: |
           just locale_gen
 
@@ -172,6 +195,8 @@ jobs:
           cd mapness
           fvm flutter pub get
           fvm flutter pub run build_runner build --delete-conflicting-outputs
+          # Restore assets.gen.dart — flutter_gen_runner version on CI may differ from local
+          git checkout HEAD -- lib/_generated/assets/assets.gen.dart
 
       - name: Select Android build params
         id: select
@@ -236,182 +261,113 @@ jobs:
           mv "build/app/outputs/flutter-apk/app-${FLAVOR}-release.apk" \
              "build/app/outputs/flutter-apk/${BUILD_NAME_PREFIX}-${CI_ARTIFACT_SUFFIX}.apk"
 
-      - name: Get Graph access token (client_credentials)
-        id: token
-        run: |
-          set -euo pipefail
-          RESP="$(curl -sS -X POST \
-            -H "Content-Type: application/x-www-form-urlencoded" \
-            -d "client_id=${{ secrets.SHAREPOINT_CLIENT_ID }}&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=${{ secrets.SHAREPOINT_CLIENT_SECRET }}&grant_type=client_credentials" \
-            "https://login.microsoftonline.com/${{ secrets.SHAREPOINT_TENANT_ID }}/oauth2/v2.0/token")"
-          TOKEN="$(echo "$RESP" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['access_token'])")"
-          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
-
-      - name: Upload large file to SharePoint (Graph upload session, chunked)
+      - name: 📤 Upload APK to GitHub Releases
         id: upload_apk
         env:
-          TOKEN: ${{ steps.token.outputs.token }}
-          SITE_HOST: urbiae.sharepoint.com
-          SITE_PATH: /sites/DevArtifacts
-          DRIVE_NAME: Documents
-          DEST_FOLDER: android
-          LOCAL_FILE: build/app/outputs/flutter-apk/${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          DEST_NAME: ${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          CHUNK_MB: "10"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
+          ARTIFACT_NAME="${{ steps.select.outputs.build_name_prefix }}-${CI_ARTIFACT_SUFFIX}.apk"
+          LOCAL_FILE="build/app/outputs/flutter-apk/${ARTIFACT_NAME}"
+          TAG="build-${CI_ARTIFACT_SUFFIX}"
+
           if [ ! -f "$LOCAL_FILE" ]; then
-            echo "LOCAL_FILE not found: $LOCAL_FILE"
+            echo "APK not found: $LOCAL_FILE"
             exit 1
           fi
 
-          echo "1) Resolve Site ID..."
-          SITE_JSON="$(curl -sS -H "Authorization: Bearer $TOKEN" \
-            "https://graph.microsoft.com/v1.0/sites/$SITE_HOST:$SITE_PATH")"
-          SITE_ID="$(echo "$SITE_JSON" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['id'])")"
-          echo "SITE_ID=$SITE_ID"
+          NOTES="Branch: ${CI_GIT_BRANCH}"$'\n'"Environment: ${{ steps.ctx.outputs.environment }}"$'\n'"Author: ${{ github.actor }}"$'\n'"Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
-          echo "2) Resolve Drive ID (document library) by name..."
-          DRIVES_JSON="$(curl -sS -H "Authorization: Bearer $TOKEN" \
-            "https://graph.microsoft.com/v1.0/sites/$SITE_ID/drives")"
-          DRIVE_ID="$(echo "$DRIVES_JSON" | python3 -c "import sys,json; data=json.loads(sys.stdin.read())['value']; name='$DRIVE_NAME'; matches=[d['id'] for d in data if d.get('name')==name]; print(matches[0] if matches else '')")"
+          echo "Creating release $TAG..."
+          gh release create "$TAG" \
+            --title "$ARTIFACT_NAME" \
+            --notes "$NOTES" \
+            --prerelease \
+            "$LOCAL_FILE"
 
-          if [ -z "$DRIVE_ID" ]; then
-            echo "Drive '$DRIVE_NAME' not found. Available drives:"
-            echo "$DRIVES_JSON" | python3 -c "import sys,json; print([d.get('name') for d in json.loads(sys.stdin.read()).get('value',[])])"
-            exit 1
+          RELEASE_URL=$(gh release view "$TAG" --json url -q .url)
+          echo "release-url=$RELEASE_URL" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "artifact-name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+          echo "Release created: $RELEASE_URL"
+
+      - name: 🧹 Delete old releases (keep last 10)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Get all pre-releases sorted by date, skip first 10
+          OLD_TAGS=$(gh release list --limit 100 --json tagName,isPrerelease,createdAt \
+            | jq -r '[.[] | select(.isPrerelease == true)] | sort_by(.createdAt) | reverse | .[10:] | .[].tagName')
+
+          if [ -z "$OLD_TAGS" ]; then
+            echo "Nothing to clean up."
+            exit 0
           fi
 
-          echo "DRIVE_ID=$DRIVE_ID"
-
-          FILE_SIZE="$(python3 -c "import os; print(os.path.getsize('$LOCAL_FILE'))")"
-          CHUNK_SIZE="$((CHUNK_MB * 1024 * 1024))"
-
-          echo "3) Create upload session..."
-          SESSION_JSON="$(curl -sS -X POST \
-            -H "Authorization: Bearer $TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "{\"item\":{\"@microsoft.graph.conflictBehavior\":\"replace\",\"name\":\"$DEST_NAME\"}}" \
-            "https://graph.microsoft.com/v1.0/drives/$DRIVE_ID/root:/$DEST_FOLDER/$DEST_NAME:/createUploadSession")"
-
-          UPLOAD_URL="$(echo "$SESSION_JSON" | python3 -c "import sys,json; print(json.loads(sys.stdin.read()).get('uploadUrl',''))")"
-          if [ -z "$UPLOAD_URL" ]; then
-            echo "Failed to create upload session. Response:"
-            echo "$SESSION_JSON"
-            exit 1
-          fi
-
-          echo "4) Uploading $FILE_SIZE bytes in chunks of $CHUNK_SIZE bytes..."
-          OFFSET=0
-          PART=0
-
-          while [ "$OFFSET" -lt "$FILE_SIZE" ]; do
-            PART="$((PART + 1))"
-            END="$((OFFSET + CHUNK_SIZE - 1))"
-            if [ "$END" -ge "$FILE_SIZE" ]; then
-              END="$((FILE_SIZE - 1))"
-            fi
-
-            LEN="$((END - OFFSET + 1))"
-            echo "Chunk $PART: bytes $OFFSET-$END (len=$LEN)"
-
-            python3 -c "import sys; f=open('$LOCAL_FILE','rb'); f.seek($OFFSET); sys.stdout.buffer.write(f.read($LEN))" \
-              | curl -sS --http1.1 -X PUT \
-                  -H "Content-Length: $LEN" \
-                  -H "Content-Range: bytes $OFFSET-$END/$FILE_SIZE" \
-                  --data-binary @- \
-                  "$UPLOAD_URL" \
-              > /tmp/upload_resp.json
-
-            python3 -c "import json; d=json.load(open('/tmp/upload_resp.json','r',encoding='utf-8')); \
-              print('✅ Upload completed, item id:', d['id']) if 'id' in d else \
-              print('→ nextExpectedRanges:', d.get('nextExpectedRanges', [])[:2]) if 'nextExpectedRanges' in d else \
-              print('Response:', d)"
-
-            OFFSET="$((END + 1))"
+          for tag in $OLD_TAGS; do
+            echo "Deleting release $tag..."
+            gh release delete "$tag" --yes --cleanup-tag || true
           done
 
-          ITEM_ID="$(python3 -c "import json; d=json.load(open('/tmp/upload_resp.json','r',encoding='utf-8')); print(d.get('id',''))")"
-          ARTIFACT_URL="$(python3 -c "import json; d=json.load(open('/tmp/upload_resp.json','r',encoding='utf-8')); print(d.get('webUrl',''))")"
+      - name: 🔔 Send Telegram notification
+        if: ${{ always() }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_BUILDS_CHAT_ID: ${{ secrets.TELEGRAM_BUILDS_CHAT_ID }}
+        run: |
+          set -euo pipefail
 
-          if [ -z "$ITEM_ID" ] || [ -z "$ARTIFACT_URL" ]; then
-            echo "Upload finished but could not read final item id/webUrl."
-            echo "Last response:"
-            cat /tmp/upload_resp.json
+          ARTIFACT_NAME="${{ steps.upload_apk.outputs.artifact-name }}"
+          RELEASE_URL="${{ steps.upload_apk.outputs.release-url }}"
+          BRANCH="${CI_GIT_BRANCH}"
+          ACTOR="${{ github.actor }}"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          JOB_STATUS="${{ job.status }}"
+
+          if [ "$JOB_STATUS" = "success" ]; then
+            ICON="✅"
+            TOPIC_NAME="${ARTIFACT_NAME}"
+            DOWNLOAD_LINE="$(printf '\n📥 <a href="%s">Download APK</a>' "$RELEASE_URL")"
+          else
+            ICON="❌"
+            TOPIC_NAME="❌ ${{ steps.select.outputs.build_name_prefix }}-${CI_ARTIFACT_SUFFIX}"
+            DOWNLOAD_LINE=""
+          fi
+
+          PR_LINE=""
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            PR_LINE="$(printf '\n🔗 PR: %s' '${{ github.event.pull_request.html_url }}')"
+          fi
+
+          # Create forum topic
+          TOPIC_RESP=$(curl -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/createForumTopic" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\":\"${TELEGRAM_BUILDS_CHAT_ID}\",\"name\":\"${TOPIC_NAME}\"}")
+
+          THREAD_ID=$(echo "$TOPIC_RESP" | jq -r '.result.message_thread_id')
+
+          if [ -z "$THREAD_ID" ] || [ "$THREAD_ID" = "null" ]; then
+            echo "Failed to create topic: $TOPIC_RESP"
             exit 1
           fi
 
-          echo "item-id=$ITEM_ID" >> "$GITHUB_OUTPUT"
-          echo "artifact-url=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
+          MSG="$(printf '%s <b>Android build %s</b>\n\n🌿 Branch: <code>%s</code>\n👤 Author: %s\n🔧 Environment: %s%s%s\n▶️ <a href="%s">Open run</a>' \
+            "$ICON" "$JOB_STATUS" "$BRANCH" "$ACTOR" "${{ steps.ctx.outputs.environment }}" "$PR_LINE" "$DOWNLOAD_LINE" "$RUN_URL")"
 
-          echo "Done."
-          echo "artifact-url=$ARTIFACT_URL"
+          curl -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg chat_id "$TELEGRAM_BUILDS_CHAT_ID" \
+              --argjson thread_id "$THREAD_ID" \
+              --arg text "$MSG" \
+              '{chat_id:$chat_id,message_thread_id:$thread_id,text:$text,parse_mode:"HTML",disable_web_page_preview:true}')"
 
-      - name: 🔔 Send link to Microsoft Teams
-        if: ${{ success() }}
-        env:
-          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
-          JOB_STATUS: ${{ job.status }}
-          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          ACTOR: ${{ github.actor }}
-          BRANCH: ${{ env.CI_GIT_BRANCH }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          # PR title only exists on PR event
-          PR_TITLE: ${{ github.event.pull_request.title || '' }}
-          ARTIFACT_NAME: ${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          ARTIFACT_URL: ${{ steps.upload_apk.outputs.artifact-url }}
-        run: |
-          COLOR="0076D7"; [ "$JOB_STATUS" != "success" ] && COLOR="D83B01"
-
-          PR_LINE=""
-          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
-            PR_URL="${{ github.event.pull_request.html_url }}"
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-            PR_LINE="**Pull request**: [#${PR_NUMBER}](${PR_URL})\n\n"
-          fi
-
-          TASK_ID=""
-          TASK_ID=$(echo "$BRANCH"   | grep -oE '[A-Z]+-[0-9]+' | head -n1 || true)
-          if [ -z "$TASK_ID" ] && [ -n "$PR_TITLE" ]; then
-            TASK_ID=$(echo "$PR_TITLE" | grep -oE '[A-Z]+-[0-9]+' | head -n1 || true)
-          fi
-
-          TASK_LINE=""
-          if [ -n "$TASK_ID" ]; then
-            TASK_URL="https://urbi-flutter-team.youtrack.cloud/issue/${TASK_ID}"
-            TASK_LINE="**Task**: [${TASK_ID}](${TASK_URL})\n"
-          fi
-
-          PAYLOAD="$(cat <<'EOF'
-          {
-            "@type": "MessageCard",
-            "@context": "https://schema.org/extensions",
-            "themeColor": "__COLOR__",
-            "summary": "Android build",
-            "title": "📦 Android build — __STATUS__",
-            "sections": [
-              {
-                "text": "__PR_LINE____TASK_LINE__**Branch**: [__BRANCH__](__REPO_URL__/tree/__BRANCH__)\n\n**Author**: __ACTOR__\n\n**Artifact**: [__ARTIFACT_NAME__](__ARTIFACT_URL__)\n\n**Run**: [Open run](__RUN_URL__)"
-              }
-            ]
-          }
-          EOF
-          )"
-
-          PAYLOAD="${PAYLOAD/__COLOR__/$COLOR}"
-          PAYLOAD="${PAYLOAD/__STATUS__/$JOB_STATUS}"
-          PAYLOAD="${PAYLOAD/__PR_LINE__/$PR_LINE}"
-          PAYLOAD="${PAYLOAD/__TASK_LINE__/$TASK_LINE}"
-          PAYLOAD="${PAYLOAD/__BRANCH__/$BRANCH}"
-          PAYLOAD="${PAYLOAD/__REPO_URL__/$REPO_URL}"
-          PAYLOAD="${PAYLOAD/__ACTOR__/$ACTOR}"
-          PAYLOAD="${PAYLOAD/__RUN_URL__/$RUN_URL}"
-          PAYLOAD="${PAYLOAD/__ARTIFACT_NAME__/$ARTIFACT_NAME}"
-          PAYLOAD="${PAYLOAD/__ARTIFACT_URL__/$ARTIFACT_URL}"
-
-          curl -sS -H 'Content-Type: application/json' -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL"
+          echo "Telegram notification sent."
 
       - name: 🧹 Cleanup workspace
         if: ${{ success() }}
