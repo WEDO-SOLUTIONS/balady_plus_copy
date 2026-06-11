@@ -10,7 +10,14 @@ const debug3dModelId = 'debug-3d-model';
 const debug3dModelLatitude = 24.71495891002165;
 const debug3dModelLongitude = 46.67876719900673;
 const debug3dModelPath = 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
-const debugDistrictModelPath = 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
+const debugYellowStadiumModelPath = 'packages/mapness/assets/models/yellowe_stadium_fix.glb';
+const debugBlueStadiumModelPath = 'packages/mapness/assets/models/blue_stadium_fix.glb';
+const debugDistrictModelPaths = <String>[
+  debugYellowStadiumModelPath,
+  debugBlueStadiumModelPath,
+];
+const debugDistrictModelPathsLabel = 'yellowe_stadium_fix.glb, blue_stadium_fix.glb';
+const debugDistrictModelScale = 600.0;
 const debugDistrictPolygonFillArgbs = <int>[
   0x3314B8A6,
   0x33F5A623,
@@ -27,14 +34,71 @@ const debugDistrictPolygonStrokeArgbs = <int>[
   0xFF2F80ED,
   0xFF27AE60,
 ];
+const debugDistrictSolidPolygonFillArgbs = <DebugDistrictPolygonColorMode, int>{
+  DebugDistrictPolygonColorMode.teal: 0x3314B8A6,
+  DebugDistrictPolygonColorMode.amber: 0x33F5A623,
+  DebugDistrictPolygonColorMode.purple: 0x337B61FF,
+  DebugDistrictPolygonColorMode.red: 0x33E5484D,
+  DebugDistrictPolygonColorMode.blue: 0x332F80ED,
+  DebugDistrictPolygonColorMode.green: 0x3327AE60,
+};
+const debugDistrictSolidPolygonStrokeArgbs = <DebugDistrictPolygonColorMode, int>{
+  DebugDistrictPolygonColorMode.teal: 0xFF0AB0A4,
+  DebugDistrictPolygonColorMode.amber: 0xFFF5A623,
+  DebugDistrictPolygonColorMode.purple: 0xFF7B61FF,
+  DebugDistrictPolygonColorMode.red: 0xFFE5484D,
+  DebugDistrictPolygonColorMode.blue: 0xFF2F80ED,
+  DebugDistrictPolygonColorMode.green: 0xFF27AE60,
+};
 const debugDistrictCameraLatitude = 24.755353712174955;
 const debugDistrictCameraLongitude = 46.78380853883565;
 
-int _debugDistrictPolygonFillArgb(int index) =>
-    debugDistrictPolygonFillArgbs[index % debugDistrictPolygonFillArgbs.length];
+int _debugDistrictPolygonFillArgb(int index, DebugDistrictPolygonColorMode mode) {
+  if (mode == DebugDistrictPolygonColorMode.palette) {
+    return debugDistrictPolygonFillArgbs[index % debugDistrictPolygonFillArgbs.length];
+  }
 
-int _debugDistrictPolygonStrokeArgb(int index) =>
-    debugDistrictPolygonStrokeArgbs[index % debugDistrictPolygonStrokeArgbs.length];
+  return debugDistrictSolidPolygonFillArgbs[mode]!;
+}
+
+int _debugDistrictPolygonStrokeArgb(int index, DebugDistrictPolygonColorMode mode) {
+  if (mode == DebugDistrictPolygonColorMode.palette) {
+    return debugDistrictPolygonStrokeArgbs[index % debugDistrictPolygonStrokeArgbs.length];
+  }
+
+  return debugDistrictSolidPolygonStrokeArgbs[mode]!;
+}
+
+String _debugDistrictModelPath(int index) => debugDistrictModelPaths[index % debugDistrictModelPaths.length];
+
+enum DebugDistrictPolygonColorMode {
+  palette,
+  teal,
+  amber,
+  purple,
+  red,
+  blue,
+  green;
+
+  String get label => switch (this) {
+    DebugDistrictPolygonColorMode.palette => 'Palette',
+    DebugDistrictPolygonColorMode.teal => 'Teal',
+    DebugDistrictPolygonColorMode.amber => 'Amber',
+    DebugDistrictPolygonColorMode.purple => 'Purple',
+    DebugDistrictPolygonColorMode.red => 'Red',
+    DebugDistrictPolygonColorMode.blue => 'Blue',
+    DebugDistrictPolygonColorMode.green => 'Green',
+  };
+
+  int get previewStrokeArgb => this == DebugDistrictPolygonColorMode.palette
+      ? debugDistrictPolygonStrokeArgbs.first
+      : debugDistrictSolidPolygonStrokeArgbs[this]!;
+
+  DebugDistrictPolygonColorMode get next {
+    const modes = DebugDistrictPolygonColorMode.values;
+    return modes[(index + 1) % modes.length];
+  }
+}
 
 const debugDistrictPolygons = <DebugDistrictPolygon>[
   DebugDistrictPolygon(
@@ -240,6 +304,8 @@ class Debug3DModelState {
     required this.isAdded,
     required this.arePolygonsVisible,
     required this.areCentroidModelsVisible,
+    required this.polygonColorMode,
+    required this.polygonColorModeOverrides,
     required this.isBusy,
     this.error,
   });
@@ -247,6 +313,8 @@ class Debug3DModelState {
   final bool isAdded;
   final bool arePolygonsVisible;
   final bool areCentroidModelsVisible;
+  final DebugDistrictPolygonColorMode polygonColorMode;
+  final Map<String, DebugDistrictPolygonColorMode> polygonColorModeOverrides;
   final bool isBusy;
   final String? error;
 
@@ -256,12 +324,16 @@ class Debug3DModelState {
     bool? isAdded,
     bool? arePolygonsVisible,
     bool? areCentroidModelsVisible,
+    DebugDistrictPolygonColorMode? polygonColorMode,
+    Map<String, DebugDistrictPolygonColorMode>? polygonColorModeOverrides,
     bool? isBusy,
     String? error,
   }) => Debug3DModelState(
     isAdded: isAdded ?? this.isAdded,
     arePolygonsVisible: arePolygonsVisible ?? this.arePolygonsVisible,
     areCentroidModelsVisible: areCentroidModelsVisible ?? this.areCentroidModelsVisible,
+    polygonColorMode: polygonColorMode ?? this.polygonColorMode,
+    polygonColorModeOverrides: polygonColorModeOverrides ?? this.polygonColorModeOverrides,
     isBusy: isBusy ?? this.isBusy,
     error: error,
   );
@@ -284,6 +356,8 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
       isAdded: false,
       arePolygonsVisible: false,
       areCentroidModelsVisible: false,
+      polygonColorMode: DebugDistrictPolygonColorMode.palette,
+      polygonColorModeOverrides: {},
       isBusy: false,
     );
   }
@@ -313,12 +387,49 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     final manager = await _ensureDistrictLayerManager(controller);
     if (value) {
       await controller.removeAllPolygons(fromManager: manager);
-      await controller.addPolygons(_buildDistrictPolygons(), toManager: manager);
+      await controller.addPolygons(
+        _buildDistrictPolygons(state.polygonColorMode, state.polygonColorModeOverrides),
+        toManager: manager,
+      );
     } else {
       await controller.removeAllPolygons(fromManager: manager);
     }
 
     _setState(state.copyWith(arePolygonsVisible: value, isBusy: false));
+  });
+
+  Future<void> setPolygonColorMode({required DebugDistrictPolygonColorMode mode}) => _run((controller) async {
+    if (state.polygonColorMode == mode) {
+      _setState(state.copyWith(isBusy: false));
+      return;
+    }
+
+    if (state.arePolygonsVisible) {
+      final manager = await _ensureDistrictLayerManager(controller);
+      await controller.removeAllPolygons(fromManager: manager);
+      await controller.addPolygons(_buildDistrictPolygons(mode, const {}), toManager: manager);
+    }
+
+    _setState(state.copyWith(polygonColorMode: mode, polygonColorModeOverrides: const {}, isBusy: false));
+  });
+
+  Future<void> cyclePolygonColorMode({required String polygonId}) => _run((controller) async {
+    final currentMode = state.polygonColorModeOverrides[polygonId] ?? state.polygonColorMode;
+    final nextMode = currentMode.next;
+    final overrides = Map<String, DebugDistrictPolygonColorMode>.of(state.polygonColorModeOverrides);
+    if (nextMode == state.polygonColorMode) {
+      overrides.remove(polygonId);
+    } else {
+      overrides[polygonId] = nextMode;
+    }
+
+    if (state.arePolygonsVisible) {
+      final manager = await _ensureDistrictLayerManager(controller);
+      await controller.removeAllPolygons(fromManager: manager);
+      await controller.addPolygons(_buildDistrictPolygons(state.polygonColorMode, overrides), toManager: manager);
+    }
+
+    _setState(state.copyWith(polygonColorModeOverrides: overrides, isBusy: false));
   });
 
   Future<void> setCentroidModelsVisible({required bool value}) => _run((controller) async {
@@ -430,45 +541,60 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     CameraAnimationTypeMessage.linear,
   );
 
-  List<Polygon> _buildDistrictPolygons() => [
+  List<Polygon> _buildDistrictPolygons(
+    DebugDistrictPolygonColorMode colorMode,
+    Map<String, DebugDistrictPolygonColorMode> colorModeOverrides,
+  ) => [
     for (var index = 0; index < debugDistrictPolygons.length; index++)
-      Polygon(
-        id: debugDistrictPolygons[index].id,
-        options: PolygonOptionsMessage(
-          contours: [
-            PolylineGeometryMessage(
-              points: [
-                for (final point in debugDistrictPolygons[index].ring)
-                  GeoPointMessage(
-                    latitude: point.latitude,
-                    longitude: point.longitude,
-                  ),
-              ],
-            ),
-          ],
-          color: _debugDistrictPolygonFillArgb(index),
-          strokeColor: _debugDistrictPolygonStrokeArgb(index),
-          strokeWidth: 2,
-        ),
-      ),
+      _buildDistrictPolygon(index, colorMode, colorModeOverrides),
   ];
 
+  Polygon _buildDistrictPolygon(
+    int index,
+    DebugDistrictPolygonColorMode baseColorMode,
+    Map<String, DebugDistrictPolygonColorMode> colorModeOverrides,
+  ) {
+    final polygon = debugDistrictPolygons[index];
+    final colorMode = colorModeOverrides[polygon.id] ?? baseColorMode;
+
+    return Polygon(
+      id: polygon.id,
+      options: PolygonOptionsMessage(
+        contours: [
+          PolylineGeometryMessage(
+            points: [
+              for (final point in polygon.ring)
+                GeoPointMessage(
+                  latitude: point.latitude,
+                  longitude: point.longitude,
+                ),
+            ],
+          ),
+        ],
+        color: _debugDistrictPolygonFillArgb(index, colorMode),
+        strokeColor: _debugDistrictPolygonStrokeArgb(index, colorMode),
+        strokeWidth: 2,
+      ),
+    );
+  }
+
   List<ModelMapObject> _buildDistrictCentroidModels() => [
-    for (final polygon in debugDistrictPolygons)
+    for (var index = 0; index < debugDistrictPolygons.length; index++)
       ModelMapObject(
-        id: '${polygon.id}-centroid-model',
+        id: '${debugDistrictPolygons[index].id}-centroid-model',
         options: ModelMapObjectOptionsMessage(
           position: GeoPointWithElevationMessage(
-            latitude: polygon.centroid.latitude,
-            longitude: polygon.centroid.longitude,
+            latitude: debugDistrictPolygons[index].centroid.latitude,
+            longitude: debugDistrictPolygons[index].centroid.longitude,
             elevation: 1,
           ),
-          modelPath: debugDistrictModelPath,
-          size: LogicalPixelModelSize(100),
+          modelPath: _debugDistrictModelPath(index),
+          size: ScaleModelSize(debugDistrictModelScale),
           mapDirection: MapDirectionMessage(degree: 0),
           opacity: 1,
           zIndex: 101,
         ),
+        onTap: () => unawaited(cyclePolygonColorMode(polygonId: debugDistrictPolygons[index].id)),
       ),
   ];
 

@@ -97,8 +97,27 @@ class Debug3DModelPanel extends ConsumerWidget {
             value: '${debugDistrictPolygons.length}',
           ),
           const DebugInfoRow(
-            label: 'Model',
-            value: debugDistrictModelPath,
+            label: 'Models',
+            value: debugDistrictModelPathsLabel,
+          ),
+          DebugInfoRow(
+            label: 'Color',
+            value: state.polygonColorMode.label,
+            valueColor: Color(state.polygonColorMode.previewStrokeArgb),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final mode in DebugDistrictPolygonColorMode.values)
+                _PolygonColorButton(
+                  mode: mode,
+                  isSelected: state.polygonColorMode == mode,
+                  isBusy: state.isBusy,
+                  onPressed: () => unawaited(notifier.setPolygonColorMode(mode: mode)),
+                ),
+            ],
           ),
           DebugToggleRow(
             title: 'Show Polygons',
@@ -146,6 +165,42 @@ class Debug3DModelPanel extends ConsumerWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+class _PolygonColorButton extends StatelessWidget {
+  const _PolygonColorButton({
+    required this.mode,
+    required this.isSelected,
+    required this.isBusy,
+    required this.onPressed,
+  });
+
+  final DebugDistrictPolygonColorMode mode;
+  final bool isSelected;
+  final bool isBusy;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Color(mode.previewStrokeArgb);
+    if (isSelected) {
+      return DebugButton(
+        label: mode.label,
+        icon: Icons.palette_rounded,
+        gradient: LinearGradient(colors: [color, color.withOpacity(0.72)]),
+        isCompact: true,
+        onPressed: isBusy ? () {} : onPressed,
+      );
+    }
+
+    return DebugOutlinedButton(
+      label: mode.label,
+      icon: Icons.circle_rounded,
+      color: color,
+      isCompact: true,
+      onPressed: isBusy ? () {} : onPressed,
     );
   }
 }
