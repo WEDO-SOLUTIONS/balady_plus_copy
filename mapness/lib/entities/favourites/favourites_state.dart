@@ -15,10 +15,31 @@ class FavouritesState {
     List<FavouriteItem>? items,
     FavouriteItem? home,
     FavouriteItem? work,
-  }) =>
-      FavouritesState(
-        items: items ?? this.items,
-        home: home ?? this.home,
-        work: work ?? this.work,
-      );
+  }) => FavouritesState(
+    items: items ?? this.items,
+    home: home ?? this.home,
+    work: work ?? this.work,
+  );
+
+  FavouriteItemMarkerType getItemMarkerType(FavouriteItem item) {
+    if (item.id == home?.id) {
+      return FavouriteItemMarkerType.home;
+    } else if (item.id == work?.id) {
+      return FavouriteItemMarkerType.work;
+    } else if (items
+        .where(
+          (e) => e.id == item.id,
+        )
+        .isNotEmpty) {
+      return FavouriteItemMarkerType.place;
+    } else {
+      return FavouriteItemMarkerType.unknown;
+    }
+  }
+
+  String? getItemTypeName(FavouriteItem item) => switch (getItemMarkerType(item)) {
+    FavouriteItemMarkerType.home => 'Home',
+    FavouriteItemMarkerType.work => 'Work',
+    FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => item.title,
+  };
 }

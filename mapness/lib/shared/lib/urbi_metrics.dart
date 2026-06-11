@@ -11,7 +11,7 @@ class Metrics {
       payload: extras != null || object != null
           ? {
               ...?extras,
-              if (object != null) 'object': object,
+              if (object != null) 'object': object.toString(),
             }
           : null,
     );

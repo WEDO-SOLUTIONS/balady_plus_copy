@@ -22,6 +22,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
@@ -140,6 +141,7 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
               onFilterSelected: (q) {
                 widget.onMoreQuickFiltersChanged?.call(false);
                 ref.read(searchProvider(scope.value).notifier).searchByText(q);
+                ref.read(metricsRepositoryProvider.notifier).sendQuickSearchClickEvent(q);
               },
             ),
             if (!widget.showMoreQuickFilters) ...[

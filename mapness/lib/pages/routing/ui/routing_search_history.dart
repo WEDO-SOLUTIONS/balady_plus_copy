@@ -7,12 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
 
 class RoutingSearchHistory extends ConsumerWidget {
   final bool showMyLocation;
@@ -29,6 +31,10 @@ class RoutingSearchHistory extends ConsumerWidget {
           showBookmark: false,
           onFavouriteTap: (point) {
             context.router.pop(RoutePointFavouriteItem(point));
+            final searchText = ref.read(favouriteCacheProvider).value?.getItemTypeName(point);
+            if (searchText != null) {
+              ref.read(metricsRepositoryProvider.notifier).sendQuickSearchClickEvent(searchText);
+            }
           },
         ),
         Spacing.$4x.heightBox,

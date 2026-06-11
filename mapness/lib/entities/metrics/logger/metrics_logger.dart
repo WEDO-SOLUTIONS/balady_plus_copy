@@ -50,6 +50,7 @@ class _MetricsLogger {
     if (_cache.isEmpty) {
       return;
     }
+    await _writeCompleter?.future;
     final items = List.of(_cache);
     final file = await _getFile();
     final text = items.map((e) => e.toFileString()).join('\n');

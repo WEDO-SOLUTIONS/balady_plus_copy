@@ -20,6 +20,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/navi_search/navi_find_in_fav.dart';
@@ -279,6 +280,9 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                   ref
                       .read(searchHistoryProvider(scope.value).notifier)
                       .put(SearchHistoryItem.fromQuery(query: q).toMessage());
+
+                  // todo check if works fine
+                  ref.read(metricsRepositoryProvider.notifier).sendQuickSearchClickEvent(q);
                 },
               ),
               if (shouldShowHistoryAndFavorites && hasFavourites)
