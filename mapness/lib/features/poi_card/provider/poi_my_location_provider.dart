@@ -55,23 +55,21 @@ class PoiMyLocation extends _$PoiMyLocation {
 
     unawaited(_cameraAnimation(closestPoint));
 
-    unawaited(dgisController
-        .search('${closestPoint.latitude}, ${closestPoint.longitude}', sortingType: SortingTypeMessage.byDistance)
-        .then((data) {
-      if (data.firstPage?.items.isNotEmpty == true) {
-        String? address = data.firstPage!.items.firstOrNull?.makeAddress();
-        address ??= coordinatesAddress;
-
-        state = AsyncValue.data(state.value?.copyWith(address: address));
-      }
-    }));
+    String address = coordinatesAddress;
+    final searchData = await dgisController.search(
+      '${closestPoint.latitude}, ${closestPoint.longitude}',
+      sortingType: SortingTypeMessage.byDistance,
+    );
+    if (searchData.firstPage?.items.isNotEmpty == true) {
+      address = searchData.firstPage!.items.firstOrNull?.makeAddress() ?? coordinatesAddress;
+    }
 
     final userData = ref.watch(authProvider).value;
 
     final language = ref.read(appLanguageProvider);
     final title = userData?.getLocalizedFirstAndLastName(language);
     return PoiMyLocationState(
-      address: coordinatesAddress,
+      address: address,
       location: closestPoint,
       title: title,
       isAuthorized: CommonProperties.isLoggedIn,
