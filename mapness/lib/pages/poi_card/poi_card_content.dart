@@ -296,7 +296,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       'Will show in subtitle: ${poiHeaderSubTitle != null}',
     );
 
-
     return Directionality(
       textDirection: Directionality.of(context),
       child: ValueListenableBuilder<PoiCardBottomSheetState>(
