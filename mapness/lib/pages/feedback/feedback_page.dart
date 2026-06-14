@@ -32,10 +32,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
   final Map<FeedbackTextType, String? Function(String?)> validators = {
     FeedbackTextType.email: FormBuilderValidators.email(checkNullOrEmpty: false),
-    FeedbackTextType.phone: FormBuilderValidators.compose([
-      FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
-      FormBuilderValidators.minLength(PhoneNumberFormatter.arabicPhoneNumberMinLength, checkNullOrEmpty: false),
-    ]),
+    FeedbackTextType.phone: PhoneNumberFormatter.validateSaudiMobile,
     FeedbackTextType.url: FormBuilderValidators.url(checkNullOrEmpty: false),
   };
 
