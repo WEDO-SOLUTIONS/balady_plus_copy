@@ -23,6 +23,7 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
     /// complex fields should be already mapped to json
     required Iterable<MapEntry<String, dynamic>> fields,
     int? objectId,
+    bool hasPhotos = false,
   }) {
     /// get curretn
     final cameraViewport = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
@@ -35,6 +36,7 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
     state = FeedbackFormPayloadEntity(
       category: categoryId,
       objectId: objectId,
+      hasPhotos: hasPhotos,
       fields: fields
           .map(
             (entry) => entry.value != null

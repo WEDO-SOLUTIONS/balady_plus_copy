@@ -12,5 +12,6 @@ abstract class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
     required IList<FeedbackFieldPayloadDto> fields,
     required VisibleRect viewport,
     int? objectId,
+    @Default(false) bool hasPhotos,
   }) = _FeedbackFormPayloadEntity;
 }
