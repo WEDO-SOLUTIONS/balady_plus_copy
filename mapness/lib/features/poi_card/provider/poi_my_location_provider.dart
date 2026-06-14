@@ -32,11 +32,7 @@ class PoiMyLocationState {
     required this.isAuthorized,
   });
 
-  PoiMyLocationState copyWith(
-          {String? address,
-          LatLng? location,
-          String? title,
-          bool? isAuthorized}) =>
+  PoiMyLocationState copyWith({String? address, LatLng? location, String? title, bool? isAuthorized}) =>
       PoiMyLocationState(
         address: address ?? this.address,
         location: location ?? this.location,
@@ -48,17 +44,14 @@ class PoiMyLocationState {
 @riverpod
 class PoiMyLocation extends _$PoiMyLocation {
   @override
-  Future<PoiMyLocationState?> build(
-      {required LatLng? closestPoint,
-      required PoiCameraConfig? cameraConfig}) async {
+  Future<PoiMyLocationState?> build({required LatLng? closestPoint, required PoiCameraConfig? cameraConfig}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     if (closestPoint == null || cameraConfig == null) {
       return null;
     }
 
-    final coordinatesAddress =
-        '${closestPoint.latitude}, ${closestPoint.longitude}';
+    final coordinatesAddress = '${closestPoint.latitude}, ${closestPoint.longitude}';
 
     unawaited(_cameraAnimation(closestPoint));
 
@@ -68,8 +61,7 @@ class PoiMyLocation extends _$PoiMyLocation {
       sortingType: SortingTypeMessage.byDistance,
     );
     if (searchData.firstPage?.items.isNotEmpty == true) {
-      address = searchData.firstPage!.items.firstOrNull?.makeAddress() ??
-          coordinatesAddress;
+      address = searchData.firstPage!.items.firstOrNull?.makeAddress() ?? coordinatesAddress;
     }
 
     final userData = ref.watch(authProvider).value;
@@ -87,17 +79,13 @@ class PoiMyLocation extends _$PoiMyLocation {
   Future<void> _cameraAnimation(LatLng closestPoint) async {
     final settings = MapObjectManagerSettings.myLocation();
     final mapObjectManager = ref.read(
-      mapObjectManagerProvider(named: settings.name, layerId: settings.layerId)
-          .notifier,
+      mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
     );
     final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
 
     await mapObjectManager.removeAllMarkers();
     final marker = Markers.pinMarker(
-      GeoPointWithElevationMessage(
-          latitude: closestPoint.latitude,
-          longitude: closestPoint.longitude,
-          elevation: 1),
+      GeoPointWithElevationMessage(latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 1),
       activeCityEvent: ref.watch(activeCityEventProvider),
       isDark: isDark,
     );
@@ -109,11 +97,11 @@ class PoiMyLocation extends _$PoiMyLocation {
 
     await mapObjectManager.addMarker(marker);
 
-    await ref.read(cameraPositionProvider.notifier).animateTo(
+    await ref
+        .read(cameraPositionProvider.notifier)
+        .animateTo(
           CameraPositionMessage(
-            point: GeoPointMessage(
-                latitude: closestPoint.latitude,
-                longitude: closestPoint.longitude),
+            point: GeoPointMessage(latitude: closestPoint.latitude, longitude: closestPoint.longitude),
             zoom: cameraConfig?.zoom ?? 16,
             tilt: cameraConfig?.tilt ?? 0,
             bearing: cameraConfig?.bearing ?? 0,
