@@ -448,7 +448,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                       child: ListView.separated(
                                                         scrollDirection: Axis.horizontal,
                                                         separatorBuilder: (context, i) =>
-                                                            SizedBox(width: context.screenWidth * 0.00),
+                                                            SizedBox(width: context.screenWidth * 0.02),
                                                         itemCount: apps.length,
                                                         itemBuilder: (context, appIndex) {
                                                           final miniApp = apps[appIndex];
@@ -460,7 +460,16 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                   miniApp,
                                                                 );
                                                               },
-                                                              child: Card(
+                                                              child: DecoratedBox(
+                                                                decoration: BoxDecoration(
+                                                                  color: Theme.of(context).cardColor,
+                                                                  borderRadius: BorderRadius.circular(8),
+                                                                  border: Border.all(
+                                                                    color: Theme.of(
+                                                                      context,
+                                                                    ).disabledColor.withAlpha(90),
+                                                                  ),
+                                                                ),
                                                                 child: Row(
                                                                   children: [
                                                                     Padding(

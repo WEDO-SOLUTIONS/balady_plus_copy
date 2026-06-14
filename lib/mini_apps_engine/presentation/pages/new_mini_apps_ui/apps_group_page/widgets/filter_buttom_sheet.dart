@@ -76,7 +76,7 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                   width: context.w(36),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).disabledColor,
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(13),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),

@@ -285,10 +285,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                             width: context.w(100),
                                             height: context.h(100),
                                             child: Card(
-                                              elevation: 1,
+                                              elevation: 0,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                               color: Theme.of(context).brightness == Brightness.light
-                                                  ? Theme.of(context).colorScheme.onSurface.withAlpha(10)
+                                                  ? Theme.of(context).colorScheme.onSurface.withAlpha(13)
                                                   : Theme.of(context).primaryColorLight,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
