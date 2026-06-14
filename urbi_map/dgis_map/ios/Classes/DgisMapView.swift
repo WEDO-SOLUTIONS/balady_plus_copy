@@ -212,6 +212,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
 
+    func setIndoorFloorPlansEnabled(enabled: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
+        if let indoorControlHandler = self.indoorControlHandler {
+            indoorControlHandler.setIndoorFloorPlansEnabled(enabled: enabled)
+        } else {
+            self.map?.indoorManager.setIndoorState(newState: enabled ? .enabled : .disabled)
+        }
+         completion(Result.success(()))
+    }
+
     func moveCameraToActiveRoute(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
       self.routeHandler?.moveCameraToActiveRouteIndex(UInt64(index))
          completion(Result.success(()))

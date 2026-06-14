@@ -4,7 +4,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -276,9 +275,6 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                       .track(
                         '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
                       );
-                  ref
-                      .read(searchHistoryProvider(scope.value).notifier)
-                      .put(SearchHistoryItem.fromQuery(query: q).toMessage());
                 },
               ),
               if (shouldShowHistoryAndFavorites && hasFavourites)
