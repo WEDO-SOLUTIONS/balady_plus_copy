@@ -16,6 +16,7 @@ import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_contacts_card.dart';
+import 'package:mapness/features/poi_card/widgets/phone_picker_sheet.dart';
 import 'package:mapness/pages/poi_card/poi_card_widget_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
@@ -50,11 +51,9 @@ class SearchItemQuickActions extends HookConsumerWidget {
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
-    final phoneNumber = directoryObject.getContactsInfoModels
-        .firstWhereOrNull(
-          (element) => element.type == ContactsInfoType.phone,
-        )
-        ?.value;
+    final phoneNumbers = directoryObject.getContactsInfoModels
+        .where((e) => e.type == ContactsInfoType.phone && e.value != null)
+        .toList();
 
     final website = directoryObject.getContactsInfoModels
         .firstWhereOrNull(
@@ -149,7 +148,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           onPressed: throttledShare,
         ),
       ),
-      if (phoneNumber != null)
+      if (phoneNumbers.isNotEmpty)
         ItemActionBar(
           bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: GeneralIcons.phoneLTR,
@@ -158,8 +157,15 @@ class SearchItemQuickActions extends HookConsumerWidget {
           border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
           borderRadius: 4,
           onPressed: () {
-            BssService.instance.trackCallTap(directoryObject, phoneNumber);
-            poiActions.callPhone(phoneNumber);
+            if (phoneNumbers.length == 1) {
+              BssService.instance.trackCallTap(directoryObject, phoneNumbers.first.value!);
+              poiActions.callPhone(phoneNumbers.first.value!);
+            } else {
+              showPhonePickerSheet(context, phoneNumbers, (phone) {
+                BssService.instance.trackCallTap(directoryObject, phone);
+                poiActions.callPhone(phone);
+              });
+            }
           },
         ),
       if (website != null)
