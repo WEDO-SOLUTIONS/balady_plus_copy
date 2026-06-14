@@ -85,6 +85,7 @@ class RouteHandler(
     }
 
     override fun close() {
+        publicTransportHandler.stopDurationUpdates()
         closeables.forEach { it.close() }
         closeables.clear()
     }
