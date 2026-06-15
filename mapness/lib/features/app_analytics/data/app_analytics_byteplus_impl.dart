@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 
 /// BytePlus RangersAppLog implementation of [AppAnalyticsRepository].
@@ -12,7 +14,45 @@ import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart
 /// SDK must be initialized before this class is used. Initialization happens
 /// in `setupMapness()` inside `mapness/lib/entry_point.dart`, which runs at
 /// app startup before any widgets are built.
-class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository {
+class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnalyticsRepository {
+  AppAnalyticsBytePlusImpl() {
+    _resolveSimulator();
+  }
+
+  /// Whether the app is running on an iOS Simulator / Android emulator.
+  ///
+  /// The RangersAppLog XCFramework runs on the simulator, but BytePlus only
+  /// shows data from real devices on the dashboard (a simulator has no real
+  /// device fingerprint, fake GPS, etc.). So on simulators we run in "dry-run":
+  /// events are logged locally but NOT sent — the app works for testing, and the
+  /// dashboard stays clean. On a physical device, events are sent for real.
+  ///
+  /// `null` until [_resolveSimulator] completes (a few ms after startup); we
+  /// treat that brief window as a simulator (don't send) to be safe.
+  static bool? _isSimulator;
+
+  /// Manual override: force dry-run even on a physical device (local testing).
+  /// Leave `false` for normal behavior (auto-detect by device type).
+  static const bool _forceDryRun = false;
+
+  Future<void> _resolveSimulator() async {
+    if (_isSimulator != null) {
+      return;
+    }
+    try {
+      final info = DeviceInfoPlugin();
+      if (Platform.isIOS) {
+        _isSimulator = !(await info.iosInfo).isPhysicalDevice;
+      } else if (Platform.isAndroid) {
+        _isSimulator = !(await info.androidInfo).isPhysicalDevice;
+      } else {
+        _isSimulator = true;
+      }
+    } catch (_) {
+      _isSimulator = true; // unknown → safest is dry-run
+    }
+  }
+
   // ── User identity ─────────────────────────────────────────────────────────
 
   @override
@@ -215,7 +255,178 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository {
     });
   }
 
+  // ── DataFinder Phase-1 search events ──────────────────────────────────────
+
+  @override
+  void searchBoxClick({
+    required DataFinderSourcePage eventSource,
+    required bool isFirstClick,
+  }) {
+    _send('search_box_click', {
+      'event_source': eventSource.value,
+      'is_first_click': isFirstClick,
+    });
+  }
+
+  @override
+  void searchBoxInput({
+    required DataFinderInputOperation operationType,
+    required String inputText,
+  }) {
+    _send('search_box_input', {
+      'operation_type': operationType.value,
+      'input_text': inputText,
+    });
+  }
+
+  @override
+  void searchButtonClick({
+    required DataFinderSourcePage eventSource,
+    required String searchText,
+    String triggerMethod = 'Keyboard',
+  }) {
+    _send('search_button_click', {
+      'event_source': eventSource.value,
+      'search_text': searchText,
+      'trigger_method': triggerMethod,
+    });
+  }
+
+  @override
+  void quickSearchClick({
+    required DataFinderSourcePage eventSource,
+    required String searchText,
+  }) {
+    _send('quick_search_click', {
+      'event_source': eventSource.value,
+      'search_text': searchText,
+    });
+  }
+
+  @override
+  void favoriteAdd({
+    required DataFinderSourcePage eventSource,
+    required DataFinderFavoriteType favoriteType,
+    required DataFinderPoi poi,
+  }) {
+    _send('favorite_add', {
+      'event_source': eventSource.value,
+      'favorite_type': favoriteType.value,
+      ...poi.toJson(),
+    });
+  }
+
+  @override
+  void suggestionExposure({
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required DataFinderSearchParam searchParam,
+    required List<DataFinderPoi> pois,
+  }) {
+    _send('suggestion_exposure', {
+      'request_id': requestId,
+      'suggestion_session_id': sessionId,
+      'search_text': searchText,
+      'search_param': searchParam.toQueryString(),
+      'suggestions': pois.map((p) => p.toSuggestionJson()).toList(),
+      'result_count': pois.length,
+    });
+  }
+
+  @override
+  void suggestionClick({
+    required DataFinderSourcePage eventSource,
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required String suggestionType,
+    required DataFinderPoi poi,
+  }) {
+    // BRD wants both `suggestion_name` + `poi_name`, and `suggestion_rank`
+    // (not `poi_rank`) on this event.
+    _send('suggestion_click', {
+      'event_source': eventSource.value,
+      'request_id': requestId,
+      'suggestion_session_id': sessionId,
+      'search_text': searchText,
+      'suggestion_type': suggestionType,
+      'suggestion_name': poi.name,
+      'suggestion_rank': poi.rank,
+      if (poi.id != null) 'poi_id': poi.id,
+      if (poi.name != null) 'poi_name': poi.name,
+      if (poi.address != null) 'poi_addr': poi.address,
+      if (poi.type != null) 'poi_type': poi.type,
+      if (poi.distanceKm != null) 'poi_distance': poi.distanceKm,
+    });
+  }
+
+  @override
+  void searchResultsExposure({
+    required DataFinderSourcePage eventSource,
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required DataFinderSearchType searchType,
+    required DataFinderSearchParam searchParam,
+    required List<DataFinderPoi> pois,
+  }) {
+    _send('search_results_exposure', {
+      'event_source': eventSource.value,
+      'request_id': requestId,
+      'search_session_id': sessionId,
+      'search_text': searchText,
+      'search_type': searchType.value,
+      'search_param': searchParam.toQueryString(),
+      'results': pois.map((p) => p.toJson()).toList(),
+      'result_count': pois.length,
+    });
+  }
+
+  @override
+  void searchResultsClick({
+    required DataFinderSourcePage eventSource,
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required DataFinderClickAction clickAction,
+    required DataFinderPoi poi,
+  }) {
+    _send('search_results_click', {
+      'event_source': eventSource.value,
+      'request_id': requestId,
+      'search_session_id': sessionId,
+      'search_text': searchText,
+      'click_action': clickAction.value,
+      ...poi.toJson(),
+    });
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
+
+  /// True when events should be logged but NOT sent to BytePlus:
+  /// on a simulator/emulator (auto-detected), or when [_forceDryRun] is set.
+  /// While device detection is still resolving (`_isSimulator == null`) we also
+  /// dry-run, so nothing leaks before we know the device type.
+  bool get _dryRun => _forceDryRun || (_isSimulator ?? true);
+
+  /// Sends a DataFinder event. In debug builds the payload is logged with a
+  /// `[DataFinder]` prefix for grepping. When [_dryRun] is true the event is
+  /// NOT forwarded to BytePlus — it only prints locally (simulator/emulator).
+  void _send(String eventName, Map<String, dynamic> params) {
+    final dryRun = _dryRun;
+    assert(() {
+      final tag = dryRun ? '[DataFinder][DRY-RUN]' : '[DataFinder]';
+      // ignore: avoid_print
+      print('$tag $eventName -> ${jsonEncode(params)}');
+      return true;
+    }(), 'debug-only log');
+
+    if (dryRun) {
+      return; // simulator/emulator (or forced): do not send to BytePlus.
+    }
+    RangersApplogFlutterPlugin.onEventV3(eventName, params);
+  }
 
   String get _now {
     final now = DateTime.now().toUtc();

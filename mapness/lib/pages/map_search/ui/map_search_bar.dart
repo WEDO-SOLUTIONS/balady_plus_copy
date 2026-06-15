@@ -2,6 +2,8 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -54,6 +56,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
+
+  /// DataFinder: tracks the first focus of the search box for `is_first_click`.
+  bool _searchBoxClicked = false;
 
   void _safeControllerWrite(VoidCallback action) {
     try {
@@ -171,6 +176,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
+            // DataFinder: report the manual text input.
+            ref
+                .read(appAnalyticsProvider)
+                .searchBoxInput(
+                  operationType: DataFinderInputOperation.manual,
+                  inputText: query,
+                );
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -191,6 +203,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           },
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
+            // DataFinder: report the search-box tap (first focus flagged).
+            ref
+                .read(appAnalyticsProvider)
+                .searchBoxClick(
+                  eventSource: searcher.dataFinderEventSource,
+                  isFirstClick: !_searchBoxClicked,
+                );
+            _searchBoxClicked = true;
             BssService.instance.sendEvent(
               const BssRequest(
                 eventType: BSSEventType.action,
@@ -221,6 +241,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               ),
             );
             if (query.trim().isNotEmpty) {
+              // DataFinder: report the search submit (keyboard action).
+              ref
+                  .read(appAnalyticsProvider)
+                  .searchButtonClick(
+                    eventSource: searcher.dataFinderEventSource,
+                    searchText: query,
+                  );
               searcher.searchByText(query);
               ref
                   .read(urbiAnalyticsProvider)

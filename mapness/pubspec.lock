@@ -229,10 +229,10 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: b8b0fd5c67cf395e801d3399b9ea805b0499b304065307a600e62d578bf78cfc
+      sha256: "23984d5b26b4910d47cf1a1a8b72df1d9eed988c9ec3ea387a2ad6b53d98d1f3"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.12"
   balady_design_system:
     dependency: transitive
     description:
@@ -247,7 +247,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+504"
+    version: "3.30.3+565"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -1021,7 +1021,7 @@ packages:
     source: hosted
     version: "0.8.1"
   flutter_dotenv:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_dotenv
       sha256: d4130c4a43e0b13fefc593bc3961f2cb46e30cb79e253d4a526b1b5d24ae1ce4
@@ -2589,6 +2589,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.2"
+  rangers_applog_flutter_plugin:
+    dependency: "direct main"
+    description:
+      name: rangers_applog_flutter_plugin
+      sha256: "144b574592d093236edd4be59546e8f1e2b1fcf50e21f0e75ce372a32bd100a7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.0"
   redis:
     dependency: transitive
     description:

@@ -1,6 +1,7 @@
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_byteplus_impl.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_insider_impl.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -12,10 +13,16 @@ part 'app_analytics.g.dart';
 /// Insider and BytePlus simultaneously.
 ///
 /// Add new analytics backends here — no callers need to change.
-class _CompositeAnalytics implements AppAnalyticsRepository {
+class _CompositeAnalytics implements AppAnalyticsApi {
   _CompositeAnalytics(this._implementations);
 
   final List<AppAnalyticsRepository> _implementations;
+
+  /// Only the backends that opted into the DataFinder capability. An event in
+  /// this group is sent **only** to these — backends that don't implement
+  /// [DataFinderAnalyticsRepository] (e.g. Insider) never receive it.
+  Iterable<DataFinderAnalyticsRepository> get _dataFinderImpls =>
+      _implementations.whereType<DataFinderAnalyticsRepository>();
 
   @override
   void onboardingFlowStarted() {
@@ -203,14 +210,153 @@ class _CompositeAnalytics implements AppAnalyticsRepository {
       impl.transportModeSelected(type: type);
     }
   }
+
+  // ── DataFinder Phase-1 search events ──────────────────────────────────────
+
+  @override
+  void searchBoxClick({
+    required DataFinderSourcePage eventSource,
+    required bool isFirstClick,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.searchBoxClick(eventSource: eventSource, isFirstClick: isFirstClick);
+    }
+  }
+
+  @override
+  void searchBoxInput({
+    required DataFinderInputOperation operationType,
+    required String inputText,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.searchBoxInput(operationType: operationType, inputText: inputText);
+    }
+  }
+
+  @override
+  void searchButtonClick({
+    required DataFinderSourcePage eventSource,
+    required String searchText,
+    String triggerMethod = 'Keyboard',
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.searchButtonClick(eventSource: eventSource, searchText: searchText, triggerMethod: triggerMethod);
+    }
+  }
+
+  @override
+  void quickSearchClick({
+    required DataFinderSourcePage eventSource,
+    required String searchText,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.quickSearchClick(eventSource: eventSource, searchText: searchText);
+    }
+  }
+
+  @override
+  void favoriteAdd({
+    required DataFinderSourcePage eventSource,
+    required DataFinderFavoriteType favoriteType,
+    required DataFinderPoi poi,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.favoriteAdd(eventSource: eventSource, favoriteType: favoriteType, poi: poi);
+    }
+  }
+
+  @override
+  void suggestionExposure({
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required DataFinderSearchParam searchParam,
+    required List<DataFinderPoi> pois,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.suggestionExposure(
+        requestId: requestId,
+        sessionId: sessionId,
+        searchText: searchText,
+        searchParam: searchParam,
+        pois: pois,
+      );
+    }
+  }
+
+  @override
+  void suggestionClick({
+    required DataFinderSourcePage eventSource,
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required String suggestionType,
+    required DataFinderPoi poi,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.suggestionClick(
+        eventSource: eventSource,
+        requestId: requestId,
+        sessionId: sessionId,
+        searchText: searchText,
+        suggestionType: suggestionType,
+        poi: poi,
+      );
+    }
+  }
+
+  @override
+  void searchResultsExposure({
+    required DataFinderSourcePage eventSource,
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required DataFinderSearchType searchType,
+    required DataFinderSearchParam searchParam,
+    required List<DataFinderPoi> pois,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.searchResultsExposure(
+        eventSource: eventSource,
+        requestId: requestId,
+        sessionId: sessionId,
+        searchText: searchText,
+        searchType: searchType,
+        searchParam: searchParam,
+        pois: pois,
+      );
+    }
+  }
+
+  @override
+  void searchResultsClick({
+    required DataFinderSourcePage eventSource,
+    required String requestId,
+    required String sessionId,
+    required String searchText,
+    required DataFinderClickAction clickAction,
+    required DataFinderPoi poi,
+  }) {
+    for (final impl in _dataFinderImpls) {
+      impl.searchResultsClick(
+        eventSource: eventSource,
+        requestId: requestId,
+        sessionId: sessionId,
+        searchText: searchText,
+        clickAction: clickAction,
+        poi: poi,
+      );
+    }
+  }
 }
 
 @riverpod
 class AppAnalytics extends _$AppAnalytics {
   @override
-  AppAnalyticsRepository build() {
+  AppAnalyticsApi build() {
     final auth = ref.watch(authProvider.future);
-    final analytics = stateOrNull ??
+    final analytics =
+        stateOrNull ??
         _CompositeAnalytics([
           AppAnalyticsInsiderImpl(),
           AppAnalyticsBytePlusImpl(),

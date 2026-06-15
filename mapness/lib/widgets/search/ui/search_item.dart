@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
@@ -55,6 +56,10 @@ class SearchItem extends ConsumerWidget {
 
   final void Function() onTap;
 
+  /// DataFinder: reports a `search_results_click` for an action button
+  /// (directions / share / favourite). The card-body tap uses [onTap].
+  final void Function(DataFinderClickAction action)? onResultAction;
+
   const SearchItem({
     required this.result,
     required this.onTap,
@@ -64,13 +69,14 @@ class SearchItem extends ConsumerWidget {
     this.contentColor,
     this.index = 0,
     this.searchResultList,
+    this.onResultAction,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String subtitle =(result.id?.objectId == 70030077050725730
-        ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
+    String subtitle = (result.id?.objectId == 70030077050725730
+        ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
         : (result.subtitle == 'تسوية' ? 'نطاق' : result.subtitle));
     // String subtitle = result.subtitle;
     List<String> photosUrls = [];
@@ -199,7 +205,7 @@ class SearchItem extends ConsumerWidget {
                   ),
                 ),
               ),
-              SearchItemQuickActions(directoryObject: result),
+              SearchItemQuickActions(directoryObject: result, onResultAction: onResultAction),
             ],
           ),
         ),

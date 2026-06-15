@@ -3,8 +3,14 @@ import 'dart:math';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_mappers.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -16,6 +22,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -63,6 +70,19 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
   SearchRequestLang? _currentQueryLocale;
 
+  // ── DataFinder (ByteDance) correlators ──────────────────────────────────────
+  // Client-generated ids per ByteDance's decision (no 2GIS server request id).
+  // A new suggestion session starts on each fresh suggest; a new search session
+  // on each full search. `_requestId` is regenerated per SDK call.
+  String? _suggestionSessionId;
+  String? _searchSessionId;
+  String _requestId = '';
+
+  /// True when the current search was started by tapping a history record, so
+  /// `search_results_exposure` reports `search_type: History`. Reset on the next
+  /// fresh (typed/quick/suggest) search.
+  bool _searchFromHistory = false;
+
   bool get isGoogleSearch => _isGoogleSearch;
 
   // Timer to start full search if we don't get any results
@@ -96,6 +116,104 @@ class Search extends _$Search {
     _currentQueryLocale = null;
     _fullSearchTimer?.cancel();
     _fullSearchTimer = null;
+    _suggestionSessionId = null;
+    _searchSessionId = null;
+    _requestId = '';
+    _searchFromHistory = false;
+  }
+
+  // ── DataFinder analytics helpers ────────────────────────────────────────────
+
+  /// Shortcut to the analytics service (events fan out to the tools that opted
+  /// into the DataFinder capability — today BytePlus only).
+  DataFinderAnalyticsRepository get _analytics => ref.read(appAnalyticsProvider);
+
+  /// Resolves the [DataFinderSourcePage] (`event_source`) from the search scope
+  /// plus the current top route.
+  ///
+  /// App→BRD mapping (the app has a single map surface that the spec calls
+  /// "Explore"; "Routes" is the route-planning flow; navigation is "Direction"):
+  ///  * Routing search  → Routes-Path Changing (editing route) / Routes-Main Page
+  ///  * Navi search      → Explore-Direction-Path Changing / Explore-Direction
+  ///  * Map/other search → Explore-Main Page (or path-changing if a route is open)
+  DataFinderSourcePage get _sourcePage {
+    final onPathNav = _isRouteActive(PathNavRoute.name);
+    final onRouting = _isRouteActive(RoutingRoutesRoute.name) || _isRouteActive(RouteDetailsRoute.name);
+
+    switch (scope) {
+      case 'RoutingSearch':
+        return onRouting ? DataFinderSourcePage.routesPathChanging : DataFinderSourcePage.routesMainPage;
+      case 'NaviSearch':
+        return onPathNav ? DataFinderSourcePage.exploreDirectionPathChanging : DataFinderSourcePage.exploreDirection;
+      case 'MapSearch':
+      case 'FavouritesSearch':
+      case 'FeedbackSearch':
+      default:
+        // The single map surface. If a route is being planned/followed while the
+        // user searches, it is a path-changing context.
+        if (onPathNav || onRouting) {
+          return DataFinderSourcePage.exploreDirectionPathChanging;
+        }
+        return DataFinderSourcePage.exploreMainPage;
+    }
+  }
+
+  /// Public accessor so UI-fired events (search box, favourite dialog) can tag
+  /// the same `event_source` the notifier computes.
+  DataFinderSourcePage get dataFinderEventSource => _sourcePage;
+
+  /// Marks the next search as originating from a tapped history record, so its
+  /// `search_results_exposure` reports `search_type: History`.
+  void markSearchFromHistory() => _searchFromHistory = true;
+
+  /// True if [routeName] is anywhere in the current navigation stack.
+  bool _isRouteActive(String routeName) {
+    try {
+      return ref.read(appRouterProvider).currentSegments.any((s) => s.name == routeName);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Current user location, if granted, for distance computation.
+  ({double lat, double lon})? get _myLocation {
+    final pos = ref.read(locationProvider);
+    if (pos == null) {
+      return null;
+    }
+    return (lat: pos.latitude, lon: pos.longitude);
+  }
+
+  /// Builds the `search_param` (flat string) from the query, viewport corners,
+  /// user location, page size and suggestor type.
+  DataFinderSearchParam _buildSearchParam({String? suggestType}) {
+    final rect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+    final loc = _myLocation;
+    return DataFinderSearchParam(
+      q: _previousQuery,
+      viewpoint1: rect == null ? null : (rect.southWestLat, rect.southWestLon),
+      viewpoint2: rect == null ? null : (rect.northEastLat, rect.northEastLon),
+      suggestType: suggestType,
+      pageSize: 20,
+      location: loc == null ? null : (loc.lat, loc.lon),
+    );
+  }
+
+  /// Maps the current search entry type to the spec's `search_type` value.
+  DataFinderSearchType get _searchType {
+    if (_searchFromHistory) {
+      return DataFinderSearchType.history;
+    }
+    switch (_previousType) {
+      case SearchType.quickSearch:
+        return DataFinderSearchType.quickSearch;
+      case SearchType.searchByQuery:
+        return DataFinderSearchType.clickSuggestion;
+      case SearchType.searchByText:
+      case SearchType.fetchSuggest:
+      case null:
+        return _isSearchInThisArea ? DataFinderSearchType.searchInThisArea : DataFinderSearchType.manual;
+    }
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -172,6 +290,12 @@ class Search extends _$Search {
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
       _isGoogleSearch = false;
+      // DataFinder: typing is a fresh (non-history) search.
+      _searchFromHistory = false;
+      // DataFinder: start a suggestion session on the first keystroke of a query
+      // and refresh the request id for this suggest call.
+      _suggestionSessionId ??= DataFinderIds.uuid();
+      _requestId = DataFinderIds.uuid();
       // -- Analytics
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
@@ -208,6 +332,7 @@ class Search extends _$Search {
           suggest: result,
           searchText: query,
         );
+        _reportSuggestionDisplay(result.suggests, query);
       } else if (query.length > 2) {
         await ref
             .read(urbiAnalyticsProvider.notifier)
@@ -253,7 +378,14 @@ class Search extends _$Search {
 
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
+      _previousQuery = searchQuery;
       _isGoogleSearch = isGoogle;
+      _searchFromHistory = false;
+      // DataFinder: new search session + request id for this full search.
+      _searchSessionId = DataFinderIds.uuid();
+      _requestId = DataFinderIds.uuid();
+      // DataFinder: quick_search_click with the actual query (matches search_param q=).
+      _analytics.quickSearchClick(eventSource: _sourcePage, searchText: searchQuery);
       final searchRect = ref
           .read(dgisControllerProvider.notifier)
           .visibleRectSubject
@@ -316,6 +448,9 @@ class Search extends _$Search {
       _previousType = SearchType.searchByText;
       _previousQuery = query;
       _isGoogleSearch = isGoogle;
+      // DataFinder: new search session + request id for this full search.
+      _searchSessionId = DataFinderIds.uuid();
+      _requestId = DataFinderIds.uuid();
       final searchRect = ref
           .read(dgisControllerProvider.notifier)
           .visibleRectSubject
@@ -394,6 +529,9 @@ class Search extends _$Search {
       _previousQuery = text;
       _previousSearchQueryMessage = query;
       _isGoogleSearch = false;
+      // DataFinder: new search session + request id for this full search.
+      _searchSessionId = DataFinderIds.uuid();
+      _requestId = DataFinderIds.uuid();
 
       final searchRect = ref
           .read(dgisControllerProvider.notifier)
@@ -670,10 +808,88 @@ class Search extends _$Search {
     if (licenseIds != null && licenseIds.isNotEmpty) {
       unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
     }
+
+    _reportResultsExposure(results, searchQuery);
+
     return SearchStateResults(
       results: results,
       searchText: searchQuery,
       markerType: markerType,
+    );
+  }
+
+  /// Fires `search_results_click` when the user taps a search result. Called by
+  /// the results UI, which already knows the tapped [item] and its [rank].
+  void reportSearchResultsClick({
+    required DirectoryObjectMessage item,
+    required int rank,
+    DataFinderClickAction clickAction = DataFinderClickAction.viewPoiDetails,
+  }) {
+    final loc = _myLocation;
+    _analytics.searchResultsClick(
+      eventSource: _sourcePage,
+      requestId: _requestId,
+      sessionId: _searchSessionId ??= DataFinderIds.uuid(),
+      searchText: _previousQuery ?? '',
+      clickAction: clickAction,
+      poi: item.toDataFinderPoi(rank: rank, myLat: loc?.lat, myLon: loc?.lon),
+    );
+  }
+
+  /// Fires `suggestion_click` when the user taps a suggestion. Called by the
+  /// suggest UI, which knows the tapped [suggest] and its [rank].
+  void reportSuggestionClick({required SuggestMessage suggest, required int rank}) {
+    final loc = _myLocation;
+    _analytics.suggestionClick(
+      eventSource: _sourcePage,
+      requestId: _requestId,
+      sessionId: _suggestionSessionId ??= DataFinderIds.uuid(),
+      searchText: _previousQuery ?? '',
+      suggestionType: suggest.dataFinderSuggestionType,
+      poi: suggest.toDataFinderPoi(rank: rank, myLat: loc?.lat, myLon: loc?.lon),
+    );
+  }
+
+  /// Fires `suggestion_exposure` once per suggest response (list-level). Only
+  /// the suggestions actually returned are reported.
+  void _reportSuggestionDisplay(List<SuggestMessage> suggests, String searchQuery) {
+    if (suggests.isEmpty) {
+      return;
+    }
+    final loc = _myLocation;
+    final pois = [
+      for (var i = 0; i < suggests.length; i++)
+        suggests[i].toDataFinderPoi(rank: i + 1, myLat: loc?.lat, myLon: loc?.lon),
+    ];
+    _analytics.suggestionExposure(
+      requestId: _requestId,
+      sessionId: _suggestionSessionId ??= DataFinderIds.uuid(),
+      searchText: searchQuery,
+      // suggest_type = the suggestor mode used by fetchSuggest (default object).
+      searchParam: _buildSearchParam(suggestType: 'object'),
+      pois: pois,
+    );
+  }
+
+  /// Fires `search_results_exposure` once per result page (list-level). Only
+  /// the items actually returned on the page are reported.
+  void _reportResultsExposure(SearchResultMessage results, String searchQuery) {
+    final items = results.firstPage?.items ?? const <DirectoryObjectMessage>[];
+    if (items.isEmpty) {
+      return;
+    }
+    final loc = _myLocation;
+    final pois = [
+      for (var i = 0; i < items.length; i++) items[i].toDataFinderPoi(rank: i + 1, myLat: loc?.lat, myLon: loc?.lon),
+    ];
+    _analytics.searchResultsExposure(
+      eventSource: _sourcePage,
+      requestId: _requestId,
+      sessionId: _searchSessionId ??= DataFinderIds.uuid(),
+      searchText: searchQuery,
+      searchType: _searchType,
+      searchParam: _buildSearchParam(),
+      pois: pois,
     );
   }
 }
