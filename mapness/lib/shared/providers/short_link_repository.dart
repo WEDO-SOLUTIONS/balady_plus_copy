@@ -59,7 +59,6 @@ abstract class ShortLinkRequest with _$ShortLinkRequest {
     String? poiId,
     double? lat,
     double? lon,
-    String? type,
   }) = _ShortLinkRequest;
 
   factory ShortLinkRequest.fromJson(Map<String, dynamic> json) => _$ShortLinkRequestFromJson(json);

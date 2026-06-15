@@ -13,7 +13,6 @@ class ShareUtil {
     required BuildContext context,
     String? objectId,
     Coordinates? markerCoords,
-    bool isMyLocation = false,
   }) async {
     try {
       final container = ProviderScope.containerOf(context, listen: false);
@@ -24,7 +23,6 @@ class ShareUtil {
               poiId: objectId,
               lat: markerCoords?.latitude,
               lon: markerCoords?.longitude,
-              type: isMyLocation ? BaldayDeeplink.typeValueMyLocation : null,
             ),
           );
     } catch (e) {
@@ -41,9 +39,6 @@ class ShareUtil {
       if (markerCoords != null) {
         query[BaldayDeeplink.latitudeKey] = markerCoords.latitude.toString();
         query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
-        if (isMyLocation) {
-          query[BaldayDeeplink.typeKey] = BaldayDeeplink.typeValueMyLocation;
-        }
       }
 
       return BaldayDeeplink.urlWithQuery(baseUri, query);
@@ -54,13 +49,11 @@ class ShareUtil {
     required BuildContext context,
     String? objectId,
     Coordinates? markerCoords,
-    bool isMyLocation = false,
   }) async {
     final shareUrl = await getSharePOILink(
       context: context,
       objectId: objectId,
       markerCoords: markerCoords,
-      isMyLocation: isMyLocation,
     );
 
     if (objectId == parkingObjectId.toString()) {
