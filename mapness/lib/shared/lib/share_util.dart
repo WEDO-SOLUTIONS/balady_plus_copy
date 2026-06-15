@@ -54,8 +54,14 @@ class ShareUtil {
     required BuildContext context,
     String? objectId,
     Coordinates? markerCoords,
+    bool isMyLocation = false,
   }) async {
-    final shareUrl = await getSharePOILink(context: context, objectId: objectId, markerCoords: markerCoords);
+    final shareUrl = await getSharePOILink(
+      context: context,
+      objectId: objectId,
+      markerCoords: markerCoords,
+      isMyLocation: isMyLocation,
+    );
 
     if (objectId == parkingObjectId.toString()) {
       return safeShareText('${context.l10n.leftMyCarHere} $shareUrl', context: context);
