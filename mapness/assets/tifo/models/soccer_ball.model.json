@@ -1,0 +1,20 @@
+{
+  "name": "classic_soccer_ball_full_model",
+  "sourceAsset": "assets/models/soccer_ball.glb",
+  "source": {
+    "title": "Animated Morph Sphere",
+    "url": "https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/AnimatedMorphSphere",
+    "license": "CC0 1.0 Universal"
+  },
+  "baseRadius": 0.32,
+  "panels": [
+    { "normal": [0.0, 0.0, 1.0], "size": 0.23 },
+    { "normal": [0.76, 0.18, 0.63], "size": 0.18 },
+    { "normal": [-0.72, 0.14, 0.68], "size": 0.18 },
+    { "normal": [0.2, 0.72, 0.66], "size": 0.17 },
+    { "normal": [-0.15, -0.72, 0.68], "size": 0.17 },
+    { "normal": [0.62, -0.55, 0.55], "size": 0.15 },
+    { "normal": [-0.64, 0.56, 0.52], "size": 0.15 },
+    { "normal": [0.0, 0.0, -1.0], "size": 0.2 }
+  ]
+}

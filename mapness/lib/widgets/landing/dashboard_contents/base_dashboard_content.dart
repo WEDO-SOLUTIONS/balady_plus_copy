@@ -47,8 +47,10 @@ class BaseDashboardContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final actions = DashboardActions(ref, bottomSheetController: bottomSheetController);
     final activeEvent = ref.watch(activeCityEventProvider);
-    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
-    final isFoundingday = activeEvent?.isFoundingDay ?? false;
+    // final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
+    // final isFoundingday = activeEvent?.isFoundingDay ?? false;
+    final isNationalDay = true;
+    final isFoundingday = true;
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
     final recommendationsEnabled = ref.watch(recommendationsFeatureFlagProvider);
 

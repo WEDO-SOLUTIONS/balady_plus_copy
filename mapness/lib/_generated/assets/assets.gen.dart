@@ -453,11 +453,11 @@ class $AssetsMapsGen {
 class $AssetsModelsGen {
   const $AssetsModelsGen();
 
-  /// File path: assets/models/blue_stadium_fix.glb
-  String get blueStadiumFix => 'packages/mapness/assets/models/blue_stadium_fix.glb';
-
   /// File path: assets/models/LIGHT_THEME_CAR_MODEL.glb
   String get lightThemeCarModel => 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
+
+  /// File path: assets/models/blue_stadium_fix.glb
+  String get blueStadiumFix => 'packages/mapness/assets/models/blue_stadium_fix.glb';
 
   /// File path: assets/models/stadium.glb
   String get stadium => 'packages/mapness/assets/models/stadium.glb';
@@ -466,7 +466,7 @@ class $AssetsModelsGen {
   String get yelloweStadiumFix => 'packages/mapness/assets/models/yellowe_stadium_fix.glb';
 
   /// List of all assets
-  List<String> get values => [blueStadiumFix, lightThemeCarModel, stadium, yelloweStadiumFix];
+  List<String> get values => [lightThemeCarModel, blueStadiumFix, stadium, yelloweStadiumFix];
 }
 
 class $AssetsIconsLottieGen {

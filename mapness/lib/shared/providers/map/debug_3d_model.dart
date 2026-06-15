@@ -1,7 +1,14 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/launch_screen.dart';
+import 'package:mapness/features/tifo/onboarding_screen.dart';
+import 'package:mapness/features/tifo/penalty_entry_screen.dart';
+import 'package:mapness/features/tifo/tifo_flow_provider.dart';
+import 'package:mapness/features/tifo/tifo_team.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -17,7 +24,6 @@ const debugDistrictModelPaths = <String>[
   debugBlueStadiumModelPath,
 ];
 const debugDistrictModelPathsLabel = 'yellowe_stadium_fix.glb, blue_stadium_fix.glb';
-const debugDistrictModelScale = 600.0;
 const debugDistrictPolygonFillArgbs = <int>[
   0x3314B8A6,
   0x33F5A623,
@@ -41,6 +47,7 @@ const debugDistrictSolidPolygonFillArgbs = <DebugDistrictPolygonColorMode, int>{
   DebugDistrictPolygonColorMode.red: 0x33E5484D,
   DebugDistrictPolygonColorMode.blue: 0x332F80ED,
   DebugDistrictPolygonColorMode.green: 0x3327AE60,
+  DebugDistrictPolygonColorMode.gray: 0x336B7280,
 };
 const debugDistrictSolidPolygonStrokeArgbs = <DebugDistrictPolygonColorMode, int>{
   DebugDistrictPolygonColorMode.teal: 0xFF0AB0A4,
@@ -49,6 +56,7 @@ const debugDistrictSolidPolygonStrokeArgbs = <DebugDistrictPolygonColorMode, int
   DebugDistrictPolygonColorMode.red: 0xFFE5484D,
   DebugDistrictPolygonColorMode.blue: 0xFF2F80ED,
   DebugDistrictPolygonColorMode.green: 0xFF27AE60,
+  DebugDistrictPolygonColorMode.gray: 0xFF6B7280,
 };
 const debugDistrictCameraLatitude = 24.755353712174955;
 const debugDistrictCameraLongitude = 46.78380853883565;
@@ -78,7 +86,8 @@ enum DebugDistrictPolygonColorMode {
   purple,
   red,
   blue,
-  green;
+  green,
+  gray;
 
   String get label => switch (this) {
     DebugDistrictPolygonColorMode.palette => 'Palette',
@@ -88,6 +97,7 @@ enum DebugDistrictPolygonColorMode {
     DebugDistrictPolygonColorMode.red => 'Red',
     DebugDistrictPolygonColorMode.blue => 'Blue',
     DebugDistrictPolygonColorMode.green => 'Green',
+    DebugDistrictPolygonColorMode.gray => 'Gray',
   };
 
   int get previewStrokeArgb => this == DebugDistrictPolygonColorMode.palette
@@ -307,6 +317,8 @@ class Debug3DModelState {
     required this.polygonColorMode,
     required this.polygonColorModeOverrides,
     required this.isBusy,
+    required this.isGameModeActive,
+    required this.capturedPolygonIds,
     this.error,
   });
 
@@ -316,9 +328,16 @@ class Debug3DModelState {
   final DebugDistrictPolygonColorMode polygonColorMode;
   final Map<String, DebugDistrictPolygonColorMode> polygonColorModeOverrides;
   final bool isBusy;
+  final bool isGameModeActive;
+
+  /// Polygon ids the player captured by scoring a goal in [PenaltyApp].
+  /// Captured polygons render in the selected team's color and stay on the
+  /// map until game mode is turned off.
+  final Set<String> capturedPolygonIds;
   final String? error;
 
-  bool get hasDistrictLayerObjects => arePolygonsVisible || areCentroidModelsVisible;
+  bool get hasDistrictLayerObjects =>
+      arePolygonsVisible || areCentroidModelsVisible || capturedPolygonIds.isNotEmpty;
 
   Debug3DModelState copyWith({
     bool? isAdded,
@@ -327,6 +346,8 @@ class Debug3DModelState {
     DebugDistrictPolygonColorMode? polygonColorMode,
     Map<String, DebugDistrictPolygonColorMode>? polygonColorModeOverrides,
     bool? isBusy,
+    bool? isGameModeActive,
+    Set<String>? capturedPolygonIds,
     String? error,
   }) => Debug3DModelState(
     isAdded: isAdded ?? this.isAdded,
@@ -335,6 +356,8 @@ class Debug3DModelState {
     polygonColorMode: polygonColorMode ?? this.polygonColorMode,
     polygonColorModeOverrides: polygonColorModeOverrides ?? this.polygonColorModeOverrides,
     isBusy: isBusy ?? this.isBusy,
+    isGameModeActive: isGameModeActive ?? this.isGameModeActive,
+    capturedPolygonIds: capturedPolygonIds ?? this.capturedPolygonIds,
     error: error,
   );
 }
@@ -359,6 +382,8 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
       polygonColorMode: DebugDistrictPolygonColorMode.palette,
       polygonColorModeOverrides: {},
       isBusy: false,
+      isGameModeActive: false,
+      capturedPolygonIds: {},
     );
   }
 
@@ -384,18 +409,9 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
   });
 
   Future<void> setPolygonsVisible({required bool value}) => _run((controller) async {
-    final manager = await _ensureDistrictLayerManager(controller);
-    if (value) {
-      await controller.removeAllPolygons(fromManager: manager);
-      await controller.addPolygons(
-        _buildDistrictPolygons(state.polygonColorMode, state.polygonColorModeOverrides),
-        toManager: manager,
-      );
-    } else {
-      await controller.removeAllPolygons(fromManager: manager);
-    }
-
-    _setState(state.copyWith(arePolygonsVisible: value, isBusy: false));
+    _setState(state.copyWith(arePolygonsVisible: value));
+    await _renderDistrictPolygons(controller);
+    _setState(state.copyWith(isBusy: false));
   });
 
   Future<void> setPolygonColorMode({required DebugDistrictPolygonColorMode mode}) => _run((controller) async {
@@ -403,14 +419,12 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
       _setState(state.copyWith(isBusy: false));
       return;
     }
-
-    if (state.arePolygonsVisible) {
-      final manager = await _ensureDistrictLayerManager(controller);
-      await controller.removeAllPolygons(fromManager: manager);
-      await controller.addPolygons(_buildDistrictPolygons(mode, const {}), toManager: manager);
-    }
-
-    _setState(state.copyWith(polygonColorMode: mode, polygonColorModeOverrides: const {}, isBusy: false));
+    _setState(state.copyWith(
+      polygonColorMode: mode,
+      polygonColorModeOverrides: const {},
+    ));
+    await _renderDistrictPolygons(controller);
+    _setState(state.copyWith(isBusy: false));
   });
 
   Future<void> cyclePolygonColorMode({required String polygonId}) => _run((controller) async {
@@ -422,14 +436,22 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     } else {
       overrides[polygonId] = nextMode;
     }
+    _setState(state.copyWith(polygonColorModeOverrides: overrides));
+    await _renderDistrictPolygons(controller);
+    _setState(state.copyWith(isBusy: false));
+  });
 
-    if (state.arePolygonsVisible) {
-      final manager = await _ensureDistrictLayerManager(controller);
-      await controller.removeAllPolygons(fromManager: manager);
-      await controller.addPolygons(_buildDistrictPolygons(state.polygonColorMode, overrides), toManager: manager);
+  /// Marks a polygon as captured (i.e. the player scored a goal at this
+  /// district's arena) and renders it on the map in the selected team's color.
+  Future<void> capturePolygon({required String polygonId}) => _run((controller) async {
+    if (state.capturedPolygonIds.contains(polygonId)) {
+      _setState(state.copyWith(isBusy: false));
+      return;
     }
-
-    _setState(state.copyWith(polygonColorModeOverrides: overrides, isBusy: false));
+    final captured = {...state.capturedPolygonIds, polygonId};
+    _setState(state.copyWith(capturedPolygonIds: captured));
+    await _renderDistrictPolygons(controller);
+    _setState(state.copyWith(isBusy: false));
   });
 
   Future<void> setCentroidModelsVisible({required bool value}) => _run((controller) async {
@@ -460,6 +482,7 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
       state.copyWith(
         arePolygonsVisible: false,
         areCentroidModelsVisible: false,
+        capturedPolygonIds: const {},
         isBusy: false,
       ),
     );
@@ -543,11 +566,62 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
 
   List<Polygon> _buildDistrictPolygons(
     DebugDistrictPolygonColorMode colorMode,
-    Map<String, DebugDistrictPolygonColorMode> colorModeOverrides,
-  ) => [
+    Map<String, DebugDistrictPolygonColorMode> colorModeOverrides, {
+    Set<String>? onlyIds,
+  }) => [
     for (var index = 0; index < debugDistrictPolygons.length; index++)
-      _buildDistrictPolygon(index, colorMode, colorModeOverrides),
+      if (onlyIds == null ||
+          onlyIds.contains(debugDistrictPolygons[index].id))
+        _buildDistrictPolygon(index, colorMode, colorModeOverrides),
   ];
+
+  /// Maps a [TifoTeam] to its closest polygon color mode. Used to paint
+  /// captured polygons in the player's team color.
+  DebugDistrictPolygonColorMode _teamColorMode(TifoTeam? team) {
+    switch (team) {
+      case TifoTeam.alHilal:
+        return DebugDistrictPolygonColorMode.blue;
+      case TifoTeam.alNassr:
+        return DebugDistrictPolygonColorMode.amber;
+      case TifoTeam.riyadhFc:
+        return DebugDistrictPolygonColorMode.red;
+      case TifoTeam.alShabab:
+        return DebugDistrictPolygonColorMode.gray;
+      case null:
+        return state.polygonColorMode;
+    }
+  }
+
+  /// Single source of truth for what polygons to render. Three cases:
+  ///   * [arePolygonsVisible] = true  → all polygons (manual debug view);
+  ///     captured ones still get the team color override.
+  ///   * captures non-empty → only captured polygons, team-colored.
+  ///   * otherwise → nothing.
+  Future<void> _renderDistrictPolygons(DgisMapController controller) async {
+    final manager = await _ensureDistrictLayerManager(controller);
+    await controller.removeAllPolygons(fromManager: manager);
+
+    final captured = state.capturedPolygonIds;
+    if (!state.arePolygonsVisible && captured.isEmpty) {
+      return;
+    }
+
+    final teamMode = _teamColorMode(ref.read(tifoFlowProvider).selectedTeam);
+    final overrides = <String, DebugDistrictPolygonColorMode>{
+      ...state.polygonColorModeOverrides,
+      // Captures win over manual color overrides for that polygon.
+      for (final id in captured) id: teamMode,
+    };
+
+    final polygons = _buildDistrictPolygons(
+      state.polygonColorMode,
+      overrides,
+      onlyIds: state.arePolygonsVisible ? null : captured,
+    );
+    if (polygons.isNotEmpty) {
+      await controller.addPolygons(polygons, toManager: manager);
+    }
+  }
 
   Polygon _buildDistrictPolygon(
     int index,
@@ -589,14 +663,92 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
             elevation: 1,
           ),
           modelPath: _debugDistrictModelPath(index),
-          size: ScaleModelSize(debugDistrictModelScale),
+          size: LogicalPixelModelSize(100),
           mapDirection: MapDirectionMessage(degree: 0),
           opacity: 1,
           zIndex: 101,
         ),
-        onTap: () => unawaited(cyclePolygonColorMode(polygonId: debugDistrictPolygons[index].id)),
+        onTap: () => _launchPenaltyForPolygon(debugDistrictPolygons[index].id),
       ),
   ];
+
+  void _launchPenaltyForPolygon(String polygonId) {
+    final navigator = rootNavigatorKey.currentState;
+    if (navigator == null) {
+      return;
+    }
+    unawaited(
+      navigator.push<void>(
+        MaterialPageRoute<void>(
+          fullscreenDialog: true,
+          builder: (_) => PenaltyEntryScreen(polygonId: polygonId),
+        ),
+      ),
+    );
+  }
+
+  /// Flips the debug "game mode" flag.
+  ///
+  /// On activation:
+  ///  - sets [Debug3DModelState.isGameModeActive] (drives [TifoBallButton]
+  ///    visibility on the dashboard),
+  ///  - pushes the [TifoLaunchScreen] then [TifoOnboardingScreen] as a
+  ///    one-shot intro (fire-and-forget),
+  ///  - drops 3D "arena" models at every district centroid. Polygons are
+  ///    NOT shown — they only appear per-district once the player scores
+  ///    a goal at that arena (see [capturePolygon]).
+  ///
+  /// On deactivation: hides the arenas, clears all captures (so the next
+  /// activation starts fresh), and re-renders the polygon layer.
+  Future<void> setGameModeActive({required bool value}) async {
+    if (value == state.isGameModeActive) {
+      return;
+    }
+    _setState(state.copyWith(isGameModeActive: value));
+
+    if (value) {
+      final navigator = rootNavigatorKey.currentState;
+      if (navigator != null) {
+        unawaited(
+          navigator
+              .push<void>(
+                MaterialPageRoute<void>(
+                  fullscreenDialog: true,
+                  builder: (_) => const TifoLaunchScreen(),
+                ),
+              )
+              .then((_) {
+            // Chain onboarding only if game mode is still active —
+            // otherwise the user already turned it off via debug.
+            if (!state.isGameModeActive) {
+              return;
+            }
+            final nav = rootNavigatorKey.currentState;
+            if (nav == null) {
+              return;
+            }
+            unawaited(
+              nav.push<void>(
+                MaterialPageRoute<void>(
+                  fullscreenDialog: true,
+                  builder: (_) => const TifoOnboardingScreen(),
+                ),
+              ),
+            );
+          }),
+        );
+      }
+      await setCentroidModelsVisible(value: true);
+    } else {
+      // Drop arena models and wipe any captures from the previous session.
+      await setCentroidModelsVisible(value: false);
+      _setState(state.copyWith(capturedPolygonIds: const {}));
+      await _run((controller) async {
+        await _renderDistrictPolygons(controller);
+        _setState(state.copyWith(isBusy: false));
+      });
+    }
+  }
 
   Future<void> _disposeManager() async {
     final controller = activeDgisController;

@@ -154,6 +154,21 @@ class Debug3DModelPanel extends ConsumerWidget {
                 ),
             ],
           ),
+          const DebugDivider(),
+          Text(
+            'Game mode',
+            style: context.textStyles.bodySmallMedium.copyWith(
+              color: DebugTheme.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          DebugToggleRow(
+            title: 'Activate TIFO',
+            subtitle: 'Show the ⚽ FAB + gray polygons on the map',
+            value: state.isGameModeActive,
+            onChanged: (value) => unawaited(notifier.setGameModeActive(value: value)),
+            gradient: DebugTheme.gradientTeal,
+          ),
           if (state.error != null) ...[
             const DebugDivider(),
             Text(

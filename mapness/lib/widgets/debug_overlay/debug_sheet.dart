@@ -172,6 +172,14 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
               label: 'DEV',
               color: DebugTheme.warning,
             ),
+            const SizedBox(width: 8),
+            _CloseButton(
+              onTap: () => widget._draggableController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.linear,
+              ),
+            ),
           ],
         ),
       ],
@@ -332,6 +340,37 @@ class _InfoItem extends StatelessWidget {
           ),
         ),
       ],
+    ),
+  );
+}
+
+class _CloseButton extends StatelessWidget {
+  const _CloseButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: 'Close debug panel',
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: DebugTheme.surfaceLight,
+          border: Border.all(color: DebugTheme.border),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: const Icon(
+          Icons.close_rounded,
+          size: 18,
+          color: DebugTheme.textSecondary,
+        ),
+      ),
     ),
   );
 }

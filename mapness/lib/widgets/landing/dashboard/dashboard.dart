@@ -14,6 +14,8 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
+import 'package:mapness/features/tifo/tifo_ball_button.dart';
+import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -205,6 +207,27 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 bottom: (widget.bottomSheetController.sheetHeight + 50).clamp(0.0, double.infinity),
                 child: eventLogo,
               ),
+            // TIFO entry — floats above the sheet's top edge, tracks drag.
+            // Only visible while the debug "Activate TIFO" toggle is ON.
+            if (ref.watch(debug3dModelProvider.select((s) => s.isGameModeActive)))
+              AnimatedBuilder(
+                animation: widget.bottomSheetController,
+                builder: (context, _) {
+                  final sheetHeight = widget.bottomSheetController.sheetHeight;
+                  // Sheet must actually be shown for the FAB to make sense.
+                  if (sheetHeight < 24) {
+                    return const SizedBox.shrink();
+                  }
+                  // Center the 56px button on the sheet's top edge:
+                  // half above (28) and half below (28) the boundary.
+                  final bottom = (sheetHeight - 28).clamp(0.0, double.infinity);
+                  return Positioned(
+                    right: 16,
+                    bottom: bottom,
+                    child: const TifoBallButton(),
+                  );
+                },
+              ),
           ],
         ),
       ),
@@ -235,6 +258,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   Widget _buildDashboardContent(SpecialThemeMode themeMode, DashboardThemeConfig themeConfig) {
+
     switch (themeMode) {
       case SpecialThemeMode.mekkahBase:
       case SpecialThemeMode.ramadan:
