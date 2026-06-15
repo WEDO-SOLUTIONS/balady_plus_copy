@@ -72,18 +72,6 @@
       "requireLogin": false,
       "requirePermissions": [],
       "iconReference": "Home"
-    },
-    {
-      "key": "snap_and_send",
-      "labelEn": "Snap & Send",
-      "labelAr": "صور وأرسل",
-      "destination": "https://plus.balady.sa/#/snapSend",
-      "status": "inactive",
-      "order": 7,
-      "platforms": ["android", "ios", "huawei"],
-      "requireLogin": true,
-      "requirePermissions": ["location", "camera"],
-      "iconReference": "Search"
     }
   ]
 }

@@ -2,18 +2,16 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_actions_config_datasource.dart';
+import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_actions_defaults.dart';
 import 'package:mapness/features/app_icon_quick_actions/models/app_icon_quick_action.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_config.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_native_bridge.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_navigator.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
-import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -32,9 +30,27 @@ part 'app_icon_quick_action_handler.g.dart';
 class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
   String? _inFlightShortcutKey;
   Completer<void>? _inFlightCompleter;
+  bool _deliveringColdStart = false;
+  bool _deliveryRescheduleNeeded = false;
 
   @override
   void build() {}
+
+  /// Plugin / home-screen tap entry point (warm vs cold start).
+  Future<void> handleFromPlatform(String shortcutKey) async {
+    if (_isRouterReady) {
+      await handle(shortcutKey, isFirstRun: false);
+      return;
+    }
+    await queueShortcut(shortcutKey, isFirstRun: true);
+  }
+
+  /// Queues a shortcut tap and delivers once the router is ready (BR#04).
+  Future<void> queueShortcut(String shortcutKey, {bool isFirstRun = true}) async {
+    logger.log('AppIconQuickActions: queue $shortcutKey');
+    ref.read(pendingAppIconQuickActionProvider.notifier).setPending(shortcutKey, isFirstRun: isFirstRun);
+    await deliverColdStartShortcut();
+  }
 
   Future<void> handle(String shortcutKey, {bool isFirstRun = false}) async {
     if (_inFlightShortcutKey == shortcutKey && _inFlightCompleter != null) {
@@ -62,61 +78,63 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
   Future<void> _handleShortcut(String shortcutKey, {bool isFirstRun = false}) async {
     logger.log('AppIconQuickActions: handle($shortcutKey, isFirstRun=$isFirstRun)');
 
-    if (!await _waitForRouterReady()) {
-      ref.read(pendingAppIconQuickActionProvider.notifier).setPending(shortcutKey, isFirstRun: isFirstRun);
-      logger.log('AppIconQuickActions: router not ready, queued $shortcutKey');
-      return;
-    }
-
-    final config = await ref.read(appIconQuickActionsConfigProvider.future);
-    final item = config.shortcuts.where((shortcut) => shortcut.key == shortcutKey).firstOrNull;
-
-    if (item == null || !item.status.isActive) {
-      _track(shortcutKey: shortcutKey, outcome: 'failure', reason: 'unknown_shortcut');
-      await _showFallbackMessage();
-      return;
-    }
-
-    final platform = await resolveCurrentAppIconQuickActionPlatform();
-    if (!item.supportsPlatform(platform)) {
-      _track(shortcutKey: shortcutKey, outcome: 'failure', reason: 'unsupported_platform');
-      return;
-    }
-
-    final destination = Uri.tryParse(item.destination);
-    if (destination == null || !isSupportedQuickActionDestination(destination)) {
-      _track(shortcutKey: shortcutKey, outcome: 'failure', reason: 'invalid_destination');
-      await _showFallbackMessage();
-      return;
-    }
-
-    _track(shortcutKey: shortcutKey, outcome: 'selected');
-
-    if (item.requireLogin && !ref.read(authMethodsProvider)) {
-      _track(shortcutKey: shortcutKey, outcome: 'login_required');
-      final loggedIn = await _ensureLoggedIn();
-      if (!loggedIn) {
-        logger.log('AppIconQuickActions: login cancelled or failed for $shortcutKey');
+    try {
+      if (!await _waitForRouterReady()) {
+        ref.read(pendingAppIconQuickActionProvider.notifier).setPending(shortcutKey, isFirstRun: isFirstRun);
+        logger.log('AppIconQuickActions: router not ready, queued $shortcutKey');
         return;
       }
-    }
 
-    if (!await _ensurePermissions(item, shortcutKey)) {
-      return;
-    }
+      final item = AppIconQuickActionsDefaults.findShortcut(shortcutKey);
 
-    _prepareDestinationSideEffects(destination);
+      if (item == null || !item.status.isActive) {
+        _track(shortcutKey: shortcutKey, outcome: 'failure', reason: 'unknown_shortcut');
+        await _showFallbackMessage();
+        return;
+      }
 
-    try {
-      await AppIconQuickActionNavigator(ref).open(
-        destination: destination,
-        isFirstRun: isFirstRun,
-      );
-      _track(shortcutKey: shortcutKey, outcome: 'opened');
-    } catch (e, st) {
-      logger.log('AppIconQuickActions: navigation failed: $e\n$st', logLevel: MapnessLogLevel.error);
-      _track(shortcutKey: shortcutKey, outcome: 'failure', reason: e.toString());
-      await _showFallbackMessage();
+      final platform = await resolveCurrentAppIconQuickActionPlatform();
+      if (!item.supportsPlatform(platform)) {
+        _track(shortcutKey: shortcutKey, outcome: 'failure', reason: 'unsupported_platform');
+        return;
+      }
+
+      final destination = Uri.tryParse(item.destination);
+      if (destination == null || !isSupportedQuickActionDestination(destination)) {
+        _track(shortcutKey: shortcutKey, outcome: 'failure', reason: 'invalid_destination');
+        await _showFallbackMessage();
+        return;
+      }
+
+      _track(shortcutKey: shortcutKey, outcome: 'selected');
+
+      if (item.requireLogin && !ref.read(authMethodsProvider)) {
+        _track(shortcutKey: shortcutKey, outcome: 'login_required');
+        final loggedIn = await _ensureLoggedIn();
+        if (!loggedIn) {
+          logger.log('AppIconQuickActions: login cancelled or failed for $shortcutKey');
+          return;
+        }
+      }
+
+      if (!await _ensurePermissions(item, shortcutKey)) {
+        return;
+      }
+
+      try {
+        await AppIconQuickActionNavigator(ref).open(
+          destination: destination,
+          isFirstRun: isFirstRun,
+        );
+        _track(shortcutKey: shortcutKey, outcome: 'opened');
+      } catch (e, st) {
+        logger.log('AppIconQuickActions: navigation failed: $e\n$st', logLevel: MapnessLogLevel.error);
+        _track(shortcutKey: shortcutKey, outcome: 'failure', reason: e.toString());
+        await _showFallbackMessage();
+      }
+    } finally {
+      // Clear native storage so a stale launch intent cannot override later taps.
+      await AppIconQuickActionNativeBridge.consumePendingShortcut();
     }
   }
 
@@ -129,37 +147,42 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     await handle(pending.shortcutKey, isFirstRun: pending.isFirstRun);
   }
 
-  /// Handles a warm-start shortcut when the router is already mounted.
-  Future<void> processPendingIfRouterReady() async {
-    if (!_isRouterReady) {
+  /// Ingests native shortcut storage and navigates once [rootNavigatorKey] is mounted.
+  Future<void> deliverColdStartShortcut() async {
+    if (_deliveringColdStart) {
+      _deliveryRescheduleNeeded = true;
       return;
     }
-    await processPending();
+    _deliveringColdStart = true;
+    try {
+      do {
+        _deliveryRescheduleNeeded = false;
+        await _ingestNativeShortcut();
+
+        if (!await _waitForRouterReady()) {
+          logger.log('AppIconQuickActions: router not ready, shortcut kept pending', logLevel: MapnessLogLevel.warning);
+          return;
+        }
+
+        await processPending();
+      } while (
+        _deliveryRescheduleNeeded || ref.read(pendingAppIconQuickActionProvider.notifier).hasPending
+      );
+    } finally {
+      _deliveringColdStart = false;
+    }
   }
 
-  /// Polls native launch storage and navigates once [rootNavigatorKey] is mounted (cold start).
-  Future<void> deliverColdStartShortcut() async {
-    var consumeNativeAfterQueue = false;
-    var nativeKey = await AppIconQuickActionNativeBridge.peekPendingShortcut();
-    if (nativeKey != null) {
-      consumeNativeAfterQueue = true;
-    } else {
-      nativeKey = await pollAppIconQuickActionLaunch();
-    }
-
-    if (nativeKey != null) {
-      ref.read(pendingAppIconQuickActionProvider.notifier).setPending(nativeKey, isFirstRun: true);
-      if (consumeNativeAfterQueue) {
-        await AppIconQuickActionNativeBridge.consumePendingShortcut();
-      }
-    }
-
-    if (!await _waitForRouterReady()) {
-      logger.log('AppIconQuickActions: router not ready, shortcut kept pending', logLevel: MapnessLogLevel.warning);
+  Future<void> _ingestNativeShortcut() async {
+    if (ref.read(pendingAppIconQuickActionProvider.notifier).hasPending) {
       return;
     }
 
-    await processPending();
+    final nativeKey = await AppIconQuickActionNativeBridge.consumePendingShortcut();
+    if (nativeKey != null && nativeKey.isNotEmpty) {
+      logger.log('AppIconQuickActions: native consume $nativeKey');
+      ref.read(pendingAppIconQuickActionProvider.notifier).setPending(nativeKey, isFirstRun: true);
+    }
   }
 
   bool get _isRouterReady {
@@ -167,9 +190,8 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     return state != null && state.mounted;
   }
 
-  /// Waits until mapness [rootNavigatorKey] is mounted (cold start from home-screen shortcut).
   Future<bool> _waitForRouterReady() async {
-    for (var attempt = 0; attempt < 120; attempt++) {
+    for (var attempt = 0; attempt < 300; attempt++) {
       if (_isRouterReady) {
         return true;
       }
@@ -179,7 +201,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     return false;
   }
 
-  /// Shows login and waits for success — does not depend on a widget [BuildContext] staying mounted.
+  /// BR#05 / BR#06 — login then continue to the selected destination.
   Future<bool> _ensureLoggedIn() async {
     if (CommonProperties.isLoggedIn) {
       ref.read(authMethodsProvider.notifier).state = true;
@@ -213,23 +235,31 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     return loggedIn;
   }
 
-  void _prepareDestinationSideEffects(Uri destination) {
-    final path = destination.fragment.isNotEmpty
-        ? (Uri.tryParse(destination.fragment)?.path ?? destination.path)
-        : destination.path;
+  String? _locationRouteOnCloseForShortcut(String shortcutKey) => switch (shortcutKey) {
+    'directions' => RoutingPointsRoute.name,
+    'share_my_location' || 'share_live_location' => ShareMyLocationRoute.name,
+    _ => null,
+  };
 
-    if (path == '/shareLiveLocation') {
-      ref.read(shareMyLocationLaunchIntentProvider.notifier).requestLiveLocationOptions();
-    }
-  }
-
+  /// BR#07 — request required device permissions before opening the journey.
   Future<bool> _ensurePermissions(AppIconQuickActionItem item, String shortcutKey) async {
     for (final permission in item.requirePermissions) {
       switch (permission) {
         case AppIconQuickActionPermission.location:
-          final allowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+          final allowed = await ref.read(locationProvider.notifier).checkLocationPermission(
+            routeOnClose: _locationRouteOnCloseForShortcut(shortcutKey),
+          );
           if (!allowed) {
             _track(shortcutKey: shortcutKey, outcome: 'permission_required', reason: 'location');
+            final context = rootNavigatorKey.currentContext;
+            if (context != null &&
+                context.mounted &&
+                !CommonFunctions.locationDialogShowed &&
+                !ref.read(appRouterProvider).isPathActive('/request_location')) {
+              ToastOverlay.of(context).show(
+                title: AppLocalizations.of(context).appIconQuickActionUnavailable,
+              );
+            }
             return false;
           }
         case AppIconQuickActionPermission.camera:
@@ -249,6 +279,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     return true;
   }
 
+  /// BR#11 — fallback when the destination cannot be opened.
   Future<void> _showFallbackMessage() async {
     final context = rootNavigatorKey.currentContext;
     if (context == null || !context.mounted) {
@@ -259,6 +290,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     );
   }
 
+  /// BR#10 — analytics for selection, login, permission, open, and failure.
   void _track({
     required String shortcutKey,
     required String outcome,

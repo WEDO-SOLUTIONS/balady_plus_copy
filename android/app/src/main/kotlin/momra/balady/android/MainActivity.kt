@@ -68,6 +68,8 @@ class MainActivity : AudioServiceFragmentActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Warm-start shortcuts can arrive via onNewIntent without onStart re-running.
+        AppIconQuickActionChannel.captureFromIntent(intent)
         MainAppScreenStateNotifier.setState(MainAppScreenState.RESUMED)
 
         // Ensure we are listening for focus changes while the app is active.

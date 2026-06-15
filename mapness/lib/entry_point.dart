@@ -57,6 +57,7 @@ import 'package:mapness/features/search/providers/search_region.dart' show initi
 import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
@@ -295,8 +296,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).refresh());
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
+      // Warm-start shortcuts are stored natively; the plugin callback may not fire.
+      unawaited(deliverNativeShortcutIfPresent());
+      unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts());
+      if (ref.read(pendingAppIconQuickActionProvider.notifier).hasPending) {
+        unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
+      }
     }
   }
 
@@ -715,12 +720,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   }
 
   void initAppIconQuickActionsPending() {
-    // Callback is registered in [appIconQuickActionsInitializerProvider] at app root.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _scheduleColdStartDelivery(attempt: 0);
+  }
+
+  void _scheduleColdStartDelivery({required int attempt}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) {
         return;
       }
-      unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
+      await ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut();
+      if (!mounted) {
+        return;
+      }
+      final stillPending = ref.read(pendingAppIconQuickActionProvider.notifier).hasPending;
+      if (stillPending && attempt < 90) {
+        _scheduleColdStartDelivery(attempt: attempt + 1);
+      }
     });
   }
 

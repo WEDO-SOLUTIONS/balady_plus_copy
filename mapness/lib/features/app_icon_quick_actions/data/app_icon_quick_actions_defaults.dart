@@ -1,6 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:mapness/features/app_icon_quick_actions/models/app_icon_quick_action.dart';
 
-/// Bundled BRD defaults – used when remote/cache/asset config is missing or invalid.
+/// BRD v0.2 — static predefined quick actions (BR#01, BR#02).
+/// Fixed list implemented in the mobile app; not fetched from a remote API.
 class AppIconQuickActionsDefaults {
   AppIconQuickActionsDefaults._();
 
@@ -9,6 +11,7 @@ class AppIconQuickActionsDefaults {
     'assets/quick_actions_config.json',
   ];
 
+  /// Predefined shortcuts in BRD order (BR#03).
   static const config = AppIconQuickActionsConfig(
     version: 1,
     shortcuts: [
@@ -87,5 +90,8 @@ class AppIconQuickActionsDefaults {
     ],
   );
 
-  static bool isValid(AppIconQuickActionsConfig config) => config.shortcuts.isNotEmpty;
+  static AppIconQuickActionItem? findShortcut(String key) =>
+      config.shortcuts.where((shortcut) => shortcut.key == key).firstOrNull;
+
+  static bool isValid(AppIconQuickActionsConfig value) => value.shortcuts.isNotEmpty;
 }

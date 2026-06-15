@@ -1,5 +1,4 @@
 import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_actions_config_datasource.dart';
-import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_actions_defaults.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_config.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -7,31 +6,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_icon_quick_actions_manager.g.dart';
 
+/// Publishes the BRD v0.2 static shortcut list with localized labels (BR#08).
 @Riverpod(keepAlive: true)
 class AppIconQuickActionsManager extends _$AppIconQuickActionsManager {
   final AppIconQuickActionsPlatformService _platformService = const AppIconQuickActionsPlatformService(appQuickActions);
 
   @override
   Future<void> build() async {
-    final language = ref.read(appLanguageProvider);
-    final platform = await resolveCurrentAppIconQuickActionPlatform();
-
-    // Publish BRD defaults immediately so shortcuts appear before remote config loads.
-    await _platformService.syncShortcuts(
-      config: AppIconQuickActionsDefaults.config,
-      language: language,
-      platform: platform,
-    );
-
     ref.listen(appLanguageProvider, (_, __) async {
-      await _syncFromConfig();
+      await syncPublishedShortcuts();
     });
 
-    await _syncFromConfig();
+    await syncPublishedShortcuts();
   }
 
-  Future<void> _syncFromConfig() async {
-    final config = await ref.read(appIconQuickActionsConfigProvider.future);
+  /// Re-publishes static shortcuts — e.g. after language change (BR#08).
+  Future<void> syncPublishedShortcuts() async {
+    final config = ref.read(appIconQuickActionsConfigProvider);
     final language = ref.read(appLanguageProvider);
     final platform = await resolveCurrentAppIconQuickActionPlatform();
     await _platformService.syncShortcuts(
@@ -39,10 +30,5 @@ class AppIconQuickActionsManager extends _$AppIconQuickActionsManager {
       language: language,
       platform: platform,
     );
-  }
-
-  Future<void> refresh() async {
-    ref.invalidate(appIconQuickActionsConfigProvider);
-    await _syncFromConfig();
   }
 }

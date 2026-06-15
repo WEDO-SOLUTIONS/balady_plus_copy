@@ -8,7 +8,7 @@ import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
-/// Debug helpers to exercise app icon quick actions without long-pressing the launcher icon.
+/// Debug helpers to exercise BRD v0.2 static quick actions.
 class AppIconQuickActionsDebugPanel extends ConsumerWidget {
   const AppIconQuickActionsDebugPanel({super.key});
 
@@ -18,7 +18,7 @@ class AppIconQuickActionsDebugPanel extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final configAsync = ref.watch(appIconQuickActionsConfigProvider);
+    final config = ref.watch(appIconQuickActionsConfigProvider);
 
     return DebugCard(
       child: Column(
@@ -26,12 +26,12 @@ class AppIconQuickActionsDebugPanel extends ConsumerWidget {
         children: [
           const DebugSectionHeader(
             icon: Icons.apps_rounded,
-            title: 'App icon quick actions (BRD)',
+            title: 'App icon quick actions (BRD v0.2)',
             gradient: DebugTheme.gradientAmber,
           ),
           const SizedBox(height: 8),
           Text(
-            'Simulate shortcut taps. On device, long-press the Balady+ icon on the home screen.',
+            'Static predefined shortcuts. Long-press the Balady+ icon on the home screen.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: DebugTheme.textSecondary),
           ),
           const SizedBox(height: 12),
@@ -39,69 +39,49 @@ class AppIconQuickActionsDebugPanel extends ConsumerWidget {
             children: [
               Expanded(
                 child: DebugButton(
-                  label: 'Refresh config',
-                  icon: Icons.cloud_sync_outlined,
+                  label: 'Resync labels',
+                  icon: Icons.translate_outlined,
                   gradient: DebugTheme.gradientTeal,
-                  onPressed: () => ref.read(appIconQuickActionsManagerProvider.notifier).refresh(),
+                  onPressed: () => ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts(),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          configAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Text('Config error: $error', style: const TextStyle(color: Colors.red)),
-            data: (config) => FutureBuilder<AppIconQuickActionPlatform>(
-              future: resolveCurrentAppIconQuickActionPlatform(),
-              builder: (context, platformSnapshot) {
-                if (!platformSnapshot.hasData) {
-                  return const SizedBox.shrink();
-                }
-                final active = activeShortcutsForPlatform(config, platformSnapshot.data!);
-                final inactive = config.shortcuts.where((s) => !s.status.isActive).toList();
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (active.isNotEmpty) ...[
-                      Text(
-                        'Published (max ${maxPublishedShortcutsForPlatform(platformSnapshot.data!)})',
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          for (final item in active)
-                            DebugButton(
-                              label: item.key,
-                              icon: Icons.touch_app_outlined,
-                              onPressed: () => ref.read(appIconQuickActionHandlerProvider.notifier).handle(item.key),
-                            ),
-                        ],
-                      ),
+          FutureBuilder<AppIconQuickActionPlatform>(
+            future: resolveCurrentAppIconQuickActionPlatform(),
+            builder: (context, platformSnapshot) {
+              if (!platformSnapshot.hasData) {
+                return const SizedBox.shrink();
+              }
+              final platform = platformSnapshot.data;
+              if (platform == null) {
+                return const SizedBox.shrink();
+              }
+              final shortcuts = activeShortcutsForPlatform(config, platform);
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Predefined shortcuts (OS may show max ${maxPublishedShortcutsForPlatform(platform)})',
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final item in shortcuts)
+                        DebugButton(
+                          label: item.key,
+                          icon: Icons.touch_app_outlined,
+                          onPressed: () => ref.read(appIconQuickActionHandlerProvider.notifier).handle(item.key),
+                        ),
                     ],
-                    if (inactive.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Text('Inactive (should not appear on icon)', style: Theme.of(context).textTheme.labelSmall),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          for (final item in inactive)
-                            DebugButton(
-                              label: item.key,
-                              icon: Icons.block_outlined,
-                              onPressed: () => ref.read(appIconQuickActionHandlerProvider.notifier).handle(item.key),
-                            ),
-                        ],
-                      ),
-                    ],
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              );
+            },
           ),
         ],
       ),

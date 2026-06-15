@@ -34,7 +34,7 @@ bool _shouldIgnoreDuplicateDispatch(String shortcutKey) {
 }
 
 void _dispatchShortcut(String shortcutKey) {
-  if (_shouldIgnoreDuplicateDispatch(shortcutKey)) {
+  if (_shortcutTapHandler != null && _shouldIgnoreDuplicateDispatch(shortcutKey)) {
     _logBridge('ignoring duplicate shortcut dispatch: $shortcutKey');
     return;
   }
@@ -42,11 +42,15 @@ void _dispatchShortcut(String shortcutKey) {
   _logBridge('shortcut received: $shortcutKey');
   final handler = _shortcutTapHandler;
   if (handler != null) {
+    _lastDispatchedShortcutKey = shortcutKey;
+    _lastDispatchedAt = DateTime.now();
     handler(shortcutKey);
     return;
   }
   if (!_earlyPendingShortcutKeys.contains(shortcutKey)) {
     _earlyPendingShortcutKeys.add(shortcutKey);
+    _lastDispatchedShortcutKey = shortcutKey;
+    _lastDispatchedAt = DateTime.now();
   }
   _logBridge('queued shortcut (handler not bound yet): $shortcutKey');
 }
@@ -73,6 +77,21 @@ Future<void> initAppIconQuickActionsBridge() async {
   }
 
   _logBridge('bridge initialized');
+}
+
+/// Delivers a shortcut stored natively on warm start (onNewIntent / SceneDelegate).
+/// The [quick_actions] plugin callback is unreliable when a custom SceneDelegate or
+/// pre-warmed engine is used, so we poll our native channel on resume.
+Future<void> deliverNativeShortcutIfPresent() async {
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    return;
+  }
+  final nativeKey = await AppIconQuickActionNativeBridge.peekPendingShortcut();
+  if (nativeKey == null || nativeKey.isEmpty) {
+    return;
+  }
+  _logBridge('native shortcut pending: $nativeKey');
+  _dispatchShortcut(nativeKey);
 }
 
 /// Reads shortcut key stored in native launch intent (pre-warmed engine safe).

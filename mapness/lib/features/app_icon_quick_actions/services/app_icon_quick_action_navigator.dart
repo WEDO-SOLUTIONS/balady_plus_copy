@@ -1,14 +1,11 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/app_icon_quick_actions/data/app_icon_quick_actions_config_datasource.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod/riverpod.dart';
 
-/// Direct in-app navigation for app icon shortcuts (skips HTTP redirect in [openAppLink]).
+/// Direct in-app navigation for BRD quick actions (BR#04 — no HTTP redirect).
 class AppIconQuickActionNavigator {
   const AppIconQuickActionNavigator(this.ref);
 
@@ -19,7 +16,7 @@ class AppIconQuickActionNavigator {
     bool isFirstRun = false,
   }) async {
     final path = _resolvePath(destination);
-    if (path.isEmpty) {
+    if (path.isEmpty || !isSupportedQuickActionDestination(destination)) {
       throw StateError('Unsupported quick action destination: $destination');
     }
 
@@ -35,10 +32,8 @@ class AppIconQuickActionNavigator {
       case '/favourites':
         await router.push(const FavouritesRoute());
       case '/directions':
-        final allowed = await ref.read(locationProvider.notifier).checkLocationPermission();
-        if (allowed) {
-          await router.navigate(const RoutingPointsRoute());
-        }
+        // Tab route — permissions are handled in [AppIconQuickActionHandler].
+        await router.navigate(const BottomMenuRoute(children: [RoutingPointsRoute()]));
       case '/search':
         await router.push(SearchRoute(requestFocus: true));
       case '/shareMyLocation':
@@ -48,8 +43,6 @@ class AppIconQuickActionNavigator {
         await router.push(ShareMyLocationRoute());
       case '/contribute':
         await router.push(const ContributeRoute());
-      case '/snapSend':
-        CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
       default:
         throw StateError('Unsupported quick action path: $path');
     }

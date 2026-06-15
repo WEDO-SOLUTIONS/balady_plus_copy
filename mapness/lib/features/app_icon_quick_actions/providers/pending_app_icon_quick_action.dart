@@ -25,6 +25,8 @@ class PendingAppIconQuickAction extends _$PendingAppIconQuickAction {
     );
   }
 
+  bool get hasPending => state != null;
+
   PendingAppIconQuickActionRequest? take() {
     final value = state;
     state = null;
