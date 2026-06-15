@@ -14,7 +14,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/saudi_pass/widgets/favorite_delete_menu.dart';
+// import 'package:mapness/features/saudi_pass/widgets/favorite_delete_menu.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
@@ -52,7 +52,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     if (item == null) {
       return;
     }
-    await _onDeleteConfirmation(context, item);
+    // await _onDeleteConfirmation(context, item);
   }
 
   /// Pure function to delete the item from the cache
@@ -77,17 +77,17 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   /// We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
-  Future<bool?> _onDeleteConfirmation(BuildContext ctx, FavouriteItem item) async => showDialog(
-    context: context,
-    useSafeArea: false,
-    builder: (_) => DialogDeleteMenu(
-      title: ctx.l10n.deleteFromFavourites,
-      description: ctx.l10n.deleteAlertFavourites,
-      cancel: ctx.l10n.cancel,
-      remove: ctx.l10n.delete,
-      onRemove: () => _onDelete(item),
-    ),
-  );
+  // Future<bool?> _onDeleteConfirmation(BuildContext ctx, FavouriteItem item) async => showDialog(
+  //   context: context,
+  //   useSafeArea: false,
+  //   builder: (_) => DialogDeleteMenu(
+  //     title: ctx.l10n.deleteFromFavourites,
+  //     description: ctx.l10n.deleteAlertFavourites,
+  //     cancel: ctx.l10n.cancel,
+  //     remove: ctx.l10n.delete,
+  //     onRemove: () => _onDelete(item),
+  //   ),
+  // );
 
   @override
   Widget build(BuildContext ctx) {

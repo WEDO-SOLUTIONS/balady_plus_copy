@@ -19,8 +19,6 @@ import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_conte
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
-import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -158,9 +156,6 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
     final items = organizationsData?.items ?? [];
 
     final licenseIds = items.map((e) => e.tradeLicense?.license).nonNulls.toSet();
-    if (licenseIds.isNotEmpty) {
-      unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
-    }
 
     return items;
   }
@@ -201,13 +196,6 @@ class OrganizationWidget extends StatelessWidget {
             titleStyle: context.textStyles.bodyLargeSemiBold,
           ),
         ),
-        if (hasOffers)
-          Positioned.directional(
-            textDirection: Directionality.of(context),
-            top: Spacing.$3x,
-            end: Spacing.$3x,
-            child: const OffersBadge(),
-          ),
       ],
     ),
   );

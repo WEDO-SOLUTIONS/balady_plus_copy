@@ -17,10 +17,20 @@ import 'package:mapness/widgets/profile/profile_account_service.dart';
 /// Pill radius for fields / buttons (matches existing layout; not all tokens expose radius).
 const _kFieldRadius = 10.0;
 
+/// Flip to `true` when profile edit, save, and email OTP flows are enabled in this build.
+const kPersonalDataShowImpl = false;
+
 class PersonalData extends ConsumerStatefulWidget {
   final SsoUserInfo userInfo;
 
-  const PersonalData({required this.userInfo, super.key});
+  /// When `false`, all fields are read-only: no text inputs, save button, or OTP sheet.
+  final bool showImpl;
+
+  const PersonalData({
+    required this.userInfo,
+    this.showImpl = kPersonalDataShowImpl,
+    super.key,
+  });
 
   @override
   ConsumerState<PersonalData> createState() => _PersonalDataState();
@@ -140,9 +150,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   ///   so editing must be blocked even though they logged in via OTP.
   bool get _hasCompleteOtpProfile => widget.userInfo.completeProfile;
 
-  bool get _canEditProfile => _isOtpUser && _hasCompleteOtpProfile;
+  bool get _canEditProfile => widget.showImpl && _isOtpUser && _hasCompleteOtpProfile;
 
-  bool get _canEditEmail => _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
+  bool get _canEditEmail =>
+      widget.showImpl && _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
 
   /// True when first name, last name, or email differs from the last saved values.
   bool _hasUnsavedChanges() {
@@ -190,6 +201,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   Future<void> _save() async {
+    if (!widget.showImpl) return;
     if (!_validateForm()) return;
 
     final newFirstName = _firstNameController.text.trim();
@@ -495,7 +507,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         SingleChildScrollView(
           padding: EdgeInsets.only(
             top: 20,
-            bottom: MediaQuery.of(context).size.height - 500,
+            bottom: widget.showImpl ? MediaQuery.of(context).size.height - 500 : 20,
           ),
           child: Container(
             decoration: BoxDecoration(
@@ -681,8 +693,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           ),
         ),
 
-        // ── Fixed Save button (only for OTP users that can edit) ──────
-        if (isOtp && _hasCompleteOtpProfile && !_otpPending)
+        // ── Fixed Save button (only when edit implementation is enabled) ──
+        if (_canEditProfile && !_otpPending)
           Positioned(
             left: 0,
             right: 0,

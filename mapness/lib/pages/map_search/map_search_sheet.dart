@@ -60,7 +60,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
+  late final MultiStateSheetController<ThreeStateSheet>  _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();

@@ -12,7 +12,6 @@ import 'package:mapness/features/poi_card/domain/model/organizations_response.da
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
@@ -254,7 +253,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       if (tradeLicense != null) tradeLicense.license,
       if (organizationsLicenses != null) ...organizationsLicenses,
     };
-    await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
+    // await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
   }
 
   Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {
