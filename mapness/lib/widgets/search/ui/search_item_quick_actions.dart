@@ -16,6 +16,7 @@ import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_contacts_card.dart';
+import 'package:mapness/features/poi_card/widgets/phone_picker_sheet.dart';
 import 'package:mapness/pages/poi_card/poi_card_widget_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
@@ -25,8 +26,6 @@ import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dar
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 import '../../../features/special_themes/core/special_theme_mode.dart';
-
-const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
@@ -50,11 +49,9 @@ class SearchItemQuickActions extends HookConsumerWidget {
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
-    final phoneNumber = directoryObject.getContactsInfoModels
-        .firstWhereOrNull(
-          (element) => element.type == ContactsInfoType.phone,
-        )
-        ?.value;
+    final phoneNumbers = directoryObject.getContactsInfoModels
+        .where((e) => e.type == ContactsInfoType.phone && e.value != null)
+        .toList();
 
     final website = directoryObject.getContactsInfoModels
         .firstWhereOrNull(
@@ -82,7 +79,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
-        border:isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+        border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
         borderRadius: 4,
         colorScheme: colorScheme,
         iconSize: 15,
@@ -106,14 +103,18 @@ class SearchItemQuickActions extends HookConsumerWidget {
             ),
             ref,
           );
-        }
+        },
       ),
 
       ItemActionBar(
         icon: iconData,
         iconSize: 15,
-        bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
-        border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+        bgColor: isDGADark
+            ? context.colors.neutralMuted
+            : isDGAlight
+            ? context.colors.neutralOnNeutral
+            : null,
+        border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
         borderRadius: 4,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
@@ -140,35 +141,54 @@ class SearchItemQuickActions extends HookConsumerWidget {
         },
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
-          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
+          bgColor: isDGADark
+              ? context.colors.neutralMuted
+              : isDGAlight
+              ? context.colors.neutralOnNeutral
+              : null,
           icon: SystemIcons.share,
-          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
         ),
       ),
-      if (phoneNumber != null)
+      if (phoneNumbers.isNotEmpty)
         ItemActionBar(
-          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
+          bgColor: isDGADark
+              ? context.colors.neutralMuted
+              : isDGAlight
+              ? context.colors.neutralOnNeutral
+              : null,
           icon: GeneralIcons.phoneLTR,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
-          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
           onPressed: () {
-            BssService.instance.trackCallTap(directoryObject, phoneNumber);
-            poiActions.callPhone(phoneNumber);
+            if (phoneNumbers.length == 1) {
+              BssService.instance.trackCallTap(directoryObject, phoneNumbers.first.value!);
+              poiActions.callPhone(phoneNumbers.first.value!);
+            } else {
+              showPhonePickerSheet(context, phoneNumbers, (phone) {
+                BssService.instance.trackCallTap(directoryObject, phone);
+                poiActions.callPhone(phone);
+              });
+            }
           },
         ),
       if (website != null)
         ItemActionBar(
-          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
+          bgColor: isDGADark
+              ? context.colors.neutralMuted
+              : isDGAlight
+              ? context.colors.neutralOnNeutral
+              : null,
           icon: GeneralIcons.web,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
-          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
@@ -177,11 +197,15 @@ class SearchItemQuickActions extends HookConsumerWidget {
         ),
       if (website == null && socialMedia != null)
         ItemActionBar(
-          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
+          bgColor: isDGADark
+              ? context.colors.neutralMuted
+              : isDGAlight
+              ? context.colors.neutralOnNeutral
+              : null,
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
-          border:isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
