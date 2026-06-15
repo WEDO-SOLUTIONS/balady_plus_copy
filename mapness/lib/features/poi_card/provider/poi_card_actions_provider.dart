@@ -52,6 +52,7 @@ class PoiCardActions extends _$PoiCardActions {
       ShareUtil.sharePOI(
         context: context,
         markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+        isMyLocation: true,
       );
     } else {
       onError();
@@ -68,6 +69,7 @@ class PoiCardActions extends _$PoiCardActions {
       final shareLink = await ShareUtil.getSharePOILink(
         context: context,
         markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+        isMyLocation: true,
       );
       await Clipboard.setData(ClipboardData(text: shareLink));
     }
