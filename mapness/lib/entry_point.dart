@@ -781,11 +781,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       while (true) {
         final request = Request('GET', currentUri)..followRedirects = false;
 
-        final response = await client.send(request);
-        if (response.statusCode >= 400) {
-          // the link is broken, skip it
-          return null;
-        }
+        final response = await client.send(request).timeout(const Duration(seconds: 10));
         if (redirectStatuses.contains(response.statusCode)) {
           final location = response.headers['location'];
           if (location != null && location.isNotEmpty) {
@@ -799,6 +795,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } catch (e) {
       logger.log('Error tracking redirect: $e', logLevel: MapnessLogLevel.error);
+      client.close();
+      return null;
     } finally {
       client.close();
     }
@@ -809,7 +807,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final uri = await getFinalRedirectUri(sourceUri);
+
     if (uri == null) {
+      final ctx = rootNavigatorKey.currentContext;
+      if (ctx != null) {
+        ToastOverlay.of(ctx).showNoInternet(
+          onRetry: () => openAppLink(sourceUri, isFirstRun: isFirstRun),
+        );
+      }
       return;
     }
     final decodeFull = Uri.decodeFull(uri.toString());
