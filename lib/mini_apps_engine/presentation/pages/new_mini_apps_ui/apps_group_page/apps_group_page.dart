@@ -89,7 +89,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       if (cubit.state.isAppsGroupLoading) {
         return const Scaffold(
           backgroundColor: Colors.transparent,
-          body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
+          body: Center(child: CircularProgressIndicator()),
         );
       }
 
@@ -100,7 +100,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       });
       return const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(child: CircularProgressIndicator(color: Color(0xFF1CA9A6))),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
