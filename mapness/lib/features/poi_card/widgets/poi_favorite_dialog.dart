@@ -24,7 +24,12 @@ import 'package:sheetify/sheetify.dart';
 class PoiFavoriteDialogPage extends ConsumerStatefulWidget {
   final FavouriteItem favItem;
 
-  const PoiFavoriteDialogPage({required this.favItem, super.key});
+  /// Full POI payload (addr/type/distance) captured at the opener, where the
+  /// source [DirectoryObjectMessage] is still in hand. [FavouriteItem] is a thin
+  /// DTO that drops these fields, so we carry them separately for `favorite_add`.
+  final DataFinderPoi? favoritePoi;
+
+  const PoiFavoriteDialogPage({required this.favItem, this.favoritePoi, super.key});
 
   @override
   ConsumerState<PoiFavoriteDialogPage> createState() => _PoiFavoriteDialogPageState();
@@ -39,24 +44,32 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
   }
 
   /// DataFinder: fires `favorite_add` when a POI is added to favourites.
-  /// `poi_type`/`poi_addr`/`poi_distance` are not stored on [FavouriteItem], so
-  /// only id and name are sent.
+  ///
+  /// Prefers the full [PoiFavoriteDialogPage.favoritePoi] captured at the opener
+  /// (carries `poi_addr`/`poi_type`/`poi_distance`). Falls back to id+name from
+  /// the thin [FavouriteItem] only when no rich payload was supplied.
   void _reportFavoriteAdd(DataFinderFavoriteType favoriteType) {
     final objectId = parseObjectIdFromFavouriteEntityId(widget.favItem.entity?.id);
-    // event_source is route-based (the scope only seeds the notifier). Favourites
-    // are added from a POI card, so by this point the navigation/routing route is
-    // usually no longer on the stack → resolves to Explore-Main Page, matching the
-    // BRD's "Map → POI → Add to Favorites" examples.
+    final poi =
+        widget.favoritePoi ??
+        DataFinderPoi(
+          id: objectId?.toString(),
+          name: widget.favItem.title,
+        );
+    // Resolve the source fresh from the stamped origin + live navigation state.
+    // `dataFinderEventSource` reads the journey origin from the tracker (set by
+    // the map-POI tap / Explore / Routes / Free Roam entry controls) and the
+    // current nav flags, so a direct map-POI favourite (no prior search)
+    // correctly yields Map-Main Page, while a favourite from a Routes/Direction
+    // search inherits that surface. The `map` scope here only seeds the notifier;
+    // the resolved value is origin-based, not scope-based.
     final eventSource = ref.read(searchProvider(SearchScopeEnum.map.value).notifier).dataFinderEventSource;
     ref
         .read(appAnalyticsProvider)
         .favoriteAdd(
           eventSource: eventSource,
           favoriteType: favoriteType,
-          poi: DataFinderPoi(
-            id: objectId?.toString(),
-            name: widget.favItem.title,
-          ),
+          poi: poi,
         );
   }
 

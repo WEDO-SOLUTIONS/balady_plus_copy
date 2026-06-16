@@ -33,6 +33,59 @@ enum DataFinderSourcePage {
   final String value;
 }
 
+/// The surface where a user **journey started** — the "controller" the user
+/// first interacted with on the single map screen. Balady is one map screen
+/// with overlay controllers, so `event_source` is not a route: it is decided by
+/// the entry control the user touched (a map POI, the Explore tab UI, the Routes
+/// flow, or Free Roam) and then carried through navigation + search + favorite.
+///
+/// The final `event_source` is [resolve]d by combining this origin with the
+/// current navigation state (in-navigation → "Direction", editing a drawn route
+/// → "Path Changing").
+enum DataFinderOrigin {
+  /// A POI tapped directly on the map → `Map-*`.
+  map,
+
+  /// The Explore tab UI (Quick Filters, Explore search bar) → `Explore-*`.
+  /// This is the default before any other origin is stamped.
+  explore,
+
+  /// The Routes (route-planning) flow → `Routes-*`.
+  routes,
+
+  /// Free Roam mode → `Explore-Free Roam`.
+  freeRoam;
+
+  /// Combines this origin with the live navigation state into the final
+  /// `event_source`. [inNavigation] is true while turn-by-turn navigation is
+  /// active (`PathNavRoute`); [pathChanging] is true while a drawn route is
+  /// being edited (`RoutingRoutesRoute`/`RouteDetailsRoute`).
+  DataFinderSourcePage resolve({required bool inNavigation, required bool pathChanging}) {
+    switch (this) {
+      case DataFinderOrigin.freeRoam:
+        // Free Roam has a single surface value regardless of nav state.
+        return DataFinderSourcePage.exploreFreeRoam;
+      case DataFinderOrigin.routes:
+        return pathChanging ? DataFinderSourcePage.routesPathChanging : DataFinderSourcePage.routesMainPage;
+      case DataFinderOrigin.map:
+        if (pathChanging) {
+          return DataFinderSourcePage.mapDirectionPathChanging;
+        }
+        // Map journeys stay "Map-Main Page" through Directions → Go → Search,
+        // per the BRD's Map-Main flows 2–5.
+        return DataFinderSourcePage.mapMainPage;
+      case DataFinderOrigin.explore:
+        if (pathChanging) {
+          return DataFinderSourcePage.exploreDirectionPathChanging;
+        }
+        if (inNavigation) {
+          return DataFinderSourcePage.exploreDirection;
+        }
+        return DataFinderSourcePage.exploreMainPage;
+    }
+  }
+}
+
 /// `favorite_type` for the `favorite_add` event. All POIs other than Home/Work
 /// are "Not Specified".
 enum DataFinderFavoriteType {
@@ -152,6 +205,7 @@ class DataFinderPoi {
     this.type,
     this.distanceKm,
     this.rank,
+    this.suggestionType,
   });
 
   /// 2GIS object id (`DirectoryObjectMessage.id.objectId`). Null for anonymous
@@ -171,6 +225,31 @@ class DataFinderPoi {
 
   /// 1-based rank within the list (suggestion_rank / poi_rank).
   final int? rank;
+
+  /// The SDK suggestion type (`branch`, `rubric`, `street`, …) for
+  /// `suggestion_*` events. Distinct from [type] (the object type / `poi_type`).
+  /// Null for non-suggestion POIs.
+  final String? suggestionType;
+
+  /// Returns a copy with the given fields replaced.
+  DataFinderPoi copyWith({
+    String? id,
+    String? name,
+    String? address,
+    String? type,
+    double? distanceKm,
+    int? rank,
+    String? suggestionType,
+  }) =>
+      DataFinderPoi(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        address: address ?? this.address,
+        type: type ?? this.type,
+        distanceKm: distanceKm ?? this.distanceKm,
+        rank: rank ?? this.rank,
+        suggestionType: suggestionType ?? this.suggestionType,
+      );
 
   /// Distance from the user, in km rounded to 2 decimals with a 0.01 km floor.
   static double? formatDistanceKm(double? meters) {
@@ -213,6 +292,9 @@ class DataFinderPoi {
     final data = <String, dynamic>{};
     if (name != null) {
       data['suggestion_name'] = name;
+    }
+    if (suggestionType != null) {
+      data['suggestion_type'] = suggestionType;
     }
     if (id != null) {
       data['suggestion_poi_id'] = id;

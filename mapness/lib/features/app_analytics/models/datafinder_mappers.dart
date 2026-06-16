@@ -35,12 +35,19 @@ extension DataFinderDirectoryObject on DirectoryObjectMessage {
 /// the suggestion wraps an object (`handler.objectHandler`); for text/rubric
 /// suggestions only the title is filled.
 extension DataFinderSuggest on SuggestMessage {
+  /// Builds a [DataFinderPoi] for a suggestion. Keeps the underlying object's
+  /// `type` as `poi_type`, and carries the **suggestion type**
+  /// (`suggestedType.name`, e.g. `branch`, `rubric`, `street`) separately in
+  /// [DataFinderPoi.suggestionType] so `suggestion_exposure` can report
+  /// `suggestion_type` (BRD) without clobbering `poi_type`.
   DataFinderPoi toDataFinderPoi({int? rank, double? myLat, double? myLon}) {
     final object = handler.objectHandler?.item;
     if (object != null) {
-      return object.toDataFinderPoi(rank: rank, myLat: myLat, myLon: myLon);
+      return object
+          .toDataFinderPoi(rank: rank, myLat: myLat, myLon: myLon)
+          .copyWith(suggestionType: dataFinderSuggestionType);
     }
-    return DataFinderPoi(name: title.text, rank: rank);
+    return DataFinderPoi(name: title.text, suggestionType: dataFinderSuggestionType, rank: rank);
   }
 
   /// The SDK suggestion type as a string (e.g. `branch`, `rubric`, `street`).

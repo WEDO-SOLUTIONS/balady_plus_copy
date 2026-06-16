@@ -80,7 +80,12 @@ void toggleFavoriteDirectoryObject({
   if (favState?.home != null && favState?.work != null) {
     favRepo.addItem(data.mapToFavourite());
   } else {
+    /// Build the rich POI here, where [data] (addr/type/marker) is still in
+    /// hand, so `favorite_add` reports poi_addr/poi_type/poi_distance.
+    final loc = ref.read(locationProvider);
+    final favoritePoi = data.toDataFinderPoi(myLat: loc?.latitude, myLon: loc?.longitude);
+
     /// show dialog to choose home, work or regular
-    context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
+    context.router.push(PoiFavoriteDialogRoute(favItem: favItem, favoritePoi: favoritePoi));
   }
 }

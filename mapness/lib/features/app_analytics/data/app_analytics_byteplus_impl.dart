@@ -324,14 +324,19 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnal
     required DataFinderSearchParam searchParam,
     required List<DataFinderPoi> pois,
   }) {
-    _send('suggestion_exposure', {
-      'request_id': requestId,
-      'suggestion_session_id': sessionId,
-      'search_text': searchText,
-      'search_param': searchParam.toQueryString(),
-      'suggestions': pois.map((p) => p.toSuggestionJson()).toList(),
-      'result_count': pois.length,
-    });
+    // BRD: "10 recommendation items → 10 individual tracking events, one for
+    // each item". One flat event per suggestion (not a `suggestions` array —
+    // the dashboard cannot parse arrays). Each event carries the shared context
+    // + that one item's flat `suggestion_*` fields.
+    for (final poi in pois) {
+      _send('suggestion_exposure', {
+        'request_id': requestId,
+        'suggestion_session_id': sessionId,
+        'search_text': searchText,
+        'search_param': searchParam.toQueryString(),
+        ...poi.toSuggestionJson(),
+      });
+    }
   }
 
   @override
@@ -371,16 +376,21 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnal
     required DataFinderSearchParam searchParam,
     required List<DataFinderPoi> pois,
   }) {
-    _send('search_results_exposure', {
-      'event_source': eventSource.value,
-      'request_id': requestId,
-      'search_session_id': sessionId,
-      'search_text': searchText,
-      'search_type': searchType.value,
-      'search_param': searchParam.toQueryString(),
-      'results': pois.map((p) => p.toJson()).toList(),
-      'result_count': pois.length,
-    });
+    // BRD: "10 result items → 10 separate tracking events". One flat event per
+    // POI (not a single event with a `results` array — the dashboard cannot
+    // parse arrays). Each event carries the shared search context + that one
+    // POI's flat `poi_*` fields.
+    for (final poi in pois) {
+      _send('search_results_exposure', {
+        'event_source': eventSource.value,
+        'request_id': requestId,
+        'search_session_id': sessionId,
+        'search_text': searchText,
+        'search_type': searchType.value,
+        'search_param': searchParam.toQueryString(),
+        ...poi.toJson(),
+      });
+    }
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
+import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_mappers.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -56,6 +57,11 @@ class Search extends _$Search {
 
   /// Google search rubric id
   static const googleSearchRubricId = 900913;
+
+  /// The [scope] value for the Routes-tab search (mirror of
+  /// `SearchScopeEnum.routes.value`; kept here so the provider layer doesn't
+  /// depend on the widget-coupled scope enum). Used to force a `routes` origin.
+  static const _routingSearchScope = 'RoutingSearch';
   static const _minVisibleQuickFilterPlaces = 3;
   static const _quickFilterExtraHorizontalPadding = 32.0;
   static const _quickFilterExtraTopPadding = 24.0;
@@ -128,34 +134,32 @@ class Search extends _$Search {
   /// into the DataFinder capability — today BytePlus only).
   DataFinderAnalyticsRepository get _analytics => ref.read(appAnalyticsProvider);
 
-  /// Resolves the [DataFinderSourcePage] (`event_source`) from the search scope
-  /// plus the current top route.
+  /// Resolves the [DataFinderSourcePage] (`event_source`).
   ///
-  /// App→BRD mapping (the app has a single map surface that the spec calls
-  /// "Explore"; "Routes" is the route-planning flow; navigation is "Direction"):
-  ///  * Routing search  → Routes-Path Changing (editing route) / Routes-Main Page
-  ///  * Navi search      → Explore-Direction-Path Changing / Explore-Direction
-  ///  * Map/other search → Explore-Main Page (or path-changing if a route is open)
+  /// Balady is a single map screen with overlay controllers, so the source is
+  /// decided by the **origin** the user entered from (stamped by entry controls
+  /// into [DataFinderSourceTracker]) combined with the live navigation state:
+  ///  * in turn-by-turn navigation (`PathNavRoute`) → "Direction"
+  ///  * editing a drawn route (`RoutingRoutes`/`RouteDetails`) → "Path Changing"
+  ///
+  /// The search scope refines the origin where it is unambiguous: a search in
+  /// the Routes flow is always `routes`; a navigation search is at least
+  /// `explore` (never the Explore main page default while navigating).
   DataFinderSourcePage get _sourcePage {
-    final onPathNav = _isRouteActive(PathNavRoute.name);
-    final onRouting = _isRouteActive(RoutingRoutesRoute.name) || _isRouteActive(RouteDetailsRoute.name);
+    final inNavigation = _isRouteActive(PathNavRoute.name);
+    final pathChanging = _isRouteActive(RoutingRoutesRoute.name) || _isRouteActive(RouteDetailsRoute.name);
 
-    switch (scope) {
-      case 'RoutingSearch':
-        return onRouting ? DataFinderSourcePage.routesPathChanging : DataFinderSourcePage.routesMainPage;
-      case 'NaviSearch':
-        return onPathNav ? DataFinderSourcePage.exploreDirectionPathChanging : DataFinderSourcePage.exploreDirection;
-      case 'MapSearch':
-      case 'FavouritesSearch':
-      case 'FeedbackSearch':
-      default:
-        // The single map surface. If a route is being planned/followed while the
-        // user searches, it is a path-changing context.
-        if (onPathNav || onRouting) {
-          return DataFinderSourcePage.exploreDirectionPathChanging;
-        }
-        return DataFinderSourcePage.exploreMainPage;
+    var origin = ref.read(dataFinderSourceTrackerProvider);
+
+    // The Routes search surface is itself the entry control for the Routes
+    // flow, so it always resolves to a `routes` origin regardless of any
+    // earlier stamp. (NaviSearch keeps the stamped map/explore origin — Map→Go
+    // stays Map-Main, Explore→Go becomes Explore-Direction via the nav flags.)
+    if (scope == _routingSearchScope) {
+      origin = DataFinderOrigin.routes;
     }
+
+    return origin.resolve(inNavigation: inNavigation, pathChanging: pathChanging);
   }
 
   /// Public accessor so UI-fired events (search box, favourite dialog) can tag
