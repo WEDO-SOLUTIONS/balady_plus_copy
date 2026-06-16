@@ -39,6 +39,13 @@
                 "unknown": 0
             }
         },
+        "RoadMarkingColorType": {
+            "type": "enum<RoadMarkingColorType>",
+            "values": {
+                "white": 0,
+                "yellow": 1
+            }
+        },
         "RouteEditorMode": {
             "type": "enum<RouteEditorMode>",
             "values": {
@@ -97,6 +104,10 @@
         "db_entrance_has_poi": {
             "default_value": "false",
             "type": "bool"
+        },
+        "db_format_version": {
+            "default_value": "2411",
+            "type": "u32"
         },
         "db_has_immersive_counterpart": {
             "default_value": "false",
@@ -434,6 +445,10 @@
         "db_region": {
             "default_value": "0",
             "type": "u32"
+        },
+        "db_road_marking_color_type": {
+            "default_value": "white",
+            "type": "enum<RoadMarkingColorType>"
         },
         "db_road_part": {
             "type": "enum<RoadPart>",
@@ -1092,6 +1107,7 @@
                 "s_vendor_dynamic_point_text_676767": "",
                 "s_vendor_dynamic_point_text_920277": "",
                 "s_vendor_dynamic_point_text_977194": "",
+                "satellite": "",
                 "tech_zenith_background": "",
                 "unknown_sublayer": 65535
             }
@@ -1833,6 +1849,10 @@
             "taxi": "",
             "unknown": 0
         },
+        "RoadMarkingColorType": {
+            "white": 0,
+            "yellow": 1
+        },
         "RoadPart": {
             "border_flat": "",
             "border_overpass": "",
@@ -2482,6 +2502,7 @@
             "s_vendor_dynamic_point_text_676767": "",
             "s_vendor_dynamic_point_text_920277": "",
             "s_vendor_dynamic_point_text_977194": "",
+            "satellite": "",
             "tech_zenith_background": "",
             "unknown_sublayer": 65535
         },
@@ -2544,6 +2565,10 @@
             "default_value": "false",
             "type": "bool"
         },
+        "db_format_version": {
+            "default_value": "2411",
+            "type": "u32"
+        },
         "db_has_immersive_counterpart": {
             "default_value": "false",
             "type": "bool"
@@ -2578,6 +2603,10 @@
         "db_region": {
             "default_value": "0",
             "type": "u32"
+        },
+        "db_road_marking_color_type": {
+            "default_value": "white",
+            "type": "enum<RoadMarkingColorType>"
         },
         "db_road_part": {
             "type": "enum<RoadPart>"

@@ -1,3 +1,3 @@
-export-release-26.06
-hash=afd2caa6f349073ae57506a86f540fe1bc1f4875
+export-release-26.07
+hash=d1101c8091a77b45b389e67e08293741783e8c27
 tilesforge_compat=export-release-24.11
