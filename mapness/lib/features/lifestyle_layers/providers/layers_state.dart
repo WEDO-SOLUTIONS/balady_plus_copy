@@ -10,7 +10,9 @@ enum LayerType {
   jeddahBus,
   fencing,
   traffic,
-  three3D;
+  three3D,
+  defaultMap,
+  satellite;
   // roadEvents;
 
   static List<LayerType> get lifestyle => [
@@ -29,6 +31,8 @@ enum LayerType {
   ];
 
   static List<LayerType> get v1 => [
+    LayerType.defaultMap,
+    LayerType.satellite,
     LayerType.traffic,
     LayerType.metro,
     LayerType.parkingLots,
@@ -57,6 +61,8 @@ extension LayerTypeEx on LayerType {
     'jeddahBus' => LayerType.jeddahBus,
     'traffic' => LayerType.traffic,
     'three3D' => LayerType.three3D,
+    'defaultMap' => LayerType.defaultMap,
+    'satellite' => LayerType.satellite,
     _ => null,
   };
 }

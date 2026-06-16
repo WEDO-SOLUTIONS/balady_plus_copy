@@ -10,6 +10,36 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/remote_config_constants.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
+/// Bundled default for `satellite_config` so the satellite layer works
+/// out-of-the-box before Firebase Console is wired up. Firebase Remote
+/// Config overrides this value at runtime.
+///
+/// **Current default — ESRI World Imagery** (public, no token). Used as a
+/// dev/staging stand-in while access to the Saudi Geoportal endpoint is
+/// being sorted out. ESRI's ToS restricts non-paid use to non-commercial
+/// scenarios, so switch back to the production endpoint before release.
+///
+/// To swap to a different tile provider, just replace the JSON below or
+/// set the `satellite_config` key in Firebase Remote Console — the schema
+/// is the same: `layer_name`, `url_template`, `token`, `expires`. `{TOKEN}`
+/// in the template is substituted at runtime; omit it for token-less
+/// servers (e.g. ESRI World Imagery).
+///
+/// Production endpoint (Saudi Geoportal — KSA-restricted, requires token):
+/// ```json
+/// {
+///   "layer_name": "satellite",
+///   "url_template": "https://www.geoportal.sa/basemap/rest/services/Imagery/BasemapImagery/MapServer/tile/{z}/{y}/{x}?token={TOKEN}",
+///   "token": "<rotated via FRC ~monthly>",
+///   "expires": 1784245894893
+/// }
+/// ```
+const String _kSatelliteConfigDefault =
+    '{"layer_name":"satellite",'
+    '"url_template":"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",'
+    '"token":"",'
+    '"expires":0}';
+
 class AppConfigLoader {
   AppConfigLoader._();
 
@@ -36,6 +66,11 @@ class AppConfigLoader {
           minimumFetchInterval: const Duration(minutes: 2),
         ),
       );
+
+      /// In-code defaults used until the Firebase Console value is fetched.
+      await remoteConfig.setDefaults({
+        RemoteConfigConstants.satelliteConfig: _kSatelliteConfigDefault,
+      });
 
       /// Ensure Remote Config is initialized and activate the config values
       await remoteConfig.ensureInitialized();
@@ -86,6 +121,29 @@ class AppConfigLoader {
   static Future<String?> getDynamicPoiVisibility() async {
     final config = await _config?.future;
     return config?.getValue(RemoteConfigConstants.dynamicPoiVisibility).asString();
+  }
+
+  /// Returns the JSON string for the satellite raster tile overlay.
+  /// Expected shape:
+  /// `{"layer_name": "satellite",
+  ///   "url_template": "https://.../tile/{z}/{y}/{x}?token={TOKEN}",
+  ///   "token": "...",
+  ///   "expires": 1784245894893}`.
+  /// `expires` is milliseconds since epoch and is informational — the
+  /// controller logs a warning when the token is past expiry. Token is
+  /// substituted into url_template at runtime so it can rotate without
+  /// changing the URL field.
+  ///
+  /// Falls back to [_kSatelliteConfigDefault] when Firebase Remote Config
+  /// failed to initialize or returned an empty value, so the satellite
+  /// layer works offline / before Firebase Console is wired up.
+  static Future<String?> getSatelliteConfig() async {
+    final config = await _config?.future;
+    final value = config?.getValue(RemoteConfigConstants.satelliteConfig).asString();
+    if (value == null || value.isEmpty) {
+      return _kSatelliteConfigDefault;
+    }
+    return value;
   }
 
   static Future<void> _saveAppConfig(FirebaseRemoteConfig? remoteConfig, EnvType envType) async {

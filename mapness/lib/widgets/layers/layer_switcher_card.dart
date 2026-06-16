@@ -9,6 +9,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
+import 'package:mapness/features/satellite/providers/satellite_map_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 
@@ -51,6 +52,14 @@ class LayerSwitcherCard extends ConsumerWidget {
     if (value == layers_state.LayerType.busSubMenu) {
       final trafficState = ref.watch(traffic.trafficStateProvider);
       isSelected = layers_state.LayerType.bus.contains(layersState.selectedType);
+    }
+
+    if (value == layers_state.LayerType.satellite) {
+      isSelected = ref.watch(satelliteMapControllerProvider);
+    }
+
+    if (value == layers_state.LayerType.defaultMap) {
+      isSelected = !ref.watch(satelliteMapControllerProvider);
     }
 
     final withIcon = onIconTap != null && layerTapItems.contains(value);

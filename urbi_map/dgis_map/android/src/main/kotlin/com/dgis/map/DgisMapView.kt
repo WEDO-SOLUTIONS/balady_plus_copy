@@ -57,6 +57,7 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
+    private var satelliteHandler: SatelliteHandler? = null
     private val navigationManager = DgisMapInitializer.getNavigationManager().also { navManager ->
         // Apply persisted sound setting immediately, before any navigation starts.
         // The SDK enables all sound categories by default. We read from Flutter's
@@ -1183,6 +1184,7 @@ class DgisMapView(
                 TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext, map)
+        satelliteHandler = SatelliteHandler(sdkContext, map)
 
         callback(Result.success(InitializeMessage(wasInitialized = true, errorDescription = "")))
     }
@@ -1256,6 +1258,10 @@ class DgisMapView(
 
     override fun toggleHeatmap(message: WeatherMapMessage, callback: (Result<Boolean>) -> Unit) {
         weatherHandler?.toggleHeatmap(message, callback)
+    }
+
+    override fun toggleSatellite(message: SatelliteMapMessage, callback: (Result<Boolean>) -> Unit) {
+        satelliteHandler?.toggleSatellite(message, callback)
     }
 
     override fun betterRouteResponse(
