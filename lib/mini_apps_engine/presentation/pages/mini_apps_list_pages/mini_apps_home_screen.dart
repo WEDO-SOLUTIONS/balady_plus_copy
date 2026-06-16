@@ -688,13 +688,27 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                               },
                                                               child: DecoratedBox(
                                                                 decoration: BoxDecoration(
-                                                                  color: Theme.of(context).cardColor,
-                                                                  borderRadius: BorderRadius.circular(8),
+                                                                  color:
+                                                                      Theme.of(
+                                                                            context,
+                                                                          ).brightness ==
+                                                                          Brightness
+                                                                              .dark
+                                                                      ? Theme.of(
+                                                                          context,
+                                                                        ).primaryColorLight
+                                                                      : Theme.of(
+                                                                          context,
+                                                                        ).cardColor,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        8,
+                                                                      ),
                                                                   border: Border.all(
-                                                                    color: Theme.of(context,
-                                                                        ).disabledColor.withAlpha(
-                                                                          90,
-                                                                        ),
+                                                                    color:
+                                                                        Theme.of(
+                                                                          context,
+                                                                        ).disabledColor,
                                                                   ),
                                                                 ),
                                                                 child: Row(
@@ -720,7 +734,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                             ),
                                                                             color: Theme.of(
                                                                               context,
-                                                                            ).primaryColorLight,
+                                                                            ).colorScheme.primaryContainer,
                                                                           ),
                                                                           child: Padding(
                                                                             padding: const EdgeInsets.all(
@@ -814,11 +828,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                             fontSize: 18,
                                             fontWeight: FontWeight.w600,
                                             fontFamily: GeneralKey.appFontType,
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? Colors.white
-                                                : Colors.black,
+
                                           ),
                                         ),
                                         SizedBox(

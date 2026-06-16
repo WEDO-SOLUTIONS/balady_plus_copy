@@ -100,9 +100,13 @@ class CustomMiniAppsCard extends StatelessWidget {
                 width: context.w(70),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Theme.of(context).primaryColorLight
+                        : Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Theme.of(context).disabledColor.withAlpha(90)),
+                    border: Border.all(
+                      color: Theme.of(context).disabledColor,
+                    ),
                   ),
                   // elevation: 0,
                   child: Padding(
@@ -110,7 +114,7 @@ class CustomMiniAppsCard extends StatelessWidget {
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.onPrimaryFixed,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                       ),
                       child: child,
                     ),
