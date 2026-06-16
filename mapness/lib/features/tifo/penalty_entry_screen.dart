@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 
@@ -80,25 +81,32 @@ class PenaltyEntryScreen extends ConsumerWidget {
     );
   }
 
+  /// Minimum goals (out of 5 attempts) required to capture the polygon.
+  static const int _goalsToCapture = 3;
+
   void _startPenalty(BuildContext context, WidgetRef ref) {
     var handled = false;
     Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => PenaltyApp(
-          onGoal: () {
+          onComplete: (goals) {
             if (handled) return;
             handled = true;
-            // Brief delay so the user sees the "GOAL!" message.
+            // Brief delay so the user sees the last result message,
+            // then unconditionally pop back to the dashboard map.
             Future<void>.delayed(const Duration(milliseconds: 850), () {
-              final nav = Navigator.of(context, rootNavigator: true);
-              // Pop PenaltyApp + this entry screen back to the dashboard.
-              nav.popUntil((route) => route.isFirst);
-              unawaited(
-                ref
-                    .read(debug3dModelProvider.notifier)
-                    .capturePolygon(polygonId: polygonId),
-              );
+              // Use the global root key — `context` could be unmounted
+              // by the time this future fires.
+              rootNavigatorKey.currentState
+                  ?.popUntil((route) => route.isFirst);
+              if (goals >= _goalsToCapture) {
+                unawaited(
+                  ref
+                      .read(debug3dModelProvider.notifier)
+                      .capturePolygon(polygonId: polygonId),
+                );
+              }
             });
           },
         ),

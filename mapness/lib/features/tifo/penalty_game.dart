@@ -13,9 +13,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class PenaltyApp extends StatelessWidget {
-  const PenaltyApp({super.key, this.onGoal});
+  const PenaltyApp({super.key, this.onComplete});
 
-  final VoidCallback? onGoal;
+  /// Fires after the 5-shot session ends. Argument is the number of goals
+  /// scored in the session (0..5).
+  final ValueChanged<int>? onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class PenaltyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Penalty 3D',
       theme: ThemeData.dark(useMaterial3: true),
-      home: PenaltyGamePage(onGoal: onGoal),
+      home: PenaltyGamePage(onComplete: onComplete),
     );
   }
 }
@@ -31,9 +33,9 @@ class PenaltyApp extends StatelessWidget {
 enum _PenaltyView { perspective, topDown, miniGame, styles }
 
 class PenaltyGamePage extends StatefulWidget {
-  const PenaltyGamePage({super.key, this.onGoal});
+  const PenaltyGamePage({super.key, this.onComplete});
 
-  final VoidCallback? onGoal;
+  final ValueChanged<int>? onComplete;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -50,7 +52,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
         body = ClipRect(
           child: GameWidget<PenaltyGame>.controlled(
             key: const ValueKey('penalty-game'),
-            gameFactory: () => PenaltyGame(onGoal: widget.onGoal),
+            gameFactory: () => PenaltyGame(onComplete: widget.onComplete),
           ),
         );
         break;
@@ -923,13 +925,22 @@ enum _ShotState { aiming, flying, goal, saved, missed }
 enum _KeeperDive { low, mid, high }
 
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
-  PenaltyGame({this.onGoal});
+  PenaltyGame({this.onComplete});
 
-  final VoidCallback? onGoal;
+  /// Fired exactly once, after [_maxAttempts] shots have been resolved.
+  /// Argument is the number of goals scored across the session.
+  final ValueChanged<int>? onComplete;
+
+  /// Session length — game closes after this many attempts.
+  static const int _maxAttempts = 5;
 
   static const double _goalZ = 23;
-  static const double _goalHalfWidth = 3.65;
-  static const double _goalHeight = 2.45;
+  // World goal dimensions are intentionally larger than a real goal so the
+  // schematic hitbox lines up with the painted goal frame in
+  // `stadium_goal_background.jpg` (the photo's perspective squishes
+  // a regulation 7.3×2.45 m frame, so we counter-scale here).
+  static const double _goalHalfWidth = 4.5;
+  static const double _goalHeight = 3.4;
   static const double _ballRadius = 0.32;
   static const double _ballStartZ = -0.95;
   static const double _strikerBaseZ = -0.25;
@@ -997,6 +1008,8 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   int _goals = 0;
   int _shots = 0;
   int _saves = 0;
+  final List<_ShotState> _shotHistory = [];
+  bool _completed = false;
 
   @override
   Color backgroundColor() => Colors.black;
@@ -1016,6 +1029,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   @override
   void onTapUp(TapUpEvent event) {
+    if (_completed) return;
     if (_state == _ShotState.aiming) {
       _shootAt(event.canvasPosition, 0.74);
     }
@@ -1024,6 +1038,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
+    if (_completed) return;
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1034,6 +1049,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
+    if (_completed) return;
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1044,6 +1060,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
+    if (_completed) return;
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1089,7 +1106,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _resultTime += dt;
     _keeperX += (_keeperTargetX - _keeperX) * (1 - math.exp(-dt * 3.5));
     _updateBall(dt, bounce: true);
-    if (_resultTime > 1.65) {
+    if (_resultTime > 1.65 && !_completed) {
       _resetRound();
     }
   }
@@ -1219,8 +1236,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _state = state;
     _message = message;
     _resultTime = 0;
-    if (state == _ShotState.goal) {
-      onGoal?.call();
+    _shotHistory.add(state);
+    if (_shotHistory.length >= _maxAttempts && !_completed) {
+      _completed = true;
+      onComplete?.call(_goals);
     }
   }
 
@@ -1255,8 +1274,16 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     if (_backgroundImage == null) {
       _drawField(canvas);
       _drawGoal(canvas);
+    } else {
+      // Photo's painted goal doesn't match the projection used by
+      // [_resolveShot] — overlay the actual hit-detection bounds so the
+      // player can aim correctly.
+      _drawGoalHitbox(canvas);
     }
     _drawKeeper(canvas);
+    if (_backgroundImage != null) {
+      _drawKeeperHitbox(canvas);
+    }
     _drawBall(canvas);
     _drawPlayer(canvas);
     _drawHud(canvas);
@@ -1580,6 +1607,74 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     }
   }
 
+  /// Schematic outline of the actual hit-detection goal frame (world
+  /// `x = ±_goalHalfWidth`, `y = 0..._goalHeight` at `z = _goalZ`). Drawn
+  /// on top of the background photo so the player can see exactly what
+  /// counts as "in" for [_resolveShot] — the photo's painted goal is
+  /// purely decorative.
+  void _drawGoalHitbox(Canvas canvas) {
+    final lt = _project(_Vec3(-_goalHalfWidth, _goalHeight, _goalZ));
+    final rt = _project(_Vec3(_goalHalfWidth, _goalHeight, _goalZ));
+    final lb = _project(_Vec3(-_goalHalfWidth, 0, _goalZ));
+    final rb = _project(_Vec3(_goalHalfWidth, 0, _goalZ));
+    if (lt == null || rt == null || lb == null || rb == null) {
+      return;
+    }
+
+    final post = Paint()
+      ..color = Colors.white.withValues(alpha: 0.85)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 0.6);
+    final groundLine = Paint()
+      ..color = Colors.white.withValues(alpha: 0.35)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+
+    // Crossbar.
+    canvas.drawLine(lt.offset, rt.offset, post);
+    // Left post.
+    canvas.drawLine(lt.offset, lb.offset, post);
+    // Right post.
+    canvas.drawLine(rt.offset, rb.offset, post);
+    // Goal-line on the turf — thinner / dimmer hint.
+    canvas.drawLine(lb.offset, rb.offset, groundLine);
+  }
+
+  /// Translucent rectangle showing the keeper's actual save zone in
+  /// world coords (`_keeperX ± 0.78` horizontally, `1.15 ± 1.15` vertically
+  /// at `z = _goalZ`). Moves with [_keeperX] every frame.
+  void _drawKeeperHitbox(Canvas canvas) {
+    const halfW = 0.78;
+    const centerY = 1.15;
+    const halfH = 1.15;
+    final tl = _project(_Vec3(_keeperX - halfW, centerY + halfH, _goalZ));
+    final tr = _project(_Vec3(_keeperX + halfW, centerY + halfH, _goalZ));
+    final bl = _project(_Vec3(_keeperX - halfW, centerY - halfH, _goalZ));
+    final br = _project(_Vec3(_keeperX + halfW, centerY - halfH, _goalZ));
+    if (tl == null || tr == null || bl == null || br == null) {
+      return;
+    }
+    final path = Path()
+      ..moveTo(tl.offset.dx, tl.offset.dy)
+      ..lineTo(tr.offset.dx, tr.offset.dy)
+      ..lineTo(br.offset.dx, br.offset.dy)
+      ..lineTo(bl.offset.dx, bl.offset.dy)
+      ..close();
+    final fill = Paint()
+      ..color = const Color(0xFFFF3B30).withValues(alpha: 0.22)
+      ..style = PaintingStyle.fill;
+    final stroke = Paint()
+      ..color = const Color(0xFFFF3B30).withValues(alpha: 0.85)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..strokeJoin = StrokeJoin.round;
+    canvas.drawPath(path, fill);
+    canvas.drawPath(path, stroke);
+  }
+
   void _drawGoal(Canvas canvas) {
     final netColor = Colors.white.withValues(alpha: 0.42);
     final netBackZ = _goalZ + 1.25;
@@ -1735,20 +1830,11 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawHud(Canvas canvas) {
-    final stage = _stageRect;
-    _titleText.render(
-      canvas,
-      'Penalty 3D',
-      Vector2(stage.left + 18, stage.top + 18),
-    );
-    _scoreText.render(
-      canvas,
-      'Goals: $_goals / Shots: $_shots   Saves: $_saves',
-      Vector2(stage.left + 18, stage.top + 52),
-    );
+    _drawAttemptDots(canvas);
     if (_message.isEmpty) {
       return;
     }
+    final stage = _stageRect;
     final alpha = (1 - (_resultTime / 1.65)).clamp(0.0, 1.0).toDouble();
     canvas.saveLayer(
       Rect.fromLTWH(0, 0, canvasSize.x, canvasSize.y),
@@ -1761,6 +1847,43 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       anchor: Anchor.center,
     );
     canvas.restore();
+  }
+
+  /// Five result dots near the top of the stage:
+  ///   * white  — attempt not taken yet
+  ///   * red    — saved or missed
+  ///   * green  — goal
+  void _drawAttemptDots(Canvas canvas) {
+    const radius = 5.0;
+    const spacing = 7.0;
+    final totalWidth = _maxAttempts * (radius * 2) + (_maxAttempts - 1) * spacing;
+    final startX = _stageRect.center.dx - totalWidth / 2 + radius;
+    // Push below the status bar / notch area. `_stageRect` covers the whole
+    // canvas so we can't pull MediaQuery padding here — pick a generous
+    // fixed offset (~status bar + 12 px breathing room).
+    final y = _stageRect.top +
+        math.max(56.0, _stageRect.height * 0.07);
+
+    final fill = Paint()..style = PaintingStyle.fill;
+    final ring = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2
+      ..color = Colors.black.withValues(alpha: 0.45);
+
+    for (var i = 0; i < _maxAttempts; i++) {
+      final cx = startX + i * (radius * 2 + spacing);
+      final Color color;
+      if (i >= _shotHistory.length) {
+        color = Colors.white;
+      } else if (_shotHistory[i] == _ShotState.goal) {
+        color = const Color(0xFF22C55E);
+      } else {
+        color = const Color(0xFFEF4444);
+      }
+      fill.color = color;
+      canvas.drawCircle(Offset(cx, y), radius, fill);
+      canvas.drawCircle(Offset(cx, y), radius, ring);
+    }
   }
 
   void _drawStageBorder(Canvas canvas) {
@@ -1999,11 +2122,91 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     math.max(10.0, math.min(canvasSize.x, canvasSize.y) * 0.03),
   );
 
-  double get _centerX => _stageRect.center.dx;
+  // ─── Photo-fitted projection ───────────────────────────────────────────
+  //
+  // The world projection is anchored to the painted goal inside
+  // `stadium_goal_background.jpg` so the schematic hitbox lines up
+  // pixel-accurately on every screen size / aspect ratio / DPI.
+  //
+  // 1. Source image is `_photoIntrinsicWidth × _photoIntrinsicHeight`.
+  //    The painted goal-frame inside that image is at
+  //    `[_photoGoalSrcLeft … _photoGoalSrcRight] × [Top … Bottom]`.
+  //    These are measured once from the asset and are absolute pixel
+  //    constants — they do NOT depend on the device.
+  // 2. `_photoGoalOnStage()` mirrors the BoxFit.cover crop logic from
+  //    [_drawCoverImage] to map those source pixels to current
+  //    logical-screen coordinates.
+  // 3. `_focalLength` / `_horizonY` / `_centerX` are computed so the
+  //    world goal `(±_goalHalfWidth, [0, _goalHeight], _goalZ)`
+  //    projects exactly onto the photo's painted goal — width matches
+  //    the post separation, and y=0 lands on the photo's goal-line.
+  //    Crossbar match accuracy depends on `_goalHeight / 2_goalHalfWidth`
+  //    matching the photo's aspect (an aesthetic choice).
+  //
+  // Procedural fallback (no photo) keeps the original arbitrary
+  // multipliers (`1.24`, `0.4`) since it doesn't need to align with a
+  // photo, and the goal there is drawn in code at the world coords.
 
-  double get _horizonY => _stageRect.top + _stageRect.height * 0.4;
+  // Intrinsic dimensions of stadium_goal_background.jpg, in source px.
+  static const double _photoIntrinsicWidth = 853;
+  static const double _photoIntrinsicHeight = 1844;
+  // Painted goal frame inside that image, in source px.
+  static const double _photoGoalSrcLeft = 90;
+  static const double _photoGoalSrcRight = 711;
+  static const double _photoGoalSrcTop = 742;
+  static const double _photoGoalSrcBottom = 991;
+  // Vertical bias used by `_drawCoverImage` (must stay in sync).
+  static const double _photoCropVerticalBias = 0.46;
 
-  double get _focalLength => _stageRect.height * 1.24;
+  /// Where the painted goal of the background photo lands on screen,
+  /// after `BoxFit.cover` crop on the current stage. Returns logical-px
+  /// coordinates that adapt to screen size / aspect ratio.
+  Rect _photoGoalOnStage() {
+    final stage = _stageRect;
+    final scale = math.max(
+      stage.width / _photoIntrinsicWidth,
+      stage.height / _photoIntrinsicHeight,
+    );
+    final sourceWidth = stage.width / scale;
+    final sourceHeight = stage.height / scale;
+    final sourceLeft = ((_photoIntrinsicWidth - sourceWidth) / 2)
+        .clamp(0.0, _photoIntrinsicWidth);
+    final sourceTop =
+        ((_photoIntrinsicHeight - sourceHeight) * _photoCropVerticalBias)
+            .clamp(0.0, _photoIntrinsicHeight);
+    return Rect.fromLTRB(
+      (_photoGoalSrcLeft - sourceLeft) * scale,
+      (_photoGoalSrcTop - sourceTop) * scale,
+      (_photoGoalSrcRight - sourceLeft) * scale,
+      (_photoGoalSrcBottom - sourceTop) * scale,
+    );
+  }
+
+  double get _centerX {
+    if (_backgroundImage == null) {
+      return _stageRect.center.dx;
+    }
+    return _photoGoalOnStage().center.dx;
+  }
+
+  double get _horizonY {
+    if (_backgroundImage == null) {
+      return _stageRect.top + _stageRect.height * 0.4;
+    }
+    final goalRect = _photoGoalOnStage();
+    // Match world post separation → photo post separation, then derive
+    // horizon so world y=0 projects to the photo's goal-line.
+    final scale = goalRect.width / (2 * _goalHalfWidth);
+    return goalRect.bottom - _cameraY * scale;
+  }
+
+  double get _focalLength {
+    if (_backgroundImage == null) {
+      return _stageRect.height * 1.24;
+    }
+    final goalRect = _photoGoalOnStage();
+    return goalRect.width * (_goalZ - _cameraZ) / (2 * _goalHalfWidth);
+  }
 }
 
 class _StrikerModel {
