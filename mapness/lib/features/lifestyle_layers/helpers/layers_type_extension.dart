@@ -60,9 +60,10 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => Assets.imagesSvg.layers.parking.keyName,
     LayerType.traffic => Assets.imagesSvg.layers.traffic.keyName,
     LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
-    // TODO(satellite): replace placeholder thumbnails once final assets land.
-    LayerType.defaultMap => Assets.imagesSvg.layers.traffic.keyName,
-    LayerType.satellite => Assets.imagesSvg.layers.traffic.keyName,
+    // Raster thumbnails — LayerSwitcherCard switches to Image.asset based on
+    // file extension. Files registered via assets/images/layers/ in pubspec.
+    LayerType.defaultMap => 'assets/images/layers/default.png',
+    LayerType.satellite => 'assets/images/layers/satellite.png',
     // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
   };
 

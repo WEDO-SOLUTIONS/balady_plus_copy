@@ -79,15 +79,21 @@ class LayerSwitcherCard extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(RadiusBorder.m),
-            child: SvgPicture.asset(
-              value.imageAsset(),
-              fit: BoxFit.cover,
-              height: 80,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withAlpha(40),
-                BlendMode.overlay,
-              ),
-            ),
+            child: value.imageAsset().endsWith('.svg')
+                ? SvgPicture.asset(
+                    value.imageAsset(),
+                    fit: BoxFit.cover,
+                    height: 80,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withAlpha(40),
+                      BlendMode.overlay,
+                    ),
+                  )
+                : Image.asset(
+                    value.imageAsset(),
+                    fit: BoxFit.cover,
+                    height: 80,
+                  ),
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),
