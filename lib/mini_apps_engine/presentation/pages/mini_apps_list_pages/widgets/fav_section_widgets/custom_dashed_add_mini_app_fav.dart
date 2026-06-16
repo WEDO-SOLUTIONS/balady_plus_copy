@@ -48,10 +48,10 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
             child: DottedBorder(
               // 1. CHANGE THIS CLASS TO RoundedRectDottedBorderOptions
               options: RoundedRectDottedBorderOptions(
-                radius: const Radius.circular(16), // Now you can add the radius!
+                radius: const Radius.circular(10), // Now you can add the radius!
                 borderPadding: EdgeInsets.zero,
                 padding: const EdgeInsets.all(2),
-                strokeWidth: 2.5,
+                strokeWidth: 2,
                 color: Theme.of(context).primaryColor,
                 gradient: null,
                 dashPattern: const <double>[4, 5],
@@ -66,7 +66,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimaryFixed, // The light background
-                      borderRadius: BorderRadius.circular(16), // Match the radius above
+                      borderRadius: BorderRadius.circular(10), // Match the radius above
                     ),
                     child: Center(child: Icon(Icons.add, color: Theme.of(context).primaryColor, size: 30)),
                   ),
