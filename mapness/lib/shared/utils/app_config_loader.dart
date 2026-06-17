@@ -38,7 +38,8 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 const String _kSatelliteConfigDefault =
     '{"layer_name":"satellite",'
     '"url_template":"https://www.geoportal.sa/basemap/rest/services/Imagery/BasemapImagery/MapServer/tile/{z}/{y}/{x}?token={TOKEN}",'
-    '"token":"qiCZf9ZHurs_jUeR2KSOrJNpujNC13mbFVNxzpPwmUpe5d7TqEV2Nl0I9VmVPD5OsHMVSHcvVqYHaVLm94FhiItxsGpAcz2flsjDNB7AITA.",'
+    // '"token":"qiCZf9ZHurs_jUeR2KSOrJNpujNC13mbFVNxzpPwmUpe5d7TqEV2Nl0I9VmVPD5OsHMVSHcvVqYHaVLm94FhiItxsGpAcz2flsjDNB7AITA.",'
+    '"token":"qiCZf9ZHurs_jUeR2KSOrIk41Cwepa6yQkV5XY4CG-2MMKuA_S_CIwkZNy3M9AEa2CQomyYYZNTvALaKJdxEr5GX-8XnZjz1LbUvsKX3MNE.",'
     '"expires":1784245894893}';
 
 class AppConfigLoader {
