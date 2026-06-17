@@ -59,12 +59,13 @@ class NavigationConstants {
   /// the horizon (more road ahead); slower → zoomed in + closer to top-down
   /// (detail for maneuvers)**. Tilt in degrees.
   static final List<StyleZoomTiltPoint> defaultTiltRelation = [
-    // TEST sequence (requested): tilt rises with zoom so high-zoom/high-speed
-    // bands lean toward the horizon. NB: the SDK caps tilt at very low zoom, so
-    // zoom 10 will likely render flatter than 38°.
-    StyleZoomTiltPoint(styleZoom: 10, tiltDegrees: 38),
-    StyleZoomTiltPoint(styleZoom: 15, tiltDegrees: 50),
-    StyleZoomTiltPoint(styleZoom: 20, tiltDegrees: 58),
+    // Decreasing in zoom: low zoom (high speed) leans toward the horizon; high
+    // zoom (low speed / near a maneuver) flattens toward top-down. Kept within the
+    // z16–20 range the speed→zoom bands actually use — below ~z16 the SDK flattens
+    // tilt regardless of this curve.
+    StyleZoomTiltPoint(styleZoom: 16, tiltDegrees: 58),
+    StyleZoomTiltPoint(styleZoom: 18, tiltDegrees: 45),
+    StyleZoomTiltPoint(styleZoom: 20, tiltDegrees: 30),
   ];
 
   /// Converts km/h to the m/s used by the SDK's [SpeedRange].
@@ -75,15 +76,18 @@ class NavigationConstants {
   /// city range. **Faster → lower zoom (zooms out)**, which via
   /// [defaultTiltRelation] tilts the camera toward the horizon for more road
   /// ahead; slower → higher zoom (zooms in) + closer to top-down.
+  ///
+  /// StyleZoom must be **non-increasing as speed rises**, otherwise 2GIS rejects
+  /// the whole sequence (`ZoomFollowSettings: Wrong StyleZoom and SpeedRange
+  /// sequences. Skipped`) and zoom-by-speed silently stops working. The floor is
+  /// kept ≥ ~16 so the camera stays out of the SDK's low-zoom tilt-flatten zone
+  /// and [defaultTiltRelation] can hold its tilt.
   static final List<SpeedZoomRule> _defaultSpeedZoomRules = [
-    // TEST sequence (requested): zoom RISES with speed (10 → 20). Keeps the
-    // high-speed bands at high zoom, where the SDK still allows a high tilt, so
-    // the speed→zoom→tilt chain is obvious on screen / in the side-view.
-    ..._bandRules(minSpeed: _kmh(0), maxSpeed: _kmh(20), cruiseZoom: 10),
-    ..._bandRules(minSpeed: _kmh(20), maxSpeed: _kmh(40), cruiseZoom: 13),
-    ..._bandRules(minSpeed: _kmh(40), maxSpeed: _kmh(60), cruiseZoom: 15),
-    ..._bandRules(minSpeed: _kmh(60), maxSpeed: _kmh(90), cruiseZoom: 20),
-    ..._bandRules(minSpeed: _kmh(90), maxSpeed: _kmh(250), cruiseZoom: 20),
+    ..._bandRules(minSpeed: _kmh(0), maxSpeed: _kmh(20), cruiseZoom: 19),
+    ..._bandRules(minSpeed: _kmh(20), maxSpeed: _kmh(40), cruiseZoom: 18),
+    ..._bandRules(minSpeed: _kmh(40), maxSpeed: _kmh(60), cruiseZoom: 17.5),
+    ..._bandRules(minSpeed: _kmh(60), maxSpeed: _kmh(90), cruiseZoom: 17),
+    ..._bandRules(minSpeed: _kmh(90), maxSpeed: _kmh(250), cruiseZoom: 16.5),
   ];
 
   static List<SpeedZoomRule> _bandRules({

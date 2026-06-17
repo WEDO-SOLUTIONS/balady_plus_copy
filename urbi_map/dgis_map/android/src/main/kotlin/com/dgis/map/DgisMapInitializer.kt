@@ -66,8 +66,11 @@ object DgisMapInitializer {
         sdkContext = DGis.initialize(
             appContext,
             vendorConfig = config,
-            logOptions = logOptions ?: LogOptions(
-                systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR
+            // [DEBUG TEMP] Force VERBOSE SDK logging to inspect ZoomFollowSettings
+            // (speed→zoom accept/skip) + camera follow. Revert to:
+            //   logOptions = logOptions ?: LogOptions(systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR),
+            logOptions = LogOptions(
+                systemLevel = LogLevel.VERBOSE, customLevel = LogLevel.VERBOSE
             ),
             httpOptions = HttpOptions(useCache = true),
         )

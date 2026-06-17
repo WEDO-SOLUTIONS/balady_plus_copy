@@ -98,26 +98,40 @@ class CameraTuneState {
     distanceGapToManeuverMm: distanceGapToManeuverMm ?? this.distanceGapToManeuverMm,
   );
 
+  /// Speed→zoom rules sorted into the order 2GIS expects: by speed ascending,
+  /// then by maneuver-distance window. 2GIS validates the sequence and silently
+  /// skips the whole table if the elements are out of order, so we normalise here
+  /// (StyleZoom must also be non-increasing as speed rises — that's enforced by
+  /// the authored values, not sorting).
+  static List<SpeedZoomRule> _sortedBySpeed(List<SpeedZoomRule> rules) => [...rules]
+    ..sort((a, b) {
+      final bySpeed = a.minSpeed.compareTo(b.minSpeed);
+      return bySpeed != 0 ? bySpeed : a.minDistanceToManeuverMm.compareTo(b.minDistanceToManeuverMm);
+    });
+
   /// Builds the pigeon payload sent to the native side.
-  NavigationCameraSettings toMessage() => NavigationCameraSettings(
-    speedZoomRules: speedZoomRules,
-    freeRoamSpeedZoomRules: speedZoomRules,
-    tiltRelation: tiltRelation,
-    followBehaviour: CameraFollowBehaviourMessage(
-      followBearing: followBearing,
-      followStyleZoom: followStyleZoom,
-      followTilt: followTilt,
-    ),
-    minZoom: zoomRestrictionEnabled ? minZoom : null,
-    maxZoom: zoomRestrictionEnabled ? maxZoom : null,
-    followReturnDelaySeconds: followReturnDelaySeconds,
-    zoomTuning: ZoomFollowTuning(
-      styleZoomSpeedRangesAnimationMs: styleZoomSpeedRangesAnimationMs,
-      zoomInBeforeManeuverAnimationMs: zoomInBeforeManeuverAnimationMs,
-      zoomOutAfterManeuverAnimationMs: zoomOutAfterManeuverAnimationMs,
-      distanceGapToManeuverMm: distanceGapToManeuverMm,
-    ),
-  );
+  NavigationCameraSettings toMessage() {
+    final orderedRules = _sortedBySpeed(speedZoomRules);
+    return NavigationCameraSettings(
+      speedZoomRules: orderedRules,
+      freeRoamSpeedZoomRules: orderedRules,
+      tiltRelation: tiltRelation,
+      followBehaviour: CameraFollowBehaviourMessage(
+        followBearing: followBearing,
+        followStyleZoom: followStyleZoom,
+        followTilt: followTilt,
+      ),
+      minZoom: zoomRestrictionEnabled ? minZoom : null,
+      maxZoom: zoomRestrictionEnabled ? maxZoom : null,
+      followReturnDelaySeconds: followReturnDelaySeconds,
+      zoomTuning: ZoomFollowTuning(
+        styleZoomSpeedRangesAnimationMs: styleZoomSpeedRangesAnimationMs,
+        zoomInBeforeManeuverAnimationMs: zoomInBeforeManeuverAnimationMs,
+        zoomOutAfterManeuverAnimationMs: zoomOutAfterManeuverAnimationMs,
+        distanceGapToManeuverMm: distanceGapToManeuverMm,
+      ),
+    );
+  }
 }
 
 /// Holds the current navigation-camera settings and pushes them to the native

@@ -242,6 +242,19 @@ class _LiveReadout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // [DEBUG TEMP] Log the sim-speed → camera zoom/tilt response so the
+    // speed→zoom→tilt chain can be verified against the VERBOSE SDK log. Fires on
+    // each camera change while this readout is mounted (i.e. debug panel open).
+    ref.listen(cameraPositionProvider, (_, pos) {
+      if (pos == null) {
+        return;
+      }
+      final kmh = ref.read(simulationSpeedProvider);
+      debugPrint(
+        '[CAM-TUNE] speed=${kmh.round()}km/h  zoom=${pos.zoom.toStringAsFixed(2)}  '
+        'tilt=${pos.tilt.toStringAsFixed(1)}deg  bearing=${pos.bearing.round()}deg',
+      );
+    });
     final pos = ref.watch(cameraPositionProvider);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
