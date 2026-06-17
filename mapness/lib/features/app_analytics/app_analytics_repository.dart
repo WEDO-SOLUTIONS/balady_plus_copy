@@ -59,6 +59,13 @@ abstract interface class AppAnalyticsRepository {
 
   void quickActionSelected(String action);
 
+  /// BR#09 – tracks selection, open, login, permission, and failure outcomes.
+  void appIconQuickActionSelected({
+    required String action,
+    required String outcome,
+    String? reason,
+  });
+
   void carPlayConnected();
 
   void poiContributionUsed({required String type});

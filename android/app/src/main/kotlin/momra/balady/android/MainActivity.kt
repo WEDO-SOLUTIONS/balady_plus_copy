@@ -3,6 +3,7 @@ package momra.balady.android
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -45,6 +46,9 @@ class MainActivity : AudioServiceFragmentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Capture before super.onCreate — FlutterFragmentActivity may attach plugins and read the intent.
+        AppIconQuickActionChannel.captureFromIntent(intent)
+
         super.onCreate(savedInstanceState)
         // Initialize Adjust OAID
         AdjustOaid.readOaid(applicationContext)
@@ -57,15 +61,26 @@ class MainActivity : AudioServiceFragmentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Fallback for devices that deliver the shortcut intent after onCreate.
+        AppIconQuickActionChannel.captureFromIntent(intent)
         MainAppScreenStateNotifier.setState(MainAppScreenState.STARTED)
     }
 
     override fun onResume() {
         super.onResume()
+        // Warm-start shortcuts can arrive via onNewIntent without onStart re-running.
+        AppIconQuickActionChannel.captureFromIntent(intent)
         MainAppScreenStateNotifier.setState(MainAppScreenState.RESUMED)
 
         // Ensure we are listening for focus changes while the app is active.
         requestAudioFocusForCoordination()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Required for singleTask — home-screen shortcuts deliver a new intent on warm resume.
+        setIntent(intent)
+        AppIconQuickActionChannel.captureFromIntent(intent)
     }
 
     override fun onPause() {
@@ -112,6 +127,8 @@ class MainActivity : AudioServiceFragmentActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             "com.balady.audio_coordination"
         )
+
+        AppIconQuickActionChannel.register(flutterEngine.dartExecutor.binaryMessenger)
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {
