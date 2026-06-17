@@ -3,6 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/src/core.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/common/image_asset_type.dart';
 import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -43,19 +44,19 @@ extension LayerTypeExt on LayerType {
         => GeneralIcons.placeholder,
   };
 
-  String imageAsset() => switch (this) {
-    LayerType.invest => '',
-    LayerType.buildings => '',
-    LayerType.fencing => '',
-    LayerType.favourites => Assets.imagesSvg.layers.favourites.keyName,
-    LayerType.metro => Assets.imagesSvg.layers.metro.keyName,
-    LayerType.busSubMenu => Assets.imagesSvg.layers.busSubMenu.keyName,
-    LayerType.makkahBus => Assets.imagesSvg.layers.makkahBus.keyName,
-    LayerType.shuttleBus => Assets.imagesSvg.layers.shuttleBus.keyName,
-    LayerType.jeddahBus => Assets.imagesSvg.layers.jeddahBus.keyName,
-    LayerType.parkingLots => Assets.imagesSvg.layers.parking.keyName,
-    LayerType.traffic => Assets.imagesSvg.layers.traffic.keyName,
-    LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
+  (ImageAssetType, String) imageAsset() => switch (this) {
+    LayerType.invest => (ImageAssetType.svg, ''),
+    LayerType.buildings => (ImageAssetType.svg, ''),
+    LayerType.fencing => (ImageAssetType.svg, ''),
+    LayerType.favourites => (ImageAssetType.svg, Assets.imagesSvg.layers.favourites.keyName),
+    LayerType.metro => (ImageAssetType.svg, Assets.imagesSvg.layers.metro.keyName),
+    LayerType.busSubMenu => (ImageAssetType.svg, Assets.imagesSvg.layers.busSubMenu.keyName),
+    LayerType.makkahBus => (ImageAssetType.svg, Assets.imagesSvg.layers.makkahBus.keyName),
+    LayerType.shuttleBus => (ImageAssetType.svg, Assets.imagesSvg.layers.shuttleBus.keyName),
+    LayerType.jeddahBus => (ImageAssetType.image, Assets.images.layers.imgLayerJeddahBus.keyName),
+    LayerType.parkingLots => (ImageAssetType.svg, Assets.imagesSvg.layers.parking.keyName),
+    LayerType.traffic => (ImageAssetType.svg, Assets.imagesSvg.layers.traffic.keyName),
+    LayerType.three3D => (ImageAssetType.svg, Assets.imagesSvg.layers.a3D.keyName),
     // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
   };
 
