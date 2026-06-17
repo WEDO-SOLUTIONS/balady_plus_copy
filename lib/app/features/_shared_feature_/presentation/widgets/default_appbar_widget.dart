@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, ImagePath;
@@ -36,6 +37,7 @@ class DefaultAppBarWidget extends StatelessWidget
       leadingWidth: showBack == true ? null : 8,
       leading: Navigator.canPop(context) && showBack
           ? IconButton(
+              tooltip: 'a11yBack'.tr(),
               icon: Icon(
                 x ? Icons.close : Icons.arrow_back_ios,
                 color: Theme.of(context).colorScheme.onSurface,

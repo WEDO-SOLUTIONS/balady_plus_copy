@@ -43,17 +43,27 @@ class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
     return Scaffold(
       backgroundColor: colors.backgroundSurface4,
 
-      appBar: BaladyTopBar.iconAndText(
+      appBar: BaladyTopBar(
         systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         title: 'fontSize'.tr(),
-        textStyle: titleStyle,
-        colorEnabled: accent,
-        leading: ActionModel(
-          onPressed: () {
-            context.router.pop();
-          },
-          icon: SystemIcons.arrowCornerLeftLarge,
+        onLeadingPressed: () {
+          context.router.pop();
+        },
+        leading: Semantics(
+          label: 'a11yBack'.tr(),
+          button: true,
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: Spacing.$4x),
+                Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.accentDefault),
+                const SizedBox(width: Spacing.$4x),
+              ],
+            ),
+          ),
         ),
+        textStyle: titleStyle,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

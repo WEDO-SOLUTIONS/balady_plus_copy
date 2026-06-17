@@ -88,6 +88,7 @@ class _VolunteerProfileEditingScreenState
             backgroundColor: Theme.of(context).colorScheme.surface,
             elevation: 0,
             leading: IconButton(
+              tooltip: 'a11yBack'.tr(),
               icon: Icon(
                 Icons.arrow_back_ios,
                 color: Theme.of(context).colorScheme.onSurface,

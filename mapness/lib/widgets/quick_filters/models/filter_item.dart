@@ -13,6 +13,8 @@ sealed class FilterItem {
 class FilterItemConfig extends FilterItem {
   final String? title;
   final IconData? icon;
+  /// Spoken by screen readers when [title] is omitted (icon-only chip).
+  final String? semanticsLabel;
   final VoidCallback onTap;
 
   FilterItemConfig({
@@ -20,6 +22,7 @@ class FilterItemConfig extends FilterItem {
     required this.onTap,
     this.icon,
     this.title,
+    this.semanticsLabel,
     super.selected = false,
   });
 }

@@ -58,6 +58,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
           elevation: 0,
           centerTitle: true,
           leading: IconButton(
+            tooltip: context.l10n.a11yBack,
             onPressed: () => context.router.pop(),
             icon: Icon(SystemIcons.arrowCornerLeftSmall, color: context.colors.foregroundDefault),
           ),

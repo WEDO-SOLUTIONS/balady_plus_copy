@@ -60,7 +60,10 @@ class FavouritesPickerPage extends ConsumerWidget {
                     Material(
                       borderRadius: BorderRadius.circular(8),
                       color: Colors.transparent,
-                      child: InkWell(
+                      child: Semantics(
+                        label: context.l10n.a11yBack,
+                        button: true,
+                        child: InkWell(
                         onTap: () {
                           context.router.pop();
                         },
@@ -68,6 +71,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+                        ),
                         ),
                       ),
                     ),

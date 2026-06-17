@@ -268,84 +268,92 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
         boxShadow: Shadows.s,
         color: colors.backgroundSurface2,
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(borderRadius),
-        onTap: () {
-          context.router.push(const FreeRoamRoute());
-          ref.read(freeRoamStarterProvider.notifier).setShown();
-        },
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minWidth: minWidth,
-            maxHeight: lerpDouble(minHeight, maxHeight, delta) ?? maxHeight,
-          ),
-          child: Center(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(borderRadius),
-                gradient: LinearGradient(
-                  colors: [
-                    if (isLTR) Colors.black.withOpacity(progressOpacity),
-                    Colors.transparent,
-                    if (!isLTR) Colors.black.withOpacity(progressOpacity),
-                  ],
-                  stops: [
-                    if (isLTR) gradientPosition else 1 - gradientPosition,
-                    if (isLTR) gradientPosition else 1 - gradientPosition,
-                  ],
-                ),
+      child: Semantics(
+        label: widget.isLaunching ? context.l10n.launchingNavigator : context.l10n.goToNavigator,
+        button: true,
+        container: true,
+        child: ExcludeSemantics(
+          excluding: widget.isLaunching,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(borderRadius),
+            onTap: () {
+              context.router.push(const FreeRoamRoute());
+              ref.read(freeRoamStarterProvider.notifier).setShown();
+            },
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minWidth: minWidth,
+                maxHeight: lerpDouble(minHeight, maxHeight, delta) ?? maxHeight,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(Spacing.$1x * delta),
-                    child: SizedBox(
-                      width: minHeight,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(RadiusBorder.m),
-                          color: Colors.white.withOpacity(progressOpacity * delta),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            TransportIcons.newlocationDirectionNavigator,
-                            size: iconSize,
-                            color: context.colors.foregroundSoft,
-                          ),
-                        ),
-                      ),
+              child: Center(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(borderRadius),
+                    gradient: LinearGradient(
+                      colors: [
+                        if (isLTR) Colors.black.withOpacity(progressOpacity),
+                        Colors.transparent,
+                        if (!isLTR) Colors.black.withOpacity(progressOpacity),
+                      ],
+                      stops: [
+                        if (isLTR) gradientPosition else 1 - gradientPosition,
+                        if (isLTR) gradientPosition else 1 - gradientPosition,
+                      ],
                     ),
                   ),
-                  if (delta > startingPoint)
-                    ClipRect(
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        widthFactor: delta,
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
-                          child: Row(
-                            children: [
-                              Text(
-                                context.l10n.launchingNavigator,
-                                style: context.textStyles.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(Spacing.$1x * delta),
+                        child: SizedBox(
+                          width: minHeight,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(RadiusBorder.m),
+                              color: Colors.white.withOpacity(progressOpacity * delta),
+                            ),
+                            child: Center(
+                              child: Icon(
+                                TransportIcons.newlocationDirectionNavigator,
+                                size: iconSize,
+                                color: context.colors.foregroundSoft,
                               ),
-                              AppButton(
-                                color: context.colors.accentSecondarySoft,
-                                onTap: () {
-                                  ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-                                  context.router.push(const AutostartSettingsSheetRoute());
-                                },
-                                primaryIcon: SystemIcons.close,
-                                buttonColorScheme: ButtonColorScheme.accent,
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                      if (delta > startingPoint)
+                        ClipRect(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            widthFactor: delta,
+                            child: Padding(
+                              padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    context.l10n.launchingNavigator,
+                                    style: context.textStyles.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                                  ),
+                                  AppButton(
+                                    color: context.colors.accentSecondarySoft,
+                                    onTap: () {
+                                      ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                                      context.router.push(const AutostartSettingsSheetRoute());
+                                    },
+                                    primaryIcon: SystemIcons.close,
+                                    buttonColorScheme: ButtonColorScheme.accent,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

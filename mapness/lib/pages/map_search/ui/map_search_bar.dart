@@ -327,13 +327,17 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
     return Row(
       children: [
-        AppButton(
-          buttonColorScheme: ButtonColorScheme.neutral,
-          buttonType: ButtonType.secondary,
-          primaryIcon: SystemIcons.arrowCornerLeftSmall,
-          onTap: widget.onLeadingBackPressed,
-          padding: const EdgeInsets.all(0),
-          innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+        Semantics(
+          label: context.l10n.a11yBack,
+          button: true,
+          child: AppButton(
+            buttonColorScheme: ButtonColorScheme.neutral,
+            buttonType: ButtonType.secondary,
+            primaryIcon: SystemIcons.arrowCornerLeftSmall,
+            onTap: widget.onLeadingBackPressed,
+            padding: const EdgeInsets.all(0),
+            innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+          ),
         ),
         const SizedBox(width: Spacing.$3x),
         Expanded(child: borderedSearchField),      ],

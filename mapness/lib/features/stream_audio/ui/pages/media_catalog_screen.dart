@@ -37,13 +37,23 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
     value: context.read<ThemeController>().systemOverlayStyle,
     child: Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
-      appBar: BaladyTopBar.iconAndText(
+      appBar: BaladyTopBar(
         systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         title: Directionality.of(context) == TextDirection.rtl ? 'كتالوج الوسائط' : 'media catalog',
-        colorEnabled: context.color.textAndIconsStatusAccent,
-        leading: ActionModel(
-          onPressed: () => context.router.pop(),
-          icon: SystemIcons.arrowCornerLeftLarge,
+        onLeadingPressed: () => context.router.pop(),
+        leading: Semantics(
+          label: context.l10n.a11yBack,
+          button: true,
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: Spacing.$4x),
+                Icon(SystemIcons.arrowCornerLeftLarge, color: context.color.textAndIconsStatusAccent),
+                const SizedBox(width: Spacing.$4x),
+              ],
+            ),
+          ),
         ),
       ),
       body: Column(

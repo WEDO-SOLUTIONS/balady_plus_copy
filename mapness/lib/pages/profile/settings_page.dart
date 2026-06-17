@@ -36,7 +36,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final isDGA =
         context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
-        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -175,16 +175,16 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   Widget? leadingIcon(Language language) => showFlags
       ? SvgPicture.asset(
-          switch (language) {
-            Language.arabic => Assets.icons.svg.saFlag.keyName,
-            Language.english => Assets.icons.svg.ukFlag.keyName,
-          },
-          height: 16,
-          width: 22,
-        )
+    switch (language) {
+      Language.arabic => Assets.icons.svg.saFlag.keyName,
+      Language.english => Assets.icons.svg.ukFlag.keyName,
+    },
+    height: 16,
+    width: 22,
+  )
       : AppIcons(
-          iconData: GeneralIcons.web,
-          color: context.colors.accentDefault,
-          size: 24,
-        );
+    iconData: GeneralIcons.web,
+    color: context.colors.accentDefault,
+    size: 24,
+  );
 }
