@@ -12,33 +12,34 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Bundled default for `satellite_config` so the satellite layer works
 /// out-of-the-box before Firebase Console is wired up. Firebase Remote
-/// Config overrides this value at runtime.
+/// Config overrides this value at runtime — rotating the ESRI token is
+/// just editing the JSON in the Console (no app release needed).
 ///
-/// **Current default — ESRI World Imagery** (public, no token). Used as a
-/// dev/staging stand-in while access to the Saudi Geoportal endpoint is
-/// being sorted out. ESRI's ToS restricts non-paid use to non-commercial
-/// scenarios, so switch back to the production endpoint before release.
+/// **Current default — Saudi Geoportal** (production endpoint). Token is
+/// KSA-restricted, server caps expiry at ~30 days regardless of the
+/// requested duration. Rotate via Firebase Console under the
+/// `satellite_config` key.
 ///
-/// To swap to a different tile provider, just replace the JSON below or
-/// set the `satellite_config` key in Firebase Remote Console — the schema
-/// is the same: `layer_name`, `url_template`, `token`, `expires`. `{TOKEN}`
-/// in the template is substituted at runtime; omit it for token-less
-/// servers (e.g. ESRI World Imagery).
-///
-/// Production endpoint (Saudi Geoportal — KSA-restricted, requires token):
+/// Alternate (dev/staging when Geoportal is unreachable — e.g. behind
+/// non-KSA network) — ESRI World Imagery, public, no token required.
+/// Restricted by ESRI ToS to non-commercial use; do not ship to prod.
 /// ```json
 /// {
 ///   "layer_name": "satellite",
-///   "url_template": "https://www.geoportal.sa/basemap/rest/services/Imagery/BasemapImagery/MapServer/tile/{z}/{y}/{x}?token={TOKEN}",
-///   "token": "<rotated via FRC ~monthly>",
-///   "expires": 1784245894893
+///   "url_template": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+///   "token": "",
+///   "expires": 0
 /// }
 /// ```
+///
+/// Schema: `layer_name`, `url_template`, `token`, `expires`. `{TOKEN}`
+/// in the template is substituted at runtime; omit it for token-less
+/// servers.
 const String _kSatelliteConfigDefault =
     '{"layer_name":"satellite",'
-    '"url_template":"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",'
-    '"token":"",'
-    '"expires":0}';
+    '"url_template":"https://www.geoportal.sa/basemap/rest/services/Imagery/BasemapImagery/MapServer/tile/{z}/{y}/{x}?token={TOKEN}",'
+    '"token":"qiCZf9ZHurs_jUeR2KSOrJNpujNC13mbFVNxzpPwmUpe5d7TqEV2Nl0I9VmVPD5OsHMVSHcvVqYHaVLm94FhiItxsGpAcz2flsjDNB7AITA.",'
+    '"expires":1784245894893}';
 
 class AppConfigLoader {
   AppConfigLoader._();
