@@ -295,9 +295,11 @@ class SsoUserInfo extends Equatable {
     // Get email from mail or email field
     String? emailValue = getValue('mail', alternativeKey: 'email');
 
-    // Get Arabic name
-    String? firstNameValue = getValue('first_name_arabic', alternativeKey: 'given_name');
-    String? lastNameValue = getValue('last_name_arabic', alternativeKey: 'family_name');
+    // Get Arabic name (profile API uses firstname/lastname; SSO uses given_name/family_name)
+    String? firstNameValue = getValue('firstname', alternativeKey: 'firstName');
+    firstNameValue ??= getValue('first_name_arabic', alternativeKey: 'given_name');
+    String? lastNameValue = getValue('lastname', alternativeKey: 'lastName');
+    lastNameValue ??= getValue('last_name_arabic', alternativeKey: 'family_name');
     String? arNameValue = getValue('ar_name');
     if (arNameValue == null && firstNameValue != null && lastNameValue != null) {
       arNameValue = '$firstNameValue $lastNameValue';

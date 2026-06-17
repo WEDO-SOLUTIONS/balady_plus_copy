@@ -40,7 +40,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = context.read<ThemeController>().currentTheme == BaladyAppThemes.light;
+    final isLight = context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     return Material(
       child: ColoredBox(

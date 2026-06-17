@@ -4,12 +4,14 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
   final PoiCardDataFromGoogle? poiCardDataFromGoogle;
+  final bool showHighlight;
 
   final LatLng? closestPoint;
 
   const _PoiCardWrapper({
     required this.objectId,
     required this.closestPoint,
+    required this.showHighlight,
     this.cameraConfig,
     this.poiCardDataFromGoogle,
     super.key,
@@ -132,6 +134,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       context.read<ThemeController>().currentTheme,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
+      showHighlight: widget.showHighlight,
     );
     final state = ref.watch(viewModelProvider);
     ref
@@ -147,7 +150,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
           );
         },
       )
-      ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
           _clearPoiSelectionState();

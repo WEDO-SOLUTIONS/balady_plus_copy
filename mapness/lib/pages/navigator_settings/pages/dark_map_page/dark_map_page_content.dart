@@ -1,8 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/pages/navigator_settings/components/dark_map_mode_row_widget.dart';
@@ -16,6 +18,9 @@ class DarkMapPageContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dark = ref.watch(darkModeProvider);
     const darkModes = DarkMapStateEnum.values;
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     return Padding(
       padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
@@ -42,7 +47,7 @@ class DarkMapPageContent extends ConsumerWidget {
           Expanded(
             child: SingleChildScrollView(
               child: ContentWrapper(
-                color: context.colors.backgroundSurface1,
+                color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                 children: darkModes
                     .mapIndexed<Widget>(
                       (i, e) => DarkMapModeRowWidget(

@@ -34,6 +34,8 @@ class UnauthorizedProfile extends ConsumerWidget {
         SizedBox(
           width: double.infinity,
           child: AppButton(
+            color: context.colors.backgroundSurface5,
+            textColor: context.colors.foregroundDefault,
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             primaryLabel: context.l10n.connectToMomrah,
             size: ButtonSize.large,

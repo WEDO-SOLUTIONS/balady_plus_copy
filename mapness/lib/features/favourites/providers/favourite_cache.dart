@@ -35,6 +35,8 @@ class _FavouriteCache extends _$FavouriteCache {
   static const _keyCache = 'cache';
   static const _keyDeleteSync = 'delete_sync';
   static const _keyAddSync = 'add_sync';
+  static const _keyLastUpdate = 'last_update';
+  static const _keyLastUserId = 'last_user_id';
 
   static const _tag = MetricsConstants.favoriteTag;
 
@@ -46,34 +48,50 @@ class _FavouriteCache extends _$FavouriteCache {
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
-  bool _isEmpty(FavouritesState data) => data.home == null && data.work == null && data.items.isEmpty;
 
-  List<String> _missingIds(FavouritesState data, List<FavouriteItem> items) {
-    final ids = {
-      data.home?.id,
-      data.work?.id,
-      ...data.items.map((item) => item.id),
-    };
-
-    return items.map((item) => item.id).where((id) => !ids.contains(id)).toList();
-  }
-
-  FavouritesState _readCache(Box<dynamic> favoritesBox) {
-    final cache = favoritesBox.get(_keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
-    return cache?.toDomain() ?? const FavouritesState(items: []);
-  }
-
-  List<FavoriteCacheItem> _readSyncItems(Box<dynamic> favoritesBox, String key) {
-    final rawItems = favoritesBox.get(key, defaultValue: <FavoriteCacheItem>[]);
-    if (rawItems is! List) {
-      return [];
+  // Load _lastUpdate from Hive on init
+  Future<void> _initLastUpdate() async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final stored = favoritesBox.get(_keyLastUpdate) as int?;
+    if (stored != null) {
+      _lastUpdate = DateTime.fromMillisecondsSinceEpoch(stored);
     }
-
-    return rawItems.cast<FavoriteCacheItem>();
   }
 
-  bool _hasPendingSync(Box<dynamic> favoritesBox) =>
-      _readSyncItems(favoritesBox, _keyDeleteSync).isNotEmpty || _readSyncItems(favoritesBox, _keyAddSync).isNotEmpty;
+  // Save _lastUpdate and _lastUserId to Hive when updated
+  Future<void> _saveLastUpdate(String? userId) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    if (_lastUpdate != null) {
+      await favoritesBox.put(_keyLastUpdate, _lastUpdate!.millisecondsSinceEpoch);
+    }
+    if (userId != null) {
+      await favoritesBox.put(_keyLastUserId, userId);
+    }
+  }
+
+  // Check if user has changed
+  Future<bool> _hasUserChanged(String? currentUserId) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final storedUserId = favoritesBox.get(_keyLastUserId) as String?;
+
+    // If no stored user or user is different, cache is invalid
+    if (storedUserId == null || storedUserId != currentUserId) {
+      return true;
+    }
+    return false;
+  }
+
+  // Clear cache when user changes
+  Future<void> _clearCacheForUserChange() async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    _lastUpdate = null;
+    await favoritesBox.delete(_keyLastUpdate);
+    await favoritesBox.delete(_keyLastUserId);
+    // Also clear the sync queues to avoid syncing old user's data
+    await favoritesBox.delete(_keyAddSync);
+    await favoritesBox.delete(_keyDeleteSync);
+  }
+
 
   List<FavouriteItem?> _getAllItems(FavouritesState favouriteState) => [
     ...favouriteState.items,
@@ -126,14 +144,11 @@ class _FavouriteCache extends _$FavouriteCache {
 
     const newState = FavouritesState(items: []);
     await _updateState(newState);
-    await _removeFromAddSync(items);
-    await _addToDeletionSync(items);
 
     try {
       await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
-      await _removeFromDeletionSync(items);
     } on Exception catch (_) {
-      // Keep delete_sync queued for the next app start.
+      await _addToDeletionSync(items);
     }
   }
 
@@ -153,16 +168,13 @@ class _FavouriteCache extends _$FavouriteCache {
     );
 
     await _updateState(newState);
-    await _removeFromAddSync([item]);
-    await _addToDeletionSync([item]);
 
     try {
       await _deleteRequest(items: [item], workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
-      await _removeFromDeletionSync([item]);
 
       ref.invalidate(favouriteMarkersProvider);
     } on Exception catch (_) {
-      // Keep delete_sync queued for the next app start.
+      await _addToDeletionSync([item]);
     }
   }
 
@@ -181,56 +193,32 @@ class _FavouriteCache extends _$FavouriteCache {
     final newState = FavouritesState(items: filteredItems, work: work, home: home);
 
     await _updateState(newState);
-    await _removeFromAddSync(items);
-    await _addToDeletionSync(items);
 
     try {
       await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
-      await _removeFromDeletionSync(items);
     } on Exception catch (_) {
-      // Keep delete_sync queued for the next app start.
+      await _addToDeletionSync(items);
     }
   }
 
   Future<void> _addToDeletionSync(List<FavouriteItem> items) async {
-    await _addToSyncQueue(key: _keyDeleteSync, items: items);
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final deleteSync =
+        (await favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+            .cast<FavoriteCacheItem>()
+          ..addAll(items.map((e) => e.toHive()));
+
+    await favoritesBox.put(_keyDeleteSync, deleteSync);
   }
 
   Future<void> _addToAddSync(FavouriteItem item) async {
-    await _addToSyncQueue(key: _keyAddSync, items: [item]);
-  }
-
-  Future<void> _addToSyncQueue({required String key, required List<FavouriteItem> items}) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final byId = {
-      for (final item in _readSyncItems(favoritesBox, key)) item.id: item,
-    };
+    final addSync =
+        (await favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+            .cast<FavoriteCacheItem>()
+          ..add(item.toHive());
 
-    for (final item in items) {
-      byId[item.id] = item.toHive();
-    }
-
-    await favoritesBox.put(key, byId.values.toList());
-  }
-
-  Future<void> _removeFromAddSync(List<FavouriteItem> items) async {
-    await _removeFromSyncQueue(key: _keyAddSync, items: items);
-  }
-
-  Future<void> _removeFromDeletionSync(List<FavouriteItem> items) async {
-    await _removeFromSyncQueue(key: _keyDeleteSync, items: items);
-  }
-
-  Future<void> _removeFromSyncQueue({required String key, required List<FavouriteItem> items}) async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final ids = items.map((e) => e.id).toSet();
-    final updated = _readSyncItems(favoritesBox, key).where((item) => !ids.contains(item.id)).toList();
-
-    if (updated.isEmpty) {
-      await favoritesBox.delete(key);
-    } else {
-      await favoritesBox.put(key, updated);
-    }
+    await favoritesBox.put(_keyAddSync, addSync);
   }
 
   Future<void> setHome(FavouriteItem item) async {
@@ -293,13 +281,11 @@ class _FavouriteCache extends _$FavouriteCache {
 
   Future<void> _addItem(FavouriteItem item, FavouritesState state) async {
     await _updateState(state);
-    await _addToAddSync(item);
 
     try {
       await _addItemsRequest(items: [item], workId: state.work?.id, homeId: state.home?.id);
-      await _removeFromAddSync([item]);
     } on Exception catch (_) {
-      // Keep add_sync queued for the next app start.
+      await _addToAddSync(item);
     }
   }
 
@@ -317,7 +303,9 @@ class _FavouriteCache extends _$FavouriteCache {
     final homeId = cache?.home?.toDomain().id;
 
     try {
-      final deleteSync = _readSyncItems(favoritesBox, _keyDeleteSync);
+      final deleteSync =
+          (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+              .cast<FavoriteCacheItem>();
 
       if (deleteSync.isNotEmpty) {
         await _deleteRequest(items: deleteSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
@@ -328,7 +316,9 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     try {
-      final addSync = _readSyncItems(favoritesBox, _keyAddSync);
+      final addSync =
+          (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+              .cast<FavoriteCacheItem>();
 
       if (addSync.isNotEmpty) {
         await _addItemsRequest(items: addSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
@@ -380,15 +370,6 @@ class _FavouriteCache extends _$FavouriteCache {
     try {
       final raw = await dio.post('favourites', data: request.writeToBuffer());
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
-      final missingIds = _missingIds(newState, items);
-      if (missingIds.isNotEmpty) {
-        final message = 'Add favourites response misses added items $missingIds; keeping local cache';
-        logger.log(
-          message,
-          logLevel: MapnessLogLevel.warning,
-        );
-        throw StateError(message);
-      }
       await _updateState(newState);
     } on DioException catch (e) {
       if (e.response?.data != null) {
@@ -426,9 +407,6 @@ class _FavouriteCache extends _$FavouriteCache {
 
   @override
   Future<FavouritesState> build() async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    final localState = _readCache(favoritesBox);
-
     final authState = await ref
         .watch(authProvider.future)
         .timeout(
@@ -439,35 +417,57 @@ class _FavouriteCache extends _$FavouriteCache {
           },
         );
     if (authState == null) {
-      return localState;
+      return const FavouritesState(items: []);
+    }
+
+    //  'idNo' from auth state
+    final currentUserId = authState.idNo ??  '';
+
+    // Check if user has changed BEFORE initializing last update
+    final userHasChanged = await _hasUserChanged(currentUserId);
+    if (userHasChanged) {
+      logger.log('User changed from previous session, clearing all favorites cache for user: $currentUserId', logLevel: MapnessLogLevel.info);
+      await _clearCacheForUserChange();
+      // Also clear the main cache for the new user
+      final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+      await favoritesBox.delete(_keyCache);
+      _lastUpdate = null;
+      _isForceRefresh = true;
+    } else {
+      // Only initialize last update if user hasn't changed
+      await _initLastUpdate();
     }
 
     // sync uncommitted changes
     await _sync();
-    final hasPendingSync = _hasPendingSync(favoritesBox);
+
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
 
     FavouritesState result;
     try {
       if (_isForceRefresh || !isCacheValid) {
+        logger.log('Fetching favorites from API for user: $currentUserId (forceRefresh: $_isForceRefresh, cacheValid: $isCacheValid)', logLevel: MapnessLogLevel.info);
         final apiData = await _fetchFavourites();
-        if (hasPendingSync && !_isEmpty(localState) && _isEmpty(apiData)) {
-          logger.log(
-            'Skipping empty favourites response because local cache has data and pending sync exists',
-            logLevel: MapnessLogLevel.warning,
-          );
-          result = localState;
-        } else {
-          await favoritesBox.put(_keyCache, apiData.toHive());
-          _lastUpdate = DateTime.now();
-          await _notifyMapAboutFavourites(apiData);
-          result = apiData;
-        }
+        await favoritesBox.put(_keyCache, apiData.toHive());
+        _lastUpdate = DateTime.now();
+        await _saveLastUpdate(currentUserId);
+        await _notifyMapAboutFavourites(apiData);
+        result = apiData;
+        logger.log('Successfully fetched ${result.items.length} favorites from API', logLevel: MapnessLogLevel.info);
       } else {
-        result = localState;
+        logger.log('Using cached favorites for user: $currentUserId', logLevel: MapnessLogLevel.info);
+        result = await getFavouritesStateFromHive();
       }
     } on Exception catch (e) {
-      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
-      result = localState;
+      logger.log('Error fetching favorites: $e', logLevel: MapnessLogLevel.critical);
+      // If user just changed, return empty state instead of stale cached data
+      if (userHasChanged) {
+        result = const FavouritesState(items: []);
+        logger.log('User changed but failed to fetch favorites from API, returning empty state', logLevel: MapnessLogLevel.warning);
+      } else {
+        // For existing users, fall back to cache
+        result = await getFavouritesStateFromHive();
+      }
     }
 
     final link = ref.keepAlive();

@@ -100,6 +100,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
@@ -142,6 +146,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           child: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$4x),
             child: ABRoute(
+              backgroundColor: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
               stopByTitle: context.l10n.addStop,
               items: aBRouteModels.toList(),
               onTap: (i) => _onTap(i, context, ref),

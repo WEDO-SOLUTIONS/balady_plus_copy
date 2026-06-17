@@ -2,9 +2,11 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -50,8 +52,14 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
 
   @override
   Widget build(BuildContext context) {
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
+    final backgroundColor = isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1;
+
     final hasManyResults = widget.history.length > 10;
-    final contentColor = widget.contentColor ?? context.colors.backgroundSurface1;
+    final contentColor = widget.contentColor ?? backgroundColor;
     final bssHistoryList = BssHistoryList(size: widget.history.length);
 
     return Padding(
@@ -142,7 +150,6 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
               ],
             ),
           ),
-          if (_collapsed) const SizedBox(height: Spacing.$4x),
           if (!_collapsed)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
@@ -159,6 +166,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 ],
               ),
             ),
+          const SizedBox(height: Spacing.$4x),
         ],
       ),
     );

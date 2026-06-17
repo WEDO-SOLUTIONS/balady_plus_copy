@@ -11,7 +11,6 @@ import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
-import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
@@ -58,7 +57,6 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(jeddahBusLayerProvider.select((_) => null))
       ..watch(jeddahBusLayerVisibleProvider.select((_) => null))
       ..watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).select((_) => null))
-      ..watch(showMapOffersProvider.select((_) => null))
       ..watch(hajjRcmcProvider.select((_) => null));
 
     return child;

@@ -32,10 +32,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
   final Map<FeedbackTextType, String? Function(String?)> validators = {
     FeedbackTextType.email: FormBuilderValidators.email(checkNullOrEmpty: false),
-    FeedbackTextType.phone: FormBuilderValidators.compose([
-      FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
-      FormBuilderValidators.minLength(PhoneNumberFormatter.arabicPhoneNumberMinLength, checkNullOrEmpty: false),
-    ]),
+    FeedbackTextType.phone: PhoneNumberFormatter.validateSaudiMobile,
     FeedbackTextType.url: FormBuilderValidators.url(checkNullOrEmpty: false),
   };
 
@@ -88,6 +85,11 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         .map((entry) => MapEntry(entry.key, formState.getTransformedValue(entry.key, fromSaved: true)))
         .toList();
 
+    final hasPhotos = widget.category.fields.whereType<FeedbackImageInputEntity>().any((imageField) {
+      final value = formState.getTransformedValue(imageField.id, fromSaved: true);
+      return value is List<String> && value.isNotEmpty;
+    });
+
     /// tweak to pass compex structure through gorouter.
     /// Id guarantee that old provider would be disposed if new form filled,
     /// state do not mix
@@ -95,7 +97,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     ref.read(submitFeedbackPayloadProvider(payloadId).notifier)
       // pass data
-      ..collectForm(objectId: objectId, categoryId: categoryId, fields: fields)
+      ..collectForm(objectId: objectId, categoryId: categoryId, fields: fields, hasPhotos: hasPhotos)
       // guarantee that provider would be alive after navigation.
       // probably for thousands of filled form within this time window
       // may be mem overflow, but esimate as impossible

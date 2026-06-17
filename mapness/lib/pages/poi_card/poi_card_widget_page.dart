@@ -40,6 +40,7 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/data/poi_data_google.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/domain/poi_card_state_mapper.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -52,6 +53,7 @@ import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/footer/poi_card_footer.dart';
+import 'package:mapness/features/poi_card/widgets/phone_picker_sheet.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/header_component.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
@@ -64,7 +66,6 @@ import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
@@ -115,6 +116,7 @@ class PoiCardWidgetPage extends StatelessWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
   final PoiCardDataFromGoogle? poiCardDataFromGoogle;
+  final bool showHighlight;
 
   const PoiCardWidgetPage({
     this.objectId,
@@ -122,6 +124,7 @@ class PoiCardWidgetPage extends StatelessWidget {
     this.closestPoint,
     this.cameraConfig,
     this.poiCardDataFromGoogle,
+    this.showHighlight = true,
     super.key,
   });
 
@@ -136,6 +139,7 @@ class PoiCardWidgetPage extends StatelessWidget {
       cameraConfig: cameraConfig,
       poiCardDataFromGoogle: poiCardDataFromGoogle,
       closestPoint: closestPoint,
+      showHighlight: showHighlight,
       key: key,
     ),
   );

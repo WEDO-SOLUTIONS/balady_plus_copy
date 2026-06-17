@@ -65,7 +65,6 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
           title: context.l10n.baladyWebsite,
           colorEnabled: context.colors.accentDefault,
           leading: ActionModel(
-            text: context.l10n.back,
             onPressed: () => context.router.pop(),
             icon: SystemIcons.arrowCornerLeftLarge,
           ),

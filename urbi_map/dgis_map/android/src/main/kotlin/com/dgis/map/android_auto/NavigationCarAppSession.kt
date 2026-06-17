@@ -16,6 +16,7 @@ import androidx.car.app.SessionInfo
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
+import com.dgis.map.android_auto.settings.VoiceInstructionsScreen
 import io.flutter.FlutterInjector
 import ru.dgis.sdk.androidauto.AndroidAutoMapSession
 import ru.dgis.sdk.map.Map
@@ -184,6 +185,12 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
                         it.onLocaleChanged()
                     }
                 }
+            }
+            SharedPrefs.flutterVoiceInstructionIndexKey -> {
+                carMapController.syncVoiceInstructionsFromFlutter()
+                carContext.getCarService(ScreenManager::class.java).screenStack
+                    .filterIsInstance<VoiceInstructionsScreen>()
+                    .forEach { it.refresh() }
             }
         }
     }

@@ -18,7 +18,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-
 class SelectedPersonaCard extends StatelessWidget {
   const SelectedPersonaCard({
     super.key,
@@ -41,9 +40,9 @@ class SelectedPersonaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selected = !isListItem || this.selected;
+    // final selected = !isListItem || this.selected;
     final name = (agent?.grantorName ?? delegator?.entityName) ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
-    String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
+    // String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
 
     return Consumer<BaladyThemeNotifier>(
       builder: (context, themeNotifier, child) {
@@ -135,10 +134,10 @@ class SelectedPersonaCard extends StatelessWidget {
   }
 
   Future<void> _handleAccountSelection(
-      BuildContext context, {
-        DelegatorEntity? newDelegator,
-        AgentEntity? newAgent,
-      }) async {
+    BuildContext context, {
+    DelegatorEntity? newDelegator,
+    AgentEntity? newAgent,
+  }) async {
     final cubit = context.read<DelegatorsCubit>();
 
     if (groupId != null) {
@@ -165,7 +164,7 @@ class SelectedPersonaCard extends StatelessWidget {
                 PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, __, ___) => AppsGroupPage(groupId: targetGroupId),
+                  pageBuilder: (_, _, _) => AppsGroupPage(groupId: targetGroupId),
                 ),
               );
             } else {

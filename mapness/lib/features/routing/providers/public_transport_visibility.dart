@@ -123,7 +123,9 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       return point;
     }
 
-    final location = ref.watch(locationProvider.select((v) => v == null ? null : (v.longitude, v.latitude)));
+    // Use ref.read to avoid rebuilding on every GPS update, which causes the
+    // metro icon to flicker between normal/disabled on each location emission.
+    final location = ref.read(locationProvider.select((v) => v == null ? null : (v.longitude, v.latitude)));
     if (location == null) {
       debugPrint('User location is null. Check [locationProvider] and permissions');
       throw const PublicTransportVisibilityException(
