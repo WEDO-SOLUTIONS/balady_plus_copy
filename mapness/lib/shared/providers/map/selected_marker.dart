@@ -34,9 +34,7 @@ class SelectedMarker extends _$SelectedMarker {
     _showHiddenMarkerIfPresent();
 
     final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
-    final currentSearchMarker =
-        searchObjectManager.markerByGeoPoint(position) ??
-        (objectId != null ? searchObjectManager.markerById(objectId.toString()) : null);
+    final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
       _hideMarker(currentSearchMarker);
     }

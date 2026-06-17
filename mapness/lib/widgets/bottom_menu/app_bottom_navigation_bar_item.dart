@@ -9,14 +9,24 @@ class AppBottomNavigationBarItem extends StatelessWidget {
   const AppBottomNavigationBarItem({required this.selected, required this.iconBuilder, super.key, this.label});
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) {
+    final labelText = label ?? '';
+    return Semantics(
+      container: true,
+      button: true,
+      selected: selected,
+      label: labelText,
+      child: Padding(
         padding: const EdgeInsets.only(top: 2),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            iconBuilder.call(context, selected),
+            ExcludeSemantics(child: iconBuilder.call(context, selected)),
             const SizedBox(height: 2),
-            DefaultLabel(label: label!, selected: selected),
+            ExcludeSemantics(child: DefaultLabel(label: labelText, selected: selected)),
           ],
         ),
-      );
+      ),
+    );
+  }
 }

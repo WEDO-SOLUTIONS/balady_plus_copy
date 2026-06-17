@@ -80,6 +80,7 @@ class QuickFilters extends ConsumerWidget {
       FilterItemConfig(
         filterType: FilterType.favourites,
         icon: SystemIcons.bookmark,
+        semanticsLabel: context.l10n.favourites,
         onTap: onFavouritesBookmarkTap,
       ),
       ...customItems,

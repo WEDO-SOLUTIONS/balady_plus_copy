@@ -11,21 +11,31 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Premium shimmer palette (no pure black)
-    final baseColor = isDark ? const Color(0xFF2A2F3A) : const Color(0xFFE7E9EF);
-    final highlightColor = isDark ? const Color(0xFF3A4150) : const Color(0xFFF5F6FA);
+    final baseColor = isDark
+        ? const Color(0xFF2A2F3A)
+        : const Color(0xFFE7E9EF);
+    final highlightColor = isDark
+        ? const Color(0xFF3A4150)
+        : const Color(0xFFF5F6FA);
 
     // Surfaces
     final cardBg = isDark ? const Color(0xFF141821) : Colors.white;
     final titleBg = isDark ? const Color(0xFF141821) : Colors.white;
 
     // Placeholders
-    final iconBg = isDark ? const Color(0xFF1D2430) : Colors.white.withOpacity(0.55);
+    final iconBg = isDark
+        ? const Color(0xFF1D2430)
+        : Colors.white.withOpacity(0.55);
     final textBg = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Subtle borders for premium feel
-    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
+    final borderColor = isDark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.black.withOpacity(0.04);
 
-    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.06);
 
     // Dimensions extracted from CustomMiniAppsCard in the parent widget:
     final double cardWidth = context.w(104);
@@ -48,9 +58,15 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
               height: cardHeight,
               decoration: BoxDecoration(
                 color: cardBg,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: borderColor, width: 1),
-                boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
+                boxShadow: [
+                  BoxShadow(
+                    color: shadowColor,
+                    blurRadius: isDark ? 10 : 8,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
               child: Center(
                 child: Container(
@@ -60,7 +76,9 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
                     color: iconBg,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.03),
+                      color: isDark
+                          ? Colors.white.withOpacity(0.06)
+                          : Colors.black.withOpacity(0.03),
                       width: 1,
                     ),
                   ),
@@ -80,7 +98,7 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
               height: titlesHeight,
               decoration: BoxDecoration(
                 color: textBg,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(6),
                 border: Border.all(color: borderColor, width: 1),
               ),
             ),
@@ -101,21 +119,28 @@ class MiniAppsMostUsedSectionShimmerWidget extends StatelessWidget {
             height: context.h(35),
             decoration: BoxDecoration(
               color: titleBg,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: borderColor, width: 1),
-              boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
+              boxShadow: [
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: isDark ? 10 : 8,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
           ),
         ),
 
         SizedBox(height: context.screenHeight * 0.01),
 
-        // Horizontal list shimmer wrapper
+        // Horizontal list shimmer wrapper - height fits full card (icon + spacing + text) so bottom text is not clipped
         SizedBox(
-          height: context.h(64),
+          height: cardHeight + context.h(4) + titlesHeight + context.h(8),
           width: context.screenWidth,
           child: ListView.separated(
-            separatorBuilder: (context, index) => SizedBox(width: context.screenWidth * 0.03),
+            separatorBuilder: (context, index) =>
+                SizedBox(width: context.screenWidth * 0.03),
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             itemBuilder: (context, index) => buildShimmerCard(),

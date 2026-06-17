@@ -84,19 +84,19 @@ class EnvironmentConfig {
     bssApi: json['bssApi'] as String,
     saudiPassApi: json['saudiPassApi'] as String,
     cityscapeDateTimeRange: CityEventDateRange.fromJson(
-      json['cityscapeDateTimeRange'] as Map<String, dynamic>?,
+      json['cityscapeDateTimeRange'] as Map<String, dynamic>,
       CityEventDateRange.cityscapeDefault(),
     ),
     foundingDayDateRange: CityEventDateRange.fromJson(
-      json['foundingDayDateRange'] as Map<String, dynamic>?,
+      json['foundingDayDateRange'] as Map<String, dynamic>,
       CityEventDateRange.foundingDayDefault(),
     ),
     saudiNationalDayDateRange: CityEventDateRange.fromJson(
-      json['saudiNationalDayDateRange'] as Map<String, dynamic>?,
+      json['saudiNationalDayDateRange'] as Map<String, dynamic>,
       CityEventDateRange.saudiNationalDayDefault(),
     ),
     wrcEventDateRange: CityEventDateRange.fromJson(
-      json['wrcEventDateRange'] as Map<String, dynamic>?,
+      json['wrcEventDateRange'] as Map<String, dynamic>,
       CityEventDateRange.wrcDefault(),
     ),
   );
@@ -127,8 +127,8 @@ class EnvironmentConfig {
     twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
-    shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
-    shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
+    shortLinkUrl: 'https://momrah-balady-dev.iaas.urbi-sa.com/1.0/short/link',
+    shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
 
     /// swagger: https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/docs/
     feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
@@ -151,8 +151,8 @@ class EnvironmentConfig {
     twinsApi: 'https://urbi-lifestyle-stg.momah.gov.sa/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momah.gov.sa',
-    shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
-    shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
+    shortLinkUrl: 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/short/link',
+    shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
     feedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api/2.0/',
     appFeedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api',
     appFeedbackEnable: true,
@@ -198,8 +198,8 @@ class EnvironmentConfig {
     twinsApi: 'https://momrah-twins-api.iaas.urbi-sa.com/v1',
     baseApiDomain: 'urbi.ae',
     shareEtaApi: 'https://momrah-balady-dev-geo.iaas.urbi-sa.com',
-    shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
-    shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
+    shortLinkUrl: 'https://sa1.ops.2gis.dev/1.0/short/link',
+    shortLinkApiKey: '7e0724bf-70e5-489f-81da-b38fa4b794a2',
 
     /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
     feedbackApi: 'https://momrah-balady-discrepancy.iaas.urbi-sa.com/api/2.0/',

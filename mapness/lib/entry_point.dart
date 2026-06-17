@@ -54,7 +54,13 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
+import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -65,6 +71,7 @@ import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -119,11 +126,19 @@ class MapnessProviderScope extends StatelessWidget {
 
   final Widget child;
 
+
+
   @override
   Widget build(BuildContext context) => ProviderScope(
-    child: EagerInitWidget(
+    child: Consumer(
+      builder: (context, ref, child) {
+        // Must run before [EagerInitWidget] — eager init shows a spinner instead of [child].
+        ref.watch(appIconQuickActionsInitializerProvider);
+        return EagerInitWidget(child: child!);
+      },
       child: Consumer(
         builder: (context, ref, child) {
+
           final language = ref.watch(appLanguageProvider);
           final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
           // Initialize Saudi National Day provider to start the timer
@@ -137,6 +152,8 @@ class MapnessProviderScope extends StatelessWidget {
             ..watch(makkahPlacesLayerProvider)
             // Initialize Dynamic POI layer (Momrah dynamic-markers backend)
             ..watch(dynamicPoiLayerProvider)
+            // Sync home-screen app icon quick actions from remote config
+            ..watch(appIconQuickActionsManagerProvider)
             // Initialize WRC provider to listen remote config
             ..watch(wRCProvider);
 
@@ -154,6 +171,8 @@ class MapnessProviderScope extends StatelessWidget {
   );
 }
 
+
+
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   const MapnessEntryPoint({required this.mapCreated, super.key});
 
@@ -163,19 +182,27 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
 }
 
-class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
+
+
+class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with WidgetsBindingObserver {
   late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
   StreamSubscription? _navigationEventsListener;
+  String _fontFamily() {
 
+    final language = ref.watch(appLanguageProvider);
+    return language ==Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+  }
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     logger.init();
     initMixpanel();
     initDeepLinks();
+    initAppIconQuickActionsPending();
     listenNavigationEvents();
     checkConnection();
     PersistentSafeAreaBottom.startObserving();
@@ -208,6 +235,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (!mounted) {
         return;
       }
+      await ref.read(appIconQuickActionsManagerProvider.future);
+      await ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut();
       unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
@@ -266,12 +295,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     PersistentSafeAreaBottom.stopObserving();
     _linkSubscription?.cancel();
     _locationListener?.close();
     _navigationEventsListener?.cancel();
 
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Warm-start shortcuts are stored natively; the plugin callback may not fire.
+      unawaited(deliverNativeShortcutIfPresent());
+      unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts());
+      if (ref.read(pendingAppIconQuickActionProvider.notifier).hasPending) {
+        unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
+      }
+    }
   }
 
   Future<void> _initBssService() async {
@@ -572,6 +614,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             return MaterialApp.router(
               routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
+                fontFamily: _fontFamily(),
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],
                 useMaterial3: false,
@@ -685,6 +728,26 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         logger.log('Deep link received: $uri');
       }
       openAppLink(uri, isFirstRun: appLink != null);
+    });
+  }
+
+  void initAppIconQuickActionsPending() {
+    _scheduleColdStartDelivery(attempt: 0);
+  }
+
+  void _scheduleColdStartDelivery({required int attempt}) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) {
+        return;
+      }
+      await ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut();
+      if (!mounted) {
+        return;
+      }
+      final stillPending = ref.read(pendingAppIconQuickActionProvider.notifier).hasPending;
+      if (stillPending && attempt < 90) {
+        _scheduleColdStartDelivery(attempt: attempt + 1);
+      }
     });
   }
 
@@ -802,7 +865,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     return currentUri;
   }
 
-  Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false}) async {
+  Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false, bool fromQuickAction = false}) async {
     await initCameraPositionPoint();
     final uri = await getFinalRedirectUri(sourceUri);
     final decodeFull = Uri.decodeFull(uri.toString());
@@ -900,19 +963,48 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/quickFeedback') {
         await router.push(QuickFeedbackRoute());
       } else if (url.path == '/search') {
-        await router.push(SearchRoute());
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await router.push(SearchRoute(requestFocus: fromQuickAction));
       } else if (url.path == '/freeRoam') {
         await _freeRoam();
       } else if (url.path == '/qibla') {
         await _openQibla();
       } else if (url.path == '/shareMyLocation') {
-        await _shareMyLocation();
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await _shareMyLocation(fromQuickAction: fromQuickAction);
+      } else if (url.path == '/shareLiveLocation') {
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await _shareLiveLocation(fromQuickAction: fromQuickAction);
+      } else if (url.path == '/favourites') {
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await _openFavourites(fromQuickAction: fromQuickAction);
+      } else if (url.path == '/directions') {
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await _openDirections(fromQuickAction: fromQuickAction);
+      } else if (url.path == '/contribute') {
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await _openContribute(fromQuickAction: fromQuickAction);
       } else if (url.path == '/athkar') {
         await _openAthkar();
       } else if (url.path == '/quran') {
         await _openQuran();
       } else if (url.path == '/snapSend') {
-        await _openSnapSend();
+        if (fromQuickAction) {
+          await _delayIfFirstRun(isFirstRun: isFirstRun);
+        }
+        await _openSnapSend(fromQuickAction: fromQuickAction);
       } else if (url.path == '/miniApps') {
         if (params['groupId'] != null) {
           CommonFunctions.openMiniAppGroupId(
@@ -966,9 +1058,83 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await router.push(const FreeRoamRoute());
   }
 
-  Future<void> _shareMyLocation() async {
-    final AppRouter router = await ref.watch(appRouterProvider);
-    await router.push(ShareMyLocationRoute());
+  Future<void> _shareMyLocation({bool fromQuickAction = false}) async {
+    if (fromQuickAction) {
+      await ref.read(appRouterProvider).push(ShareMyLocationRoute());
+      return;
+    }
+
+    final context = rootNavigatorKey.currentContext;
+    if (context == null || !context.mounted) {
+      return;
+    }
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(
+          context,
+          callback: () async {
+            await ref.read(appRouterProvider).push(ShareMyLocationRoute());
+          },
+        );
+  }
+
+  Future<void> _shareLiveLocation({bool fromQuickAction = false}) async {
+    ref.read(shareMyLocationLaunchIntentProvider.notifier).requestLiveLocationOptions();
+    await _shareMyLocation(fromQuickAction: fromQuickAction);
+  }
+
+  Future<void> _openFavourites({bool fromQuickAction = false}) async {
+    if (fromQuickAction) {
+      await ref.read(appRouterProvider).push(const FavouritesRoute());
+      return;
+    }
+
+    final context = rootNavigatorKey.currentContext;
+    if (context == null || !context.mounted) {
+      return;
+    }
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(
+          context,
+          callback: () => ref.read(appRouterProvider).push(const FavouritesRoute()),
+        );
+  }
+
+  Future<void> _openDirections({bool fromQuickAction = false}) async {
+    if (fromQuickAction) {
+      final allowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+      if (!allowed) {
+        return;
+      }
+      await ref.read(appRouterProvider).navigate(const RoutingPointsRoute());
+      return;
+    }
+
+    final context = rootNavigatorKey.currentContext;
+    if (context == null || !context.mounted) {
+      return;
+    }
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authAndOpen(
+          context,
+          callback: () async {
+            final allowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+            if (!allowed) {
+              return;
+            }
+            await ref.read(appRouterProvider).navigate(const RoutingPointsRoute());
+          },
+        );
+  }
+
+  Future<void> _openContribute({bool fromQuickAction = false}) async {
+    final router = ref.read(appRouterProvider);
+    if (!fromQuickAction) {
+      ref.read(appAnalyticsProvider).quickActionSelected('contribute');
+    }
+    await router.push(const ContributeRoute());
   }
 
   Future<void> _openQibla() async {
@@ -1000,10 +1166,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
-  Future<void> _openSnapSend() async {
-    CommonFunctions.sendUXCamEvent(
-      UXCamEvents.SnapAndSend_Open_From_Home_Event,
-    );
+  Future<void> _openSnapSend({bool fromQuickAction = false}) async {
+    if (!fromQuickAction) {
+      CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SnapAndSend_Open_From_Home_Event,
+      );
+    }
     CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(
     //   RouteName.vDAllTypesScreen,
@@ -1313,6 +1481,9 @@ Future<void> runMapnessApp(
       },
     );
     _startupLog('runMapnessApp: runMain() received, proceeding to main()');
+
+    await initAppIconQuickActionsBridge();
+    _startupLog('runMapnessApp: App icon quick actions bridge initialized');
 
     await main();
     _startupLog('runMapnessApp: main() completed');

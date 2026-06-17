@@ -10,9 +10,7 @@ import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InAppWebViewPage extends StatefulWidget {
-  const InAppWebViewPage({
-    super.key,
-  });
+  const InAppWebViewPage({super.key});
 
   @override
   State<InAppWebViewPage> createState() => _InAppWebViewPageState();
@@ -26,7 +24,11 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   void initState() {
     super.initState();
     //CookieManager.instance().deleteAllCookies();
-
+    CookieManager.instance().setCookie(
+      url: WebUri.uri(Uri.parse("balady.gov.sa")),
+      name: "balady-lang",
+      value: translator.activeLanguageCode,
+    );
     //  _progessStream = StreamController<double?>();
   }
 
@@ -35,15 +37,12 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
     ({String requestNum, String url, bool? isObjections}) args =
         ModalRoute.of(context)!.settings.arguments as ({String requestNum, String url, bool? isObjections});
 
-   String url = args.url.replaceAll("\n", "");
+    String url = args.url.replaceAll("\n", "");
     return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: "back".tr(),
-      ),
+      appBar: DefaultAppBarWidget(title: "back".tr()),
       body: Stack(
         children: [
           InAppWebView(
-
             initialSettings: InAppWebViewSettings(
               useHybridComposition: true,
               javaScriptEnabled: true,
@@ -58,19 +57,14 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
             initialUrlRequest: URLRequest(
               // url: Uri.parse('https://flutter.dev/'),
               url: WebUri(url),
-              headers: {
-                "Authorization": "Bearer ${CommonProperties.token}",
-                "authToken": CommonProperties.token,
-              },
+              headers: {"Authorization": "Bearer ${CommonProperties.token}", "authToken": CommonProperties.token},
             ),
             initialOptions: InAppWebViewGroupOptions(
               android: AndroidInAppWebViewOptions(
                 useHybridComposition: true,
                 // safeBrowsingEnabled: false,
               ),
-              crossPlatform: InAppWebViewOptions(
-                useShouldOverrideUrlLoading: true,
-              ),
+              crossPlatform: InAppWebViewOptions(useShouldOverrideUrlLoading: true),
             ),
             onLoadStart: (controller, Uri? url) {},
             onLoadStop: (controller, Uri? url) {
@@ -90,8 +84,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
               try {
                 _controller?.evaluateJavascript(
-                    source:
-                        "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
+                  source:
+                      "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'",
+                );
               } catch (error, stackTrace) {
                 LogsViewModel().sendEventFromModel(
                   event: ErrorExceptionModel(
@@ -109,7 +104,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 try {
                   print("HIDEEE");
                   _controller?.evaluateJavascript(
-                      source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                    source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'",
+                  );
                 } catch (error, stackTrace) {
                   LogsViewModel().sendEventFromModel(
                     event: ErrorExceptionModel(
@@ -127,7 +123,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   try {
                     print("HIDEEE");
                     _controller?.evaluateJavascript(
-                        source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                      source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'",
+                    );
                   } catch (error, stackTrace) {
                     LogsViewModel().sendEventFromModel(
                       event: ErrorExceptionModel(
@@ -156,10 +153,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
               "Message coming from Dart side: ${consoleMessage.message}".warningLog();
             },
           ),
-          if (isLoading)
-            const Center(
-              child: CustomLoadingWidget(),
-            ),
+          if (isLoading) const Center(child: CustomLoadingWidget()),
         ],
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:app_settings/app_settings.dart';
 import 'package:balady_plus/app/features/accecipilities/life_sycle_event_handler.dart';
+import 'package:dgis_map/dgis_map_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -137,11 +138,38 @@ class AccessibilityController extends ChangeNotifier {
   }
 
   // Text & Reading methods
-  void setTextScale(double value) {
+  // void setTextScale(double value) {
+  //   textScale = value;
+  //   _saveSettings();
+  //   notifyListeners();
+  // }
+
+  void setTextScale(double value,DgisMapController? dgisController) async{
     textScale = value;
     _saveSettings();
+    await _syncMapFontScale(value,dgisController);
     notifyListeners();
   }
+
+  Future<void> _syncMapFontScale(double scale,DgisMapController? _dgisController) async {
+    if (_dgisController == null) return;
+
+    try {
+
+      await _dgisController.setMapAttributeString(
+        'fontScaleMultiplier',
+        value: scale.toString(),
+      );
+    } catch (e) {
+      print('Error syncing map font scale: $e');
+    }
+  }
+
+
+
+
+
+
 
   void setLineHeight(double value) {
     lineHeight = value;

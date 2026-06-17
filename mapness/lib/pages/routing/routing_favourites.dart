@@ -35,6 +35,9 @@ class RoutingFavouritesPage extends ConsumerWidget {
                   child: Material(
                     borderRadius: BorderRadius.circular(8),
                     color: Colors.transparent,
+                  child: Semantics(
+                    label: context.l10n.a11yBack,
+                    button: true,
                     child: InkWell(
                       onTap: () {
                         Metrics.logEventAdvanced(
@@ -52,7 +55,8 @@ class RoutingFavouritesPage extends ConsumerWidget {
                           SystemIcons.arrowCornerLeftLarge,
                           size: 24,
                           color: context.colors.foregroundDefault,
-                        ),
+                    ),
+                  ),
                       ),
                     ),
                   ),

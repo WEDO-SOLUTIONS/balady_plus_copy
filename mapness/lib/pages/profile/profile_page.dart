@@ -145,12 +145,6 @@ class ProfilePage extends HookConsumerWidget {
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                     text: ContentRowTextOptions(title: context.l10n.helpCenter),
-                                    options: ContentRowOptions(
-                                      dividerEnabled: true,
-                                      wrapperEnabled: true,
-                                      title: context.l10n.helpCenter,
-                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                                    ),
                                   ),
                                   ContentRowV2(
                                     isDividerEnabled: true,
@@ -160,11 +154,6 @@ class ProfilePage extends HookConsumerWidget {
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
-                                    options: ContentRowOptions(
-                                      wrapperEnabled: true,
-                                      title: context.l10n.aboutApp,
-                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                                    ),
                                   ),
                                   ContentRowV2(
                                     onTap: () {

@@ -60,6 +60,15 @@
   "November": "November",
   "December": "December",
   "back": "Previous",
+  "a11yBack": "Back",
+  "a11yImage": "Image",
+  "a11yMap3d": "3D map",
+  "a11yMap2d": "2D map",
+  "a11yShowOnMap": "Show on map",
+  "a11yWeather": "Weather map",
+  "a11yCompass": "Compass",
+  "a11yFollowNavigation": "Follow navigation",
+  "a11yClearSearch": "Clear search",
   "address": "Address",
   "_buttonsComment": "Anything about buttons",
   "signInButton": "Login",
@@ -4500,7 +4509,7 @@
   "passcode_success": "Passcode has been registered successfully",
   "deactivate": "Deactivate",
   "error_pin": "There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
-  "message_login_life_style": "Unlock the full potential of maps and navigation",
+  "message_login_life_style": "For full access of maps and navigation features, please sign-in",
   "by_continuing_agree": "By continuing, you agree to our ",
   "privacy_policy": "Privacy Policy",
   "continue": "Continue",
@@ -4883,11 +4892,6 @@
   "favorite_services_subtitle": "You can add your favorite services for easy access",
   "compliance_map":"compliance map",
   "building_compliance_question":"Is your building compliant?",
-  "add_to_fav":"Add to favorite",
-  "facilities":"Facilities",
-  "agencies":"Agents",
-  "business_account":"Business Account",
-  "please_select_facility_or_agency":"Please select a facility or agency"
-
+  "add_to_fav":"Add to favorite"
 
 }

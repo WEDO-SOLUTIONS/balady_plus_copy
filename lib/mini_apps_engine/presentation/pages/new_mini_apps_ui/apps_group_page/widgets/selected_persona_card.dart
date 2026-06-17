@@ -2,7 +2,6 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -100,8 +99,8 @@ class SelectedPersonaCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: ShapeDecoration(
-                    color: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    color: const Color(0x2629B2A9),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,7 +109,7 @@ class SelectedPersonaCard extends StatelessWidget {
                         "switch_account".tr(),
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: Colors.white,
+                          color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
                           fontSize: 14,
                           fontFamily: GeneralKey.appFontType,
                           fontWeight: FontWeight.w400,
@@ -118,8 +117,11 @@ class SelectedPersonaCard extends StatelessWidget {
                           letterSpacing: -0.24,
                         ),
                       ),
-                      SizedBox(width: context.screenWidth * 0.01),
-                      Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: 20),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
+                        size: 20,
+                      ),
                     ],
                   ),
                 ),

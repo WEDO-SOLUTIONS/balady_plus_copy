@@ -98,7 +98,6 @@ class PoiCardProvider extends _$PoiCardProvider {
     BaladyAppThemes theme, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
-    bool showHighlight = true,
   }) async {
     state = const AsyncValue.loading();
     // We need to use [appLang] to cache different data for different locales
@@ -109,32 +108,24 @@ class PoiCardProvider extends _$PoiCardProvider {
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     final cachedData = await loadCacheData(poiBox, poiCardStateKey);
     if (cachedData != null) {
-      ref
-          .read(
-            pointOfInterestProvider(
-              DgisObjectId(objectId: objectId, entranceId: 0),
-              closestPoint,
-              theme,
-              showHighlight: showHighlight,
-            ).future,
-          )
-          .then((poi) {
-            if (poi != null) {
-              _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
-            }
-          });
+      ref.read(
+        pointOfInterestProvider(
+          DgisObjectId(objectId: objectId, entranceId: 0),
+          closestPoint,
+          theme,
+        ).future,
+      )
+        .then((poi) {
+        if (poi != null) {
+          _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
+        }
+      });
 
       return cachedData;
-    } else {
+    }
+    else {
       final poiFuture = ref
-          .watch(
-            pointOfInterestProvider(
-              DgisObjectId(objectId: objectId, entranceId: 0),
-              closestPoint,
-              theme,
-              showHighlight: showHighlight,
-            ).future,
-          )
+          .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
           .timeout(const Duration(minutes: 10));
 
       final photosFuture = ref.watch(poiPhotoProvider(objectId).future);
@@ -218,8 +209,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     LatLng? closestPoint,
     PoiCameraConfig? cameraConfig,
   ) {
-    final position =
-        closestPoint ??
+    final position = closestPoint ??
         (markerPosition == null
             ? null
             : LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude));
@@ -233,16 +223,14 @@ class PoiCardProvider extends _$PoiCardProvider {
     final zoom = cameraConfig?.zoom ?? currentZoom ?? 16.0;
 
     unawaited(
-      ref
-          .read(cameraPositionProvider.notifier)
-          .animateTo(
-            CameraPositionMessage(
-              point: markerPoint,
-              zoom: zoom,
-              tilt: cameraConfig?.tilt ?? 0,
-              bearing: cameraConfig?.bearing ?? 0,
-            ),
-          ),
+      ref.read(cameraPositionProvider.notifier).animateTo(
+        CameraPositionMessage(
+          point: markerPoint,
+          zoom: zoom,
+          tilt: cameraConfig?.tilt ?? 0,
+          bearing: cameraConfig?.bearing ?? 0,
+        ),
+      ),
     );
   }
 

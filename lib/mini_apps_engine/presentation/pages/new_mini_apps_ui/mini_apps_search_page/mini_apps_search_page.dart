@@ -193,44 +193,41 @@ class _MiniAppsSearchPageState extends State<MiniAppsSearchPage> {
                               bottom: (MediaQuery.viewInsetsOf(context).bottom > 0)
                                   ? (MediaQuery.viewInsetsOf(context).bottom -
                                             MediaQuery.paddingOf(context).bottom -
-                                            (context.screenHeight * 0.08))
+                                            (context.screenHeight * 0.06))
                                         .clamp(0.0, double.infinity)
                                   : 0.0,
                             ),
-                            child: IntrinsicHeight(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  CustomMiniAppsIconButton(
-                                    backgroundColor: Theme.of(context).colorScheme.surface,
-                                    borderColor: Theme.of(context).dividerColor,
-                                    width: context.screenWidth * 0.13,
-                                  ),
-                                  ValueListenableBuilder<TextEditingValue>(
-                                    valueListenable: _controller,
-                                    builder: (context, value, child) {
-                                      return MiniAppsCustomTextField(
-                                        width: context.screenWidth * 0.79,
-                                        autofocus: true,
-                                        controller: _controller,
-                                        onTap: () {},
-                                        keyboardType: TextInputType.text,
-                                        isReadOnly: false,
-                                        suffixIcon: value.text.isEmpty
-                                            ? null
-                                            : IconButton(
-                                                onPressed: () {
-                                                  _controller.clear();
-                                                  context.read<NewMiniAppLogicCubit>().searchMiniApp('');
-                                                },
-                                                icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
-                                              ),
-                                        onChanged: (query) => _onSearchChanged(query, context),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                            child: Row(
+                              children: [
+                                CustomMiniAppsIconButton(
+                                  height: context.screenHeight * 0.063,
+                                  width: context.screenWidth * 0.13,
+                                  backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
+                                ),
+                                ValueListenableBuilder<TextEditingValue>(
+                                  valueListenable: _controller,
+                                  builder: (context, value, child) {
+                                    return MiniAppsCustomTextField(
+                                      width: context.screenWidth * 0.79,
+                                      autofocus: true,
+                                      controller: _controller,
+                                      onTap: () {},
+                                      keyboardType: TextInputType.text,
+                                      isReadOnly: false,
+                                      suffixIcon: value.text.isEmpty
+                                          ? null
+                                          : IconButton(
+                                              onPressed: () {
+                                                _controller.clear();
+                                                context.read<NewMiniAppLogicCubit>().searchMiniApp('');
+                                              },
+                                              icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
+                                            ),
+                                      onChanged: (query) => _onSearchChanged(query, context),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ],

@@ -24,33 +24,39 @@ class BottomNavBarCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClickableWidget(
-      onPressed: onSelected,
-      effectColor: Colors.transparent,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Icon widget
-          DrawIconBasedTypeWidget(
-            icon: icon,
-            iconSize: iconSize,
-            iconColor: isSelected
-                ? AppColor.white
-                : AppColor.primary200Light.withOpacity(0.64),
-          ),
-          // Label widget
-          CustomAutoSizeTextWidget(
-            label.tr(),
-            textAlign: TextAlign.center,
-            maxFontSize: labelSize,
-            textStyle: AppStyle.mainTextStyle.copyWith(
-              // fontSize: 10.0,
-              color: isSelected
-                  ? AppColor.white
-                  : AppColor.primary200Light.withOpacity(0.64),
+    final labelText = label.tr();
+    return Semantics(
+      selected: isSelected,
+      label: labelText,
+      child: ClickableWidget(
+        onPressed: onSelected,
+        effectColor: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ExcludeSemantics(
+              child: DrawIconBasedTypeWidget(
+                icon: icon,
+                iconSize: iconSize,
+                iconColor: isSelected
+                    ? AppColor.white
+                    : AppColor.primary200Light.withOpacity(0.64),
+              ),
             ),
-          ),
-        ].addPadding(bottom: 10.0),
+            ExcludeSemantics(
+              child: CustomAutoSizeTextWidget(
+                labelText,
+                textAlign: TextAlign.center,
+                maxFontSize: labelSize,
+                textStyle: AppStyle.mainTextStyle.copyWith(
+                  color: isSelected
+                      ? AppColor.white
+                      : AppColor.primary200Light.withOpacity(0.64),
+                ),
+              ),
+            ),
+          ].addPadding(bottom: 10.0),
+        ),
       ),
     );
   }

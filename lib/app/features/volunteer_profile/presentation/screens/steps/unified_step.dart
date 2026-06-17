@@ -25,8 +25,6 @@ class _UnifiedStepState extends State<UnifiedStep> {
     final state = context.read<VolunteerProfileBloc>().state;
     _phoneController = TextEditingController(text: state.phoneNumber ?? '');
     _emailController = TextEditingController(text: state.email ?? '');
-    _selectedRegionId = state.regionId;
-    _selectedCityId = state.cityId;
   }
 
   void _onEmailChanged(String value) {
@@ -104,254 +102,318 @@ class _UnifiedStepState extends State<UnifiedStep> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
-      builder: (context, state) => SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'full_name'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+  Widget build(
+    BuildContext context,
+  ) => BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
+    builder: (context, state) => SingleChildScrollView(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'full_name'.tr(),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            readOnly: true,
+            initialValue: state.fullName ?? '',
+            decoration: InputDecoration(
+              hintText: 'full_name'.tr(),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 15.0,
+              ),
+              filled: true,
+              fillColor: Theme.of(context).cardColor,
             ),
-            const SizedBox(height: 8),
-            TextFormField(
-              readOnly: true,
-              initialValue: state.fullName ?? '',
-              decoration: InputDecoration(
-                hintText: 'full_name'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
-                filled: true,
-                fillColor: Theme.of(context).cardColor,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'national_id'.tr(),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            readOnly: true,
+            initialValue: state.nationalId,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              filled: state.isNationalIdFromApi,
+              fillColor: Theme.of(context).cardColor,
+            ),
+            keyboardType: TextInputType.number,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            '${'email'.tr()} *',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: _emailController,
+            decoration: InputDecoration(
+              hintText: 'example@gmail.com',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 15.0,
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              'national_id'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              readOnly: true,
-              initialValue: state.nationalId,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                filled: state.isNationalIdFromApi,
-                fillColor: Theme.of(context).cardColor,
+            keyboardType: TextInputType.emailAddress,
+            validator: (value) => Helpers.validateEmail(value),
+            onChanged: _onEmailChanged,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            '${'personal_mobile'.tr()} *',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          TextFormField(
+            controller: _phoneController,
+            decoration: InputDecoration(
+              hintText: '966500000000+',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8.0),
               ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '${'email'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                hintText: 'example@gmail.com',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 15.0,
               ),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) => Helpers.validateEmail(value),
-              onChanged: _onEmailChanged,
             ),
-            const SizedBox(height: 20),
-            Text(
-              '${'personal_mobile'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _phoneController,
-              decoration: InputDecoration(
-                hintText: '966500000000+',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                  vertical: 15.0,
-                ),
-              ),
-              keyboardType: TextInputType.phone,
-              validator: (value) => Helpers.validateMobile(value),
-              onChanged: _onPhoneChanged,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              '${'region'.tr()} *',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            if (state.isLoadingRegions)
-              const Center(child: CircularProgressIndicator())
-            else
-              DropdownButtonFormField<String>(
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
-                ),
-
-                dropdownColor: Theme.of(context).cardColor,
-                initialValue: _selectedRegionId?.isEmpty == true
-                    ? null
-                    : _selectedRegionId,
-                decoration: InputDecoration(
-                  helperStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  hint: Text('region'.tr()),
-                  hintStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                ),
-                items: state.regionsList
-                    .map(
-                      (region) => DropdownMenuItem<String>(
-                        value: region.tid.toString(),
-                        child: Center(
-                          child: Text(
-                            region.name,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) => _onRegionChanged(value, state),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'select_region'.tr();
-                  }
-                  return null;
-                },
-              ),
-            const SizedBox(height: 16),
-            // City (editable, required)
-            Text(
-              '${'city'.tr()} *',
+            keyboardType: TextInputType.phone,
+            validator: (value) => Helpers.validateMobile(value),
+            onChanged: _onPhoneChanged,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            '${'region'.tr()} *',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          if (state.isLoadingRegions)
+            const Center(child: CircularProgressIndicator())
+          else
+            DropdownButtonFormField<String>(
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontSize: 17,
                 color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.w700,
               ),
-            ),
-            const SizedBox(height: 8),
-            if (state.isLoadingCities)
-              const Center(child: CircularProgressIndicator())
-            else
-              DropdownButtonFormField<String>(
-                dropdownColor: Theme.of(context).cardColor,
-                initialValue: _selectedCityId?.isEmpty == true
-                    ? null
-                    : _selectedCityId,
-                decoration: InputDecoration(
-                  hint: Text('city'.tr()),
-                  hintStyle: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+
+              dropdownColor: Theme.of(context).cardColor,
+              initialValue: _selectedRegionId?.isEmpty == true
+                  ? null
+                  : _selectedRegionId,
+              decoration: InputDecoration(
+                helperStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
-                items: state.citiesList
-                    .map(
-                      (city) => DropdownMenuItem<String>(
-                        value: city.tid.toString(),
-                        child: Center(
-                          child: Text(
-                            city.name,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.onSurface,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: (value) => _onCityChanged(value, state),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '${'city_select'.tr()} *';
-                  }
-                  return null;
-                },
-              ),
-            Text(
-              'educational_qualification_required'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            if (state.isLoadingQualifications)
-              const Center(child: CircularProgressIndicator())
-            else if (state.qualificationsList.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(100),
-                  ),
+                hint: Text('region'.tr()),
+                hintStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+
+                border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text(
-                  'no_qualifications_available'.tr(),
-                  style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(100),
-                  ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              items: state.regionsList
+                  .map(
+                    (region) => DropdownMenuItem<String>(
+                      value: region.tid.toString(),
+                      child: Center(
+                        child: Text(
+                          region.name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) => _onRegionChanged(value, state),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'select_region'.tr();
+                }
+                return null;
+              },
+            ),
+          const SizedBox(height: 16),
+          // City (editable, required)
+          Text(
+            '${'city'.tr()} *',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (state.isLoadingCities)
+            const Center(child: CircularProgressIndicator())
+          else
+            DropdownButtonFormField<String>(
+              dropdownColor: Theme.of(context).cardColor,
+              initialValue: _selectedCityId?.isEmpty == true
+                  ? null
+                  : _selectedCityId,
+              decoration: InputDecoration(
+                hint: Text('city'.tr()),
+                hintStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
-              )
-            else
-              DropdownButtonFormField<String>(
-                dropdownColor: Theme.of(context).cardColor,
-                initialValue: state.educationalQualificationId?.isEmpty == true
-                    ? null
-                    : state.educationalQualificationId,
-                decoration: InputDecoration(
-                  hint: Text('choose'.tr()),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                items: state.qualificationsList
-                    .map(
-                      (qualification) => DropdownMenuItem<String>(
-                        value: qualification.tid.toString(),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              items: state.citiesList
+                  .map(
+                    (city) => DropdownMenuItem<String>(
+                      value: city.tid.toString(),
+                      child: Center(
+                        child: Text(
+                          city.name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) => _onCityChanged(value, state),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '${'city_select'.tr()} *';
+                }
+                return null;
+              },
+            ),
+          Text(
+            'educational_qualification_required'.tr(),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          if (state.isLoadingQualifications)
+            const Center(child: CircularProgressIndicator())
+          else if (state.qualificationsList.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                ),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                'no_qualifications_available'.tr(),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+                ),
+              ),
+            )
+          else
+            DropdownButtonFormField<String>(
+              dropdownColor: Theme.of(context).cardColor,
+              initialValue: state.educationalQualificationId?.isEmpty == true
+                  ? null
+                  : state.educationalQualificationId,
+              decoration: InputDecoration(
+                hint: Text('choose'.tr()),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              items: state.qualificationsList
+                  .map(
+                    (qualification) => DropdownMenuItem<String>(
+                      value: qualification.tid.toString(),
+                      child: Center(
+                        child: Text(
+                          qualification.name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  final selectedQualification = state.qualificationsList
+                      .firstWhere(
+                        (qualification) =>
+                            qualification.tid.toString() == value,
+                      );
+                  context.read<VolunteerProfileBloc>().add(
+                    UpdateScientificInfo(
+                      educationalQualification: selectedQualification.name,
+                      educationalQualificationId: value,
+                      specialization: state.specialization,
+                      specializationId: state.specializationId,
+                      profession: state.profession,
+                      workExperience: state.workExperience,
+                      language: state.language,
+                      languageId: state.languageId,
+                      scientificExperienceSummary:
+                          state.scientificExperienceSummary,
+                    ),
+                  );
+                }
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'please_select_educational_qualification'.tr();
+                }
+                return null;
+              },
+            ),
+          Text(
+            'volunteering_work_field_required'.tr(),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          if (state.isLoadingVolunteeringFields)
+            const Center(child: CircularProgressIndicator())
+          else
+            DropdownButtonFormField<String>(
+              dropdownColor: Theme.of(context).cardColor,
+              initialValue: state.volunteeringWorkFieldId,
+              decoration: InputDecoration(
+                hint: Text('choose'.tr()),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 15.0,
+                ),
+              ),
+              items: state.volunteeringFieldsList.isEmpty
+                  ? [
+                      DropdownMenuItem<String>(
                         child: Center(
                           child: Text(
-                            qualification.name,
+                            'no_volunteering_fields_available'.tr(),
                             style: TextStyle(
                               fontSize: 14,
                               color: Theme.of(context).colorScheme.onSurface,
@@ -360,126 +422,58 @@ class _UnifiedStepState extends State<UnifiedStep> {
                           ),
                         ),
                       ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    final selectedQualification = state.qualificationsList
-                        .firstWhere(
-                          (qualification) =>
-                              qualification.tid.toString() == value,
-                        );
-                    context.read<VolunteerProfileBloc>().add(
-                      UpdateScientificInfo(
-                        educationalQualification: selectedQualification.name,
-                        educationalQualificationId: value,
-                        specialization: state.specialization,
-                        specializationId: state.specializationId,
-                        profession: state.profession,
-                        workExperience: state.workExperience,
-                        language: state.language,
-                        languageId: state.languageId,
-                        scientificExperienceSummary:
-                            state.scientificExperienceSummary,
-                      ),
-                    );
-                  }
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'please_select_educational_qualification'.tr();
-                  }
-                  return null;
-                },
-              ),
-            Text(
-              'volunteering_work_field_required'.tr(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 8),
-            if (state.isLoadingVolunteeringFields)
-              const Center(child: CircularProgressIndicator())
-            else
-              DropdownButtonFormField<String>(
-                dropdownColor: Theme.of(context).cardColor,
-                initialValue: state.volunteeringWorkFieldId,
-                decoration: InputDecoration(
-                  hint: Text('choose'.tr()),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 15.0,
-                  ),
-                ),
-                items: state.volunteeringFieldsList.isEmpty
-                    ? [
-                        DropdownMenuItem<String>(
-                          child: Center(
-                            child: Text(
-                              'no_volunteering_fields_available'.tr(),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.onSurface,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]
-                    : state.volunteeringFieldsList
-                          .map(
-                            (field) => DropdownMenuItem<String>(
-                              value: field.tid.toString(),
-                              child: Center(
-                                child: Text(
-                                  field.name,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                    ]
+                  : state.volunteeringFieldsList
+                        .map(
+                          (field) => DropdownMenuItem<String>(
+                            value: field.tid.toString(),
+                            child: Center(
+                              child: Text(
+                                field.name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                          )
-                          .toList(),
-                onChanged: state.volunteeringFieldsList.isEmpty
-                    ? null
-                    : (value) {
-                        if (value != null) {
-                          final selectedField = state.volunteeringFieldsList
-                              .firstWhere(
-                                (field) => field.tid.toString() == value,
-                              );
-                          context.read<VolunteerProfileBloc>().add(
-                            UpdateVolunteeringInterests(
-                              skills: state.skills,
-                              skillsIds: state.skillsIds,
-                              volunteeringLevel: state.volunteeringLevel,
-                              volunteeringLevelId: state.volunteeringLevelId,
-                              volunteeringWorkField: selectedField.name,
-                              volunteeringWorkFieldId: value,
-                              isIndividualSelected: state.isIndividualSelected,
-                              isGroupSelected: state.isGroupSelected,
-                            ),
-                          );
-                        }
-                      },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'please_select_volunteering_work_field'.tr();
-                  }
-                  return null;
-                },
-              ),
-            const SizedBox(height: 80),
-          ],
-        ),
+                          ),
+                        )
+                        .toList(),
+              onChanged: state.volunteeringFieldsList.isEmpty
+                  ? null
+                  : (value) {
+                      if (value != null) {
+                        final selectedField = state.volunteeringFieldsList
+                            .firstWhere(
+                              (field) => field.tid.toString() == value,
+                            );
+                        context.read<VolunteerProfileBloc>().add(
+                          UpdateVolunteeringInterests(
+                            skills: state.skills,
+                            skillsIds: state.skillsIds,
+                            volunteeringLevel: state.volunteeringLevel,
+                            volunteeringLevelId: state.volunteeringLevelId,
+                            volunteeringWorkField: selectedField.name,
+                            volunteeringWorkFieldId: value,
+                            isIndividualSelected: state.isIndividualSelected,
+                            isGroupSelected: state.isGroupSelected,
+                          ),
+                        );
+                      }
+                    },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'please_select_volunteering_work_field'.tr();
+                }
+                return null;
+              },
+            ),
+          const SizedBox(height: 80),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

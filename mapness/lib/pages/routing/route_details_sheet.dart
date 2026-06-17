@@ -36,7 +36,6 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
   final int initialIndex;
   final void Function(int index)? onActiveChanged;
   final RouteDetailsSheetType type;
-  final ValueChanged<double>? onSheetHeightChanged;
 
   const RouteDetailsPage({
     required this.publicTransportRoutes,
@@ -48,7 +47,6 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
     this.onPressed,
     this.onClose,
     this.startPoint,
-    this.onSheetHeightChanged,
     super.key,
   });
 
@@ -85,12 +83,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
       stateMapper: const RouteDetailsStateMapperV2(),
       initialState: _initialState,
     );
-    _bottomSheetController.addListener(_notifySheetHeight);
     _activeIndex = widget.initialIndex;
     _route = widget.publicTransportRoutes[_activeIndex];
   }
-
-  void _notifySheetHeight() => widget.onSheetHeightChanged?.call(_bottomSheetController.sheetHeight);
 
   @override
   void didUpdateWidget(RouteDetailsPage oldWidget) {
@@ -102,7 +97,6 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
   @override
   void dispose() {
-    _bottomSheetController.removeListener(_notifySheetHeight);
     _bottomSheetController.dispose();
     super.dispose();
   }

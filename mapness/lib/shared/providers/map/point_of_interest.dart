@@ -28,9 +28,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
   DgisObjectId objectId,
   LatLng? closestPoint,
-  BaladyAppThemes theme, {
-  bool showHighlight = true,
-}) async {
+  BaladyAppThemes theme,
+) async {
   final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
   final l10n = ref.watch(appLocaleProvider);
   final dgisController = await ref.read(dgisControllerProvider.future);
@@ -108,10 +107,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.watch(highlightProvider.notifier);
   await highlightController.removeAll();
-
-  if (!showHighlight) {
-    return directoryObject;
-  }
 
   const haramZone = 70030077050725730;
   const holySites = 70030077050669177;

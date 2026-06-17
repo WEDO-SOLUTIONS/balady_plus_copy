@@ -1,10 +1,10 @@
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
-import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 
 class BottomSheetWithActions extends StatefulWidget {
@@ -66,10 +66,10 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                DrawLineWidget(
-                  lineWidth: 40.0,
+                const DrawLineWidget(
+                  lineWidth: 70.0,
                   lineHeight: 6.0,
-                  lineColor: Theme.of(context).disabledColor,
+                  lineColor: AppColor.blackModern200Light,
                   radius: 46.0,
                 ),
                 Row(
@@ -82,7 +82,6 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
                         maxLines: 3,
                         textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
                           fontSize: 24.0,
-                          fontWeight: FontWeight.w500,
                           color: themeNotifier.isDarkMode ? Colors.white : AppColor.black,
                         ),
                       ),
@@ -90,28 +89,12 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
                     if (!widget.withoutClose)
                       InkWell(
                         onTap: () => Navigator.pop(context),
-                        child: SizedBox(
-                          width: context.w(44),
-                          height: context.h(44),
-
-                          child: Card(
-                            elevation: 1,
-                            shadowColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.transparent, width: 1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface),
-                          ),
-                        ),
-                        /* 
-                        CircleIcon(
+                        child: CircleIcon(
                           icon: Icons.close,
                           iconColor: AppColor.primary600Light,
                           backgroundColor: AppColor.geyser.withOpacity(0.4),
                           iconSize: 18,
                         ),
-                        */
                       ),
                   ],
                 ),
@@ -160,6 +143,46 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
           ),
         );
       },
+    );
+
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Container(
+        padding: padding,
+        height: context.screenHeight * 0.90,
+        color: AppColor.white,
+        child: Column(
+          children: [
+            const DrawLineWidget(lineWidth: 70.0, lineHeight: 6.0, lineColor: AppColor.gray, radius: 46.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(fontSize: 24.0, color: AppColor.black),
+                ),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: CircleIcon(
+                    icon: Icons.close,
+                    iconColor: AppColor.primary600Light,
+                    backgroundColor: AppColor.geyser.withOpacity(0.4),
+                    iconSize: 18,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(mainAxisSize: MainAxisSize.min, children: [widget.body]),
+              ),
+            ),
+            if (widget.action != null) SafeArea(top: false, child: widget.action!),
+          ],
+        ),
+      ),
     );
   }
 

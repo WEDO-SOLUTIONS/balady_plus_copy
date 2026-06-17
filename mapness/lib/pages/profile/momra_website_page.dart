@@ -72,11 +72,11 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
         body: _isLoading
             ? const Center(child: Loading())
             : Column(
-                children: [
-                  const SizedBox(width: 28),
-                  Expanded(child: WebViewWidget(controller: _controller)),
-                ],
-              ),
+          children: [
+            const SizedBox(width: 28),
+            Expanded(child: WebViewWidget(controller: _controller)),
+          ],
+        ),
       ),
     ),
   );

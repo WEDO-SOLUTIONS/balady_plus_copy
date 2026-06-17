@@ -34,12 +34,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        systemNavigationBarColor: Color(0x00000000),
-        systemNavigationBarDividerColor: Color(0x00000000),
-      ),
-    );
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Color(0x00000000),
+      systemNavigationBarDividerColor: Color(0x00000000),
+    ));
 
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
@@ -58,7 +56,9 @@ class App extends StatelessWidget {
       providers: [
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        BlocProvider<NewMiniAppLogicCubit>.value(value: sl<NewMiniAppLogicCubit>()),
+        BlocProvider<NewMiniAppLogicCubit>.value(
+          value: sl<NewMiniAppLogicCubit>(),
+        ),
         // Add AccessibilityController to providers
         ChangeNotifierProvider(create: (_) => AccessibilityController()),
         BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),
@@ -144,9 +144,14 @@ class AppWidgetState extends State<AppWidget> {
 
                         // [NEW CODE]: We first wrap builtChild with StreamAudio so the floating audio player
                         // is always present in the widget tree, regardless of the grayscale filter.
+                    // TODO: MBC - Uncomment for next release
+                    // final streamAudioChild = Material(
+                    //   type: MaterialType.transparency,
+                    //   child: StreamAudio(child: builtChild),
+                    // );
                         final streamAudioChild = Material(
                           type: MaterialType.transparency,
-                          child: StreamAudio(child: builtChild),
+                      child: builtChild,
                         );
 
                         if (grayscaleFilter == null) return streamAudioChild;

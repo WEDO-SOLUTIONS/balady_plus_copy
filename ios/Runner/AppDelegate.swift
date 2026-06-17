@@ -1,77 +1,18 @@
 import UIKit
 import Flutter
 import dgis_map
-import AVFoundation
-import ObjectiveC
 //import GoogleMaps
-
-extension Notification.Name {
-    static let navigationVoiceStarted = Notification.Name("com.balady.navigationVoiceStarted")
-    static let navigationVoiceEnded   = Notification.Name("com.balady.navigationVoiceEnded")
-}
-
-private enum AudioSessionMixer {
-    static var unduckTimer: Timer?
-
-    static func install() {
-        let cls = AVAudioSession.self
-
-        if let orig = class_getInstanceMethod(cls, #selector(AVAudioSession.setCategory(_:mode:options:))),
-           let repl = class_getInstanceMethod(cls, #selector(AVAudioSession._bs_setCategory(_:mode:options:))) {
-            method_exchangeImplementations(orig, repl)
-        }
-
-        if let orig = class_getInstanceMethod(cls, #selector(AVAudioSession.setActive(_:options:))),
-           let repl = class_getInstanceMethod(cls, #selector(AVAudioSession._bs_setActiveWithOptions(_:withOptions:))) {
-            method_exchangeImplementations(orig, repl)
-        }
-    }
-}
-
-extension AVAudioSession {
-    @objc func _bs_setCategory(
-        _ category: AVAudioSession.Category,
-        mode: AVAudioSession.Mode,
-        options: AVAudioSession.CategoryOptions
-    ) throws {
-        if mode == .voicePrompt || mode == .spokenAudio {
-            return
-        }
-        let safeOptions = options.union(.mixWithOthers).subtracting(.duckOthers)
-        try _bs_setCategory(category, mode: mode, options: safeOptions)
-    }
-
-    @objc func _bs_setActiveWithOptions(_ active: Bool, withOptions options: AVAudioSession.SetActiveOptions) throws {
-        if !active {
-            DispatchQueue.main.async {
-                AudioSessionMixer.unduckTimer?.invalidate()
-                AudioSessionMixer.unduckTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { _ in
-                    AudioSessionMixer.unduckTimer = nil
-                    NotificationCenter.default.post(name: .navigationVoiceEnded, object: nil)
-                }
-            }
-            return
-        }
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .navigationVoiceStarted, object: nil)
-        }
-        try _bs_setActiveWithOptions(active, withOptions: options)
-    }
-}
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
     private var overlayView: UIView?
     private var audioCoordinationManager: AudioCoordinationManager?
-    private var nativeRadioPlayer: NativeRadioPlayer?
 
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
        // GMSServices.provideAPIKey("AIzaSyBqCwmdyfOA84Tz3XwRbFPHUgiNs0O95pU")
-        AudioSessionMixer.install()
-
         let sharedSingleFlutterEngine = FlutterEngine(name: "SharedSingle")
         sharedSingleFlutterEngine.run()
         GeneratedPluginRegistrant.register(with: sharedSingleFlutterEngine)
@@ -84,14 +25,22 @@ extension AVAudioSession {
         // Setup iOS audio coordination → Flutter events (duck/restore).
         audioCoordinationManager = AudioCoordinationManager(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
-        // Native radio player — bypasses just_audio_background interruption handling.
-        nativeRadioPlayer = NativeRadioPlayer(messenger: sharedSingleFlutterEngine.binaryMessenger)
+        AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
         }
 
         return true
+    }
+
+    override func application(
+        _ application: UIApplication,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        AppIconQuickActionChannel.store(shortcutItem.type)
+        completionHandler(true)
     }
 
     private func setupNativeOverlayChannel(with flutterEngine: FlutterEngine) {

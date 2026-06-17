@@ -98,13 +98,7 @@ class CustomMiniAppsCard extends StatelessWidget {
               SizedBox(
                 height: context.h(70),
                 width: context.w(70),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Theme.of(context).disabledColor.withAlpha(90)),
-                  ),
-                  // elevation: 0,
+                child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: DecoratedBox(

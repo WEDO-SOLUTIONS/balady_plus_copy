@@ -1,8 +1,8 @@
 # Paths
-ARCHIVE_PATH := "assets/maps/styles/styles.2gis"
-OLD_ARCHIVE_PATH := "assets/maps/styles/old_styles.2gis"
-UNPACKED_PATH := "assets/maps/styles/content"
-FONTS_SRC_PATH := "assets/maps/styles/fonts"
+ARCHIVE_PATH := "../assets/maps/styles/styles.2gis"
+OLD_ARCHIVE_PATH := "../assets/maps/styles/old_styles.2gis"
+UNPACKED_PATH := "../assets/maps/styles/content"
+FONTS_SRC_PATH := "../assets/maps/styles/fonts"
 FONTS_DEST_PATH := UNPACKED_PATH + "/zmap/vidoc/fonts"
 FONT_SET_JSON := FONTS_DEST_PATH + "/font_set.json"
 
@@ -24,8 +24,8 @@ unpack:
 		echo "Archive {{ARCHIVE_PATH}} not found!"
 		exit 1
 	fi
+	rm -rf "{{UNPACKED_PATH}}"
 	mkdir -p "{{UNPACKED_PATH}}"
-	find "{{UNPACKED_PATH}}" -mindepth 1 -exec rm -rf {} +
 	echo "Unpacking {{ARCHIVE_PATH}} to {{UNPACKED_PATH}}..."
 	unzip -o "{{ARCHIVE_PATH}}" -d "{{UNPACKED_PATH}}"
 	echo "Archive unpacked."
