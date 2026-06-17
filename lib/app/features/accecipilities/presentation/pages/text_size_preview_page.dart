@@ -4,29 +4,36 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as p;
 
-class TextSizePreviewPage extends StatefulWidget {
+class TextSizePreviewPage extends ConsumerStatefulWidget {
   const TextSizePreviewPage({super.key});
 
   @override
-  State<TextSizePreviewPage> createState() => _TextSizePreviewPageState();
+  ConsumerState<TextSizePreviewPage> createState() => _TextSizePreviewPageState();
 }
 
-class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
+class _TextSizePreviewPageState extends ConsumerState<TextSizePreviewPage> {
   double _fontSize = 16;
 
   @override
   void initState() {
     super.initState();
-    final controller = Provider.of<AccessibilityController>(context, listen: false);
+    final controller =  p.Provider.of<AccessibilityController>(context, listen: false);
+
     _fontSize = 16 * controller.textScale;
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<AccessibilityController>(context);
+    final controller =  p.Provider.of<AccessibilityController>(context);
+    final dgisController = ref.watch(dgisControllerProvider);
     final colors = context.colors;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bodyTextColor = isDark ? colors.accentDefault : colors.foregroundDefault;
@@ -90,7 +97,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                       divisions: 12,
                       onChanged: (value) {
                         setState(() => _fontSize = value);
-                        controller.setTextScale(_fontSize / 16);
+                        controller.setTextScale(_fontSize / 16,dgisController.value);
                       },
                     ),
                   ),

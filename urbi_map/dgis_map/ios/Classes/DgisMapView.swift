@@ -231,6 +231,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(Result.success(()))
     }
     
+    func setfontScale(multiplier: Float) {
+        do{
+            try self.map?.setFontIconSizeMultiplier(multiplier: multiplier)
+        }catch{}
+       
+    }
+    
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
         
@@ -286,8 +293,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func setMapAttributeString(name: String, value: String, completion: @escaping (Result<Void, any Error>) -> Void) {
-        map?.attributes.setAttributeValue(name: name, value: .string(value))
-         completion(Result.success(()))
+        if name == "fontScaleMultiplier" {
+               if let scale = Double(value) {
+                 self.setfontScale(multiplier: Float(scale))
+               }
+           } else {
+               map?.attributes.setAttributeValue(name: name, value: .string(value))
+           }
+           completion(Result.success(()))
     }
 
     func setMapAttributeBool(name: String, value: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {

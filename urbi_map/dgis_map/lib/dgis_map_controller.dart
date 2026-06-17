@@ -664,6 +664,10 @@ class DgisMapController {
   Future<void> setMapAttributeBool(String name, {required bool value}) =>
       _instance.setMapAttributeBool(name, value: value);
 
+  ///Set map attribute String
+  Future<void> setMapAttributeString(String name,  {required String value} ) =>
+      _instance.setMapAttributeString(name, value);
+
   /// Getting Android Auto/CarPlay connection state
   Future<bool> getCarConnectionState() => _instance.getCarConnectionState();
 
