@@ -104,6 +104,8 @@ class SuggestItem extends ConsumerWidget {
           ),
         ),
       );
+      // DataFinder: report the suggestion tap (rank = position in the list).
+      ref.read(searchProvider(scope.value).notifier).reportSuggestionClick(suggest: suggest, rank: index + 1);
     }
 
     return ContentRow(

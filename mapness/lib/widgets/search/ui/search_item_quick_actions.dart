@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
@@ -31,8 +32,12 @@ const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
 
+  /// DataFinder: reports a `search_results_click` with the matching action.
+  final void Function(DataFinderClickAction action)? onResultAction;
+
   const SearchItemQuickActions({
     required this.directoryObject,
+    this.onResultAction,
     super.key,
   });
 
@@ -92,6 +97,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
+          onResultAction?.call(DataFinderClickAction.initiateNavigation);
           BssService.instance.trackRouteTap(directoryObject);
           openRoutingRoutes(
             context,
@@ -118,6 +124,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
         onPressed: () {
+          onResultAction?.call(DataFinderClickAction.addToFavorites);
           _onFavoriteTap(
             context: context,
             ref: ref,
@@ -128,6 +135,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ),
       ThrottledCallbackWidget(
         callback: () {
+          onResultAction?.call(DataFinderClickAction.sharePoi);
           final markerPosition = directoryObject.markerPosition;
           final latLng = markerPosition != null
               ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)

@@ -4,6 +4,8 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -173,9 +175,14 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   }
 
   void _handleObjectTapEvent(ObjectTapEvent event) {
+
     if (_consumePendingMakkahSuppression()) {
       return;
     }
+
+    // DataFinder: a POI tapped directly on the map starts a "Map" journey
+    // (BRD `Map-Main Page`). Carried through Directions → Go → Search → favorite.
+    ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.map);
 
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.map,
