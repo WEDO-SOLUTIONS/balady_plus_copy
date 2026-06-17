@@ -188,19 +188,6 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
-    override fun setIndoorFloorPlansEnabled(enabled: Boolean, callback: (Result<Unit>) -> Unit) {
-        val handler = indoorControlHandler
-        if (handler != null) {
-            handler.setIndoorFloorPlansEnabled(enabled)
-        } else {
-            map?.indoorManager?.setIndoorState(
-                if (enabled) IndoorManagerState.ENABLED else IndoorManagerState.DISABLED
-            )
-        }
-
-        callback(Result.success(Unit))
-    }
-
     override fun moveCameraToActiveRoute(index: Long, callback: (Result<Unit>) -> Unit) {
         routeHandler?.moveCameraToActiveRoute(index)
 

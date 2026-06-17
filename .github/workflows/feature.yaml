@@ -268,9 +268,12 @@ jobs:
 
       - name: Generate locale
         run: |
+          # Re-apply keys referenced in code but not published in Localazy
+          # (see mapness/l10n_overrides.json). Must run after download, before gen-l10n.
+          sudo chown -R "$USER:$USER" mapness/lib/l10n || true
+          python3 justscripts/apply_l10n_overrides.py
           cd mapness
           # FIXME: Workaround, see https://github.com/localazy/download/issues/3
-          sudo chown -R "$USER:$USER" lib/l10n || true
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 

@@ -89,8 +89,6 @@ class QuickFilters extends ConsumerWidget {
           filterType: FilterType.quick,
           title: filter.title(context.l10n),
           icon: filter.icon,
-          // DataFinder `quick_search_click` is fired inside the search notifier's
-          // quickSearch(), so search_text matches the actual query string.
           onTap: () => onQuickFilterTap(filter),
         ),
       ),

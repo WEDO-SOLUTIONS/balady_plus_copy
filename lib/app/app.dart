@@ -15,6 +15,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/stream_audio/ui/pages/stream_audio_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -33,12 +34,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        systemNavigationBarColor: Color(0x00000000),
-        systemNavigationBarDividerColor: Color(0x00000000),
-      ),
-    );
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Color(0x00000000),
+      systemNavigationBarDividerColor: Color(0x00000000),
+    ));
 
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
@@ -57,7 +56,9 @@ class App extends StatelessWidget {
       providers: [
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        BlocProvider<NewMiniAppLogicCubit>.value(value: sl<NewMiniAppLogicCubit>()),
+        BlocProvider<NewMiniAppLogicCubit>.value(
+          value: sl<NewMiniAppLogicCubit>(),
+        ),
         // Add AccessibilityController to providers
         ChangeNotifierProvider(create: (_) => AccessibilityController()),
         BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),
@@ -143,9 +144,14 @@ class AppWidgetState extends State<AppWidget> {
 
                         // [NEW CODE]: We first wrap builtChild with StreamAudio so the floating audio player
                         // is always present in the widget tree, regardless of the grayscale filter.
+                    // TODO: MBC - Uncomment for next release
+                    // final streamAudioChild = Material(
+                    //   type: MaterialType.transparency,
+                    //   child: StreamAudio(child: builtChild),
+                    // );
                         final streamAudioChild = Material(
                           type: MaterialType.transparency,
-                          child: StreamAudio(child: builtChild),
+                      child: builtChild,
                         );
 
                         if (grayscaleFilter == null) return streamAudioChild;
@@ -157,7 +163,6 @@ class AppWidgetState extends State<AppWidget> {
                         BotToastNavigatorObserver(),
                         FlutterUxcamNavigatorObserver(),
                         MapnessRouteObserver(),
-                        MapnessBytePlusObserver(),
                       ],
                       localizationsDelegates: translator.delegates.toList()..add(CountryLocalizations.delegate),
                       locale: translator.activeLocale,

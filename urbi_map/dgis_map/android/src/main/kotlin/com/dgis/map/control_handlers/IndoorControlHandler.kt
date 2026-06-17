@@ -3,7 +3,6 @@ package com.dgis.map.control_handlers
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.map.IndoorBuilding
-import ru.dgis.sdk.map.IndoorManagerState
 import ru.dgis.sdk.map.Map
 
 class IndoorControlHandler(
@@ -75,12 +74,6 @@ class IndoorControlHandler(
 
     fun selectIndoorLevel(index: Long) {
         indoorManager.focusedBuilding?.activeLevelIndex = index
-    }
-
-    fun setIndoorFloorPlansEnabled(enabled: Boolean) {
-        indoorManager.setIndoorState(
-            if (enabled) IndoorManagerState.ENABLED else IndoorManagerState.DISABLED
-        )
     }
 
     override fun close() {

@@ -66,7 +66,7 @@ class QuickFilter extends ConsumerWidget {
           borderRadius: BorderRadius.circular(RadiusBorder.m),
           border: Border.all(
             color: context.colors.borderDefault,
-            width: 0,
+            width: 1,
           ),
         ),
 
@@ -84,7 +84,7 @@ class QuickFilter extends ConsumerWidget {
 
           border: Border.all(
             color: context.colors.borderDefault,
-            width: 0,
+            width: 1,
           ),
         ),
 

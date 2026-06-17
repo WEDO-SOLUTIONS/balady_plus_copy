@@ -33,12 +33,14 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final audioProvider = ref.read(streamAudioProvider);
-      audioProvider.setInWeb(true);
-      audioProvider.setFloatingPlayerVisibility(false);
-      audioProvider.prepareForMiniAppNavigation();
-    });
+    // TODO: MBC - Uncomment for next release
+    // Hide floating player and prepare for mini app navigation
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   final audioProvider = ref.read(streamAudioProvider);
+    //   audioProvider.setInWeb(true);
+    //   audioProvider.setFloatingPlayerVisibility(false);
+    //   audioProvider.prepareForMiniAppNavigation();
+    // });
   }
 
   Future<bool> _showExitConfirmationDialog() async {
@@ -89,9 +91,11 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           if (didPop) return;
           final shouldExit = await _showExitConfirmationDialog();
           if (shouldExit && context.mounted) {
-            final audioProvider = ref.read(streamAudioProvider);
-            audioProvider.setInWeb(false);
-            audioProvider.setFloatingPlayerVisibility(true);
+            // TODO: MBC - Uncomment for next release
+            // Show floating player when mini app is closed
+            // final audioProvider = ref.read(streamAudioProvider);
+            // audioProvider.setInWeb(false);
+            // audioProvider.setFloatingPlayerVisibility(true);
             Navigator.of(context).pop();
           }
         },
@@ -101,7 +105,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
           appBar: AppBar(
             title: Text(
-              data.name ?? " ",
+              data.name,
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(fontFamily: GeneralKey.appFontType),
@@ -112,11 +116,13 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
                   if (shouldExit && context.mounted) {
-                    final audioProvider = ref.read(streamAudioProvider);
-                    audioProvider.setInWeb(false);
-                    audioProvider.setFloatingPlayerVisibility(true);
-                    Navigator.of(context).pop();
-                  }
+                    // TODO: MBC - Uncomment for next release
+                    // Show floating player when mini app is closed
+                    // final audioProvider = ref.read(streamAudioProvider);
+                    // audioProvider.setInWeb(false);
+                    // audioProvider.setFloatingPlayerVisibility(true);
+                    Navigator.of(context).pop();  
+                }
                 },
               ),
             ],
@@ -124,22 +130,26 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           ),
           body: Column(
             children: [
-              Consumer(
-                builder: (context, ref, child) {
-                  final provider = ref.watch(streamAudioProvider);
-                  if (provider.selectedChannel == null) {
-                    return const SizedBox.shrink();
-                  }
-                  return AudioPlayerBanner(
-                    onTap: () {
-                      ref.read(streamAudioProvider).togglePanel();
-                    },
-                    onClose: () async {
-                      await ref.read(streamAudioProvider).exitPlayer();
-                    },
-                  );
-                },
-              ),
+              // TODO: MBC - Uncomment for next release
+              // // Audio Player Banner
+              // Consumer(
+              //   builder: (context, ref, child) {
+              //     final provider = ref.watch(streamAudioProvider);
+              //     if (provider.selectedChannel == null) {
+              //       return const SizedBox.shrink();
+              //     }
+              //     return AudioPlayerBanner(
+              //       onTap: () {
+              //         // Call togglePanel through the provider
+              //         ref.read(streamAudioProvider).togglePanel();
+              //       },
+              //       onClose: () async {
+              //         await ref.read(streamAudioProvider).exitPlayer();
+              //       },
+              //     );
+              //   },
+              // ),
+              // Main content
               Expanded(
                 child: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
                   builder: (contextBloc, state) {
@@ -209,14 +219,16 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void dispose() {
     debugPrint('MiniAppsMainScreen: Starting dispose');
 
-    if (mounted) {
-      try {
-        ref.read(streamAudioProvider).setInWeb(false);
-        ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
-      } catch (e) {
-        debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');
-      }
-    }
-    super.dispose();
+    // TODO: MBC - Uncomment for next release
+    // Restore audio provider and show floating player when mini app is closed
+    // if (mounted) {
+    //   try {
+    //     ref.read(streamAudioProvider).setInWeb(false);
+    //     ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+    //   } catch (e) {
+    //     debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');
+    //   }
   }
+
+  // super.dispose();
 }

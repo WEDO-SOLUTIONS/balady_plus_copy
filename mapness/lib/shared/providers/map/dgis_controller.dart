@@ -20,7 +20,6 @@ import 'package:rxdart/rxdart.dart';
 part 'dgis_controller.g.dart';
 
 final GeoPointMessage _kingdomTower = GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
-const double _indoorFloorPlansMinZoom = 19;
 
 /// Plain top-level reference to the live [DgisMapController].
 ///
@@ -44,7 +43,6 @@ class DgisController extends _$DgisController {
   late LocationSetupHelper _locationHelper;
   // Non-final so build() can replace it with a fresh open subject on each rebuild.
   BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
-  bool? _indoorFloorPlansEnabled;
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
 
@@ -91,8 +89,6 @@ class DgisController extends _$DgisController {
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);
-    await controller.setIndoorFloorPlansEnabled(enabled: false);
-    _indoorFloorPlansEnabled = false;
     await controller.overrideLocales(ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA']);
     await controller.setAppearance(
       (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day,
@@ -182,27 +178,16 @@ class DgisController extends _$DgisController {
   Future<void> _setupVisibleRectUpdates(DgisMapController controller) async {
     final visibleRectSubscription = controller.visibleRectEvents
         .debounceTime(const Duration(seconds: 1))
-        .listen((event) => _listenVisibleRectangle(controller, event));
+        .listen(_listenVisibleRectangle);
     _visibleRectSubject.add(null);
 
     ref.onDispose(visibleRectSubscription.cancel);
   }
 
-  void _listenVisibleRectangle(DgisMapController controller, VisibleRectEvent event) {
+  void _listenVisibleRectangle(VisibleRectEvent event) {
     ref.read(urbiAnalyticsProvider).track('mapInteraction');
-    _syncIndoorFloorPlansWithZoom(controller, event.visibleRect.zoom);
     if (!_visibleRectSubject.isClosed) {
       _visibleRectSubject.add(event);
     }
-  }
-
-  void _syncIndoorFloorPlansWithZoom(DgisMapController controller, double zoom) {
-    final enabled = zoom >= _indoorFloorPlansMinZoom;
-    if (_indoorFloorPlansEnabled == enabled) {
-      return;
-    }
-
-    _indoorFloorPlansEnabled = enabled;
-    unawaited(controller.setIndoorFloorPlansEnabled(enabled: enabled));
   }
 }

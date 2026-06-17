@@ -98,23 +98,13 @@ class CustomMiniAppsCard extends StatelessWidget {
               SizedBox(
                 height: context.h(70),
                 width: context.w(70),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Theme.of(context).primaryColorLight
-                        : Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Theme.of(context).disabledColor,
-                    ),
-                  ),
-                  // elevation: 0,
+                child: Card(
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        color: Theme.of(context).colorScheme.primaryContainer,
+                        color: Theme.of(context).colorScheme.onPrimaryFixed,
                       ),
                       child: child,
                     ),

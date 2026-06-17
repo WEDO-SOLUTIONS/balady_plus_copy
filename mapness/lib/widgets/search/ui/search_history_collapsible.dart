@@ -150,6 +150,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
               ],
             ),
           ),
+          if (_collapsed) const SizedBox(height: Spacing.$4x),
           if (!_collapsed)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
@@ -166,7 +167,6 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 ],
               ),
             ),
-          const SizedBox(height: Spacing.$4x),
         ],
       ),
     );

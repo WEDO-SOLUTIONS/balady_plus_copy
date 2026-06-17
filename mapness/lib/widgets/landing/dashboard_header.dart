@@ -219,7 +219,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
 
           border: Border.all(
             color: context.colors.borderDefault,
-            width: 0,
+            width: 1,
           ),
         ),
         child: ClipRRect(

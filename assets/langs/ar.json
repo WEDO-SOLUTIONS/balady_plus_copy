@@ -4245,11 +4245,11 @@
   "quick_access_not_activated": "لا يوجد سمات حيوية مسجلة، نأمل تسجيل الدخول بإستخدام أحد الطرق الأخرى وحفظ السمات الحيوية",
   "deactivate": "إلغاء التنشيط",
   "biometrics_failed": "فشل المصادقة الحيوية! .فضلا المحاولة مرة أخرى أو يمكنك تسجيل الدخول عن طريق الرمز السريع أو إسم المستخدم و كلمة المرور",
-  "message_login_life_style": "افتح الإمكانيات الكاملة للخرائط والملاحة",
+  "message_login_life_style": "للوصول الى كامل خصائص الخرائط والملاحة، يرجى تسجيل الدخول",
   "by_continuing_agree": "بالمتابعة، أوافق على ",
   "privacy_policy": "سياسة الخصوصية",
   "continue": "متابعة",
-  "enter_code_from_sms": "أدخل الرمز من الرسالة النصية",
+  "enter_code_from_sms": "أدخل الرمز المرسل عبر الرسالة النصية",
   "to_confirm_number": " لتأكيد رقم الجوال",
   "get_code_again": "احصل عل الرمز",
   "in": "في",
@@ -4655,9 +4655,5 @@
   "favorite_services_subtitle": "يمكنك إضافة خدماتك المفضلة لسهولة الوصول اليها",
   "compliance_map":"خريطة الامتثال",
   "building_compliance_question":"هل المبنى الخاص بك ممتثل؟",
-  "add_to_fav":"أضف للمفضلة",
-  "facilities":"المنشآت",
-  "agencies":"الوكلاء",
-  "business_account":"حساب اعمال",
-  "please_select_facility_or_agency":"يرجى اختيار المنشأة أو الوكالة"
+  "add_to_fav":"أضف للمفضلة"
 }

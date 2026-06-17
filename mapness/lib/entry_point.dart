@@ -102,9 +102,6 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:rangers_applog_flutter_plugin/autotrack.dart';
-import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
@@ -122,24 +119,6 @@ class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
   factory MapnessRouteObserver() => _instance;
 
   MapnessRouteObserver._internal();
-}
-
-/// Automatically tracks screen views in BytePlus by observing navigator events.
-///
-/// [RangersApplogNavigationObserver] is the SDK's built-in observer — registering
-/// it in [MaterialApp.navigatorObservers] is all that is needed for BytePlus to
-/// receive a `page_view` event on every route push/pop, with no per-screen code.
-///
-/// This subclass exists purely for architecture: `lib/app/app.dart` must never
-/// import `rangers_applog_flutter_plugin` directly. By re-exporting this wrapper
-/// from `mapness/entry_point.dart` (which `app.dart` already imports), the main
-/// app stays decoupled from the BytePlus SDK.
-class MapnessBytePlusObserver extends RangersApplogNavigationObserver {
-  static final MapnessBytePlusObserver _instance = MapnessBytePlusObserver._internal();
-
-  factory MapnessBytePlusObserver() => _instance;
-
-  MapnessBytePlusObserver._internal();
 }
 
 class MapnessProviderScope extends StatelessWidget {
@@ -1422,31 +1401,6 @@ Future<void> setupMapness(EnvType envType) async {
     ),
     configContent: vendorConfigContentMessage,
   );
-
-  // Initialize BytePlus RangersAppLog SDK.
-  // App ID and channel are read from .env.{flavor} loaded earlier by AppEnv.setupEnv().
-  // Skips gracefully when the App ID is still a TODO placeholder.
-  final appId = dotenv.env['BYTEPLUS_APP_ID'] ?? '';
-  final channel = dotenv.env['BYTEPLUS_CHANNEL'] ?? 'AppStore';
-  final isProduction = envType == EnvType.prod;
-
-  if (appId.isNotEmpty && !appId.startsWith('TODO')) {
-    try {
-      RangersApplogFlutterPlugin.initRangersAppLog(
-        appId,
-        channel,
-        true,         // enableAb
-        false,         // enableEncrypt
-        !isProduction, // enableLog: true on stg/dev, false on prod
-        'https://balady.finder-snssdk.bytepluses.com',
-      );
-      debugPrint('[BytePlus] RangersAppLog initialized — AppID=$appId, channel=$channel');
-    } catch (e) {
-      debugPrint('[BytePlus] Init failed: $e');
-    }
-  } else {
-    debugPrint('[BytePlus] Skipped: BYTEPLUS_APP_ID not configured yet.');
-  }
 }
 
 Future<void> enableInsiderGeofenceAfterConsent() async {

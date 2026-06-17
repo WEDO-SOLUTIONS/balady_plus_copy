@@ -11,8 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
-import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
@@ -93,15 +91,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   @override
   void initState() {
     super.initState();
-
-    // DataFinder: this is the Explore-tab map search (scope=map). Opening it is
-    // an Explore-tab entry control, so reset the journey origin to `explore`
-    // (BRD "Explore Tab → Main Page → Search Bar"). This clears any sticky `map`
-    // origin left by an earlier map-POI tap. Deferred: can't modify a provider
-    // during initState. The Map→POI→Go nav search uses NaviSearch, not this.
-    Future(() {
-      ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.explore);
-    });
 
     _multiStateSheetController = MultiStateSheetController(
       forceMultiplier: 2,

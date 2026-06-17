@@ -2,8 +2,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/app_analytics/app_analytics.dart';
-import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -67,19 +65,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Animation<double>? _routeAnimation;
   void Function(AnimationStatus)? _routeAnimationStatusListener;
 
-  /// DataFinder: tracks the first focus of the search box for `is_first_click`.
-  bool _searchBoxClicked = false;
-
-  /// Suppresses the `search_box_click` focus listener during the internal
-  /// unfocus→refocus cycle that runs after search results load (see
-  /// [didChangeDependencies]) — that refocus is not a user action.
-  bool _suppressFocusEvent = false;
-
-  /// Guards against `search_box_click` firing twice for the same activation
-  /// (focus listener + `onTap`). Reset whenever the box loses focus, so the
-  /// next genuine activation reports again.
-  bool _boxClickFiredThisFocus = false;
-
   void _safeControllerWrite(VoidCallback action) {
     try {
       action();
@@ -101,48 +86,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.initState();
     _controller = _MapSearchTextEditingController();
     _focusNode = FocusNode();
-    // DataFinder: fire `search_box_click` whenever the box GAINS FOCUS, not just
-    // on a manual tap — this covers the programmatic auto-focus on open (BRD:
-    // "Triggered when the search box gains focus"). The initial focus itself is
-    // deferred to `_scheduleInitialFocus()` (dev) so the keyboard doesn't fight
-    // the route animation; the listener still catches that deferred focus-gain.
-    _focusNode.addListener(_onFocusChanged);
     if (widget.initialState != null) {
       _updateText(widget.initialState!);
       ref.read(searchProvider(_scope).notifier).fetchSuggest(_controller.text);
     }
-  }
-
-  /// Fires the FIRST `search_box_click` when the box auto-focuses on open.
-  /// Later activations are reported from the field's `onTap` (genuine user taps
-  /// only) so we don't emit a spurious event when focus merely *returns* to the
-  /// box after a pushed route/dialog (e.g. the favourite sheet) closes.
-  void _onFocusChanged() {
-    if (!_focusNode.hasFocus) {
-      // Box lost focus → allow the next genuine activation to report again.
-      _boxClickFiredThisFocus = false;
-      return;
-    }
-    if (!mounted || _suppressFocusEvent || _searchBoxClicked) {
-      return;
-    }
-    _fireSearchBoxClick();
-  }
-
-  /// Emits `search_box_click` with the current source, at most once per focus
-  /// session (the focus listener and `onTap` share this guard). [isFirstClick]
-  /// is true only for the very first activation after the bar opened.
-  void _fireSearchBoxClick() {
-    if (_boxClickFiredThisFocus || !mounted) {
-      return;
-    }
-    _boxClickFiredThisFocus = true;
-    final searcher = ref.read(searchProvider(_scope).notifier);
-    ref.read(appAnalyticsProvider).searchBoxClick(
-          eventSource: searcher.dataFinderEventSource,
-          isFirstClick: !_searchBoxClicked,
-        );
-    _searchBoxClicked = true;
   }
 
   /// Defers initial keyboard until the page transition animation completes —
@@ -202,13 +149,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           if (next is SearchStateLoading) {
             _safeFocusAction(_focusNode.unfocus);
           } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
-            // Internal refocus after results — not a user focus, so suppress the
-            // DataFinder `search_box_click` it would otherwise trigger.
-            _suppressFocusEvent = true;
             _safeFocusAction(_focusNode.requestFocus);
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _suppressFocusEvent = false;
-            });
           }
         });
       },
@@ -226,9 +167,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     _routeAnimationStatusListener = null;
     _searchSubscription?.close();
     _controller.dispose();
-    _focusNode
-      ..removeListener(_onFocusChanged)
-      ..dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -275,13 +214,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-            // DataFinder: report the manual text input.
-            ref
-                .read(appAnalyticsProvider)
-                .searchBoxInput(
-                  operationType: DataFinderInputOperation.manual,
-                  inputText: query,
-                );
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -306,12 +238,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             // waiting for `flutter_keyboard_visibility` (BALADY-3580).
             widget.onTap?.call();
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
-            // DataFinder: the FIRST search_box_click comes from the focus
-            // listener (covers auto-focus on open). Genuine RE-taps after the
-            // box lost focus are reported here, so we don't miss them — but a
-            // mere focus RETURN (e.g. after the favourite sheet closes) is not a
-            // tap and is correctly skipped.
-            _fireSearchBoxClick();
             BssService.instance.sendEvent(
               const BssRequest(
                 eventType: BSSEventType.action,
@@ -342,13 +268,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               ),
             );
             if (query.trim().isNotEmpty) {
-              // DataFinder: report the search submit (keyboard action).
-              ref
-                  .read(appAnalyticsProvider)
-                  .searchButtonClick(
-                    eventSource: searcher.dataFinderEventSource,
-                    searchText: query,
-                  );
               searcher.searchByText(query);
               ref
                   .read(urbiAnalyticsProvider)

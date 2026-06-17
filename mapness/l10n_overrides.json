@@ -1,0 +1,9 @@
+{
+  "_comment": "Local localization overrides merged into the Localazy-downloaded ARBs AFTER `localazy download` and BEFORE `flutter gen-l10n`. Use this ONLY for keys that are referenced in code but missing from Localazy (e.g. the Localazy project is over its key-plan limit so new keys can't be published). Each top-level entry is a language code; each value is { key: translation }. Remove an entry once the key is properly published in Localazy.",
+  "en": {
+    "appIconQuickActionUnavailable": "This action is currently unavailable. Please try again later."
+  },
+  "ar": {
+    "appIconQuickActionUnavailable": "هذا الإجراء غير متاح حاليًا. يرجى المحاولة لاحقًا."
+  }
+}

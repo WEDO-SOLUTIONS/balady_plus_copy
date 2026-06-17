@@ -316,11 +316,6 @@ class DgisMapPlugin extends FlutterMapApi {
     return _indoorEventHandler.selectIndoorLevel(index);
   }
 
-  /// Enables or disables indoor floor plans.
-  Future<void> setIndoorFloorPlansEnabled({required bool enabled}) {
-    return _api.setIndoorFloorPlansEnabled(enabled);
-  }
-
   /// Load styles from asset.
   Future<void> loadStyles(String asset) {
     return _api.loadStyles(asset);

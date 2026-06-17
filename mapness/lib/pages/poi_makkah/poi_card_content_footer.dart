@@ -146,11 +146,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     if (favState?.home != null && favState?.work != null) {
       favNotifier.addItem(favItem);
     } else {
-      // Build the rich POI here, where [data] (addr/type/marker) is available,
-      // so `favorite_add` reports poi_addr/poi_type/poi_distance.
-      final loc = ref.read(locationProvider);
-      final favoritePoi = data.toDataFinderPoi(myLat: loc?.latitude, myLon: loc?.longitude);
-      context.router.push(PoiFavoriteDialogRoute(favItem: favItem, favoritePoi: favoritePoi));
+      context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
     }
   }
 

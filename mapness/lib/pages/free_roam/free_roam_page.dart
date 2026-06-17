@@ -8,8 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
-import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
-import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -60,12 +58,6 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   @override
   void initState() {
     super.initState();
-    // DataFinder: entering Free Roam sets the journey origin (BRD
-    // `Explore-Free Roam`), so a search/favorite from here is attributed to it.
-    // Deferred: modifying a provider directly in initState throws in Riverpod.
-    Future(() {
-      ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.freeRoam);
-    });
     WidgetsBinding.instance
       ..addPostFrameCallback((_) async {
         await SystemChrome.setPreferredOrientations([
@@ -190,68 +182,67 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                   child: ManeuverWidget(),
                 ),
                 const SizedBox(height: uikit.Spacing.$6x),
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: uikit.Spacing.$3x),
+                    child: SoundControl(),
+                  ),
+                ),
                 Expanded(
-                  child: IntrinsicHeight(
-                    child: Padding(
-                      padding: padding,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SoundControl(),
-                          Expanded(
-                            child: AnimatedOpacity(
-                              opacity: isControlsActive ? 1 : 0,
-                              duration: const Duration(milliseconds: 250),
-                              child: IgnorePointer(
-                                ignoring: !isControlsActive,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    timer?.cancel();
-                                    timer = null;
-                                    wasSetActive = true;
-                                    isControlsActive = true;
-                                    startControlsDisapearTimer();
-                                  },
-                                  child: isPortrait
-                                      ? const Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children: [
-                                            TrafficParkingControl(trafficVisible: false),
-                                            SizedBox(height: uikit.Spacing.$2x),
-                                            DimensionControl(),
-                                            Spacer(),
-                                            Row(
-                                              children: [
-                                                IndoorControl(),
-                                              ],
-                                            ),
-                                            Spacer(),
-                                            CompassControl(),
-                                            SizedBox(height: uikit.Spacing.$2x),
-                                            FollowControl(),
-                                            SizedBox(height: uikit.Spacing.$3x),
-                                          ],
-                                        )
-                                      : const Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Spacer(),
-                                                Padding(
-                                                  padding: padding,
-                                                  child: IndoorControl(),
-                                                ),
-                                                Spacer(flex: 3),
-                                              ],
-                                            ),
-                                          ],
+                  child: AnimatedOpacity(
+                    opacity: isControlsActive ? 1 : 0,
+                    duration: const Duration(milliseconds: 250),
+                    child: IgnorePointer(
+                      ignoring: !isControlsActive,
+                      child: GestureDetector(
+                        onTap: () {
+                          timer?.cancel();
+                          timer = null;
+                          wasSetActive = true;
+                          isControlsActive = true;
+                          startControlsDisapearTimer();
+                        },
+                        child: Padding(
+                          padding: padding,
+                          child: isPortrait
+                              ? const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    TrafficParkingControl(
+                                      trafficVisible: false,
+                                    ),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    DimensionControl(),
+                                    Spacer(),
+                                    Row(
+                                      children: [
+                                        IndoorControl(),
+                                      ],
+                                    ),
+                                    Spacer(),
+                                    CompassControl(),
+                                    SizedBox(height: uikit.Spacing.$2x),
+                                    FollowControl(),
+                                    SizedBox(height: uikit.Spacing.$3x),
+                                  ],
+                                )
+                              : const Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Spacer(),
+                                        Padding(
+                                          padding: padding,
+                                          child: IndoorControl(),
                                         ),
+                                        Spacer(flex: 3),
+                                      ],
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
