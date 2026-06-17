@@ -19,9 +19,6 @@ class BaldayDeeplink {
 
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 
-  // My location
-  static const String typeValueMyLocation = 'my-location';
-
   // By coordinates
   static const vendorConfigKey = 'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
   static const catalogKey = 'Modules/directory/webapi_url';

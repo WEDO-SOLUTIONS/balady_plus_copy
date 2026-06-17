@@ -861,12 +861,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
-      if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
-        _myLocationDeepLinkHandler(latitude, longitude);
-      } else {
-        await _delayIfFirstRun(isFirstRun: isFirstRun);
-        await _poiDeepLinkByCoords(latitude, longitude);
-      }
+      // we agreed to treat absence of objectId as it is My location and open the point immediately
+      _myLocationDeepLinkHandler(latitude, longitude);
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {

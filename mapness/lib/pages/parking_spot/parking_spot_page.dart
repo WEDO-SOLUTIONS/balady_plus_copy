@@ -317,7 +317,7 @@ class ParkingSpotPage extends HookConsumerWidget {
             final coordinates = markerCoords == null
                 ? null
                 : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
-            ShareUtil.sharePOI(parkingObjectId.toString(), context: context, markerCoords: coordinates);
+            ShareUtil.sharePOI(context: context, objectId: parkingObjectId.toString(), markerCoords: coordinates);
           },
         ),
       ],
