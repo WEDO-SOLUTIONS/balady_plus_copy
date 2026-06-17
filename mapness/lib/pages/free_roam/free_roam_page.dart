@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
+import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -20,7 +22,6 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
-import 'package:mapness/widgets/landing/sound_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:sheetify/sheetify.dart';
@@ -49,7 +50,6 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   Timer? timer;
 
   StreamSubscription? _naviEventsListener;
-  late final VoidCallback _deactivateFreeRoam;
 
   late final ToggleSheetController _bottomSheetController = ToggleSheetController(
     onClose: (_) => _bottomSheetController.close,
@@ -58,6 +58,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
   @override
   void initState() {
     super.initState();
+    // DataFinder: entering Free Roam sets the journey origin (BRD
+    // `Explore-Free Roam`), so a search/favorite from here is attributed to it.
+    // Deferred: modifying a provider directly in initState throws in Riverpod.
+    Future(() {
+      ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.freeRoam);
+    });
     WidgetsBinding.instance
       ..addPostFrameCallback((_) async {
         await SystemChrome.setPreferredOrientations([
@@ -68,12 +74,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
         ]);
       })
       ..addObserver(this);
-    final freeRoamManager = ref.read(freeRoamManagerProvider.notifier);
-    _deactivateFreeRoam = freeRoamManager.deactivate;
-    freeRoamManager.initFreeRoam().then((_) {
-      if (!mounted) {
-        return;
-      }
+    ref.read(freeRoamManagerProvider.notifier).initFreeRoam().then((_) {
       setState(() {
         isLoading = false;
       });
@@ -89,12 +90,11 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
-    context.changeSystemNavBar();
   }
 
   @override
   void deactivate() {
-    _deactivateFreeRoam();
+    ref.read(freeRoamManagerProvider.notifier).deactivate();
     super.deactivate();
   }
 
@@ -113,11 +113,8 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   Future<void> _listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    if (!mounted) {
-      return;
-    }
     _naviEventsListener = dgisController.navigationEvents.listen((event) {
-      if (event == NavigationEvent.disabled && context.mounted && mounted) {
+      if (event == NavigationEvent.disabled && context.mounted) {
         ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
       }
     });
@@ -181,14 +178,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                   padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                   child: ManeuverWidget(),
                 ),
-                const SizedBox(height: uikit.Spacing.$6x),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: uikit.Spacing.$3x),
-                    child: SoundControl(),
-                  ),
-                ),
+                const SizedBox(height: uikit.Spacing.$3x),
                 Expanded(
                   child: AnimatedOpacity(
                     opacity: isControlsActive ? 1 : 0,
@@ -209,9 +199,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                               ? const Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    TrafficParkingControl(
-                                      trafficVisible: false,
-                                    ),
+                                    TrafficParkingControl(),
                                     SizedBox(height: uikit.Spacing.$2x),
                                     DimensionControl(),
                                     Spacer(),

@@ -146,7 +146,11 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     if (favState?.home != null && favState?.work != null) {
       favNotifier.addItem(favItem);
     } else {
-      context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
+      // Build the rich POI here, where [data] (addr/type/marker) is available,
+      // so `favorite_add` reports poi_addr/poi_type/poi_distance.
+      final loc = ref.read(locationProvider);
+      final favoritePoi = data.toDataFinderPoi(myLat: loc?.latitude, myLon: loc?.longitude);
+      context.router.push(PoiFavoriteDialogRoute(favItem: favItem, favoritePoi: favoritePoi));
     }
   }
 
@@ -195,14 +199,8 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
 
   void _onShareTap(BuildContext context) {
     // Prefer makkahPlace.dgisId for sharing, fall back to data.id.objectId
-
     final shareId = makkahPlace?.dgisId ?? data.id?.objectId.toString();
-    final lat = makkahPlace?.lat ?? data.markerPosition?.latitude;
-    final lon = makkahPlace?.lon ?? data.markerPosition?.longitude;
-    final coordinates = lat != null && lon != null ? Coordinates(latitude: lat, longitude: lon) : null;
-    if (shareId == null || shareId == '0') {
-      return;
-    }
+    if (shareId == null || shareId == '0') return;
 
     // Track Makkah places share
     Metrics.logEventAdvanced(
@@ -215,7 +213,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
       },
     );
 
-    ShareUtil.sharePOI(shareId, context: context, markerCoords: coordinates);
+    ShareUtil.sharePOI(shareId, context: context);
   }
 
   @override
@@ -374,8 +372,8 @@ class _MakkahFooterSquareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconColor = isFilled
         ? (colors.actionButtonIconColor == MakkahPoiConstants.normalActionIconColor
-              ? MakkahPoiConstants.filledActionIconColor
-              : colors.actionButtonIconColor)
+            ? MakkahPoiConstants.filledActionIconColor
+            : colors.actionButtonIconColor)
         : colors.actionButtonIconColor;
     return AppButton(
       buttonColorScheme: ButtonColorScheme.neutral,
