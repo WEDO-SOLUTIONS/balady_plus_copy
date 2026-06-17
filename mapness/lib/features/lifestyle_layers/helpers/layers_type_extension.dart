@@ -61,9 +61,11 @@ extension LayerTypeExt on LayerType {
     LayerType.traffic => Assets.imagesSvg.layers.traffic.keyName,
     LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
     // Raster thumbnails — LayerSwitcherCard switches to Image.asset based on
-    // file extension. Files registered via assets/images/layers/ in pubspec.
-    LayerType.defaultMap => 'assets/images/layers/default_map.png',
-    LayerType.satellite => 'assets/images/layers/satellite.png',
+    // file extension. Use .keyName (not .path) so the package prefix is
+    // applied — mapness is consumed as a package by balady_plus, so bare
+    // asset paths do not resolve from the host app.
+    LayerType.defaultMap => Assets.images.layers.defaultMap.keyName,
+    LayerType.satellite => Assets.images.layers.satellite.keyName,
     // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
   };
 
