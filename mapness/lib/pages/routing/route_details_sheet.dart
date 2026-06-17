@@ -192,11 +192,10 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     PublicTransportTransferRouteLongEntryMessage transferEntry,
     BriefPublicTransportModel route,
     int index,
-  ) =>
-      RouteDetailsPublicTransportPedestrian(
-        length: transferEntry.length.millimeters,
-        isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, index),
-      );
+  ) => RouteDetailsPublicTransportPedestrian(
+    length: transferEntry.length.millimeters,
+    isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, index),
+  );
 
   /// Creates a metro transport entry
   RouteDetailsPublicTransport _createMetroTransport(
@@ -216,18 +215,19 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   }
 
   /// Builds route parts from transfer entry
-  List<RoutePart> _buildRouteParts(PublicTransportTransferRouteLongEntryMessage transferEntry) =>
-      transferEntry.value.routeParts
-          .map(
-            (routePart) => RoutePart(
-              stations: [
-                transferEntry.value.startPointName,
-                ...routePart.intermediateStops.map((stop) => stop.name),
-                transferEntry.value.finishPointName,
-              ],
-            ),
-          )
-          .toList();
+  List<RoutePart> _buildRouteParts(PublicTransportTransferRouteLongEntryMessage transferEntry) => transferEntry
+      .value
+      .routeParts
+      .map(
+        (routePart) => RoutePart(
+          stations: [
+            transferEntry.value.startPointName,
+            ...routePart.intermediateStops.map((stop) => stop.name),
+            transferEntry.value.finishPointName,
+          ],
+        ),
+      )
+      .toList();
 
   /// Gets the metro line color for the transport
   Color? _getMetroLineColor(BriefPublicTransportModel route, int index, BuildContext context) {
@@ -238,9 +238,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   }
 
   TwoStateSheet get _initialState => switch (widget.type) {
-        RouteDetailsSheetType.about => TwoStateSheet.expanded,
-        RouteDetailsSheetType.driving => TwoStateSheet.hidden,
-      };
+    RouteDetailsSheetType.about => TwoStateSheet.expanded,
+    RouteDetailsSheetType.driving => TwoStateSheet.hidden,
+  };
 }
 
 class _Header extends ConsumerStatefulWidget {
@@ -301,18 +301,22 @@ class _HeaderState extends ConsumerState<_Header> {
                             ),
                           ),
                           RichText(
-                            text: TextSpan(children: [
-                              TextSpan(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
                                   text: transfers,
                                   style: context.textStyles.bodySmallRegular.copyWith(
                                     color: context.colors.foregroundDefault,
-                                  )),
-                              TextSpan(
+                                  ),
+                                ),
+                                TextSpan(
                                   text: ' • $durationByFoot',
                                   style: context.textStyles.bodySmallRegular.copyWith(
                                     color: context.colors.foregroundSoft,
-                                  )),
-                            ]),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -336,45 +340,45 @@ class YouArrivedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: ui_kit.Spacing.$12x, top: ui_kit.Spacing.$2x),
-        child: Row(
+    padding: const EdgeInsets.only(bottom: ui_kit.Spacing.$12x, top: ui_kit.Spacing.$2x),
+    child: Row(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: context.colors.accentDefault,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            ui_kit.GeneralIcons.flag,
+            color: context.colors.accentOnAccent,
+            size: 24,
+          ),
+        ),
+        ui_kit.Spacing.$3x.widthBox,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: context.colors.accentDefault,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                ui_kit.GeneralIcons.flag,
-                color: context.colors.accentOnAccent,
-                size: 24,
+            Text(
+              context.l10n.arrivedPub,
+              style: context.textStyles.bodyLargeSemiBold.copyWith(
+                color: context.colors.foregroundDefault,
               ),
             ),
-            ui_kit.Spacing.$3x.widthBox,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.arrivedPub,
-                  style: context.textStyles.bodyLargeSemiBold.copyWith(
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
-                Text(
-                  context.l10n.thankYou,
-                  style: context.textStyles.bodySmallRegular.copyWith(
-                    color: context.colors.foregroundSoft,
-                  ),
-                ),
-              ],
+            Text(
+              context.l10n.thankYou,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.foregroundSoft,
+              ),
             ),
-            const Spacer(),
-            ui_kit.AppButton.close(onTap: onClose),
           ],
         ),
-      );
+        const Spacer(),
+        ui_kit.AppButton.close(onTap: onClose),
+      ],
+    ),
+  );
 }
 
 class _PublicTransportRoutes extends StatelessWidget {
@@ -392,52 +396,50 @@ class _PublicTransportRoutes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: height,
-        child: ListView.separated(
-          padding: const EdgeInsets.only(left: ui_kit.Spacing.$4x, right: ui_kit.Spacing.$4x),
-          scrollDirection: Axis.horizontal,
-          itemCount: routes.length,
-          itemBuilder: (context, index) {
-            final transfers = ArPlurals.transfers(routes[index].transferCount, context.l10n);
-            final isActive = index == activeIndex;
-            return InkWell(
-              onTap: () {
-                onActiveChanged(index);
-              },
-              child: Container(
-                constraints: const BoxConstraints(minWidth: 110),
-                padding: const EdgeInsets.all(ui_kit.Spacing.$2x),
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? context.colors.accentSecondaryDefault
-                      : context.colors.accentSecondaryOnAccentSecondary,
-                  borderRadius: BorderRadius.circular(ui_kit.RadiusBorder.l),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      routes[index].duration.formatDuration(context.l10n),
-                      style: context.textStyles.bodyLargeRegular.copyWith(
-                        color: isActive
-                            ? context.colors.accentSecondaryOnAccentSecondary
-                            : context.colors.foregroundDefault,
-                      ),
-                    ),
-                    ui_kit.Spacing.$1x.heightBox,
-                    Text(
-                      transfers,
-                      style: context.textStyles.bodySmallRegular.copyWith(
-                        color: isActive ? context.colors.accentSecondaryMuted : context.colors.foregroundSoft,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
+    height: height,
+    child: ListView.separated(
+      padding: const EdgeInsets.only(left: ui_kit.Spacing.$4x, right: ui_kit.Spacing.$4x),
+      scrollDirection: Axis.horizontal,
+      itemCount: routes.length,
+      itemBuilder: (context, index) {
+        final transfers = ArPlurals.transfers(routes[index].transferCount, context.l10n);
+        final isActive = index == activeIndex;
+        return InkWell(
+          onTap: () {
+            onActiveChanged(index);
           },
-          separatorBuilder: (context, index) => ui_kit.Spacing.$2x.widthBox,
-        ),
-      );
+          child: Container(
+            constraints: const BoxConstraints(minWidth: 110),
+            padding: const EdgeInsets.all(ui_kit.Spacing.$2x),
+            decoration: BoxDecoration(
+              color: isActive ? context.colors.accentSecondaryDefault : context.colors.backgroundSurface1,
+              borderRadius: BorderRadius.circular(ui_kit.RadiusBorder.l),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  routes[index].duration.formatDuration(context.l10n),
+                  style: context.textStyles.bodyLargeRegular.copyWith(
+                    color: isActive
+                        ? context.colors.accentSecondaryOnAccentSecondary
+                        : context.colors.foregroundDefault,
+                  ),
+                ),
+                ui_kit.Spacing.$1x.heightBox,
+                Text(
+                  transfers,
+                  style: context.textStyles.bodySmallRegular.copyWith(
+                    color: isActive ? context.colors.accentSecondaryMuted : context.colors.foregroundSoft,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      separatorBuilder: (context, index) => ui_kit.Spacing.$2x.widthBox,
+    ),
+  );
 }

@@ -18,7 +18,6 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
-import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_header.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
@@ -52,6 +51,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
   Color? _barrierColor;
   bool _showMoreQuickFilters = false;
+  DgisMapController? _dgisController;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
@@ -72,8 +72,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     }
 
-    ref.read(dgisControllerProvider).value?.stopFollowNavigation();
-    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+    _dgisController = ref.read(dgisControllerProvider).value;
+    _dgisController?.stopFollowNavigation();
+    _dgisController?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
 
     _multiStateSheetController = MultiStateSheetController<ThreeStateSheet>(
       behavior: MultiSnappingBehavior(
@@ -121,8 +122,8 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider).value?.startFollowNavigation();
-    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
+    _dgisController?.startFollowNavigation();
+    _dgisController?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     super.deactivate();
   }
 
@@ -182,7 +183,6 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               scrollController: _multiStateSheetController,
               outsideOpacityDelegate: outsideOpacityDelegate,
               barrierColorDelegate: barrierColorDelegate,
-              outside: NaviSearchSheetControls(_multiStateSheetController),
               safeAreaColor: _sheetState == ThreeStateSheet.hidden || _showMoreQuickFilters
                   ? context.colors.backgroundSurface1
                   : context.colors.backgroundSurface4,

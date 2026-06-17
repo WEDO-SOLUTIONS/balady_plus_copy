@@ -14,20 +14,20 @@ import './app/core/utils/utils_exports.dart' show EnvType;
 import './env.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  await unhandledExceptionBaladyLogs(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  final themeNotifier = BaladyThemeNotifier();
+    final themeNotifier = BaladyThemeNotifier();
 
-  await themeNotifier.init();
+    await themeNotifier.init();
 
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      systemNavigationBarColor: Color(0x00000000),
-      systemNavigationBarDividerColor: Color(0x00000000),
-    ),
-  );
-  unhandledExceptionBaladyLogs(() async {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0x00000000),
+        systemNavigationBarDividerColor: Color(0x00000000),
+      ),
+    );
     await runMapnessApp(EnvType.stg, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.prod);

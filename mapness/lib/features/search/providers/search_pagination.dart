@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -41,9 +40,6 @@ class SearchPagination extends _$SearchPagination {
       page = await dgisController.fetchNextPage(_currentPage!);
 
       final licenseIds = page.items.map((e) => e.tradeLicense?.license.trim()).nonNulls.toSet();
-      if (licenseIds.isNotEmpty) {
-        unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
-      }
     } catch (e) {
       return false;
     }

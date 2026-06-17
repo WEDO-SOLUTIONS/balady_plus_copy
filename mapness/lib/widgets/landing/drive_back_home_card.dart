@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
@@ -22,10 +23,16 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class DriveBackHomeCard extends ConsumerStatefulWidget {
-  const DriveBackHomeCard({super.key});
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
+
+  const DriveBackHomeCard({
+    required this.bottomSheetController,
+    super.key,
+  });
 
   @override
   ConsumerState<DriveBackHomeCard> createState() => _DriveBackHomeCardState();
@@ -51,10 +58,12 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
           height: 123,
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: context.colors.backgroundSurface5,
-              borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              boxShadow: Shadows.s,
+
+             //  color: context.colors.backgroundSurface5,
+              // borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              // boxShadow: Shadows.s,
               image: DecorationImage(
+
                 image: activeCityEvent.getDriveHomeBackground(isDark: isDark),
                 matchTextDirection: true,
                 fit: BoxFit.cover,
@@ -63,6 +72,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
             ),
             child: Stack(
               children: [
+
                 if (showBlueCircles) ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(RadiusBorder.xl),
@@ -82,17 +92,17 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                 Align(
                   alignment: AlignmentDirectional.topStart,
                   child: Padding(
-                    padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
+                    padding: const EdgeInsetsDirectional.only(top: 20.0, start: 22.0),
                     child: RichText(
                       text: TextSpan(
                         text: context.l10n.driveBack,
-                        style: context.textStyles.h3Medium.copyWith(
+                        style: context.textStyles.h3SemiBold.copyWith(
                           color: activeCityEvent?.textColor(context.colors) ?? context.colors.foregroundDefault,
                         ),
                         children: [
                           TextSpan(
                             text: '\n${context.l10n.homeQuestionMark}',
-                            style: context.textStyles.h3Medium.copyWith(color: context.colors.accentDefault),
+                            style: context.textStyles.h3SemiBold.copyWith(color: context.colors.accentDefault),
                           ),
                         ],
                       ),
@@ -110,31 +120,45 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   void tryOpenNavigationBackHome(BuildContext context, WidgetRef ref) {
     final locationLabel = context.l10n.myLocation;
     final homeLabel = context.l10n.home;
-    final router = context.router;
+    final router = ref.read(appRouterProvider);
 
     debouncer.debounce(
-      () async => ref
-          .read(authMethodsProvider.notifier)
-          .authAndOpen(
-            context,
-            callback: () async => authAndOpenNavigator(
-              ref,
-              router,
-              locationLabel,
-              homeLabel,
-            ),
-          ),
+      () async {
+        hideLandingSheet();
+        await waitForLandingSheetToSettle();
+        if (!mounted || !context.mounted) {
+          return;
+        }
+        await ref
+            .read(authMethodsProvider.notifier)
+            .authAndOpen(
+              context,
+              callback: () async => authAndOpenNavigator(
+                ref,
+                router,
+                locationLabel,
+                homeLabel,
+              ),
+            );
+      },
     );
   }
 
   Future<void> authAndOpenNavigator(WidgetRef ref, StackRouter router, String locationLabel, String homeLabel) async {
+
     /// Force update authProvider when the user was not authenticated to get relavant favorites.
     final isAuth = ref.read(authProvider).value != null;
     if (!isAuth) {
       await ref.read(authProvider.notifier).forceUpdate();
+      if (!mounted) {
+        return;
+      }
     }
 
     final home = await getHome(router);
+    if (!mounted) {
+      return;
+    }
 
     /// If no home, exit from the function and not openning navigator to driving back home.
     if (home == null) {
@@ -149,8 +173,17 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
     final (startLocation, finishLocation) = locations;
 
+    hideLandingSheet();
+    await waitForLandingSheetToSettle();
+    if (!mounted) {
+      return;
+    }
+
     await setupMap(ref);
-    await openNavigation(ref, locationLabel, homeLabel, startLocation, finishLocation);
+    if (!mounted) {
+      return;
+    }
+    await openNavigation(router, locationLabel, homeLabel, startLocation, finishLocation);
   }
 
   Future<FavouriteItem?> getHome(StackRouter router) async {
@@ -160,8 +193,18 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
     /// If there is no home ask user to add it.
     if (home == null) {
-      await router.push(FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home));
-      return ref.refresh(favouriteCacheProvider).value?.home;
+      hideLandingSheet();
+      await waitForLandingSheetToSettle();
+      if (!mounted) {
+        return null;
+      }
+      final selectedHome = await router.push<FavouriteItem>(
+        FavouritesSearchRoute(markerType: FavouriteItemMarkerType.home),
+      );
+      if (selectedHome != null) {
+        await Future<void>.delayed(const Duration(milliseconds: 200));
+      }
+      return selectedHome;
     }
     return home;
   }
@@ -184,12 +227,12 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   }
 
   Future<void> openNavigation(
-    WidgetRef ref,
+    StackRouter router,
     String locationLabel,
     String homeLabel,
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
-  ) async => context.router.push(
+  ) async => router.push(
     RoutingRoutesRoute(
       points: [
         RouteParamsPointWithLabel(value: startLocation, label: locationLabel),
@@ -206,6 +249,17 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
       ],
     ),
   );
+
+  void hideLandingSheet() {
+    if (widget.bottomSheetController.closestState != ThreeStateSheet.hidden) {
+      widget.bottomSheetController.setState(
+        ThreeStateSheet.hidden,
+        duration: const Duration(milliseconds: 1),
+      );
+    }
+  }
+
+  Future<void> waitForLandingSheetToSettle() => Future<void>.delayed(const Duration(milliseconds: 32));
 
   Future<void> setupMap(WidgetRef ref) async {
     final mapSetting = MapObjectManagerSettings.search();

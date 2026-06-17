@@ -1,8 +1,11 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -22,6 +25,8 @@ import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
+import '../../../features/special_themes/core/special_theme_mode.dart';
+
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 
 class SearchItemQuickActions extends HookConsumerWidget {
@@ -39,6 +44,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final objectId = directoryObject.id?.objectId;
+    final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
+    final isDGAlight = context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     ref.watch(favouriteCacheProvider).value;
     final provider = ref.watch(favouriteCacheProvider.notifier);
@@ -73,13 +80,20 @@ class SearchItemQuickActions extends HookConsumerWidget {
         .toList()
         .firstOrNull;
     final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+    final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final bool isBaseTheme = specialThemeMode == SpecialThemeMode.base || specialThemeMode == SpecialThemeMode.base;
     final colorScheme = isFoundingDay ? ButtonColorScheme.accent : ButtonColorScheme.accentSecondary;
-
     final actions = [
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
+        border:isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+        borderRadius: 4,
         colorScheme: colorScheme,
+        iconSize: 15,
+        bgColor: context.colors.staticTiffany,
+        labelColor: context.colors.accentSecondaryOnAccentSecondary,
+        iconColor: context.colors.accentSecondaryOnAccentSecondary,
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
@@ -98,10 +112,15 @@ class SearchItemQuickActions extends HookConsumerWidget {
             ),
             ref,
           );
-        },
+        }
       ),
+
       ItemActionBar(
         icon: iconData,
+        iconSize: 15,
+        bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
+        border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+        borderRadius: 4,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
         onPressed: () {
@@ -129,7 +148,10 @@ class SearchItemQuickActions extends HookConsumerWidget {
         },
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: SystemIcons.share,
+          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
@@ -137,9 +159,12 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ),
       if (phoneNumber != null)
         ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: GeneralIcons.phoneLTR,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           onPressed: () {
             BssService.instance.trackCallTap(directoryObject, phoneNumber);
             poiActions.callPhone(phoneNumber);
@@ -147,9 +172,12 @@ class SearchItemQuickActions extends HookConsumerWidget {
         ),
       if (website != null)
         ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: GeneralIcons.web,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          border: isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
             poiActions.launch(website);
@@ -157,9 +185,12 @@ class SearchItemQuickActions extends HookConsumerWidget {
         ),
       if (website == null && socialMedia != null)
         ItemActionBar(
+          bgColor: isDGADark ? context.colors.neutralMuted : isDGAlight ? context.colors.neutralOnNeutral : null,
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
+          border:isBaseTheme?BorderSide(color: context.colors.borderDefault, width: 1):null,
+          borderRadius: 4,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
             poiActions.launch(socialMedia.link);

@@ -29,16 +29,25 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
       final routes = context.router.stack;
       prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
 
       // Hide Makkah place markers when regular POI is open
-      // ignore: avoid_print
-      print('[MakkahPinDebug] Wrapper: initState setActive(true)');
+      if (kDebugMode) {
+        logger.log('[MakkahPinDebug] Wrapper: initState setActive(true)');
+      }
       ref.read(regularPoiActiveProvider.notifier).setActive(true);
     });
 
     Future.delayed(Duration.zero, () {
+      if (!mounted) {
+        return;
+      }
+
       final isFoundinDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
 
       final isFoundingDayObject = ref
@@ -138,7 +147,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
           );
         },
       )
-      ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
           _clearPoiSelectionState();

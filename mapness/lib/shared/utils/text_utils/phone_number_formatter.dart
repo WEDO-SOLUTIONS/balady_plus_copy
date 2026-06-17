@@ -28,6 +28,15 @@ import 'package:flutter/services.dart';
 /// - [TextInputFormatter]
 /// - [TextEditingValue]
 
+String _convertArabicDigits(String text) {
+  const arabic = '٠١٢٣٤٥٦٧٨٩';
+  return text.splitMapJoin(
+    RegExp('[٠-٩]'),
+    onMatch: (m) => arabic.indexOf(m[0]!).toString(),
+    onNonMatch: (s) => s,
+  );
+}
+
 class PhoneNumberFormatter extends TextInputFormatter {
   static const _arabicCountyCode = '966';
   static const arabicPhoneNumberMinLength = 12;
@@ -38,7 +47,7 @@ class PhoneNumberFormatter extends TextInputFormatter {
   /// Formats the given [text] by removing any non-digit characters.
   ///
   /// TODO(ilyasov): extract to a separate utility class.
-  static String formatPure(String text) => text.replaceAll(RegExp(r'\D'), '');
+  static String formatPure(String text) => _convertArabicDigits(text).replaceAll(RegExp(r'\D'), '');
 
   @override
   TextEditingValue formatEditUpdate(
@@ -46,8 +55,8 @@ class PhoneNumberFormatter extends TextInputFormatter {
     TextEditingValue newValue,
   ) {
     final initialMask = '+$countyCode (';
-    // Remove any non-digit characters
-    String digitsOnly = newValue.text.replaceAll(RegExp(r'\D'), '');
+    // Remove any non-digit characters (convert Arabic digits first)
+    String digitsOnly = _convertArabicDigits(newValue.text).replaceAll(RegExp(r'\D'), '');
 
     // Apply the mask
     final StringBuffer formatted = StringBuffer(initialMask);

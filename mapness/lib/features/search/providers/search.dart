@@ -13,7 +13,6 @@ import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_mappers.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -736,18 +735,28 @@ class Search extends _$Search {
       }
     }
 
-    if (results.representativeArea != null && points.length > 1) {
-      await _animateToRepresentativeArea(results: results);
-      return;
-    }
+    final userLocation = ref.read(locationProvider);
+    final orderedPoints = userLocation == null
+        ? points
+        : (points.toList()
+          ..sort((a, b) {
+            final dA = _squaredDistance(a, userLocation.latitude, userLocation.longitude);
+            final dB = _squaredDistance(b, userLocation.latitude, userLocation.longitude);
+            return dA.compareTo(dB);
+          }));
 
     await ref
         .read(cameraPositionProvider.notifier)
         .animateToGeoPoints(
-          points.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
+          orderedPoints.take(max(_minVisibleQuickFilterPlaces, visiblePlacesCount)).toList(),
           options: _quickFilterCameraOptions(),
-          keepCameraPositionPoint: true,
         );
+  }
+
+  double _squaredDistance(GeoPointMessage point, double lat, double lng) {
+    final dLat = point.latitude - lat;
+    final dLng = point.longitude - lng;
+    return dLat * dLat + dLng * dLng;
   }
 
   List<GeoPointMessage> _uniqueResultPoints(SearchResultMessage results) {
@@ -809,9 +818,9 @@ class Search extends _$Search {
   }) async {
     final licenseIds = results.firstPage?.items.map((e) => e.tradeLicense?.license.trim()).nonNulls.toSet();
 
-    if (licenseIds != null && licenseIds.isNotEmpty) {
-      unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
-    }
+    // if (licenseIds != null && licenseIds.isNotEmpty) {
+    //   unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
+    // }
 
     _reportResultsExposure(results, searchQuery);
 

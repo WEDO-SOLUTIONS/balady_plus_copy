@@ -7,7 +7,6 @@ import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -19,6 +18,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
@@ -37,12 +37,19 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final bool showLeadingBackButton;
   final VoidCallback? onLeadingBackPressed;
 
+  /// Fires synchronously on every tap on the field, before focus / keyboard work.
+  /// Parents use this to expand the enclosing bottom sheet without waiting for
+  /// `flutter_keyboard_visibility`, whose `onChange` signal is unreliable on
+  /// Android when the keyboard reopens on the same screen (BALADY-3580).
+  final VoidCallback? onTap;
+
   const MapSearchBar({
     required this.requestFocus,
     required this.onClose,
     this.isCloseButton = false,
     this.showLeadingBackButton = false,
     this.onLeadingBackPressed,
+    this.onTap,
     super.key,
     this.initialState,
   });
@@ -56,6 +63,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   late final FocusNode _focusNode;
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
+  bool _initialFocusScheduled = false;
+  Animation<double>? _routeAnimation;
+  void Function(AnimationStatus)? _routeAnimationStatusListener;
 
   /// DataFinder: tracks the first focus of the search box for `is_first_click`.
   bool _searchBoxClicked = false;
@@ -92,12 +102,11 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     _controller = _MapSearchTextEditingController();
     _focusNode = FocusNode();
     // DataFinder: fire `search_box_click` whenever the box GAINS FOCUS, not just
-    // on a manual tap — this covers programmatic auto-focus on open (BRD:
-    // "Triggered when the search box gains focus").
+    // on a manual tap — this covers the programmatic auto-focus on open (BRD:
+    // "Triggered when the search box gains focus"). The initial focus itself is
+    // deferred to `_scheduleInitialFocus()` (dev) so the keyboard doesn't fight
+    // the route animation; the listener still catches that deferred focus-gain.
     _focusNode.addListener(_onFocusChanged);
-    if (widget.requestFocus) {
-      _safeFocusAction(_focusNode.requestFocus);
-    }
     if (widget.initialState != null) {
       _updateText(widget.initialState!);
       ref.read(searchProvider(_scope).notifier).fetchSuggest(_controller.text);
@@ -136,9 +145,37 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     _searchBoxClicked = true;
   }
 
+  /// Defers initial keyboard until the page transition animation completes —
+  /// otherwise the keyboard fights the route animation and the user perceives lag.
+  void _scheduleInitialFocus() {
+    if (_initialFocusScheduled || !widget.requestFocus) {
+      return;
+    }
+    _initialFocusScheduled = true;
+    final animation = ModalRoute.of(context)?.animation;
+    if (animation == null || animation.status == AnimationStatus.completed) {
+      _safeFocusAction(_focusNode.requestFocus);
+      return;
+    }
+    void listener(AnimationStatus status) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        animation.removeStatusListener(listener);
+        _routeAnimation = null;
+        _routeAnimationStatusListener = null;
+        if (mounted && status == AnimationStatus.completed) {
+          _safeFocusAction(_focusNode.requestFocus);
+        }
+      }
+    }
+    _routeAnimation = animation;
+    _routeAnimationStatusListener = listener;
+    animation.addStatusListener(listener);
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _scheduleInitialFocus();
     _searchSubscription?.close();
     final scope = context.read<SearchScope>();
     _searchSubscription = ref.listenManual<SearchState>(
@@ -181,6 +218,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
+    final listener = _routeAnimationStatusListener;
+    if (listener != null) {
+      _routeAnimation?.removeStatusListener(listener);
+    }
+    _routeAnimation = null;
+    _routeAnimationStatusListener = null;
     _searchSubscription?.close();
     _controller.dispose();
     _focusNode
@@ -211,12 +254,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
-    ref.watch(poiOffersProvider.select((_) => null));
-
     return _buildSearchRow(context, scope, searcher);
   }
 
   Widget _buildSearchRow(BuildContext context, SearchScope scope, Search searcher) {
+    late final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+
     // Always keep BaladySearch under Expanded — never swap between "bare" vs Row+Expanded.
     // Otherwise toggling showLeadingBackButton disposes the text field; if uikit disposes the
     // passed controller, our State still owns a dead controller and crashes next sync.
@@ -227,6 +270,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           isDisposed: false,
           focusNode: _focusNode,
+          fillColor: isDark?context.colors.neutralMuted: context.colors.staticWhite,
+
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
@@ -256,6 +301,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
+            // Notify parent first so it can synchronously expand the enclosing
+            // bottom sheet — this is the reliable signal on Android, instead of
+            // waiting for `flutter_keyboard_visibility` (BALADY-3580).
+            widget.onTap?.call();
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             // DataFinder: the FIRST search_box_click comes from the focus
             // listener (covers auto-focus on open). Genuine RE-taps after the
@@ -313,20 +362,48 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             _safeFocusAction(_focusNode.requestFocus);
           },
           hintText: context.l10n.searchPlaceOrAddress,
-          fillColor: context.colors.neutralContainerDefault,
           hintColor: context.colors.foregroundSoft,
           textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
-      option: widget.showLeadingBackButton
-          ? null
-          : widget.isCloseButton
-          ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
-          : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
+      // option: widget.showLeadingBackButton
+      //     ? null
+      //     : widget.isCloseButton
+      //     ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
+      //     : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
     );
 
+    final borderedSearchField = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+        border: Border.all(
+          color: context.colors.borderSoft,
+          width: 1,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius:  BorderRadius.circular(5),
+
+        child: searchField,
+      ),
+    );
     if (!widget.showLeadingBackButton) {
-      return searchField;
+      return Row(
+        children: [
+          Expanded(child: borderedSearchField),
+          const SizedBox(width: Spacing.$3x),
+          GestureDetector(
+            onTap: () => _onBackPressed(searcher),
+            child: Text(
+              context.l10n.cancel,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.accentDefault,
+              ),
+            ),
+          ),
+        ],
+      );
     }
 
     return Row(
@@ -340,8 +417,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         ),
         const SizedBox(width: Spacing.$3x),
-        Expanded(child: searchField),
-      ],
+        Expanded(child: borderedSearchField),      ],
     );
   }
 

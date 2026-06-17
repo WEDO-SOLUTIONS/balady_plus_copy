@@ -113,7 +113,7 @@ class DynamicPoiVisibility {
     final raw = await AppConfigLoader.getDynamicPoiVisibility();
     if (raw == null || raw.trim().isEmpty) {
       logger.log(
-        '[DynamicPoiDebug] visibility config missing — falling back to '
+        'dynamic_poi:visibility config missing — falling back to '
         '$fallback',
         logLevel: MapnessLogLevel.info,
       );
@@ -128,13 +128,13 @@ class DynamicPoiVisibility {
       final polygon = _windowFromJson(json['polygon']) ?? fallback.polygonWindow;
       final result = DynamicPoiVisibility(markerWindow: marker, polygonWindow: polygon);
       logger.log(
-        '[DynamicPoiDebug] visibility config loaded marker=$marker polygon=$polygon',
+        'dynamic_poi:visibility config loaded marker=$marker polygon=$polygon',
         logLevel: MapnessLogLevel.info,
       );
       return result;
     } catch (e) {
       logger.log(
-        '[DynamicPoiDebug] visibility config parse failed ($e) — falling back to $fallback',
+        'dynamic_poi:visibility config parse failed ($e) — falling back to $fallback',
         logLevel: MapnessLogLevel.warning,
       );
       return fallback;

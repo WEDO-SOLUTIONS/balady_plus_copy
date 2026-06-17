@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member
+
 import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
@@ -17,8 +19,7 @@ import 'package:path_provider/path_provider.dart';
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
-class MiniAppsEngineBloc
-    extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
+class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniApp miniApp;
 
   CustomInAppLocalhostServer? localhostServer;
@@ -41,38 +42,26 @@ class MiniAppsEngineBloc
   String getLocalizedURL(String serviceUrl) {
     if (serviceUrl.contains("ewaa") && CommonFunctions.isAppAR == false) {
       serviceUrl = "$serviceUrl/en/normal_profile";
-    } else if (serviceUrl.contains("/ar/") &&
-        CommonFunctions.isAppAR == false) {
+    } else if (serviceUrl.contains("/ar/") && CommonFunctions.isAppAR == false) {
       serviceUrl = serviceUrl.replaceAll("/ar/", "/en/");
     }
 
     return serviceUrl;
   }
 
-  void _checkMiniAppsEngine(
-    CheckMiniAppsEngineEvent event,
-    Emitter emit,
-  ) async {
+  void _checkMiniAppsEngine(CheckMiniAppsEngineEvent event, Emitter emit) async {
     if (event.miniApp.latestVersion?.serviceUrl != null) {
       if (event.miniApp.nafathLogin) {
         GetCookie getCookie = GetCookie(repository: sl());
+        // ignore: unused_local_variable
         final failureOrSuccessForCookie = await getCookie(true);
       }
-      String serviceUrl = getLocalizedURL(
-        event.miniApp.latestVersion!.serviceUrl!,
-      );
+      String serviceUrl = getLocalizedURL(event.miniApp.latestVersion!.serviceUrl!);
 
-      emit(
-        MiniAppsEngineLoadedState(
-          servicePath: serviceUrl,
-          path: event.miniApp.path ?? "",
-        ),
-      );
+      emit(MiniAppsEngineLoadedState(servicePath: serviceUrl, path: event.miniApp.path ?? ""));
     } else {
-      basePathService =
-          "${(await getApplicationDocumentsDirectory()).path}/www/";
-      String dir =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
+      basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
+      String dir = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
@@ -86,10 +75,7 @@ class MiniAppsEngineBloc
     return;
   }
 
-  void _downloadMiniAppsEngine(
-    DownloadMiniAppsEngineEvent event,
-    Emitter emit,
-  ) async {
+  void _downloadMiniAppsEngine(DownloadMiniAppsEngineEvent event, Emitter emit) async {
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
     serviceDownloadPath = "$basePathService${event.miniApp.serviceKey}";
@@ -98,13 +84,11 @@ class MiniAppsEngineBloc
     // chick if have old version of the app delete it
     if (exists) {
       await directoryApp.delete(recursive: true);
-      serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
-      serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
@@ -118,11 +102,7 @@ class MiniAppsEngineBloc
       await unarchiveAndSave(zippedFile, serviceDownloadPath!);
       add(OpenServerEngineEvent(miniApp: event.miniApp));
     } else {
-      emit(
-        const MiniAppsEngineErrorState(
-          errorMessage: "Failed to download the file",
-        ),
-      );
+      emit(const MiniAppsEngineErrorState(errorMessage: "Failed to download the file"));
     }
   }
 
@@ -143,14 +123,12 @@ class MiniAppsEngineBloc
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       if (state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState =
-            state as MiniAppsEngineLoadingState;
+        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
         if (!tempState.progress.contains("100")) {
           return;
         }
       }
-      String pathService =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
+      String pathService = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       CommonProperties.currentLocalServerDirectory = pathService;
 
       /// Testing implementation
@@ -161,27 +139,15 @@ class MiniAppsEngineBloc
       /// Real implementation
       int portToUse =
           event.miniApp.portNumber ??
-          PortHelper.generateRandomPort(
-            portNumber,
-            event.miniApp.name,
-            event.miniApp.serviceKey,
-          );
+          PortHelper.generateRandomPort(portNumber, event.miniApp.name, event.miniApp.serviceKey);
 
       if (PortHelper.isPortUnsafe(portToUse)) {
-        portToUse = PortHelper.generateRandomPort(
-          portToUse,
-          event.miniApp.name,
-          event.miniApp.serviceKey,
-        );
+        portToUse = PortHelper.generateRandomPort(portToUse, event.miniApp.name, event.miniApp.serviceKey);
       }
 
       if (localhostServer == null || localhostServer!.port != portToUse) {
         localhostServer = CustomInAppLocalhostServer(
-          PlatformInAppLocalhostServerCreationParams(
-            documentRoot: pathService,
-            port: portToUse,
-            shared: true,
-          ),
+          PlatformInAppLocalhostServerCreationParams(documentRoot: pathService, port: portToUse, shared: true),
         );
       }
 
@@ -195,23 +161,14 @@ class MiniAppsEngineBloc
 
       String servicePath = "http://localhost:${localhostServer!.port}/";
 
-      emit(
-        MiniAppsEngineLoadedState(
-          servicePath: servicePath,
-          path: event.miniApp.path ?? "",
-        ),
-      );
+      emit(MiniAppsEngineLoadedState(servicePath: servicePath, path: event.miniApp.path ?? ""));
     } catch (e) {
       // print(e.toString());
       print('Error in _openLocalHostServer: ${e.toString()}');
       add(
         OpenServerEngineEvent(
           miniApp: event.miniApp.copyWith(
-            portNumber: PortHelper.generateRandomPort(
-              portNumber,
-              event.miniApp.name,
-              event.miniApp.serviceKey,
-            ),
+            portNumber: PortHelper.generateRandomPort(portNumber, event.miniApp.name, event.miniApp.serviceKey),
           ),
         ),
       );
@@ -229,15 +186,11 @@ class MiniAppsEngineBloc
     try {
       Response response = await webService.dio.get(
         urlDownload,
-     //   "https://drive.usercontent.google.com/download?id=1LlfZAkq_jnsRomZ8M9gNuWwXD8fRFZ2w&export=download&authuser=0&confirm=t&uuid=c0e9e789-4f4a-45d3-9198-9a50da263b2d&at=APcXIO21OZ4UYXcyXPpVSDYhSOLQ:1772538036067",
+        //   "https://drive.usercontent.google.com/download?id=1LlfZAkq_jnsRomZ8M9gNuWwXD8fRFZ2w&export=download&authuser=0&confirm=t&uuid=c0e9e789-4f4a-45d3-9198-9a50da263b2d&at=APcXIO21OZ4UYXcyXPpVSDYhSOLQ:1772538036067",
         //  "https://drive.usercontent.google.com/download?id=1C4oR_afe51mlTI2UxaUBHVM-GEh8udKS&export=download&authuser=0&confirm=t&uuid=ea8ba0b1-bbc9-483f-a2b7-405087900911&at=APcXIO1V5DcJuxsmxv3xh7u14kle:1772532129488",
         onReceiveProgress: (received, total) {
           if (total != -1) {
-            emitter(
-              MiniAppsEngineLoadingState(
-                progress: (received / total * 100).toStringAsFixed(1),
-              ),
-            );
+            emitter(MiniAppsEngineLoadingState(progress: (received / total * 100).toStringAsFixed(1)));
           }
         },
         options: Options(
@@ -255,13 +208,7 @@ class MiniAppsEngineBloc
     } catch (error) {
       if (retryCounter < 3) {
         // Retry downloading the file up to 3 times
-        return _downloadFile(
-          urlDownload,
-          downloadPath,
-          serviceKey,
-          emitter,
-          retryCounter: retryCounter + 1,
-        );
+        return _downloadFile(urlDownload, downloadPath, serviceKey, emitter, retryCounter: retryCounter + 1);
       } else {
         emit(const FailedDownloadState());
       }

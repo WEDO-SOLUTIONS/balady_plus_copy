@@ -48,46 +48,48 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
             return SizedBox(
               key: ValueKey('unfav_${unFavApp.id}'),
               width: context.screenWidth,
-              height: context.h(64),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Theme.of(context).colorScheme.onSurface.withAlpha(15)),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          AppsGroupMiniAppsCardWidgets(
-                            width: context.w(48.09228515625),
-                            height: context.h(48.09228515625),
-                            iconHeight: context.h(37.73630905151367),
-                            iconWidth: context.w(37.73630905151367),
-                            isTextRemove: true,
-                            iconPath: unFavApp.iconPath,
-                            radius: 12.7,
-                          ),
-                          SizedBox(width: context.screenWidth * 0.02),
-                          CustomSubHeadingText(
-                            width: context.w(192),
-                            height: context.h(30),
-                            text: unFavApp.name,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ],
-                      ),
-                      CustomMiniAppSwitch(
+              height: context.h(70),
+              child: Card(
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        AppsGroupMiniAppsCardWidgets(
+                          isActive: false,
+                          width: context.w(48.09228515625),
+                          height: context.h(48.09228515625),
+                          iconHeight: context.h(37.73630905151367),
+                          iconWidth: context.w(37.73630905151367),
+                          isTextRemove: true,
+                          iconPath: unFavApp.iconPath,
+                          radius: 8,
+                        ),
+                        // SizedBox(width: context.screenWidth * 0.02),
+                        CustomSubHeadingText(
+                          isTextCenter: false,
+                          maxLines: 2,
+                          autoSizeMaxFont: 15,
+                          autoSizeMinFont: 9,
+                          width: context.w(192),
+                          height: context.h(30),
+                          text: unFavApp.name,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 15,
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: CustomMiniAppSwitch(
                         isActive: false,
                         onChanged: (_) {
                           context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(unFavApp.id);
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );

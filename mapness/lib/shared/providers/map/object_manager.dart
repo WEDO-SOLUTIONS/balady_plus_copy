@@ -84,6 +84,9 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.makkahBus() =>
       const MapObjectManagerSettings._(name: 'makkah-bus', layerId: MapObjectLayers.defaultLayerId);
 
+  factory MapObjectManagerSettings.jeddahBus() =>
+      const MapObjectManagerSettings._(name: 'jeddah-bus', layerId: MapObjectLayers.defaultLayerId);
+
   factory MapObjectManagerSettings.shuttleBus() =>
       const MapObjectManagerSettings._(name: 'shuttle-bus', layerId: MapObjectLayers.defaultLayerId);
 

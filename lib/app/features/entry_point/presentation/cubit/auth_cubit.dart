@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/domain/use_cases/get_gis_data.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -82,9 +83,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
        _getEkramPermission = GetEkramPermission(repository: sl()),
        // _getGisData = getGisData,
        super(const EntryPointState()) {
-    sl<LocationCubit>().getLocationInit();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sl<LocationCubit>().getLocationInit();
+      Permission.notification.request();
+    });
     refreshAPIGeeToken();
-    Permission.notification.request();
     // Restore authentication state on app startup (non-blocking)
    // unawaited(_restoreAuthState());
   }
@@ -476,6 +479,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
     CommonFunctions.showError("session_ended_error".tr());
     EasyLoading.dismiss();
+  }
+
+  /// Persists and broadcasts profile edits (e.g. OTP user name changes from mapness).
+  Future<void> applyUserInfo(SsoUserInfo userInfo) async {
+    final failureOrSuccess = await _saveSSOProfile(userInfo);
+    if (failureOrSuccess.isRight()) {
+      emit(state.copyWith(userInfo: userInfo));
+    }
   }
 
   Future<void> refreshSSOProfile() async {

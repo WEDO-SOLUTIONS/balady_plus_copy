@@ -43,20 +43,27 @@ class _LandscapeLayout extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   maneuverAndLimitWidget,
-                  const Spacer(),
-                ValueListenableBuilder(
-                valueListenable: showControls,
-                builder: (context, isVisible, child) => AnimatedOpacity(
-                  opacity: isVisible ? 1 : 0,
-                  duration: const Duration(milliseconds: 250),
-                  child: IgnorePointer(ignoring: !isVisible,
-                    // TODO: MBC - Uncomment for next release
-                    // child: const RadioContextualButton(),
-                    child: const SizedBox.shrink(),
+                  const SizedBox(height: uikit.Spacing.$6x),
+                  const Padding(
+                    padding: EdgeInsetsDirectional.only(start: uikit.Spacing.$3x, top: uikit.Spacing.$6x),
+                    child: SoundControl(),
                   ),
-                ),
-              ),
-              const SizedBox(height: 60)],
+                  const Spacer(),
+                  ValueListenableBuilder(
+                    valueListenable: showControls,
+                    builder: (context, isVisible, child) => AnimatedOpacity(
+                      opacity: isVisible ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: IgnorePointer(
+                        ignoring: !isVisible,
+                        // TODO: MBC - Uncomment for next release
+                        // child: const RadioContextualButton(),
+                        child: const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 60),
+                ],
               ),
             ),
             ValueListenableBuilder(
@@ -70,12 +77,12 @@ class _LandscapeLayout extends StatelessWidget {
                       duration: const Duration(milliseconds: 250),
                       child: IgnorePointer(
                         ignoring: !isVisible,
-                        child: Column(
+                        child: const Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const TrafficParkingControl(parkingVisible: false),
-                            const SizedBox(height: uikit.Spacing.$2x),
-                            const DimensionControl(),
+                            TrafficParkingControl(parkingVisible: false),
+                            SizedBox(height: uikit.Spacing.$2x),
+                            DimensionControl(),
                           ],
                         ),
                       ),

@@ -250,6 +250,7 @@ extension Map {
         return styleFactory.loadFile(path: assetPath).sink(
             receiveValue: { style in
                 self.style = style
+                self.attributes.setAttributeValue(name: "split_screen_on", value: .boolean(true))
             },
             failure: { _ in }
         )

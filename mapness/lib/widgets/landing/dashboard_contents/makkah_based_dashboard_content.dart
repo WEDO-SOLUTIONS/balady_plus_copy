@@ -15,7 +15,6 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard_actions.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_config.dart';
-import 'package:mapness/widgets/landing/dashboard_offers_row.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
 import 'package:mapness/widgets/landing/place_preview_makkah.dart';
@@ -260,8 +259,6 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.$4x),
-        const SizedBox(height: Spacing.$6x),
-        const DashboardOffersRow(),
         const SizedBox(height: Spacing.$6x),
         if (!themeConfig.useThemedExploreBackground) ...[
           DashboardTitle(context.l10n.exploreNearby),

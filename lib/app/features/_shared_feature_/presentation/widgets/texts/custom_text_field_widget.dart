@@ -185,7 +185,10 @@ class CustomTextFieldWidget extends StatelessWidget {
           ),
           inputFormatters: inputFormatters ??
               [
-                if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
+                if (isDigitsOnly) ...[
+                  _arabicToLatinDigits,
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 if (allowedInputPattern != null)
                   FilteringTextInputFormatter.allow(allowedInputPattern!),
                 if (deniedInputPattern != null)
@@ -479,8 +482,10 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                     textInputAction: textInputAction,
                     inputFormatters: inputFormatter ??
                         [
-                          if (isDigitsOnly)
+                          if (isDigitsOnly) ...[
+                            _arabicToLatinDigits,
                             FilteringTextInputFormatter.digitsOnly,
+                          ],
                         ],
                     style: textFieldStyle ??
                         const TextStyle(
@@ -722,7 +727,10 @@ class _CustomTextFieldWithValueWidgetState
           ),
           inputFormatters: widget.inputFormatters ??
               [
-                if (widget.isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
+                if (widget.isDigitsOnly) ...[
+                  _arabicToLatinDigits,
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 if (widget.allowedInputPattern != null)
                   FilteringTextInputFormatter.allow(
                       widget.allowedInputPattern!),
@@ -874,3 +882,13 @@ class _CustomTextFieldWithValueWidgetState
   Color get fieldBorderFocusedColor =>
       widget.borderColor ?? AppColor.primary900Light;
 }
+
+final _arabicToLatinDigits = TextInputFormatter.withFunction((oldValue, newValue) {
+  const arabic = '٠١٢٣٤٥٦٧٨٩';
+  final converted = newValue.text.splitMapJoin(
+    RegExp('[٠-٩]'),
+    onMatch: (m) => arabic.indexOf(m[0]!).toString(),
+    onNonMatch: (s) => s,
+  );
+  return converted == newValue.text ? newValue : newValue.copyWith(text: converted);
+});

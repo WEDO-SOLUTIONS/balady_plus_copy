@@ -82,7 +82,6 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
                 title: context.l10n.profileInfo,
                 colorEnabled: context.colors.accentDefault,
                 leading: ActionModel(
-                  text: context.l10n.back,
                   onPressed: () => context.router.pop(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
@@ -96,7 +95,10 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
                     child: Column(
                       children: [
                         if (userData != null)
-                          PersonalData(userInfo: userData),
+                          PersonalData(
+                            userInfo: userData,
+                            showImpl: kPersonalDataShowImpl,
+                          ),
                       ],
                     ),
                   ),

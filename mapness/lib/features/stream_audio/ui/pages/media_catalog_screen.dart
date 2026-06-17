@@ -1,10 +1,11 @@
 // import 'dart:math' as math;
 import 'dart:ui';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,7 @@ import 'package:mapness/features/stream_audio/ui/widgets/channel_item.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class MediaCatalogPage extends ConsumerStatefulWidget {
@@ -32,11 +34,11 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: SystemUiOverlayStyle.dark,
+    value: context.read<ThemeController>().systemOverlayStyle,
     child: Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar.iconAndText(
-        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         title: Directionality.of(context) == TextDirection.rtl ? 'كتالوج الوسائط' : 'media catalog',
         colorEnabled: context.color.textAndIconsStatusAccent,
         leading: ActionModel(

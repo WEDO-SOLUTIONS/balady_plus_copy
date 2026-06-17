@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ProfileAccountService {
@@ -64,8 +66,52 @@ class ProfileAccountService {
         body: body,
       ),
     );
-    final data = response.data as Map<String, dynamic>;
-    return (data['data'] ?? '') as String;
+    return _parseSessionId(response.data, response.headers);
+  }
+
+  /// SSO may return the session id as a string, nested object, or top-level field.
+  String _parseSessionId(dynamic raw, Headers headers) {
+    if (raw is String && raw.trim().isNotEmpty) {
+      return raw.trim();
+    }
+
+    if (raw is Map) {
+      final map = Map<String, dynamic>.from(raw);
+      final data = map['data'];
+
+      if (data is String && data.trim().isNotEmpty) {
+        return data.trim();
+      }
+      if (data is Map) {
+        final nested = _readSessionIdField(Map<String, dynamic>.from(data));
+        if (nested != null) return nested;
+      }
+
+      final topLevel = _readSessionIdField(map);
+      if (topLevel != null) return topLevel;
+    }
+
+    for (final key in const ['sessionid', 'sessionId', 'SessionId', 'x-session-id']) {
+      final value = headers.value(key);
+      if (value != null && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+
+    if (kDebugMode) {
+      debugPrint('SendVerificationEmail: could not parse sessionId from response: $raw');
+    }
+    throw StateError('SendVerificationEmail: missing sessionId in response');
+  }
+
+  String? _readSessionIdField(Map<String, dynamic> map) {
+    for (final key in const ['sessionId', 'SessionId', 'session_id', 'id']) {
+      final value = map[key];
+      if (value is String && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+    return null;
   }
 
   Future<bool> verifyEmail({
