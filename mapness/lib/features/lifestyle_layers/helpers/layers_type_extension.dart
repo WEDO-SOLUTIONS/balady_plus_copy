@@ -62,7 +62,7 @@ extension LayerTypeExt on LayerType {
     LayerType.three3D => Assets.imagesSvg.layers.a3D.keyName,
     // Raster thumbnails — LayerSwitcherCard switches to Image.asset based on
     // file extension. Files registered via assets/images/layers/ in pubspec.
-    LayerType.defaultMap => 'assets/images/layers/default.png',
+    LayerType.defaultMap => 'assets/images/layers/default_map.png',
     LayerType.satellite => 'assets/images/layers/satellite.png',
     // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
   };
