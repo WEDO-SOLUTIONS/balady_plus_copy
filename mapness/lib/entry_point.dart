@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rangers_applog_flutter_plugin/autotrack.dart';
 import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -123,21 +122,13 @@ class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
   MapnessRouteObserver._internal();
 }
 
-/// Automatically tracks screen views in BytePlus (DataFinder) by observing
-/// navigator events.
-///
-/// [RangersApplogNavigationObserver] is the SDK's built-in observer — adding it
-/// to the router's `navigatorObservers` is all that is needed for BytePlus to
-/// receive a `page_view` event on every route push/pop, with no per-screen code.
-/// This subclass exists purely so the rest of the app can register it without
-/// importing `rangers_applog_flutter_plugin` directly.
-class MapnessBytePlusObserver extends RangersApplogNavigationObserver {
-  static final MapnessBytePlusObserver _instance = MapnessBytePlusObserver._internal();
-
-  factory MapnessBytePlusObserver() => _instance;
-
-  MapnessBytePlusObserver._internal();
-}
+// NOTE: The RangersAppLog auto-track navigation observer
+// (`RangersApplogNavigationObserver`) is intentionally NOT registered. Its
+// `didPush`/`didReplace` walk the element tree (`visitChildElements`) on every
+// route change, which corrupts Flutter's element tree under auto_route's nested
+// tab navigators (`_elements.contains(element)` assertion → red screen). We
+// don't need automatic `page_view` tracking — all DataFinder events are fired
+// explicitly from the search/POI flows.
 
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({required this.child, super.key});
@@ -630,9 +621,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         child: Consumer(
           builder: (context, ref, child) {
             return MaterialApp.router(
-              routerConfig: ref.read(appRouterProvider).config(
-                navigatorObservers: () => [RoutesObserver(ref: ref), MapnessBytePlusObserver()],
-              ),
+              routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
                 fontFamily: _fontFamily(),
                 scaffoldBackgroundColor: Colors.transparent,
