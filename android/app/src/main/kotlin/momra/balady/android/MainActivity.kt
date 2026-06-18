@@ -25,6 +25,7 @@ class MainActivity : AudioServiceFragmentActivity() {
     private var audioCoordinationChannel: MethodChannel? = null
     private var audioManager: AudioManager? = null
     private var focusRequest: AudioFocusRequest? = null
+    private var mbcLockBridge: MbcLockBridge? = null
 
     private val audioFocusListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
         // Forward focus changes to Flutter so it can pause/resume the in-app player.
@@ -112,6 +113,11 @@ class MainActivity : AudioServiceFragmentActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             "com.balady.audio_coordination"
         )
+
+        // MBC live-radio wake / Wi-Fi lock bridge — keeps the foreground
+        // streaming service alive while the screen is off so HLS doesn't stall
+        // on Wi-Fi throttling / Doze.
+        mbcLockBridge = MbcLockBridge(applicationContext).also { it.register(flutterEngine) }
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {
@@ -127,15 +133,28 @@ class MainActivity : AudioServiceFragmentActivity() {
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
 
-                val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                // IMPORTANT: do NOT request AUDIOFOCUS_GAIN here.
+                // That would steal exclusive media focus from the MBC live-radio
+                // foreground service (just_audio_background) every time the
+                // activity resumes, which on screen-off / fast app-switching
+                // contributed to the radio dying after 1-2 min on Android.
+                // We only need transient, dux-friendly focus to listen for
+                // navigation voice ducking hints from the system.
+                val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
                     .setAudioAttributes(attrs)
+                    .setWillPauseWhenDucked(false)
+                    .setAcceptsDelayedFocusGain(true)
                     .setOnAudioFocusChangeListener(audioFocusListener)
                     .build()
                 focusRequest = req
                 am.requestAudioFocus(req)
             } else {
                 @Suppress("DEPRECATION")
-                am.requestAudioFocus(audioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+                am.requestAudioFocus(
+                    audioFocusListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
+                )
             }
         } catch (_: Exception) {
             // Best-effort: if focus cannot be requested, coordination will be unavailable.
