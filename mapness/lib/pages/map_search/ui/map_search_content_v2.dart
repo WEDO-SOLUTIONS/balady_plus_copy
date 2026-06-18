@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/features/discover/discover.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -23,6 +24,7 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/navi_search/navi_find_in_fav.dart';
 import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
+import 'package:mapness/widgets/search/ui/search_discover.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
@@ -259,6 +261,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
         final history = ref.watch(searchHistoryProvider(scope.value));
         final shouldShowHistoryAndFavorites = !widget.showMoreQuickFilters;
+        final discoverItems = ref.watch(discoverProvider).value ?? [];
 
         return SafeArea(
           top: false,
@@ -284,6 +287,13 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                 ),
               if (shouldShowHistoryAndFavorites && history.isEmpty) const SizedBox(height: Spacing.$4x),
               if (shouldShowHistoryAndFavorites) const MapSearchHistory(),
+              if (discoverItems.isNotEmpty) ...[
+                const SizedBox(height: Spacing.$4x),
+                SearchDiscover(
+                  discoverItems: discoverItems,
+                  onItemTap: ref.read(searchProvider(scope.value).notifier).fetchSuggest,
+                ),
+              ],
             ],
           ),
         );
