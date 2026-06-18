@@ -140,12 +140,22 @@ class AppConfigLoader {
   /// failed to initialize or returned an empty value, so the satellite
   /// layer works offline / before Firebase Console is wired up.
   static Future<String?> getSatelliteConfig() async {
+    final snapshot = await getSatelliteConfigSnapshot();
+    return snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
+  }
+
+  /// Returns the raw FRC value together with its source flag — lets the
+  /// caller distinguish a `valueRemote` (server-supplied) value from a
+  /// `valueDefault` (bundled in `setDefaults`) one. When Firebase Remote
+  /// Config failed to initialize, returns the bundled default with source
+  /// `valueStatic` so the caller doesn't have to special-case nulls.
+  static Future<({String raw, ValueSource source})> getSatelliteConfigSnapshot() async {
     final config = await _config?.future;
-    final value = config?.getValue(RemoteConfigConstants.satelliteConfig).asString();
-    if (value == null || value.isEmpty) {
-      return kSatelliteConfigBundledDefault;
+    if (config == null) {
+      return (raw: kSatelliteConfigBundledDefault, source: ValueSource.valueStatic);
     }
-    return value;
+    final value = config.getValue(RemoteConfigConstants.satelliteConfig);
+    return (raw: value.asString(), source: value.source);
   }
 
   static Future<void> _saveAppConfig(FirebaseRemoteConfig? remoteConfig, EnvType envType) async {

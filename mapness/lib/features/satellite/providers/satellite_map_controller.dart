@@ -37,7 +37,8 @@ class SatelliteMapController extends _$SatelliteMapController {
 
   Future<void> _setEnabled(bool enable) async {
     if (enable) {
-      final raw = await AppConfigLoader.getSatelliteConfig();
+      final snapshot = await AppConfigLoader.getSatelliteConfigSnapshot();
+      final raw = snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
       final config = SatelliteConfig.tryParse(raw);
       if (config == null || !config.isUsable) {
         logger.log(
@@ -46,20 +47,12 @@ class SatelliteMapController extends _$SatelliteMapController {
         );
         return;
       }
-      // TEMP debug — verify whether FRC overrode the bundled default and
-      // surface a token fingerprint without leaking the full value to logs.
-      // Remove once FRC integration is confirmed working in prod.
-      final isBundled = raw == kSatelliteConfigBundledDefault;
-      final token = config.token;
-      final fp = token.isEmpty
-          ? '<empty>'
-          : token.length <= 16
-          ? token
-          : '${token.substring(0, 12)}…${token.substring(token.length - 6)} (len=${token.length})';
+      // TEMP debug — surface the raw FRC value and its source flag so we
+      // can confirm Firebase Console is actually overriding the bundled
+      // default. Remove once FRC integration is confirmed working in prod.
       logger.log(
-        'satellite enable: source=${isBundled ? 'bundled' : 'frc'} '
-        'layer=${config.layerName} token=$fp '
-        'expires=${config.expiresAt?.toIso8601String() ?? '-'}',
+        'satellite FRC raw: source=${snapshot.source.name} '
+        'length=${snapshot.raw.length} payload=${snapshot.raw}',
         logLevel: MapnessLogLevel.info,
       );
       if (config.isExpired) {
