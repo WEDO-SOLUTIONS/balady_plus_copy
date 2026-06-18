@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -120,6 +121,14 @@ class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
 
   MapnessRouteObserver._internal();
 }
+
+// NOTE: The RangersAppLog auto-track navigation observer
+// (`RangersApplogNavigationObserver`) is intentionally NOT registered. Its
+// `didPush`/`didReplace` walk the element tree (`visitChildElements`) on every
+// route change, which corrupts Flutter's element tree under auto_route's nested
+// tab navigators (`_elements.contains(element)` assertion → red screen). We
+// don't need automatic `page_view` tracking — all DataFinder events are fired
+// explicitly from the search/POI flows.
 
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({required this.child, super.key});
@@ -1413,6 +1422,48 @@ Future<void> setupMapness(EnvType envType) async {
     ),
     configContent: vendorConfigContentMessage,
   );
+
+  _initBytePlus(envType);
+}
+
+/// Initializes the BytePlus RangersAppLog SDK (DataFinder analytics).
+///
+/// App ID is hardcoded per flavor for now.
+/// TODO: staging is temporarily pointed at the (future) PRODUCTION BytePlus
+/// project so we can validate prod-project data on TestFlight. Switch staging
+/// back to the staging project id once validation is done.
+/// TODO: replace `_kBytePlusProdAppId` with the real PRODUCTION project App ID
+/// once it is registered in the BytePlus console (Project Center → Details).
+/// TODO: move these ids to build-time config (--dart-define) instead of
+/// hardcoding.
+void _initBytePlus(EnvType envType) {
+  // Staging project id (Balady Staging Test APP). Used as the placeholder for
+  // production until the real prod project is registered.
+  const stagingAppId = '10000000';
+  const prodAppId = stagingAppId; // TODO: replace with real prod App ID.
+
+  final isProduction = envType == EnvType.prod || envType == EnvType.pre;
+  final appId = isProduction ? prodAppId : stagingAppId;
+  final channel = isProduction ? 'AppStore' : 'TestFlight';
+
+  if (appId.isEmpty || appId.startsWith('TODO')) {
+    debugPrint('[BytePlus] Skipped: App ID not configured yet.');
+    return;
+  }
+
+  try {
+    RangersApplogFlutterPlugin.initRangersAppLog(
+      appId,
+      channel,
+      true, // enableAb
+      false, // enableEncrypt
+      !isProduction, // enableLog: verbose on stg/dev, quiet on prod
+      'https://balady.finder-snssdk.bytepluses.com',
+    );
+    debugPrint('[BytePlus] RangersAppLog initialized — AppID=$appId, channel=$channel');
+  } catch (e) {
+    debugPrint('[BytePlus] Init failed: $e');
+  }
 }
 
 Future<void> enableInsiderGeofenceAfterConsent() async {

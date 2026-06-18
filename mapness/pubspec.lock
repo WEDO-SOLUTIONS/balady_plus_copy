@@ -2621,6 +2621,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.2"
+  rangers_applog_flutter_plugin:
+    dependency: "direct main"
+    description:
+      name: rangers_applog_flutter_plugin
+      sha256: "144b574592d093236edd4be59546e8f1e2b1fcf50e21f0e75ce372a32bd100a7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.0"
   redis:
     dependency: transitive
     description:

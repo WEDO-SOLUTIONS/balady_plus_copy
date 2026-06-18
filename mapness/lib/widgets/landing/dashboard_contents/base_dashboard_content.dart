@@ -63,7 +63,7 @@ class BaseDashboardContent extends ConsumerWidget {
               ],
             ),
 
-            const SizedBox(height: Spacing.$3x),
+            const SizedBox(height: Spacing.$6x),
             // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
