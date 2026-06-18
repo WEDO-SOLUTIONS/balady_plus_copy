@@ -173,6 +173,9 @@ class $AssetsImagesGen {
   AssetGenImage get illustrationFlipContinueLight =>
       const AssetGenImage('assets/images/illustration_flip_continue_light.png');
 
+  /// File path: assets/images/img_nearby_placeholder.jpg
+  AssetGenImage get imgNearbyPlaceholder => const AssetGenImage('assets/images/img_nearby_placeholder.jpg');
+
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
   AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
@@ -285,6 +288,7 @@ class $AssetsImagesGen {
     icArrowFeedback,
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,
+    imgNearbyPlaceholder,
     ishanSeefromtheskyUnsplash,
     lightMapPreview,
     markerEtaMask,
