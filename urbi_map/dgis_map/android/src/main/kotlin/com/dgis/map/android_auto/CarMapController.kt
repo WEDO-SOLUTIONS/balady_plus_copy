@@ -346,6 +346,13 @@ class CarMapController(
             SoundUpdateNotifier.sendEvent(value)
         }
 
+    // Syncs voice instruction state from Flutter SharedPrefs to Auto (no Flutter notification to avoid loop).
+    fun syncVoiceInstructionsFromFlutter() {
+        val newType = sharedPrefs.getFlutterVoiceInstructionType()
+        sharedPrefs.voiceInstructionsValue = newType
+        navigationHandler.toggleVoiceInstruction(newType)
+    }
+
     // -- Traffic
     val trafficEnabled: Boolean
         get() {
