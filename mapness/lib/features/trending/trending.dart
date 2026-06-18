@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mapness/features/debug/recommendations_feature_flag.dart';
 import 'package:mapness/features/trending/data/mock/mock_trending_data_source.dart';
 import 'package:mapness/features/trending/data/trending_data_source.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -17,6 +18,11 @@ TrendingDataSource _trendingDataSource(Ref ref) => MockTrendingDataSource();
 class Trending extends _$Trending {
   @override
   Future<List<TrendingItem>> build() async {
+    final recommendationsEnabled = ref.watch(recommendationsFeatureFlagProvider);
+    if (!recommendationsEnabled) {
+      return [];
+    }
+
     final ids = await ref.read(_trendingDataSourceProvider).getTrendingItemIds();
     final dgisController = ref.read(dgisControllerProvider).value;
     if (dgisController == null) {
