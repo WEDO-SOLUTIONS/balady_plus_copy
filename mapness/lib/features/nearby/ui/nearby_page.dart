@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/nearby/model/nearby_model.dart';
 import 'package:mapness/features/nearby/providers/nearby.dart';
@@ -44,8 +46,18 @@ class NearbyPage extends ConsumerWidget {
                 mainAxisSpacing: Spacing.$2x,
                 crossAxisSpacing: Spacing.$2x,
                 itemCount: value.length,
-                itemBuilder: (context, index) =>
-                    _Tile(item: value[index], index: index, isLarge: index % 4 == 0 || index % 4 == 2),
+                itemBuilder: (context, index) {
+                  final item = value[index];
+                  return GestureDetector(
+                    onTap: () {
+                      context.router.replaceOrPush(
+                        route: PoiCardWidgetRoute(objectId: item.object.id),
+                        toCompareRoutes: [PoiCardWidgetRoute.page],
+                      );
+                    },
+                    child: _Tile(item: item, index: index, isLarge: index % 4 == 0 || index % 4 == 2),
+                  );
+                },
               ),
             ),
             AsyncError<List<NearbyItem>>() => BaseErrorWidget(
