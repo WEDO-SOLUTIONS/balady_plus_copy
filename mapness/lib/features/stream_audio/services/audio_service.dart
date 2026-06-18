@@ -140,16 +140,17 @@ class AudioService extends ChangeNotifier {
     if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) return;
     if (_isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) return;
 
-    // Android: with `androidNotificationOngoing: true`, the user cannot swipe
-    // the notification away while the player is active, so an unexpected
-    // idle/completed almost always means a transient network blip (Doze
-    // maintenance window, Wi-Fi sleep, NAT timeout, HLS stall). Treating it as
-    // a dismissal stops live radio after 1-2 minutes when the screen is off.
-    // Instead, schedule a recovery attempt and keep the foreground service
-    // alive so playback resumes automatically.
+    // Android: with `androidNotificationOngoing: true` the notification can
+    // still be acted on via the system play/pause/stop buttons. Treat an
+    // unexpected idle/completed as a user-initiated stop (notification stop,
+    // headset stop, OS reclaim, etc.). The previous "auto-recovery" loop was
+    // a workaround for an unrelated bug (the `await player.play()` that never
+    // returned for live streams — now fixed) and made MBC un-stoppable
+    // because tapping stop from the notification was treated as a stall and
+    // immediately restarted.
     if (Platform.isAndroid) {
-      debugPrint('AudioService: 🔁 Android live-stream stalled ($source) - scheduling recovery');
-      _scheduleAndroidRecovery(reason: source);
+      debugPrint('AudioService: 🚫 Android player stopped unexpectedly ($source) — treating as dismissal');
+      _handleNotificationDismissed();
       return;
     }
 
