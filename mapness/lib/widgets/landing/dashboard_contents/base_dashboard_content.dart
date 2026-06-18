@@ -56,7 +56,6 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
-
             // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
@@ -124,7 +123,12 @@ class BaseDashboardContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
+                    QuickActionButton(
+                      text: context.l10n.nearby,
+                      icon: GeneralIcons.location,
+                      onTap: () => actions.openNearby(context),
+                    ),
+                    const SizedBox(width: Spacing.$2x),
                     QuickActionButton(
                       text: context.l10n.sendLocation,
                       icon: General32Icons.locationAction,
@@ -274,11 +278,11 @@ class BaseDashboardContent extends ConsumerWidget {
                   ),
                   image: themeConfig.exploreBackgroundImageBuilder != null
                       ? DecorationImage(
-                    image: themeConfig.exploreBackgroundImageBuilder!(),
-                    matchTextDirection: true,
-                    fit: BoxFit.cover,
-                    alignment: AlignmentDirectional.centerEnd,
-                  )
+                          image: themeConfig.exploreBackgroundImageBuilder!(),
+                          matchTextDirection: true,
+                          fit: BoxFit.cover,
+                          alignment: AlignmentDirectional.centerEnd,
+                        )
                       : null,
                 ),
                 child: Column(

@@ -42,6 +42,12 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'nearby',
+          page: NearbyRoute.page,
+          fullscreenDialog: true,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'service_available',
           page: ServiceNotAvailableSheetRoute.page,
           opaque: false,
