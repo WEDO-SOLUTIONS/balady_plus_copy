@@ -78,7 +78,6 @@ class LayerSwitcherCard extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: 80,
           decoration: BoxDecoration(
             border: Border.all(
               strokeAlign: BorderSide.strokeAlignOutside,
@@ -104,8 +103,6 @@ class LayerSwitcherCard extends ConsumerWidget {
               Flexible(
                 child: Text(
                   value.titleLocale(context.l10n),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                   style: textStyles.bodySmallMedium.copyWith(
                     color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
