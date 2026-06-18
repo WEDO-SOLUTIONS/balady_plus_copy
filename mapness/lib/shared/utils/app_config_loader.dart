@@ -35,7 +35,7 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// Schema: `layer_name`, `url_template`, `token`, `expires`. `{TOKEN}`
 /// in the template is substituted at runtime; omit it for token-less
 /// servers.
-const String _kSatelliteConfigDefault =
+const String kSatelliteConfigBundledDefault =
     '{"layer_name":"satellite",'
     '"url_template":"https://www.geoportal.sa/basemap/rest/services/Imagery/BasemapImagery/MapServer/tile/{z}/{y}/{x}?token={TOKEN}",'
     // '"token":"qiCZf9ZHurs_jUeR2KSOrJNpujNC13mbFVNxzpPwmUpe5d7TqEV2Nl0I9VmVPD5OsHMVSHcvVqYHaVLm94FhiItxsGpAcz2flsjDNB7AITA.",'
@@ -71,7 +71,7 @@ class AppConfigLoader {
 
       /// In-code defaults used until the Firebase Console value is fetched.
       await remoteConfig.setDefaults({
-        RemoteConfigConstants.satelliteConfig: _kSatelliteConfigDefault,
+        RemoteConfigConstants.satelliteConfig: kSatelliteConfigBundledDefault,
       });
 
       /// Ensure Remote Config is initialized and activate the config values
@@ -136,14 +136,14 @@ class AppConfigLoader {
   /// substituted into url_template at runtime so it can rotate without
   /// changing the URL field.
   ///
-  /// Falls back to [_kSatelliteConfigDefault] when Firebase Remote Config
+  /// Falls back to [kSatelliteConfigBundledDefault] when Firebase Remote Config
   /// failed to initialize or returned an empty value, so the satellite
   /// layer works offline / before Firebase Console is wired up.
   static Future<String?> getSatelliteConfig() async {
     final config = await _config?.future;
     final value = config?.getValue(RemoteConfigConstants.satelliteConfig).asString();
     if (value == null || value.isEmpty) {
-      return _kSatelliteConfigDefault;
+      return kSatelliteConfigBundledDefault;
     }
     return value;
   }
