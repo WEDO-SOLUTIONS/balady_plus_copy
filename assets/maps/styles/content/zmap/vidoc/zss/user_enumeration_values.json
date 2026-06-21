@@ -26,6 +26,10 @@
     "ParkingType": {
         "unknown": 0
     },
+    "RoadMarkingColorType": {
+        "white": 0,
+        "yellow": 1
+    },
     "RouteEditorMode": {
         "car_route_on": 1,
         "off": 0,
@@ -214,7 +218,8 @@
         "s_vendor_dynamic_point_text_676767": 59822,
         "s_vendor_dynamic_point_text_920277": 59821,
         "s_vendor_dynamic_point_text_977194": 59820,
-        "tech_zenith_background": 59819,
+        "satellite": 59819,
+        "tech_zenith_background": 59818,
         "unknown_sublayer": 65535
     },
     "Subsublayer": {

@@ -1043,6 +1043,9 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Toggle heatmap.
   Future<bool> toggleHeatmap(WeatherMapMessage message) => _api.toggleHeatmap(message);
 
+  /// Toggle satellite raster tile overlay.
+  Future<bool> toggleSatellite(SatelliteMapMessage message) => _api.toggleSatellite(message);
+
   /// Better route response.
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _api.betterRouteResponse(response);
 

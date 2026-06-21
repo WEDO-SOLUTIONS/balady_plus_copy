@@ -9,6 +9,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
+import 'package:mapness/features/satellite/providers/satellite_map_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 
@@ -53,6 +54,14 @@ class LayerSwitcherCard extends ConsumerWidget {
       isSelected = layers_state.LayerType.bus.contains(layersState.selectedType);
     }
 
+    if (value == layers_state.LayerType.satellite) {
+      isSelected = ref.watch(satelliteMapControllerProvider);
+    }
+
+    if (value == layers_state.LayerType.defaultMap) {
+      isSelected = !ref.watch(satelliteMapControllerProvider);
+    }
+
     final withIcon = onIconTap != null && layerTapItems.contains(value);
 
     return Column(
@@ -70,15 +79,21 @@ class LayerSwitcherCard extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(RadiusBorder.m),
-            child: SvgPicture.asset(
-              value.imageAsset(),
-              fit: BoxFit.cover,
-              height: 80,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withAlpha(40),
-                BlendMode.overlay,
-              ),
-            ),
+            child: value.imageAsset().endsWith('.svg')
+                ? SvgPicture.asset(
+                    value.imageAsset(),
+                    fit: BoxFit.cover,
+                    height: 80,
+                    colorFilter: ColorFilter.mode(
+                      Colors.black.withAlpha(40),
+                      BlendMode.overlay,
+                    ),
+                  )
+                : Image.asset(
+                    value.imageAsset(),
+                    fit: BoxFit.cover,
+                    height: 80,
+                  ),
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),
