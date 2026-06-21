@@ -56,7 +56,7 @@ class ShortLinkRepository extends _$ShortLinkRepository {
 @freezed
 abstract class ShortLinkRequest with _$ShortLinkRequest {
   const factory ShortLinkRequest({
-    required String poiId,
+    String? poiId,
     double? lat,
     double? lon,
   }) = _ShortLinkRequest;
@@ -81,7 +81,7 @@ abstract class ShortLinkResponse with _$ShortLinkResponse {
 @freezed
 abstract class ShortLinkPayload with _$ShortLinkPayload {
   const factory ShortLinkPayload({
-    required String poiId,
+    String? poiId,
     double? lat,
     double? lon,
   }) = _ShortLinkPayload;

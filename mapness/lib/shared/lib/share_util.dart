@@ -9,18 +9,14 @@ import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class ShareUtil {
-  static Future<void> sharePOI(
-    String? objectId, {
+  static Future<String> getSharePOILink({
     required BuildContext context,
+    String? objectId,
     Coordinates? markerCoords,
   }) async {
-    String shareUrl;
     try {
-      if (objectId == null) {
-        throw ArgumentError('Object id is null');
-      }
       final container = ProviderScope.containerOf(context, listen: false);
-      shareUrl = await container
+      return await container
           .read(shortLinkRepositoryProvider)
           .createLink(
             ShortLinkRequest(
@@ -45,8 +41,20 @@ class ShareUtil {
         query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
       }
 
-      shareUrl = BaldayDeeplink.urlWithQuery(baseUri, query);
+      return BaldayDeeplink.urlWithQuery(baseUri, query);
     }
+  }
+
+  static Future<void> sharePOI({
+    required BuildContext context,
+    String? objectId,
+    Coordinates? markerCoords,
+  }) async {
+    final shareUrl = await getSharePOILink(
+      context: context,
+      objectId: objectId,
+      markerCoords: markerCoords,
+    );
 
     if (objectId == parkingObjectId.toString()) {
       return safeShareText('${context.l10n.leftMyCarHere} $shareUrl', context: context);

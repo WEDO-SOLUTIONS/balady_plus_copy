@@ -111,6 +111,7 @@ class JeddahBusLayer extends _$JeddahBusLayer {
             points: geoPoints,
             width: 5,
             color: line.color,
+            zIndex: i,
           ),
         ),
       );
