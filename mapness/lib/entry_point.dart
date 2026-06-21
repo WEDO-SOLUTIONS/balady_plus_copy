@@ -772,7 +772,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<Uri> getFinalRedirectUri(Uri uri) async {
+  Future<Uri?> getFinalRedirectUri(Uri uri) async {
     final client = Client();
     var currentUri = uri;
     const redirectStatuses = {301, 302, 303, 307, 308};
@@ -781,7 +781,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       while (true) {
         final request = Request('GET', currentUri)..followRedirects = false;
 
-        final response = await client.send(request);
+        final response = await client.send(request).timeout(const Duration(seconds: 10));
         if (redirectStatuses.contains(response.statusCode)) {
           final location = response.headers['location'];
           if (location != null && location.isNotEmpty) {
@@ -795,6 +795,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } catch (e) {
       logger.log('Error tracking redirect: $e', logLevel: MapnessLogLevel.error);
+      client.close();
+      return null;
     } finally {
       client.close();
     }
@@ -805,6 +807,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final uri = await getFinalRedirectUri(sourceUri);
+
+    if (uri == null) {
+      final ctx = rootNavigatorKey.currentContext;
+      if (ctx != null) {
+        ToastOverlay.of(ctx).showNoInternet(
+          onRetry: () => openAppLink(sourceUri, isFirstRun: isFirstRun),
+        );
+      }
+      return;
+    }
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
