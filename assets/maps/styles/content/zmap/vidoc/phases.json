@@ -2041,6 +2041,7 @@
         "phase_group_0040": {
             "phases": {
                 "s_462": {
+                    "identify_superlayer": "default",
                     "z_index": 0
                 }
             },
@@ -2076,7 +2077,6 @@
         "phase_group_0044": {
             "phases": {
                 "s_466": {
-                    "identify_superlayer": "default",
                     "z_index": 0
                 }
             },
@@ -6600,6 +6600,7 @@
         "phase_group_0138": {
             "phases": {
                 "s_1490": {
+                    "identify_superlayer": "default",
                     "z_index": 0
                 }
             },
@@ -6635,7 +6636,6 @@
         "phase_group_0142": {
             "phases": {
                 "s_1494": {
-                    "identify_superlayer": "default",
                     "z_index": 0
                 }
             },

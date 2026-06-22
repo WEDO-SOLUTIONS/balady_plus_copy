@@ -34023,22 +34023,10 @@
 				}
 			}
 		}
-		[g_z_level >= 0][g_z_level < 22] {
-			[db_sublayer = satellite] {
-				phase: s_462;
-				symbol: textured_area_symbol;
-				opacity: 0.5;
-				[immersiveRoadsOn = true] <
-					with_tier: true;
-				>
-				 {
-				}
-			}
-		}
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Building_model] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_463;
+					phase: s_462;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -34060,7 +34048,7 @@
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model]|[db_sublayer = Immersive_model_multipart] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_464;
+					phase: s_463;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -34082,7 +34070,7 @@
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_baladi] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_465;
+					phase: s_464;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -34104,7 +34092,7 @@
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_medina] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_466;
+					phase: s_465;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -34120,6 +34108,18 @@
 					>
 					 {
 					}
+				}
+			}
+		}
+		[g_z_level >= 0][g_z_level < 22] {
+			[db_sublayer = satellite] {
+				phase: s_466;
+				symbol: textured_area_symbol;
+				opacity: 0.5;
+				[immersiveRoadsOn = true] <
+					with_tier: true;
+				>
+				 {
 				}
 			}
 		}
@@ -107539,44 +107539,10 @@
 				}
 			}
 		}
-		[g_z_level >= 0][g_z_level < 22] {
-			[db_sublayer = satellite] {
-				phase: s_1490;
-				symbol: textured_area_symbol;
-				opacity: 1;
-				[immersiveRoadsOn = true] <
-					with_tier: true;
-				>
-				 {
-				}
-			}
-		}
-		[g_z_level >= 8][g_z_level < 21] {
-			[db_sublayer = Building_model] {
-				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_1491;
-					symbol: model_symbol;
-					color_blend_mode: multiply;
-					color_adjust_hue: 0;
-					color_adjust_sat: 0;
-					color: #ff3D4245;
-					contour_color: #ff33363C;
-					outer_edge_width_zpt: 0.2;
-					 <
-						model_texture_index: 0;
-					>
-					 <
-						model_transparency_start_distance: 2.5;
-					>
-					 {
-					}
-				}
-			}
-		}
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model]|[db_sublayer = Immersive_model_multipart] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_1492;
+					phase: s_1490;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -107598,7 +107564,7 @@
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_baladi] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_1493;
+					phase: s_1491;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -107620,7 +107586,7 @@
 		[g_z_level >= 8][g_z_level < 21] {
 			[db_sublayer = Immersive_model_medina] {
 				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
-					phase: s_1494;
+					phase: s_1492;
 					symbol: model_symbol;
 					color_blend_mode: multiply;
 					color_adjust_hue: 0;
@@ -107636,6 +107602,40 @@
 					>
 					 {
 					}
+				}
+			}
+		}
+		[g_z_level >= 8][g_z_level < 21] {
+			[db_sublayer = Building_model] {
+				[db_hidden_by_plan_building_id != _activeFloorBuildingId] {
+					phase: s_1493;
+					symbol: model_symbol;
+					color_blend_mode: multiply;
+					color_adjust_hue: 0;
+					color_adjust_sat: 0;
+					color: #ff3D4245;
+					contour_color: #ff33363C;
+					outer_edge_width_zpt: 0.2;
+					 <
+						model_texture_index: 0;
+					>
+					 <
+						model_transparency_start_distance: 2.5;
+					>
+					 {
+					}
+				}
+			}
+		}
+		[g_z_level >= 0][g_z_level < 22] {
+			[db_sublayer = satellite] {
+				phase: s_1494;
+				symbol: textured_area_symbol;
+				opacity: 1;
+				[immersiveRoadsOn = true] <
+					with_tier: true;
+				>
+				 {
 				}
 			}
 		}
