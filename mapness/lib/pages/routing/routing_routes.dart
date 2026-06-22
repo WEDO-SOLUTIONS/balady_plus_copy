@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,10 +48,16 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
   DgisMapController? _dgisController;
   bool _permissionRequested = false;
+  RouteSearchOptionsMessage? _navType;
+  int? _activeRouteIndex;
 
   @override
   void initState() {
     super.initState();
+    _initialize();
+  }
+
+  void _initialize() {
     points = widget.points;
     _dgisController = ref.read(dgisControllerProvider).value;
 
@@ -66,6 +73,14 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     FocusScope.of(context).unfocus();
+  }
+
+  @override
+  void didUpdateWidget(covariant RoutingRoutesPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!const DeepCollectionEquality().equals(oldWidget.points, widget.points)) {
+      _initialize();
+    }
   }
 
   @override
@@ -118,6 +133,15 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                           : ABPointsChange.none,
                     ),
                   ),
+                  // this button is always visible because the page can not be shown without start and finish points
+                  AppButton(
+                    primaryIcon: SystemIcons.share,
+                    iconColor: colors.neutralOnContainer,
+                    buttonColorScheme: ButtonColorScheme.neutral,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    onTap: _onSharePressed,
+                  ),
                   if (points.length > 2)
                     AppButton(
                       primaryIcon: General16Icons.edit,
@@ -146,7 +170,16 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                 ].insertBetween(Spacing.$3x.widthBox).toList(),
               ),
             ),
-            RoutingInfo(pointsWithLabel: points, isHomeOrWork: widget.isHomeOrWork),
+            RoutingInfo(
+              pointsWithLabel: points,
+              isHomeOrWork: widget.isHomeOrWork,
+              onNavTypeChanged: (value) {
+                _navType = value;
+              },
+              onRouteIndexChanged: (value) {
+                _activeRouteIndex = value;
+              },
+            ),
           ],
         ),
       ),
@@ -156,6 +189,22 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   int get intermediatePointCount {
     final count = points.length - 2;
     return count.clamp(0, count);
+  }
+
+  Future<void> _onSharePressed() async {
+    final navType = _navType;
+    final activeRouteIndex = _activeRouteIndex;
+    if (navType == null || activeRouteIndex == null) {
+      return;
+    }
+
+    context.router.push(
+      ShareRouteRoute(
+        points: points,
+        navType: navType,
+        activeRouteIndex: activeRouteIndex,
+      ),
+    );
   }
 
   VoidCallback? _onAddStop(BuildContext context) {
