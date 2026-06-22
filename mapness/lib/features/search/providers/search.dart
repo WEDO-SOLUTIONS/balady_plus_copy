@@ -868,22 +868,48 @@ class Search extends _$Search {
     );
   }
 
-  /// Fires `search_results_exposure` once per result page (list-level). Only
-  /// the items actually returned on the page are reported.
+  /// Fires `search_results_exposure` for the FIRST result page. Subsequent pages
+  /// (infinite scroll) are reported via [reportResultsPageExposure].
   void _reportResultsExposure(SearchResultMessage results, String searchQuery) {
     final items = results.firstPage?.items ?? const <DirectoryObjectMessage>[];
+    // Remember the query so paginated pages report the same search_text.
+    _exposureSearchText = searchQuery;
+    _exposedResultsCount = 0;
+    _reportResultsPage(items.whereType<DirectoryObjectMessage>().toList());
+  }
+
+  /// Fires `search_results_exposure` for a newly-loaded page of results
+  /// (infinite scroll / pagination). Ranks continue from the previous pages
+  /// (page-2 item-1 → rank 21, etc.) and the same request_id/search_session_id
+  /// are reused so the dashboard groups all pages under one search. Called from
+  /// the results UI after `SearchPagination.fetchNext()` loads more items.
+  void reportResultsPageExposure(List<DirectoryObjectMessage> newItems) {
+    _reportResultsPage(newItems);
+  }
+
+  /// Running count of result items already reported for the current search, so
+  /// pagination ranks continue correctly across pages.
+  int _exposedResultsCount = 0;
+
+  /// The query of the current search, reused for paginated page exposures.
+  String _exposureSearchText = '';
+
+  void _reportResultsPage(List<DirectoryObjectMessage> items) {
     if (items.isEmpty) {
       return;
     }
     final loc = _myLocation;
+    final base = _exposedResultsCount;
     final pois = [
-      for (var i = 0; i < items.length; i++) items[i].toDataFinderPoi(rank: i + 1, myLat: loc?.lat, myLon: loc?.lon),
+      for (var i = 0; i < items.length; i++)
+        items[i].toDataFinderPoi(rank: base + i + 1, myLat: loc?.lat, myLon: loc?.lon),
     ];
+    _exposedResultsCount += items.length;
     _analytics.searchResultsExposure(
       eventSource: _sourcePage,
       requestId: _requestId,
       sessionId: _searchSessionId ??= DataFinderIds.uuid(),
-      searchText: searchQuery,
+      searchText: _exposureSearchText,
       searchType: _searchType,
       searchParam: _buildSearchParam(),
       pois: pois,

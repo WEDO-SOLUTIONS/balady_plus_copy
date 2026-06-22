@@ -60,10 +60,21 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
     if (!_isLoading && max - current <= delta) {
       _isLoading = true;
-      ref.read(searchPaginationProvider(widget.results).notifier).fetchNext().then(
+      final paginationNotifier = ref.read(searchPaginationProvider(widget.results).notifier);
+      paginationNotifier.fetchNext().then(
         (hasNext) {
           _isLoading = false;
-          setState(() => _hasNext = hasNext);
+          if (hasNext) {
+            // DataFinder: report exposure for the newly-loaded result page
+            // (continued ranks, same search session).
+            final scope = context.read<SearchScope>().value;
+            ref
+                .read(searchProvider(scope).notifier)
+                .reportResultsPageExposure(paginationNotifier.lastFetchedItems);
+          }
+          if (mounted) {
+            setState(() => _hasNext = hasNext);
+          }
         },
       );
     }
