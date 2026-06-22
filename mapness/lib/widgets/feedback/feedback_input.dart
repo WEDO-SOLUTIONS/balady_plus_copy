@@ -120,12 +120,15 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         ? BaladyInputState.error
         : BaladyInputState.defaultValue;
 
-    return Directionality(
+    final separateLabelForPhone = widget.type == FeedbackTextType.phone && widget.labelText != null;
+    final inputWidget = Directionality(
       textDirection: direction,
       child: BaladyTextInput(
-        label: widget.labelText != null
-            ? BaladyInputLabel(text: widget.labelText!, isRequired: widget.isRequired)
-            : null,
+        label: separateLabelForPhone
+            ? null
+            : (widget.labelText != null
+                  ? BaladyInputLabel(text: widget.labelText!, isRequired: widget.isRequired)
+                  : null),
         inputState: widget.readonly ? BaladyInputState.readOnly : _inputErrorState,
         controller: _controller,
         config: BaladyInputConfig(
@@ -150,6 +153,52 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
             ? BaladySupportingText(text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText)
             : null,
       ),
+    );
+
+    if (!separateLabelForPhone) {
+      return inputWidget;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _PhoneLabelWidget(labelText: widget.labelText!, isRequired: widget.isRequired),
+        inputWidget,
+      ],
+    );
+  }
+}
+
+class _PhoneLabelWidget extends StatelessWidget {
+  const _PhoneLabelWidget({required this.labelText, required this.isRequired});
+
+  final String labelText;
+  final bool isRequired;
+
+  @override
+  Widget build(BuildContext context) {
+    final defaultStyle = context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault);
+    return Row(
+      children: [
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.$2x),
+            child: RichText(
+              text: TextSpan(
+                text: labelText,
+                style: defaultStyle,
+                children: [
+                  if (isRequired)
+                    TextSpan(
+                      text: '*',
+                      style: defaultStyle.copyWith(color: context.colors.errorDefault),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -398,7 +398,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   active: navigatingType,
                   onChanged: _onChanged,
                   points: widget.points,
-                  hasPublicTransport: publicTransportVisibility.asData?.value.hasPublicTransportRoutes ?? false,
+                  hasPublicTransport: publicTransportVisibility.value?.hasPublicTransportRoutes ?? false,
                   routes: routes,
                   lockedNavType: _lockedNavType,
                 ),

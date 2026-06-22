@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:flutter/material.dart';
 
 class NafathLoginWidget extends StatelessWidget {
@@ -25,7 +24,7 @@ class NafathLoginWidget extends StatelessWidget {
   }
 
   BoxDecoration get shapeDecoration => BoxDecoration(
-    color: const Color(0xFF74D9D7),
+    color: Color(0XFF005937),
     borderRadius: BorderRadius.circular(20),
     boxShadow: [
       BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1), spreadRadius: 0),
@@ -37,7 +36,7 @@ class NafathLoginWidget extends StatelessWidget {
     Text(
       CommonFunctions.isAppAR ? 'تابع إحصائياتك الشخصية' : 'Track your personal statistics',
       style: TextStyle(
-        color: const Color(0xFF1B1B1B),
+        color: Colors.white,
         fontSize: 16,
         fontWeight: FontWeight.w700,
         height: 1.50,
@@ -47,8 +46,8 @@ class NafathLoginWidget extends StatelessWidget {
     Text(
       CommonFunctions.isAppAR ? 'سجل الدخول عبر نفاذ لعرض لوحة البيانات' : 'Login via Nafath to view the dashboard',
       style: TextStyle(
-        color: const Color(0xFF4C4C4C),
-        fontSize: 16,
+        color: Colors.white,
+        fontSize: 14,
         fontWeight: FontWeight.w400,
         height: 1.25,
         fontFamily: GeneralKey.appFontType,
@@ -65,15 +64,15 @@ class NafathLoginWidget extends StatelessWidget {
       }
     },
     style: ElevatedButton.styleFrom(
-      backgroundColor: const Color(0xFF003449),
+      backgroundColor: Color(0XFFF3F4F6),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       minimumSize: const Size(0, 36),
     ),
     child: Text(
       CommonFunctions.isAppAR ? 'التحقق عبر نفاذ' : 'Verify via Nafath',
       style: TextStyle(
-        color: Colors.white,
+        color: Color(0XFF161616),
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.43,

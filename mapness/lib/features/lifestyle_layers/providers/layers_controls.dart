@@ -31,6 +31,7 @@ import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
+import 'package:mapness/features/satellite/providers/satellite_map_controller.dart';
 import 'package:mapness/features/shuttle_bus/provider.dart';
 import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
@@ -231,6 +232,12 @@ class LayersControls extends _$LayersControls {
         break;
       case LayerType.jeddahBus:
         toggleJeddahBuses();
+        break;
+      case LayerType.defaultMap:
+        await ref.read(satelliteMapControllerProvider.notifier).disable();
+        break;
+      case LayerType.satellite:
+        await ref.read(satelliteMapControllerProvider.notifier).enable();
         break;
       // case LayerType.joy:
       //   await toggleIwish();
@@ -625,6 +632,13 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _tapHandler(LayerType value) async {
+    // Satellite / default base-map switch is independent of overlay layers —
+    // do not clear the active overlay or its selection state.
+    if (value == LayerType.satellite || value == LayerType.defaultMap) {
+      await toggleLayers(value);
+      return;
+    }
+
     final currentState = state.selectedType;
 
     _cancelToken?.cancel();
@@ -688,6 +702,9 @@ class LayersControls extends _$LayersControls {
         }
         break;
       case LayerType.three3D:
+      case LayerType.defaultMap:
+      case LayerType.satellite:
+        break;
       // case LayerType.roadEvents:
       //   break;
     }

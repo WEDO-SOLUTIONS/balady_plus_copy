@@ -13,7 +13,10 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../shared/ui/toast/toast_overlay.dart';
 
 part 'poi_card_actions_provider.g.dart';
 
@@ -65,6 +68,15 @@ class PoiCardActions extends _$PoiCardActions {
 
   Future<void> copyToClipboard(LatLng? location) async {
     if (location != null) {
+      final context = rootNavigatorKey.currentContext;
+      if (context != null) {
+        ToastOverlay.of(context).show(
+          title: context.l10n.copyToastMsg,
+          actions: [
+            ToastAction(title: context.l10n.feedbackBreaksSheetClose),
+          ],
+        );
+      }
       await Clipboard.setData(ClipboardData(text: _myLocationDeeplink(location)));
     }
   }

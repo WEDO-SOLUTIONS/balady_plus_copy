@@ -12,7 +12,6 @@ import 'package:mapness/features/poi_card/domain/model/organizations_response.da
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
@@ -99,6 +98,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     BaladyAppThemes theme, {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
+    bool showHighlight = true,
   }) async {
     state = const AsyncValue.loading();
     // We need to use [appLang] to cache different data for different locales
@@ -109,24 +109,32 @@ class PoiCardProvider extends _$PoiCardProvider {
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     final cachedData = await loadCacheData(poiBox, poiCardStateKey);
     if (cachedData != null) {
-      ref.read(
-        pointOfInterestProvider(
-          DgisObjectId(objectId: objectId, entranceId: 0),
-          closestPoint,
-          theme,
-        ).future,
-      )
-        .then((poi) {
-        if (poi != null) {
-          _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
-        }
-      });
+      ref
+          .read(
+            pointOfInterestProvider(
+              DgisObjectId(objectId: objectId, entranceId: 0),
+              closestPoint,
+              theme,
+              showHighlight: showHighlight,
+            ).future,
+          )
+          .then((poi) {
+            if (poi != null) {
+              _animateCameraToPoi(poi.markerPosition, closestPoint, cameraConfig);
+            }
+          });
 
       return cachedData;
-    }
-    else {
+    } else {
       final poiFuture = ref
-          .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
+          .watch(
+            pointOfInterestProvider(
+              DgisObjectId(objectId: objectId, entranceId: 0),
+              closestPoint,
+              theme,
+              showHighlight: showHighlight,
+            ).future,
+          )
           .timeout(const Duration(minutes: 10));
 
       final photosFuture = ref.watch(poiPhotoProvider(objectId).future);
@@ -210,7 +218,8 @@ class PoiCardProvider extends _$PoiCardProvider {
     LatLng? closestPoint,
     PoiCameraConfig? cameraConfig,
   ) {
-    final position = closestPoint ??
+    final position =
+        closestPoint ??
         (markerPosition == null
             ? null
             : LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude));
@@ -224,14 +233,16 @@ class PoiCardProvider extends _$PoiCardProvider {
     final zoom = cameraConfig?.zoom ?? currentZoom ?? 16.0;
 
     unawaited(
-      ref.read(cameraPositionProvider.notifier).animateTo(
-        CameraPositionMessage(
-          point: markerPoint,
-          zoom: zoom,
-          tilt: cameraConfig?.tilt ?? 0,
-          bearing: cameraConfig?.bearing ?? 0,
-        ),
-      ),
+      ref
+          .read(cameraPositionProvider.notifier)
+          .animateTo(
+            CameraPositionMessage(
+              point: markerPoint,
+              zoom: zoom,
+              tilt: cameraConfig?.tilt ?? 0,
+              bearing: cameraConfig?.bearing ?? 0,
+            ),
+          ),
     );
   }
 
@@ -242,7 +253,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       if (tradeLicense != null) tradeLicense.license,
       if (organizationsLicenses != null) ...organizationsLicenses,
     };
-    await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
+    // await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
   }
 
   Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {

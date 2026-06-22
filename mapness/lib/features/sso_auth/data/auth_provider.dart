@@ -53,6 +53,7 @@ class Auth extends _$Auth {
   Future<void> tokenExpireLogout() async {
     Metrics.logEvent('Auth/tokenExpireLogout');
     mixpanel?.timeEvent('Auth: tokenExpireLogout');
+    await ref.read(profileImageProvider.notifier).clear();
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logtokenExpireLogoutOut');
@@ -121,6 +122,13 @@ class Auth extends _$Auth {
     await sl<EntryPointCubit>().refreshSSOProfile();
     final data = sl<EntryPointCubit>().state.userInfo;
     state = AsyncValue.data(data);
+  }
+
+  /// Pushes profile changes from `/api/user/userinfo` to the app-wide auth state.
+  /// Used after OTP profile edits (refreshSSOProfile only updates municipality SSO).
+  Future<void> updateUserInfo(SsoUserInfo userInfo) async {
+    await sl<EntryPointCubit>().applyUserInfo(userInfo);
+    state = AsyncValue.data(userInfo);
   }
 
   Future<void> notifyAuthorizationChange({required bool isAuthorized}) async {

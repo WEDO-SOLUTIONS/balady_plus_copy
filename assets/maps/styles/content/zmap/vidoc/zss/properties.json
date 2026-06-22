@@ -39,6 +39,13 @@
                 "unknown": 0
             }
         },
+        "RoadMarkingColorType": {
+            "type": "enum<RoadMarkingColorType>",
+            "values": {
+                "white": 0,
+                "yellow": 1
+            }
+        },
         "RouteEditorMode": {
             "type": "enum<RouteEditorMode>",
             "values": {
@@ -97,6 +104,10 @@
         "db_entrance_has_poi": {
             "default_value": "false",
             "type": "bool"
+        },
+        "db_format_version": {
+            "default_value": "2411",
+            "type": "u32"
         },
         "db_has_immersive_counterpart": {
             "default_value": "false",
@@ -434,6 +445,10 @@
         "db_region": {
             "default_value": "0",
             "type": "u32"
+        },
+        "db_road_marking_color_type": {
+            "default_value": "white",
+            "type": "enum<RoadMarkingColorType>"
         },
         "db_road_part": {
             "type": "enum<RoadPart>",
@@ -1055,18 +1070,22 @@
                 "s_dvg_vehicle_gps_marker": "",
                 "s_dvg_vehicle_gps_marker_degraded": "",
                 "s_dynamic_dashed_polyline_331464": "",
+                "s_dynamic_dashed_polyline_537454": "",
                 "s_dynamic_dashed_polyline_676767": "",
                 "s_dynamic_dashed_polyline_920277": "",
                 "s_dynamic_dashed_polyline_977194": "",
                 "s_dynamic_gradient_polyline_331464": "",
+                "s_dynamic_gradient_polyline_537454": "",
                 "s_dynamic_gradient_polyline_676767": "",
                 "s_dynamic_gradient_polyline_920277": "",
                 "s_dynamic_gradient_polyline_977194": "",
                 "s_dynamic_polygon_331464": "",
+                "s_dynamic_polygon_537454": "",
                 "s_dynamic_polygon_676767": "",
                 "s_dynamic_polygon_920277": "",
                 "s_dynamic_polygon_977194": "",
                 "s_dynamic_polyline_331464": "",
+                "s_dynamic_polyline_537454": "",
                 "s_dynamic_polyline_676767": "",
                 "s_dynamic_polyline_920277": "",
                 "s_dynamic_polyline_977194": "",
@@ -1074,17 +1093,21 @@
                 "s_traffic_line_zenith": "",
                 "s_vendor_dynamic_poi": "",
                 "s_vendor_dynamic_poi2_331464": "",
+                "s_vendor_dynamic_poi2_537454": "",
                 "s_vendor_dynamic_poi2_676767": "",
                 "s_vendor_dynamic_poi2_920277": "",
                 "s_vendor_dynamic_poi2_977194": "",
                 "s_vendor_dynamic_point_331464": "",
+                "s_vendor_dynamic_point_537454": "",
                 "s_vendor_dynamic_point_676767": "",
                 "s_vendor_dynamic_point_920277": "",
                 "s_vendor_dynamic_point_977194": "",
                 "s_vendor_dynamic_point_text_331464": "",
+                "s_vendor_dynamic_point_text_537454": "",
                 "s_vendor_dynamic_point_text_676767": "",
                 "s_vendor_dynamic_point_text_920277": "",
                 "s_vendor_dynamic_point_text_977194": "",
+                "satellite": "",
                 "tech_zenith_background": "",
                 "unknown_sublayer": 65535
             }
@@ -1826,6 +1849,10 @@
             "taxi": "",
             "unknown": 0
         },
+        "RoadMarkingColorType": {
+            "white": 0,
+            "yellow": 1
+        },
         "RoadPart": {
             "border_flat": "",
             "border_overpass": "",
@@ -2438,18 +2465,22 @@
             "s_dvg_vehicle_gps_marker": "",
             "s_dvg_vehicle_gps_marker_degraded": "",
             "s_dynamic_dashed_polyline_331464": "",
+            "s_dynamic_dashed_polyline_537454": "",
             "s_dynamic_dashed_polyline_676767": "",
             "s_dynamic_dashed_polyline_920277": "",
             "s_dynamic_dashed_polyline_977194": "",
             "s_dynamic_gradient_polyline_331464": "",
+            "s_dynamic_gradient_polyline_537454": "",
             "s_dynamic_gradient_polyline_676767": "",
             "s_dynamic_gradient_polyline_920277": "",
             "s_dynamic_gradient_polyline_977194": "",
             "s_dynamic_polygon_331464": "",
+            "s_dynamic_polygon_537454": "",
             "s_dynamic_polygon_676767": "",
             "s_dynamic_polygon_920277": "",
             "s_dynamic_polygon_977194": "",
             "s_dynamic_polyline_331464": "",
+            "s_dynamic_polyline_537454": "",
             "s_dynamic_polyline_676767": "",
             "s_dynamic_polyline_920277": "",
             "s_dynamic_polyline_977194": "",
@@ -2457,17 +2488,21 @@
             "s_traffic_line_zenith": "",
             "s_vendor_dynamic_poi": "",
             "s_vendor_dynamic_poi2_331464": "",
+            "s_vendor_dynamic_poi2_537454": "",
             "s_vendor_dynamic_poi2_676767": "",
             "s_vendor_dynamic_poi2_920277": "",
             "s_vendor_dynamic_poi2_977194": "",
             "s_vendor_dynamic_point_331464": "",
+            "s_vendor_dynamic_point_537454": "",
             "s_vendor_dynamic_point_676767": "",
             "s_vendor_dynamic_point_920277": "",
             "s_vendor_dynamic_point_977194": "",
             "s_vendor_dynamic_point_text_331464": "",
+            "s_vendor_dynamic_point_text_537454": "",
             "s_vendor_dynamic_point_text_676767": "",
             "s_vendor_dynamic_point_text_920277": "",
             "s_vendor_dynamic_point_text_977194": "",
+            "satellite": "",
             "tech_zenith_background": "",
             "unknown_sublayer": 65535
         },
@@ -2530,6 +2565,10 @@
             "default_value": "false",
             "type": "bool"
         },
+        "db_format_version": {
+            "default_value": "2411",
+            "type": "u32"
+        },
         "db_has_immersive_counterpart": {
             "default_value": "false",
             "type": "bool"
@@ -2564,6 +2603,10 @@
         "db_region": {
             "default_value": "0",
             "type": "u32"
+        },
+        "db_road_marking_color_type": {
+            "default_value": "white",
+            "type": "enum<RoadMarkingColorType>"
         },
         "db_road_part": {
             "type": "enum<RoadPart>"

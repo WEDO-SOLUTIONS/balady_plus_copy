@@ -173,8 +173,14 @@ class $AssetsImagesGen {
   AssetGenImage get illustrationFlipContinueLight =>
       const AssetGenImage('assets/images/illustration_flip_continue_light.png');
 
+  /// File path: assets/images/img_nearby_placeholder.jpg
+  AssetGenImage get imgNearbyPlaceholder => const AssetGenImage('assets/images/img_nearby_placeholder.jpg');
+
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
   AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
+
+  /// Directory path: assets/images/layers
+  $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
 
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
@@ -285,6 +291,7 @@ class $AssetsImagesGen {
     icArrowFeedback,
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,
+    imgNearbyPlaceholder,
     ishanSeefromtheskyUnsplash,
     lightMapPreview,
     markerEtaMask,
@@ -938,6 +945,19 @@ class $AssetsImagesAudioPlaceholdersGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
+}
+
+class $AssetsImagesLayersGen {
+  const $AssetsImagesLayersGen();
+
+  /// File path: assets/images/layers/default_map.png
+  AssetGenImage get defaultMap => const AssetGenImage('assets/images/layers/default_map.png');
+
+  /// File path: assets/images/layers/satellite.png
+  AssetGenImage get satellite => const AssetGenImage('assets/images/layers/satellite.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [defaultMap, satellite];
 }
 
 class $AssetsImagesMakkahQuickActionsGen {

@@ -1305,6 +1305,14 @@ class WeatherMapMessage {
   final bool enabled;
 }
 
+class SatelliteMapMessage {
+  SatelliteMapMessage({required this.layerName, required this.rasterTileUri, required this.enabled});
+
+  final String? layerName;
+  final String? rasterTileUri;
+  final bool enabled;
+}
+
 class RenderedObjectMessage {
   RenderedObjectMessage(this.objectId, this.closestMapPoint, this.levelId);
 
@@ -1595,6 +1603,9 @@ abstract class MapApi {
 
   @async
   void selectIndoorLevel(int index);
+
+  @async
+  void setIndoorFloorPlansEnabled(bool enabled);
 
   @async
   void loadStyles(String asset);
@@ -1948,6 +1959,9 @@ abstract class MapApi {
 
   @async
   bool toggleHeatmap(WeatherMapMessage message);
+
+  @async
+  bool toggleSatellite(SatelliteMapMessage message);
 
   @async
   void betterRouteResponse(BetterRouteResponseMessage response);

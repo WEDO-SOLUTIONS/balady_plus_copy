@@ -35,7 +35,7 @@ class RoutingHistory extends ConsumerWidget {
 
     return SearchHistoryCollapsible(
       history: history,
-      iconColor: context.colors.foregroundMuted,
+      iconColor: context.colors.foregroundSoft,
       onClear: () {
         Metrics.logEventAdvanced(
           MetricsConstants.routesKeys.searchClearButton,
