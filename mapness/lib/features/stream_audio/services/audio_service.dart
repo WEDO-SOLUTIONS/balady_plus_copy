@@ -25,8 +25,45 @@ class AudioService extends ChangeNotifier {
   Timer? _reconnectionTimer;
   Timer? _dismissalCheckTimer; // Periodic check for dismissal
   Timer? _iosDismissalDebounceTimer;
+  Timer? _androidRecoveryTimer; // Android: live-stream recovery backoff
+  int _androidRecoveryAttempt = 0;
+  bool _isAndroidRecovering = false;
+  // Cap individual backoff delay; total recovery never gives up while
+  // _expectsToBePlaying is true (live radio should self-heal forever).
+  static const Duration _androidRecoveryMaxDelay = Duration(seconds: 30);
   AudioSession? _audioSession;
   MethodChannel? _audioCoordinationChannel;
+  MethodChannel? _nativeRadioChannel;
+  // Android wake-lock + Wi-Fi-lock bridge. Acquired while live radio is
+  // playing so the OS doesn't throttle Wi-Fi / suspend the process after the
+  // screen turns off (root cause of "MBC stops after 1-2 min on Android").
+  static const MethodChannel _mbcLockChannel = MethodChannel('com.balady.mbc_lock');
+  bool _mbcLocksHeld = false;
+
+  Future<void> _acquireAndroidMbcLocks() async {
+    if (!Platform.isAndroid) return;
+    if (_mbcLocksHeld) return;
+    try {
+      await _mbcLockChannel.invokeMethod<bool>('acquire');
+      _mbcLocksHeld = true;
+      debugPrint('AudioService: 🔒 Android MBC wake/Wi-Fi locks acquired');
+    } catch (e) {
+      debugPrint('AudioService: ⚠️ Could not acquire Android MBC locks: $e');
+    }
+  }
+
+  Future<void> _releaseAndroidMbcLocks() async {
+    if (!Platform.isAndroid) return;
+    if (!_mbcLocksHeld) return;
+    try {
+      await _mbcLockChannel.invokeMethod<bool>('release');
+    } catch (e) {
+      debugPrint('AudioService: ⚠️ Could not release Android MBC locks: $e');
+    } finally {
+      _mbcLocksHeld = false;
+      debugPrint('AudioService: 🔓 Android MBC wake/Wi-Fi locks released');
+    }
+  }
 
   bool _wasPlayingBeforeInterruption = false;
   bool _isInterrupted = false;
@@ -34,6 +71,11 @@ class AudioService extends ChangeNotifier {
   bool _isNavigationDucking = false;
   Timer? _navigationDuckingFailsafeTimer;
   double? _preNavigationDuckVolume;
+
+  // True while navigation voice is active — blocks dismissal detection so the
+  // periodic timer doesn't mistake a voice-induced idle state for a user dismissal.
+  bool _isNavigationVoiceActive = false;
+  Timer? _navigationVoiceFailsafeTimer;
 
   String? _currentStreamUrl;
   String? _currentChannelId;
@@ -66,7 +108,8 @@ class AudioService extends ChangeNotifier {
 
     try {
       final st = _player!.playerState;
-      final isStopped = !st.playing &&
+      final isStopped =
+          !st.playing &&
           (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
 
       if (!isStopped) {
@@ -77,7 +120,16 @@ class AudioService extends ChangeNotifier {
       debugPrint('AudioService: 🔁 iOS ensure-playing ($reason) - re-preparing stream source');
       _expectsToBePlaying = true;
 
-      // Re-prepare the source; on iOS the player can drop to idle after interruptions.
+      // Re-activate the audio session before re-preparing: after an iOS interruption
+      // the session stays deactivated, and calling play() without setActive(true) is a no-op.
+      try {
+        await _audioSession?.setActive(true);
+        debugPrint('AudioService: ✅ Audio session reactivated ($reason)');
+      } catch (e) {
+        debugPrint('AudioService: ⚠️ Could not reactivate audio session ($reason): $e');
+      }
+
+      // Re-prepare the source; on iOS the player drops to idle after interruptions.
       await _playLiveStream();
     } catch (e) {
       debugPrint('AudioService: ❌ iOS ensure-playing failed ($reason): $e');
@@ -86,7 +138,21 @@ class AudioService extends ChangeNotifier {
 
   void _maybeHandleUnexpectedStop(String source) {
     if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) return;
-    if (_isInterrupted || _isNavigationDucking) return;
+    if (_isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) return;
+
+    // Android: with `androidNotificationOngoing: true` the notification can
+    // still be acted on via the system play/pause/stop buttons. Treat an
+    // unexpected idle/completed as a user-initiated stop (notification stop,
+    // headset stop, OS reclaim, etc.). The previous "auto-recovery" loop was
+    // a workaround for an unrelated bug (the `await player.play()` that never
+    // returned for live streams — now fixed) and made MBC un-stoppable
+    // because tapping stop from the notification was treated as a stall and
+    // immediately restarted.
+    if (Platform.isAndroid) {
+      debugPrint('AudioService: 🚫 Android player stopped unexpectedly ($source) — treating as dismissal');
+      _handleNotificationDismissed();
+      return;
+    }
 
     // iOS sometimes reports the player as idle before we receive the AVAudioSession
     // interruption/secondary-audio hint. Debounce to avoid flipping state too early.
@@ -94,7 +160,11 @@ class AudioService extends ChangeNotifier {
       _iosDismissalDebounceTimer?.cancel();
       _iosDismissalDebounceTimer = Timer(_iosUnexpectedStopDebounce, () {
         if (_player == null) {
-          if (_currentChannelId != null && _expectsToBePlaying && !_isInterrupted && !_isNavigationDucking) {
+          if (_currentChannelId != null &&
+              _expectsToBePlaying &&
+              !_isInterrupted &&
+              !_isNavigationDucking &&
+              !_isNavigationVoiceActive) {
             debugPrint('AudioService: 🚫 Notification dismissed (debounced/$source) - player is null');
             _handleNotificationDismissed();
           }
@@ -102,9 +172,16 @@ class AudioService extends ChangeNotifier {
         }
 
         final st = _player!.playerState;
-        final isStopped = !st.playing &&
+        final isStopped =
+            !st.playing &&
             (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
-        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !_isInterrupted && !_isNavigationDucking) {
+        if (_expectsToBePlaying &&
+            isStopped &&
+            !_isStoppingInternally &&
+            !_isStartingPlayback &&
+            !_isInterrupted &&
+            !_isNavigationDucking &&
+            !_isNavigationVoiceActive) {
           debugPrint('AudioService: 🚫 Notification dismissed (debounced/$source) - player stopped unexpectedly');
           _handleNotificationDismissed();
         } else {
@@ -169,13 +246,25 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    if (_isInitialized && _globalPlayer != null) {
+    if (_isInitialized) {
       debugPrint('AudioService: Already initialized');
       return;
     }
 
     try {
       debugPrint('AudioService: Starting initialization');
+
+      if (Platform.isIOS) {
+        // iOS: NativeRadioPlayer.swift handles all audio.
+        // Do NOT create just_audio_background or AudioPlayer — their idle state
+        // would trigger the dismissal-check timer and kill the native player.
+        await _setupIOSAudioCoordination();
+        _isInitialized = true;
+        debugPrint('AudioService: ✅ iOS initialised (native radio mode)');
+        return;
+      }
+
+      // ── Android / other platforms ──────────────────────────────────────────
 
       // Dispose existing player if any
       if (_globalPlayer != null) {
@@ -224,13 +313,8 @@ class AudioService extends ChangeNotifier {
       _globalPlayer = AudioPlayer();
       debugPrint('AudioService: ✅ AudioPlayer created successfully');
 
-      // Setup listeners
+      // Setup listeners (includes dismissal-check timer — only for Android)
       await _setupPlayerListeners();
-
-      // Setup iOS audio coordination if on iOS
-      if (Platform.isIOS) {
-        await _setupIOSAudioCoordination();
-      }
 
       _isInitialized = true;
       debugPrint('AudioService: ✅ Initialization completed successfully');
@@ -281,29 +365,35 @@ class AudioService extends ChangeNotifier {
       _audioSession = await AudioSession.instance;
 
       // Configure for proper lock screen controls and interruption handling
-      await _audioSession!.configure(const AudioSessionConfiguration(
-        avAudioSessionCategory: AVAudioSessionCategory.playback,
-        // iOS: allow navigation voice prompts to coexist with radio playback.
-        // - mixWithOthers: don't fully stop other audio when another session activates
-        // - interruptSpokenAudioAndMixWithOthers: improves coexistence with spoken guidance
-        // We still handle duck/pause via our native coordination bridge as a fallback.
-        // Note: This must stay `const`. We use raw bitmask values from `audio_session`
-        // (`AVAudioSessionCategoryOptions` in `audio_session/lib/src/darwin.dart`):
-        // - mixWithOthers: 0x1
-        // - interruptSpokenAudioAndMixWithOthers: 0x11
-        // - allowBluetooth: 0x4
-        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions(0x1 | 0x11 | 0x4),
-        avAudioSessionMode: AVAudioSessionMode.defaultMode,
-        avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
-        avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
-        androidAudioAttributes: AndroidAudioAttributes(
-          contentType: AndroidAudioContentType.music,
-          flags: AndroidAudioFlags.none,
-          usage: AndroidAudioUsage.media,
+      await _audioSession!.configure(
+        const AudioSessionConfiguration(
+          avAudioSessionCategory: AVAudioSessionCategory.playback,
+          // iOS: allow navigation voice prompts to coexist with radio playback.
+          // - mixWithOthers: don't fully stop other audio when another session activates
+          // - interruptSpokenAudioAndMixWithOthers: improves coexistence with spoken guidance
+          // We still handle duck/pause via our native coordination bridge as a fallback.
+          // Note: This must stay `const`. We use raw bitmask values from `audio_session`
+          // (`AVAudioSessionCategoryOptions` in `audio_session/lib/src/darwin.dart`):
+          // - mixWithOthers: 0x1
+          // - interruptSpokenAudioAndMixWithOthers: 0x11
+          // - allowBluetooth: 0x4
+          // 0x1 = mixWithOthers: mix with other sessions (don't take exclusive access)
+          // 0x4 = allowBluetooth
+          // NOT 0x11 (interruptSpokenAudioAndMixWithOthers): that flag makes us interrupt
+          // navigation voice, which fights 2GIS SDK and kills our audio session.
+          avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions(0x1 | 0x4),
+          avAudioSessionMode: AVAudioSessionMode.defaultMode,
+          avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
+          avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+          androidAudioAttributes: AndroidAudioAttributes(
+            contentType: AndroidAudioContentType.music,
+            flags: AndroidAudioFlags.none,
+            usage: AndroidAudioUsage.media,
+          ),
+          androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+          androidWillPauseWhenDucked: false,
         ),
-        androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
-        androidWillPauseWhenDucked: false,
-      ));
+      );
 
       debugPrint('AudioService: ✅ Audio session configured successfully');
 
@@ -327,12 +417,15 @@ class AudioService extends ChangeNotifier {
         cancelOnError: false,
       );
 
-      // Listen for becomingNoisy
+      // Listen for becomingNoisy. For live radio we DO NOT auto-pause: on
+      // Android, Bluetooth A2DP idle-disconnect after the screen has been off
+      // for a minute or two fires this event and would otherwise stop the
+      // foreground service entirely (root cause of the "MBC dies after 1-2
+      // min" bug). The user is listening to a live stream and explicitly
+      // expects continuous playback. If we're not actively playing, leave
+      // existing behaviour intact.
       _audioSession!.becomingNoisyEventStream.listen((_) {
-        debugPrint('AudioService: 🔊 Audio becoming noisy (headphones unplugged)');
-        if (_isPlaying) {
-          pause();
-        }
+        debugPrint('AudioService: 🔊 Audio becoming noisy (route change) — keeping live stream alive');
       });
 
       debugPrint('AudioService: ✅ Interruption listeners configured');
@@ -343,61 +436,36 @@ class AudioService extends ChangeNotifier {
   }
 
   void _handleInterruptionBegan(AudioInterruptionEvent event) {
-    debugPrint('AudioService: 🛑 INTERRUPTION BEGAN - '
-        'type: ${event.type}, '
-        'expectsToBePlaying: $_expectsToBePlaying, '
-        'isPlaying: $_isPlaying');
+    debugPrint(
+      'AudioService: 🛑 INTERRUPTION BEGAN - '
+      'type: ${event.type}, '
+      'expectsToBePlaying: $_expectsToBePlaying, '
+      'isPlaying: $_isPlaying',
+    );
 
-    if (_isInterrupted) {
-      debugPrint('AudioService: Already interrupted, ignoring');
-      return;
-    }
-
-    if (!_expectsToBePlaying) {
-      debugPrint('AudioService: Not expecting to play, ignoring interruption');
-      return;
-    }
-
-    _wasPlayingBeforeInterruption = _isPlaying;
     _isInterrupted = true;
+    _wasPlayingBeforeInterruption = _isPlaying || _isLoading;
 
-    if (_isPlaying) {
-      debugPrint('AudioService: Pausing due to interruption');
-      pause();
+    // Android: duck volume instead of pausing when 2GIS navigation voice speaks.
+    if (Platform.isAndroid && event.type == AudioInterruptionType.duck && _player != null) {
+      _player!.setVolume(0.15);
     }
-
-    syncState();
-    notifyListeners();
   }
 
   void _handleInterruptionEnded(AudioInterruptionEvent event) {
-    debugPrint('AudioService: ▶️ INTERRUPTION ENDED - '
-        'wasPlayingBefore: $_wasPlayingBeforeInterruption, '
-        'expectsToBePlaying: $_expectsToBePlaying');
+    debugPrint('AudioService: ▶️ INTERRUPTION ENDED - wasPlaying: $_wasPlayingBeforeInterruption');
+    _isInterrupted = false;
 
-    if (!_isInterrupted) {
-      debugPrint('AudioService: Not interrupted, ignoring interruption end');
+    if (Platform.isAndroid && event.type == AudioInterruptionType.duck && _player != null) {
+      // Restore volume after navigation voice ends.
+      _player!.setVolume(1.0);
       return;
     }
 
-    _isInterrupted = false;
-
-    if (_wasPlayingBeforeInterruption && _expectsToBePlaying) {
-      debugPrint('AudioService: Resuming after interruption');
-      resume();
+    if (Platform.isIOS && _wasPlayingBeforeInterruption && _expectsToBePlaying) {
+      // ignore: discarded_futures
+      _recoverAfterInterruption('interruptionEnded');
     }
-
-    // iOS: even if we weren't "playing" at interruption begin (e.g. we were duck-paused),
-    // the system can still leave the player in `idle`. Best-effort recovery.
-    if (Platform.isIOS && _expectsToBePlaying) {
-      Future<void>.delayed(_iosResumeRetryDelay, () {
-        // ignore: discarded_futures
-        _ensureStreamPlayingAfterVoice(reason: 'audio_session_interruptionEnded');
-      });
-    }
-
-    syncState();
-    notifyListeners();
   }
 
   Future<void> _setupPlayerListeners() async {
@@ -418,11 +486,11 @@ class AudioService extends ChangeNotifier {
           _currentTitle = mediaItem.title;
           _currentArtist = mediaItem.artist;
           _currentArtUri = mediaItem.artUri?.toString();
-          
+
           if (state.currentSource is UriAudioSource) {
             _currentStreamUrl = (state.currentSource as UriAudioSource).uri.toString();
           }
-          
+
           syncState();
           notifyListeners();
         }
@@ -432,33 +500,51 @@ class AudioService extends ChangeNotifier {
     // Listen to player state changes
     _playerStateSubscription = _player!.playerStateStream.listen(
       (state) {
-        debugPrint('AudioService: 🎵 Player state changed - '
-            'playing: ${state.playing}, '
-            'processingState: ${state.processingState}, '
-            'expectsToBePlaying: $_expectsToBePlaying, '
-            'isStoppingInternally: $_isStoppingInternally, '
-            'isStartingPlayback: $_isStartingPlayback');
+        debugPrint(
+          'AudioService: 🎵 Player state changed - '
+          'playing: ${state.playing}, '
+          'processingState: ${state.processingState}, '
+          'expectsToBePlaying: $_expectsToBePlaying, '
+          'isStoppingInternally: $_isStoppingInternally, '
+          'isStartingPlayback: $_isStartingPlayback',
+        );
+
+        // Android: once the stream is actually playing again, clear any pending
+        // recovery backoff so the next stall starts a fresh retry sequence.
+        if (Platform.isAndroid && state.playing && state.processingState == ProcessingState.ready) {
+          if (_androidRecoveryAttempt != 0 || _androidRecoveryTimer != null) {
+            debugPrint('AudioService: ✅ Android recovery cleared (stream is playing)');
+          }
+          _androidRecoveryAttempt = 0;
+          _androidRecoveryTimer?.cancel();
+          _androidRecoveryTimer = null;
+        }
 
         // Detect notification dismissal: player stopped unexpectedly while we expect it to be playing
         // But ignore if we're actively starting playback (initial idle state is normal)
-        final isStopped = !state.playing &&
+        final isStopped =
+            !state.playing &&
             (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed);
 
         if (_expectsToBePlaying && isStopped) {
-          debugPrint('AudioService: 🔍 Potential dismissal detected - '
-              'expectsToBePlaying: $_expectsToBePlaying, '
-              'isStoppingInternally: $_isStoppingInternally, '
-              'isStartingPlayback: $_isStartingPlayback');
+          debugPrint(
+            'AudioService: 🔍 Potential dismissal detected - '
+            'expectsToBePlaying: $_expectsToBePlaying, '
+            'isStoppingInternally: $_isStoppingInternally, '
+            'isStartingPlayback: $_isStartingPlayback',
+          );
 
-          final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
+          final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking || _isNavigationVoiceActive;
           if (!_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
             _maybeHandleUnexpectedStop('playerStateStream');
           } else {
-            debugPrint('AudioService: ⏸️ Ignoring dismissal - '
-                'isStoppingInternally: $_isStoppingInternally, '
-                'isStartingPlayback: $_isStartingPlayback, '
-                'isInterrupted: $_isInterrupted, '
-                'isNavigationDucking: $_isNavigationDucking');
+            debugPrint(
+              'AudioService: ⏸️ Ignoring dismissal - '
+              'isStoppingInternally: $_isStoppingInternally, '
+              'isStartingPlayback: $_isStartingPlayback, '
+              'isInterrupted: $_isInterrupted, '
+              'isNavigationDucking: $_isNavigationDucking',
+            );
           }
         }
 
@@ -473,8 +559,10 @@ class AudioService extends ChangeNotifier {
     // Listen to playback events for buffering and errors
     _playbackEventSubscription = _player!.playbackEventStream.listen(
       (event) {
-        debugPrint('AudioService: 📻 Playback event - '
-            'processingState: ${event.processingState}');
+        debugPrint(
+          'AudioService: 📻 Playback event - '
+          'processingState: ${event.processingState}',
+        );
 
         if (event.processingState == ProcessingState.buffering) {
           debugPrint('AudioService: 🔄 Buffering...');
@@ -486,7 +574,11 @@ class AudioService extends ChangeNotifier {
             event.processingState == ProcessingState.idle || event.processingState == ProcessingState.completed;
 
         final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
-        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
+        if (_expectsToBePlaying &&
+            isStopped &&
+            !_isStoppingInternally &&
+            !_isStartingPlayback &&
+            !shouldIgnoreDismissal) {
           _maybeHandleUnexpectedStop('playbackEventStream');
         }
       },
@@ -506,7 +598,12 @@ class AudioService extends ChangeNotifier {
   void _startDismissalCheckTimer() {
     _dismissalCheckTimer?.cancel();
     _dismissalCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (!_expectsToBePlaying || _isStoppingInternally || _isStartingPlayback || _isInterrupted || _isNavigationDucking) {
+      if (!_expectsToBePlaying ||
+          _isStoppingInternally ||
+          _isStartingPlayback ||
+          _isInterrupted ||
+          _isNavigationDucking ||
+          _isNavigationVoiceActive) {
         return; // Don't check if we don't expect to be playing or are stopping/starting
       }
 
@@ -519,14 +616,16 @@ class AudioService extends ChangeNotifier {
       }
 
       final state = _player!.playerState;
-      final isStopped = !state.playing &&
+      final isStopped =
+          !state.playing &&
           (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed);
 
       if (isStopped) {
         debugPrint('AudioService: 🔍 Periodic check - Player stopped unexpectedly');
         debugPrint('AudioService: 🔍 State - playing: ${state.playing}, processingState: ${state.processingState}');
         debugPrint(
-            'AudioService: 🔍 Flags - expectsToBePlaying: $_expectsToBePlaying, isStoppingInternally: $_isStoppingInternally, isStartingPlayback: $_isStartingPlayback');
+          'AudioService: 🔍 Flags - expectsToBePlaying: $_expectsToBePlaying, isStoppingInternally: $_isStoppingInternally, isStartingPlayback: $_isStartingPlayback',
+        );
         _maybeHandleUnexpectedStop('periodicTimer');
       }
     });
@@ -549,21 +648,23 @@ class AudioService extends ChangeNotifier {
   }) async {
     debugPrint('AudioService: 🎵 playStream called - URL: $url, Channel: $channelId');
 
-    if (!_isInitialized || _player == null) {
+    if (!_isInitialized || (!Platform.isIOS && _player == null)) {
       debugPrint('AudioService: Not initialized, initializing first');
       await init();
     }
 
-    if (_player == null) {
+    if (!Platform.isIOS && _player == null) {
       debugPrint('AudioService: ❌ Player is null after initialization');
       _setError('Failed to initialize audio player');
       return;
     }
 
     try {
-      // Reset dismissal handling flag when starting new stream
       _isHandlingDismissal = false;
-
+      _androidRecoveryTimer?.cancel();
+      _androidRecoveryTimer = null;
+      _androidRecoveryAttempt = 0;
+      _isAndroidRecovering = false;
       _currentStreamUrl = url;
       _currentChannelId = channelId;
       _currentTitle = title ?? 'Live Radio';
@@ -572,15 +673,22 @@ class AudioService extends ChangeNotifier {
       _expectsToBePlaying = true;
       _clearError();
 
-      // Start periodic dismissal check when starting playback
-      _startDismissalCheckTimer();
-
-      debugPrint('AudioService: Setting audio source...');
-
-      await _playLiveStream(playlist: playlist, initialIndex: initialIndex);
-
-      // Notify iOS that MBC is now active
-      await _notifyIOSMBCActive();
+      if (Platform.isIOS) {
+        // On iOS: delegate all audio to NativeRadioPlayer.swift which handles
+        // session conflicts with the 2GIS navigation SDK internally.
+        _isLoading = true;
+        notifyListeners();
+        await _nativePlay();
+        await _notifyIOSMBCActive();
+      } else {
+        _startDismissalCheckTimer();
+        // Hold a wake-lock + Wi-Fi-lock for the entire MBC session so the OS
+        // can't suspend the network/CPU once the screen turns off.
+        await _acquireAndroidMbcLocks();
+        debugPrint('AudioService: Setting audio source...');
+        await _playLiveStream(playlist: playlist, initialIndex: initialIndex);
+        await _notifyIOSMBCActive();
+      }
 
       debugPrint('AudioService: ✅ Stream started successfully');
     } catch (e) {
@@ -633,11 +741,31 @@ class AudioService extends ChangeNotifier {
         }
 
         debugPrint('AudioService: Audio source set, starting playback...');
-        await _player!.play();
+        // ⚠️ DO NOT await _player.play() for a live stream.
+        // just_audio's `play()` Future only completes when the player is
+        // *paused* or *finished* — for a live HLS stream that's by design
+        // continuous, awaiting it blocks forever, the 60 s timeout fires,
+        // and the cascading error path calls pause(). That's the real
+        // "MBC stops after ~1 min on Android" bug.
+        // Fire-and-forget the play call; rely on `playerStateStream` for
+        // the actual playing/loading state.
+        unawaited(_player!.play());
 
-        // Wait a bit for playback to actually start before clearing the flag
-        // This prevents false dismissal detection during the initial idle->loading->playing transition
-        await Future.delayed(const Duration(milliseconds: 500));
+        // Wait until the player reports playing (or buffering/loading turns
+        // into playing) instead of the 500 ms fixed sleep — this prevents
+        // false dismissal detection without depending on play()'s Future.
+        try {
+          await _player!.playerStateStream
+              .firstWhere(
+                (s) =>
+                    s.playing &&
+                    s.processingState != ProcessingState.idle &&
+                    s.processingState != ProcessingState.completed,
+              )
+              .timeout(const Duration(seconds: 15));
+        } on TimeoutException {
+          debugPrint('AudioService: ⚠️ Timed out waiting for playing state (continuing anyway)');
+        }
       }).timeout(_startPlaybackTimeout);
 
       _isStartingPlayback = false;
@@ -652,8 +780,100 @@ class AudioService extends ChangeNotifier {
     }
   }
 
+  // ── Android live-stream recovery ────────────────────────────────────────────
+  //
+  // On Android we keep the foreground service alive (the user cannot swipe
+  // the ongoing notification away while playing), so any unexpected idle /
+  // completed state is treated as a transient stream stall rather than a user
+  // dismissal. We re-prepare the stream with exponential backoff and never
+  // give up while `_expectsToBePlaying` is true. This eliminates the
+  // "audio stops after 1-2 minutes with the screen off" symptom caused by
+  // Doze maintenance windows, Wi-Fi sleep, NAT timeouts, etc.
+  void _scheduleAndroidRecovery({required String reason}) {
+    if (!Platform.isAndroid) return;
+    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    if (_currentStreamUrl == null) return;
+    if (_isAndroidRecovering) return;
+    if (_androidRecoveryTimer?.isActive == true) return;
+
+    _androidRecoveryAttempt += 1;
+    // Exponential backoff: 0s, 1s, 2s, 4s, 8s, 16s, 30s (cap).
+    final attempt = _androidRecoveryAttempt;
+    final delaySeconds = attempt <= 1 ? 0 : (1 << (attempt - 2).clamp(0, 5));
+    final delay = Duration(
+      seconds: delaySeconds.clamp(0, _androidRecoveryMaxDelay.inSeconds),
+    );
+
+    debugPrint(
+      'AudioService: ⏱️ Android recovery scheduled - attempt $attempt in ${delay.inSeconds}s (reason: $reason)',
+    );
+
+    _androidRecoveryTimer?.cancel();
+    _androidRecoveryTimer = Timer(delay, () {
+      _androidRecoveryTimer = null;
+      // ignore: discarded_futures
+      _attemptAndroidRecovery(reason: reason);
+    });
+  }
+
+  Future<void> _attemptAndroidRecovery({required String reason}) async {
+    if (!Platform.isAndroid) return;
+    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    if (_currentStreamUrl == null) return;
+    if (_isStartingPlayback) return;
+    if (_player == null) return;
+    if (_isAndroidRecovering) return;
+
+    _isAndroidRecovering = true;
+    debugPrint('AudioService: 🔁 Android recovery attempt #$_androidRecoveryAttempt ($reason)');
+
+    try {
+      // Re-activate the audio session in case the OS dropped focus.
+      try {
+        await _audioSession?.setActive(true);
+      } catch (e) {
+        debugPrint('AudioService: ⚠️ Could not reactivate audio session during recovery: $e');
+      }
+
+      // Re-prepare and play the live stream. _playLiveStream handles the
+      // _isStartingPlayback flag and surfaces errors via _setError.
+      await _playLiveStream();
+    } catch (e) {
+      debugPrint('AudioService: ❌ Android recovery attempt failed ($reason): $e');
+    } finally {
+      _isAndroidRecovering = false;
+    }
+
+    // If the stream still isn't actually playing after the attempt, schedule
+    // another one. The playerStateStream listener clears the counter once
+    // playback genuinely resumes.
+    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    final st = _player?.playerState;
+    final actuallyPlaying =
+        st != null &&
+        st.playing &&
+        st.processingState != ProcessingState.idle &&
+        st.processingState != ProcessingState.completed;
+    if (!actuallyPlaying) {
+      _scheduleAndroidRecovery(reason: 'recovery-retry');
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   Future<void> pause() async {
     debugPrint('AudioService: ⏸️ pause called');
+
+    if (Platform.isIOS) {
+      try {
+        await _nativePause();
+        _isPlaying = false;
+        _isLoading = false;
+        notifyListeners();
+      } catch (e) {
+        debugPrint('AudioService: ❌ Error pausing (native): $e');
+      }
+      return;
+    }
 
     if (_player == null) {
       debugPrint('AudioService: Player is null, cannot pause');
@@ -673,13 +893,24 @@ class AudioService extends ChangeNotifier {
   Future<void> resume() async {
     debugPrint('AudioService: ▶️ resume called');
 
-    if (_player == null) {
-      debugPrint('AudioService: Player is null, cannot resume');
+    if (!_expectsToBePlaying) {
+      debugPrint('AudioService: Not expecting to be playing, ignoring resume');
       return;
     }
 
-    if (!_expectsToBePlaying) {
-      debugPrint('AudioService: Not expecting to be playing, ignoring resume');
+    if (Platform.isIOS) {
+      try {
+        await _nativeRadioChannel?.invokeMethod('resume');
+        _isLoading = true;
+        notifyListeners();
+      } catch (e) {
+        debugPrint('AudioService: ❌ Error resuming (native): $e');
+      }
+      return;
+    }
+
+    if (_player == null) {
+      debugPrint('AudioService: Player is null, cannot resume');
       return;
     }
 
@@ -694,6 +925,11 @@ class AudioService extends ChangeNotifier {
   }
 
   void syncState() {
+    // On iOS the state is driven by NativeRadioPlayer callbacks — _globalPlayer
+    // is always null. Calling syncState() here would reset _isPlaying to false
+    // and break the provider's play/pause logic.
+    if (Platform.isIOS) return;
+
     if (_player == null) {
       _isPlaying = false;
       _isLoading = false;
@@ -705,11 +941,13 @@ class AudioService extends ChangeNotifier {
     try {
       final currentState = _player!.playerState;
 
-      final isActuallyPlaying = currentState.playing &&
+      final isActuallyPlaying =
+          currentState.playing &&
           currentState.processingState != ProcessingState.idle &&
           currentState.processingState != ProcessingState.completed;
 
-      final isActuallyLoading = currentState.processingState == ProcessingState.loading ||
+      final isActuallyLoading =
+          currentState.processingState == ProcessingState.loading ||
           currentState.processingState == ProcessingState.buffering;
 
       final bool wasPlaying = _isPlaying;
@@ -720,7 +958,8 @@ class AudioService extends ChangeNotifier {
 
       if (wasPlaying != _isPlaying || wasLoading != _isLoading) {
         debugPrint(
-            'AudioService: State synced - isPlaying: $_isPlaying, isLoading: $_isLoading, isDucked: $_isDucked, isInterrupted: $_isInterrupted');
+          'AudioService: State synced - isPlaying: $_isPlaying, isLoading: $_isLoading, isDucked: $_isDucked, isInterrupted: $_isInterrupted',
+        );
         notifyListeners();
       }
     } catch (e) {
@@ -731,7 +970,9 @@ class AudioService extends ChangeNotifier {
   Future<void> togglePlayPause() async {
     debugPrint('AudioService: 🔄 togglePlayPause called - current isPlaying: $_isPlaying, isLoading: $_isLoading');
 
-    if (_isLoading) {
+    // On iOS the native player reports transient "loading" states during normal
+    // operation — do NOT block the toggle on them.
+    if (!Platform.isIOS && _isLoading) {
       debugPrint('AudioService: Currently loading, ignoring toggle');
       return;
     }
@@ -746,13 +987,35 @@ class AudioService extends ChangeNotifier {
   Future<void> stop() async {
     debugPrint('AudioService: 🛑 stop called');
 
-    _stopDismissalCheckTimer(); // Stop periodic checks when stopping
-
-    _isStoppingInternally = true; // Mark that we're stopping internally
-    _isStartingPlayback = false; // Reset playback flag
     _expectsToBePlaying = false;
+    _isStartingPlayback = false;
     _isInterrupted = false;
     _isDucked = false;
+    _currentChannelId = null;
+    _currentStreamUrl = null;
+    _currentTitle = null;
+    _currentArtist = null;
+    _currentArtUri = null;
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+    _androidRecoveryTimer?.cancel();
+    _androidRecoveryTimer = null;
+    _androidRecoveryAttempt = 0;
+    _isAndroidRecovering = false;
+    _clearError();
+
+    if (Platform.isIOS) {
+      await _nativeStop();
+      await _notifyIOSMBCInactive();
+      _isPlaying = false;
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    _stopDismissalCheckTimer();
+    _isStoppingInternally = true;
+    await _releaseAndroidMbcLocks();
 
     if (_player != null) {
       try {
@@ -763,19 +1026,8 @@ class AudioService extends ChangeNotifier {
       }
     }
 
-    _currentChannelId = null;
-    _currentStreamUrl = null;
-    _currentTitle = null;
-    _currentArtist = null;
-    _currentArtUri = null;
-    _reconnectionTimer?.cancel();
-    _reconnectionTimer = null;
-    _clearError();
-
-    // Notify iOS that MBC is now inactive
     await _notifyIOSMBCInactive();
-
-    _isStoppingInternally = false; // Reset flag after stop completes
+    _isStoppingInternally = false;
     syncState();
     notifyListeners();
   }
@@ -795,6 +1047,9 @@ class AudioService extends ChangeNotifier {
     _expectsToBePlaying = false;
     _isStoppingInternally = false;
     _isStartingPlayback = false; // Always reset this when dismissed
+    // Release the Android wake / Wi-Fi locks if they were held.
+    // ignore: discarded_futures
+    _releaseAndroidMbcLocks();
 
     // Clear current stream info
     _currentChannelId = null;
@@ -834,7 +1089,9 @@ class AudioService extends ChangeNotifier {
     // iOS can temporarily pause/stop our audio session while navigation voice speaks
     // (or while we are in navigation-duck mode). That should NOT be treated as a dismissal.
     if (_isInterrupted || _isNavigationDucking) {
-      debugPrint('AudioService: 🔍 Skipping dismissal check - interrupted/ducking (isInterrupted: $_isInterrupted, isNavigationDucking: $_isNavigationDucking)');
+      debugPrint(
+        'AudioService: 🔍 Skipping dismissal check - interrupted/ducking (isInterrupted: $_isInterrupted, isNavigationDucking: $_isNavigationDucking)',
+      );
       return false;
     }
 
@@ -849,7 +1106,8 @@ class AudioService extends ChangeNotifier {
     }
 
     final state = _player!.playerState;
-    final isStopped = !state.playing &&
+    final isStopped =
+        !state.playing &&
         (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed);
 
     // If we expect to be playing but player is stopped and we didn't stop it internally
@@ -868,7 +1126,15 @@ class AudioService extends ChangeNotifier {
     // Cancel timers
     _reconnectionTimer?.cancel();
     _reconnectionTimer = null;
+    _androidRecoveryTimer?.cancel();
+    _androidRecoveryTimer = null;
+    _androidRecoveryAttempt = 0;
+    _isAndroidRecovering = false;
+    _navigationVoiceFailsafeTimer?.cancel();
+    _navigationVoiceFailsafeTimer = null;
+    _isNavigationVoiceActive = false;
     _stopDismissalCheckTimer();
+    await _releaseAndroidMbcLocks();
 
     // Cancel subscriptions
     await _playerStateSubscription?.cancel();
@@ -926,7 +1192,11 @@ class AudioService extends ChangeNotifier {
       _audioCoordinationChannel = const MethodChannel('com.balady.audio_coordination');
       _audioCoordinationChannel!.setMethodCallHandler(_handleIOSAudioCoordinationCall);
 
-      debugPrint('AudioService: ✅ iOS audio coordination setup completed');
+      // Native radio player channel — receives state updates from NativeRadioPlayer.swift.
+      _nativeRadioChannel = const MethodChannel('com.balady.native_radio');
+      _nativeRadioChannel!.setMethodCallHandler(_handleNativeRadioCall);
+
+      debugPrint('AudioService: ✅ iOS audio coordination + native radio setup completed');
     } catch (e) {
       debugPrint('AudioService: ❌ Failed to setup iOS audio coordination: $e');
     }
@@ -936,17 +1206,20 @@ class AudioService extends ChangeNotifier {
   Future<void> _handleIOSAudioCoordinationCall(MethodCall call) async {
     try {
       switch (call.method) {
+        case 'navigationVoiceStarted':
+          _handleNavigationVoiceStarted();
+          break;
+        case 'navigationVoiceEnded':
+          await _handleNavigationVoiceEnded();
+          break;
+        // Legacy — kept so older native builds don't crash.
         case 'duckAudio':
-          await _handleDuckAudio(call.arguments);
+        case 'onAudioInterrupted':
+          _handleNavigationVoiceStarted();
           break;
         case 'restoreAudio':
-          await _handleRestoreAudio(call.arguments);
-          break;
-        case 'onAudioInterrupted':
-          _handleAudioInterrupted();
-          break;
         case 'onAudioInterruptionEnded':
-          _handleAudioInterruptionEnded();
+          await _handleNavigationVoiceEnded();
           break;
         case 'onAudioRouteChanged':
           _handleAudioRouteChanged(call.arguments);
@@ -959,113 +1232,137 @@ class AudioService extends ChangeNotifier {
     }
   }
 
-  /// Duck audio for navigation voice
-  Future<void> _handleDuckAudio(dynamic arguments) async {
-    if (_player == null) {
-      debugPrint('AudioService: 🦆 Duck request ignored - player not active');
+  // MARK: - Native radio player (iOS only) -----------------------------------
+
+  /// Receives state updates from NativeRadioPlayer.swift via method channel.
+  Future<void> _handleNativeRadioCall(MethodCall call) async {
+    if (call.method != 'onStateChanged') return;
+    final state = ((call.arguments as Map?)?['state'] as String?) ?? 'stopped';
+    debugPrint('AudioService: 📡 native radio state → $state');
+    switch (state) {
+      case 'playing':
+        _isPlaying = true;
+        _isLoading = false;
+        _hasError = false;
+        _isStartingPlayback = false;
+        notifyListeners();
+      case 'loading':
+        _isPlaying = false;
+        _isLoading = true;
+        _hasError = false;
+        notifyListeners();
+      case 'paused':
+        _isPlaying = false;
+        _isLoading = false;
+        notifyListeners();
+      case 'error':
+        _isPlaying = false;
+        _isLoading = false;
+        _setError('Native radio player error');
+      case 'stopped':
+        // 'stopped' only means the native player was explicitly stopped.
+        // Do NOT treat it as a user dismissal — the native player handles recovery.
+        _isPlaying = false;
+        _isLoading = false;
+        notifyListeners();
+    }
+  }
+
+  /// Send play command to the native iOS player.
+  Future<void> _nativePlay() async {
+    if (_nativeRadioChannel == null || _currentStreamUrl == null) return;
+    try {
+      await _nativeRadioChannel!.invokeMethod('play', {
+        'url': _currentStreamUrl,
+        'title': _currentTitle ?? 'Live Radio',
+        'artist': _currentArtist ?? '',
+      });
+      debugPrint('AudioService: ✅ native play sent');
+    } catch (e) {
+      debugPrint('AudioService: ❌ native play failed: $e');
+    }
+  }
+
+  Future<void> _nativePause() async {
+    try {
+      await _nativeRadioChannel?.invokeMethod('pause');
+    } catch (e) {
+      debugPrint('AudioService: ❌ native pause failed: $e');
+    }
+  }
+
+  Future<void> _nativeStop() async {
+    try {
+      await _nativeRadioChannel?.invokeMethod('stop');
+    } catch (e) {
+      debugPrint('AudioService: ❌ native stop failed: $e');
+    }
+  }
+
+  // --------------------------------------------------------------------------
+
+  /// Navigation voice started — block dismissal detection so the periodic timer
+  /// doesn't mistake the iOS-induced idle state for a user notification dismissal.
+  void _handleNavigationVoiceStarted() {
+    if (_isNavigationVoiceActive) return;
+    debugPrint('AudioService: 🔔 Navigation voice started — blocking dismissal detection');
+    _isNavigationVoiceActive = true;
+
+    // Failsafe: if navigationVoiceEnded never arrives (e.g. SDK bug), unblock after 20s.
+    _navigationVoiceFailsafeTimer?.cancel();
+    _navigationVoiceFailsafeTimer = Timer(const Duration(seconds: 20), () {
+      if (_isNavigationVoiceActive) {
+        debugPrint('AudioService: ⏱️ Navigation voice failsafe — forcing recovery');
+        // ignore: discarded_futures
+        _handleNavigationVoiceEnded();
+      }
+    });
+  }
+
+  /// Navigation voice ended — re-activate audio session and restart the stream.
+  Future<void> _handleNavigationVoiceEnded() async {
+    if (!_isNavigationVoiceActive) return;
+    debugPrint('AudioService: 🔔 Navigation voice ended — recovering radio stream');
+
+    _navigationVoiceFailsafeTimer?.cancel();
+    _navigationVoiceFailsafeTimer = null;
+
+    if (!_expectsToBePlaying || _currentStreamUrl == null || _isStoppingInternally) {
+      _isNavigationVoiceActive = false;
       return;
     }
 
-    // Desired behavior: keep radio playing, but lower its volume while navigation speaks,
-    // then restore volume after navigation finishes.
-    debugPrint('AudioService: 🦆 Navigation started - ducking stream audio volume');
-
-    try {
-      if (_isNavigationDucking) {
-        // Already in navigation-duck state, ignore duplicate requests.
-        return;
-      }
-
-      _isNavigationDucking = true;
-
-      final targetVolume = switch (arguments) {
-        {'volume': final num v} => v.toDouble(),
-        _ => 0.2,
-      };
-
-      // Store current volume so we can restore exactly.
-      _preNavigationDuckVolume ??= _player!.volume;
-      await _player!.setVolume(targetVolume.clamp(0.0, 1.0));
-
-      // If native forgets to call restoreAudio (it happens in real devices),
-      // ensure we don't stay paused forever.
-      _navigationDuckingFailsafeTimer?.cancel();
-      _navigationDuckingFailsafeTimer = Timer(const Duration(seconds: 10), () {
-        if (_isNavigationDucking) {
-          debugPrint('AudioService: ⏱️ restoreAudio timeout - auto restoring stream audio');
-          // Best-effort; ignore returned future in timer callback.
-          // The restore method itself checks flags and will no-op if not needed.
-          // ignore: discarded_futures
-          _handleRestoreAudio(<String, dynamic>{});
-        }
-      });
-
-      debugPrint('AudioService: ✅ Stream audio volume ducked for navigation (target: $targetVolume)');
-      syncState();
-      notifyListeners();
-    } catch (e) {
-      debugPrint('AudioService: ❌ Failed to duck for navigation: $e');
-    }
+    // Clear voice flag before recovery so guards inside _recoverAfterInterruption pass.
+    _isNavigationVoiceActive = false;
+    await _recoverAfterInterruption('navigationVoiceEnded');
   }
 
-  /// Restore audio after navigation voice
-  Future<void> _handleRestoreAudio(dynamic arguments) async {
-    if (_player == null || !_isNavigationDucking) {
-      debugPrint('AudioService: 🔊 Restore request ignored - not ducking or player not active');
+  /// Unified recovery: re-activate audio session and restart the stream.
+  /// Called from both the interruption-ended path and the navigation-voice-ended path.
+  Future<void> _recoverAfterInterruption(String reason) async {
+    if (_isStartingPlayback) {
+      debugPrint('AudioService: ⏭️ Recovery skipped — already starting ($reason)');
       return;
     }
+    if (!_expectsToBePlaying || _currentStreamUrl == null || _isStoppingInternally) return;
 
-    debugPrint('AudioService: 🔊 Navigation finished - restoring stream audio');
+    debugPrint('AudioService: 🔁 Recovering after interruption ($reason)');
+    _isStartingPlayback = true;
 
     try {
-      _isNavigationDucking = false;
-      _navigationDuckingFailsafeTimer?.cancel();
-      _navigationDuckingFailsafeTimer = null;
+      // Re-activate the session; iOS deactivates it during interruptions.
+      await _audioSession?.setActive(true);
+      debugPrint('AudioService: ✅ Audio session reactivated ($reason)');
 
-      final restoreVolume = _preNavigationDuckVolume ?? 1.0;
-      _preNavigationDuckVolume = null;
-      await _player!.setVolume(restoreVolume.clamp(0.0, 1.0));
-      // iOS: some prompts leave the player idle; ensure the stream is actually running.
-      Future<void>.delayed(_iosResumeRetryDelay, () {
-        // ignore: discarded_futures
-        _ensureStreamPlayingAfterVoice(reason: 'restoreAudio');
-      });
+      // Give iOS a moment to fully hand back the audio route.
+      await Future<void>.delayed(const Duration(milliseconds: 300));
 
-      debugPrint('AudioService: ✅ Stream audio volume restored after navigation (volume: $restoreVolume)');
-      syncState();
-      notifyListeners();
+      // Re-prepare and play the live stream from scratch.
+      await _playLiveStream();
+      debugPrint('AudioService: ✅ Stream restarted ($reason)');
     } catch (e) {
-      debugPrint('AudioService: ❌ Failed to restore after navigation: $e');
-    }
-  }
-
-  /// Handle audio interruption from iOS
-  void _handleAudioInterrupted() {
-    debugPrint('AudioService: 🛑 iOS audio interruption detected');
-
-    if (_isPlaying) {
-      _wasPlayingBeforeInterruption = true;
-      _isInterrupted = true;
-      pause();
-    }
-  }
-
-  /// Handle audio interruption end from iOS
-  void _handleAudioInterruptionEnded() {
-    debugPrint('AudioService: ▶️ iOS audio interruption ended');
-
-    _isInterrupted = false;
-
-    if (_expectsToBePlaying) {
-      if (_wasPlayingBeforeInterruption) {
-        resume();
-      }
-
-      // Best-effort: if we ended up idle, re-prepare and restart.
-      Future<void>.delayed(_iosResumeRetryDelay, () {
-        // ignore: discarded_futures
-        _ensureStreamPlayingAfterVoice(reason: 'iosChannel_interruptionEnded');
-      });
+      debugPrint('AudioService: ❌ Recovery failed ($reason): $e');
+      _isStartingPlayback = false;
     }
   }
 

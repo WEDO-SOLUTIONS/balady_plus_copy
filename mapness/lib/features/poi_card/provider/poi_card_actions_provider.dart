@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -6,7 +5,6 @@ import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -42,14 +40,8 @@ class PoiCardActions extends _$PoiCardActions {
     final coordinates = markerCoords == null
         ? null
         : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
-    ShareUtil.sharePOI(objectId.toString(), context: context, markerCoords: coordinates);
+    ShareUtil.sharePOI(context: context, objectId: objectId.toString(), markerCoords: coordinates);
   }
-
-  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
-    BaldayDeeplink.latitudeKey: location.latitude.toString(),
-    BaldayDeeplink.longitudeKey: location.longitude.toString(),
-    BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
-  });
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
@@ -57,7 +49,10 @@ class PoiCardActions extends _$PoiCardActions {
       if (context == null) {
         return;
       }
-      balady_utils.safeShareText(_myLocationDeeplink(location), context: context);
+      ShareUtil.sharePOI(
+        context: context,
+        markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+      );
     } else {
       onError();
     }
@@ -65,7 +60,16 @@ class PoiCardActions extends _$PoiCardActions {
 
   Future<void> copyToClipboard(LatLng? location) async {
     if (location != null) {
-      await Clipboard.setData(ClipboardData(text: _myLocationDeeplink(location)));
+      final context = rootNavigatorKey.currentContext;
+      if (context == null) {
+        return;
+      }
+
+      final shareLink = await ShareUtil.getSharePOILink(
+        context: context,
+        markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+      );
+      await Clipboard.setData(ClipboardData(text: shareLink));
     }
   }
 

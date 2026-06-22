@@ -176,6 +176,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
   AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
+  /// Directory path: assets/images/layers
+  $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
+
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
 
@@ -940,6 +943,16 @@ class $AssetsImagesAudioPlaceholdersGen {
   List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
 }
 
+class $AssetsImagesLayersGen {
+  const $AssetsImagesLayersGen();
+
+  /// File path: assets/images/layers/img_layer_jeddah_bus.png
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [imgLayerJeddahBus];
+}
+
 class $AssetsImagesMakkahQuickActionsGen {
   const $AssetsImagesMakkahQuickActionsGen();
 
@@ -1062,9 +1075,6 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/favourites.svg
   SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
 
-  /// File path: assets/images_svg/layers/jeddah_bus.svg
-  SvgGenImage get jeddahBus => const SvgGenImage('assets/images_svg/layers/jeddah_bus.svg');
-
   /// File path: assets/images_svg/layers/makkah_bus.svg
   SvgGenImage get makkahBus => const SvgGenImage('assets/images_svg/layers/makkah_bus.svg');
 
@@ -1088,7 +1098,6 @@ class $AssetsImagesSvgLayersGen {
     a3D,
     busSubMenu,
     favourites,
-    jeddahBus,
     makkahBus,
     metro,
     parking,

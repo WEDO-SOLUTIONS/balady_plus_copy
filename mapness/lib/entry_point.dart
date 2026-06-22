@@ -844,7 +844,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<Uri> getFinalRedirectUri(Uri uri) async {
+  Future<Uri?> getFinalRedirectUri(Uri uri) async {
     final client = Client();
     var currentUri = uri;
     const redirectStatuses = {301, 302, 303, 307, 308};
@@ -854,6 +854,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         final request = Request('GET', currentUri)..followRedirects = false;
 
         final response = await client.send(request);
+        if (response.statusCode >= 400) {
+          // the link is broken, skip it
+          return null;
+        }
         if (redirectStatuses.contains(response.statusCode)) {
           final location = response.headers['location'];
           if (location != null && location.isNotEmpty) {
@@ -877,6 +881,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false, bool fromQuickAction = false}) async {
     await initCameraPositionPoint();
     final uri = await getFinalRedirectUri(sourceUri);
+    if (uri == null) {
+      return;
+    }
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
@@ -933,12 +940,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
-      if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
-        _myLocationDeepLinkHandler(latitude, longitude);
-      } else {
-        await _delayIfFirstRun(isFirstRun: isFirstRun);
-        await _poiDeepLinkByCoords(latitude, longitude);
-      }
+      // we agreed to treat absence of objectId as it is My location and open the point immediately
+      _myLocationDeepLinkHandler(latitude, longitude);
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
