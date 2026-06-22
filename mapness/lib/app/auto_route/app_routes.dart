@@ -110,6 +110,11 @@ class AppRouter extends RootStackRouter {
           path: 'public_routing_details',
           page: RouteDetailsRoute.page,
         ),
+        CustomRoute(
+          path: 'share_route',
+          page: ShareRouteRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
         AppRoute(
           transitionsBuilder: TransitionsBuilders.slideBottom,
           durationInMilliseconds: 250,

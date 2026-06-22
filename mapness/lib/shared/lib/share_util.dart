@@ -20,15 +20,18 @@ class ShareUtil {
         throw ArgumentError('Object id is null');
       }
       final container = ProviderScope.containerOf(context, listen: false);
-      shareUrl = await container
+      final response = await container
           .read(shortLinkRepositoryProvider)
           .createLink(
-            ShortLinkRequest(
-              poiId: objectId,
-              lat: markerCoords?.latitude,
-              lon: markerCoords?.longitude,
+            ShortLinkRequest.poi(
+              payload: ShortLinkPayloadPoi(
+                poiId: objectId,
+                lat: markerCoords?.latitude,
+                lon: markerCoords?.longitude,
+              ),
             ),
           );
+      shareUrl = response.shortUrl;
     } catch (e) {
       logger.log(
         'Failed to create short link: $e',
@@ -52,5 +55,32 @@ class ShareUtil {
       return safeShareText('${context.l10n.leftMyCarHere} $shareUrl', context: context);
     }
     await safeShareText(shareUrl, context: context);
+  }
+
+  static Future<void> sharePoint({
+    required BuildContext context,
+    required ShortLinkPayloadPoint data,
+  }) => _shareShortLink(context, ShortLinkRequest.point(payload: data));
+
+  static Future<void> shareTrip({
+    required BuildContext context,
+    required ShortLinkPayloadTrip data,
+  }) => _shareShortLink(context, ShortLinkRequest.trip(payload: data));
+
+  static Future<void> _shareShortLink(
+    BuildContext context,
+    ShortLinkRequest request,
+  ) async {
+    try {
+      final container = ProviderScope.containerOf(context, listen: false);
+      final response = await container.read(shortLinkRepositoryProvider).createLink(request);
+      final shareUrl = response.shortUrl;
+      await safeShareText(shareUrl, context: context);
+    } catch (e) {
+      logger.log(
+        'Failed to create short link: $e',
+        logLevel: MapnessLogLevel.error,
+      );
+    }
   }
 }

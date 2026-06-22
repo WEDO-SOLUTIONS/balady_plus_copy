@@ -32,6 +32,8 @@ import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+// todo handle did update widget
+// todo handle timeout button when in navigation - show modal from route guard
 @RoutePage()
 class RoutingRoutesPage extends StatefulHookConsumerWidget {
   final List<RouteParamsPointWithLabel> points;
@@ -47,6 +49,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
   DgisMapController? _dgisController;
   bool _permissionRequested = false;
+  RouteSearchOptionsMessage? _navType;
+  int? _activeRouteIndex;
 
   @override
   void initState() {
@@ -118,6 +122,15 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                           : ABPointsChange.none,
                     ),
                   ),
+                  // this button is always visible because the page can not be shown without start and finish points
+                  AppButton(
+                    primaryIcon: SystemIcons.share,
+                    iconColor: colors.neutralOnContainer,
+                    buttonColorScheme: ButtonColorScheme.neutral,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    onTap: _onSharePressed,
+                  ),
                   if (points.length > 2)
                     AppButton(
                       primaryIcon: General16Icons.edit,
@@ -146,7 +159,16 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                 ].insertBetween(Spacing.$3x.widthBox).toList(),
               ),
             ),
-            RoutingInfo(pointsWithLabel: points, isHomeOrWork: widget.isHomeOrWork),
+            RoutingInfo(
+              pointsWithLabel: points,
+              isHomeOrWork: widget.isHomeOrWork,
+              onNavTypeChanged: (value) {
+                _navType = value;
+              },
+              onRouteIndexChanged: (value) {
+                _activeRouteIndex = value;
+              },
+            ),
           ],
         ),
       ),
@@ -156,6 +178,22 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   int get intermediatePointCount {
     final count = points.length - 2;
     return count.clamp(0, count);
+  }
+
+  Future<void> _onSharePressed() async {
+    final navType = _navType;
+    final activeRouteIndex = _activeRouteIndex;
+    if (navType == null || activeRouteIndex == null) {
+      return;
+    }
+
+    context.router.push(
+      ShareRouteRoute(
+        points: points,
+        navType: navType,
+        activeRouteIndex: activeRouteIndex,
+      ),
+    );
   }
 
   VoidCallback? _onAddStop(BuildContext context) {
