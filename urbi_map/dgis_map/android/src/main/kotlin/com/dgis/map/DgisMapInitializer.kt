@@ -23,6 +23,14 @@ object DgisMapInitializer {
     private var sdkContext: SdkContext? = null
     private var navigationManager: NavigationManager? = null
 
+    /**
+     * Last navigation-camera settings tuned on the phone (via setNavigationCameraSettings).
+     * Stored here so Android Auto's [CarNavigationHandler] can mirror the same tilt-by-zoom
+     * curve / zoom restriction on its own map. Speed→zoom already propagates because the
+     * NavigationManager (and its zoomFollowSettings) is shared.
+     */
+    var lastNavigationCameraSettings: NavigationCameraSettings? = null
+
     @SuppressLint("StaticFieldLeak")
     private var locationSource: FusedLocationSource? = null
 
@@ -58,8 +66,11 @@ object DgisMapInitializer {
         sdkContext = DGis.initialize(
             appContext,
             vendorConfig = config,
-            logOptions = logOptions ?: LogOptions(
-                systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR
+            // [DEBUG TEMP] Force VERBOSE SDK logging to inspect ZoomFollowSettings
+            // (speed→zoom accept/skip) + camera follow. Revert to:
+            //   logOptions = logOptions ?: LogOptions(systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR),
+            logOptions = LogOptions(
+                systemLevel = LogLevel.VERBOSE, customLevel = LogLevel.VERBOSE
             ),
             httpOptions = HttpOptions(useCache = true),
         )

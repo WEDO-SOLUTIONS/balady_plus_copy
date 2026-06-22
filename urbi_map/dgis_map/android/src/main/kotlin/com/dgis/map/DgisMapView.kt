@@ -1103,6 +1103,14 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
+    override fun setNavigationCameraSettings(
+        settings: NavigationCameraSettings,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        navigationHandler.applyCameraSettings(settings)
+        callback(Result.success(Unit))
+    }
+
     override fun stopFreeRoam(callback: (Result<Unit>) -> Unit) {
         navigationHandler.stopFreeRoam()
         callback(Result.success(Unit))

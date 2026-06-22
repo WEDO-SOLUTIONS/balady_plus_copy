@@ -94,7 +94,7 @@ build_pigeon:
 
     print_style '' 'yellow' '> build pigeons...'
     mkdir -p mkdir lib/src/pigeons/ ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/
-    fvm dart pub run pigeon --input pigeons/messages.dart
+    fvm dart pub run pigeon --input pigeons/messages.dart --package_name dgis_map_platform_interface
     print_style '' 'yellow' '< pigeons ready'
 
 build_apk_qa:

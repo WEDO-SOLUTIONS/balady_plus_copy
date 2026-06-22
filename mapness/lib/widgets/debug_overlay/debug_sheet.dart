@@ -9,6 +9,7 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
+import 'package:mapness/widgets/debug_overlay/camera_controls_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
@@ -73,6 +74,9 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SliderSpeed(),
+                    const DebugNavigationControll(),
+                    const CameraControlsDebugPanel(),
                     _AppInfoCard(packageInfo: _packageInfo),
                     const SpecialThemeDebugPanel(),
                     const MakkahPlacesDebugPanel(),
@@ -83,8 +87,6 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     const SsoCredentialView(),
                     const CityscapeDebugSwitcher(),
                     const BetterRouteSettingsWidget(),
-                    const SliderSpeed(),
-                    const DebugNavigationControll(),
                     const ShowOnboardingButton(),
                     const ShowSaudiDayButton(),
                     SizedBox(
@@ -165,11 +167,42 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
               label: 'DEV',
               color: DebugTheme.warning,
             ),
+            const SizedBox(width: 12),
+            // Explicit close button: collapses the sheet to extent 0 regardless of
+            // the inner scroll position (drag-to-dismiss only works when the list
+            // is scrolled to the top, so it fails once the content is scrolled down).
+            GestureDetector(
+              onTap: _close,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: DebugTheme.surfaceLight,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: DebugTheme.border),
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  color: DebugTheme.textSecondary,
+                  size: 20,
+                ),
+              ),
+            ),
           ],
         ),
       ],
     ),
   );
+
+  void _close() {
+    final controller = widget._draggableController;
+    if (controller.isAttached) {
+      controller.animateTo(
+        0,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 }
 
 class _AppInfoCard extends ConsumerWidget {
