@@ -15,6 +15,7 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -98,6 +99,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
+import 'package:rxdart/rxdart.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'features/search/providers/search.dart';
@@ -682,7 +684,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final appLink = await _appLinks.getInitialLink();
 
-    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+    // the opened link might trigger duplicate events in uriLinkStream, so we throttle such values
+    _linkSubscription = _appLinks.uriLinkStream.throttleTime(const Duration(milliseconds: 500)).listen((
+      uri,
+    ) {
       if (kDebugMode) {
         logger.log('Deep link received: $uri');
       }

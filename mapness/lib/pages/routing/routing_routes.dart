@@ -33,8 +33,6 @@ import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
-// todo handle did update widget
-// todo handle timeout button when in navigation - show modal from route guard
 @RoutePage()
 class RoutingRoutesPage extends StatefulHookConsumerWidget {
   final List<RouteParamsPointWithLabel> points;
