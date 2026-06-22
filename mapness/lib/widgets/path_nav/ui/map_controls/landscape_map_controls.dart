@@ -56,9 +56,7 @@ class _LandscapeLayout extends StatelessWidget {
                       duration: const Duration(milliseconds: 250),
                       child: IgnorePointer(
                         ignoring: !isVisible,
-                        // TODO: MBC - Uncomment for next release
-                        // child: const RadioContextualButton(),
-                        child: const SizedBox.shrink(),
+                        child: const RadioContextualButton(),
                       ),
                     ),
                   ),
@@ -80,7 +78,7 @@ class _LandscapeLayout extends StatelessWidget {
                         child: const Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            TrafficParkingControl(parkingVisible: false),
+                            TrafficParkingControl(trafficVisible: false, parkingVisible: false),
                             SizedBox(height: uikit.Spacing.$2x),
                             DimensionControl(),
                           ],
