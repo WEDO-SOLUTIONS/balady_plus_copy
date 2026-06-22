@@ -65,7 +65,7 @@ class ShareUtil {
   static Future<void> shareTrip({
     required BuildContext context,
     required ShortLinkPayloadTrip data,
-  }) => _shareShortLink(context, ShortLinkRequest.trip(payload: data));
+  }) => _shareShortLink(context, ShortLinkRequest.trip(payload: data, visibility: ShortLinkVisibility.public));
 
   static Future<void> _shareShortLink(
     BuildContext context,
