@@ -34115,7 +34115,7 @@
 			[db_sublayer = satellite] {
 				phase: s_466;
 				symbol: textured_area_symbol;
-				opacity: 0.5;
+				opacity: 1;
 				[immersiveRoadsOn = true] <
 					with_tier: true;
 				>
