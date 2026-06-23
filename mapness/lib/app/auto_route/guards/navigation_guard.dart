@@ -3,6 +3,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 
 const _routesToSkip = {
   RoutingRoutesRoute.name,
+  PoiCardWidgetRoute.name,
 };
 
 const _naviRoutes = {

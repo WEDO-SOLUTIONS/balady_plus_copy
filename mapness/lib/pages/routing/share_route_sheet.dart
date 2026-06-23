@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/share_util.dart';
@@ -32,6 +33,8 @@ class ShareRoutePage extends HookConsumerWidget {
       heightModel: ToggleSheetHeightModel.fixed(160),
     );
 
+    final destinationObjectId = points.last.value?.objectId;
+
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface4,
@@ -44,15 +47,16 @@ class ShareRoutePage extends HookConsumerWidget {
           child: ContentWrapper(
             color: context.colors.backgroundSurface1,
             children: [
-              ContentRow(
-                isDividerEnabled: true,
-                leading: Icon(SystemIcons.share, color: context.colors.foregroundSoft),
-                text: ContentRowTextOptions(title: context.l10n.shareDestination),
-                onTap: () async {
-                  await _shareDestination(context, ref);
-                  context.router.pop();
-                },
-              ),
+              if (destinationObjectId != null)
+                ContentRow(
+                  isDividerEnabled: true,
+                  leading: Icon(SystemIcons.share, color: context.colors.foregroundSoft),
+                  text: ContentRowTextOptions(title: context.l10n.shareDestination),
+                  onTap: () async {
+                    await _shareDestination(context, ref, destinationObjectId);
+                    context.router.pop();
+                  },
+                ),
               ContentRow(
                 leading: Icon(GeneralIcons.routeStroke, color: context.colors.foregroundSoft),
                 text: ContentRowTextOptions(title: context.l10n.shareThisRoute),
@@ -68,7 +72,7 @@ class ShareRoutePage extends HookConsumerWidget {
     );
   }
 
-  Future<void> _shareDestination(BuildContext context, WidgetRef ref) async {
+  Future<void> _shareDestination(BuildContext context, WidgetRef ref, int destinationObjectId) async {
     final lastPoint = points.last;
     final isMyLocation = isLocation(context.l10n, lastPoint);
     final location = isMyLocation ? await ref.read(getLocationSyncProvider().future) : null;
@@ -83,9 +87,14 @@ class ShareRoutePage extends HookConsumerWidget {
       return;
     }
 
-    ShareUtil.sharePoint(
+    final lat = lastPoint.value?.latitude;
+    final lon = lastPoint.value?.longitude;
+    final coordinates = lat != null && lon != null ? Coordinates(latitude: lat, longitude: lon) : null;
+
+    ShareUtil.sharePOI(
+      destinationObjectId.toString(),
       context: context,
-      data: ShortLinkPayloadPoint(lat: end.lat, lon: end.lon),
+      markerCoords: coordinates,
     );
   }
 
