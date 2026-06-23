@@ -10,7 +10,12 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class LayersSheetContent extends ConsumerWidget {
+/// Filter tab on the layers sheet — switches which subset of [LayerType]
+/// the grid renders. Default lands on `allLayers` which mirrors the
+/// previous (single-tab) behaviour.
+enum LayersTab { allLayers, mapDetails, publicTransport }
+
+class LayersSheetContent extends ConsumerStatefulWidget {
   final ValueChanged<layers_state.LayerType>? onIconTap;
   final Function() onClose;
   final Set<layers_state.LayerType> layerTapItems;
@@ -18,19 +23,28 @@ class LayersSheetContent extends ConsumerWidget {
   const LayersSheetContent({required this.onIconTap, required this.onClose, this.layerTapItems = const {}, super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LayersSheetContent> createState() => _LayersSheetContentState();
+}
+
+class _LayersSheetContentState extends ConsumerState<LayersSheetContent> {
+  LayersTab _activeTab = LayersTab.allLayers;
+
+  List<layers_state.LayerType> _layersForTab(LayersTab tab) => switch (tab) {
+    LayersTab.allLayers => layers_state.LayerType.v1,
+    LayersTab.mapDetails => layers_state.LayerType.mapDetails,
+    LayersTab.publicTransport => layers_state.LayerType.publicTransport,
+  };
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(layersControlsProvider);
     return SliverPadding(
-      padding: const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
-        bottom: Spacing.$4x,
-      ),
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
       sliver: MultiSliver(
         children: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$5x),
+              padding: const EdgeInsets.only(bottom: Spacing.$3x),
               child: Row(
                 children: [
                   Text(
@@ -45,7 +59,7 @@ class LayersSheetContent extends ConsumerWidget {
                         group: MetricsConstants.layersTag,
                         action: MetricAction.tap.toString(),
                       );
-                      onClose();
+                      widget.onClose();
                     },
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
@@ -54,34 +68,86 @@ class LayersSheetContent extends ConsumerWidget {
               ),
             ),
           ),
-
-          // TODO(Ayat): BSA(1069) For now we hide the switches and present only the Lifestyle logic, we will come back to this later
-          // SliverToBoxAdapter(
-          //   child: Column(
-          //     children: [
-          //       TabsRow.v2(
-          //         initialIndex: state.layersType.index,
-          //         tabsContent: [
-          //           TabsRowV2Content(title: context.l10n.lifestyle),
-          //           TabsRowV2Content(title: context.l10n.business),
-          //         ],
-          //         onIndexChanged: (index) {
-          //           layersControlsProviderNotifier.update(
-          //             layersType: LayersType.values[index ?? 0],
-          //           );
-          //         },
-          //       ),
-          //       const SizedBox(height: 12),
-          //     ],
-          //   ),
-          // ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.$3x),
+              child: _LayersTabRow(
+                active: _activeTab,
+                onSelected: (tab) => setState(() => _activeTab = tab),
+              ),
+            ),
+          ),
           LayerSliverList(
-            onIconTap: onIconTap,
-            layerType: layers_state.LayerType.v1,
+            onIconTap: widget.onIconTap,
+            layerType: _layersForTab(_activeTab),
             layersState: state,
-            layerTapItems: layerTapItems,
+            layerTapItems: widget.layerTapItems,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _LayersTabRow extends StatelessWidget {
+  const _LayersTabRow({required this.active, required this.onSelected});
+
+  final LayersTab active;
+  final ValueChanged<LayersTab> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO(BE-243): replace inline strings with Localazy keys once added.
+    const labels = <LayersTab, String>{
+      LayersTab.allLayers: 'All layers',
+      LayersTab.mapDetails: 'Map details',
+      LayersTab.publicTransport: 'Public transport',
+    };
+    return Row(
+      children: [
+        for (final tab in LayersTab.values) ...[
+          if (tab != LayersTab.allLayers) const SizedBox(width: Spacing.$2x),
+          _LayersTabChip(label: labels[tab]!, isSelected: tab == active, onTap: () => onSelected(tab)),
+        ],
+      ],
+    );
+  }
+}
+
+class _LayersTabChip extends StatelessWidget {
+  const _LayersTabChip({required this.label, required this.isSelected, required this.onTap});
+
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final accent = colors.accentDefault;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+        decoration: BoxDecoration(
+          color: colors.backgroundSurface2,
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          border: Border.all(color: isSelected ? accent : Colors.transparent, width: 2),
+          boxShadow: const [
+            BoxShadow(color: Color(0x14000000), offset: Offset(0, 1), blurRadius: 4),
+            BoxShadow(color: Color(0x0A000000), spreadRadius: 0.5),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: context.textStyles.bodySmallMedium.copyWith(color: isSelected ? accent : colors.foregroundDefault),
+        ),
       ),
     );
   }

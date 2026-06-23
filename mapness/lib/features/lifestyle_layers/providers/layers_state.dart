@@ -41,6 +41,12 @@ enum LayerType {
     LayerType.favourites,
   ];
 
+  /// Subset shown under the "Map details" filter tab.
+  static List<LayerType> get mapDetails => [LayerType.traffic, LayerType.parkingLots, LayerType.favourites];
+
+  /// Subset shown under the "Public transport" filter tab.
+  static List<LayerType> get publicTransport => [LayerType.metro, LayerType.busSubMenu];
+
   static List<LayerType> get bus => [
     LayerType.makkahBus,
     LayerType.shuttleBus,
