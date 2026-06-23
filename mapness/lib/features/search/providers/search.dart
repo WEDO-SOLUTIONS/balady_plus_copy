@@ -88,6 +88,11 @@ class Search extends _$Search {
   /// fresh (typed/quick/suggest) search.
   bool _searchFromHistory = false;
 
+  /// True when the current search was started by a quick-filter chip that runs
+  /// via `searchByText` (the search bottom sheet), so the exposure reports
+  /// `search_type: Quick search` to match the top-level quick filters.
+  bool _searchFromQuickFilter = false;
+
   bool get isGoogleSearch => _isGoogleSearch;
 
   // Timer to start full search if we don't get any results
@@ -125,6 +130,7 @@ class Search extends _$Search {
     _searchSessionId = null;
     _requestId = '';
     _searchFromHistory = false;
+    _searchFromQuickFilter = false;
   }
 
   // ── DataFinder analytics helpers ────────────────────────────────────────────
@@ -169,6 +175,11 @@ class Search extends _$Search {
   /// `search_results_exposure` reports `search_type: History`.
   void markSearchFromHistory() => _searchFromHistory = true;
 
+  /// Marks the next `searchByText` as originating from a quick-filter chip (the
+  /// search bottom sheet), so its `search_results_exposure` reports
+  /// `search_type: Quick search`.
+  void markSearchFromQuickFilter() => _searchFromQuickFilter = true;
+
   /// True if [routeName] is anywhere in the current navigation stack.
   bool _isRouteActive(String routeName) {
     try {
@@ -206,6 +217,9 @@ class Search extends _$Search {
   DataFinderSearchType get _searchType {
     if (_searchFromHistory) {
       return DataFinderSearchType.history;
+    }
+    if (_searchFromQuickFilter) {
+      return DataFinderSearchType.quickSearch;
     }
     switch (_previousType) {
       case SearchType.quickSearch:
@@ -293,8 +307,9 @@ class Search extends _$Search {
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
       _isGoogleSearch = false;
-      // DataFinder: typing is a fresh (non-history) search.
+      // DataFinder: typing is a fresh (non-history, non-quick) search.
       _searchFromHistory = false;
+      _searchFromQuickFilter = false;
       // DataFinder: start a suggestion session on the first keystroke of a query
       // and refresh the request id for this suggest call.
       _suggestionSessionId ??= DataFinderIds.uuid();
@@ -384,6 +399,7 @@ class Search extends _$Search {
       _previousQuery = searchQuery;
       _isGoogleSearch = isGoogle;
       _searchFromHistory = false;
+      _searchFromQuickFilter = false;
       // DataFinder: new search session + request id for this full search.
       _searchSessionId = DataFinderIds.uuid();
       _requestId = DataFinderIds.uuid();
@@ -868,22 +884,48 @@ class Search extends _$Search {
     );
   }
 
-  /// Fires `search_results_exposure` once per result page (list-level). Only
-  /// the items actually returned on the page are reported.
+  /// Fires `search_results_exposure` for the FIRST result page. Subsequent pages
+  /// (infinite scroll) are reported via [reportResultsPageExposure].
   void _reportResultsExposure(SearchResultMessage results, String searchQuery) {
     final items = results.firstPage?.items ?? const <DirectoryObjectMessage>[];
+    // Remember the query so paginated pages report the same search_text.
+    _exposureSearchText = searchQuery;
+    _exposedResultsCount = 0;
+    _reportResultsPage(items.whereType<DirectoryObjectMessage>().toList());
+  }
+
+  /// Fires `search_results_exposure` for a newly-loaded page of results
+  /// (infinite scroll / pagination). Ranks continue from the previous pages
+  /// (page-2 item-1 → rank 21, etc.) and the same request_id/search_session_id
+  /// are reused so the dashboard groups all pages under one search. Called from
+  /// the results UI after `SearchPagination.fetchNext()` loads more items.
+  void reportResultsPageExposure(List<DirectoryObjectMessage> newItems) {
+    _reportResultsPage(newItems);
+  }
+
+  /// Running count of result items already reported for the current search, so
+  /// pagination ranks continue correctly across pages.
+  int _exposedResultsCount = 0;
+
+  /// The query of the current search, reused for paginated page exposures.
+  String _exposureSearchText = '';
+
+  void _reportResultsPage(List<DirectoryObjectMessage> items) {
     if (items.isEmpty) {
       return;
     }
     final loc = _myLocation;
+    final base = _exposedResultsCount;
     final pois = [
-      for (var i = 0; i < items.length; i++) items[i].toDataFinderPoi(rank: i + 1, myLat: loc?.lat, myLon: loc?.lon),
+      for (var i = 0; i < items.length; i++)
+        items[i].toDataFinderPoi(rank: base + i + 1, myLat: loc?.lat, myLon: loc?.lon),
     ];
+    _exposedResultsCount += items.length;
     _analytics.searchResultsExposure(
       eventSource: _sourcePage,
       requestId: _requestId,
       sessionId: _searchSessionId ??= DataFinderIds.uuid(),
-      searchText: searchQuery,
+      searchText: _exposureSearchText,
       searchType: _searchType,
       searchParam: _buildSearchParam(),
       pois: pois,

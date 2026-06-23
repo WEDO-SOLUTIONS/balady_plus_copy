@@ -3,9 +3,15 @@
 | | |
 |---|---|
 | **Document Title** | Balady DataFinder — Event Examples |
-| **Document Date** | 2026-06-16 |
-| **Document Version** | 1.0 |
+| **Document Date** | 2026-06-23 |
+| **Document Version** | 1.1 |
 | **Document Writer** | Shadi Al-Jaradat |
+
+> **v1.1 changes (after 1st test round):**
+> - `search_results_exposure` now fires on **pagination** (page 2+), with
+>   continued `poi_rank` and the same search session.
+> - `poi_type` now reports `place` instead of `unknown` when the SDK can't
+>   classify a result.
 
 > Companion to **Balady User Behavior Tracking Metrics – BRD V0.1**, section *Event Information*.
 > Events are listed in the **same order as the BRD**. For each event the BRD's
@@ -17,12 +23,20 @@
 >
 > **Source of truth:** https://wedosolutionssa-my.sharepoint.com/:w:/g/personal/majid_ahmed_wedosolutions_sa/IQAK9uPoI0d0TYs6izBCs1zHAdEZ-BjLMEEVq9WtEiIMpYM?rtime=O_VbDcHK3kg
 
-> ### Two rules that apply to every event
+> ### Rules that apply to every event
 > 1. **Exposure events are reported PER ITEM, not as an array.** If 20 results
 >    are visible, 20 separate `search_results_exposure` events fire — one per
 >    result, with that result's fields flat in the event. Same for
 >    `suggestion_exposure`. (No `results`/`suggestions` array, no `result_count`.)
-> 2. **`event_source` = the surface where the journey STARTED** (Map / Explore /
+> 2. **Pagination is covered.** As the user scrolls and more pages load, the new
+>    page's items fire `search_results_exposure` too. `poi_rank` continues across
+>    pages (page 1 → ranks 1–20, page 2 → 21–40, …), and every page reuses the
+>    **same** `request_id` and `search_session_id` so the dashboard groups them
+>    under one search.
+> 3. **`poi_type`** is the 2GIS object type (e.g. `branch`, `building`, `street`).
+>    When the SDK cannot classify an item (it would return `unknown`), it is
+>    reported as **`place`** instead — search results are always POIs/places.
+> 4. **`event_source` = the surface where the journey STARTED** (Map / Explore /
 >    Routes / Free Roam), combined with the live navigation state. The 8 values
 >    and how they are decided are in **Appendix A**.
 
@@ -196,43 +210,47 @@ The next event in the same list is identical except for the item fields:
   rendered on the screen. If 10 items are shown, 10 separate events fire — one per item.
 - **Format:** ONE flat event per result (no array). All events from the same
   search share `request_id` and `search_session_id`.
+- **Pagination:** as the user scrolls and more pages load, the new items also
+  fire. `poi_rank` continues across pages (page 1 → 1–20, page 2 → 21–40, …) and
+  the same `request_id`/`search_session_id` are reused.
 - **Notes:** `search_type` is one of `Quick search`, `History`, `Click suggestion`,
-  `Manual`, `Search in this area`.
-- **Example:** one event (the 1st of N — e.g. a 20-result list fires 20 of these):
+  `Manual`, `Search in this area`. `poi_type` is `place` when the SDK can't
+  classify the item (see rule 3 at the top).
+- **Example — page 1, item 1** (a `place`-type result, query "balady"):
 
 ```json
 {
   "event_source": "Explore-Main Page",
-  "request_id": "a48e1a93-04a3-40e1-a95b-c674d6421ccd",
-  "search_session_id": "93f64765-cfb9-46c3-a4b3-3c1f8cff5a54",
-  "search_text": "mall",
+  "request_id": "240fc188-3e41-4c2f-9904-51deb31dc653",
+  "search_session_id": "6df7fe27-7bba-4f6a-b58b-d5a04dd7e64e",
+  "search_text": "balady",
   "search_type": "Manual",
-  "search_param": "q=mall&viewpoint1=24.719391831174107,46.6767758410424&viewpoint2=24.74525846350589,46.68971615843475&page_size=20&location=24.724282,46.683246",
-  "poi_id": "20000004740961831",
-  "poi_name": "Al Sadhan Mall",
-  "poi_addr": "Al Rabwah, Riyadh Region",
-  "poi_type": "branch",
-  "poi_distance": 8.03,
+  "search_param": "q=balady&viewpoint1=24.718822009956455,46.676315758377314&viewpoint2=24.74468868464949,46.68925607576966&page_size=20&location=24.724282,46.683246",
+  "poi_id": "48904475002390482",
+  "poi_name": "Balady Poultry",
+  "poi_addr": "Al Sabbakh, Al Qassim, Al-Qassim Region",
+  "poi_type": "place",
+  "poi_distance": 323.39,
   "poi_rank": 1
 }
 ```
 
-The next event in the same search is identical except for the item fields:
+- **Example — page 2, item 1** (same search session, rank continues at 21):
 
 ```json
 {
   "event_source": "Explore-Main Page",
-  "request_id": "a48e1a93-04a3-40e1-a95b-c674d6421ccd",
-  "search_session_id": "93f64765-cfb9-46c3-a4b3-3c1f8cff5a54",
-  "search_text": "mall",
+  "request_id": "240fc188-3e41-4c2f-9904-51deb31dc653",
+  "search_session_id": "6df7fe27-7bba-4f6a-b58b-d5a04dd7e64e",
+  "search_text": "balady",
   "search_type": "Manual",
-  "search_param": "q=mall&...&page_size=20&location=24.724282,46.683246",
-  "poi_id": "70000001068177661",
-  "poi_name": "Hayat Mall",
-  "poi_addr": "Mohammed Hamd Al Fqi street, King Fahd district, Riyadh, Riyadh Region",
+  "search_param": "q=balady&...&page_size=20&location=24.724282,46.683246",
+  "poi_id": "70000001084892674",
+  "poi_name": "Matroos",
+  "poi_addr": "Prince Ahmad Bin Abdulaziz street, Al Woroud district, Riyadh, Riyadh Region",
   "poi_type": "branch",
-  "poi_distance": 1.93,
-  "poi_rank": 3
+  "poi_distance": 1.0,
+  "poi_rank": 21
 }
 ```
 

@@ -28,6 +28,10 @@ class SearchPagination extends _$SearchPagination {
     return _currentPage != null ? _mapPage(_currentPage!) : [];
   }
 
+  /// The items added by the most recent [fetchNext] call. Lets the results UI
+  /// report a `search_results_exposure` for the newly-loaded page.
+  List<DirectoryObjectMessage> lastFetchedItems = const [];
+
   Future<bool> fetchNext() async {
     if (_currentPage == null) {
       return false;
@@ -38,8 +42,6 @@ class SearchPagination extends _$SearchPagination {
     PageMessage page;
     try {
       page = await dgisController.fetchNextPage(_currentPage!);
-
-      final licenseIds = page.items.map((e) => e.tradeLicense?.license.trim()).nonNulls.toSet();
     } catch (e) {
       return false;
     }
@@ -51,9 +53,11 @@ class SearchPagination extends _$SearchPagination {
     }
 
     _currentPage = page;
+    final newItems = _mapPage(page);
+    lastFetchedItems = newItems;
     state = [
       ...state,
-      ..._mapPage(page),
+      ...newItems,
     ];
     return true;
   }
