@@ -45,6 +45,7 @@ class LayersSheetContent extends ConsumerWidget {
                       );
                       onClose();
                     },
+                    color: context.colors.backgroundSurface5,
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                   ),
@@ -108,19 +109,13 @@ class _LayersTabRow extends StatelessWidget {
       LayersTab.mapDetails: l10n.mapDetails,
       LayersTab.publicTransport: l10n.publicTransport,
     };
-    const tabs = LayersTab.values;
+    // Intrinsic width per chip + spaceBetween — chips size to their text and
+    // spread across the row width. Matches Figma node 6194:9044.
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (var i = 0; i < tabs.length; i++) ...[
-          if (i > 0) const SizedBox(width: Spacing.$2x),
-          Expanded(
-            child: _LayersTabChip(
-              label: labels[tabs[i]]!,
-              isSelected: tabs[i] == active,
-              onTap: () => onSelected(tabs[i]),
-            ),
-          ),
-        ],
+        for (final tab in LayersTab.values)
+          _LayersTabChip(label: labels[tab]!, isSelected: tab == active, onTap: () => onSelected(tab)),
       ],
     );
   }
