@@ -18,12 +18,6 @@ class LayersSheetContent extends ConsumerWidget {
 
   const LayersSheetContent({required this.onIconTap, required this.onClose, this.layerTapItems = const {}, super.key});
 
-  List<layers_state.LayerType> _layersForTab(LayersTab tab) => switch (tab) {
-    LayersTab.allLayers => layers_state.LayerType.v1,
-    LayersTab.mapDetails => layers_state.LayerType.mapDetails,
-    LayersTab.publicTransport => layers_state.LayerType.publicTransport,
-  };
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
@@ -67,12 +61,33 @@ class LayersSheetContent extends ConsumerWidget {
               ),
             ),
           ),
-          LayerSliverList(
-            onIconTap: onIconTap,
-            layerType: _layersForTab(activeTab),
-            layersState: state,
-            layerTapItems: layerTapItems,
-          ),
+          // Two grids for "All layers" so base-map options (Default, Satellite)
+          // occupy a row by themselves and overlays start on a fresh row —
+          // matches the Figma macet for BE-243. Other tabs keep a single grid.
+          if (activeTab == LayersTab.allLayers) ...[
+            LayerSliverList(
+              onIconTap: onIconTap,
+              layerType: layers_state.LayerType.baseMaps,
+              layersState: state,
+              layerTapItems: layerTapItems,
+            ),
+            LayerSliverList(
+              onIconTap: onIconTap,
+              layerType: layers_state.LayerType.overlays,
+              layersState: state,
+              layerTapItems: layerTapItems,
+            ),
+          ] else
+            LayerSliverList(
+              onIconTap: onIconTap,
+              layerType: switch (activeTab) {
+                LayersTab.mapDetails => layers_state.LayerType.mapDetails,
+                LayersTab.publicTransport => layers_state.LayerType.publicTransport,
+                LayersTab.allLayers => layers_state.LayerType.v1, // unreachable; keeps the switch exhaustive.
+              },
+              layersState: state,
+              layerTapItems: layerTapItems,
+            ),
         ],
       ),
     );
@@ -94,11 +109,10 @@ class _LayersTabRow extends StatelessWidget {
       LayersTab.publicTransport: 'Public transport',
     };
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (final tab in LayersTab.values) ...[
-          if (tab != LayersTab.allLayers) const SizedBox(width: Spacing.$2x),
+        for (final tab in LayersTab.values)
           _LayersTabChip(label: labels[tab]!, isSelected: tab == active, onTap: () => onSelected(tab)),
-        ],
       ],
     );
   }
