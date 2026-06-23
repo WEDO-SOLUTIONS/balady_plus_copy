@@ -1439,7 +1439,16 @@ Future<void> setupMapness(EnvType envType) async {
 /// once it is registered in the BytePlus console (Project Center → Details).
 /// TODO: move these ids to build-time config (--dart-define) instead of
 /// hardcoding.
+/// Guards against initializing the BytePlus SDK more than once — `setupMapness`
+/// can run twice (e.g. the engine re-attaches), and a second `initRangersAppLog`
+/// triggers a duplicate device-register / session.
+bool _bytePlusInitialized = false;
+
 void _initBytePlus(EnvType envType) {
+  if (_bytePlusInitialized) {
+    return;
+  }
+
   // Staging project id (Balady Staging Test APP). Used as the placeholder for
   // production until the real prod project is registered.
   const stagingAppId = '10000000';
@@ -1463,6 +1472,7 @@ void _initBytePlus(EnvType envType) {
       !isProduction, // enableLog: verbose on stg/dev, quiet on prod
       'https://balady.finder-snssdk.bytepluses.com',
     );
+    _bytePlusInitialized = true;
     debugPrint('[BytePlus] RangersAppLog initialized — AppID=$appId, channel=$channel');
   } catch (e) {
     debugPrint('[BytePlus] Init failed: $e');

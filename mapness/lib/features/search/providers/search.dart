@@ -88,6 +88,11 @@ class Search extends _$Search {
   /// fresh (typed/quick/suggest) search.
   bool _searchFromHistory = false;
 
+  /// True when the current search was started by a quick-filter chip that runs
+  /// via `searchByText` (the search bottom sheet), so the exposure reports
+  /// `search_type: Quick search` to match the top-level quick filters.
+  bool _searchFromQuickFilter = false;
+
   bool get isGoogleSearch => _isGoogleSearch;
 
   // Timer to start full search if we don't get any results
@@ -125,6 +130,7 @@ class Search extends _$Search {
     _searchSessionId = null;
     _requestId = '';
     _searchFromHistory = false;
+    _searchFromQuickFilter = false;
   }
 
   // ── DataFinder analytics helpers ────────────────────────────────────────────
@@ -169,6 +175,11 @@ class Search extends _$Search {
   /// `search_results_exposure` reports `search_type: History`.
   void markSearchFromHistory() => _searchFromHistory = true;
 
+  /// Marks the next `searchByText` as originating from a quick-filter chip (the
+  /// search bottom sheet), so its `search_results_exposure` reports
+  /// `search_type: Quick search`.
+  void markSearchFromQuickFilter() => _searchFromQuickFilter = true;
+
   /// True if [routeName] is anywhere in the current navigation stack.
   bool _isRouteActive(String routeName) {
     try {
@@ -206,6 +217,9 @@ class Search extends _$Search {
   DataFinderSearchType get _searchType {
     if (_searchFromHistory) {
       return DataFinderSearchType.history;
+    }
+    if (_searchFromQuickFilter) {
+      return DataFinderSearchType.quickSearch;
     }
     switch (_previousType) {
       case SearchType.quickSearch:
@@ -293,8 +307,9 @@ class Search extends _$Search {
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
       _isGoogleSearch = false;
-      // DataFinder: typing is a fresh (non-history) search.
+      // DataFinder: typing is a fresh (non-history, non-quick) search.
       _searchFromHistory = false;
+      _searchFromQuickFilter = false;
       // DataFinder: start a suggestion session on the first keystroke of a query
       // and refresh the request id for this suggest call.
       _suggestionSessionId ??= DataFinderIds.uuid();
@@ -384,6 +399,7 @@ class Search extends _$Search {
       _previousQuery = searchQuery;
       _isGoogleSearch = isGoogle;
       _searchFromHistory = false;
+      _searchFromQuickFilter = false;
       // DataFinder: new search session + request id for this full search.
       _searchSessionId = DataFinderIds.uuid();
       _requestId = DataFinderIds.uuid();
