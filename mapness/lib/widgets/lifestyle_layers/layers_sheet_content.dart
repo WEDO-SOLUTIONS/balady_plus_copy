@@ -102,17 +102,25 @@ class _LayersTabRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(BE-243): replace inline strings with Localazy keys once added.
-    const labels = <LayersTab, String>{
-      LayersTab.allLayers: 'All layers',
-      LayersTab.mapDetails: 'Map details',
-      LayersTab.publicTransport: 'Public transport',
+    final l10n = context.l10n;
+    final labels = <LayersTab, String>{
+      LayersTab.allLayers: l10n.allLayers,
+      LayersTab.mapDetails: l10n.mapDetails,
+      LayersTab.publicTransport: l10n.publicTransport,
     };
+    const tabs = LayersTab.values;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (final tab in LayersTab.values)
-          _LayersTabChip(label: labels[tab]!, isSelected: tab == active, onTap: () => onSelected(tab)),
+        for (var i = 0; i < tabs.length; i++) ...[
+          if (i > 0) const SizedBox(width: Spacing.$2x),
+          Expanded(
+            child: _LayersTabChip(
+              label: labels[tabs[i]]!,
+              isSelected: tabs[i] == active,
+              onTap: () => onSelected(tabs[i]),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -127,8 +135,11 @@ class _LayersTabChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Styling per Figma node 6194:9044: rectangular neutral button, 1px
+    // borderDefault always present, fill flips to backgroundSurface5 on the
+    // active tab. No accent border / accent text — selection is signalled
+    // by fill, like an iOS segmented control.
     final colors = context.colors;
-    final accent = colors.accentDefault;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
@@ -137,20 +148,16 @@ class _LayersTabChip extends StatelessWidget {
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
         decoration: BoxDecoration(
-          color: colors.backgroundSurface2,
-          borderRadius: BorderRadius.circular(RadiusBorder.m),
-          border: Border.all(color: isSelected ? accent : Colors.transparent, width: 2),
-          boxShadow: const [
-            BoxShadow(color: Color(0x14000000), offset: Offset(0, 1), blurRadius: 4),
-            BoxShadow(color: Color(0x0A000000), spreadRadius: 0.5),
-          ],
+          color: isSelected ? colors.backgroundSurface5 : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(color: colors.borderDefault),
         ),
         alignment: Alignment.center,
         child: Text(
           label,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: context.textStyles.bodySmallMedium.copyWith(color: isSelected ? accent : colors.foregroundDefault),
+          style: context.textStyles.bodySmallMedium.copyWith(color: colors.foregroundDefault),
         ),
       ),
     );
