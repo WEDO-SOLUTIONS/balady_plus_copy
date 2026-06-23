@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/lifestyle_layers/providers/active_layers_tab.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -10,24 +11,12 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-/// Filter tab on the layers sheet — switches which subset of [LayerType]
-/// the grid renders. Default lands on `allLayers` which mirrors the
-/// previous (single-tab) behaviour.
-enum LayersTab { allLayers, mapDetails, publicTransport }
-
-class LayersSheetContent extends ConsumerStatefulWidget {
+class LayersSheetContent extends ConsumerWidget {
   final ValueChanged<layers_state.LayerType>? onIconTap;
   final Function() onClose;
   final Set<layers_state.LayerType> layerTapItems;
 
   const LayersSheetContent({required this.onIconTap, required this.onClose, this.layerTapItems = const {}, super.key});
-
-  @override
-  ConsumerState<LayersSheetContent> createState() => _LayersSheetContentState();
-}
-
-class _LayersSheetContentState extends ConsumerState<LayersSheetContent> {
-  LayersTab _activeTab = LayersTab.allLayers;
 
   List<layers_state.LayerType> _layersForTab(LayersTab tab) => switch (tab) {
     LayersTab.allLayers => layers_state.LayerType.v1,
@@ -36,8 +25,9 @@ class _LayersSheetContentState extends ConsumerState<LayersSheetContent> {
   };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(layersControlsProvider);
+    final activeTab = ref.watch(activeLayersTabProvider);
     return SliverPadding(
       padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
       sliver: MultiSliver(
@@ -59,7 +49,7 @@ class _LayersSheetContentState extends ConsumerState<LayersSheetContent> {
                         group: MetricsConstants.layersTag,
                         action: MetricAction.tap.toString(),
                       );
-                      widget.onClose();
+                      onClose();
                     },
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
@@ -72,16 +62,16 @@ class _LayersSheetContentState extends ConsumerState<LayersSheetContent> {
             child: Padding(
               padding: const EdgeInsets.only(bottom: Spacing.$3x),
               child: _LayersTabRow(
-                active: _activeTab,
-                onSelected: (tab) => setState(() => _activeTab = tab),
+                active: activeTab,
+                onSelected: (tab) => ref.read(activeLayersTabProvider.notifier).set(tab),
               ),
             ),
           ),
           LayerSliverList(
-            onIconTap: widget.onIconTap,
-            layerType: _layersForTab(_activeTab),
+            onIconTap: onIconTap,
+            layerType: _layersForTab(activeTab),
             layersState: state,
-            layerTapItems: widget.layerTapItems,
+            layerTapItems: layerTapItems,
           ),
         ],
       ),
