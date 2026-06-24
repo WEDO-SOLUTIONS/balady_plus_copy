@@ -23,6 +23,11 @@ class ExitNavigationPage extends HookConsumerWidget {
       },
     );
 
+    void cancel() {
+      onCancel();
+      context.router.pop();
+    }
+
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface4,
@@ -64,7 +69,7 @@ class ExitNavigationPage extends HookConsumerWidget {
                 buttonColorScheme: ButtonColorScheme.accentSecondary,
                 size: ButtonSize.large,
                 primaryLabel: context.l10n.yes,
-                onTap: () async {
+                onTap: () {
                   onConfirm();
                   context.router.pop();
                 },
@@ -75,30 +80,14 @@ class ExitNavigationPage extends HookConsumerWidget {
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Positioned(
-                      top: Spacing.$3x,
-                      bottom: Spacing.$3x,
-                      left: Spacing.$4x,
-                      child: SizedBox.square(
-                        dimension: 24,
-                        child: CountdownProgress(
-                          animationDuration: const Duration(seconds: 4),
-                          onComplete: () {
-                            onCancel();
-                            context.router.pop();
-                          },
-                        ),
+                    _CancelButton(onTap: cancel),
+                    _AnimatedClipWidget(
+                      onAnimationCompleted: cancel,
+                      child: _CancelButton(
+                        bgColor: context.colors.neutralOnContainer,
+                        textColor: context.colors.accentSecondaryOnAccentSecondary,
+                        onTap: cancel,
                       ),
-                    ),
-                    AppButton(
-                      buttonColorScheme: ButtonColorScheme.accentSecondary,
-                      size: ButtonSize.large,
-                      buttonType: ButtonType.secondary,
-                      primaryLabel: context.l10n.cancel,
-                      onTap: () async {
-                        onCancel();
-                        context.router.pop();
-                      },
                     ),
                   ],
                 ),
@@ -111,31 +100,86 @@ class ExitNavigationPage extends HookConsumerWidget {
   }
 }
 
-class CountdownProgress extends StatelessWidget {
-  final Duration animationDuration;
-  final VoidCallback? onComplete;
+class _CancelButton extends StatelessWidget {
+  final VoidCallback? onTap;
+  final Color? bgColor;
+  final Color? textColor;
 
-  const CountdownProgress({required this.animationDuration, this.onComplete, super.key});
+  const _CancelButton({this.onTap, this.bgColor, this.textColor});
 
   @override
-  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
-    tween: Tween<double>(begin: 0.0, end: 1),
-    duration: animationDuration,
-    onEnd: onComplete,
-    builder: (context, value, child) => Stack(
-      alignment: AlignmentGeometry.center,
-      children: [
-        Text(
-          (animationDuration - animationDuration * value + const Duration(seconds: 1)).inSeconds.toString(),
-          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.accentSecondaryDefault),
-        ),
-        CircularProgressIndicator(
-          value: value,
-          strokeWidth: 2,
-          backgroundColor: Colors.transparent,
-          color: context.colors.accentSecondaryDefault,
-        ),
-      ],
-    ),
+  Widget build(BuildContext context) => AppButton(
+    buttonColorScheme: ButtonColorScheme.accentSecondary,
+    size: ButtonSize.large,
+    color: bgColor,
+    buttonType: ButtonType.secondary,
+    textColor: textColor,
+    primaryLabel: context.l10n.cancel,
+    onTap: onTap,
   );
+}
+
+class _AnimatedClipWidget extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onAnimationCompleted;
+
+  const _AnimatedClipWidget({required this.child, this.onAnimationCompleted});
+
+  @override
+  _AnimatedClipWidgetState createState() => _AnimatedClipWidgetState();
+}
+
+class _AnimatedClipWidgetState extends State<_AnimatedClipWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 4),
+      vsync: this,
+    );
+    _controller.forward().then((_) => widget.onAnimationCompleted?.call());
+
+    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _animation,
+    builder: (context, child) => ClipRRect(
+      clipper: _Clipper(_animation.value),
+      borderRadius: const BorderRadius.horizontal(left: Radius.circular(Spacing.$2_5x)),
+      child: child,
+    ),
+    child: widget.child,
+  );
+}
+
+// Animates the clipping rectangle width from 0 to full size
+class _Clipper extends CustomClipper<RRect> {
+  final double progress;
+
+  _Clipper(this.progress);
+
+  @override
+  RRect getClip(Size size) {
+    if (size.width == 0 || size.height == 0) {
+      return RRect.zero;
+    }
+    return RRect.fromRectAndRadius(
+      Rect.fromPoints(Offset.zero, Offset(size.width * progress, size.height)),
+      Radius.zero,
+    );
+  }
+
+  @override
+  bool shouldReclip(covariant _Clipper oldClipper) => oldClipper.progress != progress;
 }
