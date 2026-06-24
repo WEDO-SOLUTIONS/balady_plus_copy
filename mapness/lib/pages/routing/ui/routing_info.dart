@@ -50,12 +50,14 @@ class RoutingInfo extends ConsumerStatefulWidget {
   final bool isHomeOrWork;
   final ValueChanged<RouteSearchOptionsMessage>? onNavTypeChanged;
   final ValueChanged<int>? onRouteIndexChanged;
+  final RouteSearchOptionsMessage? navType;
 
   RoutingInfo({
     required this.pointsWithLabel,
     this.isHomeOrWork = false,
     this.onNavTypeChanged,
     this.onRouteIndexChanged,
+    this.navType,
     super.key,
   }) : points = pointsWithLabel.map((e) => e.value).toList();
 
@@ -64,11 +66,13 @@ class RoutingInfo extends ConsumerStatefulWidget {
 }
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
-  final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(_defaultNavType);
+  late final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(_initialNavType);
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
 
   bool _navigationStarted = false;
   RouteSearchOptionsMessage? _lockedNavType;
+
+  RouteSearchOptionsMessage get _initialNavType => widget.navType ?? _defaultNavType;
 
   @override
   void initState() {
@@ -173,7 +177,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _calculateNavigationType(Position? location) async {
-    var navType = _defaultNavType;
+    var navType = _initialNavType;
     final dgisController = ref.read(dgisControllerProvider).value;
     final carConnected = await ref.read(carConnectionProvider.future);
 
