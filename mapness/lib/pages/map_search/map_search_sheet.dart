@@ -104,6 +104,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     });
 
     _multiStateSheetController = MultiStateSheetController(
+      forceMultiplier: 2,
       initialState: ThreeStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
@@ -113,9 +114,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       ),
       stateMapper: const LandingStateMapper(),
       // BE-153: animation how in Google Maps
-      forceMultiplier: 100.0,
-      initialOpenCurve: Curves.linear,
-      mainCurve: Curves.linear,
+      // forceMultiplier: 100.0,
+      // initialOpenCurve: Curves.linear,
+      // mainCurve: Curves.linear,
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
@@ -216,6 +217,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
+              animateOpening: false,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: _showMoreQuickFilters
@@ -274,6 +276,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                     isCloseButton: isCloseButton,
                     showLeadingBackButton: _showMoreQuickFilters,
                     onLeadingBackPressed: () => _setShowMoreQuickFilters(false),
+                    onTap: _expandSheet,
                   ),
                 ),
               },
@@ -398,6 +401,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       return;
     }
 
+    _expandSheet();
+   // _multiStateSheetController.setState(ThreeStateSheet.expanded);
+  }
+
+  void _expandSheet() {
+    if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
+      return;
+    }
     _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
