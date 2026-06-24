@@ -61,7 +61,12 @@ class LayerSliverList extends ConsumerWidget {
                       layersControl.handleTap(value);
                     },
                   );
-            } else if (value != layers_state.LayerType.busSubMenu) {
+            } else if (value == layers_state.LayerType.busSubMenu) {
+              // BALADY-3726: tap anywhere on the Bus card (incl. the thumbnail)
+              // opens the bus submenu — same behavior the label + chevron row
+              // already has via LayerSwitcherCard's inner gesture detector.
+              onIconTap?.call(value);
+            } else {
               layersControl.handleTap(value);
             }
 
