@@ -138,8 +138,11 @@ class _LayersTabChip extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
+      // BALADY-3725: instant state flip, no AnimatedContainer. Animating the
+      // fill color over 150 ms produced overlapping transitions across two
+      // chips (old + new both half-gray for a frame), which QA logged as a
+      // flash. Selection is binary anyway, animation gave nothing here.
+      child: Container(
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
         decoration: BoxDecoration(
