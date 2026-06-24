@@ -291,11 +291,20 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleFavourites() async {
+    final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (state.selectedType != (LayerType.favourites)) {
+    if (currentState != LayerType.favourites) {
+      // BALADY-3730: same mutual-exclusion guard as toggleParking — when
+      // favourites is activated while another overlay is on (e.g. traffic
+      // or metro), hide the previous native layer so the two don't render
+      // side-by-side. Idempotent (each branch checks isEnabled), so the
+      // double-call from _tapHandler stays safe.
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
     } else {

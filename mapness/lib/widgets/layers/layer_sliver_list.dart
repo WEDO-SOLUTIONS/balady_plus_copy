@@ -58,7 +58,13 @@ class LayerSliverList extends ConsumerWidget {
                   .authOrOpen(
                     context,
                     callback: () async {
-                      layersControl.handleTap(value);
+                      // BALADY-3730: await the toggle directly instead of
+                      // going through the debounced tapSubject. The 250 ms
+                      // debounce could elapse after the layers route was
+                      // popped during the auth flow, leaving _tapHandler
+                      // never invoked and the Favorites card unmarked on
+                      // return.
+                      await layersControl.toggleFavourites();
                     },
                   );
             } else if (value == layers_state.LayerType.busSubMenu) {
