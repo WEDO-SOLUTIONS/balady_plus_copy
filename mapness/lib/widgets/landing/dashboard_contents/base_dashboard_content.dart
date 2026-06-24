@@ -59,6 +59,17 @@ class BaseDashboardContent extends ConsumerWidget {
         Column(
           children: [
             // 1. Feedback Banner (ساهم معنا)
+            Column(
+              children: [
+                StoriesWidget(
+                  titleWidget: Padding(
+                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: Spacing.$3x),
             SizedBox(
               width: double.infinity,
               child: FeedbackBannerCardV2(
@@ -80,18 +91,6 @@ class BaseDashboardContent extends ConsumerWidget {
                 subtitle: context.l10n.buildBaladyTogether,
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
               ),
-            ),
-
-            const SizedBox(height: Spacing.$3x),
-            Column(
-              children: [
-                StoriesWidget(
-                  titleWidget: Padding(
-                    padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                    child: DashboardTitle(context.l10n.whatIsNewInBalady),
-                  ),
-                ),
-              ],
             ),
 
             const SizedBox(height: Spacing.$6x),
