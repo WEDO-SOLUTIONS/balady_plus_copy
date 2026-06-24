@@ -30,7 +30,6 @@ class ShareRoutePage extends HookConsumerWidget {
       onClose: (controller) {
         context.router.pop();
       },
-      heightModel: ToggleSheetHeightModel.fixed(160),
     );
 
     final destinationObjectId = points.last.value?.objectId;

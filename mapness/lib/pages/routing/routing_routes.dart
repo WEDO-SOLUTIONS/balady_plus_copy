@@ -37,8 +37,9 @@ import 'package:urbi_utils/urbi_utils.dart';
 class RoutingRoutesPage extends StatefulHookConsumerWidget {
   final List<RouteParamsPointWithLabel> points;
   final bool isHomeOrWork;
+  final RouteSearchOptionsMessage? navType;
 
-  const RoutingRoutesPage({required this.points, this.isHomeOrWork = false, super.key});
+  const RoutingRoutesPage({required this.points, this.isHomeOrWork = false, this.navType, super.key});
 
   @override
   ConsumerState<RoutingRoutesPage> createState() => _RoutingRoutesPageState();
@@ -58,6 +59,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   void _initialize() {
+    _navType = widget.navType;
     points = widget.points;
     _dgisController = ref.read(dgisControllerProvider).value;
 
@@ -173,6 +175,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
             RoutingInfo(
               pointsWithLabel: points,
               isHomeOrWork: widget.isHomeOrWork,
+              navType: widget.navType,
               onNavTypeChanged: (value) {
                 _navType = value;
               },

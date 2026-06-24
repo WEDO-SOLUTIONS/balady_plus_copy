@@ -103,16 +103,29 @@ enum ShortLinkTransportType {
   scooter,
   emergency,
   truck,
-  motorcycle;
+  motorcycle,
+  metro;
 
   static ShortLinkTransportType message(RouteSearchOptionsMessage type) => switch (type) {
     RouteSearchOptionsMessage.car => ShortLinkTransportType.driving,
-    RouteSearchOptionsMessage.publicTransport => ShortLinkTransportType.driving,
+    RouteSearchOptionsMessage.publicTransport => ShortLinkTransportType.metro,
     RouteSearchOptionsMessage.bicycle => ShortLinkTransportType.bicycle,
     RouteSearchOptionsMessage.pedestrian => ShortLinkTransportType.walking,
     RouteSearchOptionsMessage.scooter => ShortLinkTransportType.scooter,
     RouteSearchOptionsMessage.truck => ShortLinkTransportType.truck,
     RouteSearchOptionsMessage.taxi => ShortLinkTransportType.taxi,
+  };
+
+  RouteSearchOptionsMessage toMessage() => switch (this) {
+    ShortLinkTransportType.driving => RouteSearchOptionsMessage.car,
+    ShortLinkTransportType.walking => RouteSearchOptionsMessage.pedestrian,
+    ShortLinkTransportType.taxi => RouteSearchOptionsMessage.taxi,
+    ShortLinkTransportType.bicycle => RouteSearchOptionsMessage.bicycle,
+    ShortLinkTransportType.scooter => RouteSearchOptionsMessage.scooter,
+    ShortLinkTransportType.emergency => RouteSearchOptionsMessage.car,
+    ShortLinkTransportType.truck => RouteSearchOptionsMessage.truck,
+    ShortLinkTransportType.motorcycle => RouteSearchOptionsMessage.scooter,
+    ShortLinkTransportType.metro => RouteSearchOptionsMessage.publicTransport,
   };
 }
 

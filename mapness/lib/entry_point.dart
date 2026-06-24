@@ -824,7 +824,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           ref
               .read(appRouterProvider)
               .replaceOrPush(
-                route: RoutingRoutesRoute(points: payload.route.toRouteParamsPointWithLabels()),
+                route: RoutingRoutesRoute(
+                  points: payload.route.toRouteParamsPointWithLabels(),
+                  navType: payload.route.type.toMessage(),
+                ),
                 toCompareRoutes: [RoutingRoutesRoute.page],
               );
       }
