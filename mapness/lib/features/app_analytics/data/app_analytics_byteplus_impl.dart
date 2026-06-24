@@ -62,8 +62,13 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnal
     String? deviceId,
     String? deviceOs,
     String? appVersion,
+    String? userId,
   }) {
-    if (deviceId != null) RangersApplogFlutterPlugin.setUserUniqueId(deviceId);
+    // BytePlus user identity: the logged-in user id when available, otherwise the
+    // device id. This re-runs on auth changes (login/logout), so on logout
+    // `userId` is null and we fall back to the device id.
+    final identity = (userId != null && userId.isNotEmpty) ? userId : deviceId;
+    if (identity != null) RangersApplogFlutterPlugin.setUserUniqueId(identity);
 
     final profile = <String, dynamic>{};
     if (email != null) profile['email'] = email;
