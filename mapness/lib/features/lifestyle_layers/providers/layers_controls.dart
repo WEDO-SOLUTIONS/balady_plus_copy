@@ -469,6 +469,16 @@ class LayersControls extends _$LayersControls {
 
       await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
+      // BALADY-3615: when parking is activated while another overlay is
+      // on (e.g. via the dashboard quick action that calls toggleParking
+      // directly, bypassing _tapHandler), the previous layer kept
+      // rendering alongside parking. Hide the previous layer here so the
+      // toggle stays mutually exclusive regardless of call site.
+      // _hidePreviousLayers is idempotent (each branch checks isEnabled
+      // before disabling), so the double-call from _tapHandler is safe.
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _removeMapObjects();
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
