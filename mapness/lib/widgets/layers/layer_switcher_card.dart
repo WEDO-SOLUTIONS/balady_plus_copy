@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/entities/common/image_asset_type.dart';
 import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
@@ -55,11 +56,28 @@ class LayerSwitcherCard extends ConsumerWidget {
 
     final withIcon = onIconTap != null && layerTapItems.contains(value);
 
+    final (imageType, assetPath) = value.imageAsset();
+    final image = switch (imageType) {
+      ImageAssetType.svg => SvgPicture.asset(
+        assetPath,
+        fit: BoxFit.cover,
+        height: 80,
+        colorFilter: ColorFilter.mode(
+          Colors.black.withAlpha(40),
+          BlendMode.overlay,
+        ),
+      ),
+      ImageAssetType.image => Image.asset(
+        assetPath,
+        fit: BoxFit.cover,
+        height: 80,
+      ),
+    };
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          height: 80,
           decoration: BoxDecoration(
             border: Border.all(
               strokeAlign: BorderSide.strokeAlignOutside,
@@ -70,16 +88,7 @@ class LayerSwitcherCard extends ConsumerWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(RadiusBorder.m),
-            child: SvgPicture.asset(
-              value.imageAsset(),
-              fit: BoxFit.cover,
-              height: 80,
-              semanticsLabel: context.l10n.a11yImage,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withAlpha(40),
-                BlendMode.overlay,
-              ),
-            ),
+            child: image,
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),

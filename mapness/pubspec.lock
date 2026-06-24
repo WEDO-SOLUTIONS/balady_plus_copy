@@ -229,25 +229,25 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: "71972790ed51de39fb5114662421e94c19725d5e036528ef9db4494e25b8db38"
+      sha256: "4e66006fe34dd08a19053082207393b81c003baac4f6cad6e904052ef8926ea8"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.14"
+    version: "1.0.13"
   balady_design_system:
     dependency: transitive
     description:
       name: balady_design_system
-      sha256: "333c3f95cad805f817fd5a41c9e907fa7a7ad6000877788376d5b682b8918848"
+      sha256: "4d2ff3154bd051a8a0d0b3c0c603d1d6914c85dc39ef25b178656d740f42b145"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.3"
+    version: "0.0.13"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+572"
+    version: "3.30.3+576"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -2485,6 +2485,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.0"
+  pie_chart:
+    dependency: transitive
+    description:
+      name: pie_chart
+      sha256: "58e6a46999ac938bfa1c3e5be414d6e149f037647197dca03ba3614324c12c82"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.0"
   pinput:
     dependency: transitive
     description:

@@ -161,7 +161,7 @@ class SharedPrefs(val context: Context) : AutoCloseable {
 
         // Flutter's voice instruction key (source of truth for phone-side setting)
         // Values: 0 = none, 1 = important, 2 = all
-        private const val flutterVoiceInstructionIndexKey = "voice_instruction_index"
+        const val flutterVoiceInstructionIndexKey = "voice_instruction_index"
     }
 
     /// Reads the phone-side voice instruction setting from Flutter SharedPreferences.

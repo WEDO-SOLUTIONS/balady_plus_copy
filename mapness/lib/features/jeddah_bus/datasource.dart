@@ -23,10 +23,24 @@ class JeddahBusData extends Equatable {
   @override
   List<Object?> get props => [stations, lines];
 
-  bool isStationDirectoryObject(DirectoryObjectMessage? object) {
-    final busStationObjectId = object?.group.firstWhereOrNull((g) => g.type == ObjectTypeMessage.station)?.id.objectId;
-    return stations.containsKey(busStationObjectId);
+  bool isStationDirectoryObject(DirectoryObjectMessage? object) => getStationByDirectoryObject(object) != null;
+
+  BusStation? getStationByDirectoryObject(DirectoryObjectMessage? object) {
+    // the POI might have several ids in different groups so we check if any of them is a station
+    final busStationObjectIds = _getStationIdsForDirectoryObject(object);
+    for (final id in busStationObjectIds) {
+      final station = stations[id];
+      if (station != null) {
+        return station;
+      }
+    }
+    return null;
   }
+
+  Iterable<int> _getStationIdsForDirectoryObject(DirectoryObjectMessage? object) => [
+    object?.id?.objectId,
+    ...?object?.group.map((e) => e.id.objectId),
+  ].nonNulls;
 }
 
 abstract class JeddahBusJsonDatasource {

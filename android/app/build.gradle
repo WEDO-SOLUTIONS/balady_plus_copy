@@ -157,6 +157,11 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android:5.4.0'
     implementation 'com.adjust.sdk:adjust-android-oaid:5.4.0'
     implementation 'com.huawei.hms:ads-identifier:3.4.62.300'
+    // BytePlus RangersAppLog (DataFinder) native Android SDK. The Flutter plugin
+    // declares this only as `compileOnly`, so the app must provide the runtime
+    // dependency — otherwise classes like com.bytedance.applog.InitConfig /
+    // IDataObserver are missing at runtime (NoClassDefFoundError → crash).
+    implementation 'com.bytedance.applog:RangersAppLog-Lite-cn:6.14.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

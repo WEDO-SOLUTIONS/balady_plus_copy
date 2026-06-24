@@ -844,7 +844,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<Uri> getFinalRedirectUri(Uri uri) async {
+  Future<Uri?> getFinalRedirectUri(Uri uri) async {
     final client = Client();
     var currentUri = uri;
     const redirectStatuses = {301, 302, 303, 307, 308};
@@ -854,6 +854,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         final request = Request('GET', currentUri)..followRedirects = false;
 
         final response = await client.send(request);
+        if (response.statusCode >= 400) {
+          // the link is broken, skip it
+          return null;
+        }
         if (redirectStatuses.contains(response.statusCode)) {
           final location = response.headers['location'];
           if (location != null && location.isNotEmpty) {
@@ -877,6 +881,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false, bool fromQuickAction = false}) async {
     await initCameraPositionPoint();
     final uri = await getFinalRedirectUri(sourceUri);
+    if (uri == null) {
+      return;
+    }
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
@@ -933,12 +940,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
-      if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
-        _myLocationDeepLinkHandler(latitude, longitude);
-      } else {
-        await _delayIfFirstRun(isFirstRun: isFirstRun);
-        await _poiDeepLinkByCoords(latitude, longitude);
-      }
+      // we agreed to treat absence of objectId as it is My location and open the point immediately
+      _myLocationDeepLinkHandler(latitude, longitude);
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
@@ -1436,7 +1439,16 @@ Future<void> setupMapness(EnvType envType) async {
 /// once it is registered in the BytePlus console (Project Center → Details).
 /// TODO: move these ids to build-time config (--dart-define) instead of
 /// hardcoding.
+/// Guards against initializing the BytePlus SDK more than once — `setupMapness`
+/// can run twice (e.g. the engine re-attaches), and a second `initRangersAppLog`
+/// triggers a duplicate device-register / session.
+bool _bytePlusInitialized = false;
+
 void _initBytePlus(EnvType envType) {
+  if (_bytePlusInitialized) {
+    return;
+  }
+
   // Staging project id (Balady Staging Test APP). Used as the placeholder for
   // production until the real prod project is registered.
   const stagingAppId = '10000000';
@@ -1460,6 +1472,7 @@ void _initBytePlus(EnvType envType) {
       !isProduction, // enableLog: verbose on stg/dev, quiet on prod
       'https://balady.finder-snssdk.bytepluses.com',
     );
+    _bytePlusInitialized = true;
     debugPrint('[BytePlus] RangersAppLog initialized — AppID=$appId, channel=$channel');
   } catch (e) {
     debugPrint('[BytePlus] Init failed: $e');
