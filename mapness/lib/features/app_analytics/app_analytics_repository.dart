@@ -51,6 +51,7 @@ abstract interface class AppAnalyticsRepository {
     String? deviceId,
     String? deviceOs,
     String? appVersion,
+    String? userId,
   });
 
   void categorySelected(String category);

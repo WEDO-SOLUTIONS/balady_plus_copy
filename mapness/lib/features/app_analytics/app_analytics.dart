@@ -142,9 +142,17 @@ class _CompositeAnalytics implements AppAnalyticsApi {
     String? deviceId,
     String? deviceOs,
     String? appVersion,
+    String? userId,
   }) {
     for (final impl in _implementations) {
-      impl.setUserInfo(email: email, locale: locale, deviceId: deviceId, deviceOs: deviceOs, appVersion: appVersion);
+      impl.setUserInfo(
+        email: email,
+        locale: locale,
+        deviceId: deviceId,
+        deviceOs: deviceOs,
+        appVersion: appVersion,
+        userId: userId,
+      );
     }
   }
 
@@ -384,6 +392,9 @@ class AppAnalytics extends _$AppAnalytics {
         deviceId: deviceInfoValue.deviceId,
         deviceOs: deviceInfoValue.mobileOS?.name,
         appVersion: deviceInfoValue.appVersion,
+        // Logged-in user id (national id). Null when logged out → BytePlus
+        // falls back to the device id.
+        userId: deviceInfoValue.authId,
       );
     });
 

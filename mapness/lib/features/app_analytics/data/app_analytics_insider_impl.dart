@@ -67,6 +67,7 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
     String? deviceId,
     String? deviceOs,
     String? appVersion,
+    String? userId,
   }) {
     final user = FlutterInsider.Instance.getCurrentUser();
 
