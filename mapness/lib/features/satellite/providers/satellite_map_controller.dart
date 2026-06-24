@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/satellite/models/satellite_config.dart';
+import 'package:mapness/features/satellite/providers/satellite_debug.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -37,8 +38,21 @@ class SatelliteMapController extends _$SatelliteMapController {
 
   Future<void> _setEnabled(bool enable) async {
     if (enable) {
-      final snapshot = await AppConfigLoader.getSatelliteConfigSnapshot();
-      final raw = snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
+      // Debug-panel override: when the toggle is on, bypass FRC and use a
+      // public ESRI World Imagery stand-in. Lets dev/QA exercise the layer
+      // from networks where the production tile source is unreachable —
+      // see [SatelliteDebugOverride] for rationale.
+      final debugOverride = ref.read(satelliteDebugOverrideProvider);
+      final String raw;
+      final String source;
+      if (debugOverride) {
+        raw = kSatelliteDebugOverrideConfig;
+        source = 'debugOverride';
+      } else {
+        final snapshot = await AppConfigLoader.getSatelliteConfigSnapshot();
+        raw = snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
+        source = snapshot.source.name;
+      }
       final config = SatelliteConfig.tryParse(raw);
       if (config == null || !config.isUsable) {
         logger.log(
@@ -47,12 +61,11 @@ class SatelliteMapController extends _$SatelliteMapController {
         );
         return;
       }
-      // TEMP debug — surface the raw FRC value and its source flag so we
-      // can confirm Firebase Console is actually overriding the bundled
-      // default. Remove once FRC integration is confirmed working in prod.
+      // TEMP debug — surface the resolved config so we can confirm whether
+      // FRC, the bundled default, or the debug override is in effect.
+      // Remove once FRC integration is confirmed working in prod.
       logger.log(
-        'satellite FRC raw: source=${snapshot.source.name} '
-        'length=${snapshot.raw.length} payload=${snapshot.raw}',
+        'satellite enable: source=$source length=${raw.length} payload=$raw',
         logLevel: MapnessLogLevel.info,
       );
       if (config.isExpired) {

@@ -291,11 +291,20 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleFavourites() async {
+    final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (state.selectedType != (LayerType.favourites)) {
+    if (currentState != LayerType.favourites) {
+      // BALADY-3730: same mutual-exclusion guard as toggleParking — when
+      // favourites is activated while another overlay is on (e.g. traffic
+      // or metro), hide the previous native layer so the two don't render
+      // side-by-side. Idempotent (each branch checks isEnabled), so the
+      // double-call from _tapHandler stays safe.
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
     } else {
@@ -469,6 +478,16 @@ class LayersControls extends _$LayersControls {
 
       await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
+      // BALADY-3615: when parking is activated while another overlay is
+      // on (e.g. via the dashboard quick action that calls toggleParking
+      // directly, bypassing _tapHandler), the previous layer kept
+      // rendering alongside parking. Hide the previous layer here so the
+      // toggle stays mutually exclusive regardless of call site.
+      // _hidePreviousLayers is idempotent (each branch checks isEnabled
+      // before disabling), so the double-call from _tapHandler is safe.
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _removeMapObjects();
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
