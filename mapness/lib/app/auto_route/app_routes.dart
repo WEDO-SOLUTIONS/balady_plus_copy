@@ -413,5 +413,5 @@ class AppRouter extends RootStackRouter {
   ];
 
   @override
-  List<AutoRouteGuard> get guards => [const NavigationGuard()];
+  List<AutoRouteGuard> get guards => [NavigationGuard(ref)];
 }
