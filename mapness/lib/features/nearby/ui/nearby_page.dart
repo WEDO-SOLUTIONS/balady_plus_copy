@@ -20,13 +20,15 @@ import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
+typedef _NearbyResult = List<int>;
+
 @RoutePage()
 class NearbyPage extends ConsumerWidget {
   const NearbyPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nearbyState = ref.watch(nearbyProvider);
+    final nearbyIdsState = ref.watch(nearbyIdsProvider);
 
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface1,
@@ -37,35 +39,22 @@ class NearbyPage extends ConsumerWidget {
       ),
       body: SafeArea(
         child: Center(
-          child: switch (nearbyState) {
-            AsyncLoading<List<NearbyItem>>() => CircularProgressIndicator(color: context.colors.accentDefault),
-            AsyncData<List<NearbyItem>>(:final value) => ColoredBox(
-              color: context.colors.neutralContainerSoft,
-              child: MasonryGridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: Spacing.$2x,
-                crossAxisSpacing: Spacing.$2x,
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  final item = value[index];
-                  return GestureDetector(
-                    onTap: () {
-                      context.router.replaceOrPush(
-                        route: PoiCardWidgetRoute(objectId: item.object.id),
-                        toCompareRoutes: [PoiCardWidgetRoute.page],
-                      );
-                    },
-                    child: _Tile(item: item, index: index, isLarge: index % 4 == 0 || index % 4 == 2),
-                  );
-                },
+          child: switch (nearbyIdsState) {
+            AsyncLoading<_NearbyResult>() => CircularProgressIndicator(color: context.colors.accentDefault),
+            AsyncData<_NearbyResult>(:final value) => ColoredBox(
+              color: context.colors.neutralContainerDefault,
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.$4x),
+                child: MasonryGridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: Spacing.$2x,
+                  crossAxisSpacing: Spacing.$2x,
+                  itemCount: value.length,
+                  itemBuilder: (context, index) => _TileWrapper(value[index], index),
+                ),
               ),
             ),
-            AsyncError<List<NearbyItem>>() => BaseErrorWidget(
-              errorTitle: context.l10n.failedToLoadData,
-              errorLabel: context.l10n.tryAgainLater,
-              withRetryButton: false,
-              onRetry: () {},
-            ),
+            AsyncError<_NearbyResult>() => BaseErrorWidget(onRetry: () => ref.invalidate(nearbyIdsProvider)),
           },
         ),
       ),
@@ -73,12 +62,48 @@ class NearbyPage extends ConsumerWidget {
   }
 }
 
-class _Tile extends ConsumerWidget {
-  final NearbyItem item;
+class _TileWrapper extends ConsumerWidget {
+  final int objectId;
   final int index;
-  final bool isLarge;
 
-  const _Tile({required this.item, required this.index, required this.isLarge});
+  const _TileWrapper(this.objectId, this.index);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = nearbyItemProvider(objectId);
+    final nearbyState = ref.watch(provider);
+    final isLarge = index % 4 == 0 || index % 4 == 2;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(RadiusBorder.l),
+      child: Container(
+        decoration: BoxDecoration(color: context.colors.backgroundSurface1),
+        alignment: Alignment.center,
+        child: AspectRatio(
+          aspectRatio: isLarge ? 167 / 223 : 167 / 178,
+          child: nearbyState.when(
+            data: (item) => GestureDetector(
+              onTap: () {
+                context.router.replaceOrPush(
+                  route: PoiCardWidgetRoute(objectId: item.object.id),
+                  toCompareRoutes: [PoiCardWidgetRoute.page],
+                );
+              },
+              child: _Tile(item: item),
+            ),
+            error: (error, stackTrace) => _Error(onRetry: () => ref.invalidate(provider)),
+            loading: () => Center(child: CircularProgressIndicator(color: context.colors.accentDefault)),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Tile extends ConsumerWidget {
+  final NearbyItemData item;
+
+  const _Tile({required this.item});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -106,78 +131,97 @@ class _Tile extends ConsumerWidget {
         ?.extraInfo
         .distance;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusBorder.l),
-      child: AspectRatio(
-        aspectRatio: isLarge ? 167 / 223 : 167 / 178,
-        child: Container(
-          decoration: BoxDecoration(color: context.colors.backgroundSurface1),
-          alignment: Alignment.center,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: imageUrl != null
+              ? Image.network(imageUrl, fit: BoxFit.cover)
+              : Assets.images.imgNearbyPlaceholder.image(fit: BoxFit.cover),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(Spacing.$2_5x, Spacing.$2x, Spacing.$2_5x, Spacing.$2_5x),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: imageUrl != null
-                    ? Image.network(imageUrl, fit: BoxFit.cover)
-                    : Assets.images.imgNearbyPlaceholder.image(fit: BoxFit.cover),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      item.object.title,
+                      style: context.textStyles.buttonM.copyWith(color: context.colors.foregroundDefault),
+                    ),
+                  ),
+                  if (reviewCount != null)
+                    Text(
+                      '☆ $reviewCount',
+                      style: context.textStyles.captionMediumRegular.copyWith(color: mutedColor),
+                    ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(Spacing.$2_5x, Spacing.$2x, Spacing.$2_5x, Spacing.$2_5x),
-                child: Column(
-                  children: [
-                    Row(
+              Divider(color: mutedColor, height: Spacing.$2x * 2),
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
                       children: [
-                        Expanded(
-                          child: Text(
-                            item.object.title,
-                            style: context.textStyles.buttonM.copyWith(color: context.colors.foregroundDefault),
-                          ),
+                        Container(
+                          height: 6,
+                          width: 6,
+                          decoration: BoxDecoration(color: mutedColor, shape: BoxShape.circle),
                         ),
-                        if (reviewCount != null)
-                          Text(
-                            '☆ $reviewCount',
-                            style: context.textStyles.captionMediumRegular.copyWith(color: mutedColor),
-                          ),
+                        const SizedBox(
+                          width: Spacing.$1x,
+                        ),
+                        Text(
+                          item.object.subtitle,
+                          style: context.textStyles.captionMediumRegular.copyWith(color: mutedColor),
+                        ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-                      child: Divider(color: mutedColor),
+                  ),
+                  if (distanceInMillimeters != null)
+                    Text(
+                      (distanceInMillimeters / 1000).formatDistanceShort(context.l10n),
+                      style: context.textStyles.captionMediumRegular.copyWith(color: mutedColor),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 6,
-                                width: 6,
-                                decoration: BoxDecoration(color: mutedColor, shape: BoxShape.circle),
-                              ),
-                              const SizedBox(
-                                width: Spacing.$1x,
-                              ),
-                              Text(
-                                item.object.subtitle,
-                                style: context.textStyles.captionMediumRegular.copyWith(color: mutedColor),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (distanceInMillimeters != null)
-                          Text(
-                            (distanceInMillimeters / 1000).formatDistanceShort(context.l10n),
-                            style: context.textStyles.captionMediumRegular.copyWith(color: mutedColor),
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
+                ],
               ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
+}
+
+class _Error extends ConsumerWidget {
+  final VoidCallback onRetry;
+
+  const _Error({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
+    padding: const EdgeInsets.all(Spacing.$4x),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: Center(
+            child: Text(
+              context.l10n.failedToLoadData,
+              textAlign: TextAlign.center,
+              style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.foregroundDefault),
+            ),
+          ),
+        ),
+        AppButton(
+          onTap: onRetry,
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          size: ButtonSize.small,
+          buttonType: ButtonType.secondary,
+          primaryLabel: context.l10n.tryAgain,
+        ),
+      ],
+    ),
+  );
 }
