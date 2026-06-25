@@ -28,7 +28,7 @@ enum SatelliteDebugSource {
 /// used when [SatelliteDebugSource.satproxy] is selected.
 const String kSatelliteDebugSatproxyConfig =
     '{"layer_name":"satellite",'
-    '"url_template":"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",'
+    '"url_template":"https://urbi-lifestyle-stg.momah.gov.sa/satproxy/tiles/{z}/{y}/{x}",'
     '"token":"",'
     '"expires":0}';
 
