@@ -38,47 +38,52 @@ class SatelliteMapController extends _$SatelliteMapController {
 
   Future<void> _setEnabled(bool enable) async {
     if (enable) {
-      // Debug-panel override: when the toggle is on, bypass FRC and use a
-      // public ESRI World Imagery stand-in. Lets dev/QA exercise the layer
-      // from networks where the production tile source is unreachable —
-      // see [SatelliteDebugOverride] for rationale.
-      final debugOverride = ref.read(satelliteDebugOverrideProvider);
-      final String raw;
-      final String source;
-      if (debugOverride) {
-        raw = kSatelliteDebugOverrideConfig;
-        source = 'debugOverride';
-      } else {
-        final snapshot = await AppConfigLoader.getSatelliteConfigSnapshot();
-        raw = snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
-        source = snapshot.source.name;
-      }
-      final config = SatelliteConfig.tryParse(raw);
-      if (config == null || !config.isUsable) {
-        logger.log(
-          'satellite: remote config missing or invalid — skipping enable',
-          logLevel: MapnessLogLevel.warning,
-        );
-        return;
-      }
-      // TEMP debug — surface the resolved config so we can confirm whether
-      // FRC, the bundled default, or the debug override is in effect.
-      // Remove once FRC integration is confirmed working in prod.
-      logger.log(
-        'satellite enable: source=$source length=${raw.length} payload=$raw',
-        logLevel: MapnessLogLevel.info,
-      );
-      if (config.isExpired) {
-        logger.log(
-          'satellite: ESRI token expired at ${config.expiresAt?.toIso8601String()} — '
-          'tiles will likely fail; rotate satellite_config in Firebase Remote Config',
-          logLevel: MapnessLogLevel.warning,
-        );
-      }
+      // Debug-panel override: when a non-frc source is selected the
+      // controller bypasses FRC and uses one of the bundled stand-ins
+      // (staging satproxy / ESRI WMTS). See [SatelliteDebugSource] for
+      // the menu of options and the rationale.
+      ///TODO: temporary commented for build >>>>
+      // final debugSource = ref.read(satelliteDebugOverrideProvider);
+      // final debugRaw = satelliteDebugConfigFor(debugSource);
+      // final String raw;
+      // final String source;
+      // if (debugRaw != null) {
+      //   raw = debugRaw;
+      //   source = 'debug:${debugSource.name}';
+      // } else {
+      //   final snapshot = await AppConfigLoader.getSatelliteConfigSnapshot();
+      //   raw = snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
+      //   source = snapshot.source.name;
+      // }
+      // final config = SatelliteConfig.tryParse(raw);
+      // if (config == null || !config.isUsable) {
+      //   logger.log(
+      //     'satellite: remote config missing or invalid — skipping enable',
+      //     logLevel: MapnessLogLevel.warning,
+      //   );
+      //   return;
+      // }
+      // // TEMP debug — surface the resolved config so we can confirm whether
+      // // FRC, the bundled default, or the debug override is in effect.
+      // // Remove once FRC integration is confirmed working in prod.
+      // logger.log(
+      //   'satellite enable: source=$source length=${raw.length} payload=$raw',
+      //   logLevel: MapnessLogLevel.info,
+      // );
+      // if (config.isExpired) {
+      //   logger.log(
+      //     'satellite: ESRI token expired at ${config.expiresAt?.toIso8601String()} — '
+      //     'tiles will likely fail; rotate satellite_config in Firebase Remote Config',
+      //     logLevel: MapnessLogLevel.warning,
+      //   );
+      // }
+      //TODO: temporary commented for build <<<<
       await _applyToNative(
         enabled: true,
-        layerName: config.layerName,
-        tileUri: config.resolvedTileUri,
+        // layerName: config.layerName,
+        layerName: 'satellite',
+        // tileUri: config.resolvedTileUri,
+        tileUri: 'https://urbi-lifestyle-stg.momah.gov.sa/satproxy/tiles/{z}/{y}/{x}',
       );
     } else {
       await _applyToNative(enabled: false);
