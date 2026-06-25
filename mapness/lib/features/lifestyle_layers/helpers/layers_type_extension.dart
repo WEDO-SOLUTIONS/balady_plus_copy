@@ -83,8 +83,8 @@ extension LayerTypeExt on LayerType {
     LayerType.traffic => l10n.layersTraffic,
     LayerType.three3D => l10n.threeDee,
     // TODO(satellite): switch to l10n keys once added to Localazy.
-    LayerType.defaultMap => 'Default',
-    LayerType.satellite => 'Satellite',
+    LayerType.defaultMap => l10n.defaultLayerTitle,
+    LayerType.satellite => l10n.satelliteLayerTitle,
     //LayerType.roadEvents => l10n.roadEvents.toLowerCase().toCapitalized(),
   };
 }
