@@ -113,10 +113,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         ],
       ),
       stateMapper: const LandingStateMapper(),
-      // BE-153: animation how in Google Maps
-      // forceMultiplier: 100.0,
-      // initialOpenCurve: Curves.linear,
-      // mainCurve: Curves.linear,
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
@@ -217,6 +213,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
+              // Sheet is already wrapped in a fade route transition (see SearchRoute
+              // in app_routes.dart), so suppress sheetify's own slide-up open animation.
+              // Otherwise the sheet would slide ~700–900 ms from the bottom on top of
+              // the route fade, dominating perceived latency.
               animateOpening: false,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
@@ -298,6 +298,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               ),
             ),
           ),
+          //TODO: check why ?
+          if (MediaQuery.paddingOf(context).bottom > 0)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+                child: ColoredBox(color: containerColor),
+              ),
+            ),
         ],
       ),
     );
@@ -400,16 +411,31 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
-
     _expandSheet();
-   // _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
+  /// Snaps the sheet to `expanded`. Wired both to the field tap (synchronous,
+  /// reliable on Android — BALADY-3580) and to the keyboard visibility signal
+  /// (fallback for programmatic focus requests, e.g. after Loading → Results).
+  /// Idempotent: a no-op if the sheet is already at expanded.
+  ///
+  /// The sheet mutation is deferred to a post-frame callback: tapping the field
+  /// opens the keyboard, which drives the sheet snap animation. Mutating the
+  /// sheet controller synchronously (from `onTap` / keyboard-visibility) lands
+  /// inside the same frame's layout + semantics pass and reparents the sheet's
+  /// slivers while semantics are being flushed, tripping the framework
+  /// `!semantics.parentDataDirty` assertion (Flutter 3.38). Deferring runs the
+  /// state change on a clean frame boundary.
   void _expandSheet() {
     if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
-    _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
+        return;
+      }
+      _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    });
   }
 
   void onClose() {

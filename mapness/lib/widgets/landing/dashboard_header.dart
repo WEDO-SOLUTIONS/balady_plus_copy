@@ -33,8 +33,6 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   static const headerHeight = 24.0;
 
-
-
   DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
   @override
@@ -57,7 +55,6 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
     );
   }
 
-
   @override
   double get maxExtent => headerHeight + QuickFilters.defaultHeight;
 
@@ -79,7 +76,6 @@ class _DashboardMenu extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const heightOfQuickFilters = QuickFilters.defaultHeight + Spacing.$2x * 2;
-
     final remainingSpaceForQuickFilters = max(
       0.0,
       heightOfQuickFilters - shrinkOffset,
@@ -111,7 +107,6 @@ class _DashboardMenu extends ConsumerWidget {
 
 class MapQuickFiltersDefault extends ConsumerWidget {
   final bool forMap;
-
   const MapQuickFiltersDefault({this.forMap = false, super.key});
 
   @override
@@ -150,7 +145,6 @@ class DashboardHeader extends ConsumerStatefulWidget {
 
 class DashboardHeaderState extends ConsumerState<DashboardHeader> {
   final _scope = SearchScopeEnum.map.value;
-
   final TextEditingController ctrl = TextEditingController();
 
   @override
@@ -161,7 +155,6 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
 
   @override
   Widget build(BuildContext context) {
-
     ref.listen<SearchState>(
       searchProvider(_scope),
       (previous, next) {

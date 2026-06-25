@@ -35,6 +35,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final String? initialState;
   final bool showLeadingBackButton;
   final VoidCallback? onLeadingBackPressed;
+
   /// Fires synchronously on every tap on the field, before focus / keyboard work.
   /// Parents use this to expand the enclosing bottom sheet without waiting for
   /// `flutter_keyboard_visibility`, whose `onChange` signal is unreliable on
@@ -114,8 +115,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     }
   }
 
-
-
+  /// Defers initial keyboard until the page transition animation completes —
+  /// otherwise the keyboard fights the route animation and the user perceives lag.
   void _scheduleInitialFocus() {
     if (_initialFocusScheduled || !widget.requestFocus) {
       return;
@@ -203,13 +204,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           if (next is SearchStateLoading) {
             _safeFocusAction(_focusNode.unfocus);
           } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
-            // Internal refocus after results — not a user focus, so suppress the
-            // DataFinder `search_box_click` it would otherwise trigger.
-         //   _suppressFocusEvent = true;
             _safeFocusAction(_focusNode.requestFocus);
-            // WidgetsBinding.instance.addPostFrameCallback((_) {
-            //   _suppressFocusEvent = false;
-            // });
           }
         });
       },
@@ -219,7 +214,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
 
   @override
   void dispose() {
-
     final listener = _routeAnimationStatusListener;
     if (listener != null) {
       _routeAnimation?.removeStatusListener(listener);
@@ -253,6 +247,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
+
     return _buildSearchRow(context, scope, searcher);
   }
 
