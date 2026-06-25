@@ -19,6 +19,7 @@ import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -165,9 +166,7 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
         }
 
         await processPending();
-      } while (
-        _deliveryRescheduleNeeded || ref.read(pendingAppIconQuickActionProvider.notifier).hasPending
-      );
+      } while (_deliveryRescheduleNeeded || ref.read(pendingAppIconQuickActionProvider.notifier).hasPending);
     } finally {
       _deliveringColdStart = false;
     }
@@ -203,6 +202,8 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
 
   /// BR#05 / BR#06 — login then continue to the selected destination.
   Future<bool> _ensureLoggedIn() async {
+    await _runWithLoadingOverlay(CommonProperties.waitForAuthSessionReady);
+
     if (CommonProperties.isLoggedIn) {
       ref.read(authMethodsProvider.notifier).state = true;
       return true;
@@ -235,6 +236,24 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     return loggedIn;
   }
 
+  Future<void> _runWithLoadingOverlay(Future<void> Function() action) async {
+    final context = rootNavigatorKey.currentContext;
+    LoadingOverlayState? overlay;
+    if (context != null && context.mounted) {
+      try {
+        overlay = LoadingOverlay.of(context);
+        overlay.startLoading();
+      } catch (_) {
+        // LoadingOverlay is not mounted yet.
+      }
+    }
+    try {
+      await action();
+    } finally {
+      overlay?.endLoading();
+    }
+  }
+
   String? _locationRouteOnCloseForShortcut(String shortcutKey) => switch (shortcutKey) {
     'directions' => RoutingPointsRoute.name,
     'share_my_location' || 'share_live_location' => ShareMyLocationRoute.name,
@@ -246,9 +265,11 @@ class AppIconQuickActionHandler extends _$AppIconQuickActionHandler {
     for (final permission in item.requirePermissions) {
       switch (permission) {
         case AppIconQuickActionPermission.location:
-          final allowed = await ref.read(locationProvider.notifier).checkLocationPermission(
-            routeOnClose: _locationRouteOnCloseForShortcut(shortcutKey),
-          );
+          final allowed = await ref
+              .read(locationProvider.notifier)
+              .checkLocationPermission(
+                routeOnClose: _locationRouteOnCloseForShortcut(shortcutKey),
+              );
           if (!allowed) {
             _track(shortcutKey: shortcutKey, outcome: 'permission_required', reason: 'location');
             final context = rootNavigatorKey.currentContext;

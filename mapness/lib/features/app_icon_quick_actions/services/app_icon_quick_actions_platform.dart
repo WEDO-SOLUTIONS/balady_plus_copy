@@ -141,7 +141,6 @@ class AppIconQuickActionsPlatformService {
 
   Future<void> syncShortcuts({
     required AppIconQuickActionsConfig config,
-    required Language language,
     required AppIconQuickActionPlatform platform,
   }) async {
     if (!_isPlatformSupported()) {
@@ -160,11 +159,12 @@ class AppIconQuickActionsPlatformService {
       return;
     }
 
+    final systemLanguage = Language.fromSystemLocale();
     final shortcutItems = activeItems.map((item) {
       final icon = resolveNativeQuickActionIcon(item.iconReference);
       return ShortcutItem(
         type: item.key,
-        localizedTitle: language == Language.arabic ? item.labelAr : item.labelEn,
+        localizedTitle: systemLanguage == Language.arabic ? item.labelAr : item.labelEn,
         icon: icon.isEmpty ? null : icon,
       );
     }).toList();

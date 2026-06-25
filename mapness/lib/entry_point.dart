@@ -135,8 +135,6 @@ class MapnessProviderScope extends StatelessWidget {
 
   final Widget child;
 
-
-
   @override
   Widget build(BuildContext context) => ProviderScope(
     child: Consumer(
@@ -147,7 +145,6 @@ class MapnessProviderScope extends StatelessWidget {
       },
       child: Consumer(
         builder: (context, ref, child) {
-
           final language = ref.watch(appLanguageProvider);
           final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
           // Initialize Saudi National Day provider to start the timer
@@ -180,8 +177,6 @@ class MapnessProviderScope extends StatelessWidget {
   );
 }
 
-
-
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   const MapnessEntryPoint({required this.mapCreated, super.key});
 
@@ -191,8 +186,6 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
 }
 
-
-
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with WidgetsBindingObserver {
   late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
@@ -200,10 +193,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   ProviderSubscription? _locationListener;
   StreamSubscription? _navigationEventsListener;
   String _fontFamily() {
-
     final language = ref.watch(appLanguageProvider);
-    return language ==Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+    return language == Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
   }
+
   @override
   void initState() {
     super.initState();
@@ -323,6 +316,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         unawaited(ref.read(appIconQuickActionHandlerProvider.notifier).deliverColdStartShortcut());
       }
     }
+  }
+
+  @override
+  void didChangeLocales(List<Locale>? locales) {
+    // Home-screen shortcuts must follow the device locale, not in-app language.
+    unawaited(ref.read(appIconQuickActionsManagerProvider.notifier).syncPublishedShortcuts());
   }
 
   Future<void> _initBssService() async {
