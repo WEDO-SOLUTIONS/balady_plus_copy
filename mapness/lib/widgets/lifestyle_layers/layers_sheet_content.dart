@@ -109,24 +109,15 @@ class _LayersTabRow extends StatelessWidget {
       LayersTab.mapDetails: l10n.mapDetails,
       LayersTab.publicTransport: l10n.publicTransport,
     };
-    // BALADY-3724: explicit Expanded + SizedBox gaps. Intrinsic-width +
-    // spaceBetween crowded on narrower screens (Huawei) when chip texts
-    // already filled most of the row width, leaving ~0px between chips.
-    // Equal-width chips with a guaranteed gap render predictably across
-    // devices.
-    const tabs = LayersTab.values;
+    // BALADY-3724 (re-fix): intrinsic-width chips + spaceBetween. The
+    // earlier Expanded approach forced 1/3-width chips and truncated
+    // "Public transport" on normal-resolution devices, which QA rejected
+    // against the Figma macet. Matches node 6194:8658.
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (var i = 0; i < tabs.length; i++) ...[
-          if (i > 0) const SizedBox(width: Spacing.$3x),
-          Expanded(
-            child: _LayersTabChip(
-              label: labels[tabs[i]]!,
-              isSelected: tabs[i] == active,
-              onTap: () => onSelected(tabs[i]),
-            ),
-          ),
-        ],
+        for (final tab in LayersTab.values)
+          _LayersTabChip(label: labels[tab]!, isSelected: tab == active, onTap: () => onSelected(tab)),
       ],
     );
   }
