@@ -104,6 +104,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         icon: iconData,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
+        label: isFavourite ? context.l10n.removeFromFavorites : context.l10n.addToFavorite,
         onPressed: () {
           onResultAction?.call(DataFinderClickAction.addToFavorites);
           _onFavoriteTap(
@@ -132,6 +133,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: SystemIcons.share,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          label: context.l10n.share,
           onPressed: throttledShare,
         ),
       ),
@@ -140,6 +142,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: GeneralIcons.phoneLTR,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          label: context.l10n.call,
           onPressed: () {
             BssService.instance.trackCallTap(directoryObject, phoneNumber);
             poiActions.callPhone(phoneNumber);
@@ -150,6 +153,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: GeneralIcons.web,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          label: context.l10n.feedbackWebsiteLabel,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
             poiActions.launch(website);
@@ -160,6 +164,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
+          label: context.l10n.feedbackWebsiteOrSocialMedia,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
             poiActions.launch(socialMedia.link);
