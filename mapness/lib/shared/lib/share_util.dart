@@ -29,6 +29,7 @@ class ShareUtil {
                 lat: markerCoords?.latitude,
                 lon: markerCoords?.longitude,
               ),
+              forceNew: true,
             ),
           );
       shareUrl = response.shortUrl;
@@ -60,12 +61,15 @@ class ShareUtil {
   static Future<void> sharePoint({
     required BuildContext context,
     required ShortLinkPayloadPoint data,
-  }) => _shareShortLink(context, ShortLinkRequest.point(payload: data));
+  }) => _shareShortLink(context, ShortLinkRequest.point(payload: data, forceNew: true));
 
   static Future<void> shareTrip({
     required BuildContext context,
     required ShortLinkPayloadTrip data,
-  }) => _shareShortLink(context, ShortLinkRequest.trip(payload: data, visibility: ShortLinkVisibility.public));
+  }) => _shareShortLink(
+    context,
+    ShortLinkRequest.trip(payload: data, visibility: ShortLinkVisibility.public, forceNew: true),
+  );
 
   static Future<void> _shareShortLink(
     BuildContext context,

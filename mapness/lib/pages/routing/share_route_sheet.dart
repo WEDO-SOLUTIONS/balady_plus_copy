@@ -101,7 +101,12 @@ class ShareRoutePage extends HookConsumerWidget {
 
   ShortLinkPayloadTripRoutePoint? _mapPoint(AppLocalizations l10n, Position? location, RouteParamsPointWithLabel p) {
     if (isLocation(l10n, p)) {
-      return ShortLinkPayloadTripRoutePoint(lat: location!.latitude, lon: location.longitude, label: p.label);
+      return ShortLinkPayloadTripRoutePoint(
+        lat: location!.latitude,
+        lon: location.longitude,
+        poiId: p.value?.objectId?.toString(),
+        label: p.label,
+      );
     }
 
     final point = p.value;
@@ -109,7 +114,12 @@ class ShareRoutePage extends HookConsumerWidget {
       return null;
     }
 
-    return ShortLinkPayloadTripRoutePoint(lat: point.latitude, lon: point.longitude, label: p.label);
+    return ShortLinkPayloadTripRoutePoint(
+      lat: point.latitude,
+      lon: point.longitude,
+      poiId: p.value?.objectId?.toString(),
+      label: p.label,
+    );
   }
 
   Future<void> _shareRoute(BuildContext context, WidgetRef ref) async {

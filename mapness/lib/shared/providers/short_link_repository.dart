@@ -185,6 +185,7 @@ abstract class ShortLinkPayloadTripRoutePoint with _$ShortLinkPayloadTripRoutePo
   const factory ShortLinkPayloadTripRoutePoint({
     required double lat,
     required double lon,
+    String? poiId,
     String? label,
   }) = _ShortLinkPayloadTripRoutePoint;
 
@@ -193,10 +194,13 @@ abstract class ShortLinkPayloadTripRoutePoint with _$ShortLinkPayloadTripRoutePo
   factory ShortLinkPayloadTripRoutePoint.fromJson(Map<String, dynamic> json) =>
       _$ShortLinkPayloadTripRoutePointFromJson(json);
 
-  RouteParamsPointWithLabel toRouteParamsPointWithLabel(String fallbackLabel) => RouteParamsPointWithLabel(
-    label: label ?? fallbackLabel,
-    value: RouteParamsPoint(latitude: lat, longitude: lon),
-  );
+  RouteParamsPointWithLabel toRouteParamsPointWithLabel(String fallbackLabel) {
+    final poiId = this.poiId;
+    return RouteParamsPointWithLabel(
+      label: label ?? fallbackLabel,
+      value: RouteParamsPoint(latitude: lat, longitude: lon, objectId: poiId == null ? null : int.tryParse(poiId)),
+    );
+  }
 }
 
 @Freezed(unionKey: 'contentType')
