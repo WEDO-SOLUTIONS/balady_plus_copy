@@ -15,18 +15,31 @@ NearbyDataSource _nearbyDataSource(Ref ref) => MockNearbyDataSource();
 @riverpod
 class Nearby extends _$Nearby {
   @override
-  Future<List<NearbyItem>> build() async {
+  Future<List<NearbyItemData>> build() async {
+    final intIds = await ref.read(nearbyIdsProvider.future);
+    return Future.wait(intIds.map((id) => ref.read(nearbyItemProvider(id).future)));
+  }
+}
+
+@riverpod
+class NearbyIds extends _$NearbyIds {
+  @override
+  Future<List<int>> build() async {
     final ids = await ref.read(_nearbyDataSourceProvider).getNearbyItemIds();
+    return ids.map((e) => int.tryParse(e)).nonNulls.toList();
+  }
+}
+
+@riverpod
+class NearbyItem extends _$NearbyItem {
+  @override
+  Future<NearbyItemData> build(int objectId) async {
     final dgisController = ref.read(dgisControllerProvider).value;
     if (dgisController == null) {
       throw Exception('dgisController is null');
     }
 
-    final intIds = ids.map((e) => int.tryParse(e)).nonNulls;
-    final objects = await Future.wait(
-      intIds.map((id) => dgisController.searchByObjectId(DgisObjectIdMessage(objectId: id, entranceId: 0))),
-    );
-
-    return objects.map((e) => NearbyItem(object: e)).toList();
+    final object = await dgisController.searchByObjectId(DgisObjectIdMessage(objectId: objectId, entranceId: 0));
+    return NearbyItemData(object: object);
   }
 }

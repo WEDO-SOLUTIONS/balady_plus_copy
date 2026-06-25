@@ -1,10 +1,10 @@
 import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 
-class NearbyItem extends Equatable {
+class NearbyItemData extends Equatable {
   final DirectoryObjectMessage object;
 
-  const NearbyItem({required this.object});
+  const NearbyItemData({required this.object});
 
   @override
   List<Object?> get props => [object];
