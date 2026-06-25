@@ -262,7 +262,7 @@ class BaseDashboardContent extends ConsumerWidget {
               const PlacePreview(),
               const SizedBox(height: Spacing.$4x),
               const ExploreCard(),
-              const SizedBox(height: Spacing.$6x),
+              const SizedBox(height: Spacing.$10x),
             ],
             if (themeConfig.useThemedExploreBackground)
               DecoratedBox(

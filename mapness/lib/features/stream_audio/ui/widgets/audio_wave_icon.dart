@@ -1,12 +1,13 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
 class AudioWaveIcon extends ConsumerStatefulWidget {
   final double size;
   final Color? backgroundColor;
-  final Color waveColor;
+  final Color? waveColor;
   final int waveCount;
   final bool showBackground;
 
@@ -14,7 +15,7 @@ class AudioWaveIcon extends ConsumerStatefulWidget {
     Key? key,
     this.size = 60.0,
     this.backgroundColor,
-    this.waveColor = const Color(0xFF9547E9),
+    this.waveColor,
     this.waveCount = 6,
     this.showBackground = true,
   }) : super(key: key);
@@ -91,6 +92,9 @@ class _AudioWaveIconState extends ConsumerState<AudioWaveIcon> with TickerProvid
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
+    final theme = context.streamAudioColors;
+    final gradientStart = widget.waveColor ?? theme.waveGradientStart;
+    final gradientEnd = theme.waveGradientEnd;
 
     // Update animation based on provider state
     _updateAnimation(provider.isPlaying, provider.isExited);
@@ -99,7 +103,8 @@ class _AudioWaveIconState extends ConsumerState<AudioWaveIcon> with TickerProvid
       size: Size(widget.size * 0.6, widget.size * 0.6),
       painter: AudioWavePainter(
         waveControllers: _waveControllers,
-        waveColor: widget.waveColor,
+        gradientStart: gradientStart,
+        gradientEnd: gradientEnd,
         isPlaying: _isPlaying && !_isExited,
       ),
     );
@@ -126,12 +131,14 @@ class _AudioWaveIconState extends ConsumerState<AudioWaveIcon> with TickerProvid
 
 class AudioWavePainter extends CustomPainter {
   final List<AnimationController> waveControllers;
-  final Color waveColor;
+  final Color gradientStart;
+  final Color gradientEnd;
   final bool isPlaying;
 
   AudioWavePainter({
     required this.waveControllers,
-    required this.waveColor,
+    required this.gradientStart,
+    required this.gradientEnd,
     required this.isPlaying,
   }) : super(repaint: Listenable.merge(waveControllers));
 
@@ -171,12 +178,12 @@ class AudioWavePainter extends CustomPainter {
         Radius.circular(waveWidth * 0.25),
       );
 
-      // Create gradient paint (cyan to blue like the SVG)
-      const gradient = LinearGradient(
+      // Figma linear gradient: #47CD89 → #079455
+      final gradient = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Color(0xFF5FECFF), Color(0xFF5B8FFF)],
-        stops: [0.298, 1.0], // Matching SVG gradient stops
+        colors: [gradientStart, gradientEnd],
+        stops: const [0.298, 1.0],
       );
 
       final paint = Paint()
