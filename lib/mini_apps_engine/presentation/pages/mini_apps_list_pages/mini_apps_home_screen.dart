@@ -220,7 +220,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                       );
                                                       final gap = (4.0 * textScale).clamp(4.0, 10.0);
                                                       final gapHeight = ctx.screenHeight * 0.01 + ctx.h(gap);
-                                                      final rowHeight = ctx.h(54.95) + gapHeight + defaultTitleHeight;
+                                                      final rowHeight = ctx.h(70) + gapHeight + defaultTitleHeight;
 
                                                       return SizedBox(
                                                         height: rowHeight,
@@ -249,6 +249,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                   );
                                                                 },
                                                                 text: favMiniApp.name,
+                                                                titlesHeight: defaultTitleHeight,
                                                                 maxLines: 3,
                                                                 maxFontSize: 20,
                                                                 minFontSize: 9,
@@ -295,61 +296,69 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                   }
                                                 },
                                                 child: ClipRRect(
-                                                  borderRadius: BorderRadiusGeometry.circular(11.19),
-                                                  child: Stack(
-                                                    children: [
-                                                      Image.asset("assets/icons/png/momtathel.png"),
-                                                      Padding(
-                                                        padding: EdgeInsetsGeometry.all(10),
-                                                        child: Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: [
-                                                            SizedBox(
-                                                              width: context.w(45),
-                                                              height: context.h(24),
-                                                              child: DecoratedBox(
-                                                                decoration: BoxDecoration(
-                                                                  color: Color(0XffFFFAEB),
-                                                                  borderRadius: BorderRadius.circular(50),
-                                                                ),
-                                                                child: Center(
-                                                                  child: Text(
-                                                                    "new".tr(),
-                                                                    style: TextStyle(
-                                                                      color: Color(0xff93370D),
-                                                                      fontSize: 14,
-                                                                      fontWeight: FontWeight.w700,
-                                                                      fontFamily: GeneralKey.appFontType,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "compliance_map".tr(),
-                                                              textAlign: TextAlign.start,
-                                                              style: TextStyle(
-                                                                color: Colors.white,
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.w700,
-                                                                fontFamily: GeneralKey.appFontType,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "building_compliance_question".tr(),
-                                                              textAlign: TextAlign.start,
-                                                              style: TextStyle(
-                                                                color: Colors.white,
-                                                                fontSize: 13,
-                                                                fontWeight: FontWeight.w400,
-                                                                fontFamily: GeneralKey.appFontType,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                  borderRadius: BorderRadius.circular(11.19),
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    constraints: const BoxConstraints(
+                                                      minHeight: 100,
+                                                    ),
+                                                    decoration: const BoxDecoration(
+                                                      image: DecorationImage(
+                                                        image: AssetImage(
+                                                          "assets/icons/png/momtathel.png",
                                                         ),
+                                                        fit: BoxFit.cover,
                                                       ),
-                                                    ],
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(10),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        children: [
+                                                          DecoratedBox(
+                                                            decoration: BoxDecoration(
+                                                              color: const Color(0XffFFFAEB),
+                                                              borderRadius: BorderRadius.circular(50),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                              child: Text(
+                                                                "new".tr(),
+                                                                style: TextStyle(
+                                                                  color: const Color(0xff93370D),
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.w700,
+                                                                  fontFamily: GeneralKey.appFontType,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 8),
+                                                          Text(
+                                                            "compliance_map".tr(),
+                                                            textAlign: TextAlign.start,
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 14,
+                                                              fontWeight: FontWeight.w700,
+                                                              fontFamily: GeneralKey.appFontType,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 4),
+                                                          Text(
+                                                            "building_compliance_question".tr(),
+                                                            textAlign: TextAlign.start,
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 13,
+                                                              fontWeight: FontWeight.w400,
+                                                              fontFamily: GeneralKey.appFontType,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -376,6 +385,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                     if (state.entryPoints.isEmpty) {
                                       return const SizedBox.shrink();
                                     }
+                                    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
                                     return StaggeredAppear(
                                       children: [
                                         Column(
@@ -443,7 +453,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                     ),
                                                     SizedBox(height: context.screenHeight * 0.01),
                                                     SizedBox(
-                                                      height: context.h(64),
+                                                      height: context.h(64) * (1.0 + (textScale - 1.0) * 0.4),
                                                       width: context.screenWidth,
                                                       child: ListView.separated(
                                                         scrollDirection: Axis.horizontal,
@@ -453,7 +463,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                         itemBuilder: (context, appIndex) {
                                                           final miniApp = apps[appIndex];
                                                           return SizedBox(
-                                                            width: context.w(177),
+                                                            width: context.w(177) * (1.0 + (textScale - 1.0) * 0.2),
                                                             child: GestureDetector(
                                                               onTap: () {
                                                                 context.read<NewMiniAppLogicCubit>().openMiniApp(
@@ -494,16 +504,18 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                      width: context.screenWidth * 0.27,
-                                                                      child: AutoSizeText(
-                                                                        miniApp.name,
-                                                                        maxLines: 2,
-                                                                        overflow: TextOverflow.ellipsis,
-                                                                        style: const TextStyle(
-                                                                          fontFamily: GeneralKey.appFontType,
-                                                                          fontWeight: FontWeight.w500,
-                                                                          fontSize: 14,
+                                                                    Expanded(
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                                        child: AutoSizeText(
+                                                                          miniApp.name,
+                                                                          maxLines: 2,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          style: const TextStyle(
+                                                                            fontFamily: GeneralKey.appFontType,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            fontSize: 14,
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -539,6 +551,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                       return const AppsGroupSectionShimmerWidget();
                                     }
                                     final regularGroups = state.appGroups;
+                                    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
@@ -570,9 +583,7 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                     const NeverScrollableScrollPhysics(), // 2. Prevents double-scrolling if inside another list
                                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: 3,
-                                                  mainAxisExtent: context.h(
-                                                    98,
-                                                  ), // 3. Forces the EXACT height of the card
+                                                  mainAxisExtent: context.h(98) * (1.0 + (textScale - 1.0) * 0.45), // 3. Forces the EXACT height of the card
                                                   crossAxisSpacing: 8, // Optional: Spacing between columns
                                                   mainAxisSpacing: 8, // Optional: Spacing between rows
                                                 ),

@@ -78,10 +78,10 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
         SizedBox(height: gapHeight),
         SizedBox(
           width: context.screenWidth * 0.15,
-          height: context.screenHeight * 0.04,
+          height: context.screenHeight * 0.045 * textScale,
           child: Center(
             child: Text(
-              text ?? "add_to_fav".tr(),
+              text ?? "add".tr(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

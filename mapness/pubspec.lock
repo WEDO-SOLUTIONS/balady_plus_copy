@@ -229,17 +229,17 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: b8b0fd5c67cf395e801d3399b9ea805b0499b304065307a600e62d578bf78cfc
+      sha256: "71972790ed51de39fb5114662421e94c19725d5e036528ef9db4494e25b8db38"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.14"
   balady_design_system:
     dependency: transitive
     description:
       path: "/Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system"
       relative: false
     source: path
-    version: "0.0.6"
+    version: "0.0.12"
   balady_plus:
     dependency: "direct main"
     description:
@@ -2484,6 +2484,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.0"
+  pie_chart:
+    dependency: transitive
+    description:
+      name: pie_chart
+      sha256: "58e6a46999ac938bfa1c3e5be414d6e149f037647197dca03ba3614324c12c82"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.0"
   pinput:
     dependency: transitive
     description:

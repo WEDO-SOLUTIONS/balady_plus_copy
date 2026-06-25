@@ -139,13 +139,13 @@ class CustomMiniAppsCard extends StatelessWidget {
               SizedBox(height: gapHeight),
               SizedBox(
                 width: context.screenWidth * 0.23,
-                height: context.screenHeight * 0.05,
+                height: titlesHeight ?? (context.screenHeight * 0.05 * textScale),
                 child: AutoSizeText(
                   text ?? "example",
                   textAlign: TextAlign.center,
-                  maxLines: 2,
-                  maxFontSize: 15,
-                  minFontSize: 10,
+                  maxLines: maxLines ?? 2,
+                  maxFontSize: maxFontSize ?? 15,
+                  minFontSize: minFontSize ?? 10,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
                   style: const TextStyle(
