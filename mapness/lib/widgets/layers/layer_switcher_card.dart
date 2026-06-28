@@ -91,7 +91,7 @@ class LayerSwitcherCard extends ConsumerWidget {
             child: image,
           ),
         ),
-        const SizedBox(height: Spacing.$1_5x),
+      //  const SizedBox(height: Spacing.$1x),
         // BE-153: when this is the parking layer card, the whole title row
         // (text + chevron) opens the parking menu — not only the chevron icon.
         GestureDetector(
@@ -120,6 +120,7 @@ class LayerSwitcherCard extends ConsumerWidget {
             ],
           ),
         ),
+        const SizedBox(height: Spacing.$2x),
       ],
     );
   }
