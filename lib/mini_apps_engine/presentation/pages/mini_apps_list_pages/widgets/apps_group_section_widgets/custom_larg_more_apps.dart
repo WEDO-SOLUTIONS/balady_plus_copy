@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -50,47 +49,8 @@ class CustomLargMoreApps extends StatelessWidget {
   @override
   @override
   Widget build(BuildContext context) {
-    // final List<BoxShadow> defaultShadow = withCardEffect
-    //     ? [
-    //         BoxShadow(color: const Color(0xFF000000).withOpacity(0.08), blurRadius: 4.2, offset: const Offset(0, 1.05)),
-    //         BoxShadow(
-    //           color: const Color(0xFF000000).withOpacity(0.04),
-    //           blurRadius: 0,
-    //           spreadRadius: 0.52,
-    //           offset: Offset.zero,
-    //         ),
-    //       ]
-    //     : [];
-
-    // final random = Random();
-    // final displayApps = List<MiniApp>.from(apps)..shuffle(random);
-    // final displayAppsToShow = displayApps.take(3).toList();
-    //  final displayApps = apps.take(3).toList();
-    // final remainingCount = totalAppCount - 3;
-    // final isArabic = CommonFunctions.isAppAR;
-
-    /// Helper: returns app cards aligned based on language
-    // List<Widget> buildTopRow() {
-    //   final widgets = [
-    //     displayApps.isNotEmpty ? CustomSubCardsOfLargCard(iconPath: displayApps[0].iconPath) : const EmptyCardWidget(),
-    //     displayApps.length >= 2 ? CustomSubCardsOfLargCard(iconPath: displayApps[1].iconPath) : const EmptyCardWidget(),
-    //   ];
-    //   return isArabic ? widgets.reversed.toList() : widgets;
-    // }
-
-    // List<Widget> buildBottomRow() {
-    //   Widget thirdAppWidget = displayApps.length >= 3
-    //       ? CustomSubCardsOfLargCard(iconPath: displayApps[2].iconPath)
-    //       : const SizedBox(width: 64.37, height: 64.37);
-
-    //   Widget remainingWidget = remainingCount > 0
-    //       ? CustomNumberOfAppsSubCard(count: remainingCount)
-    //       : const SizedBox(width: 64.37, height: 64.37);
-
-    //   final widgets = isArabic ? [remainingWidget, thirdAppWidget] : [thirdAppWidget, remainingWidget];
-
-    //   return CommonFunctions.isAppAR ? widgets.reversed.toList() : widgets;
-    // }
+    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
+    final cardHeight = height ?? (context.h(98) * (1.0 + (textScale - 1.0) * 0.45));
 
     return GestureDetector(
       onTap: onTap,
@@ -98,7 +58,7 @@ class CustomLargMoreApps extends StatelessWidget {
         children: [
           SizedBox(
             width: context.w(117),
-            height: context.h(98),
+            height: cardHeight,
             child: Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               color: Theme.of(context).primaryColorLight,
@@ -113,18 +73,21 @@ class CustomLargMoreApps extends StatelessWidget {
                     imageWidth: context.w(51),
                     imageHeight: context.h(51),
                   ),
-                  // SizedBox(height: context.screenHeight * 0.02),
-                  SizedBox(
-                    width: context.screenWidth * 0.25,
-                    height: context.screenHeight * 0.02,
-                    child: AutoSizeText(
-                      maxLines: 3,
-                      maxFontSize: 14,
-                      minFontSize: 10,
-                      categoryName,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center, // Good practice for grid items
-                      style: const TextStyle(fontFamily: GeneralKey.appFontType, fontWeight: FontWeight.w500),
+                  const SizedBox(height: 4),
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: AutoSizeText(
+                          maxLines: 3,
+                          maxFontSize: 14,
+                          minFontSize: 10,
+                          categoryName,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center, // Good practice for grid items
+                          style: const TextStyle(fontFamily: GeneralKey.appFontType, fontWeight: FontWeight.w500),
+                        ),
+                      ),
                     ),
                   ),
                 ],

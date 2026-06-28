@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-
+//!
 class OverlayBlurCircle extends StatelessWidget {
   const OverlayBlurCircle({super.key});
 
@@ -20,10 +20,7 @@ class OverlayBlurCircle extends StatelessWidget {
             gradient: LinearGradient(
               begin: const Alignment(0.50, -0.00),
               end: const Alignment(0.50, 1.00),
-              colors: [
-                const Color(0XFF36C3B5).withOpacity(0.04),
-                const Color(0XFF36C3B5).withOpacity(0.08)
-              ],
+              colors: [const Color(0XFF36C3B5).withOpacity(0.04), const Color(0XFF36C3B5).withOpacity(0.08)],
             ),
             shape: const OvalBorder(),
           ),
@@ -37,9 +34,7 @@ class OverlayBlurCircle extends StatelessWidget {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(107)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(58.1),
-            child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-                child: Container()),
+            child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24), child: Container()),
           ),
         ),
       ],

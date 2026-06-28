@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+//!
 class MiniAppsCustomTextField extends StatelessWidget {
   final String? hintText;
   final double? height;
@@ -138,33 +139,4 @@ class MiniAppsCustomTextField extends StatelessWidget {
     }
     return content;
   }
-
-  // Widget? _buildSuffix(BuildContext context) {
-  //   if (suffixIcon == null && suffixString == null) return null;
-  //
-  //   final theme = Theme.of(context);
-  //
-  //   return Padding(
-  //     padding: suffixPadding ?? const EdgeInsets.symmetric(horizontal: 20),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       mainAxisSize: MainAxisSize.min,
-  //       mainAxisAlignment: MainAxisAlignment.end,
-  //       children: [
-  //         if (suffixString != null)
-  //           DefaultTextStyle.merge(
-  //             style: theme.textTheme.bodyMedium,
-  //             child: suffixString!,
-  //           ),
-  //         if (suffixString != null && suffixIcon != null)
-  //           const SizedBox(width: 12),
-  //         if (suffixIcon != null)
-  //           IconTheme(
-  //             data: IconThemeData(color: theme.inputDecorationTheme.prefixIconColor),
-  //             child: suffixIcon!,
-  //           ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

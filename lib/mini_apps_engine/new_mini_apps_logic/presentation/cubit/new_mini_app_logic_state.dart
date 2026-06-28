@@ -30,8 +30,6 @@ class NewMiniAppLogicState {
   //! Sort
   final FilterOptionType? selectedSortType;
 
-  final BlocStatus? status;
-
   NewMiniAppLogicState({
     required this.isFavLoading,
     required this.favError,
@@ -52,7 +50,6 @@ class NewMiniAppLogicState {
     required this.isRefreshing,
     required this.reachLimitNumber,
     this.selectedSortType,
-    this.status,
   });
 
   factory NewMiniAppLogicState.initial() {
@@ -113,13 +110,12 @@ class NewMiniAppLogicState {
     bool? isRefreshing,
     int? reachLimitNumber,
     FilterOptionType? selectedSortType,
-    BlocStatus? status,
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,
       parentMiniApp: parentMiniApp ?? this.parentMiniApp,
       allMiniApps: allMiniApps ?? this.allMiniApps,
-      favError: favError ?? this.favError,
+      favError: this.favError,
       favoriteApps: favoriteApps ?? this.favoriteApps,
       unFavoriteApps: unFavoriteApps ?? this.unFavoriteApps,
       isUnFavLoading: isUnFavLoading ?? this.isUnFavLoading,
@@ -130,15 +126,13 @@ class NewMiniAppLogicState {
       isSearching: isSearching ?? this.isSearching,
       searchError: searchError ?? this.searchError,
       isEntryPointsLoading: isEntryPointsLoading ?? this.isEntryPointsLoading,
-      entryPointsError: entryPointsError ?? this.entryPointsError,
+      entryPointsError: this.entryPointsError,
       entryPoints: entryPoints ?? this.entryPoints,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       reachLimitNumber: reachLimitNumber ?? this.reachLimitNumber,
       selectedSortType: selectedSortType ?? this.selectedSortType,
-      status: status ?? this.status,
     );
   }
-
   // @override
   // // TODO: implement props
   // List<Object?> get props => [
