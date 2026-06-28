@@ -25,17 +25,7 @@ class NavigationHandler {
     
     private var prevCameraBehaviour: CameraBehaviour?
     private var prevGraphicsPreset: GraphicsPreset?
-
-    // Active tilt-by-zoom controller added via applyCameraSettings(_:); tracked so it can be
-    // replaced/removed cleanly.
-    private var tiltFollowController: TiltFollowController?
-    // Same, but for the CarPlay map (separate Map instance → separate controller).
-    private var carPlayTiltFollowController: TiltFollowController?
-
-    // Last navigation-camera settings tuned on the phone. Stored so the CarPlay map can
-    // pick them up when its scene connects after the phone has already applied them.
-    static var lastNavigationCameraSettings: NavigationCameraSettings?
-
+    
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
     
@@ -205,11 +195,6 @@ class NavigationHandler {
 
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
             setupCamera(map: carPlayMap, speedRangeZoom: speedRangeZoom)
-            // Mirror the phone-tuned navigation camera onto the CarPlay map (its scene may have
-            // connected after the phone applied the settings, so pull the stored copy here).
-            if let settings = NavigationHandler.lastNavigationCameraSettings {
-                applyPerMapSettings(settings, to: carPlayMap, tiltController: &self.carPlayTiltFollowController)
-            }
         }
     }
     
@@ -247,133 +232,8 @@ class NavigationHandler {
             styleZoom: StyleZoom(value: Float($0.styleZoomValue))
         )})
     }
-
-    /// Applies any subset of navigation-camera controls. Every field of `settings` is optional:
-    /// a nil field leaves the corresponding SDK behavior untouched, so this can be used both to
-    /// configure the full camera at navigation start and to tweak a single parameter live.
-    /// Phone only — does not touch the CarPlay map.
-    func applyCameraSettings(_ settings: NavigationCameraSettings) {
-        // Remember the latest phone-tuned settings so the CarPlay map can adopt them when its
-        // scene connects after the phone has already applied them (see setupCamera).
-        NavigationHandler.lastNavigationCameraSettings = settings
-
-        let zoomFollowSettings = self.navigationManager.zoomFollowSettings
-
-        if let rules = settings.speedZoomRules {
-            zoomFollowSettings.speedRangeToStyleZoomSequence = rules.map(Self.toSpeedRangeToStyleZoom)
-        }
-        if let rules = settings.freeRoamSpeedZoomRules {
-            zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = rules.map(Self.toSpeedRangeToStyleZoom)
-        }
-
-        if let tuning = settings.zoomTuning {
-            // SDK durations are TimeInterval (seconds); the API carries milliseconds.
-            if let ms = tuning.styleZoomSpeedRangesAnimationMs {
-                zoomFollowSettings.styleZoomSpeedRangesAnimationDuration = TimeInterval(ms) / 1000.0
-            }
-            if let ms = tuning.zoomInBeforeManeuverAnimationMs {
-                zoomFollowSettings.zoomInBeforeManeuverAnimationDuration = TimeInterval(ms) / 1000.0
-            }
-            if let ms = tuning.zoomOutAfterManeuverAnimationMs {
-                zoomFollowSettings.zoomOutAfterManeuverAnimationDuration = TimeInterval(ms) / 1000.0
-            }
-            if let mm = tuning.distanceGapToManeuverMm {
-                zoomFollowSettings.distanceGapToManeuver = RouteDistance(millimeters: Int64(mm))
-            }
-            if let value = tuning.minSpeedToConsiderInZoomInBeforeManeuver {
-                zoomFollowSettings.minSpeedToConsiderInZoomInBeforeManeuverAnimation = value
-            }
-            if let value = tuning.zoomInBeforeManeuverAnimationAcceleration {
-                zoomFollowSettings.zoomInBeforeManeuverAnimationAcceleration = value
-            }
-            if let ms = tuning.minAnimationMs {
-                zoomFollowSettings.minAnimationDuration = TimeInterval(ms) / 1000.0
-            }
-        }
-
-        if let behaviour = settings.followBehaviour {
-            let cameraBehaviour = CameraBehaviour(
-                position: FollowPosition(
-                    bearing: behaviour.followBearing ? .on : .off,
-                    styleZoom: behaviour.followStyleZoom ? .on : .off
-                ),
-                tilt: behaviour.followTilt ? .on : .off
-            )
-            self.navigationManager.mapFollowController.cameraBehaviour = cameraBehaviour
-        }
-
-        // Per-map controls (follow behaviour, tilt-by-zoom curve, max-tilt, zoom restriction).
-        // Applied to the phone map and — if its scene is connected — the CarPlay map, so the
-        // camera tuned on the phone is mirrored in CarPlay. (Speed→zoom lives on the shared
-        // navigationManager above, so it already propagates to CarPlay.)
-        applyPerMapSettings(settings, to: self.map, tiltController: &self.tiltFollowController)
-        if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-            applyPerMapSettings(settings, to: carPlayMap, tiltController: &self.carPlayTiltFollowController)
-        }
-
-        if let seconds = settings.followReturnDelaySeconds {
-            self.navigationManager.mapFollowController.followReturnDelay = TimeInterval(seconds)
-        }
-    }
-
-    /// Applies the per-map subset of [NavigationCameraSettings] (follow behaviour, tilt-by-zoom
-    /// curve, max-tilt restriction, zoom restriction) to a specific map. Used for both the phone
-    /// map and the CarPlay map so the phone-tuned camera is mirrored in CarPlay.
-    private func applyPerMapSettings(
-        _ settings: NavigationCameraSettings,
-        to map: Map,
-        tiltController: inout TiltFollowController?
-    ) {
-        if let behaviour = settings.followBehaviour {
-            map.camera.setBehaviour(behaviour: CameraBehaviour(
-                position: FollowPosition(
-                    bearing: behaviour.followBearing ? .on : .off,
-                    styleZoom: behaviour.followStyleZoom ? .on : .off
-                ),
-                tilt: behaviour.followTilt ? .on : .off
-            ))
-        }
-        if let points = settings.tiltRelation {
-            if let existing = tiltController {
-                map.camera.removeFollowController(followController: existing)
-            }
-            let controller = TiltFollowController(styleZoomToTilt: ZoomTiltRelation(points: points))
-            map.camera.addFollowController(followController: controller)
-            tiltController = controller
-        }
-        if let points = settings.maxTiltRelation {
-            map.camera.maxTiltRestriction = ZoomTiltRelation(points: points)
-        }
-        if settings.minZoom != nil || settings.maxZoom != nil {
-            let current = map.camera.zoomRestrictions
-            let restrictions = CameraZoomRestrictions(
-                minZoom: settings.minZoom.map { Zoom(value: Float($0)) } ?? current.minZoom,
-                maxZoom: settings.maxZoom.map { Zoom(value: Float($0)) } ?? current.maxZoom
-            )
-            try? map.camera.setZoomRestrictions(zoomRestrictions: restrictions)
-        }
-    }
-
-    // BE-193 is on SDK 12 → keep the 4-arg SpeedRangeToStyleZoom (no styleTilt / roadClasses,
-    // which only exist on SDK 13). Per-speed-band tilt is therefore not applied here; the tilt
-    // curve is driven via the TiltFollowController in applyPerMapSettings above.
-    private static func toSpeedRangeToStyleZoom(_ rule: SpeedZoomRule) -> SpeedRangeToStyleZoom {
-        SpeedRangeToStyleZoom(
-            range: SpeedRange(minSpeed: rule.minSpeed, maxSpeed: rule.maxSpeed),
-            minDistanceToManeuver: RouteDistance(millimeters: Int64(rule.minDistanceToManeuverMm)),
-            maxDistanceToManeuver: RouteDistance(millimeters: Int64(rule.maxDistanceToManeuverMm)),
-            styleZoom: StyleZoom(value: Float(rule.styleZoom))
-        )
-    }
-
+    
     func resetCamera() {
-        // Drop the navigation tilt-by-zoom controller so the chase pitch does not leak into
-        // normal map mode after navigation ends.
-        if let existing = self.tiltFollowController {
-            self.map.camera.removeFollowController(followController: existing)
-            self.tiltFollowController = nil
-        }
-
         resetCamera(map: self.map)
         
         // Restore the original graphics preset if it was stored
@@ -384,10 +244,6 @@ class NavigationHandler {
         }
 
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-            if let existing = self.carPlayTiltFollowController {
-                carPlayMap.camera.removeFollowController(followController: existing)
-                self.carPlayTiltFollowController = nil
-            }
             resetCamera(map: carPlayMap)
         }
         
@@ -694,31 +550,4 @@ func calculateDurationProfit(_ uiModel: Model,_ routeInfo: BetterRouteInfo) -> I
         durationProfit = 0
     }
     return durationProfit
-}
-
-/// Drives camera tilt from the current style zoom via a list of zoom→tilt control points,
-/// linearly interpolating between them and clamping at the endpoints.
-private final class ZoomTiltRelation: StyleZoomToTiltRelation {
-    private let points: [StyleZoomTiltPoint]
-
-    init(points: [StyleZoomTiltPoint]) {
-        self.points = points.sorted { $0.styleZoom < $1.styleZoom }
-    }
-
-    func styleZoomToTilt(styleZoom: StyleZoom) -> Tilt {
-        guard let first = points.first, let last = points.last else { return Tilt(value: 0) }
-        let zoom = Double(styleZoom.value)
-        if zoom <= first.styleZoom { return Tilt(value: Float(first.tiltDegrees)) }
-        if zoom >= last.styleZoom { return Tilt(value: Float(last.tiltDegrees)) }
-        for index in 0..<(points.count - 1) {
-            let lower = points[index]
-            let upper = points[index + 1]
-            if zoom >= lower.styleZoom && zoom <= upper.styleZoom {
-                let span = upper.styleZoom - lower.styleZoom
-                let t = span == 0 ? 0 : (zoom - lower.styleZoom) / span
-                return Tilt(value: Float(lower.tiltDegrees + t * (upper.tiltDegrees - lower.tiltDegrees)))
-            }
-        }
-        return Tilt(value: Float(last.tiltDegrees))
-    }
 }

@@ -1341,112 +1341,6 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
-/// A single speed→zoom rule for navigation, richer than [SpeedRangeZoom]:
-/// the maneuver-distance window has independent min/max bounds (the legacy
-/// [SpeedRangeZoom] collapses both into a single value, disabling maneuver-aware
-/// zoom). Speed bounds are in m/s; distances are in millimeters along the route.
-class SpeedZoomRule {
-  SpeedZoomRule(
-    this.minSpeed,
-    this.maxSpeed,
-    this.minDistanceToManeuverMm,
-    this.maxDistanceToManeuverMm,
-    this.styleZoom,
-  );
-
-  final double minSpeed;
-  final double maxSpeed;
-  final double minDistanceToManeuverMm;
-  final double maxDistanceToManeuverMm;
-  final double styleZoom;
-}
-
-/// A point on the zoom→tilt curve used to drive camera pitch during navigation.
-/// [tiltDegrees]: 0 = top-down, ~70 = oblique 3D chase view.
-class StyleZoomTiltPoint {
-  StyleZoomTiltPoint(this.styleZoom, this.tiltDegrees);
-
-  final double styleZoom;
-  final double tiltDegrees;
-}
-
-/// Maneuver/animation knobs of the SDK `ZoomFollowSettings`. All fields are
-/// nullable — null leaves the corresponding SDK value untouched. Durations are
-/// expressed in milliseconds (converted to the platform's native unit).
-class ZoomFollowTuning {
-  ZoomFollowTuning(
-    this.styleZoomSpeedRangesAnimationMs,
-    this.zoomInBeforeManeuverAnimationMs,
-    this.zoomOutAfterManeuverAnimationMs,
-    this.distanceGapToManeuverMm,
-    this.minSpeedToConsiderInZoomInBeforeManeuver,
-    this.zoomInBeforeManeuverAnimationAcceleration,
-    this.minAnimationMs,
-  );
-
-  final int? styleZoomSpeedRangesAnimationMs;
-  final int? zoomInBeforeManeuverAnimationMs;
-  final int? zoomOutAfterManeuverAnimationMs;
-  final double? distanceGapToManeuverMm;
-  final double? minSpeedToConsiderInZoomInBeforeManeuver;
-  final double? zoomInBeforeManeuverAnimationAcceleration;
-  final int? minAnimationMs;
-}
-
-/// Toggles for the SDK `CameraBehaviour` follow axes during navigation:
-/// whether the camera bearing/zoom/tilt automatically follow movement.
-class CameraFollowBehaviourMessage {
-  CameraFollowBehaviourMessage(this.followBearing, this.followStyleZoom, this.followTilt);
-
-  final bool followBearing;
-  final bool followStyleZoom;
-  final bool followTilt;
-}
-
-/// Bundle of all configurable navigation-camera controls. Every field is
-/// nullable: a null field leaves the corresponding SDK behavior unchanged, so
-/// any subset of controls can be applied via [MapApi.setNavigationCameraSettings].
-class NavigationCameraSettings {
-  NavigationCameraSettings(
-    this.speedZoomRules,
-    this.freeRoamSpeedZoomRules,
-    this.tiltRelation,
-    this.maxTiltRelation,
-    this.followBehaviour,
-    this.minZoom,
-    this.maxZoom,
-    this.followReturnDelaySeconds,
-    this.zoomTuning,
-  );
-
-  /// Speed→zoom table for active route navigation.
-  final List<SpeedZoomRule>? speedZoomRules;
-
-  /// Speed→zoom table for free-roam.
-  final List<SpeedZoomRule>? freeRoamSpeedZoomRules;
-
-  /// Active tilt curve, applied via a `TiltFollowController`.
-  final List<StyleZoomTiltPoint>? tiltRelation;
-
-  /// Maximum-tilt clamp curve, applied via `camera.maxTiltRestriction`.
-  final List<StyleZoomTiltPoint>? maxTiltRelation;
-
-  /// Follow-axis toggles (bearing/zoom/tilt).
-  final CameraFollowBehaviourMessage? followBehaviour;
-
-  /// Global minimum zoom restriction.
-  final double? minZoom;
-
-  /// Global maximum zoom restriction.
-  final double? maxZoom;
-
-  /// Delay before the camera returns to follow mode after a manual gesture.
-  final int? followReturnDelaySeconds;
-
-  /// Maneuver/animation tuning for the zoom-follow behavior.
-  final ZoomFollowTuning? zoomTuning;
-}
-
 enum NavigationState { navigation, finish, disabled }
 
 class NavigationStateMessage {
@@ -1594,12 +1488,6 @@ abstract class MapApi {
 
   @async
   void stopFollowNavigation();
-
-  /// Applies any subset of navigation-camera controls (tilt, zoom-by-speed,
-  /// follow toggles, zoom restrictions, follow-return delay, maneuver-zoom
-  /// tuning). Null fields on [settings] leave the corresponding SDK value as-is.
-  @async
-  void setNavigationCameraSettings(NavigationCameraSettings settings);
 
   @async
   void selectIndoorLevel(int index);

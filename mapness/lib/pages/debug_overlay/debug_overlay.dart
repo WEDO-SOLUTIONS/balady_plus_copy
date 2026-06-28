@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/widgets/debug_overlay/bug_button.dart';
-import 'package:mapness/widgets/debug_overlay/camera_controls_overlay.dart';
 import 'package:mapness/widgets/debug_overlay/debug_sheet.dart';
 
 class DebugOverlay extends StatefulWidget {
@@ -34,9 +33,6 @@ class _DebugOverlayState extends State<DebugOverlay> {
             );
           },
         ),
-        // Translucent on-map camera-tuning HUD (toggled from the debug sheet).
-        // Kept below DebugSheet so the sheet draws on top when expanded.
-        const CameraControlsOverlay(),
         DebugSheet(
           draggableController: _draggableController,
         ),
