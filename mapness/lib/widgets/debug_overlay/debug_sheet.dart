@@ -76,7 +76,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SliderSpeed(),
-                    // const DebugNavigationControll(),
+                    const DebugNavigationControll(),
                     // const CameraControlsDebugPanel(),
                     _AppInfoCard(packageInfo: _packageInfo),
                     const SpecialThemeDebugPanel(),
