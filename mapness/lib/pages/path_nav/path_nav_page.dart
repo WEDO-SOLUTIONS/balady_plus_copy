@@ -1001,7 +1001,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
-
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
@@ -1017,7 +1016,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             bearing: 0,
           ),
         );
-
       }
     }
 
