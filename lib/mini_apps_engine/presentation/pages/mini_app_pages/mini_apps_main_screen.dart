@@ -34,6 +34,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void initState() {
     super.initState();
 
+    // Hide floating player and prepare for mini app navigation
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final audioProvider = ref.read(streamAudioProvider);
       audioProvider.setInWeb(true);
@@ -90,6 +91,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           if (didPop) return;
           final shouldExit = await _showExitConfirmationDialog();
           if (shouldExit && context.mounted) {
+            // Show floating player when mini app is closed
             final audioProvider = ref.read(streamAudioProvider);
             audioProvider.setInWeb(false);
             audioProvider.setFloatingPlayerVisibility(true);
@@ -113,6 +115,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                 onPressed: () async {
                   final shouldExit = await _showExitConfirmationDialog();
                   if (shouldExit && context.mounted) {
+                    // Show floating player when mini app is closed
                     final audioProvider = ref.read(streamAudioProvider);
                     audioProvider.setInWeb(false);
                     audioProvider.setFloatingPlayerVisibility(true);
@@ -125,6 +128,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           ),
           body: Column(
             children: [
+              // Audio Player Banner
               Consumer(
                 builder: (context, ref, child) {
                   final provider = ref.watch(streamAudioProvider);
@@ -133,6 +137,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                   }
                   return AudioPlayerBanner(
                     onTap: () {
+                      // Call togglePanel through the provider
                       ref.read(streamAudioProvider).togglePanel();
                     },
                     onClose: () async {
@@ -141,6 +146,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                   );
                 },
               ),
+              // Main content
               Expanded(
                 child: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
                   builder: (contextBloc, state) {
@@ -210,6 +216,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void dispose() {
     debugPrint('MiniAppsMainScreen: Starting dispose');
 
+    // Restore audio provider and show floating player when mini app is closed
     if (mounted) {
       try {
         ref.read(streamAudioProvider).setInWeb(false);
