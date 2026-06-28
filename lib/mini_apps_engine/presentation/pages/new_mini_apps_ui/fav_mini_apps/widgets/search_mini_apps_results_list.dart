@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+//!
 class SearchMiniAppsResultsList extends StatelessWidget {
   final bool isSearching;
   const SearchMiniAppsResultsList({super.key, required this.isSearching});

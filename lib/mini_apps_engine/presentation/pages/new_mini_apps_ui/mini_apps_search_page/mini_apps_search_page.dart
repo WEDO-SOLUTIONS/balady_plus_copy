@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+//!
 class MiniAppsSearchPage extends StatefulWidget {
   const MiniAppsSearchPage({super.key});
 

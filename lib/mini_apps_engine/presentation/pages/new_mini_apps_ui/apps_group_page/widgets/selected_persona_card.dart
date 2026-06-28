@@ -18,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+//!
 class SelectedPersonaCard extends StatelessWidget {
   const SelectedPersonaCard({
     super.key,

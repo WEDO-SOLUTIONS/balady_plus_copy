@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+//!
 class GeneralErrorWidget extends StatelessWidget {
   final String error;
   final void Function() onPressed;

@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+//!
 class PageBarShimmerLoadingWidget extends StatelessWidget {
   const PageBarShimmerLoadingWidget({super.key});
 

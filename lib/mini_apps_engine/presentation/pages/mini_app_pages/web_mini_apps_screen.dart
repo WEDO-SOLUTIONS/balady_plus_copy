@@ -6,7 +6,6 @@ import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -14,6 +13,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
+//!
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
   const WebMiniAppsScreen({super.key});
 
@@ -36,12 +36,6 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     _currentLanguage = translator.activeLanguageCode;
     _cachedMiniAppsLanguage = ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
-
-    CookieManager.instance().setCookie(
-      url: WebUri.uri(Uri.parse("balady.gov.sa")),
-      name: "balady-lang",
-      value: translator.activeLanguageCode,
-    );
 
     if (_currentLanguage != _cachedMiniAppsLanguage) {
       clearCache = true;

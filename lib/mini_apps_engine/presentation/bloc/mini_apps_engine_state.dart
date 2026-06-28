@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+//!
 abstract class MiniAppsEngineState extends Equatable {
   const MiniAppsEngineState();
 
@@ -28,9 +29,7 @@ class MiniAppsEngineLoadingState extends MiniAppsEngineState {
 
   @override
   MiniAppsEngineState copyWith({String? progress}) {
-    return MiniAppsEngineLoadingState(
-      progress: progress ?? this.progress,
-    );
+    return MiniAppsEngineLoadingState(progress: progress ?? this.progress);
   }
 }
 
@@ -38,14 +37,14 @@ class MiniAppsEngineLoadedState extends MiniAppsEngineState {
   final String servicePath;
   final String path;
 
-  const MiniAppsEngineLoadedState({required this.servicePath,required this.path});
+  const MiniAppsEngineLoadedState({required this.servicePath, required this.path});
 
   @override
-  List<Object> get props => [servicePath,path];
+  List<Object> get props => [servicePath, path];
 
   @override
   MiniAppsEngineState copyWith() {
-    return MiniAppsEngineLoadedState(servicePath: servicePath,path: path);
+    return MiniAppsEngineLoadedState(servicePath: servicePath, path: path);
   }
 }
 
@@ -63,9 +62,7 @@ class MiniAppsEngineErrorState extends MiniAppsEngineState {
   }
 }
 
-
 class FailedDownloadState extends MiniAppsEngineState {
-
   const FailedDownloadState();
 
   @override
