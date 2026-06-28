@@ -20,7 +20,6 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
-import 'package:mapness/features/free_roam/navigation_camera_settings_controller.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
@@ -238,9 +237,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final state = base64.decode(savedState);
     try {
       await dgisController.restoreNavigationState(state, NavigationConstants.navigationSpeedRangeZooms);
-      await dgisController.setNavigationCameraSettings(
-        ref.read(navigationCameraSettingsControllerProvider).toMessage(),
-      );
       return true;
     } catch (e) {
       if (!mounted) {
@@ -284,9 +280,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
-      await dgisController.setNavigationCameraSettings(
-        ref.read(navigationCameraSettingsControllerProvider).toMessage(),
-      );
       if (!mounted) {
         return;
       }
@@ -972,9 +965,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           if (mounted) {
             // Start navigation on the newly calculated route
             await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
-            await dgisController.setNavigationCameraSettings(
-              ref.read(navigationCameraSettingsControllerProvider).toMessage(),
-            );
 
             // Save the navigation state so it can be restored on the new page
             final state = await dgisController.saveNavigationState();
@@ -1011,6 +1001,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
@@ -1021,11 +1012,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: targetZoom,
+            zoom: 17.5,
             tilt: 50,
             bearing: 0,
           ),
         );
+
       }
     }
 

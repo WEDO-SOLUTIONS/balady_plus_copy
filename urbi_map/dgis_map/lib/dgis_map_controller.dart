@@ -524,12 +524,6 @@ class DgisMapController {
   /// Starts navigation
   Future<void> startNavigation(List<SpeedRangeZoom> speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
-  /// Applies any subset of navigation-camera controls (tilt, zoom-by-speed, follow toggles,
-  /// zoom restrictions, follow-return delay, maneuver-zoom tuning). Null fields on [settings]
-  /// leave the corresponding SDK value unchanged. Can be called at navigation start or live.
-  Future<void> setNavigationCameraSettings(NavigationCameraSettings settings) =>
-      _instance.setNavigationCameraSettings(settings);
-
   /// Starts navigation simulation.
   Future<void> startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
