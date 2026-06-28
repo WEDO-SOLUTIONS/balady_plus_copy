@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-// import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
@@ -24,9 +23,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {

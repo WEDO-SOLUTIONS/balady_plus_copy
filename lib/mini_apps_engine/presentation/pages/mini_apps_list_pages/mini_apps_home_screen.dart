@@ -30,9 +30,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
-/// The main home screen for mini apps. Extracted from [HomeMiniAppsListPages]
-/// so that the route scaffold remains clean and this widget can be tested
-/// and reused independently.
 class MiniAppsHomeScreen extends StatefulWidget {
   const MiniAppsHomeScreen({super.key});
 
@@ -299,14 +296,10 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                   borderRadius: BorderRadius.circular(11.19),
                                                   child: Container(
                                                     width: double.infinity,
-                                                    constraints: const BoxConstraints(
-                                                      minHeight: 100,
-                                                    ),
+                                                    constraints: const BoxConstraints(minHeight: 100),
                                                     decoration: const BoxDecoration(
                                                       image: DecorationImage(
-                                                        image: AssetImage(
-                                                          "assets/icons/png/momtathel.png",
-                                                        ),
+                                                        image: AssetImage("assets/icons/png/momtathel.png"),
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
@@ -322,7 +315,10 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                               borderRadius: BorderRadius.circular(50),
                                                             ),
                                                             child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                              padding: const EdgeInsets.symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 4,
+                                                              ),
                                                               child: Text(
                                                                 "new".tr(),
                                                                 style: TextStyle(
@@ -506,7 +502,9 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                                     ),
                                                                     Expanded(
                                                                       child: Padding(
-                                                                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                          horizontal: 4.0,
+                                                                        ),
                                                                         child: AutoSizeText(
                                                                           miniApp.name,
                                                                           maxLines: 2,
@@ -583,7 +581,11 @@ class _MiniAppsHomeScreenState extends State<MiniAppsHomeScreen> {
                                                     const NeverScrollableScrollPhysics(), // 2. Prevents double-scrolling if inside another list
                                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                   crossAxisCount: 3,
-                                                  mainAxisExtent: context.h(98) * (1.0 + (textScale - 1.0) * 0.45), // 3. Forces the EXACT height of the card
+                                                  mainAxisExtent:
+                                                      context.h(98) *
+                                                      (1.0 +
+                                                          (textScale - 1.0) *
+                                                              0.45), // 3. Forces the EXACT height of the card
                                                   crossAxisSpacing: 8, // Optional: Spacing between columns
                                                   mainAxisSpacing: 8, // Optional: Spacing between rows
                                                 ),

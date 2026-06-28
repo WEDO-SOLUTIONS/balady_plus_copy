@@ -3,6 +3,7 @@ import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+//!
 class AnotherAppsGroupShimmerWidget extends StatelessWidget {
   const AnotherAppsGroupShimmerWidget({super.key});
 
@@ -11,30 +12,20 @@ class AnotherAppsGroupShimmerWidget extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Premium shimmer palette (no pure black)
-    final baseColor = isDark
-        ? const Color(0xFF2A2F3A)
-        : const Color(0xFFE7E9EF);
-    final highlightColor = isDark
-        ? const Color(0xFF3A4150)
-        : const Color(0xFFF5F6FA);
+    final baseColor = isDark ? const Color(0xFF2A2F3A) : const Color(0xFFE7E9EF);
+    final highlightColor = isDark ? const Color(0xFF3A4150) : const Color(0xFFF5F6FA);
 
     // Surfaces
     final surface = isDark ? const Color(0xFF141821) : Colors.white;
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
 
     // Inner "sub-card" shade (slightly different)
-    final subSurface = isDark
-        ? const Color(0xFF202838)
-        : Colors.white.withOpacity(0.55);
+    final subSurface = isDark ? const Color(0xFF202838) : Colors.white.withOpacity(0.55);
 
     // Subtle borders & shadow for premium feel
-    final borderColor = isDark
-        ? Colors.white.withOpacity(0.06)
-        : Colors.black.withOpacity(0.04);
+    final borderColor = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
 
-    final shadowColor = isDark
-        ? Colors.black.withOpacity(0.35)
-        : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
 
     // CustomLargMoreApps default dimensions:
     final double cardOuterWidth = context.w(168);
@@ -56,13 +47,7 @@ class AnotherAppsGroupShimmerWidget extends StatelessWidget {
               color: surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: borderColor, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: shadowColor,
-                  blurRadius: isDark ? 10 : 8,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
             ),
             child: Padding(
               padding: EdgeInsets.all(context.w(10)),
@@ -126,13 +111,7 @@ class AnotherAppsGroupShimmerWidget extends StatelessWidget {
               color: placeholder,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: borderColor, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: shadowColor,
-                  blurRadius: isDark ? 10 : 8,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
             ),
           ),
         ),
@@ -166,12 +145,7 @@ class _AnotherAppsSubCardBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(radius),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withOpacity(0.06)
-              : Colors.black.withOpacity(0.04),
-          width: 1,
-        ),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04), width: 1),
       ),
     );
   }

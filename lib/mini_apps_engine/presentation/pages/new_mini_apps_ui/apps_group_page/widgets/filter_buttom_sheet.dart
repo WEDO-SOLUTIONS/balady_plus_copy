@@ -33,16 +33,6 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
   }
 
   List<FilterOptionModel> filterOptions = [
-    // FilterOptionModel(
-    //   translationKey: 'service_date_ascending',
-    //   type: FilterOptionType.ServiceDateAscending,
-    //   isEnabled: true,
-    // ),
-    // FilterOptionModel(
-    //   translationKey: 'service_date_descending',
-    //   type: FilterOptionType.ServiceDateDescending,
-    //   isEnabled: true,
-    // ),
     FilterOptionModel(
       translationKey: 'alphabetical_ascending',
       type: FilterOptionType.AlphabeticalAscending,

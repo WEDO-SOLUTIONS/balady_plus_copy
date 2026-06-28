@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+//!
 class GeneralErrorWidget extends StatelessWidget {
   final String error;
   const GeneralErrorWidget({super.key, required this.error});

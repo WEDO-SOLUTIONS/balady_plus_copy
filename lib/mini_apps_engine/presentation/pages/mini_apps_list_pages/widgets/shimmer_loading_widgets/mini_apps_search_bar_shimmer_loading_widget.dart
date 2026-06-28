@@ -3,10 +3,6 @@ import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-// Shimmer for the MiniAppsCustomTextField (search field placeholder)
-// - Supports light/dark using Theme.of(context).brightness
-// - Premium look (soft surfaces, subtle border, no pure black)
-
 class MiniAppsSearchTextFieldShimmer extends StatelessWidget {
   final double? height;
   final double? width;

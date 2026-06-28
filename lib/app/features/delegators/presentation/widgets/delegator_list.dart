@@ -53,6 +53,7 @@ class _DelegatorListState extends State<DelegatorList> {
             title: "switch_account".tr(),
             body: BlocBuilder<DelegatorsCubit, DelegatorsState>(
               builder: (context, state) {
+                final textScale = MediaQuery.of(context).textScaler.scale(1.0);
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -113,7 +114,7 @@ class _DelegatorListState extends State<DelegatorList> {
                                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                         child: SizedBox(
                                           width: context.screenWidth,
-                                          height: context.h(32),
+                                          height: context.h(32) * textScale,
                                           child: DecoratedBox(
                                             decoration: BoxDecoration(
                                               color: Theme.of(context).colorScheme.onPrimaryFixedVariant,

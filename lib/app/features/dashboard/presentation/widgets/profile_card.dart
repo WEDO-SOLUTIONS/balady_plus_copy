@@ -180,19 +180,19 @@ class ProfileCard extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(vertical: 9.0),
                                   child: SizedBox(
                                     width: context.screenWidth,
-                                    height: context.screenHeight * 0.08,
                                     child: DecoratedBox(
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.onPrimaryFixedVariant,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                            child: Text(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
                                               name,
                                               style: TextStyle(
                                                 color: Theme.of(context).colorScheme.onSurface,
@@ -201,11 +201,8 @@ class ProfileCard extends StatelessWidget {
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                            child: Text(
+                                            const SizedBox(height: 5),
+                                            Text(
                                               type,
                                               style: TextStyle(
                                                 color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
@@ -214,8 +211,8 @@ class ProfileCard extends StatelessWidget {
                                                 fontWeight: FontWeight.w400,
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -280,7 +277,6 @@ class ProfileCard extends StatelessWidget {
                                 SizedBox(height: context.screenHeight * 0.01),
                                 Container(
                                   // width: context.w(90), // 1. Removed this fixed width to allow auto-expansion
-                                  height: context.h(30),
                                   decoration: BoxDecoration(
                                     color: agentBgColor,
                                     borderRadius: BorderRadius.circular(50),
@@ -288,7 +284,8 @@ class ProfileCard extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 10.0,
-                                    ), // 2. Changed to symmetric horizontal padding for uniform looks
+                                      vertical: 4.0,
+                                    ), // 2. Changed to symmetric horizontal and vertical padding for uniform looks
                                     child: Row(
                                       mainAxisSize: MainAxisSize
                                           .min, // 3. CRITICAL: Tells the Row to only take up as much space as its children need

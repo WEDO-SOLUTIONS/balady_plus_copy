@@ -33,6 +33,7 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
   @override
   Widget build(BuildContext context) {
     bool isLoggedin = CommonProperties.isLoggedInMunicipality;
+    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
     return Consumer<BaladyThemeNotifier>(
       builder: (context, themeNotifier, child) {
         return BlocProvider<DelegatorsCubit>.value(
@@ -83,14 +84,6 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                       _showDelegatorSelectionBottomSheet(context, state);
                     },
                     child: Card(
-                      // decoration: ShapeDecoration(
-                      //   color: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
-                      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      //   shadows: [
-                      //     BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1), spreadRadius: 0),
-                      //     BoxShadow(color: Color(0x0A000000), blurRadius: 0, offset: Offset(0, 0), spreadRadius: 0.50),
-                      //   ],
-                      // ),
                       child: Column(
                         children: [
                           BlocBuilder<DelegatorsCubit, DelegatorsState>(
@@ -175,8 +168,8 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                                                 final hasData = hasCard && dashboardState.cardsStates[card] != null;
 
                                                 return Container(
-                                                  height: context.h(74),
-                                                  width: context.w(63),
+                                                  height: context.h(74) * textScale,
+                                                  width: context.w(63) * textScale,
                                                   padding: const EdgeInsets.symmetric(vertical: 2),
                                                   decoration: ShapeDecoration(
                                                     color: themeNotifier.isDarkMode
@@ -264,8 +257,8 @@ class _PersonaBannerSectionState extends State<PersonaBannerSection> {
                                                     context.read<NewMiniAppLogicCubit>().openMiniApp(widget.dashboard!);
                                                   },
                                                   child: Container(
-                                                    height: context.h(74),
-                                                    width: context.w(45),
+                                                    height: context.h(74) * textScale,
+                                                    width: context.w(45) * textScale,
                                                     padding: const EdgeInsets.symmetric(vertical: 2),
                                                     decoration: ShapeDecoration(
                                                       color: Theme.of(context).hintColor.withAlpha(20),
