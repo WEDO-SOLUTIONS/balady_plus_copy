@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -30,6 +31,12 @@ enum Language {
 
   /// Device / OS locale — independent of in-app language preference.
   static Language fromSystemLocale() {
+    final preferredLocales = PlatformDispatcher.instance.locales;
+    if (preferredLocales.isNotEmpty) {
+      final languageCode = preferredLocales.first.languageCode.toLowerCase();
+      return languageCode.startsWith('en') ? Language.english : Language.arabic;
+    }
+
     final locale = Platform.localeName.toLowerCase();
     return locale.startsWith('en') ? Language.english : Language.arabic;
   }
