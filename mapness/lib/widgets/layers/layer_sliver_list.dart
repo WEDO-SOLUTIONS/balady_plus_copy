@@ -58,13 +58,14 @@ class LayerSliverList extends ConsumerWidget {
                   .authOrOpen(
                     context,
                     callback: () async {
-                      // BALADY-3730: await the toggle directly instead of
-                      // going through the debounced tapSubject. The 250 ms
-                      // debounce could elapse after the layers route was
-                      // popped during the auth flow, leaving _tapHandler
-                      // never invoked and the Favorites card unmarked on
-                      // return.
-                      await layersControl.toggleFavourites();
+                      // BALADY-3730 re-fix: do NOT use the `layersControl`
+                      // captured at widget build time. The auth flow can
+                      // auto-dispose LayersControls (sheet covered / route
+                      // popped, no remaining watchers) — the captured
+                      // ref then points at a dead notifier and the call
+                      // becomes a silent no-op. Read fresh inside the
+                      // callback so we always hit the live notifier.
+                      await ref.read(layersControlsProvider.notifier).toggleFavourites();
                     },
                   );
             } else if (value == layers_state.LayerType.busSubMenu) {
