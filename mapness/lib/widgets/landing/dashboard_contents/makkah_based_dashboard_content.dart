@@ -277,7 +277,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 PlacePreviewMakkah(),
                 SizedBox(height: Spacing.$4x),
                 ExploreCard(),
-                SizedBox(height: Spacing.$6x),
+                SizedBox(height: Spacing.$10x),
               ],
             ),
           ),

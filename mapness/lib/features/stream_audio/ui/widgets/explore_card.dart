@@ -31,7 +31,7 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  color: const Color(0xFF002945),
+                  color: const Color(0xFF005937),
                 ),
                 child: Stack(
                   children: [
@@ -73,7 +73,7 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                 TextSpan(
                   text: Directionality.of(context) == TextDirection.rtl ? '\nكتالوج الوسائط' : '\nmedia catalog',
                   style: context.textStyles.h3Medium.copyWith(
-                    color: const Color(0xFF00FFFA),
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -103,13 +103,13 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                color: context.colors.staticWhite.withOpacity( 0.2),
+                color: context.colors.staticWhite,
               ),
               child: Center(
                 child: Icon(
-                  SystemIcons.arrowRight,
-                  color: context.colors.staticWhite,
-                  size: Spacing.$5x,
+                  SystemIcons.arrowCornerRightLarge,
+                  color: context.colors.staticBlack,
+                  size: Spacing.$4x,
                 ),
               ),
             ),

@@ -25,9 +25,45 @@ class AudioService extends ChangeNotifier {
   Timer? _reconnectionTimer;
   Timer? _dismissalCheckTimer; // Periodic check for dismissal
   Timer? _iosDismissalDebounceTimer;
+  Timer? _androidRecoveryTimer; // Android: live-stream recovery backoff
+  int _androidRecoveryAttempt = 0;
+  bool _isAndroidRecovering = false;
+  // Cap individual backoff delay; total recovery never gives up while
+  // _expectsToBePlaying is true (live radio should self-heal forever).
+  static const Duration _androidRecoveryMaxDelay = Duration(seconds: 30);
   AudioSession? _audioSession;
   MethodChannel? _audioCoordinationChannel;
   MethodChannel? _nativeRadioChannel;
+  // Android wake-lock + Wi-Fi-lock bridge. Acquired while live radio is
+  // playing so the OS doesn't throttle Wi-Fi / suspend the process after the
+  // screen turns off (root cause of "MBC stops after 1-2 min on Android").
+  static const MethodChannel _mbcLockChannel = MethodChannel('com.balady.mbc_lock');
+  bool _mbcLocksHeld = false;
+
+  Future<void> _acquireAndroidMbcLocks() async {
+    if (!Platform.isAndroid) return;
+    if (_mbcLocksHeld) return;
+    try {
+      await _mbcLockChannel.invokeMethod<bool>('acquire');
+      _mbcLocksHeld = true;
+      debugPrint('AudioService: 🔒 Android MBC wake/Wi-Fi locks acquired');
+    } catch (e) {
+      debugPrint('AudioService: ⚠️ Could not acquire Android MBC locks: $e');
+    }
+  }
+
+  Future<void> _releaseAndroidMbcLocks() async {
+    if (!Platform.isAndroid) return;
+    if (!_mbcLocksHeld) return;
+    try {
+      await _mbcLockChannel.invokeMethod<bool>('release');
+    } catch (e) {
+      debugPrint('AudioService: ⚠️ Could not release Android MBC locks: $e');
+    } finally {
+      _mbcLocksHeld = false;
+      debugPrint('AudioService: 🔓 Android MBC wake/Wi-Fi locks released');
+    }
+  }
 
   bool _wasPlayingBeforeInterruption = false;
   bool _isInterrupted = false;
@@ -72,7 +108,8 @@ class AudioService extends ChangeNotifier {
 
     try {
       final st = _player!.playerState;
-      final isStopped = !st.playing &&
+      final isStopped =
+          !st.playing &&
           (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
 
       if (!isStopped) {
@@ -103,13 +140,31 @@ class AudioService extends ChangeNotifier {
     if (_isStoppingInternally || _isStartingPlayback || !_expectsToBePlaying) return;
     if (_isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) return;
 
+    // Android: with `androidNotificationOngoing: true` the notification can
+    // still be acted on via the system play/pause/stop buttons. Treat an
+    // unexpected idle/completed as a user-initiated stop (notification stop,
+    // headset stop, OS reclaim, etc.). The previous "auto-recovery" loop was
+    // a workaround for an unrelated bug (the `await player.play()` that never
+    // returned for live streams — now fixed) and made MBC un-stoppable
+    // because tapping stop from the notification was treated as a stall and
+    // immediately restarted.
+    if (Platform.isAndroid) {
+      debugPrint('AudioService: 🚫 Android player stopped unexpectedly ($source) — treating as dismissal');
+      _handleNotificationDismissed();
+      return;
+    }
+
     // iOS sometimes reports the player as idle before we receive the AVAudioSession
     // interruption/secondary-audio hint. Debounce to avoid flipping state too early.
     if (Platform.isIOS) {
       _iosDismissalDebounceTimer?.cancel();
       _iosDismissalDebounceTimer = Timer(_iosUnexpectedStopDebounce, () {
         if (_player == null) {
-          if (_currentChannelId != null && _expectsToBePlaying && !_isInterrupted && !_isNavigationDucking && !_isNavigationVoiceActive) {
+          if (_currentChannelId != null &&
+              _expectsToBePlaying &&
+              !_isInterrupted &&
+              !_isNavigationDucking &&
+              !_isNavigationVoiceActive) {
             debugPrint('AudioService: 🚫 Notification dismissed (debounced/$source) - player is null');
             _handleNotificationDismissed();
           }
@@ -117,9 +172,16 @@ class AudioService extends ChangeNotifier {
         }
 
         final st = _player!.playerState;
-        final isStopped = !st.playing &&
+        final isStopped =
+            !st.playing &&
             (st.processingState == ProcessingState.idle || st.processingState == ProcessingState.completed);
-        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !_isInterrupted && !_isNavigationDucking && !_isNavigationVoiceActive) {
+        if (_expectsToBePlaying &&
+            isStopped &&
+            !_isStoppingInternally &&
+            !_isStartingPlayback &&
+            !_isInterrupted &&
+            !_isNavigationDucking &&
+            !_isNavigationVoiceActive) {
           debugPrint('AudioService: 🚫 Notification dismissed (debounced/$source) - player stopped unexpectedly');
           _handleNotificationDismissed();
         } else {
@@ -303,33 +365,35 @@ class AudioService extends ChangeNotifier {
       _audioSession = await AudioSession.instance;
 
       // Configure for proper lock screen controls and interruption handling
-      await _audioSession!.configure(const AudioSessionConfiguration(
-        avAudioSessionCategory: AVAudioSessionCategory.playback,
-        // iOS: allow navigation voice prompts to coexist with radio playback.
-        // - mixWithOthers: don't fully stop other audio when another session activates
-        // - interruptSpokenAudioAndMixWithOthers: improves coexistence with spoken guidance
-        // We still handle duck/pause via our native coordination bridge as a fallback.
-        // Note: This must stay `const`. We use raw bitmask values from `audio_session`
-        // (`AVAudioSessionCategoryOptions` in `audio_session/lib/src/darwin.dart`):
-        // - mixWithOthers: 0x1
-        // - interruptSpokenAudioAndMixWithOthers: 0x11
-        // - allowBluetooth: 0x4
-        // 0x1 = mixWithOthers: mix with other sessions (don't take exclusive access)
-        // 0x4 = allowBluetooth
-        // NOT 0x11 (interruptSpokenAudioAndMixWithOthers): that flag makes us interrupt
-        // navigation voice, which fights 2GIS SDK and kills our audio session.
-        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions(0x1 | 0x4),
-        avAudioSessionMode: AVAudioSessionMode.defaultMode,
-        avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
-        avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
-        androidAudioAttributes: AndroidAudioAttributes(
-          contentType: AndroidAudioContentType.music,
-          flags: AndroidAudioFlags.none,
-          usage: AndroidAudioUsage.media,
+      await _audioSession!.configure(
+        const AudioSessionConfiguration(
+          avAudioSessionCategory: AVAudioSessionCategory.playback,
+          // iOS: allow navigation voice prompts to coexist with radio playback.
+          // - mixWithOthers: don't fully stop other audio when another session activates
+          // - interruptSpokenAudioAndMixWithOthers: improves coexistence with spoken guidance
+          // We still handle duck/pause via our native coordination bridge as a fallback.
+          // Note: This must stay `const`. We use raw bitmask values from `audio_session`
+          // (`AVAudioSessionCategoryOptions` in `audio_session/lib/src/darwin.dart`):
+          // - mixWithOthers: 0x1
+          // - interruptSpokenAudioAndMixWithOthers: 0x11
+          // - allowBluetooth: 0x4
+          // 0x1 = mixWithOthers: mix with other sessions (don't take exclusive access)
+          // 0x4 = allowBluetooth
+          // NOT 0x11 (interruptSpokenAudioAndMixWithOthers): that flag makes us interrupt
+          // navigation voice, which fights 2GIS SDK and kills our audio session.
+          avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions(0x1 | 0x4),
+          avAudioSessionMode: AVAudioSessionMode.defaultMode,
+          avAudioSessionRouteSharingPolicy: AVAudioSessionRouteSharingPolicy.defaultPolicy,
+          avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+          androidAudioAttributes: AndroidAudioAttributes(
+            contentType: AndroidAudioContentType.music,
+            flags: AndroidAudioFlags.none,
+            usage: AndroidAudioUsage.media,
+          ),
+          androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+          androidWillPauseWhenDucked: false,
         ),
-        androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
-        androidWillPauseWhenDucked: false,
-      ));
+      );
 
       debugPrint('AudioService: ✅ Audio session configured successfully');
 
@@ -353,12 +417,15 @@ class AudioService extends ChangeNotifier {
         cancelOnError: false,
       );
 
-      // Listen for becomingNoisy
+      // Listen for becomingNoisy. For live radio we DO NOT auto-pause: on
+      // Android, Bluetooth A2DP idle-disconnect after the screen has been off
+      // for a minute or two fires this event and would otherwise stop the
+      // foreground service entirely (root cause of the "MBC dies after 1-2
+      // min" bug). The user is listening to a live stream and explicitly
+      // expects continuous playback. If we're not actively playing, leave
+      // existing behaviour intact.
       _audioSession!.becomingNoisyEventStream.listen((_) {
-        debugPrint('AudioService: 🔊 Audio becoming noisy (headphones unplugged)');
-        if (_isPlaying) {
-          pause();
-        }
+        debugPrint('AudioService: 🔊 Audio becoming noisy (route change) — keeping live stream alive');
       });
 
       debugPrint('AudioService: ✅ Interruption listeners configured');
@@ -369,10 +436,12 @@ class AudioService extends ChangeNotifier {
   }
 
   void _handleInterruptionBegan(AudioInterruptionEvent event) {
-    debugPrint('AudioService: 🛑 INTERRUPTION BEGAN - '
-        'type: ${event.type}, '
-        'expectsToBePlaying: $_expectsToBePlaying, '
-        'isPlaying: $_isPlaying');
+    debugPrint(
+      'AudioService: 🛑 INTERRUPTION BEGAN - '
+      'type: ${event.type}, '
+      'expectsToBePlaying: $_expectsToBePlaying, '
+      'isPlaying: $_isPlaying',
+    );
 
     _isInterrupted = true;
     _wasPlayingBeforeInterruption = _isPlaying || _isLoading;
@@ -417,11 +486,11 @@ class AudioService extends ChangeNotifier {
           _currentTitle = mediaItem.title;
           _currentArtist = mediaItem.artist;
           _currentArtUri = mediaItem.artUri?.toString();
-          
+
           if (state.currentSource is UriAudioSource) {
             _currentStreamUrl = (state.currentSource as UriAudioSource).uri.toString();
           }
-          
+
           syncState();
           notifyListeners();
         }
@@ -431,33 +500,51 @@ class AudioService extends ChangeNotifier {
     // Listen to player state changes
     _playerStateSubscription = _player!.playerStateStream.listen(
       (state) {
-        debugPrint('AudioService: 🎵 Player state changed - '
-            'playing: ${state.playing}, '
-            'processingState: ${state.processingState}, '
-            'expectsToBePlaying: $_expectsToBePlaying, '
-            'isStoppingInternally: $_isStoppingInternally, '
-            'isStartingPlayback: $_isStartingPlayback');
+        debugPrint(
+          'AudioService: 🎵 Player state changed - '
+          'playing: ${state.playing}, '
+          'processingState: ${state.processingState}, '
+          'expectsToBePlaying: $_expectsToBePlaying, '
+          'isStoppingInternally: $_isStoppingInternally, '
+          'isStartingPlayback: $_isStartingPlayback',
+        );
+
+        // Android: once the stream is actually playing again, clear any pending
+        // recovery backoff so the next stall starts a fresh retry sequence.
+        if (Platform.isAndroid && state.playing && state.processingState == ProcessingState.ready) {
+          if (_androidRecoveryAttempt != 0 || _androidRecoveryTimer != null) {
+            debugPrint('AudioService: ✅ Android recovery cleared (stream is playing)');
+          }
+          _androidRecoveryAttempt = 0;
+          _androidRecoveryTimer?.cancel();
+          _androidRecoveryTimer = null;
+        }
 
         // Detect notification dismissal: player stopped unexpectedly while we expect it to be playing
         // But ignore if we're actively starting playback (initial idle state is normal)
-        final isStopped = !state.playing &&
+        final isStopped =
+            !state.playing &&
             (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed);
 
         if (_expectsToBePlaying && isStopped) {
-          debugPrint('AudioService: 🔍 Potential dismissal detected - '
-              'expectsToBePlaying: $_expectsToBePlaying, '
-              'isStoppingInternally: $_isStoppingInternally, '
-              'isStartingPlayback: $_isStartingPlayback');
+          debugPrint(
+            'AudioService: 🔍 Potential dismissal detected - '
+            'expectsToBePlaying: $_expectsToBePlaying, '
+            'isStoppingInternally: $_isStoppingInternally, '
+            'isStartingPlayback: $_isStartingPlayback',
+          );
 
           final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking || _isNavigationVoiceActive;
           if (!_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
             _maybeHandleUnexpectedStop('playerStateStream');
           } else {
-            debugPrint('AudioService: ⏸️ Ignoring dismissal - '
-                'isStoppingInternally: $_isStoppingInternally, '
-                'isStartingPlayback: $_isStartingPlayback, '
-                'isInterrupted: $_isInterrupted, '
-                'isNavigationDucking: $_isNavigationDucking');
+            debugPrint(
+              'AudioService: ⏸️ Ignoring dismissal - '
+              'isStoppingInternally: $_isStoppingInternally, '
+              'isStartingPlayback: $_isStartingPlayback, '
+              'isInterrupted: $_isInterrupted, '
+              'isNavigationDucking: $_isNavigationDucking',
+            );
           }
         }
 
@@ -472,8 +559,10 @@ class AudioService extends ChangeNotifier {
     // Listen to playback events for buffering and errors
     _playbackEventSubscription = _player!.playbackEventStream.listen(
       (event) {
-        debugPrint('AudioService: 📻 Playback event - '
-            'processingState: ${event.processingState}');
+        debugPrint(
+          'AudioService: 📻 Playback event - '
+          'processingState: ${event.processingState}',
+        );
 
         if (event.processingState == ProcessingState.buffering) {
           debugPrint('AudioService: 🔄 Buffering...');
@@ -485,7 +574,11 @@ class AudioService extends ChangeNotifier {
             event.processingState == ProcessingState.idle || event.processingState == ProcessingState.completed;
 
         final shouldIgnoreDismissal = _isInterrupted || _isNavigationDucking;
-        if (_expectsToBePlaying && isStopped && !_isStoppingInternally && !_isStartingPlayback && !shouldIgnoreDismissal) {
+        if (_expectsToBePlaying &&
+            isStopped &&
+            !_isStoppingInternally &&
+            !_isStartingPlayback &&
+            !shouldIgnoreDismissal) {
           _maybeHandleUnexpectedStop('playbackEventStream');
         }
       },
@@ -505,7 +598,12 @@ class AudioService extends ChangeNotifier {
   void _startDismissalCheckTimer() {
     _dismissalCheckTimer?.cancel();
     _dismissalCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
-      if (!_expectsToBePlaying || _isStoppingInternally || _isStartingPlayback || _isInterrupted || _isNavigationDucking || _isNavigationVoiceActive) {
+      if (!_expectsToBePlaying ||
+          _isStoppingInternally ||
+          _isStartingPlayback ||
+          _isInterrupted ||
+          _isNavigationDucking ||
+          _isNavigationVoiceActive) {
         return; // Don't check if we don't expect to be playing or are stopping/starting
       }
 
@@ -518,14 +616,16 @@ class AudioService extends ChangeNotifier {
       }
 
       final state = _player!.playerState;
-      final isStopped = !state.playing &&
+      final isStopped =
+          !state.playing &&
           (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed);
 
       if (isStopped) {
         debugPrint('AudioService: 🔍 Periodic check - Player stopped unexpectedly');
         debugPrint('AudioService: 🔍 State - playing: ${state.playing}, processingState: ${state.processingState}');
         debugPrint(
-            'AudioService: 🔍 Flags - expectsToBePlaying: $_expectsToBePlaying, isStoppingInternally: $_isStoppingInternally, isStartingPlayback: $_isStartingPlayback');
+          'AudioService: 🔍 Flags - expectsToBePlaying: $_expectsToBePlaying, isStoppingInternally: $_isStoppingInternally, isStartingPlayback: $_isStartingPlayback',
+        );
         _maybeHandleUnexpectedStop('periodicTimer');
       }
     });
@@ -561,6 +661,10 @@ class AudioService extends ChangeNotifier {
 
     try {
       _isHandlingDismissal = false;
+      _androidRecoveryTimer?.cancel();
+      _androidRecoveryTimer = null;
+      _androidRecoveryAttempt = 0;
+      _isAndroidRecovering = false;
       _currentStreamUrl = url;
       _currentChannelId = channelId;
       _currentTitle = title ?? 'Live Radio';
@@ -578,6 +682,9 @@ class AudioService extends ChangeNotifier {
         await _notifyIOSMBCActive();
       } else {
         _startDismissalCheckTimer();
+        // Hold a wake-lock + Wi-Fi-lock for the entire MBC session so the OS
+        // can't suspend the network/CPU once the screen turns off.
+        await _acquireAndroidMbcLocks();
         debugPrint('AudioService: Setting audio source...');
         await _playLiveStream(playlist: playlist, initialIndex: initialIndex);
         await _notifyIOSMBCActive();
@@ -634,11 +741,31 @@ class AudioService extends ChangeNotifier {
         }
 
         debugPrint('AudioService: Audio source set, starting playback...');
-        await _player!.play();
+        // ⚠️ DO NOT await _player.play() for a live stream.
+        // just_audio's `play()` Future only completes when the player is
+        // *paused* or *finished* — for a live HLS stream that's by design
+        // continuous, awaiting it blocks forever, the 60 s timeout fires,
+        // and the cascading error path calls pause(). That's the real
+        // "MBC stops after ~1 min on Android" bug.
+        // Fire-and-forget the play call; rely on `playerStateStream` for
+        // the actual playing/loading state.
+        unawaited(_player!.play());
 
-        // Wait a bit for playback to actually start before clearing the flag
-        // This prevents false dismissal detection during the initial idle->loading->playing transition
-        await Future.delayed(const Duration(milliseconds: 500));
+        // Wait until the player reports playing (or buffering/loading turns
+        // into playing) instead of the 500 ms fixed sleep — this prevents
+        // false dismissal detection without depending on play()'s Future.
+        try {
+          await _player!.playerStateStream
+              .firstWhere(
+                (s) =>
+                    s.playing &&
+                    s.processingState != ProcessingState.idle &&
+                    s.processingState != ProcessingState.completed,
+              )
+              .timeout(const Duration(seconds: 15));
+        } on TimeoutException {
+          debugPrint('AudioService: ⚠️ Timed out waiting for playing state (continuing anyway)');
+        }
       }).timeout(_startPlaybackTimeout);
 
       _isStartingPlayback = false;
@@ -652,6 +779,86 @@ class AudioService extends ChangeNotifier {
       _setError('Failed to start playback: $e');
     }
   }
+
+  // ── Android live-stream recovery ────────────────────────────────────────────
+  //
+  // On Android we keep the foreground service alive (the user cannot swipe
+  // the ongoing notification away while playing), so any unexpected idle /
+  // completed state is treated as a transient stream stall rather than a user
+  // dismissal. We re-prepare the stream with exponential backoff and never
+  // give up while `_expectsToBePlaying` is true. This eliminates the
+  // "audio stops after 1-2 minutes with the screen off" symptom caused by
+  // Doze maintenance windows, Wi-Fi sleep, NAT timeouts, etc.
+  void _scheduleAndroidRecovery({required String reason}) {
+    if (!Platform.isAndroid) return;
+    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    if (_currentStreamUrl == null) return;
+    if (_isAndroidRecovering) return;
+    if (_androidRecoveryTimer?.isActive == true) return;
+
+    _androidRecoveryAttempt += 1;
+    // Exponential backoff: 0s, 1s, 2s, 4s, 8s, 16s, 30s (cap).
+    final attempt = _androidRecoveryAttempt;
+    final delaySeconds = attempt <= 1 ? 0 : (1 << (attempt - 2).clamp(0, 5));
+    final delay = Duration(
+      seconds: delaySeconds.clamp(0, _androidRecoveryMaxDelay.inSeconds),
+    );
+
+    debugPrint(
+      'AudioService: ⏱️ Android recovery scheduled - attempt $attempt in ${delay.inSeconds}s (reason: $reason)',
+    );
+
+    _androidRecoveryTimer?.cancel();
+    _androidRecoveryTimer = Timer(delay, () {
+      _androidRecoveryTimer = null;
+      // ignore: discarded_futures
+      _attemptAndroidRecovery(reason: reason);
+    });
+  }
+
+  Future<void> _attemptAndroidRecovery({required String reason}) async {
+    if (!Platform.isAndroid) return;
+    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    if (_currentStreamUrl == null) return;
+    if (_isStartingPlayback) return;
+    if (_player == null) return;
+    if (_isAndroidRecovering) return;
+
+    _isAndroidRecovering = true;
+    debugPrint('AudioService: 🔁 Android recovery attempt #$_androidRecoveryAttempt ($reason)');
+
+    try {
+      // Re-activate the audio session in case the OS dropped focus.
+      try {
+        await _audioSession?.setActive(true);
+      } catch (e) {
+        debugPrint('AudioService: ⚠️ Could not reactivate audio session during recovery: $e');
+      }
+
+      // Re-prepare and play the live stream. _playLiveStream handles the
+      // _isStartingPlayback flag and surfaces errors via _setError.
+      await _playLiveStream();
+    } catch (e) {
+      debugPrint('AudioService: ❌ Android recovery attempt failed ($reason): $e');
+    } finally {
+      _isAndroidRecovering = false;
+    }
+
+    // If the stream still isn't actually playing after the attempt, schedule
+    // another one. The playerStateStream listener clears the counter once
+    // playback genuinely resumes.
+    if (!_expectsToBePlaying || _isStoppingInternally) return;
+    final st = _player?.playerState;
+    final actuallyPlaying =
+        st != null &&
+        st.playing &&
+        st.processingState != ProcessingState.idle &&
+        st.processingState != ProcessingState.completed;
+    if (!actuallyPlaying) {
+      _scheduleAndroidRecovery(reason: 'recovery-retry');
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────────
 
   Future<void> pause() async {
     debugPrint('AudioService: ⏸️ pause called');
@@ -734,11 +941,13 @@ class AudioService extends ChangeNotifier {
     try {
       final currentState = _player!.playerState;
 
-      final isActuallyPlaying = currentState.playing &&
+      final isActuallyPlaying =
+          currentState.playing &&
           currentState.processingState != ProcessingState.idle &&
           currentState.processingState != ProcessingState.completed;
 
-      final isActuallyLoading = currentState.processingState == ProcessingState.loading ||
+      final isActuallyLoading =
+          currentState.processingState == ProcessingState.loading ||
           currentState.processingState == ProcessingState.buffering;
 
       final bool wasPlaying = _isPlaying;
@@ -749,7 +958,8 @@ class AudioService extends ChangeNotifier {
 
       if (wasPlaying != _isPlaying || wasLoading != _isLoading) {
         debugPrint(
-            'AudioService: State synced - isPlaying: $_isPlaying, isLoading: $_isLoading, isDucked: $_isDucked, isInterrupted: $_isInterrupted');
+          'AudioService: State synced - isPlaying: $_isPlaying, isLoading: $_isLoading, isDucked: $_isDucked, isInterrupted: $_isInterrupted',
+        );
         notifyListeners();
       }
     } catch (e) {
@@ -788,6 +998,10 @@ class AudioService extends ChangeNotifier {
     _currentArtUri = null;
     _reconnectionTimer?.cancel();
     _reconnectionTimer = null;
+    _androidRecoveryTimer?.cancel();
+    _androidRecoveryTimer = null;
+    _androidRecoveryAttempt = 0;
+    _isAndroidRecovering = false;
     _clearError();
 
     if (Platform.isIOS) {
@@ -801,6 +1015,7 @@ class AudioService extends ChangeNotifier {
 
     _stopDismissalCheckTimer();
     _isStoppingInternally = true;
+    await _releaseAndroidMbcLocks();
 
     if (_player != null) {
       try {
@@ -832,6 +1047,9 @@ class AudioService extends ChangeNotifier {
     _expectsToBePlaying = false;
     _isStoppingInternally = false;
     _isStartingPlayback = false; // Always reset this when dismissed
+    // Release the Android wake / Wi-Fi locks if they were held.
+    // ignore: discarded_futures
+    _releaseAndroidMbcLocks();
 
     // Clear current stream info
     _currentChannelId = null;
@@ -871,7 +1089,9 @@ class AudioService extends ChangeNotifier {
     // iOS can temporarily pause/stop our audio session while navigation voice speaks
     // (or while we are in navigation-duck mode). That should NOT be treated as a dismissal.
     if (_isInterrupted || _isNavigationDucking) {
-      debugPrint('AudioService: 🔍 Skipping dismissal check - interrupted/ducking (isInterrupted: $_isInterrupted, isNavigationDucking: $_isNavigationDucking)');
+      debugPrint(
+        'AudioService: 🔍 Skipping dismissal check - interrupted/ducking (isInterrupted: $_isInterrupted, isNavigationDucking: $_isNavigationDucking)',
+      );
       return false;
     }
 
@@ -886,7 +1106,8 @@ class AudioService extends ChangeNotifier {
     }
 
     final state = _player!.playerState;
-    final isStopped = !state.playing &&
+    final isStopped =
+        !state.playing &&
         (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed);
 
     // If we expect to be playing but player is stopped and we didn't stop it internally
@@ -905,10 +1126,15 @@ class AudioService extends ChangeNotifier {
     // Cancel timers
     _reconnectionTimer?.cancel();
     _reconnectionTimer = null;
+    _androidRecoveryTimer?.cancel();
+    _androidRecoveryTimer = null;
+    _androidRecoveryAttempt = 0;
+    _isAndroidRecovering = false;
     _navigationVoiceFailsafeTimer?.cancel();
     _navigationVoiceFailsafeTimer = null;
     _isNavigationVoiceActive = false;
     _stopDismissalCheckTimer();
+    await _releaseAndroidMbcLocks();
 
     // Cancel subscriptions
     await _playerStateSubscription?.cancel();

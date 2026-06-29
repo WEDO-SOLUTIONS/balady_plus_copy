@@ -67,6 +67,7 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
     String? deviceId,
     String? deviceOs,
     String? appVersion,
+    String? userId,
   }) {
     final user = FlutterInsider.Instance.getCurrentUser();
 
@@ -111,6 +112,21 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   @override
   void quickActionSelected(String action) {
     FlutterInsider.Instance.tagEvent('quick_action_used').addParameterWithString('action', action).build();
+  }
+
+  @override
+  void appIconQuickActionSelected({
+    required String action,
+    required String outcome,
+    String? reason,
+  }) {
+    final event = FlutterInsider.Instance.tagEvent(
+      'app_icon_quick_action_used',
+    ).addParameterWithString('action', action).addParameterWithString('outcome', outcome);
+    if (reason != null) {
+      event.addParameterWithString('reason', reason);
+    }
+    event.build();
   }
 
   @override
@@ -192,12 +208,13 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   }
 
   @override
-  void navigationSearch(
-      {required String destinationCity,
-      required String keyword,
-      required String originCity,
-      required bool isResultsFound,
-      required int resultCount}) {
+  void navigationSearch({
+    required String destinationCity,
+    required String keyword,
+    required String originCity,
+    required bool isResultsFound,
+    required int resultCount,
+  }) {
     FlutterInsider.Instance.tagEvent('navigation_search')
         .addParameterWithString('event_name', 'navigation_search')
         .addParameterWithString('keyword', keyword)
@@ -210,15 +227,14 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   }
 
   @override
-  void isNavigationUser({bool isNavUser=false}) {
-    FlutterInsider.Instance.tagEvent('is_navigation_user')
-        .addParameterWithString('is_navigation_user', isNavUser?'1':'0')
-        .build();
+  void isNavigationUser({bool isNavUser = false}) {
+    FlutterInsider.Instance.tagEvent(
+      'is_navigation_user',
+    ).addParameterWithString('is_navigation_user', isNavUser ? '1' : '0').build();
   }
 
   @override
-  void poiContributionUsed({required String type})
-  {
+  void poiContributionUsed({required String type}) {
     FlutterInsider.Instance.tagEvent('contribution_used')
         .addParameterWithString('event_name', 'poi_contribution_used')
         .addParameterWithString('contribution_type', type)

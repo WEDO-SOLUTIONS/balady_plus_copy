@@ -1,0 +1,1 @@
+enum ImageAssetType { svg, image }

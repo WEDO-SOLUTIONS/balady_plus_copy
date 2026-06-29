@@ -124,10 +124,20 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     final inputWidget = Directionality(
       textDirection: direction,
       child: BaladyTextInput(
+
         label: separateLabelForPhone
             ? null
             : (widget.labelText != null
-                  ? BaladyInputLabel(text: widget.labelText!, isRequired: widget.isRequired)
+                  ? BaladyInputLabel(
+                text: widget.labelText!,
+                isRequired: widget.isRequired,
+                style: (context.textStyles.captionMediumRegular.copyWith(
+                  color: context.colors.foregroundDefault,
+                )).apply(
+                  fontSizeFactor: MediaQuery.of(context).textScaleFactor,
+                ),
+              )
+
                   : null),
         inputState: widget.readonly ? BaladyInputState.readOnly : _inputErrorState,
         controller: _controller,

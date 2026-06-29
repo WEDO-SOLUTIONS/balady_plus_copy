@@ -59,11 +59,13 @@ class QuickActionButton extends ConsumerWidget {
 
       // Keep default icon centered inside the button
       return Center(
-        child: child ?? Icon(
-          icon,
-          size: Spacing.$6x ,
-          color: colors.accentDefault,
-        ),
+        child:
+            child ??
+            Icon(
+              icon,
+              size: Spacing.$6x ,
+              color: colors.accentDefault,
+            ),
       );
     }
 
@@ -72,42 +74,51 @@ class QuickActionButton extends ConsumerWidget {
         ? MakkahPoiConstants.darkSheet
         : isDGADark ?colors.accentSecondarySoft :colors.backgroundSurface1;
 
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            height: buttonSize,
-            width: buttonSize,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                color: tileColor,
-                boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
+    return Semantics(
+      button: true,
+      label: displayText,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: buttonSize,
+              width: buttonSize,
+              child: ExcludeSemantics(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    color: tileColor,
+                    boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
                 border: Border.all(
                   color:colors.borderSoft,
                   width: 1,
                 ),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                child: buildIcon(),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    child: buildIcon(),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        SizedBox(
-          width: buttonSize,
-          child: Padding(
-            padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
-            child: Text(
-              displayText,
-              style: textStyle,
-              textAlign: TextAlign.center,
+            ExcludeSemantics(
+              child: SizedBox(
+                width: buttonSize,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
+                  child: Text(
+                    displayText,
+                    style: textStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

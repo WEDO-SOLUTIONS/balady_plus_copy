@@ -176,7 +176,6 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
                       onTap: () => _onYourLocationTap(context, ref),
                     ),
                     ContentRow(
-
                       leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
                       text: ContentRowTextOptions(title: context.l10n.findInFav),
                       trailing: ContentRowTextTrailingOptions(

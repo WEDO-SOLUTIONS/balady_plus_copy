@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.1+856
-# version: 3.13.2+451
+version: 3.30.3+576
+#version: 3.13.1+452
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -113,7 +113,7 @@ dependencies:
   flutter_timezone: ^5.0.1
   # launch_review: ^3.0.1  # Replaced with store_redirect due to Registrar compatibility issues
   mocktail: ^1.0.4
-  flutter_riverpod: ^3.1.0
+  flutter_riverpod: 3.1.0
   app_tracking_transparency: ^2.0.6+1
   adjust_sdk: ^5.5.0
   flutter_appauth: ^11.0.0
@@ -177,6 +177,7 @@ dependencies:
 
   mapness:
     path: mapness
+  quick_actions: ^1.1.0
 
   provider: ^6.1.5+1
 
@@ -212,8 +213,9 @@ dependencies:
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
+     # TODO: we need to double check if 0.0.13 published on new host
      hosted: https://balady-unpub-stg.momah.gov.sa/
-     version: 0.0.3
+     version: 0.0.13
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main

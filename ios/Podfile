@@ -1,3 +1,9 @@
+# Spec sources. The ByteDance / VolcEngine repos host the RangersAppLog
+# (BytePlus DataFinder) XCFramework, which is not on the public CocoaPods CDN.
+source 'https://cdn.cocoapods.org'
+source 'https://github.com/bytedance/cocoapods_sdk_source_repo.git'
+source 'https://github.com/volcengine/volcengine-specs.git'
+
 # Uncomment this line to define a global platform for your project
 platform :ios, '16.0'
 
@@ -30,6 +36,15 @@ target 'Runner' do
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   pod 'InsiderMobile'
   pod 'InsiderHybrid'
+
+  # BytePlus RangersAppLog — XCFramework build.
+  # This version contains both device (arm64) and simulator (arm64-simulator)
+  # slices, so it works on the iOS Simulator (stg/dev) and real devices
+  # (pre/prod) from a single pod install. Pinning it here (instead of letting
+  # the Flutter plugin pull RangersAppLog/Core >= 5.6.3 from the CDN) is required
+  # because the XCFramework build only exists in the ByteDance/VolcEngine specs.
+  pod 'RangersAppLog', '6.17.7-iOS26-xc-rc2',
+      :subspecs => ['Core', 'Host', 'Log', 'UITracker']
 end
 
 post_install do |installer|

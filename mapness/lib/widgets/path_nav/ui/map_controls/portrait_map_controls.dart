@@ -42,7 +42,14 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
               padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
               child: widget.maneuverAndLimitWidget,
             ),
-            const SizedBox(height: uikit.Spacing.$6x),
+             const SizedBox(height: uikit.Spacing.$6x),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: widget.padding.left),
+                child: const SoundControl(),
+              ),
+            ),
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: widget.showControls,
@@ -51,29 +58,25 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Padding(
-                        padding: widget.padding,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SoundControl(),
-                            AnimatedOpacity(
-                              opacity: isVisible ? 1 : 0,
-                              duration: const Duration(milliseconds: 250),
-                              child: IgnorePointer(
-                                ignoring: !isVisible,
-                                child: const Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    TrafficParkingControl(trafficVisible: false),
-                                    SizedBox(height: uikit.Spacing.$2x),
-                                    DimensionControl(),
-                                  ],
-                                ),
+                      AnimatedOpacity(
+                        opacity: isVisible ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: IgnorePointer(
+                          ignoring: !isVisible,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: widget.padding,
+                                child: const TrafficParkingControl(trafficVisible: false),
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              Padding(
+                                padding: widget.padding,
+                                child: const DimensionControl(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       const Spacer(),

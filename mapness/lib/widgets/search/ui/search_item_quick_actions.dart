@@ -5,10 +5,10 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
@@ -30,8 +30,12 @@ import '../../../features/special_themes/core/special_theme_mode.dart';
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
 
+  /// DataFinder: reports a `search_results_click` with the matching action.
+  final void Function(DataFinderClickAction action)? onResultAction;
+
   const SearchItemQuickActions({
     required this.directoryObject,
+    this.onResultAction,
     super.key,
   });
 
@@ -75,6 +79,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final bool isBaseTheme = specialThemeMode == SpecialThemeMode.base || specialThemeMode == SpecialThemeMode.base;
     final colorScheme = isFoundingDay ? ButtonColorScheme.accent : ButtonColorScheme.accentSecondary;
+
     final actions = [
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
@@ -89,6 +94,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
+          onResultAction?.call(DataFinderClickAction.initiateNavigation);
           BssService.instance.trackRouteTap(directoryObject);
           openRoutingRoutes(
             context,
@@ -105,7 +111,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
           );
         },
       ),
-
       ItemActionBar(
         icon: iconData,
         iconSize: 15,
@@ -118,7 +123,9 @@ class SearchItemQuickActions extends HookConsumerWidget {
         borderRadius: 4,
         buttonType: ButtonType.secondary,
         colorScheme: colorScheme,
+        label: isFavourite ? context.l10n.removeFromFavorites : context.l10n.addToFavorite,
         onPressed: () {
+          onResultAction?.call(DataFinderClickAction.addToFavorites);
           _onFavoriteTap(
             context: context,
             ref: ref,
@@ -129,6 +136,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ),
       ThrottledCallbackWidget(
         callback: () {
+          onResultAction?.call(DataFinderClickAction.sharePoi);
           final markerPosition = directoryObject.markerPosition;
           final latLng = markerPosition != null
               ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)
@@ -151,6 +159,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           borderRadius: 4,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          label: context.l10n.share,
           onPressed: throttledShare,
         ),
       ),
@@ -164,6 +173,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: GeneralIcons.phoneLTR,
           colorScheme: colorScheme,
           buttonType: ButtonType.secondary,
+          label: context.l10n.call,
           border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
           onPressed: () {
@@ -190,6 +200,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           buttonType: ButtonType.secondary,
           border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
+          label: context.l10n.feedbackWebsiteLabel,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
             poiActions.launch(website);
@@ -205,6 +216,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
+          label: context.l10n.feedbackWebsiteOrSocialMedia,
           border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
           borderRadius: 4,
           onPressed: () {

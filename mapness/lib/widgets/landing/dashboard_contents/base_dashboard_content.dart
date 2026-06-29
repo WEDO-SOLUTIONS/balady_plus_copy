@@ -58,7 +58,6 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
-            // 1. Feedback Banner (ساهم معنا)
             Column(
               children: [
                 StoriesWidget(
@@ -69,7 +68,8 @@ class BaseDashboardContent extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: Spacing.$3x),
+            const SizedBox(height: Spacing.$6x),
+            // 1. Feedback Banner (ساهم معنا)
             SizedBox(
               width: double.infinity,
               child: FeedbackBannerCardV2(
@@ -269,7 +269,7 @@ class BaseDashboardContent extends ConsumerWidget {
               const PlacePreview(),
               const SizedBox(height: Spacing.$4x),
               const ExploreCard(),
-              const SizedBox(height: Spacing.$6x),
+              const SizedBox(height: Spacing.$10x),
             ],
             if (themeConfig.useThemedExploreBackground)
               DecoratedBox(

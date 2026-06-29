@@ -264,6 +264,24 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+  Future<void> _applyInitialPadding() async {
+    if (mounted) {
+      // await Future.delayed(const Duration(milliseconds: 200)); // Small delay for animation to render
+      // if (!mounted) {
+      //   return;
+      // }
+
+      final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+      if (isPortrait && widget.navType != RouteSearchOptionsMessage.publicTransport) {
+        final stableInset = uikit.Spacing.$3x;
+        final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
+        final bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
+
+        _bottomHeightNotifier.value = bottomHeight;
+        _setPaddingToCamera(bottomHeight);
+      }
+    }
+  }
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     if (!mounted) {
@@ -287,6 +305,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       if (!mounted) {
         return;
       }
+      await _applyInitialPadding();
       await saveNavigationState();
     } else {
       final restored = await restoreNavigationState();
@@ -298,6 +317,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
       // After restore, move camera close without forcing follow to avoid zoom flicker
       await _moveCameraToUser(followAfter: false);
+      await _applyInitialPadding();
     }
 
     if (widget.navType == RouteSearchOptionsMessage.car) {

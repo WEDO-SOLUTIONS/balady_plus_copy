@@ -3,6 +3,7 @@ package momra.balady.android
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
@@ -25,6 +26,7 @@ class MainActivity : AudioServiceFragmentActivity() {
     private var audioCoordinationChannel: MethodChannel? = null
     private var audioManager: AudioManager? = null
     private var focusRequest: AudioFocusRequest? = null
+    private var mbcLockBridge: MbcLockBridge? = null
 
     private val audioFocusListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
         // Forward focus changes to Flutter so it can pause/resume the in-app player.
@@ -45,6 +47,9 @@ class MainActivity : AudioServiceFragmentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Capture before super.onCreate — FlutterFragmentActivity may attach plugins and read the intent.
+        AppIconQuickActionChannel.captureFromIntent(intent)
+
         super.onCreate(savedInstanceState)
         // Initialize Adjust OAID
         AdjustOaid.readOaid(applicationContext)
@@ -57,15 +62,26 @@ class MainActivity : AudioServiceFragmentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Fallback for devices that deliver the shortcut intent after onCreate.
+        AppIconQuickActionChannel.captureFromIntent(intent)
         MainAppScreenStateNotifier.setState(MainAppScreenState.STARTED)
     }
 
     override fun onResume() {
         super.onResume()
+        // Warm-start shortcuts can arrive via onNewIntent without onStart re-running.
+        AppIconQuickActionChannel.captureFromIntent(intent)
         MainAppScreenStateNotifier.setState(MainAppScreenState.RESUMED)
 
         // Ensure we are listening for focus changes while the app is active.
         requestAudioFocusForCoordination()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        // Required for singleTask — home-screen shortcuts deliver a new intent on warm resume.
+        setIntent(intent)
+        AppIconQuickActionChannel.captureFromIntent(intent)
     }
 
     override fun onPause() {
@@ -112,6 +128,13 @@ class MainActivity : AudioServiceFragmentActivity() {
             flutterEngine.dartExecutor.binaryMessenger,
             "com.balady.audio_coordination"
         )
+
+        AppIconQuickActionChannel.register(flutterEngine.dartExecutor.binaryMessenger)
+
+        // MBC live-radio wake / Wi-Fi lock bridge — keeps the foreground
+        // streaming service alive while the screen is off so HLS doesn't stall
+        // on Wi-Fi throttling / Doze.
+        mbcLockBridge = MbcLockBridge(applicationContext).also { it.register(flutterEngine) }
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {
@@ -127,15 +150,28 @@ class MainActivity : AudioServiceFragmentActivity() {
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
 
-                val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                // IMPORTANT: do NOT request AUDIOFOCUS_GAIN here.
+                // That would steal exclusive media focus from the MBC live-radio
+                // foreground service (just_audio_background) every time the
+                // activity resumes, which on screen-off / fast app-switching
+                // contributed to the radio dying after 1-2 min on Android.
+                // We only need transient, dux-friendly focus to listen for
+                // navigation voice ducking hints from the system.
+                val req = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
                     .setAudioAttributes(attrs)
+                    .setWillPauseWhenDucked(false)
+                    .setAcceptsDelayedFocusGain(true)
                     .setOnAudioFocusChangeListener(audioFocusListener)
                     .build()
                 focusRequest = req
                 am.requestAudioFocus(req)
             } else {
                 @Suppress("DEPRECATION")
-                am.requestAudioFocus(audioFocusListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+                am.requestAudioFocus(
+                    audioFocusListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK,
+                )
             }
         } catch (_: Exception) {
             // Best-effort: if focus cannot be requested, coordination will be unavailable.

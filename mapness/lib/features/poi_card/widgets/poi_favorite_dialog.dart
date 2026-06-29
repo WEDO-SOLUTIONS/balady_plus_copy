@@ -8,7 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
@@ -19,7 +24,12 @@ import 'package:sheetify/sheetify.dart';
 class PoiFavoriteDialogPage extends ConsumerStatefulWidget {
   final FavouriteItem favItem;
 
-  const PoiFavoriteDialogPage({required this.favItem, super.key});
+  /// Full POI payload (addr/type/distance) captured at the opener, where the
+  /// source [DirectoryObjectMessage] is still in hand. [FavouriteItem] is a thin
+  /// DTO that drops these fields, so we carry them separately for `favorite_add`.
+  final DataFinderPoi? favoritePoi;
+
+  const PoiFavoriteDialogPage({required this.favItem, this.favoritePoi, super.key});
 
   @override
   ConsumerState<PoiFavoriteDialogPage> createState() => _PoiFavoriteDialogPageState();
@@ -31,6 +41,36 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
   void _withPop(Future<void> future) {
     unawaited(future);
     context.router.pop();
+  }
+
+  /// DataFinder: fires `favorite_add` when a POI is added to favourites.
+  ///
+  /// Prefers the full [PoiFavoriteDialogPage.favoritePoi] captured at the opener
+  /// (carries `poi_addr`/`poi_type`/`poi_distance`). Falls back to id+name from
+  /// the thin [FavouriteItem] only when no rich payload was supplied.
+  void _reportFavoriteAdd(DataFinderFavoriteType favoriteType) {
+    final objectId = parseObjectIdFromFavouriteEntityId(widget.favItem.entity?.id);
+    final poi =
+        widget.favoritePoi ??
+        DataFinderPoi(
+          id: objectId?.toString(),
+          name: widget.favItem.title,
+        );
+    // Resolve the source fresh from the stamped origin + live navigation state.
+    // `dataFinderEventSource` reads the journey origin from the tracker (set by
+    // the map-POI tap / Explore / Routes / Free Roam entry controls) and the
+    // current nav flags, so a direct map-POI favourite (no prior search)
+    // correctly yields Map-Main Page, while a favourite from a Routes/Direction
+    // search inherits that surface. The `map` scope here only seeds the notifier;
+    // the resolved value is origin-based, not scope-based.
+    final eventSource = ref.read(searchProvider(SearchScopeEnum.map.value).notifier).dataFinderEventSource;
+    ref
+        .read(appAnalyticsProvider)
+        .favoriteAdd(
+          eventSource: eventSource,
+          favoriteType: favoriteType,
+          poi: poi,
+        );
   }
 
   @override
@@ -84,7 +124,10 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
             children: [
               if (showWork)
                 ContentRow(
-                  onTap: () => _withPop(favNotifier.setWork(widget.favItem)),
+                  onTap: () {
+                    _reportFavoriteAdd(DataFinderFavoriteType.work);
+                    _withPop(favNotifier.setWork(widget.favItem));
+                  },
                   options: ContentRowOptions(
                     padding: itemPadding,
                     dividerEnabled: true,
@@ -95,7 +138,10 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
                 ),
               if (showHome)
                 ContentRow(
-                  onTap: () => _withPop(favNotifier.setHome(widget.favItem)),
+                  onTap: () {
+                    _reportFavoriteAdd(DataFinderFavoriteType.home);
+                    _withPop(favNotifier.setHome(widget.favItem));
+                  },
                   options: ContentRowOptions(
                     padding: itemPadding,
                     dividerEnabled: true,
@@ -127,6 +173,9 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
           context,
           callback: () {
             final favNotifier = ref.read(favouriteCacheProvider.notifier);
+            if (!isFavourite) {
+              _reportFavoriteAdd(DataFinderFavoriteType.notSpecified);
+            }
             _withPop(isFavourite ? favNotifier.deleteItem(widget.favItem) : favNotifier.addItem(widget.favItem));
           },
         );

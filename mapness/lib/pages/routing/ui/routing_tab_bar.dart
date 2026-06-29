@@ -6,8 +6,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:urbi_utils/urbi_utils.dart';
+
+String _routeModeTabTitle(AppLocalizations l10n, RouteSearchOptionsMessage mode) {
+  if (mode == RouteSearchOptionsMessage.car || mode == RouteSearchOptionsMessage.truck) {
+    return l10n.mapLayerCar;
+  }
+  if (mode == RouteSearchOptionsMessage.publicTransport) {
+    return l10n.mapLayerTransport;
+  }
+  if (mode == RouteSearchOptionsMessage.pedestrian) {
+    return l10n.a11yRouteWalking;
+  }
+  if (mode == RouteSearchOptionsMessage.bicycle) {
+    return l10n.a11yRouteBicycle;
+  }
+  if (mode == RouteSearchOptionsMessage.scooter) {
+    return l10n.a11yRouteScooter;
+  }
+  return l10n.nav_route;
+}
 
 class RouteTabBar extends ConsumerWidget {
   final void Function(RouteSearchOptionsMessage) onChanged;
@@ -48,19 +69,23 @@ class RouteTabBar extends ConsumerWidget {
     );
   }
 
-  Widget _buildLockedNavTypeWidget(BuildContext context) => Expanded(
-    child: TabsRow.v2(
-      onIndexChanged: (_) {},
-      tabsContent: [
-        TabsRowV2Content(
-          leadingIcon: TabsV2IconData(
-            lockedNavType!.icon(context, noPublicTransportData: false, isPedestrianBlocked: false, isOffline: false),
+  Widget _buildLockedNavTypeWidget(BuildContext context) {
+    final l10n = context.l10n;
+    return Expanded(
+      child: TabsRow.v2(
+        onIndexChanged: (_) {},
+        tabsContent: [
+          TabsRowV2Content(
+            title: _routeModeTabTitle(l10n, lockedNavType!),
+            leadingIcon: TabsV2IconData(
+              lockedNavType!.icon(context, noPublicTransportData: false, isPedestrianBlocked: false, isOffline: false),
+            ),
+            onTap: () {},
           ),
-          onTap: () {},
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 
   Widget _buildRouteOptionsWidget(BuildContext context) {
     const chips = [
@@ -71,6 +96,7 @@ class RouteTabBar extends ConsumerWidget {
 
     final errorPedestrian = routes.error is WalkingDistanceException;
     final noInternetException = routes.error is NoInternetException;
+    final l10n = context.l10n;
 
     return Expanded(
       child: TabsRow.v2(
@@ -79,6 +105,7 @@ class RouteTabBar extends ConsumerWidget {
         tabsContent: chips
             .map(
               (chip) => TabsRowV2Content(
+                title: _routeModeTabTitle(l10n, chip),
                 leadingIcon: TabsV2IconData(
                   chip.icon(
                     context,

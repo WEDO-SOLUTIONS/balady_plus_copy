@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
+import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
 
 class MediaCatalogItem extends StatelessWidget {
   const MediaCatalogItem({
@@ -18,6 +19,7 @@ class MediaCatalogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.streamAudioColors;
     final title = channel.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air');
     final subTitle = channel.name ?? '-';
     final hasProgram = channel.currentPlayedProgram != null;
@@ -45,10 +47,10 @@ class MediaCatalogItem extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: const Alignment(0.50, -0.00),
                             end: const Alignment(0.50, 1.00),
-                            colors: [Colors.black.withOpacity(0.60), Colors.black.withOpacity(0.90)],
+                            colors: [Colors.black.withValues(alpha: 0.60), Colors.black.withValues(alpha: 0.90)],
                           ),
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white.withOpacity(0.10)),
+                            side: BorderSide(color: theme.playerBorder),
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -70,8 +72,8 @@ class MediaCatalogItem extends StatelessWidget {
                                 end: Alignment.bottomCenter,
                                 stops: const [0.00, 1.00],
                                 colors: [
-                                  Colors.black.withOpacity(0.6),
-                                  Colors.black.withOpacity(isSelected ? 0.9 : 0.2)
+                                  Colors.black.withValues(alpha: 0.6),
+                                  Colors.black.withValues(alpha: isSelected ? 0.9 : 0.2),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(8),
@@ -93,7 +95,7 @@ class MediaCatalogItem extends StatelessWidget {
                             Assets.icons.svg.audio.waves.keyName,
                             width: 32,
                             height: 32,
-                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(theme.waveGradientStart, BlendMode.srcIn),
                           ),
                         ),
                       )
@@ -105,12 +107,12 @@ class MediaCatalogItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: theme.playerText),
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       subTitle,
-                      style: const TextStyle(fontSize: 12, color: Colors.white60),
+                      style: TextStyle(fontSize: 12, color: theme.playerMutedText),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -146,19 +148,20 @@ class CircleImage extends StatelessWidget {
   final String url;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final theme = context.streamAudioColors;
+
+    return Container(
         height: 45,
         width: 45,
         padding: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.full),
-          border: Border.all(
-            color: Colors.black.withOpacity(0.10),
-          ),
+          border: Border.all(color: theme.playerBorder),
           color: Colors.white,
-          boxShadow: const [
-            BoxShadow(color: Colors.black26, blurRadius: 12, offset: Offset(0, 10)),
-            BoxShadow(color: Colors.black26, blurRadius: 36, offset: Offset(0, 12))
+          boxShadow: [
+            BoxShadow(color: theme.playerShadow, blurRadius: 12, offset: const Offset(0, 10)),
+            BoxShadow(color: theme.playerShadow, blurRadius: 36, offset: const Offset(0, 12)),
           ],
         ),
         child: !url.contains('svg')
@@ -170,7 +173,7 @@ class CircleImage extends StatelessWidget {
                   errorBuilder: (_, __, ___) => Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Assets.icons.svg.icMbcMood.svg(
-                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                     ),
                   ),
                 ),
@@ -182,12 +185,13 @@ class CircleImage extends StatelessWidget {
                   placeholderBuilder: (context) => Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Assets.icons.svg.icMbcMood.svg(
-                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                     ),
                   ),
                 ),
               ),
       );
+  }
 }
 
 class ProgramImage extends StatelessWidget {
@@ -197,20 +201,23 @@ class ProgramImage extends StatelessWidget {
   final bool withBoarder;
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final theme = context.streamAudioColors;
+
+    return Container(
         width: 96,
         height: 96,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: withBoarder ? Border.all(color: Colors.black.withOpacity(0.1)) : null,
-          color: Colors.white,
+          border: withBoarder ? Border.all(color: theme.playerBorder) : null,
+          color: const Color(0xFF161B26),
         ),
         child: url.contains('svg')
             ? SvgPicture.network(
                 url,
                 placeholderBuilder: (context) => Assets.icons.svg.icMbcMood.svg(
-                  colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                 ),
               )
             : Padding(
@@ -221,10 +228,11 @@ class ProgramImage extends StatelessWidget {
                     url,
                     fit: BoxFit.fitWidth,
                     errorBuilder: (_, __, ___) => Assets.icons.svg.icMbcMood.svg(
-                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                     ),
                   ),
                 ),
             ),
       );
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart' show BuildContextExt;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
@@ -28,15 +29,13 @@ class LayerSliverList extends ConsumerWidget {
     final layersControl = ref.watch(layersControlsProvider.notifier);
     final mapDimensionsState = ref.watch(mapDimensionsControlProvider);
 
-    return SliverGrid.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 4,
-        mainAxisExtent: 110,
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 10,
-      ),
+    // used AlignedGridView because it can handle dynamic child height
+    return AlignedGridView.count(
       itemCount: layerType.length,
+      crossAxisCount: 3,
+      mainAxisSpacing: 1,
+      crossAxisSpacing: 10,
+      shrinkWrap: true,
       itemBuilder: (_, index) {
         final value = layerType[index];
         final isSelected = layersState.selectedType == value;

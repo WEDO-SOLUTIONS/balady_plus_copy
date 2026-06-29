@@ -17,6 +17,7 @@ import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_sheet.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
+import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -50,6 +51,19 @@ class ShareMyLocationPage extends HookConsumerWidget {
       closestPoint = this.closestPoint;
       cameraConfig = this.cameraConfig;
     }
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) {
+          return;
+        }
+        final intent = ref.read(shareMyLocationLaunchIntentProvider.notifier).consume();
+        if (intent == ShareMyLocationLaunchMode.liveLocationOptions) {
+          _showEtaControlSheet(context, ref, closestPoint: closestPoint);
+        }
+      });
+      return null;
+    }, const []);
 
     final _bottomHeightNotifier = useState(0.0);
     final _animationController = useAnimationController(duration: const Duration(milliseconds: 300));
@@ -172,7 +186,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
                           ),
                   ),
                   MyLocationPoiActions(
-                    onShare: () => _showEtaControlSheet(context, ref),
+                    onShare: () => _showEtaControlSheet(context, ref, closestPoint: closestPoint),
                     onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
                     onParkingAdd: () => context.router.push(
                       ParkingSpotRoute(
@@ -200,7 +214,8 @@ class ShareMyLocationPage extends HookConsumerWidget {
     await read.removeAllMarkers();
   }
 
-  void _showEtaControlSheet(BuildContext context, WidgetRef ref) {
+  void _showEtaControlSheet(BuildContext context, WidgetRef ref, {LatLng? closestPoint}) {
+    final point = closestPoint ?? this.closestPoint;
     // TODO(Ayat) Change showModalBottomSheet to screen AutoRoute
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
@@ -209,7 +224,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       builder: (context) => EtaSharingSheet(
         onCurrentLocationPressed: () {
           Navigator.pop(context);
-          ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint);
+          ref.read(poiCardActionsProvider.notifier).shareMyLocation(point);
         },
         onLiveLocationPressed: () {
           Navigator.pop(context);

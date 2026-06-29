@@ -1,9 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -13,7 +13,9 @@ import 'package:balady_plus/app/features/delegators/presentation/delegators_cubi
 import 'package:balady_plus/app/features/delegators/presentation/widgets/delegator_list.dart';
 import 'package:balady_plus/app/features/delegators/services/account_selection_service.dart';
 import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_info.dart';
+import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/apps_group_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -26,6 +28,7 @@ class ProfileCard extends StatelessWidget {
   final bool selected;
   final bool isListItem;
   final String? groupId;
+  final bool isIndividual;
 
   const ProfileCard({
     super.key,
@@ -35,6 +38,7 @@ class ProfileCard extends StatelessWidget {
     this.selected = false,
     this.isListItem = true,
     this.groupId,
+    required this.isIndividual,
   });
 
   @override
@@ -99,105 +103,251 @@ class ProfileCard extends StatelessWidget {
               }
             }
           },
-          child: Container(
-            margin: isListItem ? const EdgeInsets.symmetric(vertical: 8) : const EdgeInsets.all(16),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: ShapeDecoration(
-              color: isIndivisual
-                  ? Colors.transparent
-                  : themeNotifier.isDarkMode
-                  ? Color(0xFF00202D)
-                  : const Color(0xFFFAFAFA),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: selected ? const Color(0xFF2AB3A9) : Colors.transparent),
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (!isIndivisual)
-                  CircleIcon(
-                    circleSize: 32,
-                    iconSize: 16,
-                    showShadow: false,
-                    icon: IconPath.profileIcon,
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    iconColor: agentTextColor,
-                  ),
-                const SizedBox(width: 16),
-                Expanded(
-                  flex: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        isIndivisual ? 'indivisual_account'.tr() : name,
-                        maxLines: 2,
-                        style: TextStyle(
-                          color: themeNotifier.isDarkMode ? Colors.white : const Color(0xFF1B1B1B),
-                          fontSize: 16,
-                          fontFamily: GeneralKey.appFontType,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      if (!isIndivisual)
-                        Text(
-                          type,
-                          style: TextStyle(
-                            color: themeNotifier.isDarkMode
-                                ? Colors.white.withValues(alpha: 0.6)
-                                : const Color(0x993C3C43),
-                            fontSize: 12,
-                            fontFamily: GeneralKey.appFontType,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      if (!isIndivisual)
-                        Container(
-                          width: 60,
-                          height: 30,
-                          decoration: BoxDecoration(color: agentBgColor, borderRadius: BorderRadius.circular(6)),
-                          alignment: Alignment.center,
-                          child: Text(
-                            agentType,
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: agentTextColor,
-                              fontSize: 12,
-                              fontFamily: GeneralKey.appFontType,
-                              fontWeight: FontWeight.w400,
+          child: SizedBox(
+            // width: context.w(461),
+            // height: context.h(130),
+            //! Individual card ....
+            child: isIndividual
+                ? Card(
+                    elevation: 0,
+                    shadowColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // width: double.infinity,
+                                      child: AutoSizeText(
+                                        maxFontSize: 16,
+                                        minFontSize: 12,
+                                        isIndivisual ? 'indivisual_account'.tr() : name,
+                                        maxLines: 2,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          fontFamily: GeneralKey.appFontType,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16,
+                                          wordSpacing: 0,
+                                          height: 0,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 22, // Match the design height
+                                      width: 22,
+                                      alignment: Alignment.center, // Centers the inner circle
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.transparent, // Background of the radio
+                                        border: Border.all(
+                                          color: selected
+                                              ? Theme.of(context).primaryColor
+                                              : Theme.of(context).colorScheme.onSurface,
+                                          width: 1, // Thinner border as per design
+                                        ),
+                                      ),
+                                      child: selected
+                                          ? Container(
+                                              width: 14,
+                                              height: 14,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context).primaryColor,
+                                                shape: BoxShape.circle,
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                  ],
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 9.0),
+                                  child: SizedBox(
+                                    width: context.screenWidth,
+                                    child: DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).colorScheme.onPrimaryFixedVariant,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              name,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface,
+                                                fontSize: 16,
+                                                fontFamily: GeneralKey.appFontType,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            Text(
+                                              type,
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onSurface.withAlpha(90),
+                                                fontSize: 14,
+                                                fontFamily: GeneralKey.appFontType,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: selected ? const Color(0xFF2AB3A9) : const Color(0xFFB2B2B2),
-                        width: selected ? 4 : 2,
+                        ],
+                      ),
+                    ),
+                  )
+                //! Business card ....
+                : Card(
+                    color: Theme.of(context).colorScheme.onPrimaryFixedVariant,
+                    elevation: 0,
+                    shadowColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 1, color: Colors.transparent),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: AutoSizeText(
+                                    maxFontSize: 16,
+                                    minFontSize: 12,
+                                    isIndivisual ? 'indivisual_account'.tr() : name,
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      fontFamily: GeneralKey.appFontType,
+                                      fontWeight: FontWeight.w400,
+                                      wordSpacing: 0,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ),
+
+                                Text(
+                                  type,
+                                  style: TextStyle(
+                                    color: themeNotifier.isDarkMode
+                                        ? Colors.white.withValues(alpha: 0.6)
+                                        : const Color(0x993C3C43),
+                                    fontSize: 12,
+                                    fontFamily: GeneralKey.appFontType,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                SizedBox(height: context.screenHeight * 0.01),
+                                Container(
+                                  // width: context.w(90), // 1. Removed this fixed width to allow auto-expansion
+                                  decoration: BoxDecoration(
+                                    color: agentBgColor,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0,
+                                      vertical: 4.0,
+                                    ), // 2. Changed to symmetric horizontal and vertical padding for uniform looks
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize
+                                          .min, // 3. CRITICAL: Tells the Row to only take up as much space as its children need
+                                      children: [
+                                        SizedBox(
+                                          width: context.w(10),
+                                          height: context.h(10),
+                                          child: DecoratedBox(
+                                            decoration: BoxDecoration(color: agentTextColor, shape: BoxShape.circle),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 6,
+                                        ), // 4. Replaced spaceEvenly with a fixed spacer for stable layout
+                                        Text(
+                                          agentType,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                            color: agentTextColor,
+                                            fontSize: 14,
+                                            fontFamily: GeneralKey.appFontType,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 22, // Match the design height
+                              width: 22,
+                              alignment: Alignment.center, // Centers the inner circle
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent, // Background of the radio
+                                border: Border.all(
+                                  color: selected
+                                      ? Theme.of(context).primaryColor
+                                      : Theme.of(context).colorScheme.onSurface,
+                                  width: 1, // Thinner border as per design
+                                ),
+                              ),
+                              child: selected
+                                  ? Container(
+                                      width: 14,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-
-                // if (!isListItem && (userInfo != null || delegator != null))
-                //   SvgPicture.asset(
-                //     IconPath.arrowDown,
-                //     width: 16,
-                //     height: 16,
-                //     placeholderBuilder: (context) =>
-                //         Icon(Icons.keyboard_arrow_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
-                //   ),
-              ],
-            ),
           ),
         );
       },
@@ -209,13 +359,17 @@ class ProfileCard extends StatelessWidget {
     DelegatorEntity? newDelegator,
     AgentEntity? newAgent,
   }) async {
-    print(
-      "DEBUG: _handleAccountSelection called - Delegator: ${newDelegator?.entityName}, Agent: ${newAgent?.grantorName}, GroupId: $groupId",
-    );
+    if (kDebugMode) {
+      print(
+        "DEBUG: _handleAccountSelection called - Delegator: ${newDelegator?.entityName}, Agent: ${newAgent?.grantorName}, GroupId: $groupId",
+      );
+    }
     final cubit = context.read<DelegatorsCubit>();
 
     if (groupId != null) {
-      print("DEBUG: GroupId is not null, calling AccountSelectionService.handleAccountSwitch");
+      if (kDebugMode) {
+        print("DEBUG: GroupId is not null, calling AccountSelectionService.handleAccountSwitch");
+      }
       // Use AccountSelectionService to handle cross-group navigation
       await AccountSelectionService.handleAccountSwitch(
         currentGroupId: groupId!,
@@ -223,21 +377,29 @@ class ProfileCard extends StatelessWidget {
         newAgent: newAgent,
         cubit: cubit,
         onNavigateToGroup: (targetGroupId) {
-          print("DEBUG: Cross-group navigation triggered to group: $targetGroupId");
+          if (kDebugMode) {
+            print("DEBUG: Cross-group navigation triggered to group: $targetGroupId");
+          }
 
           // Close the delegator list bottom sheet immediately
           Navigator.of(context).pop();
-          print("DEBUG: Closed delegator list bottom sheet");
+          if (kDebugMode) {
+            print("DEBUG: Closed delegator list bottom sheet");
+          }
 
           // Navigate back to main screen context, then navigate to new group
           // This mimics exactly how normal group navigation works from the main screen
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
-              print("DEBUG: Post-frame callback executing group switch to: $targetGroupId");
+              if (kDebugMode) {
+                print("DEBUG: Post-frame callback executing group switch to: $targetGroupId");
+              }
 
               // First, pop back to the main screen context
               // Navigator.of(context).pop();
-              print("DEBUG: Popped Personal group, back to main screen context");
+              if (kDebugMode) {
+                print("DEBUG: Popped Personal group, back to main screen context");
+              }
 
               // Then navigate to the Business group using the same pattern as main screen navigation
               Navigator.of(context).push(
@@ -245,9 +407,11 @@ class ProfileCard extends StatelessWidget {
                   opaque: false,
                   barrierColor: Colors.transparent,
                   pageBuilder: (_, __, ___) {
-                    print(
-                      "DEBUG: Building Business group overlay from main screen context with groupId: $targetGroupId",
-                    );
+                    if (kDebugMode) {
+                      print(
+                        "DEBUG: Building Business group overlay from main screen context with groupId: $targetGroupId",
+                      );
+                    }
                     return AppsGroupPage(groupId: targetGroupId);
                   },
                   transitionDuration: const Duration(milliseconds: 300),
@@ -263,9 +427,13 @@ class ProfileCard extends StatelessWidget {
                   },
                 ),
               );
-              print("DEBUG: Business group overlay pushed from main screen context successfully: $targetGroupId");
+              if (kDebugMode) {
+                print("DEBUG: Business group overlay pushed from main screen context successfully: $targetGroupId");
+              }
             } else {
-              print("DEBUG: Context not mounted, navigation failed");
+              if (kDebugMode) {
+                print("DEBUG: Context not mounted, navigation failed");
+              }
             }
           });
         },

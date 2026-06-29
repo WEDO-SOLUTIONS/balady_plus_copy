@@ -25,8 +25,14 @@ enum Language {
     'english' => Language.english,
     'arabic' => Language.arabic,
     // default is arabic
-    _ => Platform.localeName.toLowerCase().contains('en') ? Language.english : Language.arabic,
+    _ => fromSystemLocale(),
   };
+
+  /// Device / OS locale — independent of in-app language preference.
+  static Language fromSystemLocale() {
+    final locale = Platform.localeName.toLowerCase();
+    return locale.startsWith('en') ? Language.english : Language.arabic;
+  }
 
   static Language? parceString(String? s) => switch (s) {
     'en' => Language.english,
