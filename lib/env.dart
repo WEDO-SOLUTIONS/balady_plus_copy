@@ -109,7 +109,11 @@ abstract class AppEnv {
     if (Platform.isAndroid && type == EnvType.dev) {
       await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
-    HijriCalendar.setLocal(translator.activeLanguageCode);
+    const hijriSupportedLocales = {'en', 'ar', 'tr'};
+    final hijriLocale = hijriSupportedLocales.contains(translator.activeLanguageCode)
+        ? translator.activeLanguageCode
+        : 'en';
+    HijriCalendar.setLocal(hijriLocale);
     configLoading();
     await Initializer.init();
     NotificationService.init(initScheduled: true);
