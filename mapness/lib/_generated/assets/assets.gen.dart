@@ -953,11 +953,14 @@ class $AssetsImagesLayersGen {
   /// File path: assets/images/layers/default_map.png
   AssetGenImage get defaultMap => const AssetGenImage('assets/images/layers/default_map.png');
 
+  /// File path: assets/images/layers/img_layer_jeddah_bus.png
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
+
   /// File path: assets/images/layers/satellite.png
   AssetGenImage get satellite => const AssetGenImage('assets/images/layers/satellite.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [defaultMap, satellite];
+  List<AssetGenImage> get values => [defaultMap, imgLayerJeddahBus, satellite];
 }
 
 class $AssetsImagesMakkahQuickActionsGen {
@@ -1082,9 +1085,6 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/favourites.svg
   SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
 
-  /// File path: assets/images_svg/layers/jeddah_bus.svg
-  SvgGenImage get jeddahBus => const SvgGenImage('assets/images_svg/layers/jeddah_bus.svg');
-
   /// File path: assets/images_svg/layers/makkah_bus.svg
   SvgGenImage get makkahBus => const SvgGenImage('assets/images_svg/layers/makkah_bus.svg');
 
@@ -1108,7 +1108,6 @@ class $AssetsImagesSvgLayersGen {
     a3D,
     busSubMenu,
     favourites,
-    jeddahBus,
     makkahBus,
     metro,
     parking,
@@ -3375,9 +3374,10 @@ class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+  static const String quickActionsConfig = 'packages/mapness/assets/quick_actions_config.json';
 
   /// List of all assets
-  static List<String> get values => [config];
+  static List<String> get values => [config, quickActionsConfig];
 }
 
 class AssetGenImage {

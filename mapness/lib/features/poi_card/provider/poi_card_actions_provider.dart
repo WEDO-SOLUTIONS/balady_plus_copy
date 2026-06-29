@@ -52,10 +52,11 @@ class PoiCardActions extends _$PoiCardActions {
       if (context == null) {
         return;
       }
-      ShareUtil.sharePOI(
-        context: context,
-        markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
-      );
+      //TODO(Dimitri): Add this function
+      // ShareUtil.sharePOI(
+      //   context: context,
+      //   markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+      // );
     } else {
       onError();
     }
@@ -75,11 +76,12 @@ class PoiCardActions extends _$PoiCardActions {
         ],
       );
 
-      final shareLink = await ShareUtil.getSharePOILink(
-        context: context,
-        markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
-      );
-      await Clipboard.setData(ClipboardData(text: shareLink));
+      //TODO(Dimitri): Add this function
+      // final shareLink = await ShareUtil.getSharePOILink(
+      //   context: context,
+      //   markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+      // );
+      await Clipboard.setData(const ClipboardData(text: ''));
     }
   }
 

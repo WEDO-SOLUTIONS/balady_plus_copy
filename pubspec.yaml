@@ -16,6 +16,12 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
+# to access balady-unpub-stg.momah.gov.sa you must put this line on your local machine
+# 1- open terminal
+# 2- tun this command line
+# echo "80.225.75.31 balady-unpub-stg.momah.gov.sa" | sudo tee -a /etc/hosts
+# 80.225.75.31 - balady-unpub-stg.momah.gov.sa
+
 version: 3.30.3+576
 #version: 3.13.1+452
 
@@ -220,7 +226,6 @@ dependencies:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
   #    path: /Users/abdelrahmanismail/StudioProjects/balady_design_system
-
 
   ############################################################
 

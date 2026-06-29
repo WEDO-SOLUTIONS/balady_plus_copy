@@ -207,7 +207,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               },
                               onTapShare: () => ShareUtil.sharePOI(
                                 context: context,
-                                objectId: objectId?.toString(),
+                                objectId?.toString(),
                                 markerCoords: home?.coordinates,
                               ),
                               onTapChange: () {
@@ -270,8 +270,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 );
                               },
                               onTapShare: () => ShareUtil.sharePOI(
+                                objectId?.toString(),
                                 context: context,
-                                objectId: objectId?.toString(),
                                 markerCoords: work?.coordinates,
                               ),
                               onTapChange: () {
@@ -362,8 +362,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           });
                         },
                         onShareTap: () => ShareUtil.sharePOI(
+                          parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
                           context: context,
-                          objectId: parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
                           markerCoords: item.coordinates,
                         ),
                         onDelete: () => _deleteItem(item, ctx),

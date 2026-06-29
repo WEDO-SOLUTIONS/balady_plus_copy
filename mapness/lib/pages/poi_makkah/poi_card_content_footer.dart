@@ -219,7 +219,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
       },
     );
 
-    ShareUtil.sharePOI(context: context, objectId: shareId, markerCoords: coordinates);
+    ShareUtil.sharePOI(shareId, context: context, markerCoords: coordinates);
   }
 
   @override
