@@ -219,19 +219,19 @@ class LayersControls extends _$LayersControls {
         await toggleParking();
         break;
       case LayerType.metro:
-        toggleMetro();
+        await toggleMetro();
         break;
       case LayerType.busSubMenu:
         // no op
         break;
       case LayerType.makkahBus:
-        toggleMakkahBuses();
+        await toggleMakkahBuses();
         break;
       case LayerType.shuttleBus:
-        toggleHaramShuttle();
+        await toggleHaramShuttle();
         break;
       case LayerType.jeddahBus:
-        toggleJeddahBuses();
+        await toggleJeddahBuses();
         break;
       case LayerType.defaultMap:
         await ref.read(satelliteMapControllerProvider.notifier).disable();
@@ -313,53 +313,69 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  void toggleMetro() {
+  Future<void> toggleMetro() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(metroLayerVisibleProvider);
     if (isVisible) {
       ref.read(metroLayerProvider.notifier).hideMetro();
-      if (state.selectedType == LayerType.metro) {
+      if (currentState == LayerType.metro) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.metro) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(metroLayerProvider.notifier).showMetro();
       setSelection(selectedType: LayerType.metro);
     }
   }
 
-  void toggleMakkahBuses() {
+  Future<void> toggleMakkahBuses() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(makkahBusLayerVisibleProvider);
     if (isVisible) {
       ref.read(makkahBusLayerProvider.notifier).hide();
-      if (state.selectedType == LayerType.makkahBus) {
+      if (currentState == LayerType.makkahBus) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.makkahBus) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(makkahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.makkahBus);
     }
   }
 
-  void toggleHaramShuttle() {
+  Future<void> toggleHaramShuttle() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(shuttleBusLayerVisibleProvider);
     if (isVisible) {
       ref.read(shuttleBusLayerProvider.notifier).hide();
-      if (state.selectedType == LayerType.shuttleBus) {
+      if (currentState == LayerType.shuttleBus) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.shuttleBus) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(shuttleBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.shuttleBus);
     }
   }
 
-  void toggleJeddahBuses() {
+  Future<void> toggleJeddahBuses() async {
+    final currentState = state.selectedType;
     final isVisible = ref.read(jeddahBusLayerVisibleProvider);
     if (isVisible) {
       ref.read(jeddahBusLayerProvider.notifier).hide();
-      if (state.selectedType == LayerType.jeddahBus) {
+      if (currentState == LayerType.jeddahBus) {
         setSelection();
       }
     } else {
+      if (currentState != null && currentState != LayerType.jeddahBus) {
+        await _hidePreviousLayers(currentState);
+      }
       ref.read(jeddahBusLayerProvider.notifier).show();
       setSelection(selectedType: LayerType.jeddahBus);
     }
@@ -426,6 +442,9 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleComplianceBuildings() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.buildings)) {
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       setSelection(selectedType: LayerType.buildings);
       update(isLoading: true);
       await _showBuildingCompliance();
@@ -440,6 +459,9 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleInvestOpportunities() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.invest)) {
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _showInvestmentOpportunities(LayerType.invest);
     } else {
       await _removeAll();
@@ -452,6 +474,9 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleWhiteLands() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.fencing)) {
+      if (currentState != null) {
+        await _hidePreviousLayers(currentState);
+      }
       await _showWhiteLands();
     } else {
       await _viewPortSubscription?.cancel();
@@ -947,6 +972,7 @@ class LayersControls extends _$LayersControls {
   Future<void> toggleTraffic() async {
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
     final wasEnabled = trafficNotifier.isTrafficEnabled;
+    final currentState = state.selectedType;
 
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.trafficLightButton,
@@ -954,10 +980,16 @@ class LayersControls extends _$LayersControls {
       action: MetricAction.tap.name,
     );
 
+    // BALADY-3615: when enabling traffic while another overlay is on, hide
+    // the previous layer first so the two don't render side-by-side.
+    if (!wasEnabled && currentState != null && currentState != LayerType.traffic) {
+      await _hidePreviousLayers(currentState);
+    }
+
     trafficNotifier.onTrafficTap();
 
     if (wasEnabled) {
-      if (state.selectedType == LayerType.traffic) {
+      if (currentState == LayerType.traffic) {
         setSelection();
       }
     } else {
