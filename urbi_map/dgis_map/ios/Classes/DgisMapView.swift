@@ -239,9 +239,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
-        
+
         guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
-        
+
         let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
         cancelable.append(
             styleFuture.sink (
@@ -259,8 +259,34 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 })
         )
     }
-    
-        
+
+    func loadStylesFromPath(absolutePath: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard FileManager.default.fileExists(atPath: absolutePath) else {
+            completion(Result.failure(FlutterError(
+                code: "FileNotFoundException",
+                message: "Style file does not exist at <\(absolutePath)>",
+                details: nil
+            )))
+            return
+        }
+
+        let styleFuture = try! self.sdk.styleFactory.loadFile(path: absolutePath)
+        cancelable.append(
+            styleFuture.sink(
+                receiveValue: { [map = self.map] style in
+                    map?.style = style
+                    completion(Result.success(()))
+                },
+                failure: { error in
+                    completion(Result.failure(FlutterError(
+                        code: "FileNotFoundException",
+                        message: "Failed to load style from <\(absolutePath)>. Error: \(error)",
+                        details: nil
+                    )))
+                })
+        )
+    }
+
     func overrideLocales(locales: [String], completion: @escaping (Result<Void, any Error>) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales.map {

@@ -6,6 +6,7 @@ import ru.dgis.sdk.map.DefaultRasterUrlTemplate
 import ru.dgis.sdk.map.RasterTileSource
 import ru.dgis.sdk.map.RasterUrlTemplate
 import ru.dgis.sdk.map.Source
+import ru.dgis.sdk.map.WmsRasterUrlTemplate
 
 class SatelliteHandler(
     val sdkContext: Context,
@@ -33,7 +34,9 @@ class SatelliteHandler(
                 satelliteTileSource = RasterTileSource(
                     sdkContext,
                     layerName,
-                    RasterUrlTemplate(DefaultRasterUrlTemplate(tileUri)),
+//                    RasterUrlTemplate(WmsRasterUrlTemplate(tileUri),),
+                    RasterUrlTemplate(
+                        WmsRasterUrlTemplate(urlTemplate = "https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/default/default028mm/{z}/{y}/{x}.jpg"),),
                 )
                 cachedTileUri = tileUri
                 cachedLayerName = layerName
