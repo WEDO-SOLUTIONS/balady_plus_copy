@@ -34,11 +34,16 @@ class SatelliteHandler {
                    map.sources.contains(old) {
                     map.removeSource(source: old)
                 }
+                // Mirrors the Android handler: use the WMS-style template
+                // pointed at the ESRI WMTS RESTful endpoint. JPEG payloads
+                // are 3–5× smaller than the default PNG path and the WMS
+                // source lets the SDK ask the server for the actual pixel
+                // size it needs (retina-friendly on high-DPR devices).
                 satelliteTileSource = RasterTileSource(
                     context: try! self.sdk.context,
                     sublayerName: layerName,
-                    sourceTemplate: RasterUrlTemplate.defaultSource(DGis.DefaultRasterUrlTemplate(
-                        urlTemplate: tileUri))
+                    sourceTemplate: RasterUrlTemplate.wmsSource(DGis.WmsRasterUrlTemplate(
+                        urlTemplate: "https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/WMTS/tile/1.0.0/World_Imagery/default/default028mm/{z}/{y}/{x}.jpg"))
                 )
                 cachedTileUri = tileUri
                 cachedLayerName = layerName
