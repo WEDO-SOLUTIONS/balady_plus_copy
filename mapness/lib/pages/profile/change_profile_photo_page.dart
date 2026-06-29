@@ -3,8 +3,10 @@ import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,9 +25,14 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isPermanentlyDenied = ref.read(profileImageProvider.notifier).status == PermissionStatus.permanentlyDenied;
+    final colors = context.colors;
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+    final sheetCardColor = isDGA ? colors.accentSecondarySoft : colors.backgroundSurface1;
 
     return Material(
-      color: context.colors.backgroundSurface1,
+      color: sheetCardColor,
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(RadiusBorder.xl),
         topRight: Radius.circular(RadiusBorder.xl),
@@ -37,9 +44,9 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
           ContentRow(
             options: ContentRowOptions(
               title: context.l10n.profilePhoto,
-              titleStyle: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
+              titleStyle: context.textStyles.h4SemiBold.copyWith(color: colors.foregroundDefault),
               customActionWidget: AppButton.close(
-                color: context.colors.neutralContainerDefault,
+                color: colors.neutralContainerDefault,
                 onTap: context.router.pop,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
               ),
@@ -48,7 +55,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: ContentWrapper(
-              color: context.colors.backgroundSurface1,
+              color: sheetCardColor,
               children: [
                 ContentRow(
                   onTap: () async {
@@ -64,10 +71,10 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
                   options: ContentRowOptions(
                     leadingIcon: SvgPicture.asset(
                       Assets.icons.svg.photoGallery.keyName,
-                      colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(colors.accentDefault, BlendMode.srcIn),
                     ),
                     title: context.l10n.change_avatar,
-                    titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                    titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
                   ),
                 ),
               ],

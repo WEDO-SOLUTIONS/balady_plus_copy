@@ -1,15 +1,15 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
-import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
-import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -20,8 +20,8 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
-import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
+import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
@@ -48,7 +48,6 @@ class SearchItem extends ConsumerWidget {
   final Language language;
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
-  final List<Offer> offers;
   final Color? contentColor;
   final int index;
   final BssSearchResultList? searchResultList;
@@ -59,7 +58,6 @@ class SearchItem extends ConsumerWidget {
     required this.result,
     required this.onTap,
     required this.language,
-    required this.offers,
     this.myLocation,
     this.contentColor,
     this.index = 0,
@@ -69,12 +67,16 @@ class SearchItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    String subtitle =(result.id?.objectId == 70030077050725730
-        ? (context.locale.languageCode=='en'?'Settlement':'نطاق')
-        : (['تسوية','مستوطنة'].contains(result.subtitle ) ? 'نطاق' : result.subtitle));
+    String subtitle = (result.id?.objectId == 70030077050725730
+        ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
+        : (['تسوية', 'مستوطنة'].contains(result.subtitle) ? 'نطاق' : result.subtitle));
     // String subtitle = result.subtitle;
     List<String> photosUrls = [];
     List<Item> photoItems = [];
+
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     final objectId = result.id?.objectId ?? 0;
     final photos = ref.watch(poiPhotoProvider(objectId));
@@ -121,7 +123,7 @@ class SearchItem extends ConsumerWidget {
         }
       },
       child: Material(
-        color: contentColor ?? context.colors.backgroundSurface1,
+        color: isDGA ? context.colors.accentSecondarySoft : contentColor ?? context.colors.backgroundSurface1,
         shape: smoothBorder(RadiusBorder.xl),
         child: SearchTapHandler(
           onTap: onTap,
@@ -184,11 +186,6 @@ class SearchItem extends ConsumerWidget {
                                     color: context.colors.foregroundSoft,
                                   ),
                                 ),
-                                if (offers.isNotEmpty)
-                                  const Padding(
-                                    padding: EdgeInsets.only(top: Spacing.$2x),
-                                    child: OffersBadge(),
-                                  ),
                               ],
                             ),
                           ),

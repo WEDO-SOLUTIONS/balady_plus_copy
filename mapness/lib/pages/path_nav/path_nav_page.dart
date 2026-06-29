@@ -36,7 +36,6 @@ import 'package:mapness/features/share_eta/entities/route_params_point_mapper.da
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
-import 'package:mapness/features/stream_audio/services/audio_service.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
@@ -280,10 +279,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
-      // Ensure any in-app stream audio is paused while navigation is active.
-      // iOS doesn't reliably provide per-instruction callbacks from the SDK,
-      // so we pause at navigation start and resume when the trip ends.
-      unawaited(AudioService().pause());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       if (!mounted) {
         return;
@@ -515,7 +510,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     },
                     onClose: () async {
                       await ref.read(dgisControllerProvider).value?.hideRoutes();
-                      await _endTripAndShowHome();
+                      await _endTripAndShowFeedback(context);
                     },
                     buttonLabel: context.l10n.endTrip,
                   );
@@ -602,9 +597,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     } catch (_) {}
-
-    // Restore in-app stream audio after navigation stops.
-    unawaited(AudioService().resume());
 
     ref.read(currentRouteProvider.notifier).clearRoute();
 
@@ -735,7 +727,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
       ToastOverlay.of(context).show(
-        displayDuration: const Duration(seconds: 15),
+        displayDuration: const Duration(seconds: 3),
         title: ctx.l10n.youWantSaveParking,
         actions: [
           ToastAction(title: ctx.l10n.feedbackBreaksSheetClose),
@@ -756,8 +748,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           ),
         ],
         icon: ToastIconAsset(switch (context.read<ThemeController>().currentTheme) {
-          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
-          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          BaladyAppThemes.darkDGA => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
+          BaladyAppThemes.lightDGA => Assets.icons.svg.placesBigNew.light.icParking.keyName,
           _ => Assets.icons.svg.placesBigNew.light.icParking.keyName,
         }),
       );
@@ -1019,8 +1011,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: 18,
-            tilt: 90,
+            zoom: 17.5,
+            tilt: 50,
             bearing: 0,
           ),
         );
@@ -1034,8 +1026,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           await cameraProvider.animateTo(
             CameraPositionMessage(
               point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-              zoom: 18,
-              tilt: 90,
+              zoom: 17.5,
+              tilt: 50,
               bearing: 0,
             ),
           );

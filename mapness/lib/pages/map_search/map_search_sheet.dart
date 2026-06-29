@@ -60,7 +60,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
+  late final MultiStateSheetController<ThreeStateSheet>  _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -358,7 +358,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
     icon: switch (context.read<ThemeController>().currentTheme) {
-      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
+      BaladyAppThemes.darkDGA => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
       BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
       BaladyAppThemes.foundationDay => Assets.icons.svg.placesNewFoundingDay.icDefault.keyName.markerIcon(),
       _ => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),

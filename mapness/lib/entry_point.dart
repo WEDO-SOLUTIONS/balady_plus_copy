@@ -28,7 +28,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:http/http.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -39,6 +38,7 @@ import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
@@ -88,9 +88,11 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -98,6 +100,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
+import 'package:rxdart/rxdart.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'features/search/providers/search.dart';
@@ -440,13 +443,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
     baladyTheme.toggleTheme(isDark);
     if (isDark) {
-      await themeController.setTheme(BaladyAppThemes.dark);
+      await themeController.setTheme(BaladyAppThemes.darkDGA);
     } else {
       final theme = switch (specialThemeMode) {
         SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
         SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
         SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
-        _ => BaladyAppThemes.light,
+        _ => BaladyAppThemes.lightDGA,
       };
 
       await themeController.setTheme(theme);
@@ -594,7 +597,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                       SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
                       SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
                       SpecialThemeMode.foundationDay => BaladyAppThemes.foundationDay,
-                      _ => BaladyAppThemes.light,
+                      _ => BaladyAppThemes.lightDGA,
                     },
                   ),
                   AppStaticColorsThemeExt.palette(),
@@ -689,7 +692,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final appLink = await _appLinks.getInitialLink();
 
-    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+    // the opened link might trigger duplicate events in uriLinkStream, so we throttle such values
+    _linkSubscription = _appLinks.uriLinkStream.throttleTime(const Duration(milliseconds: 500)).listen((
+      uri,
+    ) {
       if (kDebugMode) {
         logger.log('Deep link received: $uri');
       }
@@ -781,39 +787,79 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<Uri> getFinalRedirectUri(Uri uri) async {
-    final client = Client();
-    var currentUri = uri;
-    const redirectStatuses = {301, 302, 303, 307, 308};
-
-    try {
-      while (true) {
-        final request = Request('GET', currentUri)..followRedirects = false;
-
-        final response = await client.send(request);
-        if (redirectStatuses.contains(response.statusCode)) {
-          final location = response.headers['location'];
-          if (location != null && location.isNotEmpty) {
-            currentUri = currentUri.resolve(location);
-            continue;
-          }
-        }
-
-        // If it's not a redirect status code, we have reached the end of the chain
-        break;
-      }
-    } catch (e) {
-      logger.log('Error tracking redirect: $e', logLevel: MapnessLogLevel.error);
-    } finally {
-      client.close();
+  // returns null if throws
+  Future<bool?> _handleShortLink(Uri uri) async {
+    final pathSegments = uri.pathSegments;
+    if (pathSegments.length != 1) {
+      return false;
     }
 
-    return currentUri;
+    try {
+      final code = pathSegments.first;
+      final response = await ref
+          .read(shortLinkRepositoryProvider)
+          .getLinkDetails(code)
+          .timeout(const Duration(seconds: 10));
+      switch (response) {
+        case ShortLinkResponsePoi(:final payload):
+          final poiId = int.tryParse(payload.poiId);
+          if (poiId != null) {
+            final lat = payload.lat;
+            final lon = payload.lon;
+            final latLon = lat != null && lon != null ? LatLng(latitude: lat, longitude: lon) : null;
+            _poiDeeplinkById(poiId, latLon);
+          }
+
+        case ShortLinkResponsePoint(:final payload):
+          final l10n = ref.read(appLocaleProvider);
+          final location = await ref.read(getLocationSyncProvider().future);
+          final startPoint = RouteParamsPointWithLabel(
+            label: l10n.myLocation,
+            value: RouteParamsPoint(latitude: location.latitude, longitude: location.longitude),
+          );
+          final finishPoint = RouteParamsPointWithLabel(
+            label: 'B',
+            value: RouteParamsPoint(latitude: payload.lat, longitude: payload.lon),
+          );
+          ref
+              .read(appRouterProvider)
+              .replaceOrPush(
+                route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
+                toCompareRoutes: [RoutingRoutesRoute.page],
+              );
+
+        case ShortLinkResponseTrip(:final payload):
+          ref
+              .read(appRouterProvider)
+              .replaceOrPush(
+                route: RoutingRoutesRoute(
+                  points: payload.route.toRouteParamsPointWithLabels(),
+                  navType: payload.route.type.toMessage(),
+                ),
+                toCompareRoutes: [RoutingRoutesRoute.page],
+              );
+      }
+      return true;
+    } catch (e) {
+      logger.log('failed to get short link details: $e', logLevel: MapnessLogLevel.error);
+      return null;
+    }
   }
 
-  Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false}) async {
+  Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
-    final uri = await getFinalRedirectUri(sourceUri);
+
+    final shortLinkHandled = await _handleShortLink(uri);
+    if (shortLinkHandled == null) {
+      final ctx = rootNavigatorKey.currentContext;
+      if (ctx != null) {
+        ToastOverlay.of(ctx).showNoInternet(onRetry: () => openAppLink(uri, isFirstRun: isFirstRun));
+      }
+      return;
+    } else if (shortLinkHandled) {
+      return;
+    }
+
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;

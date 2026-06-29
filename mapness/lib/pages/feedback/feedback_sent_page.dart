@@ -37,13 +37,7 @@ class FeedbackSentPage extends HookConsumerWidget {
       },
     );
 
-    // Check if payload has photos (any field value that is a list of strings/URLs)
-    final hasPhotos =
-        payload?.fields.any((field) {
-          final value = field.value;
-          return value is List && value.isNotEmpty;
-        }) ??
-        false;
+    final hasPhotos = payload?.hasPhotos ?? false;
 
     return FeedbackSheetWidget(
       state: isRetring.value ? FeedbackSheetState.loading : state,

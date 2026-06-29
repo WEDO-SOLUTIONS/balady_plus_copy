@@ -38,6 +38,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
     private var weatherHandler: WeatherHandler?
+    private var satelliteHandler: SatelliteHandler?
 
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
@@ -160,6 +161,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map
         )
 
+        self.satelliteHandler = SatelliteHandler(
+            sdkContext: self.sdk,
+            map: map
+        )
+
         setupTapHandler()
     }
     
@@ -209,6 +215,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func selectIndoorLevel(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.indoorControlHandler?.selectIndoorLevel(index: UInt64(index))
+         completion(Result.success(()))
+    }
+
+    func setIndoorFloorPlansEnabled(enabled: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
+        if let indoorControlHandler = self.indoorControlHandler {
+            indoorControlHandler.setIndoorFloorPlansEnabled(enabled: enabled)
+        } else {
+            self.map?.indoorManager.setIndoorState(newState: enabled ? .enabled : .disabled)
+        }
          completion(Result.success(()))
     }
 
@@ -1185,6 +1200,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
     func toggleHeatmap(message: WeatherMapMessage, completion: @escaping (Result<Bool, any Error>) -> Void) {
         weatherHandler?.toggleHeatmap(message,completion: completion)
+    }
+
+    func toggleSatellite(message: SatelliteMapMessage, completion: @escaping (Result<Bool, any Error>) -> Void) {
+        satelliteHandler?.toggleSatellite(message, completion: completion)
     }
     
     func betterRouteResponse(response: BetterRouteResponseMessage, completion: @escaping (Result<Void, any Error>) -> Void) {

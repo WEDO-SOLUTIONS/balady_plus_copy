@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ErrorWidget;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -30,6 +32,8 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
+
     return ref
         .watch(interestingPlacesProvider)
         .when(
@@ -43,12 +47,15 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
                 .toList();
 
             return SliderListView(
+              dotColor:isDGADark?context.colors.staticWhite: context.colors.borderMuted,
               items: places,
               horizontalPadding: Spacing.$3x,
               separationWidth: Spacing.$2x,
               viewportWidth: MediaQuery.sizeOf(context).width,
               contentSize: kPlaceCardSize,
-              activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
+              activeDotColor:context.colors.accentDefault  ,
+              ///todo must fix this with real color
+              // activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
               onTap: (item) {
                 final objectId = int.tryParse(item.entity.id) ?? 0;
                 final point = item.location.point;
@@ -64,6 +71,7 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
 
                 context.router.replaceOrPush(
                   route: PoiCardWidgetRoute(
+                    showHighlight: false,
                     objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0),
                     closestPoint: LatLng(latitude: point.latitude, longitude: point.longitude),
                     cameraConfig: const PoiCameraConfig(zoom: 20),

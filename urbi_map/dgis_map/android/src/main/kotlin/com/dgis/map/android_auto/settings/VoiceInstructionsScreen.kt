@@ -70,4 +70,9 @@ class VoiceInstructionsScreen(
         mapController.voiceInstructions = newType
         invalidate()
     }
+
+    fun refresh() {
+        currentSoundType = mapController.voiceInstructions
+        invalidate()
+    }
 } 

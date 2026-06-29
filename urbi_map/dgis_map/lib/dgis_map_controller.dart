@@ -172,6 +172,10 @@ class DgisMapController {
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) => _instance.selectIndoorLevel(level.levelIndex);
 
+  /// Enables or disables indoor floor plans.
+  Future<void> setIndoorFloorPlansEnabled({required bool enabled}) =>
+      _instance.setIndoorFloorPlansEnabled(enabled: enabled);
+
   /// Changes map camera position immediately without animation.
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) => _instance.setCameraPosition(cameraPosition);
 
@@ -625,6 +629,9 @@ class DgisMapController {
 
   ///toggle heatmap
   Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
+
+  ///toggle satellite raster tile overlay
+  Future<bool> toggleSatellite({required SatelliteMapMessage message}) => _instance.toggleSatellite(message);
 
   ///list packages
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();

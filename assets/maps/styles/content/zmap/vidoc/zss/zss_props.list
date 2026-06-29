@@ -12,6 +12,7 @@ commercial_poi_transparent bool false
 db_class enum<Class> unknown_class
 db_detail_level u16 
 db_entrance_has_poi bool false
+db_format_version u32 2411
 db_has_immersive_counterpart bool false
 db_is_mountain bool false
 db_label2_priority u16 
@@ -21,6 +22,7 @@ db_parking_rank u16 0
 db_parking_type enum<ParkingType> unknown
 db_recolor u16 0
 db_region u32 0
+db_road_marking_color_type enum<RoadMarkingColorType> white
 db_segment_begin_level s32 0
 db_segment_end_level s32 0
 db_sublayer enum<Sublayer> unknown_sublayer

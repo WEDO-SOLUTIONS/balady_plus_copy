@@ -37,23 +37,27 @@ class FeedbackBannerCardV2 extends StatelessWidget {
           asset: path,
           title: title,
           subTitle: subtitle,
-          gradientColors: gradientColors,
+          ///todo fix colors
+          ///          gradientColors: gradientColors,
+          gradientColors: [context.colors.accentActive,context.colors.accentActive],
           textDirection: Directionality.of(context),
           imageSizeCalculator: imageSizeCalculator,
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+            padding: const EdgeInsetsDirectional.only(end: Spacing.$4x,top:Spacing.$4x ),
             child: SizedBox(
-              width: Spacing.$6x,
-              height: Spacing.$6x,
+              width: Spacing.$8x,
+              height: Spacing.$8x,
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                  color: context.colors.staticWhite.withOpacity(0.2),
+                  ///todo fix colors
+                  // color: context.colors.staticBlack,
+                  color: context.colors.staticWhite,
                 ),
                 child: Center(
                   child: Icon(
-                    SystemIcons.arrowRight,
-                    color: context.colors.staticWhite,
+                    SystemIcons.arrowCornerRightLarge,
+                    color: context.colors.staticBlack,
                     size: Spacing.$4x,
                   ),
                 ),

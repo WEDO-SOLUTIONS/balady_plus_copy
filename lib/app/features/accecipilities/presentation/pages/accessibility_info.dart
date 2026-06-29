@@ -16,7 +16,7 @@ class AccessibilityInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: context.read<ThemeController>().systemOverlayStyle,
+    value: SystemUiOverlayStyle.dark,
     child: Material(
       color: context.colors.backgroundSurface4,
       child: Padding(
@@ -32,23 +32,37 @@ class AccessibilityInfo extends StatelessWidget {
                   primaryLabel: 'navigate'.tr(),
                   size: ButtonSize.large,
                   buttonColorScheme: ButtonColorScheme.accent,
-                  onTap: () => AppSettings.openAppSettings(type: AppSettingsType.accessibility),
+                  onTap: () => AppSettings.openAppSettings(
+                    type: AppSettingsType.accessibility,
+                  ),
                 ),
               ),
             ],
             appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
               title: 'voiceReader'.tr(),
               colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+              leading: ActionModel(
+                onPressed: () => context.router.pop(),
+                icon: SystemIcons.arrowCornerLeftLarge,
+              ),
             ),
             body: Padding(
-              padding: const EdgeInsets.only(top: 12, left: 16, right: 16, bottom: 36),
+              padding: const EdgeInsets.only(
+                top: 12,
+                left: 16,
+                right: 16,
+                bottom: 36,
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(child: Image(image: AssetImage('assets/images/voice_reader.png'))),
+                    const Center(
+                      child: Image(
+                        image: AssetImage('assets/images/voice_reader.png'),
+                      ),
+                    ),
                     Spacing.$5x.heightBox,
                     Text(
                       'stepsToAccessFeature'.tr(),
@@ -71,13 +85,17 @@ class AccessibilityInfo extends StatelessWidget {
                             height: 24,
                             width: 24,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF003449),
+                              color: context.colors.accentDefault,
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Center(
                               child: Text(
                                 '${index + 1}',
-                                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12, color: Colors.white),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  color: context.colors.accentOnAccent,
+                                ),
                               ),
                             ),
                           ),

@@ -316,6 +316,11 @@ class DgisMapPlugin extends FlutterMapApi {
     return _indoorEventHandler.selectIndoorLevel(index);
   }
 
+  /// Enables or disables indoor floor plans.
+  Future<void> setIndoorFloorPlansEnabled({required bool enabled}) {
+    return _api.setIndoorFloorPlansEnabled(enabled);
+  }
+
   /// Load styles from asset.
   Future<void> loadStyles(String asset) {
     return _api.loadStyles(asset);
@@ -1037,6 +1042,9 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Toggle heatmap.
   Future<bool> toggleHeatmap(WeatherMapMessage message) => _api.toggleHeatmap(message);
+
+  /// Toggle satellite raster tile overlay.
+  Future<bool> toggleSatellite(SatelliteMapMessage message) => _api.toggleSatellite(message);
 
   /// Better route response.
   Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _api.betterRouteResponse(response);

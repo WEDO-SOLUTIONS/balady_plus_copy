@@ -96,9 +96,8 @@ class MapSearchResults extends ConsumerWidget {
             color: context.colors.accentDefault,
           ),
         ),
-        itemBuilder: (context, item, index, offers) => SearchItem(
+        itemBuilder: (context, item, index) => SearchItem(
           result: item,
-          offers: offers,
           language: language,
           myLocation: myLocation == null
               ? null

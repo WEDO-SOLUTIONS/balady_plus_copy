@@ -104,7 +104,7 @@ class _SecondaryQuickFiltersView extends StatelessWidget {
         crossAxisCount: 4,
         mainAxisSpacing: Spacing.$3x,
         crossAxisSpacing: Spacing.$2x,
-        childAspectRatio: 0.75,
+        childAspectRatio: 0.99,
       ),
       itemBuilder: (context, index) {
         final item = items[index];

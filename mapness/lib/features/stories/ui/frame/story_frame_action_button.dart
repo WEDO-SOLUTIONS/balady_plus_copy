@@ -35,35 +35,38 @@ class StoryFrameActionButton extends StatefulWidget {
 class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   /// Maps a localization key to its corresponding localized value.
   String _keyToLocale(AppLocalizations l10n, String key) => switch (key) {
-        'next' => l10n.next,
-        'try_now' => l10n.tryNow,
-        'build_route' => l10n.buildRoute,
-        'open_services' => l10n.openServices,
-        'about_routes' => l10n.onboardingMoreRoutesButton,
-        'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
-        // TODO: After release delete from localizy [onboardingGetStartedButton] key
-        // It was previously used instead of "onboarding3Action"
-        'onboarding3Action' => l10n.onboarding3Action,
-        'saudiDayAction' => l10n.saudiDayAction,
-        _ => ''
-      };
+    'next' => l10n.next,
+    'try_now' => l10n.tryNow,
+    'build_route' => l10n.buildRoute,
+    'open_services' => l10n.openServices,
+    'about_routes' => l10n.onboardingMoreRoutesButton,
+    'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
+    // TODO: After release delete from localizy [onboardingGetStartedButton] key
+    // It was previously used instead of "onboarding3Action"
+    'onboarding3Action' => l10n.onboarding3Action,
+    'saudiDayAction' => l10n.saudiDayAction,
+    _ => '',
+  };
 
   /// Returns the title of the action based on the current widget's action type.
   String _getActionTitle() {
     final l10n = context.l10n;
     return switch (widget.action) {
-      NextStoryAction(localeKey: final key, title: final title) => title ?? _keyToLocale(l10n, key),
-      NavigationFrameAction(localeKey: final key, title: final title) => title ?? _keyToLocale(l10n, key),
+      NextStoryAction(localeKey: final key, title: final title) ||
+      NavigationFrameAction(
+        localeKey: final key,
+        title: final title,
+      ) => title == null || title.isEmpty ? _keyToLocale(l10n, key) : title,
       NetworkLinkFrameAction(title: final title) => title,
     };
   }
 
   /// Handles the action button press based on the current action type.
   void _onActionPressed(BuildContext context) => switch (widget.action) {
-        NextStoryAction() => widget.onNext(),
-        NavigationFrameAction(location: final location) => handleNavigationAction(context, location),
-        NetworkLinkFrameAction(url: final url) => handleNetworkLinkAction(url),
-      };
+    NextStoryAction() => widget.onNext(),
+    NavigationFrameAction(location: final location) => handleNavigationAction(context, location),
+    NetworkLinkFrameAction(url: final url) => handleNetworkLinkAction(url),
+  };
 
   /// Handles the navigation action by pushing the specified location to the router.
   void handleNavigationAction(BuildContext context, String location) {
@@ -92,18 +95,18 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.$4x),
-        child: FractionallySizedBox(
-          widthFactor: .82,
-          child: AppButton(
-            color: widget.actionColor,
-            buttonColorScheme: ButtonColorScheme.accent,
-            primaryLabel: _getActionTitle(),
-            onTap: () {
-              widget.onActionPressed?.call();
-              _onActionPressed(context);
-            },
-          ),
-        ),
-      );
+    padding: const EdgeInsets.only(bottom: Spacing.$4x),
+    child: FractionallySizedBox(
+      widthFactor: .82,
+      child: AppButton(
+        color: widget.actionColor,
+        buttonColorScheme: ButtonColorScheme.accent,
+        primaryLabel: _getActionTitle(),
+        onTap: () {
+          widget.onActionPressed?.call();
+          _onActionPressed(context);
+        },
+      ),
+    ),
+  );
 }

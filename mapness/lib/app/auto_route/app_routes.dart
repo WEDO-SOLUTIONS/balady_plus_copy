@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/guards/navigation_guard.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
 import 'package:mapness/app/auto_route/guards/theme_splash_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
@@ -42,6 +43,12 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'nearby',
+          page: NearbyRoute.page,
+          fullscreenDialog: true,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'service_available',
           page: ServiceNotAvailableSheetRoute.page,
           opaque: false,
@@ -60,6 +67,11 @@ class AppRouter extends RootStackRouter {
           path: 'pathNav',
           page: PathNavRoute.page,
           fullscreenDialog: true,
+        ),
+        CustomRoute(
+          path: 'exit_navigation',
+          page: ExitNavigationRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         // BE-153: fade so the search sheet appears in-place (matches Google Maps),
         // instead of the default cupertino slide. Short duration keeps the tap → keyboard
@@ -103,6 +115,11 @@ class AppRouter extends RootStackRouter {
         AppRoute(
           path: 'public_routing_details',
           page: RouteDetailsRoute.page,
+        ),
+        CustomRoute(
+          path: 'share_route',
+          page: ShareRouteRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         AppRoute(
           transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -258,55 +275,6 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
-          path: 'saudi_pass_offers_screen',
-          page: OffersScreenViewRoute.page,
-        ),
-        AppRoute(
-          path: 'saudi_pass_favourite_offers_screen',
-          page: FavouriteOffersScreenViewRoute.page,
-        ),
-        RedirectRoute(path: 'saudi_pass_profile_preferences_screen', redirectTo: 'profile_preferences'),
-        AppRoute(
-          path: 'saudi_pass_offers_on_map_screen',
-          page: OffersOnMapRoute.page,
-        ),
-        CustomRoute(
-          page: CitySelectionDialogViewRoute.page,
-          path: 'saudi_pass_city_selection_dialog',
-          opaque: false,
-          transitionsBuilder: TransitionsBuilders.slideBottom,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_type_selection_dialog',
-          page: TypeSelectionDialogViewRoute.page,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_all_categories_selection_dialog',
-          page: AllCategoriesSelectionDialogViewRoute.page,
-          opaque: false,
-          transitionsBuilder: TransitionsBuilders.slideBottom,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_sorting_selection_dialog',
-          page: SortingSelectionDialogRoute.page,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        AppRoute(
-          path: 'saudi_pass_settings_screen',
-          page: SettingsScreenViewRoute.page,
-        ),
-        CustomRoute(
-          path: 'saudi_pass_offer_page',
-          page: OfferRoute.page,
-        ),
-        RedirectRoute(path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
-        CustomRoute(
-          path: 'saudi_pass_offer_favorites_removing_sheet',
-          page: OfferFavoritesRemovingSheetRoute.page,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        CustomRoute(
           path: 'quickFeedback',
           page: QuickFeedbackRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
@@ -415,10 +383,6 @@ class AppRouter extends RootStackRouter {
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
-        AppRoute(
-          path: 'profile_preferences',
-          page: ProfilePreferencesRoute.page,
-        ),
       ],
     ),
     CustomRoute(
@@ -447,4 +411,7 @@ class AppRouter extends RootStackRouter {
     //   transitionsBuilder: TransitionsBuilders.fadeIn,
     // ),
   ];
+
+  @override
+  List<AutoRouteGuard> get guards => [NavigationGuard(ref)];
 }
