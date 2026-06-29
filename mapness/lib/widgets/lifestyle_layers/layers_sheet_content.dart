@@ -169,7 +169,7 @@ class _LayersTabChip extends StatelessWidget {
         child: AutoSizeText(
           label,
           maxLines: 1,
-          minFontSize: 10,
+          minFontSize: 9,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: context.textStyles.bodySmallMedium.copyWith(color: colors.foregroundDefault),
