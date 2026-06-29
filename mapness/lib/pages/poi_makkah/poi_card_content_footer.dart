@@ -219,7 +219,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
       },
     );
 
-    ShareUtil.sharePOI(shareId, context: context, markerCoords: coordinates);
+    ShareUtil.sharePOI(context: context, objectId: shareId, markerCoords: coordinates);
   }
 
   @override
@@ -378,8 +378,8 @@ class _MakkahFooterSquareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconColor = isFilled
         ? (colors.actionButtonIconColor == MakkahPoiConstants.normalActionIconColor
-            ? MakkahPoiConstants.filledActionIconColor
-            : colors.actionButtonIconColor)
+              ? MakkahPoiConstants.filledActionIconColor
+              : colors.actionButtonIconColor)
         : colors.actionButtonIconColor;
     return AppButton(
       buttonColorScheme: ButtonColorScheme.neutral,

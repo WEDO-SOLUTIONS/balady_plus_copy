@@ -4,6 +4,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -11,7 +12,6 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../shared/ui/toast/toast_overlay.dart';
@@ -43,7 +43,7 @@ class PoiCardActions extends _$PoiCardActions {
     final coordinates = markerCoords == null
         ? null
         : Coordinates(latitude: markerCoords.latitude, longitude: markerCoords.longitude);
-    ShareUtil.sharePOI(objectId.toString(), context: context, markerCoords: coordinates);
+    ShareUtil.sharePOI(context: context, objectId: objectId.toString(), markerCoords: coordinates);
   }
 
   void shareMyLocation(LatLng? location) {
@@ -52,11 +52,10 @@ class PoiCardActions extends _$PoiCardActions {
       if (context == null) {
         return;
       }
-      //TODO(Dimitri): Add this function
-      // ShareUtil.sharePOI(
-      //   context: context,
-      //   markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
-      // );
+      ShareUtil.sharePOI(
+        context: context,
+        markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+      );
     } else {
       onError();
     }
@@ -76,12 +75,11 @@ class PoiCardActions extends _$PoiCardActions {
         ],
       );
 
-      //TODO(Dimitri): Add this function
-      // final shareLink = await ShareUtil.getSharePOILink(
-      //   context: context,
-      //   markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
-      // );
-      await Clipboard.setData(const ClipboardData(text: ''));
+      final shareLink = await ShareUtil.getSharePOILink(
+        context: context,
+        markerCoords: Coordinates(latitude: location.latitude, longitude: location.longitude),
+      );
+      await Clipboard.setData(ClipboardData(text: shareLink));
     }
   }
 

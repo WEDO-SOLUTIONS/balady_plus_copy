@@ -91,8 +91,8 @@ class ShareRoutePage extends HookConsumerWidget {
     final coordinates = lat != null && lon != null ? Coordinates(latitude: lat, longitude: lon) : null;
 
     ShareUtil.sharePOI(
-      destinationObjectId.toString(),
       context: context,
+      objectId: destinationObjectId.toString(),
       markerCoords: coordinates,
     );
   }
