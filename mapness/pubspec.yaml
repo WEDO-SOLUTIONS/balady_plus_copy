@@ -83,7 +83,7 @@ dependencies:
   hive_ce_generator: ^1.10.0
   internet_connection_checker_plus: ^2.9.1+2
   hive_ce: ^2.16.0
-  path_provider: 2.1.5
+  path_provider: ^2.1.5
   expansion_widget: 0.1.0
   uuid: ^4.5.2
   rxdart: 0.28.0
