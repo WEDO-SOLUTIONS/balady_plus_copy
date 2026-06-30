@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 
 class SlideToLogout extends StatefulWidget {
   final String buttonText;
@@ -59,41 +60,52 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                   borderRadius: radius,
                 ),
               ),
-              AnimatedPositionedDirectional(
-                duration: Durations.short2,
-                start: _dragPosition,
-                child: GestureDetector(
-                  onHorizontalDragUpdate: (details) {
-                    setState(() {
-                      final factor = isRTL ? -1 : 1;
-                      _dragPosition = (_dragPosition + factor * details.delta.dx).clamp(0, maxWidth);
-                    });
-                  },
-                  onHorizontalDragEnd: (details) {
-                    if (_dragPosition >= maxWidth - maxWidth / 3) {
-                      widget.onLogout();
-                      setState(() {
-                        _dragPosition = maxWidth;
-                      });
-                    } else {
-                      setState(() => _dragPosition = 0);
-                    }
-                  },
-                  child: Container(
-                    width: slideSize,
-                    height: slideSize,
-                    decoration: BoxDecoration(
-                      color: context.colors.errorDefault,
-                      borderRadius: radius,
-                    ),
-                    child: Icon(
-                      SystemIcons.arrowRight,
-                      size: 24,
-                      color: context.colors.staticWhite,
+               AnimatedPositionedDirectional(
+                 duration: Durations.short2,
+                 start: _dragPosition,
+                 child: Semantics(
+                   button: true,
+                   enabled: true,
+                   label: widget.buttonText,
+                   onTap: () {
+                     // VoiceOver/TalkBack double-tap or activate
+                     widget.onLogout();
+                   },
+                    child: GestureDetector(
+                      onHorizontalDragUpdate: (details) {
+                        setState(() {
+                          final factor = isRTL ? -1 : 1;
+                          _dragPosition =
+                              (_dragPosition + factor * details.delta.dx).clamp(0, maxWidth);
+                        });
+                      },
+                      onHorizontalDragEnd: (details) {
+                        if (_dragPosition >= maxWidth - maxWidth / 3) {
+                          widget.onLogout();
+                          setState(() {
+                            _dragPosition = maxWidth;
+                          });
+                        } else {
+                          setState(() => _dragPosition = 0);
+                        }
+                      },
+
+                      child: Container(
+                        width: slideSize,
+                        height: slideSize,
+                        decoration: BoxDecoration(
+                          color: context.colors.errorDefault,
+                          borderRadius: radius,
+                        ),
+                        child: Icon(
+                          SystemIcons.arrowRight,
+                          size: 24,
+                          color: context.colors.staticWhite,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           );
         },
