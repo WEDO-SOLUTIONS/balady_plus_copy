@@ -41,6 +41,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   final ValueNotifier<int> _currentPageNotifier = ValueNotifier<int>(0);
   late final Future<List<StoryData>> _storiesData;
+  bool _storiesDataInitialized = false;
 
   @override
   void initState() {
@@ -74,8 +75,11 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     ref.read(storyServiceProvider.notifier).pauseUpdate();
-    final type = StoryArgsProvider.of(context).type;
-    _storiesData = _initStories(type);
+    if (!_storiesDataInitialized) {
+      _storiesDataInitialized = true;
+      final type = StoryArgsProvider.of(context).type;
+      _storiesData = _initStories(type);
+    }
   }
 
   void _setCurrentPage(int page) {
