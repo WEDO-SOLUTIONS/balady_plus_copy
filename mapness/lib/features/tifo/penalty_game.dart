@@ -1811,6 +1811,8 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       actionTime: _shotTime,
       diveStyle: _keeperDive,
       visualScale: _backgroundImage == null ? 1.0 : _photoKeeperVisualScale,
+      shotState: _state,
+      resultTime: _resultTime,
     );
   }
 
@@ -2400,6 +2402,10 @@ class _GoalkeeperModel {
   _SpriteSheet? _diveMidLeftSheet;
   _SpriteSheet? _diveLowLeftSheet;
   _SpriteSheet? _diveHighLeftSheet;
+  // Result-phase sheets — kick in after the dive peak.
+  _SpriteSheet? _saveRecoverSheet;
+  _SpriteSheet? _missedReactionSheet;
+  _SpriteSheet? _concededSheet;
 
   Color _jersey = const Color(0xFFFFA726);
   Color _shorts = const Color(0xFF223A5E);
@@ -2449,6 +2455,24 @@ class _GoalkeeperModel {
         frameHeight: 384,
         frames: 10,
       );
+      _saveRecoverSheet = await _loadOptionalSheet(
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/save_recover_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
+        frames: 8,
+      );
+      _missedReactionSheet = await _loadOptionalSheet(
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
+        frames: 8,
+      );
+      _concededSheet = await _loadOptionalSheet(
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/conceded_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
+        frames: 8,
+      );
       return;
     } catch (_) {
       // Keep the procedural/GLB path as a fallback if project sprites are absent.
@@ -2483,6 +2507,8 @@ class _GoalkeeperModel {
         required double actionTime,
         required _KeeperDive diveStyle,
         double visualScale = 1,
+        _ShotState? shotState,
+        double resultTime = 0,
       }) {
     final idleSprite = _idleSprite;
     final diveMidLeftSprite = _diveMidLeftSprite;
@@ -2500,6 +2526,8 @@ class _GoalkeeperModel {
         diveMidLeftSprite: diveMidLeftSprite,
         diveLowLeftSprite: _diveLowLeftSprite,
         diveHighLeftSprite: _diveHighLeftSprite,
+        shotState: shotState,
+        resultTime: resultTime,
       );
       return;
     }
@@ -2563,9 +2591,43 @@ class _GoalkeeperModel {
         required ui.Image diveMidLeftSprite,
         required ui.Image? diveLowLeftSprite,
         required ui.Image? diveHighLeftSprite,
+        _ShotState? shotState,
+        double resultTime = 0,
       }) {
     final direction = dive.signOrZero;
     final diveProgress = (actionTime / 0.54).clamp(0.0, 1.0).toDouble();
+
+    // Result-phase: once `_finish` has flipped `shotState` to a terminal
+    // outcome, switch from the (now-frozen) dive sheet to the matching
+    // reaction sheet. `resultTime` ticks up from 0 in PenaltyGame and drives
+    // the result-anim's own progress.
+    final resultSheet = switch (shotState) {
+      _ShotState.saved => _saveRecoverSheet,
+      _ShotState.missed => _missedReactionSheet,
+      _ShotState.goal => _concededSheet,
+      _ => null,
+    };
+    if (resultSheet != null && direction != 0) {
+      // 0.55s feels right for the full 8-frame reaction; the result message
+      // sticks around for ~1.65s so the keeper holds the last frame after.
+      final resultProgress = (resultTime / 0.55).clamp(0.0, 1.0).toDouble();
+      // Hold the dive's peak posture in place (no extra lean/lift drift
+      // during the reaction — it would re-trigger the dive trajectory).
+      _drawDivingSprite(
+        game,
+        canvas,
+        base: base,
+        direction: direction,
+        lift: lift,
+        progress: 1.0,
+        image: resultSheet.image,
+        sourceRect: _sheetFrame(resultSheet, resultProgress),
+        visualScale: visualScale,
+        diveStyle: diveStyle,
+      );
+      return;
+    }
+
     if (direction != 0 && diveProgress > 0.08 && diveProgress < 0.28) {
       final prep = _smoothStep((diveProgress - 0.08) / 0.2);
       _drawIdleSprite(
