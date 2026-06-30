@@ -2423,29 +2423,31 @@ class _GoalkeeperModel {
       _diveMidLeftSprite = sprites[1];
       _diveLowLeftSprite = sprites[2];
       _diveHighLeftSprite = sprites[3];
+      // Green-kit v2 sheets — 10 frames × 384×384 horizontal strip
+      // (built from `goalkeeper_v2/{1..32}.png` via the asset bake step).
       _readySheet = await _loadOptionalSheet(
-        'packages/mapness/assets/tifo/sprites/goalkeeper_motion/ready_sheet.png',
-        frameWidth: 450,
-        frameHeight: 660,
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/ready_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
         frames: 10,
       );
       _diveMidLeftSheet = await _loadOptionalSheet(
-        'packages/mapness/assets/tifo/sprites/goalkeeper_motion/dive_mid_left_sheet.png',
-        frameWidth: 840,
-        frameHeight: 490,
-        frames: 8,
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/dive_mid_left_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
+        frames: 10,
       );
       _diveLowLeftSheet = await _loadOptionalSheet(
-        'packages/mapness/assets/tifo/sprites/goalkeeper_motion/dive_low_left_sheet.png',
-        frameWidth: 840,
-        frameHeight: 490,
-        frames: 8,
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/dive_low_left_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
+        frames: 10,
       );
       _diveHighLeftSheet = await _loadOptionalSheet(
-        'packages/mapness/assets/tifo/sprites/goalkeeper_motion/dive_high_left_sheet.png',
-        frameWidth: 840,
-        frameHeight: 490,
-        frames: 8,
+        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/dive_high_left_sheet.png',
+        frameWidth: 384,
+        frameHeight: 384,
+        frames: 10,
       );
       return;
     } catch (_) {
