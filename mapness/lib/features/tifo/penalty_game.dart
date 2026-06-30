@@ -2422,29 +2422,33 @@ class _GoalkeeperModel {
   // When loaded, supersedes every per-motion sheet above.
   _KeeperAtlas? _atlas;
 
-  // 0-based cell indices into the 8×4 atlas (cell N corresponds to source
-  // pose (N+1).png). Each list defines how a motion samples poses over time —
-  // the renderer picks `progress * (length-1)` and snaps to the nearest cell.
+  // 0-based cell indices into the 8×4 atlas. The new sheet is organised by
+  // ROW = one full animation, so most motion lists are now contiguous ranges:
   //
-  // Verified pose buckets after re-extracting the atlas:
-  //   * Clean facing-camera STANDING: cells 0, 16, 22, 23, 24, 25.
-  //   * READY-CROUCH (knees wide / bent low): cells 1, 2, 8, 9, 10, 17, 18.
-  //   * Back views: cells 19, 20, 21.
-  //   * Catch / dive: cells 11–15.
-  //   * Celebrate / pointing: cells 3–7, 26, 27.
-  //   * Defeat (sitting / lying): cells 28–31.
+  //   row 0 (0..7)   — idle breath loop (8 micro-variations of stance)
+  //   row 1 (8..15)  — full dive sequence  (frame 15 = horizontal peak)
+  //   row 2 (16..23) — same dive mirrored (kept as backup direction)
+  //   row 3 (24..31) — 24:deep squat  25:V-arms  26:arms up  27:ready
+  //                    28:ball-at-chest  29:yell  30:yell-2  31:hips
+  //
+  // The render path flips horizontally for `direction > 0`, so we only need
+  // ONE dive row in motion lists; the other row is unused for now and stays
+  // as a future hook if we drop the flip in favour of native dual-direction.
   static const Map<_KeeperMotion, List<int>> _motionFrames = {
-    // Idle bobble — only clean standing poses (no crouches, no back views).
-    _KeeperMotion.ready:       [0, 25, 16, 0, 24, 0, 22, 25, 0, 23],
-    // Dive sequences begin with a real READY-CROUCH (cells 9/10) — those
-    // belong INSIDE the dive sheets, not in idle.
-    _KeeperMotion.diveMid:     [9, 14, 14, 14, 15, 15, 15, 15, 15, 15],
-    _KeeperMotion.diveHigh:    [9,  7,  6, 11, 11, 11, 11, 11, 11, 11],
-    _KeeperMotion.diveLow:     [10, 10, 15, 15, 15, 15, 15, 15, 15, 15],
-    _KeeperMotion.saveRecover: [13, 7, 6, 27, 27, 26, 27, 27],
-    // Calm "ball went wide" reaction — standing variants only.
-    _KeeperMotion.missedReact: [16, 22, 23, 23, 24, 24, 25, 25],
-    _KeeperMotion.conceded:    [13, 21, 29, 30, 30, 31, 31, 31],
+    _KeeperMotion.ready:       [0, 1, 2, 3, 4, 5, 6, 7],
+    // Same row drives every dive height — this atlas has a single dive arc.
+    _KeeperMotion.diveMid:     [8, 9, 10, 11, 12, 13, 14, 15],
+    _KeeperMotion.diveLow:     [8, 9, 10, 11, 12, 13, 14, 15],
+    // High dive — push final frames to the "arms up" celebration cells so
+    // the keeper visually reaches up rather than just out.
+    _KeeperMotion.diveHigh:    [8, 9, 10, 24, 25, 26, 25, 26],
+    // Save → ball → arms up → yell
+    _KeeperMotion.saveRecover: [15, 28, 25, 26, 26, 29, 30, 30],
+    // Missed (ball went wide) — calm "look at where it went" using ready +
+    // hands-on-hips. No back-views in this atlas.
+    _KeeperMotion.missedReact: [0, 31, 31, 7, 0, 31, 31, 7],
+    // Conceded — dejected stance (no lying-defeat poses in this atlas).
+    _KeeperMotion.conceded:    [15, 31, 31, 31, 31, 31, 31, 31],
   };
 
   Color _jersey = const Color(0xFFFFA726);
@@ -2477,8 +2481,13 @@ class _GoalkeeperModel {
       if (atlasImage != null) {
         _atlas = _KeeperAtlas(
           image: atlasImage,
-          cellWidth: 384,
-          cellHeight: 384,
+          // New 2048×1152 atlas (4 logical rows × 8 frames):
+          //   row 0 (0..7)  — idle breathing loop
+          //   row 1 (8..15) — right-side dive sequence (LEFT in keeper's POV)
+          //   row 2 (16..23)— left-side dive (mirror)
+          //   row 3 (24..31)— misc reactions (squat/V-arms/up/ready/ball/yell×2/hips)
+          cellWidth: 256,
+          cellHeight: 288,
           cols: 8,
           rows: 4,
         );
