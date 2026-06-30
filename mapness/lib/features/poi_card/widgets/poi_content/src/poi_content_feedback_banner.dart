@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
@@ -43,8 +44,9 @@ class PoiContentFeedbackCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: DecoratedBox(
             decoration: BoxDecoration(
+
               gradient: LinearGradient(
-                colors: data.gradientColorsBuilder(activeCityEvent),
+                colors:data.gradientColorsBuilder(context,activeCityEvent),
               ),
             ),
             child: IntrinsicHeight(

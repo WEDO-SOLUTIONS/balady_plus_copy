@@ -1246,7 +1246,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         // (including any in-flight utterance) when muting, and re-enables it on unmute.
         // This avoids AVAudioSession deactivation which leaves the DGis engine stopped.
         try? sdk.audioSettings?.mute = (toggleType == .none)
+
+        DispatchQueue.main.async { Self.restoreInAppAudioVolume() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { Self.restoreInAppAudioVolume() }
+
         completion(Result.success(()))
+    }
+
+    private static func restoreInAppAudioVolume() {
+        NotificationCenter.default.post(name: Notification.Name("com.balady.navigationVoiceEnded"), object: nil)
     }
     
     func authorizationNotification(isAuthorized: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
