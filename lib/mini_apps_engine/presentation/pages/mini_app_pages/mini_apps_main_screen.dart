@@ -126,86 +126,100 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
             ],
             leading: SizedBox.shrink(),
           ),
-          body: Column(
-            children: [
-              // Audio Player Banner
-              Consumer(
-                builder: (context, ref, child) {
-                  final provider = ref.watch(streamAudioProvider);
-                  if (provider.selectedChannel == null) {
-                    return const SizedBox.shrink();
-                  }
-                  return AudioPlayerBanner(
-                    onTap: () {
-                      // Call togglePanel through the provider
-                      ref.read(streamAudioProvider).togglePanel();
-                    },
-                    onClose: () async {
-                      await ref.read(streamAudioProvider).exitPlayer();
-                    },
-                  );
-                },
-              ),
-              // Main content
-              Expanded(
-                child: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
-                  builder: (contextBloc, state) {
-                    Widget content = const SizedBox.shrink();
-
-                    if (state is MiniAppsEngineLoadedState) {
-                      content = const WebMiniAppsScreen();
+          body: SafeArea(
+            top: false,
+            bottom: true,
+            child: Column(
+              children: [
+                // Audio Player Banner
+                Consumer(
+                  builder: (context, ref, child) {
+                    final provider = ref.watch(streamAudioProvider);
+                    if (provider.selectedChannel == null) {
+                      return const SizedBox.shrink();
                     }
-
-                    return Stack(
-                      children: [
-                        // Loader background
-                        Container(
-                          child: Center(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset("assets/images/newload.gif", width: 120, height: 120, fit: BoxFit.contain),
-                                const SizedBox(height: 16),
-                                if (state is MiniAppsEngineLoadingState)
-                                  state.progress.isEmpty
-                                      ? const SizedBox()
-                                      : Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: SizedBox(
-                                            height: 10,
-                                            child: LinearProgressIndicator(
-                                              value: (double.parse(state.progress) / 100),
-                                              backgroundColor: Theme.of(context).disabledColor,
-                                              valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
-                                            ),
-                                          ),
-                                        ),
-                                const SizedBox(height: 16),
-                                Text("loading".tr(), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // WebMiniAppsScreen
-                        content,
-                        // Error / reload overlay
-                        if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
-                          Center(
-                            child: ReloadWidget(
-                              errorMessage: "errors_server_error_1".tr(),
-                              onTab: () {
-                                BlocProvider.of<MiniAppsEngineBloc>(
-                                  contextBloc,
-                                ).add(DownloadMiniAppsEngineEvent(miniApp: data));
-                              },
-                            ),
-                          ),
-                      ],
+                    return AudioPlayerBanner(
+                      onTap: () {
+                        // Call togglePanel through the provider
+                        ref.read(streamAudioProvider).togglePanel();
+                      },
+                      onClose: () async {
+                        await ref.read(streamAudioProvider).exitPlayer();
+                      },
                     );
                   },
                 ),
-              ),
-            ],
+                // Main content
+                Expanded(
+                  child: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
+                    builder: (contextBloc, state) {
+                      Widget content = const SizedBox.shrink();
+
+                      if (state is MiniAppsEngineLoadedState) {
+                        content = const WebMiniAppsScreen();
+                      }
+
+                      return Stack(
+                        children: [
+                          // Loader background
+                          Container(
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/newload.gif",
+                                    width: 120,
+                                    height: 120,
+                                    fit: BoxFit.contain,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  if (state is MiniAppsEngineLoadingState)
+                                    state.progress.isEmpty
+                                        ? const SizedBox()
+                                        : Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: SizedBox(
+                                              height: 10,
+                                              child: LinearProgressIndicator(
+                                                value: (double.parse(state.progress) / 100),
+                                                backgroundColor: Theme.of(context).disabledColor,
+                                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                                  AppColor.primary900Light,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "loading".tr(),
+                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // WebMiniAppsScreen
+                          content,
+                          // Error / reload overlay
+                          if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
+                            Center(
+                              child: ReloadWidget(
+                                errorMessage: "errors_server_error_1".tr(),
+                                onTab: () {
+                                  BlocProvider.of<MiniAppsEngineBloc>(
+                                    contextBloc,
+                                  ).add(DownloadMiniAppsEngineEvent(miniApp: data));
+                                },
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
