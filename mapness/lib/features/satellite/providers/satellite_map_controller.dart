@@ -8,6 +8,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'satellite_map_controller.g.dart';
 
+/// Global map-style attribute name that hides immersive 3D buildings while
+/// satellite imagery is on. Matches the literal used by the 2GIS style
+/// editor filters (`["match", ["global", "dissappear3D"], [true], true,
+/// false]`) — note the intentional double "s" in the spelling, the
+/// contract is fixed on the style side and renaming would require a
+/// style-editor update.
+const String _kDisappear3DAttribute = 'dissappear3D';
+
 // keepAlive: native SatelliteHandler holds the raster source for the whole
 // session. If the provider auto-disposed when the layers sheet closes, the
 // Dart bool would reset to false while the native layer stays visible — and
@@ -37,6 +45,24 @@ class SatelliteMapController extends _$SatelliteMapController {
   }
 
   Future<void> _setEnabled(bool enable) async {
+    // Wait for the native map to be ready instead of silently dropping the
+    // call when `dgisControllerProvider.value` is still null (the user can
+    // tap Satellite before the map finishes its initial load). Same pattern
+    // ParkingState uses for the `parkingOn` attribute.
+    final controller = await ref.read(dgisControllerProvider.future);
+    if (!ref.mounted) {
+      return;
+    }
+    // BALADY-3742: flip the style-global `dissappear3D` flag so the 2GIS
+    // style hides immersive 3D buildings while satellite imagery is on.
+    // Done first (before adding the raster source on enable / before
+    // removing it on disable) so the style finishes re-evaluating filters
+    // in the same frame as the raster source change — no flicker of "3D
+    // sticking out above the satellite tiles for one paint".
+    await controller.setMapAttributeBool(_kDisappear3DAttribute, value: enable);
+    if (!ref.mounted) {
+      return;
+    }
     if (enable) {
       // Debug-panel override: when a non-frc source is selected the
       // controller bypasses FRC and uses one of the bundled stand-ins
@@ -95,8 +121,11 @@ class SatelliteMapController extends _$SatelliteMapController {
     String layerName = '',
     String tileUri = '',
   }) async {
-    final controller = ref.read(dgisControllerProvider).value;
-    final result = await controller?.toggleSatellite(
+    final controller = await ref.read(dgisControllerProvider.future);
+    if (!ref.mounted) {
+      return;
+    }
+    final result = await controller.toggleSatellite(
       message: SatelliteMapMessage(
         layerName: layerName,
         rasterTileUri: tileUri,
