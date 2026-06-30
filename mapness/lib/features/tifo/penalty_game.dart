@@ -2425,13 +2425,25 @@ class _GoalkeeperModel {
   // 0-based cell indices into the 8×4 atlas (cell N corresponds to source
   // pose (N+1).png). Each list defines how a motion samples poses over time —
   // the renderer picks `progress * (length-1)` and snaps to the nearest cell.
+  //
+  // Verified pose buckets after re-extracting the atlas:
+  //   * Clean facing-camera STANDING: cells 0, 16, 22, 23, 24, 25.
+  //   * READY-CROUCH (knees wide / bent low): cells 1, 2, 8, 9, 10, 17, 18.
+  //   * Back views: cells 19, 20, 21.
+  //   * Catch / dive: cells 11–15.
+  //   * Celebrate / pointing: cells 3–7, 26, 27.
+  //   * Defeat (sitting / lying): cells 28–31.
   static const Map<_KeeperMotion, List<int>> _motionFrames = {
-    _KeeperMotion.ready:       [0, 1, 16, 22, 23, 24, 25, 18, 17, 10],
-    _KeeperMotion.diveMid:     [8, 13, 13, 14, 14, 15, 15, 15, 15, 15],
-    _KeeperMotion.diveHigh:    [8,  6,  3, 11, 11, 11, 11, 11, 11, 11],
-    _KeeperMotion.diveLow:     [8,  8, 15, 15, 15, 15, 15, 15, 15, 15],
-    _KeeperMotion.saveRecover: [13, 7, 6, 3, 27, 27, 26, 27],
-    _KeeperMotion.missedReact: [16, 22, 23, 23, 17, 17, 24, 25],
+    // Idle bobble — only clean standing poses (no crouches, no back views).
+    _KeeperMotion.ready:       [0, 25, 16, 0, 24, 0, 22, 25, 0, 23],
+    // Dive sequences begin with a real READY-CROUCH (cells 9/10) — those
+    // belong INSIDE the dive sheets, not in idle.
+    _KeeperMotion.diveMid:     [9, 14, 14, 14, 15, 15, 15, 15, 15, 15],
+    _KeeperMotion.diveHigh:    [9,  7,  6, 11, 11, 11, 11, 11, 11, 11],
+    _KeeperMotion.diveLow:     [10, 10, 15, 15, 15, 15, 15, 15, 15, 15],
+    _KeeperMotion.saveRecover: [13, 7, 6, 27, 27, 26, 27, 27],
+    // Calm "ball went wide" reaction — standing variants only.
+    _KeeperMotion.missedReact: [16, 22, 23, 23, 24, 24, 25, 25],
     _KeeperMotion.conceded:    [13, 21, 29, 30, 30, 31, 31, 31],
   };
 
