@@ -12,7 +12,8 @@ const kLifestyleAccentGreen = Color(0xFF1B8354);
 
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 const _borderRadius = 4.0;
-const _iconSize = 15.0;
+const _labeledIconSize = 15.0;
+const _iconOnlyIconSize = 20.0;
 const _labeledInnerPadding = EdgeInsetsDirectional.symmetric(
   vertical: Spacing.$2x,
   horizontal: Spacing.$4x,
@@ -61,7 +62,7 @@ class LifestyleActionBarStyle {
     bgColor: kLifestyleAccentGreen,
     labelColor: directionsForeground,
     iconColor: directionsForeground,
-    iconSize: _iconSize,
+    iconSize: _labeledIconSize,
     onPressed: onPressed,
   );
 
@@ -82,7 +83,7 @@ class LifestyleActionBarStyle {
     bgColor: secondaryBackground,
     labelColor: kLifestyleAccentGreen,
     iconColor: kLifestyleAccentGreen,
-    iconSize: _iconSize,
+    iconSize: label != null ? _labeledIconSize : _iconOnlyIconSize,
     onPressed: onPressed,
   );
 }
