@@ -15,6 +15,7 @@ class FeedbackBannerCardV2 extends StatelessWidget {
   final List<Color> gradientColors;
   final VoidCallback? onTap;
   final ImageSizeCalculator? imageSizeCalculator;
+  final String? semanticsLabel;
 
   const FeedbackBannerCardV2({
     required this.path,
@@ -23,49 +24,57 @@ class FeedbackBannerCardV2 extends StatelessWidget {
     this.imageSizeCalculator,
     this.subtitle,
     this.onTap,
+    this.semanticsLabel,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bannerLabel = subtitle != null && subtitle!.trim().isNotEmpty ? '$title, $subtitle' : title;
+    final bannerLabel =
+        semanticsLabel ?? (subtitle != null && subtitle!.trim().isNotEmpty ? '$title, $subtitle' : title);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: Semantics(
-        button: true,
+        button: onTap != null,
+        container: true,
         label: bannerLabel,
-        child: GestureDetector(
-          excludeFromSemantics: true,
-          onTap: onTap,
-          child: SizedBox(
-            width: double.maxFinite,
-            child: _FeedBackWidget(
-              asset: path,
-              title: title,
-              subTitle: subtitle,
-              ///todo fix colors
-              ///          gradientColors: gradientColors,
-              gradientColors: [context.colors.accentActive, context.colors.accentActive],
-              textDirection: Directionality.of(context),
-              imageSizeCalculator: imageSizeCalculator,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: Spacing.$4x, top: Spacing.$4x),
-                child: SizedBox(
-                  width: Spacing.$8x,
-                  height: Spacing.$8x,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                      ///todo fix colors
-                      // color: context.colors.staticBlack,
-                      color: context.colors.staticWhite,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        SystemIcons.arrowCornerRightLarge,
-                        color: context.colors.staticBlack,
-                        size: Spacing.$4x,
+        onTap: onTap,
+        child: ExcludeSemantics(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onTap,
+            child: SizedBox(
+              width: double.maxFinite,
+              child: _FeedBackWidget(
+                asset: path,
+                title: title,
+                subTitle: subtitle,
+
+                ///todo fix colors
+                ///          gradientColors: gradientColors,
+                gradientColors: [context.colors.accentActive, context.colors.accentActive],
+                textDirection: Directionality.of(context),
+                imageSizeCalculator: imageSizeCalculator,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(end: Spacing.$4x, top: Spacing.$4x),
+                  child: SizedBox(
+                    width: Spacing.$8x,
+                    height: Spacing.$8x,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Spacing.$1_5x),
+
+                        ///todo fix colors
+                        // color: context.colors.staticBlack,
+                        color: context.colors.staticWhite,
+                      ),
+                      child: Center(
+                        child: Icon(
+                          SystemIcons.arrowCornerRightLarge,
+                          color: context.colors.staticBlack,
+                          size: Spacing.$4x,
+                        ),
                       ),
                     ),
                   ),
