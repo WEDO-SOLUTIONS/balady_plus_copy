@@ -2488,14 +2488,17 @@ class _GoalkeeperModel {
       if (atlasImage != null) {
         _atlas = _KeeperAtlas(
           image: atlasImage,
-          // New 2048×1152 atlas (3 logical rows × 8 frames = one long dive):
+          // 2048×768 atlas — square 256×256 cells, 8 cols × 3 rows = one
+          // long 24-frame dive that reads left-to-right, top-to-bottom:
           //   row 0 (0..7)   — standing → crouch → launch-ready
           //   row 1 (8..15)  — full horizontal flight (hands catching/deflect)
           //   row 2 (16..23) — landing → lying on ground
           //
           // Every motion samples a contiguous slice of this single sequence.
+          // Source is the artist's `player final.png` (12288×512 single row);
+          // the bake step repacks it into this GPU-friendly grid.
           cellWidth: 256,
-          cellHeight: 384,
+          cellHeight: 256,
           cols: 8,
           rows: 3,
         );
