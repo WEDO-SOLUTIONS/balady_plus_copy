@@ -927,6 +927,11 @@ enum _KeeperDive { low, mid, high }
 /// Logical motion the keeper is currently performing. Each entry maps to an
 /// ordered list of atlas-cell indices in [_GoalkeeperModel._motionFrames].
 enum _KeeperMotion {
+  /// Long-running loop while waiting for the shot; holds cell 0 (standing)
+  /// with an occasional micro-shift so the sprite doesn't look frozen.
+  idle,
+  /// Crouch-prep transition — the standing→launch-ready arc. Plays once
+  /// (progress-driven) while the striker is winding up.
   ready,
   diveMid,
   diveLow,
@@ -2422,33 +2427,35 @@ class _GoalkeeperModel {
   // When loaded, supersedes every per-motion sheet above.
   _KeeperAtlas? _atlas;
 
-  // 0-based cell indices into the 8×4 atlas. The new sheet is organised by
-  // ROW = one full animation, so most motion lists are now contiguous ranges:
+  // 0-based cell indices into the 8×3 atlas. The whole 24-frame set is
+  // ONE continuous dive-and-recover animation; each motion is just a slice:
   //
-  //   row 0 (0..7)   — idle breath loop (8 micro-variations of stance)
-  //   row 1 (8..15)  — full dive sequence  (frame 15 = horizontal peak)
-  //   row 2 (16..23) — same dive mirrored (kept as backup direction)
-  //   row 3 (24..31) — 24:deep squat  25:V-arms  26:arms up  27:ready
-  //                    28:ball-at-chest  29:yell  30:yell-2  31:hips
+  //   row 0 (0..7)   — standing (cell 0) → knees bend → launch-ready crouch
+  //   row 1 (8..15)  — full horizontal flight (hands out defending / catching)
+  //   row 2 (16..23) — landing (16..18 airborne descent) → lying flat (22..23)
   //
-  // The render path flips horizontally for `direction > 0`, so we only need
-  // ONE dive row in motion lists; the other row is unused for now and stays
-  // as a future hook if we drop the flip in favour of native dual-direction.
+  // The three dive-height variants share the same slice — this atlas has a
+  // single dive arc; height differentiation is left to the world-space
+  // trajectory in `_drawDivingSprite` (baseHeight/liftBoost per _KeeperDive).
   static const Map<_KeeperMotion, List<int>> _motionFrames = {
+    // Idle — keeper is mostly still on cell 0; brief lean to cell 1 keeps
+    // the sprite alive without dropping into the crouch cells (2+).
+    _KeeperMotion.idle:        [0, 0, 0, 0, 1, 0, 0, 0],
+    // Prep — the full standing→launch-ready arc (played once as diveProgress
+    // crosses 0.08..0.28). Ends on cell 7 so the dive slice picks up cleanly.
     _KeeperMotion.ready:       [0, 1, 2, 3, 4, 5, 6, 7],
-    // Same row drives every dive height — this atlas has a single dive arc.
-    _KeeperMotion.diveMid:     [8, 9, 10, 11, 12, 13, 14, 15],
-    _KeeperMotion.diveLow:     [8, 9, 10, 11, 12, 13, 14, 15],
-    // High dive — push final frames to the "arms up" celebration cells so
-    // the keeper visually reaches up rather than just out.
-    _KeeperMotion.diveHigh:    [8, 9, 10, 24, 25, 26, 25, 26],
-    // Save → ball → arms up → yell
-    _KeeperMotion.saveRecover: [15, 28, 25, 26, 26, 29, 30, 30],
-    // Missed (ball went wide) — calm "look at where it went" using ready +
-    // hands-on-hips. No back-views in this atlas.
-    _KeeperMotion.missedReact: [0, 31, 31, 7, 0, 31, 31, 7],
-    // Conceded — dejected stance (no lying-defeat poses in this atlas).
-    _KeeperMotion.conceded:    [15, 31, 31, 31, 31, 31, 31, 31],
+    // Dive launch → horizontal peak. Overlaps prep's last cell (7) so the
+    // hand-off is seamless.
+    _KeeperMotion.diveMid:     [7, 8, 9, 10, 11, 12, 13, 14, 15],
+    _KeeperMotion.diveLow:     [7, 8, 9, 10, 11, 12, 13, 14, 15],
+    _KeeperMotion.diveHigh:    [7, 8, 9, 10, 11, 12, 13, 14, 15],
+    // Result phases — start from the dive peak (cell 15) and progress through
+    // landing (16..19) to lying (20..23). All three outcomes share the pose
+    // sequence; only the HUD text differs. Iterate later if a save-specific
+    // "ball caught" or conceded "head-in-hands" pose is added to the atlas.
+    _KeeperMotion.saveRecover: [15, 16, 17, 18, 19, 20, 21, 22, 23],
+    _KeeperMotion.missedReact: [15, 16, 17, 18, 19, 20, 21, 22, 23],
+    _KeeperMotion.conceded:    [15, 16, 17, 18, 19, 20, 21, 22, 23],
   };
 
   Color _jersey = const Color(0xFFFFA726);
@@ -2481,15 +2488,16 @@ class _GoalkeeperModel {
       if (atlasImage != null) {
         _atlas = _KeeperAtlas(
           image: atlasImage,
-          // New 2048×1152 atlas (4 logical rows × 8 frames):
-          //   row 0 (0..7)  — idle breathing loop
-          //   row 1 (8..15) — right-side dive sequence (LEFT in keeper's POV)
-          //   row 2 (16..23)— left-side dive (mirror)
-          //   row 3 (24..31)— misc reactions (squat/V-arms/up/ready/ball/yell×2/hips)
+          // New 2048×1152 atlas (3 logical rows × 8 frames = one long dive):
+          //   row 0 (0..7)   — standing → crouch → launch-ready
+          //   row 1 (8..15)  — full horizontal flight (hands catching/deflect)
+          //   row 2 (16..23) — landing → lying on ground
+          //
+          // Every motion samples a contiguous slice of this single sequence.
           cellWidth: 256,
-          cellHeight: 288,
+          cellHeight: 384,
           cols: 8,
-          rows: 4,
+          rows: 3,
         );
       }
       // Legacy per-motion sheets — fallback if the atlas asset is missing.
@@ -2744,14 +2752,17 @@ class _GoalkeeperModel {
     }
 
     // 4. Idle cycle — slow bobble while waiting for the shot.
+    //    Uses `_KeeperMotion.idle` (not `.ready`) — idle is anchored on the
+    //    standing pose; `.ready` walks through crouch prep and would look
+    //    like the keeper is anticipating a shot that isn't happening.
     final cycleLen = _atlas != null
-        ? _motionFrames[_KeeperMotion.ready]!.length
+        ? _motionFrames[_KeeperMotion.idle]!.length
         : (_readySheet?.frames ?? 0);
     final idleCycle = cycleLen > 1
         ? ((game._elapsed * 7).floor() % cycleLen) / (cycleLen - 1)
         : null;
     if (idleCycle != null) {
-      final pose = _motionPose(_KeeperMotion.ready, idleCycle, fallback: idleSprite);
+      final pose = _motionPose(_KeeperMotion.idle, idleCycle, fallback: idleSprite);
       _drawIdleSprite(
         game,
         canvas,
@@ -2788,6 +2799,7 @@ class _GoalkeeperModel {
       return (atlas.image, atlas.cellRect(frames[idx]));
     }
     final sheet = switch (motion) {
+      _KeeperMotion.idle => _readySheet,
       _KeeperMotion.ready => _readySheet,
       _KeeperMotion.diveMid => _diveMidLeftSheet,
       _KeeperMotion.diveLow => _diveLowLeftSheet ?? _diveMidLeftSheet,
