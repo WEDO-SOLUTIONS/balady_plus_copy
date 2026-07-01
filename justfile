@@ -48,10 +48,6 @@ locale_gen:
 
     print_style '' 'yellow' '> setup locale...'
     localazy download
-    # Re-apply keys that are referenced in code but not (yet) published in
-    # Localazy (see mapness/l10n_overrides.json). Must run AFTER download and
-    # BEFORE gen-l10n; the ARBs are gitignored and rewritten by `localazy download`.
-    python3 justscripts/apply_l10n_overrides.py
     cd mapness
     mkdir -p lib/l10n
     fvm flutter gen-l10n # --arb-dir=lib/src/l10n/ --template-arb-file=intl_ru.arb --output-localization-file=generated/ --output-class=AppLocalization --output-dir=lib/src/l10n/generated/app_localizations --no-synthetic-package
