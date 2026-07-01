@@ -13,10 +13,11 @@ const kLifestyleAccentGreen = Color(0xFF1B8354);
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 const _borderRadius = 4.0;
 const _iconSize = 15.0;
-const _actionInnerPadding = EdgeInsetsDirectional.symmetric(
+const _labeledInnerPadding = EdgeInsetsDirectional.symmetric(
   vertical: Spacing.$2x,
   horizontal: Spacing.$4x,
 );
+const _iconOnlyInnerPadding = EdgeInsets.all(Spacing.$2x);
 
 class LifestyleActionBarStyle {
   final BorderSide secondaryBorder;
@@ -56,10 +57,11 @@ class LifestyleActionBarStyle {
     buttonType: ButtonType.secondary,
     colorScheme: _buttonColorScheme,
     label: context.l10n.poiCardDirections,
-    innerPadding: _actionInnerPadding,
+    innerPadding: _labeledInnerPadding,
     bgColor: kLifestyleAccentGreen,
     labelColor: directionsForeground,
     iconColor: directionsForeground,
+    iconSize: _iconSize,
     onPressed: onPressed,
   );
 
@@ -74,7 +76,7 @@ class LifestyleActionBarStyle {
     buttonType: buttonType,
     colorScheme: _buttonColorScheme,
     label: label,
-    innerPadding: innerPadding ?? _actionInnerPadding,
+    innerPadding: innerPadding ?? (label != null ? _labeledInnerPadding : _iconOnlyInnerPadding),
     border: secondaryBorder,
     borderRadius: _borderRadius,
     bgColor: secondaryBackground,

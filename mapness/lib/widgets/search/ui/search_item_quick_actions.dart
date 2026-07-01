@@ -126,7 +126,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (lifestyleStyle != null)
         lifestyleStyle.secondary(
           icon: iconData,
-          label: isFavourite ? context.l10n.removeFromFavorites : context.l10n.addToFavorite,
           onPressed: () {
             onResultAction?.call(DataFinderClickAction.addToFavorites);
             _onFavoriteTap(
@@ -170,7 +169,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
         builder: (context, throttledShare) => lifestyleStyle != null
             ? lifestyleStyle.secondary(
                 icon: SystemIcons.share,
-                label: context.l10n.share,
                 onPressed: throttledShare,
               )
             : ItemActionBar(
@@ -185,7 +183,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
         lifestyleStyle != null
             ? lifestyleStyle.secondary(
                 icon: GeneralIcons.phoneLTR,
-                label: context.l10n.call,
                 onPressed: () {
                   BssService.instance.trackCallTap(directoryObject, phoneNumber);
                   poiActions.callPhone(phoneNumber);
@@ -205,7 +202,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
         lifestyleStyle != null
             ? lifestyleStyle.secondary(
                 icon: GeneralIcons.web,
-                label: context.l10n.feedbackWebsiteLabel,
                 onPressed: () {
                   BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
                   poiActions.launch(website);
@@ -225,7 +221,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
         lifestyleStyle != null
             ? lifestyleStyle.secondary(
                 icon: PoiContentContactsCard.getIconData(socialMedia.type),
-                label: context.l10n.feedbackWebsiteOrSocialMedia,
                 onPressed: () {
                   BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
                   poiActions.launch(socialMedia.link);
