@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
@@ -169,6 +171,14 @@ class Debug3DModelPanel extends ConsumerWidget {
             onChanged: (value) => unawaited(notifier.setGameModeActive(value: value)),
             gradient: DebugTheme.gradientTeal,
           ),
+          const SizedBox(height: 8),
+          DebugButton(
+            label: 'Launch penalty game',
+            icon: Icons.sports_soccer_rounded,
+            gradient: DebugTheme.gradientTeal,
+            isCompact: true,
+            onPressed: () => _launchPenaltyGame(),
+          ),
           if (state.error != null) ...[
             const DebugDivider(),
             Text(
@@ -179,6 +189,28 @@ class Debug3DModelPanel extends ConsumerWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  /// Debug-only shortcut: pushes [PenaltyApp] directly on the root navigator,
+  /// bypassing every gate (team-select / tutorial / entry / polygon-tap).
+  /// `onComplete` just pops back — no capture, no cool-downs, no side effects.
+  void _launchPenaltyGame() {
+    final navigator = rootNavigatorKey.currentState;
+    if (navigator == null) return;
+    unawaited(
+      navigator.push<void>(
+        MaterialPageRoute<void>(
+          fullscreenDialog: true,
+          builder: (_) => PenaltyApp(
+            onComplete: (_) {
+              Future<void>.delayed(const Duration(milliseconds: 850), () {
+                rootNavigatorKey.currentState?.pop();
+              });
+            },
+          ),
+        ),
       ),
     );
   }
