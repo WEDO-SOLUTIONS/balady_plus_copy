@@ -20,9 +20,8 @@ import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/ui/lifestyle_action_bar_style.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
-
-const _buttonColorScheme = ButtonColorScheme.accentSecondary;
 
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
@@ -73,48 +72,86 @@ class SearchItemQuickActions extends HookConsumerWidget {
         .toList()
         .firstOrNull;
     final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+    final useLifestyleStyle = !isFoundingDay;
+    final lifestyleStyle = useLifestyleStyle ? LifestyleActionBarStyle.of(context) : null;
     final colorScheme = isFoundingDay ? ButtonColorScheme.accent : ButtonColorScheme.accentSecondary;
 
     final actions = [
-      ItemActionBar(
-        icon: TransportIcons.locationDirectionNavigator,
-        buttonType: ButtonType.secondary,
-        colorScheme: colorScheme,
-        label: context.l10n.poiCardDirections,
-        innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-        onPressed: () {
-          onResultAction?.call(DataFinderClickAction.initiateNavigation);
-          BssService.instance.trackRouteTap(directoryObject);
-          openRoutingRoutes(
-            context,
-            directoryObject.id!.objectId,
-            directoryObject.title,
-            RouteParamsPoint(
-              latitude: directoryObject.markerPosition!.latitude,
-              longitude: directoryObject.markerPosition!.longitude,
-              objectId: directoryObject.id?.objectId,
-              entranceId: directoryObject.id?.entranceId,
-              levelId: directoryObject.levelId,
-            ),
-            ref,
-          );
-        },
-      ),
-      ItemActionBar(
-        icon: iconData,
-        buttonType: ButtonType.secondary,
-        colorScheme: colorScheme,
-        label: isFavourite ? context.l10n.removeFromFavorites : context.l10n.addToFavorite,
-        onPressed: () {
-          onResultAction?.call(DataFinderClickAction.addToFavorites);
-          _onFavoriteTap(
-            context: context,
-            ref: ref,
-            data: directoryObject,
-            favouriteItem: favouriteItem,
-          );
-        },
-      ),
+      if (lifestyleStyle != null)
+        lifestyleStyle.directions(
+          context: context,
+          onPressed: () {
+            onResultAction?.call(DataFinderClickAction.initiateNavigation);
+            BssService.instance.trackRouteTap(directoryObject);
+            openRoutingRoutes(
+              context,
+              directoryObject.id!.objectId,
+              directoryObject.title,
+              RouteParamsPoint(
+                latitude: directoryObject.markerPosition!.latitude,
+                longitude: directoryObject.markerPosition!.longitude,
+                objectId: directoryObject.id?.objectId,
+                entranceId: directoryObject.id?.entranceId,
+                levelId: directoryObject.levelId,
+              ),
+              ref,
+            );
+          },
+        )
+      else
+        ItemActionBar(
+          icon: TransportIcons.locationDirectionNavigator,
+          buttonType: ButtonType.secondary,
+          colorScheme: colorScheme,
+          label: context.l10n.poiCardDirections,
+          innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+          onPressed: () {
+            onResultAction?.call(DataFinderClickAction.initiateNavigation);
+            BssService.instance.trackRouteTap(directoryObject);
+            openRoutingRoutes(
+              context,
+              directoryObject.id!.objectId,
+              directoryObject.title,
+              RouteParamsPoint(
+                latitude: directoryObject.markerPosition!.latitude,
+                longitude: directoryObject.markerPosition!.longitude,
+                objectId: directoryObject.id?.objectId,
+                entranceId: directoryObject.id?.entranceId,
+                levelId: directoryObject.levelId,
+              ),
+              ref,
+            );
+          },
+        ),
+      if (lifestyleStyle != null)
+        lifestyleStyle.secondary(
+          icon: iconData,
+          onPressed: () {
+            onResultAction?.call(DataFinderClickAction.addToFavorites);
+            _onFavoriteTap(
+              context: context,
+              ref: ref,
+              data: directoryObject,
+              favouriteItem: favouriteItem,
+            );
+          },
+        )
+      else
+        ItemActionBar(
+          icon: iconData,
+          buttonType: ButtonType.secondary,
+          colorScheme: colorScheme,
+          label: isFavourite ? context.l10n.removeFromFavorites : context.l10n.addToFavorite,
+          onPressed: () {
+            onResultAction?.call(DataFinderClickAction.addToFavorites);
+            _onFavoriteTap(
+              context: context,
+              ref: ref,
+              data: directoryObject,
+              favouriteItem: favouriteItem,
+            );
+          },
+        ),
       ThrottledCallbackWidget(
         callback: () {
           onResultAction?.call(DataFinderClickAction.sharePoi);
@@ -129,47 +166,76 @@ class SearchItemQuickActions extends HookConsumerWidget {
           );
         },
         resetAfterFutureCompleted: true,
-        builder: (context, throttledShare) => ItemActionBar(
-          icon: SystemIcons.share,
-          colorScheme: colorScheme,
-          buttonType: ButtonType.secondary,
-          label: context.l10n.share,
-          onPressed: throttledShare,
-        ),
+        builder: (context, throttledShare) => lifestyleStyle != null
+            ? lifestyleStyle.secondary(
+                icon: SystemIcons.share,
+                onPressed: throttledShare,
+              )
+            : ItemActionBar(
+                icon: SystemIcons.share,
+                colorScheme: colorScheme,
+                buttonType: ButtonType.secondary,
+                label: context.l10n.share,
+                onPressed: throttledShare,
+              ),
       ),
       if (phoneNumber != null)
-        ItemActionBar(
-          icon: GeneralIcons.phoneLTR,
-          colorScheme: colorScheme,
-          buttonType: ButtonType.secondary,
-          label: context.l10n.call,
-          onPressed: () {
-            BssService.instance.trackCallTap(directoryObject, phoneNumber);
-            poiActions.callPhone(phoneNumber);
-          },
-        ),
+        lifestyleStyle != null
+            ? lifestyleStyle.secondary(
+                icon: GeneralIcons.phoneLTR,
+                onPressed: () {
+                  BssService.instance.trackCallTap(directoryObject, phoneNumber);
+                  poiActions.callPhone(phoneNumber);
+                },
+              )
+            : ItemActionBar(
+                icon: GeneralIcons.phoneLTR,
+                colorScheme: colorScheme,
+                buttonType: ButtonType.secondary,
+                label: context.l10n.call,
+                onPressed: () {
+                  BssService.instance.trackCallTap(directoryObject, phoneNumber);
+                  poiActions.callPhone(phoneNumber);
+                },
+              ),
       if (website != null)
-        ItemActionBar(
-          icon: GeneralIcons.web,
-          colorScheme: colorScheme,
-          buttonType: ButtonType.secondary,
-          label: context.l10n.feedbackWebsiteLabel,
-          onPressed: () {
-            BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
-            poiActions.launch(website);
-          },
-        ),
+        lifestyleStyle != null
+            ? lifestyleStyle.secondary(
+                icon: GeneralIcons.web,
+                onPressed: () {
+                  BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
+                  poiActions.launch(website);
+                },
+              )
+            : ItemActionBar(
+                icon: GeneralIcons.web,
+                colorScheme: colorScheme,
+                buttonType: ButtonType.secondary,
+                label: context.l10n.feedbackWebsiteLabel,
+                onPressed: () {
+                  BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
+                  poiActions.launch(website);
+                },
+              ),
       if (website == null && socialMedia != null)
-        ItemActionBar(
-          icon: PoiContentContactsCard.getIconData(socialMedia.type),
-          colorScheme: ButtonColorScheme.accent,
-          buttonType: ButtonType.secondary,
-          label: context.l10n.feedbackWebsiteOrSocialMedia,
-          onPressed: () {
-            BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
-            poiActions.launch(socialMedia.link);
-          },
-        ),
+        lifestyleStyle != null
+            ? lifestyleStyle.secondary(
+                icon: PoiContentContactsCard.getIconData(socialMedia.type),
+                onPressed: () {
+                  BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
+                  poiActions.launch(socialMedia.link);
+                },
+              )
+            : ItemActionBar(
+                icon: PoiContentContactsCard.getIconData(socialMedia.type),
+                colorScheme: ButtonColorScheme.accent,
+                buttonType: ButtonType.secondary,
+                label: context.l10n.feedbackWebsiteOrSocialMedia,
+                onPressed: () {
+                  BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
+                  poiActions.launch(socialMedia.link);
+                },
+              ),
     ];
 
     return Padding(

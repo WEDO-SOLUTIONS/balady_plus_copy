@@ -56,7 +56,6 @@ class BaseDashboardContent extends ConsumerWidget {
         if (isFoundingday) const FoundingDayBackground(),
         Column(
           children: [
-
             Column(
               children: [
                 StoriesWidget(
@@ -89,6 +88,7 @@ class BaseDashboardContent extends ConsumerWidget {
                 gradientColors: themeConfig.feedbackBannerGradient,
                 title: context.l10n.contribute,
                 subtitle: context.l10n.buildBaladyTogether,
+                semanticsLabel: context.l10n.a11yContributeBanner,
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
               ),
             ),
@@ -124,7 +124,6 @@ class BaseDashboardContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
                     QuickActionButton(
                       text: context.l10n.sendLocation,
                       icon: General32Icons.locationAction,
