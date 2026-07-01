@@ -20,14 +20,16 @@ class AboutBaladyPage extends ConsumerStatefulWidget {
 
 class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
   /// youtube video id
-  final initialVideoId = '4iRVvB1iZAc';
+  final initialVideoId = 'b4kohDdo_2c';
+  final initialVideoEnId = 'DpQVsa12HxU';
   late YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
+    final isLtr = ref.read(uiDirectionProvider) == TextDirection.ltr;
     _controller = YoutubePlayerController(
-      initialVideoId: initialVideoId,
+      initialVideoId: isLtr ? initialVideoEnId : initialVideoId,
       flags: const YoutubePlayerFlags(autoPlay: false, enableCaption: false, hideControls: true),
     );
   }
