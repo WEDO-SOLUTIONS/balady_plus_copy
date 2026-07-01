@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -27,9 +29,9 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
   @override
   void initState() {
     super.initState();
-    final isLtr = ref.read(uiDirectionProvider) == TextDirection.ltr;
+    final isArabic = Helpers.isRTL();
     _controller = YoutubePlayerController(
-      initialVideoId: isLtr ? initialVideoEnId : initialVideoId,
+      initialVideoId: isArabic ? initialVideoId : initialVideoEnId,
       flags: const YoutubePlayerFlags(autoPlay: false, enableCaption: false, hideControls: true),
     );
   }
