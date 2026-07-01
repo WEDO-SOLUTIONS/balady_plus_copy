@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -22,16 +20,14 @@ class AboutBaladyPage extends ConsumerStatefulWidget {
 
 class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
   /// youtube video id
-  final initialVideoId = 'b4kohDdo_2c';
-  final initialVideoEnId = 'DpQVsa12HxU';
+  final initialVideoId = '4iRVvB1iZAc';
   late YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
-    final isArabic = Helpers.isRTL();
     _controller = YoutubePlayerController(
-      initialVideoId: isArabic ? initialVideoId : initialVideoEnId,
+      initialVideoId: initialVideoId,
       flags: const YoutubePlayerFlags(autoPlay: false, enableCaption: false, hideControls: true),
     );
   }
@@ -119,18 +115,18 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                                       child: Center(
                                         child: isBuffering
                                             ? SizedBox(
-                                                width: 18,
-                                                height: 18,
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2.5,
-                                                  color: context.colors.accentDefault,
-                                                ),
-                                              )
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            color: context.colors.accentDefault,
+                                          ),
+                                        )
                                             : Icon(
-                                                Icons.play_arrow_rounded,
-                                                size: 24,
-                                                color: context.colors.backgroundSurface1,
-                                              ),
+                                          Icons.play_arrow_rounded,
+                                          size: 24,
+                                          color: context.colors.backgroundSurface1,
+                                        ),
                                       ),
                                     ),
                                   ),
