@@ -38,6 +38,7 @@ import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -114,7 +115,12 @@ class LayersState {
 
 const duration = Duration(milliseconds: 700);
 
-@riverpod
+// BALADY-3730: keepAlive so `selectedType` survives the auth flow. Without
+// it the provider auto-disposes the moment the layers sheet is covered by
+// the login route — the callback then reads/creates a fresh instance,
+// toggles Favorites on it, and both that mutation and the later re-mount
+// lose the selection. Same pattern SatelliteMapController uses.
+@Riverpod(keepAlive: true)
 class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
   StreamSubscription? _viewPortSubscription;
@@ -139,6 +145,20 @@ class LayersControls extends _$LayersControls {
     ref.onDispose(() {
       _viewPortSubscription?.cancel();
       _tapSubscription?.cancel();
+    });
+
+    // BALADY-3730 follow-up: if the user logs out while the Favorites layer
+    // is active, disable it. Favorites needs an authenticated session, so
+    // leaving the layer "on" after logout leaves stale/empty state on the
+    // map. Fire-and-forget via microtask because ref.listen callbacks are
+    // sync and must not mutate providers on the notifier frame.
+    ref.listen(authMethodsProvider, (previous, next) {
+      if (previous == true && next == false && state.selectedType == LayerType.favourites) {
+        Future.microtask(() async {
+          await ref.read(favouriteToggleProvider.notifier).disable();
+          setSelection();
+        });
+      }
     });
 
     _tapSubscription = tapSubject.debounceTime(duration).listen(_tapHandler);
