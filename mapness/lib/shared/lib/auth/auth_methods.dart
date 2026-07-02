@@ -54,6 +54,11 @@ class AuthMethods extends _$AuthMethods {
   }) async {
     await _authSubscription?.cancel();
     _loginScreenPoppedSubscription?.cancel();
+    // BALADY-3730: the popped flag is sticky from any previous login flow.
+    // Without this reset the 1-second poll below sees the stale `true`,
+    // cancels the userStateStream subscription while the user is still on
+    // the login form, and the callback never runs.
+    BaladyRouteObserver.resetLoginScreenPopped();
     if (!state) {
       if (!context.mounted) {
         return;
