@@ -736,9 +736,13 @@ class LayersControls extends _$LayersControls {
     await _hideAllSelectedMarkers();
     ref.read(poiCardClosingProvider.notifier).close();
 
-    if (currentState != null && currentState != value) {
-      await _hidePreviousLayers(currentState);
-    }
+    // BALADY-3615: do NOT call _hidePreviousLayers here. Every toggle*
+    // reached via toggleLayers hides the previous overlay itself (they must,
+    // because dashboard/free-roam call them directly). Calling it here too
+    // fired the traffic hide TWICE: hiding traffic is a native toggle-click
+    // (onTrafficTap), and the disabled event does not land between the two
+    // calls — the second click re-enabled traffic, leaving it rendered
+    // under the newly selected overlay.
     await toggleLayers(value);
 
     // TEMP(BALADY-3615): post-toggle state.
