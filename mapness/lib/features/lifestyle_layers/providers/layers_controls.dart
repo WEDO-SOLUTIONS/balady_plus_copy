@@ -38,7 +38,7 @@ import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -124,6 +124,7 @@ const duration = Duration(milliseconds: 700);
 class LayersControls extends _$LayersControls {
   static const duration = Duration(milliseconds: 250);
   StreamSubscription? _viewPortSubscription;
+  StreamSubscription? _authStateSubscription;
   CancelToken? _cancelToken;
 
   final esriMapObjectSettings = MapObjectManagerSettings.esri();
@@ -145,15 +146,26 @@ class LayersControls extends _$LayersControls {
     ref.onDispose(() {
       _viewPortSubscription?.cancel();
       _tapSubscription?.cancel();
+      _authStateSubscription?.cancel();
     });
 
     // BALADY-3730 follow-up: if the user logs out while the Favorites layer
-    // is active, disable it. Favorites needs an authenticated session, so
-    // leaving the layer "on" after logout leaves stale/empty state on the
-    // map. Fire-and-forget via microtask because ref.listen callbacks are
-    // sync and must not mutate providers on the notifier frame.
-    ref.listen(authMethodsProvider, (previous, next) {
-      if (previous == true && next == false && state.selectedType == LayerType.favourites) {
+    // is active, disable it — the layer needs an authenticated session and
+    // would otherwise keep stale selection/markers. Listen to the
+    // EntryPointCubit stream directly (same source authAndOpen uses):
+    // relying on authMethodsProvider here doesn't work because it is only
+    // re-evaluated when the autoDispose authProvider happens to be alive to
+    // invalidate it. The cubit stream replays the current state on
+    // subscription, so guard on an explicit logged-in -> logged-out
+    // transition. Mutation is deferred via microtask — stream callbacks
+    // must not touch providers synchronously from the notifier frame.
+    bool? wasLoggedIn;
+    _authStateSubscription?.cancel();
+    _authStateSubscription = CommonProperties.userStateStream.listen((event) {
+      final isLoggedIn = event.userInfo != null;
+      final loggedOut = wasLoggedIn == true && !isLoggedIn;
+      wasLoggedIn = isLoggedIn;
+      if (loggedOut && state.selectedType == LayerType.favourites) {
         Future.microtask(() async {
           await ref.read(favouriteToggleProvider.notifier).disable();
           setSelection();
