@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -155,17 +156,22 @@ class _LayersTabChip extends StatelessWidget {
       // flash. Selection is binary anyway, animation gave nothing here.
       child: Container(
         height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         decoration: BoxDecoration(
           color: isSelected ? colors.backgroundSurface5 : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(color: colors.borderDefault),
         ),
         alignment: Alignment.center,
-        child: Text(
+        // BALADY-3736: Arabic labels (e.g. "المواصلات العامة") are wider than
+        // an equal-width chip and overflowed adjacent tabs. Shrink-to-fit
+        // with AutoSizeText keeps all three labels readable on one line.
+        child: AutoSizeText(
           label,
           maxLines: 1,
+          minFontSize: 9,
           overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
           style: context.textStyles.bodySmallMedium.copyWith(color: colors.foregroundDefault),
         ),
       ),
