@@ -41,6 +41,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -568,6 +569,12 @@ class LayersControls extends _$LayersControls {
     await _viewPortSubscription?.cancel();
     unawaited(_removeMapObjects());
     final currentState = state.selectedType;
+    // TEMP(BALADY-3615): trace — remove after QA confirms.
+    logger.log(
+      'layers: enableParking selectedType=$currentState '
+      'trafficEnabled=${ref.read(trafficStateProvider.notifier).isTrafficEnabled}',
+      logLevel: MapnessLogLevel.info,
+    );
     if (currentState != null && currentState != LayerType.parkingLots) {
       await _hidePreviousLayers(currentState);
     }
@@ -717,6 +724,13 @@ class LayersControls extends _$LayersControls {
 
     final currentState = state.selectedType;
 
+    // TEMP(BALADY-3615): trace the mutex chain — remove after QA confirms.
+    logger.log(
+      'layers: tap=$value selectedType=$currentState '
+      'trafficEnabled=${ref.read(trafficStateProvider.notifier).isTrafficEnabled}',
+      logLevel: MapnessLogLevel.info,
+    );
+
     _cancelToken?.cancel();
     await _viewPortSubscription?.cancel();
     await _hideAllSelectedMarkers();
@@ -726,6 +740,13 @@ class LayersControls extends _$LayersControls {
       await _hidePreviousLayers(currentState);
     }
     await toggleLayers(value);
+
+    // TEMP(BALADY-3615): post-toggle state.
+    logger.log(
+      'layers: after tap=$value selectedType=${state.selectedType} '
+      'trafficEnabled=${ref.read(trafficStateProvider.notifier).isTrafficEnabled}',
+      logLevel: MapnessLogLevel.info,
+    );
   }
 
   Future<void> _hidePreviousLayers(LayerType layer) async {
@@ -773,6 +794,11 @@ class LayersControls extends _$LayersControls {
         break;
       case LayerType.traffic:
         final trafficNotifier = ref.read(trafficStateProvider.notifier);
+        // TEMP(BALADY-3615): trace — remove after QA confirms.
+        logger.log(
+          'layers: hidePrevious(traffic) trafficEnabled=${trafficNotifier.isTrafficEnabled}',
+          logLevel: MapnessLogLevel.info,
+        );
         if (trafficNotifier.isTrafficEnabled) {
           trafficNotifier.onTrafficTap();
         }
@@ -1005,6 +1031,12 @@ class LayersControls extends _$LayersControls {
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
     final wasEnabled = trafficNotifier.isTrafficEnabled;
     final currentState = state.selectedType;
+
+    // TEMP(BALADY-3615): trace — remove after QA confirms.
+    logger.log(
+      'layers: toggleTraffic wasEnabled=$wasEnabled selectedType=$currentState',
+      logLevel: MapnessLogLevel.info,
+    );
 
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.trafficLightButton,
