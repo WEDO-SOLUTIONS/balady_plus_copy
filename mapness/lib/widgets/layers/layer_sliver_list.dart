@@ -53,18 +53,21 @@ class LayerSliverList extends ConsumerWidget {
           behavior: HitTestBehavior.opaque,
           onTap: () async {
             if (value == layers_state.LayerType.favourites) {
+              // BALADY-3730: must be authAndOpen, not authOrOpen. doAuth()
+              // only OPENS the login screen and resolves immediately
+              // (EntryPointCubit.onLogin pushes the route and returns), so
+              // authOrOpen re-checks isLoggedIn while the user is still on
+              // the login form and silently skips the callback. authAndOpen
+              // subscribes to userStateStream and runs the callback after
+              // login actually completes.
               await ref
                   .read(authMethodsProvider.notifier)
-                  .authOrOpen(
+                  .authAndOpen(
                     context,
                     callback: () async {
-                      // BALADY-3730 re-fix: do NOT use the `layersControl`
-                      // captured at widget build time. The auth flow can
-                      // auto-dispose LayersControls (sheet covered / route
-                      // popped, no remaining watchers) — the captured
-                      // ref then points at a dead notifier and the call
-                      // becomes a silent no-op. Read fresh inside the
-                      // callback so we always hit the live notifier.
+                      // Read the notifier fresh inside the callback — the
+                      // widget-scoped `layersControl` can be disposed while
+                      // the auth flow covers the sheet.
                       await ref.read(layersControlsProvider.notifier).toggleFavourites();
                     },
                   );
