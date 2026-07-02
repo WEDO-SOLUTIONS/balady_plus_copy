@@ -839,7 +839,7 @@ class LayersControls extends _$LayersControls {
                     strokeColor: Colors.white.value,
                     strokeWidth: 1,
                     fontSize: 14,
-                    fontName: 'Frutiger',
+                    fontName: 'IBMPlexSansArabic-Bold',
                     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
                   ),
                 ),

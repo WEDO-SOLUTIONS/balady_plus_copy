@@ -100,7 +100,7 @@ class _MakkahSplashOverlay extends StatelessWidget {
 
   String _fontFamily(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    return isArabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+    return isArabic ? 'packages/balady_design_system/IBMPlexSansArabic' : 'packages/balady_uikit/Golos';
   }
 
   @override

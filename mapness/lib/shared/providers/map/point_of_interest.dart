@@ -20,7 +20,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
-const poiMapFontAr = 'FrutigerLTArabic65Bold';
+const poiMapFontAr = 'IBMPlexSansArabic-Bold';
 const poiMapFontEn = 'GolosText_SemiBold';
 
 @riverpod

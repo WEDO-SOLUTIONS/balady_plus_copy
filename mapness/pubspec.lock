@@ -237,10 +237,10 @@ packages:
     dependency: transitive
     description:
       name: balady_design_system
-      sha256: "887c2d975fa70cb230392cf82854138f6af648a53a61eb76e5db8210c36de1e0"
+      sha256: "0f70319b7212b5f3aa38aff41dd28d41800f5e12222ccf3031de844438dc44da"
       url: "https://unpub.balady.gov.sa"
     source: hosted
-    version: "0.0.16"
+    version: "0.0.18"
   balady_plus:
     dependency: "direct main"
     description:

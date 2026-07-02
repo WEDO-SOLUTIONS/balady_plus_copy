@@ -47,7 +47,7 @@ dependencies:
     path: ..
   balady_uikit:
     hosted: https://unpub.balady.gov.sa/
-    version: 5.1.5
+    version: 5.1.6
 #  path: ../../balady_uikit
 #    hosted: https://unpub.balady.gov.sa/
 #    version: 5.1.0
