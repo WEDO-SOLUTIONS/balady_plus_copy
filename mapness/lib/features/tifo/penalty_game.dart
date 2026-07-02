@@ -2904,10 +2904,15 @@ class _GoalkeeperModel {
       _KeeperDive.mid => 0.18,
       _KeeperDive.high => 0.34,
     };
+    // widthBase re-tuned for the 8x3 atlas (cells 256x256): the artist's
+    // dive figures fill their square cells edge-to-edge (no whitespace
+    // padding like the old atlas had), so the same rendered width now
+    // draws a ~1.5x larger keeper. Compensate by shrinking widthBase and
+    // the per-launch growth accordingly.
     final widthBase = switch (diveStyle) {
-      _KeeperDive.low => 4.45,
-      _KeeperDive.mid => 3.7,
-      _KeeperDive.high => 3.95,
+      _KeeperDive.low => 2.15,
+      _KeeperDive.mid => 1.85,
+      _KeeperDive.high => 1.95,
     };
     final projected = game._project(
       _Vec3(
@@ -2928,7 +2933,7 @@ class _GoalkeeperModel {
 
     final width = math.max(
       72.0,
-      projected.scale * (widthBase + launch * 0.62) * visualScale,
+      projected.scale * (widthBase + launch * 0.28) * visualScale,
     );
     final source =
         sourceRect ??
