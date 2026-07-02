@@ -22,6 +22,7 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:uuid/uuid.dart';
 
 part 'search.g.dart';
 
@@ -78,7 +79,7 @@ class Search extends _$Search {
   @override
   SearchState build(String scope) {
     if (_result != null && _previousQuery != null) {
-      return SearchStateResults(results: _result!, searchText: _previousQuery!);
+      return SearchStateResults(results: _result!, searchText: _previousQuery!, searchSessionId: const Uuid().v4());
     }
 
     return SearchStateHistory(searchText: _previousQuery ?? '');
@@ -152,6 +153,7 @@ class Search extends _$Search {
           : SearchStateSuggest(
               suggest: result,
               searchText: query,
+              suggestionSessionId: const Uuid().v4(),
             );
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
@@ -207,6 +209,7 @@ class Search extends _$Search {
         state = SearchStateSuggest(
           suggest: result,
           searchText: query,
+          suggestionSessionId: const Uuid().v4(),
         );
       } else if (query.length > 2) {
         await ref
@@ -597,8 +600,7 @@ class Search extends _$Search {
     final userLocation = ref.read(locationProvider);
     final orderedPoints = userLocation == null
         ? points
-        : (points.toList()
-          ..sort((a, b) {
+        : (points.toList()..sort((a, b) {
             final dA = _squaredDistance(a, userLocation.latitude, userLocation.longitude);
             final dB = _squaredDistance(b, userLocation.latitude, userLocation.longitude);
             return dA.compareTo(dB);
@@ -679,6 +681,7 @@ class Search extends _$Search {
     return SearchStateResults(
       results: results,
       searchText: searchQuery,
+      searchSessionId: const Uuid().v4(),
       markerType: markerType,
     );
   }

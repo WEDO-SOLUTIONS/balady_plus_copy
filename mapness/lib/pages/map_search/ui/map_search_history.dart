@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/metrics/events/metrics_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -18,6 +19,7 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchHistory extends ConsumerWidget {
@@ -77,10 +79,12 @@ class MapSearchHistory extends ConsumerWidget {
 
             if (result != null && result as bool) {
               await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
+              _sendSearchBoxInputEvent(ref, item.title);
             }
           }
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
+          _sendSearchBoxInputEvent(ref, item.title);
         }
         final bssHistoryHandlingType = item.id?.objectId != null
             ? BssHistoryHandlingType.openRecord
@@ -103,5 +107,11 @@ class MapSearchHistory extends ConsumerWidget {
         );
       },
     );
+  }
+
+  void _sendSearchBoxInputEvent(WidgetRef ref, String inputText) {
+    ref
+        .read(metricsRepositoryProvider.notifier)
+        .sendSearchBoxInputEvent(operationType: MetricsSearchBoxInputOperationType.history, inputText: inputText);
   }
 }

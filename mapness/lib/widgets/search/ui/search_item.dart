@@ -7,16 +7,26 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/metrics/events/metrics_event.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/models/search_state.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/distance.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
+import 'package:mapness/shared/ui/visibiity/balady_visibility_detector.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
@@ -25,6 +35,7 @@ import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 import 'package:mapness/widgets/search/ui/working_hours_threshold_provider.dart';
+import 'package:uuid/uuid.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 const prefixMapping = {
@@ -67,6 +78,7 @@ class SearchItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scope = context.read<SearchScope>();
     String subtitle = (result.id?.objectId == 70030077050725730
         ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
         : (['تسوية', 'مستوطنة'].contains(result.subtitle) ? 'نطاق' : result.subtitle));
@@ -104,103 +116,209 @@ class SearchItem extends ConsumerWidget {
     final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
     final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
 
-    return VisibilityDetector(
-      key: Key('searchResult: ${result.id?.objectId}'),
-      onVisibilityChanged: (visibilityInfo) {
-        final visiblePercentage = visibilityInfo.visibleFraction * 100;
-        if (visiblePercentage > 50) {
-          BssService.instance.sendEvent(
-            BssRequest(
-              eventType: BSSEventType.view,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.placeCardMini,
-                ownerName: BssUIElementNames.searchResultList,
-                position: index + 1,
-              ),
-              payload: BssPayload(placeItem: result.toBss(index), searchResultList: searchResultList),
-            ),
-          );
-        }
-      },
-      child: Material(
-        color: isDGA ? context.colors.accentSecondarySoft : contentColor ?? context.colors.backgroundSurface1,
-        shape: smoothBorder(RadiusBorder.xl),
-        child: SearchTapHandler(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (photosUrls.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: Spacing.$3x),
-                  child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
+    return BaladyVisibilityDetector(
+      visibilityKey: Key('SearchItem: $index, ${result.title}, ${result.subtitle}'),
+      onVisible: (isFirstTimeVisible) => _sendSearchResultsExposureEvent(ref, scope, isFirstTimeVisible),
+      child: VisibilityDetector(
+        key: Key('searchResult: ${result.id?.objectId}'),
+        onVisibilityChanged: (visibilityInfo) {
+          final visiblePercentage = visibilityInfo.visibleFraction * 100;
+          if (visiblePercentage > 50) {
+            BssService.instance.sendEvent(
+              BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.placeCardMini,
+                  ownerName: BssUIElementNames.searchResultList,
+                  position: index + 1,
                 ),
-              Padding(
-                padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
-                child: DefaultTextStyle(
-                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        result.title,
-                        style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-                      ),
-                      Spacing.$1x.heightBox,
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              subtitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.textStyles.bodySmallRegular.copyWith(
-                                color: context.colors.foregroundDefault,
+                payload: BssPayload(placeItem: result.toBss(index), searchResultList: searchResultList),
+              ),
+            );
+          }
+        },
+        child: Material(
+          color: isDGA ? context.colors.accentSecondarySoft : contentColor ?? context.colors.backgroundSurface1,
+          shape: smoothBorder(RadiusBorder.xl),
+          child: SearchTapHandler(
+            onTap: () {
+              onTap();
+              _sendSuggestionClickEvent(ref, scope);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (photosUrls.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$3x),
+                    child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
+                  ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+                  child: DefaultTextStyle(
+                    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          result.title,
+                          style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+                        ),
+                        Spacing.$1x.heightBox,
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                subtitle,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundDefault,
+                                ),
                               ),
                             ),
-                          ),
-                          if (closedStatus.isNotEmpty)
-                            Text(
-                              ' • ',
-                              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                            ),
-                          if (closedStatus.isNotEmpty)
-                            Text(
-                              closedStatus,
-                              style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
-                            ),
-                        ],
-                      ),
-                      Spacing.$1x.heightBox,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  result.makeAddress(),
-                                  maxLines: 1,
-                                  style: context.textStyles.bodySmallRegular.copyWith(
-                                    color: context.colors.foregroundSoft,
-                                  ),
+                            if (closedStatus.isNotEmpty)
+                              Text(
+                                ' • ',
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
                                 ),
-                              ],
+                              ),
+                            if (closedStatus.isNotEmpty)
+                              Text(
+                                closedStatus,
+                                style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
+                              ),
+                          ],
+                        ),
+                        Spacing.$1x.heightBox,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    result.makeAddress(),
+                                    maxLines: 1,
+                                    style: context.textStyles.bodySmallRegular.copyWith(
+                                      color: context.colors.foregroundSoft,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          DirectoryObjectCarEstimate(result),
-                        ],
-                      ),
-                    ],
+                            DirectoryObjectCarEstimate(result),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SearchItemQuickActions(directoryObject: result),
-            ],
+                SearchItemQuickActions(directoryObject: result),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _sendSearchResultsExposureEvent(WidgetRef ref, SearchScope scope, bool isFirstTimeVisible) async {
+    if (!isFirstTimeVisible) {
+      return;
+    }
+    final searchState = ref.read(searchProvider(scope.value));
+    if (searchState is! SearchStateResults) {
+      return logger.log(
+        'failed to sendSearchResultsExposureEvent: searchState is not SearchStateResults',
+        logLevel: MapnessLogLevel.error,
+      );
+    }
+
+    final objectId = result.id;
+    if (objectId == null) {
+      return logger.log(
+        'failed to sendSearchResultsExposureEvent: objectId is null',
+        logLevel: MapnessLogLevel.error,
+      );
+    }
+
+    double? distanceInKilometers;
+    final distanceInMeters = await ref.read(
+      getDistanceToObjectProvider(objectId.objectId, entranceId: objectId.entranceId).future,
+    );
+    if (distanceInMeters != null) {
+      distanceInKilometers = (distanceInMeters / 1000).roundDecimal(2);
+    }
+
+    final location = ref.read(locationProvider);
+
+    // TODO(metrics): it is hard to determine which search type is going so we need to take care of it afterwards
+    const searchType = MetricsSearchResultsExposureSearchType.manual;
+
+    ref
+        .read(metricsRepositoryProvider.notifier)
+        .sendSearchResultsExposureEvent(
+          searchParam: {
+            if (location != null) 'location': '${location.latitude}, ${location.longitude}',
+          },
+          searchSessionId: searchState.searchSessionId,
+          requestId: const Uuid().v4(),
+          searchText: searchState.searchText,
+          searchType: searchType,
+          poiName: result.title,
+          poiRank: index,
+          poiId: objectId.objectId.toString(),
+          poiAddress: result.makeAddress(),
+          poiDistance: distanceInKilometers ?? 0.0,
+          poiType: result.types.firstOrNull?.type.name ?? result.subtitle,
+        );
+  }
+
+  Future<void> _sendSuggestionClickEvent(WidgetRef ref, SearchScope scope) async {
+    final searchState = ref.read(searchProvider(scope.value));
+    if (searchState is! SearchStateResults) {
+      return logger.log(
+        'failed to sendSearchResultsClickEvent: searchState is not SearchStateResults',
+        logLevel: MapnessLogLevel.error,
+      );
+    }
+
+    final objectId = result.id;
+    if (objectId == null) {
+      return logger.log(
+        'failed to sendSearchResultsExposureEvent: objectId is null',
+        logLevel: MapnessLogLevel.error,
+      );
+    }
+
+    double? distanceInKilometers;
+    final distanceInMeters = await ref.read(
+      getDistanceToObjectProvider(objectId.objectId, entranceId: objectId.entranceId).future,
+    );
+    if (distanceInMeters != null) {
+      distanceInKilometers = (distanceInMeters / 1000).roundDecimal(2);
+    }
+
+    final location = ref.read(locationProvider);
+    // TODO(metrics): it is hard to determine which clickAction type is going so we need to take care of it afterwards
+    const clickAction = MetricsSearchResultsClickActionType.viewPoiDetails;
+
+    ref
+        .read(metricsRepositoryProvider.notifier)
+        .sendSearchResultsClickEvent(
+          searchSessionId: searchState.searchSessionId,
+          requestId: const Uuid().v4(),
+          searchText: searchState.searchText,
+          clickAction: clickAction,
+          poiName: result.title,
+          poiRank: index,
+          poiId: objectId.objectId.toString(),
+          poiAddress: result.makeAddress(),
+          poiDistance: distanceInKilometers ?? 0.0,
+          poiType: result.types.firstOrNull?.type.name ?? result.subtitle,
+        );
   }
 }

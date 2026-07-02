@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -7,6 +8,7 @@ import 'package:hive_ce/hive.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
+import 'package:mapness/entities/metrics/events/metrics_event.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
@@ -18,10 +20,13 @@ import 'package:mapness/features/favourites/mappers/favourites_response_mapper.d
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/double_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
+import 'package:mapness/shared/providers/distance.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -47,7 +52,6 @@ class _FavouriteCache extends _$FavouriteCache {
   bool _isForceRefresh = false;
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
-
 
   // Load _lastUpdate from Hive on init
   Future<void> _initLastUpdate() async {
@@ -91,7 +95,6 @@ class _FavouriteCache extends _$FavouriteCache {
     await favoritesBox.delete(_keyAddSync);
     await favoritesBox.delete(_keyDeleteSync);
   }
-
 
   List<FavouriteItem?> _getAllItems(FavouritesState favouriteState) => [
     ...favouriteState.items,
@@ -284,9 +287,41 @@ class _FavouriteCache extends _$FavouriteCache {
 
     try {
       await _addItemsRequest(items: [item], workId: state.work?.id, homeId: state.home?.id);
+      _sendAddFavouriteEvent(item, state).catchError(
+        (error) => logger.log(
+          'failed to send AddFavorite event',
+          logLevel: MapnessLogLevel.error,
+        ),
+      );
     } on Exception catch (_) {
       await _addToAddSync(item);
     }
+  }
+
+  Future<void> _sendAddFavouriteEvent(FavouriteItem item, FavouritesState state) async {
+    final itemType = _getItemType(item.id, state.work?.id, state.home?.id);
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    final poiId = parseObjectIdFromFavouriteEntityId(item.id);
+    if (poiId == null) {
+      throw Exception('failed to parse poiId(${item.id}) from FavouriteItem');
+    }
+
+    final directoryObject = await dgisController.searchByObjectId(DgisObjectIdMessage(objectId: poiId, entranceId: 0));
+    final distanceInMeters = await ref.read(getDistanceToObjectProvider(poiId).future);
+    if (distanceInMeters == null) {
+      throw Exception('failed get distance to poi: $poiId');
+    }
+
+    ref
+        .read(metricsRepositoryProvider.notifier)
+        .sendFavoriteAddEvent(
+          favoriteType: MetricsFavouriteType.fromFavouriteItemMarkerType(itemType),
+          poiAddress: directoryObject.makeAddress(),
+          poiId: item.id,
+          poiType: item.subtitle,
+          poiName: item.title,
+          poiDistance: (distanceInMeters / 1000).roundDecimal(2),
+        );
   }
 
   Future<void> _updateState(FavouritesState data) async {
@@ -303,9 +338,8 @@ class _FavouriteCache extends _$FavouriteCache {
     final homeId = cache?.home?.toDomain().id;
 
     try {
-      final deleteSync =
-          (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
-              .cast<FavoriteCacheItem>();
+      final deleteSync = (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+          .cast<FavoriteCacheItem>();
 
       if (deleteSync.isNotEmpty) {
         await _deleteRequest(items: deleteSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
@@ -316,9 +350,8 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     try {
-      final addSync =
-          (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
-              .cast<FavoriteCacheItem>();
+      final addSync = (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+          .cast<FavoriteCacheItem>();
 
       if (addSync.isNotEmpty) {
         await _addItemsRequest(items: addSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
@@ -421,12 +454,15 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     //  'idNo' from auth state
-    final currentUserId = authState.idNo ??  '';
+    final currentUserId = authState.idNo ?? '';
 
     // Check if user has changed BEFORE initializing last update
     final userHasChanged = await _hasUserChanged(currentUserId);
     if (userHasChanged) {
-      logger.log('User changed from previous session, clearing all favorites cache for user: $currentUserId', logLevel: MapnessLogLevel.info);
+      logger.log(
+        'User changed from previous session, clearing all favorites cache for user: $currentUserId',
+        logLevel: MapnessLogLevel.info,
+      );
       await _clearCacheForUserChange();
       // Also clear the main cache for the new user
       final favoritesBox = await ref.read(hiveProvider(_boxName).future);
@@ -446,7 +482,10 @@ class _FavouriteCache extends _$FavouriteCache {
     FavouritesState result;
     try {
       if (_isForceRefresh || !isCacheValid) {
-        logger.log('Fetching favorites from API for user: $currentUserId (forceRefresh: $_isForceRefresh, cacheValid: $isCacheValid)', logLevel: MapnessLogLevel.info);
+        logger.log(
+          'Fetching favorites from API for user: $currentUserId (forceRefresh: $_isForceRefresh, cacheValid: $isCacheValid)',
+          logLevel: MapnessLogLevel.info,
+        );
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
@@ -463,7 +502,10 @@ class _FavouriteCache extends _$FavouriteCache {
       // If user just changed, return empty state instead of stale cached data
       if (userHasChanged) {
         result = const FavouritesState(items: []);
-        logger.log('User changed but failed to fetch favorites from API, returning empty state', logLevel: MapnessLogLevel.warning);
+        logger.log(
+          'User changed but failed to fetch favorites from API, returning empty state',
+          logLevel: MapnessLogLevel.warning,
+        );
       } else {
         // For existing users, fall back to cache
         result = await getFavouritesStateFromHive();

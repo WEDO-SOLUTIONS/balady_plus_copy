@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/metrics/events/metrics_event.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/metrics/metrics_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +64,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   ProviderSubscription<SearchState>? _searchSubscription;
   final _scope = scope.SearchScopeEnum.map.value;
   bool _initialFocusScheduled = false;
+  bool _hasFocus = false;
   Animation<double>? _routeAnimation;
   void Function(AnimationStatus)? _routeAnimationStatusListener;
 
@@ -86,6 +89,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     super.initState();
     _controller = _MapSearchTextEditingController();
     _focusNode = FocusNode();
+    _focusNode.addListener(_onFocusChanged);
     if (widget.initialState != null) {
       _updateText(widget.initialState!);
       ref.read(searchProvider(_scope).notifier).fetchSuggest(_controller.text);
@@ -114,6 +118,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         }
       }
     }
+
     _routeAnimation = animation;
     _routeAnimationStatusListener = listener;
     animation.addStatusListener(listener);
@@ -209,7 +214,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           isDisposed: false,
           focusNode: _focusNode,
-          fillColor: isDark?context.colors.neutralMuted: context.colors.staticWhite,
+          fillColor: isDark ? context.colors.neutralMuted : context.colors.staticWhite,
 
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
@@ -231,6 +236,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               action: metrics.MetricAction.type.toString(),
               props: {'query': query},
             );
+            ref
+                .read(metricsRepositoryProvider.notifier)
+                .sendSearchBoxInputEvent(operationType: MetricsSearchBoxInputOperationType.manual, inputText: query);
           },
           onTap: () {
             // Notify parent first so it can synchronously expand the enclosing
@@ -277,6 +285,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               ref
                   .read(searchHistoryProvider(scope.value).notifier)
                   .put(SearchHistoryItem.fromQuery(query: query).toMessage());
+              ref.read(metricsRepositoryProvider.notifier).sendSearchButtonClickEvent(searchText: query);
             }
             _safeFocusAction(_focusNode.requestFocus);
           },
@@ -295,15 +304,11 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final borderedSearchField = Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: isDark?context.colors.staticBlack: context.colors.staticWhite,
-        border: Border.all(
-          color: context.colors.borderSoft,
-          width: 1,
-        ),
+        color: isDark ? context.colors.staticBlack : context.colors.staticWhite,
+        border: Border.all(color: context.colors.borderSoft),
       ),
       child: ClipRRect(
-        borderRadius:  BorderRadius.circular(5),
-
+        borderRadius: BorderRadius.circular(5),
         child: searchField,
       ),
     );
@@ -336,7 +341,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         ),
         const SizedBox(width: Spacing.$3x),
-        Expanded(child: borderedSearchField),      ],
+        Expanded(child: borderedSearchField),
+      ],
     );
   }
 
@@ -344,5 +350,15 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     FocusScope.of(context).unfocus();
     searcher.clear();
     widget.onClose();
+  }
+
+  void _onFocusChanged() {
+    final hasFocus = _focusNode.hasFocus;
+    if (_hasFocus != hasFocus) {
+      _hasFocus = hasFocus;
+      if (hasFocus) {
+        ref.read(metricsRepositoryProvider.notifier).sendSearchBoxClickEvent();
+      }
+    }
   }
 }

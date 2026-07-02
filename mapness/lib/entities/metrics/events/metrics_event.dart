@@ -1,10 +1,10 @@
 // ignore_for_file: always_put_required_named_parameters_first
-import 'dart:collection';
-
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 
 part '_enums.dart';
 part '_route_flow.dart';
@@ -16,7 +16,7 @@ sealed class MetricsEvent with _$MetricsEvent {
   const MetricsEvent._();
 
   const factory MetricsEvent.favoriteAdd({
-    required String eventSource,
+    required MetricsByteDanceEventSource eventSource,
     required MetricsFavouriteType favoriteType,
     required String poiAddress,
     required String poiId,
@@ -26,12 +26,12 @@ sealed class MetricsEvent with _$MetricsEvent {
   }) = MetricsEventFavouriteAdd;
 
   const factory MetricsEvent.quickSearchClick({
-    required MetricsFavouriteQuickSearchClickEventSource eventSource,
+    required MetricsByteDanceEventSource eventSource,
     required String searchText,
   }) = MetricsEventQuickSearchClick;
 
   const factory MetricsEvent.searchBoxClick({
-    required String eventSource,
+    required MetricsByteDanceEventSource eventSource,
 
     /// In user behavior tracking, a first search is
     /// defined as the first search a user performs
@@ -43,25 +43,25 @@ sealed class MetricsEvent with _$MetricsEvent {
   }) = MetricsEventSearchBoxClick;
 
   const factory MetricsEvent.searchBoxInput({
+    required MetricsByteDanceEventSource eventSource,
     required MetricsSearchBoxInputOperationType operationType,
     required String inputText,
   }) = MetricsEventSearchBoxInput;
 
   const factory MetricsEvent.searchButtonClick({
-    required String eventSource,
+    required MetricsByteDanceEventSource eventSource,
     required MetricsSearchButtonClickTriggerMethod triggerMethod,
     required String searchText,
   }) = MetricsEventSearchButtonClick;
 
   const factory MetricsEvent.suggestionExposure({
+    required MetricsByteDanceEventSource eventSource,
     required Map<String, dynamic> searchParam,
 
     /// [suggestionSessionId] is used to link suggestion_exposure
     /// and suggestion_click. It should be generated each time
     /// before calling the Suggestion API.
     required String suggestionSessionId,
-
-    // todo needed?
     required String requestId,
     required String searchText,
     required MetricsSuggestionExposureSuggestionType suggestionType,
@@ -80,11 +80,10 @@ sealed class MetricsEvent with _$MetricsEvent {
   }) = MetricsEventSuggestionExposure;
 
   const factory MetricsEvent.suggestionClick({
-    required String eventSource,
+    required MetricsByteDanceEventSource eventSource,
 
     /// [suggestionSessionId] generated in the suggestion_exposure event
     required String suggestionSessionId,
-    // todo needed?
     required String requestId,
     required String searchText,
     required MetricsSuggestionExposureSuggestionType suggestionType,
@@ -112,6 +111,7 @@ sealed class MetricsEvent with _$MetricsEvent {
   }) = MetricsEventSuggestionClick;
 
   const factory MetricsEvent.searchResultsExposure({
+    required MetricsByteDanceEventSource eventSource,
     required Map<String, dynamic> searchParam,
 
     /// [searchSessionId] is used to link
@@ -123,10 +123,8 @@ sealed class MetricsEvent with _$MetricsEvent {
     /// higher, it is considered a pagination request, and no
     /// new search_session_id is generated.
     required String searchSessionId,
-    // todo needed?
     required String requestId,
     required String searchText,
-    required String eventSource,
     required MetricsSearchResultsExposureSearchType searchType,
     required String poiId,
     required String poiAddress,
@@ -137,13 +135,13 @@ sealed class MetricsEvent with _$MetricsEvent {
   }) = MetricsEventSearchResultsExposure;
 
   const factory MetricsEvent.searchResultsClick({
+    required MetricsByteDanceEventSource eventSource,
+
     /// [searchSessionId] generated in the search_results_exposure event
     required String searchSessionId,
-    // todo needed?
     required String requestId,
     required String searchText,
-    required String clickAction,
-    required String eventSource,
+    required MetricsSearchResultsClickActionType clickAction,
     required String poiId,
     required int poiRank,
     required String poiAddress,

@@ -8,8 +8,6 @@ abstract class MetricsRouteFlow with _$MetricsRouteFlow {
 
   const MetricsRouteFlow._();
 
-  static final onlyPushFilter = (MetricsRouteFlowItem item) => item.operation == MetricsRouteOperation.push;
-
   MetricsRouteFlow pushItem(MetricsRouteFlowItem item, {int? sizeLimit = 100}) {
     var newStack = [...routeStack, item];
     if (sizeLimit != null && newStack.length > sizeLimit) {
@@ -28,17 +26,26 @@ abstract class MetricsRouteFlow with _$MetricsRouteFlow {
   }
 
   bool containsRouteSequence(MetricsRouteFlowSequence sequence) {
-    final filter = sequence.filter;
+    final filters = sequence.filters;
     final searchItems = sequence.items;
-    final filteredItems = filter == null ? routeStack : routeStack.where(filter).toList();
+    Iterable<MetricsRouteFlowItem> filteredItems = routeStack;
+    for (final filter in filters) {
+      final currentItems = filteredItems.toList();
+      filteredItems = filteredItems.whereIndexed(
+        (i, route) => filter(currentItems, i, route),
+      );
+    }
 
     if (searchItems.length > filteredItems.length) {
       return false;
     }
+    final lengthDiff = filteredItems.length - searchItems.length;
 
-    for (int i = 0; i < searchItems.length; i++) {
+    // check starting from the top of stack
+    for (int i = searchItems.length - 1; i >= 0; i--) {
       final searchItem = searchItems[i];
-      final stackItem = filteredItems[i];
+      final stackIndex = i + lengthDiff;
+      final stackItem = filteredItems.elementAt(stackIndex);
       if (!searchItem.equalsFlowItem(stackItem)) {
         return false;
       }
