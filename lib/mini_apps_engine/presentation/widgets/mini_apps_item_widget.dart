@@ -50,7 +50,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 17,
-                        fontFamily: 'packages/balady_uikit/Frutiger',
+                        fontFamily: 'packages/balady_design_system/IBMPlexSansArabic',
                         color: context.colors.foregroundDefault,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -62,7 +62,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
                         fontSize: 13,
-                        fontFamily: 'packages/balady_uikit/Frutiger',
+                        fontFamily: 'packages/balady_design_system/IBMPlexSansArabic',
                       ),
                       textAlign: TextAlign.center,
                     ),

@@ -115,6 +115,23 @@ class RemoteConfig {
   }
 
   //////////////////////////////////////////////////////
+  // BytePlus RangersAppLog (DataFinder) — read per-flavor from the loaded .env.
+  // prod → .env.prod (10000002), stg/pre/dev → staging (10000000).
+  static String get bytePlusAppId => dotenv.env['BYTEPLUS_APP_ID'] ?? '';
+
+  static String get bytePlusAppName => dotenv.env['BYTEPLUS_APP_NAME'] ?? '';
+
+  static String get bytePlusChannel =>
+      dotenv.env['BYTEPLUS_CHANNEL'] ?? 'TestFlight';
+
+  static String get bytePlusAppKey => dotenv.env['BYTEPLUS_APP_KEY'] ?? '';
+
+  static String get bytePlusAppUrl => dotenv.env['BYTEPLUS_APP_URL'] ?? '';
+
+  static String get bytePlusUrlScheme =>
+      dotenv.env['BYTEPLUS_URL_SCHEME'] ?? '';
+
+  //////////////////////////////////////////////////////
   static String get momraDomain => _RemoteConfig.momraDomain[env]!;
 
   static String get cookieURL => _RemoteConfig.cookieURL[env]!;

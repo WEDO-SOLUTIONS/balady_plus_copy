@@ -16,12 +16,6 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-# to access balady-unpub-stg.momah.gov.sa you must put this line on your local machine
-# 1- open terminal
-# 2- tun this command line
-# echo "80.225.75.31 balady-unpub-stg.momah.gov.sa" | sudo tee -a /etc/hosts
-# 80.225.75.31 - balady-unpub-stg.momah.gov.sa
-
 version: 3.30.3+576
 #version: 3.13.1+452
 
@@ -145,7 +139,7 @@ dependencies:
   #    git:
   #      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker_plus:
-    hosted: https://balady-unpub-stg.momah.gov.sa/
+    hosted: https://unpub.balady.gov.sa/
     version: ^1.5.4
   percent_indicator: ^4.2.5
   # flutter_cached_pdfview: ^0.4.2
@@ -175,8 +169,10 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    hosted: https://balady-unpub-stg.momah.gov.sa/
-    version: 5.1.4
+    hosted: https://unpub.balady.gov.sa/
+    version: 5.1.6
+    #TODO(shady):  merge and Get latest
+#    version: 5.1.4
 
 
   sheetify: ^1.1.3
@@ -207,10 +203,7 @@ dependencies:
   ############################################################
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
-#    hosted: https://balady-unpub-stg.momah.gov.sa/
-#    version: 1.0.13
-    # TODO(Shady) update the latest version on new unpup
-    hosted: https://baladyapp-unpub.urbi.ae/
+    hosted: https://unpub.balady.gov.sa/
     version: 1.0.16
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
@@ -222,9 +215,8 @@ dependencies:
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
-     # TODO: we need to double check if 0.0.13 published on new host
-     hosted: https://balady-unpub-stg.momah.gov.sa/
-     version: 0.0.13
+     hosted: https://unpub.balady.gov.sa/
+     version: 0.0.18
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main

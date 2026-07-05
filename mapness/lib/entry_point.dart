@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
@@ -197,7 +198,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   StreamSubscription? _navigationEventsListener;
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
-    return language == Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
+    return language == Language.arabic ? 'packages/balady_design_system/IBMPlexSansArabic' : 'packages/balady_uikit/Golos';
   }
 
   @override
@@ -1469,14 +1470,15 @@ Future<void> setupMapness(EnvType envType) async {
 
 /// Initializes the BytePlus RangersAppLog SDK (DataFinder analytics).
 ///
-/// App ID is hardcoded per flavor for now.
-/// TODO: staging is temporarily pointed at the (future) PRODUCTION BytePlus
-/// project so we can validate prod-project data on TestFlight. Switch staging
-/// back to the staging project id once validation is done.
-/// TODO: replace `_kBytePlusProdAppId` with the real PRODUCTION project App ID
-/// once it is registered in the BytePlus console (Project Center → Details).
-/// TODO: move these ids to build-time config (--dart-define) instead of
-/// hardcoding.
+/// Config is read per-flavor from the loaded `.env.<flavor>` file via
+/// [RemoteConfig] (same pattern as APIGEE/SSO). Each flavor points at the right
+/// BytePlus project through its own `BYTEPLUS_APP_ID`:
+///  * `.env.prod` → production project `Balady` (10000002),
+///  * `.env.stg` / `.env.pre` / `.env.dev` → `Balady Staging Test` (10000000).
+///
+/// Only real production traffic goes to the production project; pre-prod and all
+/// lower environments report to staging so they don't pollute prod analytics.
+
 /// Guards against initializing the BytePlus SDK more than once — `setupMapness`
 /// can run twice (e.g. the engine re-attaches), and a second `initRangersAppLog`
 /// triggers a duplicate device-register / session.
@@ -1487,17 +1489,12 @@ void _initBytePlus(EnvType envType) {
     return;
   }
 
-  // Staging project id (Balady Staging Test APP). Used as the placeholder for
-  // production until the real prod project is registered.
-  const stagingAppId = '10000000';
-  const prodAppId = stagingAppId; // TODO: replace with real prod App ID.
+  final isProduction = envType == EnvType.prod;
+  final appId = RemoteConfig.bytePlusAppId;
+  final channel = RemoteConfig.bytePlusChannel;
 
-  final isProduction = envType == EnvType.prod || envType == EnvType.pre;
-  final appId = isProduction ? prodAppId : stagingAppId;
-  final channel = isProduction ? 'AppStore' : 'TestFlight';
-
-  if (appId.isEmpty || appId.startsWith('TODO')) {
-    debugPrint('[BytePlus] Skipped: App ID not configured yet.');
+  if (appId.isEmpty) {
+    debugPrint('[BytePlus] Skipped: BYTEPLUS_APP_ID not set in .env.${envType.name}.');
     return;
   }
 
