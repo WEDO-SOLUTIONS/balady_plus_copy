@@ -252,10 +252,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "1e24282db6f5ee62dfb18d354013dc22f7b42b43b55d7c5a1b7ec786f574bb0c"
+      sha256: f873f50745d72a5c982f4414a10991d90bda0daa57166b3a400ca933db5a68be
       url: "https://unpub.balady.gov.sa"
     source: hosted
-    version: "5.1.5"
+    version: "5.1.6"
   battery_plus:
     dependency: "direct main"
     description:

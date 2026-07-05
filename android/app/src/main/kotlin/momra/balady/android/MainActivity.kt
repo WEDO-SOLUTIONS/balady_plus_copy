@@ -2,13 +2,16 @@ package momra.balady.android
 
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import com.dgis.FlutterProvider
 import com.dgis.map.android_auto.CarAppConnectionState
 import com.dgis.map.android_auto.MainAppScreenState
@@ -21,7 +24,11 @@ import io.flutter.plugin.common.MethodChannel
 import com.ryanheise.audioservice.AudioServiceFragmentActivity
 
 class MainActivity : AudioServiceFragmentActivity() {
-    
+
+    companion object {
+        private const val NAV_LIVE_PERMISSION_REQUEST = 7431
+    }
+
     // TEMPORARILY DISABLED: private var mediaSessionHandler: MediaSessionHandler? = null
     private var audioCoordinationChannel: MethodChannel? = null
     private var audioManager: AudioManager? = null
@@ -58,6 +65,37 @@ class MainActivity : AudioServiceFragmentActivity() {
         MainAppScreenStateNotifier.setState(MainAppScreenState.CREATED)
 
         audioManager = getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+
+        // DEMO: live navigation notification with mocked data. Starts on every
+        // launch on purpose so the feature is easy to see; remove the call below
+        // (or drive it from Flutter via the "com.balady.nav_live_notification"
+        // channel) once it is hooked up to real navigation state.
+        startNavLiveNotificationDemo()
+    }
+
+    private fun startNavLiveNotificationDemo() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), NAV_LIVE_PERMISSION_REQUEST)
+            return
+        }
+        NavLiveNotificationService.start(this)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == NAV_LIVE_PERMISSION_REQUEST &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
+            NavLiveNotificationService.start(this)
+        }
     }
 
     override fun onStart() {
@@ -135,6 +173,24 @@ class MainActivity : AudioServiceFragmentActivity() {
         // streaming service alive while the screen is off so HLS doesn't stall
         // on Wi-Fi throttling / Doze.
         mbcLockBridge = MbcLockBridge(applicationContext).also { it.register(flutterEngine) }
+
+        // Flutter-side control for the live navigation notification demo.
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            "com.balady.nav_live_notification",
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "start" -> {
+                    startNavLiveNotificationDemo()
+                    result.success(null)
+                }
+                "stop" -> {
+                    NavLiveNotificationService.stop(this)
+                    result.success(null)
+                }
+                else -> result.notImplemented()
+            }
+        }
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {

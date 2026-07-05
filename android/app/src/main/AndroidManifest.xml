@@ -104,6 +104,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
 
+    <!-- Live navigation demo notification (foreground service on Android 14+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
@@ -153,6 +156,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="geo" />
             </intent-filter>
+        </service>
+
+        <!-- Live navigation notification demo (mocked data, updates every second,
+             visible on the lock screen). -->
+        <service
+            android:name=".NavLiveNotificationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Live turn-by-turn navigation status demo with mocked data" />
         </service>
 
         <service android:name="com.ryanheise.audioservice.AudioService"
