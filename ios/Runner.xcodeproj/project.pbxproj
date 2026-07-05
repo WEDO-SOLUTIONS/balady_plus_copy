@@ -41,6 +41,10 @@
 		F6FE3E052D1126020011838B /* MovingViolationsLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FE3E042D1126020011838B /* MovingViolationsLiveActivity.swift */; };
 		F6FE3E072D1126020011838B /* MovingViolations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FE3E062D1126020011838B /* MovingViolations.swift */; };
 		F6FE3E092D1126020011838B /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FE3E082D1126020011838B /* AppIntent.swift */; };
+		2B3C4D5E6F708192A3B4C5D1 /* NavLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C5 /* NavLiveActivityAttributes.swift */; };
+		2B3C4D5E6F708192A3B4C5D2 /* NavLiveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C5 /* NavLiveActivityAttributes.swift */; };
+		2B3C4D5E6F708192A3B4C5D3 /* NavLiveActivityWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C6 /* NavLiveActivityWidget.swift */; };
+		2B3C4D5E6F708192A3B4C5D4 /* NavLiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F708192A3B4C7 /* NavLiveActivityController.swift */; };
 		F6FE3E0B2D1126030011838B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6FE3E0A2D1126030011838B /* Assets.xcassets */; };
 		F6FE3E0F2D1126030011838B /* MovingViolationsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F6FE3DFC2D1126020011838B /* MovingViolationsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -181,6 +185,9 @@
 		F6FE3E042D1126020011838B /* MovingViolationsLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingViolationsLiveActivity.swift; sourceTree = "<group>"; };
 		F6FE3E062D1126020011838B /* MovingViolations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingViolations.swift; sourceTree = "<group>"; };
 		F6FE3E082D1126020011838B /* AppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIntent.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F708192A3B4C5 /* NavLiveActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavLiveActivityAttributes.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F708192A3B4C6 /* NavLiveActivityWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavLiveActivityWidget.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F708192A3B4C7 /* NavLiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavLiveActivityController.swift; sourceTree = "<group>"; };
 		F6FE3E0A2D1126030011838B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F6FE3E0C2D1126030011838B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F6FE3E1E2D1146470011838B /* MovingViolationsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovingViolationsExtension.entitlements; sourceTree = "<group>"; };
@@ -343,6 +350,7 @@
 				A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */,
 				B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */,
 				C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */,
+				1A2B3C4D5E6F708192A3B4C7 /* NavLiveActivityController.swift */,
 				98F4D4E02C6CB1B900CFF6EB /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				40B53BC82DE841D20027D851 /* Localizable.strings */,
@@ -379,6 +387,8 @@
 				F6FE3E042D1126020011838B /* MovingViolationsLiveActivity.swift */,
 				F6FE3E062D1126020011838B /* MovingViolations.swift */,
 				F6FE3E082D1126020011838B /* AppIntent.swift */,
+				1A2B3C4D5E6F708192A3B4C5 /* NavLiveActivityAttributes.swift */,
+				1A2B3C4D5E6F708192A3B4C6 /* NavLiveActivityWidget.swift */,
 				F6FE3E0A2D1126030011838B /* Assets.xcassets */,
 				F6FE3E0C2D1126030011838B /* Info.plist */,
 			);
@@ -735,6 +745,8 @@
 				A1B2C3D4E5F60718293A4B5D /* AudioCoordinationManager.swift in Sources */,
 				B2C3D4E5F60718293A4B5D6E /* AppIconQuickActionChannel.swift in Sources */,
 				C3D4E5F60718293A4B5D6E70 /* NativeRadioPlayer.swift in Sources */,
+				2B3C4D5E6F708192A3B4C5D4 /* NavLiveActivityController.swift in Sources */,
+				2B3C4D5E6F708192A3B4C5D1 /* NavLiveActivityAttributes.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				98F4D4E12C6CB1B900CFF6EB /* SceneDelegate.swift in Sources */,
 			);
@@ -763,6 +775,8 @@
 				F6FE3E072D1126020011838B /* MovingViolations.swift in Sources */,
 				F6FE3E092D1126020011838B /* AppIntent.swift in Sources */,
 				F6FE3E052D1126020011838B /* MovingViolationsLiveActivity.swift in Sources */,
+				2B3C4D5E6F708192A3B4C5D3 /* NavLiveActivityWidget.swift in Sources */,
+				2B3C4D5E6F708192A3B4C5D2 /* NavLiveActivityAttributes.swift in Sources */,
 				F6FE3E032D1126020011838B /* MovingViolationsBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

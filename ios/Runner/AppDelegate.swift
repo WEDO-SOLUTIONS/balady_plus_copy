@@ -78,6 +78,7 @@ extension AVAudioSession {
     private var overlayView: UIView?
     private var audioCoordinationManager: AudioCoordinationManager?
     private var nativeRadioPlayer: NativeRadioPlayer?
+    private var navLiveActivityController: AnyObject?
 
     override func application(
         _ application: UIApplication,
@@ -102,6 +103,17 @@ extension AVAudioSession {
 
         // Native radio player — bypasses just_audio_background interruption handling.
         nativeRadioPlayer = NativeRadioPlayer(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
+        // DEMO: live navigation notification with mocked data (Live Activity on
+        // the lock screen / Dynamic Island). Starts on every launch on purpose
+        // so the feature is easy to see; remove the start() call below (or drive
+        // it from Flutter via the "com.balady.nav_live_notification" channel)
+        // once it is hooked up to real navigation state.
+        if #available(iOS 16.2, *) {
+            let navLive = NavLiveActivityController(messenger: sharedSingleFlutterEngine.binaryMessenger)
+            navLiveActivityController = navLive
+            navLive.start()
+        }
 
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
