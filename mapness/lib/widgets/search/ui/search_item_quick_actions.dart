@@ -110,32 +110,33 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: TransportIcons.locationDirectionNavigator,
           buttonType: ButtonType.secondary,
           border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
-        borderRadius: 4,
-        colorScheme: colorScheme,
-        iconSize: 15,
-        bgColor: context.colors.staticTiffany,
-        labelColor: context.colors.accentSecondaryOnAccentSecondary,
-        iconColor: context.colors.accentSecondaryOnAccentSecondary,
-        label: context.l10n.poiCardDirections,
-        innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-        onPressed: () {
-          onResultAction?.call(DataFinderClickAction.initiateNavigation);
-          BssService.instance.trackRouteTap(directoryObject);
-          openRoutingRoutes(
-            context,
-            directoryObject.id!.objectId,
-            directoryObject.title,
-            RouteParamsPoint(
-              latitude: directoryObject.markerPosition!.latitude,
-              longitude: directoryObject.markerPosition!.longitude,
-              objectId: directoryObject.id?.objectId,
-              entranceId: directoryObject.id?.entranceId,
-              levelId: directoryObject.levelId,
-            ),
-            ref,
-          );
-        },
-      ),if (lifestyleStyle != null)
+          borderRadius: 4,
+          colorScheme: colorScheme,
+          iconSize: 15,
+          bgColor: context.colors.staticTiffany,
+          labelColor: context.colors.accentSecondaryOnAccentSecondary,
+          iconColor: context.colors.accentSecondaryOnAccentSecondary,
+          label: context.l10n.poiCardDirections,
+          innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+          onPressed: () {
+            onResultAction?.call(DataFinderClickAction.initiateNavigation);
+            BssService.instance.trackRouteTap(directoryObject);
+            openRoutingRoutes(
+              context,
+              directoryObject.id!.objectId,
+              directoryObject.title,
+              RouteParamsPoint(
+                latitude: directoryObject.markerPosition!.latitude,
+                longitude: directoryObject.markerPosition!.longitude,
+                objectId: directoryObject.id?.objectId,
+                entranceId: directoryObject.id?.entranceId,
+                levelId: directoryObject.levelId,
+              ),
+              ref,
+            );
+          },
+        ),
+      if (lifestyleStyle != null)
         lifestyleStyle.secondary(
           icon: iconData,
           onPressed: () {
@@ -149,16 +150,16 @@ class SearchItemQuickActions extends HookConsumerWidget {
           },
         )
       else
-      ItemActionBar(
-        icon: iconData,
-        iconSize: 15,
-        bgColor: isDGADark
-            ? context.colors.neutralMuted
-            : isDGAlight
-            ? context.colors.neutralOnNeutral
-            : null,
-        border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
-        borderRadius: 4,
+        ItemActionBar(
+          icon: iconData,
+          iconSize: 15,
+          bgColor: isDGADark
+              ? context.colors.neutralMuted
+              : isDGAlight
+              ? context.colors.neutralOnNeutral
+              : null,
+          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
+          borderRadius: 4,
           buttonType: ButtonType.secondary,
           colorScheme: colorScheme,
           label: isFavourite ? context.l10n.removeFromFavorites : context.l10n.addToFavorite,
@@ -193,13 +194,13 @@ class SearchItemQuickActions extends HookConsumerWidget {
               )
             : ItemActionBar(
                 bgColor: isDGADark
-              ? context.colors.neutralMuted
-              : isDGAlight
-              ? context.colors.neutralOnNeutral
-              : null,
-          icon: SystemIcons.share,
-          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
-          borderRadius: 4,
+                    ? context.colors.neutralMuted
+                    : isDGAlight
+                    ? context.colors.neutralOnNeutral
+                    : null,
+                icon: SystemIcons.share,
+                border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
+                borderRadius: 4,
                 colorScheme: colorScheme,
                 buttonType: ButtonType.secondary,
                 label: context.l10n.share,
@@ -211,32 +212,39 @@ class SearchItemQuickActions extends HookConsumerWidget {
             ? lifestyleStyle.secondary(
                 icon: GeneralIcons.phoneLTR,
                 onPressed: () {
-                  BssService.instance.trackCallTap(directoryObject, phoneNumber);
-                  poiActions.callPhone(phoneNumber);
+                  if (phoneNumbers.length == 1) {
+                    BssService.instance.trackCallTap(directoryObject, phoneNumbers.first.value!);
+                    poiActions.callPhone(phoneNumbers.first.value!);
+                  } else {
+                    showPhonePickerSheet(context, phoneNumbers, (phone) {
+                      BssService.instance.trackCallTap(directoryObject, phone);
+                      poiActions.callPhone(phone);
+                    });
+                  }
                 },
               )
-            :ItemActionBar(
-          bgColor: isDGADark
-              ? context.colors.neutralMuted
-              : isDGAlight
-              ? context.colors.neutralOnNeutral
-              : null,
+            : ItemActionBar(
+                bgColor: isDGADark
+                    ? context.colors.neutralMuted
+                    : isDGAlight
+                    ? context.colors.neutralOnNeutral
+                    : null,
                 icon: GeneralIcons.phoneLTR,
                 colorScheme: colorScheme,
                 buttonType: ButtonType.secondary,
                 label: context.l10n.call,
                 border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
-          borderRadius: 4,
-          onPressed: () {
-            if (phoneNumbers.length == 1) {
-              BssService.instance.trackCallTap(directoryObject, phoneNumbers.first.value!);
-              poiActions.callPhone(phoneNumbers.first.value!);
-            } else {
-              showPhonePickerSheet(context, phoneNumbers, (phone) {
-                BssService.instance.trackCallTap(directoryObject, phone);
-                poiActions.callPhone(phone);
-              });
-            }
+                borderRadius: 4,
+                onPressed: () {
+                  if (phoneNumbers.length == 1) {
+                    BssService.instance.trackCallTap(directoryObject, phoneNumbers.first.value!);
+                    poiActions.callPhone(phoneNumbers.first.value!);
+                  } else {
+                    showPhonePickerSheet(context, phoneNumbers, (phone) {
+                      BssService.instance.trackCallTap(directoryObject, phone);
+                      poiActions.callPhone(phone);
+                    });
+                  }
                 },
               ),
       if (website != null)
@@ -250,15 +258,15 @@ class SearchItemQuickActions extends HookConsumerWidget {
               )
             : ItemActionBar(
                 bgColor: isDGADark
-              ? context.colors.neutralMuted
-              : isDGAlight
-              ? context.colors.neutralOnNeutral
-              : null,
-          icon: GeneralIcons.web,
-          colorScheme: colorScheme,
-          buttonType: ButtonType.secondary,
-          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
-          borderRadius: 4,
+                    ? context.colors.neutralMuted
+                    : isDGAlight
+                    ? context.colors.neutralOnNeutral
+                    : null,
+                icon: GeneralIcons.web,
+                colorScheme: colorScheme,
+                buttonType: ButtonType.secondary,
+                border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
+                borderRadius: 4,
                 label: context.l10n.feedbackWebsiteLabel,
                 onPressed: () {
                   BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);
@@ -276,16 +284,16 @@ class SearchItemQuickActions extends HookConsumerWidget {
               )
             : ItemActionBar(
                 bgColor: isDGADark
-              ? context.colors.neutralMuted
-              : isDGAlight
-              ? context.colors.neutralOnNeutral
-              : null,
-          icon: PoiContentContactsCard.getIconData(socialMedia.type),
-          colorScheme: ButtonColorScheme.accent,
-          buttonType: ButtonType.secondary,
-          label: context.l10n.feedbackWebsiteOrSocialMedia,
-          border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
-          borderRadius: 4,
+                    ? context.colors.neutralMuted
+                    : isDGAlight
+                    ? context.colors.neutralOnNeutral
+                    : null,
+                icon: PoiContentContactsCard.getIconData(socialMedia.type),
+                colorScheme: ButtonColorScheme.accent,
+                buttonType: ButtonType.secondary,
+                label: context.l10n.feedbackWebsiteOrSocialMedia,
+                border: isBaseTheme ? BorderSide(color: context.colors.borderDefault) : null,
+                borderRadius: 4,
                 onPressed: () {
                   BssService.instance.trackLinkTap(directoryObject, socialMedia.type.toBss(), socialMedia.link);
                   poiActions.launch(socialMedia.link);
