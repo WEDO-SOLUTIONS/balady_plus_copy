@@ -71,7 +71,7 @@ dependencies:
   # Native APP to open files with string result
   open_filex: ^4.7.0
   # for getting commonly used locations on host platform file
-  path_provider: ^2.1.5
+  path_provider: ^2.1.6
   # Launching a URL, Open contacts and others.
   url_launcher: ^6.3.2
   ##! UI
@@ -170,9 +170,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://unpub.balady.gov.sa/
-    version: 5.1.6
-    #TODO(shady):  merge and Get latest
-#    version: 5.1.4
+    version: 5.1.7
 
 
   sheetify: ^1.1.3
