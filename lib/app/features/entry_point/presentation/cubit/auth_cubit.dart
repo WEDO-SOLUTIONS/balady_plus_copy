@@ -254,6 +254,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             enName: profileData.enName,
             arName: profileData.arName,
             idNo: profileData.sub,
+            // `sub` is the SSO subject id and the ONE identifier that means the
+            // same thing across phone (OTP) and national-id (SSO) login. On this
+            // OTP path `profileData.sub` is a required non-null String, so set it
+            // explicitly (previously only `idNo` carried it, leaving
+            // `userInfo.sub` null on phone login).
+            sub: profileData.sub,
             mail: profileData.email,
             phone: profileData.phoneNumber,
             loginType: SsoLoginType.otp,
@@ -645,6 +651,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
       SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+      // TEMP verification: confirm the SSO JWT actually carries a `sub` claim so
+      // `userInfo.sub` is reliable on national-id login (it is guaranteed on the
+      // phone/OTP path). Remove once confirmed on a real SSO login.
+      // ignore: avoid_print
+      assert(() {
+        print('[AUTH][SSO] jwt has sub=${decodedToken.containsKey('sub')} value=${decodedToken['sub']}');
+        return true;
+      }());
       final failureOrSuccess =
           await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
       if (failureOrSuccess.isRight()) {
