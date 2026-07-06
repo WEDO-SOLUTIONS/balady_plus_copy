@@ -120,8 +120,10 @@ class DgisController extends _$DgisController {
 
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
-
-    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+      await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    }
     await controller.toggleFollowState();
     _moveToUserLocationOnFirstFix(controller);
   }
