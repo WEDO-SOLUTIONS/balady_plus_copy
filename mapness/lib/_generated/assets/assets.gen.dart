@@ -2610,6 +2610,34 @@ class $AssetsTifoSpritesGoalkeeperV2Gen {
   /// File path: assets/tifo/sprites/goalkeeper_v2/9.png
   AssetGenImage get a9 => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/9.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/conceded_sheet.png
+  AssetGenImage get concededSheet => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/conceded_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/dive_high_left_sheet.png
+  AssetGenImage get diveHighLeftSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/dive_high_left_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/dive_low_left_sheet.png
+  AssetGenImage get diveLowLeftSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/dive_low_left_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/dive_mid_left_sheet.png
+  AssetGenImage get diveMidLeftSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/dive_mid_left_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_atlas.png
+  AssetGenImage get keeperAtlas => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_atlas.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png
+  AssetGenImage get missedReactionSheet =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/ready_sheet.png
+  AssetGenImage get readySheet => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/ready_sheet.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/save_recover_sheet.png
+  AssetGenImage get saveRecoverSheet => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/save_recover_sheet.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
     a1,
@@ -2644,6 +2672,14 @@ class $AssetsTifoSpritesGoalkeeperV2Gen {
     a7,
     a8,
     a9,
+    concededSheet,
+    diveHighLeftSheet,
+    diveLowLeftSheet,
+    diveMidLeftSheet,
+    keeperAtlas,
+    missedReactionSheet,
+    readySheet,
+    saveRecoverSheet,
   ];
 }
 

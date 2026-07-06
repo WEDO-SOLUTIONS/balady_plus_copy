@@ -924,21 +924,31 @@ enum _ShotState { aiming, flying, goal, saved, missed }
 
 enum _KeeperDive { low, mid, high }
 
+/// Horizontal zone the keeper dives towards, fixed at shot-resolve time.
+enum _KeeperSide { left, center, right }
+
 /// Logical motion the keeper is currently performing. Each entry maps to an
 /// ordered list of atlas-cell indices in [_GoalkeeperModel._motionFrames].
+///
+/// The GSP render set provides NATIVE left/right/center dives — no mirror
+/// flipping except [diveUpRight] reused (flipped) for upper-left saves,
+/// which has no dedicated render.
 enum _KeeperMotion {
-  /// Long-running loop while waiting for the shot; holds cell 0 (standing)
-  /// with an occasional micro-shift so the sprite doesn't look frozen.
+  /// Loop while waiting for the shot (crouch sway, from GSP_crouch_moving).
   idle,
-  /// Crouch-prep transition — the standing→launch-ready arc. Plays once
-  /// (progress-driven) while the striker is winding up.
+  /// Crouch-prep transition played once while the striker winds up.
   ready,
-  diveMid,
-  diveLow,
-  diveHigh,
-  saveRecover,
-  missedReact,
-  conceded,
+  diveLowLeft,
+  diveLowRight,
+  diveLowCenter,
+  diveUpCenter,
+  diveUpRight,
+  /// Post-dive slide/recover after a leftward (or center) dive.
+  groundLeft,
+  /// Post-dive slide/recover after a rightward dive.
+  groundRight,
+  /// Save celebration (punt-the-ball clip ending in a frontal stance).
+  celebrate,
 }
 
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
@@ -956,8 +966,17 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   // schematic hitbox lines up with the painted goal frame in
   // `stadium_goal_background.jpg` (the photo's perspective squishes
   // a regulation 7.3×2.45 m frame, so we counter-scale here).
+  //
+  // `_horizonY`/`_focalLength` are derived only from the photo goal's
+  // WIDTH and BOTTOM (ground line) — see `_photoGoalOnStage`. The crossbar
+  // (top) position is therefore a pure CONSEQUENCE of `_goalHeight` vs
+  // `_goalHalfWidth`'s ratio, not something the Left/Right/Top/Bottom photo
+  // constants control directly. `_goalHeight` must equal
+  // `2 * _goalHalfWidth * (measured photo goal height-px / width-px)` or
+  // the calibration overlay's crossbar drifts from the photo's real one —
+  // measured directly off the current asset: (994-778)/(760-95) ≈ 0.3248.
   static const double _goalHalfWidth = 4.5;
-  static const double _goalHeight = 3.4;
+  static const double _goalHeight = 2.923;
   static const double _ballRadius = 0.32;
   static const double _ballStartZ = -0.95;
   static const double _strikerBaseZ = -0.25;
@@ -1021,12 +1040,27 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   double _keeperX = 0;
   double _keeperTargetX = 0;
   _KeeperDive _keeperDive = _KeeperDive.mid;
+  _KeeperSide _keeperSide = _KeeperSide.center;
   double _spin = 0;
+  /// Seconds after the kick before the keeper's dive clock starts ticking —
+  /// he holds his idle stance until the ball has covered [_reactionDelayFraction]
+  /// of its flight, instead of committing to a dive the instant it's struck.
+  /// Computed per-shot in `_shootAtTarget` as a fraction of that shot's
+  /// flight time, so faster shots still leave enough of the ~0.58s dive
+  /// clock to play out before the ball arrives.
+  double _reactionDelay = 0;
+  static const double _reactionDelayFraction = 0.4;
   int _goals = 0;
   int _shots = 0;
   int _saves = 0;
   final List<_ShotState> _shotHistory = [];
   bool _completed = false;
+
+  /// Recent world-space ball positions, oldest first — recorded every frame
+  /// while the ball is moving (flight + post-resolve bounce/roll), rendered
+  /// as a fading comet-tail behind it. Cleared at the start of each attempt.
+  final List<_Vec3> _trail = [];
+  static const int _trailMaxPoints = 90;
 
   @override
   Color backgroundColor() => Colors.black;
@@ -1047,7 +1081,8 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     if (_completed) return;
-    if (_state == _ShotState.aiming) {
+    if (_state == _ShotState.aiming &&
+        _isTouchingBall(event.canvasPosition)) {
       _shootAt(event.canvasPosition, 0.74);
     }
   }
@@ -1057,6 +1092,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     super.onDragStart(event);
     if (_completed) return;
     if (_state != _ShotState.aiming) {
+      return;
+    }
+    // Only a swipe that starts on the ball counts — leaving `_dragStart`
+    // null here means `onDragEnd`'s `start != null` guard skips firing a
+    // shot even though Flame still delivers onDragUpdate/onDragEnd for the
+    // gesture (drag tracking is independent of what we do in onDragStart).
+    if (!_isTouchingBall(event.canvasPosition)) {
       return;
     }
     _dragStart = event.canvasPosition.clone();
@@ -1111,6 +1153,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       _shotTime += dt;
       _keeperX += (_keeperTargetX - _keeperX) * (1 - math.exp(-dt * 4.8));
       _updateBall(dt);
+      _recordTrailPoint();
       if (_ball.z >= _goalZ) {
         _resolveShot();
       }
@@ -1123,8 +1166,19 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _resultTime += dt;
     _keeperX += (_keeperTargetX - _keeperX) * (1 - math.exp(-dt * 3.5));
     _updateBall(dt, bounce: true);
+    _recordTrailPoint();
     if (_resultTime > 1.65 && !_completed) {
       _resetRound();
+    }
+  }
+
+  /// Appends the ball's current world position to [_trail], dropping the
+  /// oldest point once the cap is hit — keeps the comet-tail render bounded
+  /// regardless of how long the ball keeps rolling/bouncing after a miss.
+  void _recordTrailPoint() {
+    _trail.add(_ball.copy());
+    if (_trail.length > _trailMaxPoints) {
+      _trail.removeAt(0);
     }
   }
 
@@ -1132,6 +1186,23 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   void render(Canvas canvas) {
     _drawScene(canvas);
     super.render(canvas);
+  }
+
+  /// Whether [point] (canvas/screen space) lands on the ball's touch target.
+  /// Mirrors `_SoccerBallModel`'s render radius (`_modelRadius * scale`,
+  /// clamped 8..58) so the hit area tracks the ball's actual on-screen size
+  /// as it moves toward/away from the camera, padded up for a comfortable
+  /// mobile touch target (min 44dp, 1.6x the visual radius otherwise).
+  bool _isTouchingBall(Vector2 point) {
+    final ballScreen = _project(_ball);
+    if (ballScreen == null) {
+      return false;
+    }
+    final visualRadius =
+        (_ballRadius * ballScreen.scale).clamp(8.0, 58.0).toDouble();
+    final hitRadius = math.max(visualRadius * 1.6, 44.0);
+    final ballPos = Vector2(ballScreen.offset.dx, ballScreen.offset.dy);
+    return (point - ballPos).length <= hitRadius;
   }
 
   void _shootAt(Vector2 canvasPoint, double power) {
@@ -1171,6 +1242,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _shots++;
 
     final flightTime = 1.18 - power * 0.34;
+    _reactionDelay = flightTime * _reactionDelayFraction;
     final flightTarget = _aimTarget.copy();
     flightTarget.z = _goalZ + 0.2;
 
@@ -1186,6 +1258,19 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
         .clamp(-_goalHalfWidth + 0.75, _goalHalfWidth - 0.75)
         .toDouble();
     _keeperDive = _chooseKeeperDive(flightTarget.y);
+    // Fix the dive side once per shot — the render picks a native
+    // left/right/center animation from it. This MUST be judged against the
+    // shot's actual placement (_keeperTargetX, absolute — 0 = dead center
+    // of the goal), not against how far the keeper has to travel from
+    // wherever their idle sway (`sin(_elapsed*1.15)*1.65`) happened to
+    // leave them. The old `_keeperTargetX - _keeperX` distance made a shot
+    // dead center in the goal register as "left"/"right" whenever the idle
+    // animation phase had the keeper leaning away from center at that
+    // instant — i.e. side selection was driven by animation noise, not by
+    // where the ball was actually going, which read as "always dives sideways".
+    _keeperSide = _keeperTargetX.abs() < 1.0
+        ? _KeeperSide.center
+        : (_keeperTargetX > 0 ? _KeeperSide.right : _KeeperSide.left);
   }
 
   _KeeperDive _chooseKeeperDive(double targetY) {
@@ -1229,10 +1314,49 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
         _ball.x.abs() < _goalHalfWidth - _ballRadius * 0.4 &&
             _ball.y > _ballRadius * 0.8 &&
             _ball.y < _goalHeight - _ballRadius * 0.15;
-    final keeperReachX = (_ball.x - _keeperX).abs();
-    final keeperReachY = (_ball.y - 1.15).abs();
+
+    // Dynamic hitbox — reach grows from "just standing there" to the dive
+    // style's full extension as the *actual* on-screen dive completes,
+    // mirroring the delayed reaction clock in `_drawKeeper` (actionTime =
+    // _shotTime - _reactionDelay, same easeOutCubic ramp). Without this, a
+    // fast shot arriving before the delayed dive finishes would still get
+    // saved by the old fixed-size box even though the keeper visibly hasn't
+    // gotten there yet.
+    final actionTime = math.max(0.0, _shotTime - _reactionDelay);
+    final diveProgress = _keeperSide == _KeeperSide.center
+        ? 0.0 // never dives — stays at his standing reach the whole shot.
+        : _easeOutCubic((actionTime / 0.58).clamp(0.0, 1.0));
+
+    const standReachX = 0.42;
+    final maxReachX = switch (_keeperDive) {
+      _KeeperDive.low => 0.95,
+      _KeeperDive.mid => 0.78,
+      _KeeperDive.high => 0.62,
+    };
+    final reachX = standReachX + (maxReachX - standReachX) * diveProgress;
+
+    // Vertical reach band centers on the dive style's target height and
+    // widens as the dive completes — a low dive can't cover a crossbar
+    // shot, and a half-committed dive covers less than a finished one.
+    final reachCenterY = switch (_keeperDive) {
+      _KeeperDive.low => 0.55,
+      _KeeperDive.mid => 1.15,
+      _KeeperDive.high => 1.85,
+    };
+    const standReachY = 0.55;
+    final maxReachY = switch (_keeperDive) {
+      _KeeperDive.low => 0.95,
+      _KeeperDive.mid => 1.15,
+      _KeeperDive.high => 1.05,
+    };
+    final reachY = standReachY + (maxReachY - standReachY) * diveProgress;
+
+    final direction = (_keeperTargetX - _keeperX).signOrZero;
+    final reachCenterX = _keeperX + direction * diveProgress * 0.32;
+    final keeperReachX = (_ball.x - reachCenterX).abs();
+    final keeperReachY = (_ball.y - reachCenterY).abs();
     final saved =
-        keeperReachX < 0.78 && keeperReachY < 1.15 && _ball.y < _goalHeight;
+        keeperReachX < reachX && keeperReachY < reachY && _ball.y < _goalHeight;
 
     if (saved) {
       _saves++;
@@ -1269,6 +1393,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _shotTime = 0;
     _resultTime = 0;
     _keeperDive = _KeeperDive.mid;
+    _trail.clear();
   }
 
   _Vec3 _targetFromCanvas(Vector2 point) {
@@ -1292,20 +1417,46 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       _drawField(canvas);
       _drawGoal(canvas);
     } else {
-      // Photo's painted goal doesn't match the projection used by
-      // [_resolveShot] — overlay the actual hit-detection bounds so the
-      // player can aim correctly.
-      _drawGoalHitbox(canvas);
+      // QA overlay — red outline of the *programmatic* goal frame (world
+      // `x = ±_goalHalfWidth`, `y = 0..._goalHeight` at `z = _goalZ`) so
+      // any drift between the photo's painted goal and the calibration in
+      // `_photoGoalOnStage`/`_centerX`/`_horizonY`/`_focalLength` is
+      // immediately visible. Remove once alignment is confirmed on device.
+      _drawGoalCalibrationOverlay(canvas);
     }
     _drawKeeper(canvas);
-    if (_backgroundImage != null) {
-      _drawKeeperHitbox(canvas);
-    }
+    _drawTrail(canvas);
     _drawBall(canvas);
     _drawPlayer(canvas);
     _drawHud(canvas);
     canvas.restore();
     _drawStageBorder(canvas);
+  }
+
+  /// Fading comet-tail behind the ball — a breadcrumb of [_trail] points,
+  /// oldest (near-transparent) to newest (brightest, right behind the ball).
+  /// Drawn before [_drawBall] so the sprite sits cleanly on top of its tail.
+  void _drawTrail(Canvas canvas) {
+    if (_trail.length < 2) {
+      return;
+    }
+    _Projected? previous;
+    final last = _trail.length - 1;
+    for (var i = 0; i <= last; i++) {
+      final current = _project(_trail[i]);
+      if (previous != null && current != null) {
+        final age = i / last;
+        final paint = Paint()
+          ..color = Colors.white.withValues(alpha: age * age * 0.5)
+          ..strokeWidth = math.max(
+            1.5,
+            _ballRadius * 0.5 * (previous.scale + current.scale) * 0.5,
+          )
+          ..strokeCap = StrokeCap.round;
+        canvas.drawLine(previous.offset, current.offset, paint);
+      }
+      previous = current;
+    }
   }
 
   void _drawOuterBackground(Canvas canvas) {
@@ -1624,12 +1775,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     }
   }
 
-  /// Schematic outline of the actual hit-detection goal frame (world
-  /// `x = ±_goalHalfWidth`, `y = 0..._goalHeight` at `z = _goalZ`). Drawn
-  /// on top of the background photo so the player can see exactly what
-  /// counts as "in" for [_resolveShot] — the photo's painted goal is
-  /// purely decorative.
-  void _drawGoalHitbox(Canvas canvas) {
+  /// Red outline of the goal frame as computed by [_project] — crossbar,
+  /// both posts, and a ground-line hint. Purely a calibration aid: on a
+  /// correctly-calibrated photo this should trace exactly over the photo's
+  /// own painted (white) goalposts. Any gap or offset means
+  /// `_photoGoalSrcLeft/Right/Top/Bottom` need re-measuring against the
+  /// current `stadium_goal_background.jpg`.
+  void _drawGoalCalibrationOverlay(Canvas canvas) {
     final lt = _project(_Vec3(-_goalHalfWidth, _goalHeight, _goalZ));
     final rt = _project(_Vec3(_goalHalfWidth, _goalHeight, _goalZ));
     final lb = _project(_Vec3(-_goalHalfWidth, 0, _goalZ));
@@ -1638,14 +1790,14 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       return;
     }
 
+    const red = Color(0xFFFF3B30);
     final post = Paint()
-      ..color = Colors.white.withValues(alpha: 0.85)
+      ..color = red.withValues(alpha: 0.9)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 0.6);
+      ..strokeCap = StrokeCap.round;
     final groundLine = Paint()
-      ..color = Colors.white.withValues(alpha: 0.35)
+      ..color = red.withValues(alpha: 0.5)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
@@ -1658,38 +1810,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     canvas.drawLine(rt.offset, rb.offset, post);
     // Goal-line on the turf — thinner / dimmer hint.
     canvas.drawLine(lb.offset, rb.offset, groundLine);
-  }
-
-  /// Translucent rectangle showing the keeper's actual save zone in
-  /// world coords (`_keeperX ± 0.78` horizontally, `1.15 ± 1.15` vertically
-  /// at `z = _goalZ`). Moves with [_keeperX] every frame.
-  void _drawKeeperHitbox(Canvas canvas) {
-    const halfW = 0.78;
-    const centerY = 1.15;
-    const halfH = 1.15;
-    final tl = _project(_Vec3(_keeperX - halfW, centerY + halfH, _goalZ));
-    final tr = _project(_Vec3(_keeperX + halfW, centerY + halfH, _goalZ));
-    final bl = _project(_Vec3(_keeperX - halfW, centerY - halfH, _goalZ));
-    final br = _project(_Vec3(_keeperX + halfW, centerY - halfH, _goalZ));
-    if (tl == null || tr == null || bl == null || br == null) {
-      return;
-    }
-    final path = Path()
-      ..moveTo(tl.offset.dx, tl.offset.dy)
-      ..lineTo(tr.offset.dx, tr.offset.dy)
-      ..lineTo(br.offset.dx, br.offset.dy)
-      ..lineTo(bl.offset.dx, bl.offset.dy)
-      ..close();
-    final fill = Paint()
-      ..color = const Color(0xFFFF3B30).withValues(alpha: 0.22)
-      ..style = PaintingStyle.fill;
-    final stroke = Paint()
-      ..color = const Color(0xFFFF3B30).withValues(alpha: 0.85)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2
-      ..strokeJoin = StrokeJoin.round;
-    canvas.drawPath(path, fill);
-    canvas.drawPath(path, stroke);
   }
 
   void _drawGoal(Canvas canvas) {
@@ -1804,9 +1924,17 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   void _drawKeeper(Canvas canvas) {
     final z = _goalZ - 0.68;
     final isReacting = _state != _ShotState.aiming;
+    // Hold the idle stance until the ball has covered _reactionDelay of its
+    // flight — `_shotTime` itself stays undelayed (the striker's kick
+    // animation, driven separately by `_shotTime` in `_drawPlayer`, must
+    // still play immediately). Once the result phase starts (state flips to
+    // saved/missed/goal), `_shotTime` has long since passed the delay, so
+    // this has no effect there — the result-phase branch in `_renderSprite`
+    // doesn't gate on `actionTime` anyway.
+    final actionTime = math.max(0.0, _shotTime - _reactionDelay);
     final direction = isReacting ? (_keeperTargetX - _keeperX).signOrZero : 0.0;
     final progress = isReacting
-        ? _easeOutCubic((_shotTime / 0.58).clamp(0, 1))
+        ? _easeOutCubic((actionTime / 0.58).clamp(0, 1))
         : 0.0;
     final lift =
         switch (_keeperDive) {
@@ -1825,8 +1953,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       ),
       dive: direction * progress,
       lift: lift,
-      actionTime: _shotTime,
+      actionTime: actionTime,
       diveStyle: _keeperDive,
+      diveSide: _keeperSide,
+      reacting: isReacting,
       visualScale: _backgroundImage == null ? 1.0 : _photoKeeperVisualScale,
       shotState: _state,
       resultTime: _resultTime,
@@ -2169,11 +2299,15 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   // Intrinsic dimensions of stadium_goal_background.jpg, in source px.
   static const double _photoIntrinsicWidth = 853;
   static const double _photoIntrinsicHeight = 1844;
-  // Painted goal frame inside that image, in source px.
-  static const double _photoGoalSrcLeft = 90;
-  static const double _photoGoalSrcRight = 711;
-  static const double _photoGoalSrcTop = 742;
-  static const double _photoGoalSrcBottom = 991;
+  // Painted goal frame inside that image, in source px. Re-measured
+  // directly off stadium_goal_background.jpg (outer post edges / crossbar
+  // top / ground contact) — the previous constants (90/711/742/991) were
+  // off by up to ~49px horizontally and ~33px vertically, which is what
+  // made the schematic hitbox overlay visibly not line up with the photo.
+  static const double _photoGoalSrcLeft = 95;
+  static const double _photoGoalSrcRight = 760;
+  static const double _photoGoalSrcTop = 778;
+  static const double _photoGoalSrcBottom = 994;
   // Vertical bias used by `_drawCoverImage` (must stay in sync).
   static const double _photoCropVerticalBias = 0.46;
 
@@ -2427,36 +2561,49 @@ class _GoalkeeperModel {
   // When loaded, supersedes every per-motion sheet above.
   _KeeperAtlas? _atlas;
 
-  // 0-based cell indices into the 8×3 atlas. The whole 24-frame set is
-  // ONE continuous dive-and-recover animation; each motion is just a slice:
+  // 0-based cell indices into the 8×10 atlas. One row per motion, all
+  // sourced from the GSP render set (see the bake script in project notes):
   //
-  //   row 0 (0..7)   — standing (cell 0) → knees bend → launch-ready crouch
-  //   row 1 (8..15)  — full horizontal flight (hands out defending / catching)
-  //   row 2 (16..23) — landing (16..18 airborne descent) → lying flat (22..23)
-  //
-  // The three dive-height variants share the same slice — this atlas has a
-  // single dive arc; height differentiation is left to the world-space
-  // trajectory in `_drawDivingSprite` (baseHeight/liftBoost per _KeeperDive).
+  //   row 0 (0..7)   idle          — crouch sway loop
+  //   row 1 (8..15)  ready/prep    — stance → launch-ready (lower_left 0-7)
+  //   row 2 (16..23) diveLowLeft   — lower_left flight
+  //   row 3 (24..31) diveLowRight  — lower_right flight (NATIVE, no flip)
+  //   row 4 (32..39) diveLowCenter — lower_center collapse on the ball
+  //   row 5 (40..47) diveUpCenter  — vertical jump, catch overhead
+  //   row 6 (48..55) diveUpRight   — upper-right leap (flip for upper-left)
+  //   row 7 (56..63) groundLeft    — slide → kneel → rise (lower_left tail)
+  //   row 8 (64..71) groundRight   — slide → rise (lower_right tail)
+  //   row 9 (72..79) celebrate     — punt the ball, end frontal
   static const Map<_KeeperMotion, List<int>> _motionFrames = {
-    // Idle — keeper is mostly still on cell 0; brief lean to cell 1 keeps
-    // the sprite alive without dropping into the crouch cells (2+).
-    _KeeperMotion.idle:        [0, 0, 0, 0, 1, 0, 0, 0],
-    // Prep — the full standing→launch-ready arc (played once as diveProgress
-    // crosses 0.08..0.28). Ends on cell 7 so the dive slice picks up cleanly.
-    _KeeperMotion.ready:       [0, 1, 2, 3, 4, 5, 6, 7],
-    // Dive launch → horizontal peak. Overlaps prep's last cell (7) so the
-    // hand-off is seamless.
-    _KeeperMotion.diveMid:     [7, 8, 9, 10, 11, 12, 13, 14, 15],
-    _KeeperMotion.diveLow:     [7, 8, 9, 10, 11, 12, 13, 14, 15],
-    _KeeperMotion.diveHigh:    [7, 8, 9, 10, 11, 12, 13, 14, 15],
-    // Result phases — start from the dive peak (cell 15) and progress through
-    // landing (16..19) to lying (20..23). All three outcomes share the pose
-    // sequence; only the HUD text differs. Iterate later if a save-specific
-    // "ball caught" or conceded "head-in-hands" pose is added to the atlas.
-    _KeeperMotion.saveRecover: [15, 16, 17, 18, 19, 20, 21, 22, 23],
-    _KeeperMotion.missedReact: [15, 16, 17, 18, 19, 20, 21, 22, 23],
-    _KeeperMotion.conceded:    [15, 16, 17, 18, 19, 20, 21, 22, 23],
+    _KeeperMotion.idle:          [0, 1, 2, 3, 4, 5, 6, 7],
+    _KeeperMotion.ready:         [8, 9, 10, 11, 12, 13, 14, 15],
+    _KeeperMotion.diveLowLeft:   [15, 16, 17, 18, 19, 20, 21, 22, 23],
+    _KeeperMotion.diveLowRight:  [15, 24, 25, 26, 27, 28, 29, 30, 31],
+    _KeeperMotion.diveLowCenter: [15, 32, 33, 34, 35, 36, 37, 38, 39],
+    _KeeperMotion.diveUpCenter:  [15, 40, 41, 42, 43, 44, 45, 46, 47],
+    _KeeperMotion.diveUpRight:   [15, 48, 49, 50, 51, 52, 53, 54, 55],
+    _KeeperMotion.groundLeft:    [56, 57, 58, 59, 60, 61, 62, 63],
+    _KeeperMotion.groundRight:   [64, 65, 66, 67, 68, 69, 70, 71],
+    _KeeperMotion.celebrate:     [72, 73, 74, 75, 76, 77, 78, 79],
   };
+
+  /// Dive motion for a given height/side combo. Upper-left has no native
+  /// render — it reuses [_KeeperMotion.diveUpRight] mirrored (see the
+  /// `needsFlip` check in `_renderSprite`, which duplicates this same
+  /// style==high && side==left condition to drive the canvas flip).
+  static _KeeperMotion _diveMotionFor(_KeeperDive style, _KeeperSide side) {
+    if (style == _KeeperDive.high) {
+      return switch (side) {
+        _KeeperSide.center => _KeeperMotion.diveUpCenter,
+        _KeeperSide.right || _KeeperSide.left => _KeeperMotion.diveUpRight,
+      };
+    }
+    return switch (side) {
+      _KeeperSide.center => _KeeperMotion.diveLowCenter,
+      _KeeperSide.right => _KeeperMotion.diveLowRight,
+      _KeeperSide.left => _KeeperMotion.diveLowLeft,
+    };
+  }
 
   Color _jersey = const Color(0xFFFFA726);
   Color _shorts = const Color(0xFF223A5E);
@@ -2488,19 +2635,14 @@ class _GoalkeeperModel {
       if (atlasImage != null) {
         _atlas = _KeeperAtlas(
           image: atlasImage,
-          // 2048×768 atlas — square 256×256 cells, 8 cols × 3 rows = one
-          // long 24-frame dive that reads left-to-right, top-to-bottom:
-          //   row 0 (0..7)   — standing → crouch → launch-ready
-          //   row 1 (8..15)  — full horizontal flight (hands catching/deflect)
-          //   row 2 (16..23) — landing → lying on ground
-          //
-          // Every motion samples a contiguous slice of this single sequence.
-          // Source is the artist's `player final.png` (12288×512 single row);
-          // the bake step repacks it into this GPU-friendly grid.
+          // 2048×2560 atlas — square 256×256 cells, 8 cols × 10 rows.
+          // One row per motion (see _motionFrames for the row map); frames
+          // baked from the GSP keeper render set (native left/right/center
+          // dives, crouch idle loop, punt celebration).
           cellWidth: 256,
           cellHeight: 256,
           cols: 8,
-          rows: 3,
+          rows: 10,
         );
       }
       // Legacy per-motion sheets — fallback if the atlas asset is missing.
@@ -2579,6 +2721,8 @@ class _GoalkeeperModel {
         required double lift,
         required double actionTime,
         required _KeeperDive diveStyle,
+        _KeeperSide diveSide = _KeeperSide.center,
+        bool reacting = false,
         double visualScale = 1,
         _ShotState? shotState,
         double resultTime = 0,
@@ -2594,6 +2738,8 @@ class _GoalkeeperModel {
         lift: lift,
         actionTime: actionTime,
         diveStyle: diveStyle,
+        diveSide: diveSide,
+        reacting: reacting,
         visualScale: visualScale,
         idleSprite: idleSprite,
         diveMidLeftSprite: diveMidLeftSprite,
@@ -2659,6 +2805,8 @@ class _GoalkeeperModel {
         required double lift,
         required double actionTime,
         required _KeeperDive diveStyle,
+        required _KeeperSide diveSide,
+        required bool reacting,
         required double visualScale,
         required ui.Image idleSprite,
         required ui.Image diveMidLeftSprite,
@@ -2667,48 +2815,81 @@ class _GoalkeeperModel {
         _ShotState? shotState,
         double resultTime = 0,
       }) {
+    // `dive` still positions the sprite along the dive trajectory, but the
+    // reaction gate is the explicit [reacting] flag — a pure center dive has
+    // direction 0 and would otherwise read as "idle".
     final direction = dive.signOrZero;
+    // Flip only for upper-left: every other side has a native render. This
+    // is purely a mirror-the-image flag — it must NOT affect positioning
+    // (world-space left/right still comes from the real `direction`).
+    final needsFlip =
+        diveStyle == _KeeperDive.high && diveSide == _KeeperSide.left;
     final diveProgress = (actionTime / 0.54).clamp(0.0, 1.0).toDouble();
 
+    // A shot placed dead-center never sends the keeper anywhere — he plants
+    // and stays put. No prep lean, no dive, no fall to recover from.
+    final isCenter = diveSide == _KeeperSide.center;
+
     // 1. Result phase — once `_finish` has flipped `shotState` to a terminal
-    //    outcome, switch from the (now-frozen) dive pose to the matching
-    //    reaction motion. `resultTime` ticks up from 0 in PenaltyGame and
-    //    drives the reaction's own 0..1 progress.
+    //    outcome, play the outcome motion: celebration for a save, the
+    //    slide-and-rise ground sequence otherwise.
+    final groundMotion =
+        diveSide == _KeeperSide.right ? _KeeperMotion.groundRight : _KeeperMotion.groundLeft;
     final resultMotion = switch (shotState) {
-      _ShotState.saved => _KeeperMotion.saveRecover,
-      _ShotState.missed => _KeeperMotion.missedReact,
-      _ShotState.goal => _KeeperMotion.conceded,
+      _ShotState.saved => _KeeperMotion.celebrate,
+      // A center shot leaves the keeper standing — there's no lying/
+      // kneeling pose to recover from, so a miss/goal on center just holds
+      // his ground (falls through to the idle branch below) instead of
+      // playing the dive-recovery clip.
+      _ShotState.missed || _ShotState.goal => isCenter ? null : groundMotion,
       _ => null,
     };
-    if (resultMotion != null && direction != 0) {
-      // 0.55s for the full ~8-frame reaction; the result HUD sticks around
-      // for ~1.65s so the keeper holds the last frame after.
-      final resultProgress = (resultTime / 0.55).clamp(0.0, 1.0).toDouble();
+    if (resultMotion != null && reacting) {
+      // 0.75s for the reaction; the result HUD lives ~1.65s so the keeper
+      // holds the final frame for the remainder.
+      final resultProgress = (resultTime / 0.75).clamp(0.0, 1.0).toDouble();
+      // `celebrate` (GSP_punting_the_ball) is entirely standing poses — it
+      // has no lying/kneeling frames. A low/mid save ends its dive lying on
+      // the ground (peak cell of diveLowLeft/Right/Center), so cutting
+      // straight to `celebrate` made the keeper appear to teleport upright.
+      // Splice in the same stand-up arc used for miss/goal (groundLeft/
+      // Right) for the first half of the reaction, THEN celebrate — high
+      // dives and center saves skip this since the keeper is already
+      // upright/airborne (high) or never left his feet (center).
+      final needsStandUp = shotState == _ShotState.saved &&
+          diveStyle != _KeeperDive.high &&
+          !isCenter;
+      final (motion, motionProgress) = !needsStandUp
+          ? (resultMotion, resultProgress)
+          : resultProgress < 0.5
+              ? (groundMotion, resultProgress * 2)
+              : (_KeeperMotion.celebrate, (resultProgress - 0.5) * 2);
       final pose = _motionPose(
-        resultMotion,
-        resultProgress,
+        motion,
+        motionProgress,
         fallback: diveMidLeftSprite,
       );
-      // Hold the dive's peak posture in place (progress=1.0) — no extra
-      // lean/lift drift during the reaction; the upper-body change comes
-      // from the sheet swap, not movement.
-      _drawDivingSprite(
+      // Foot-anchored, not center-anchored: celebrate/groundLeft/groundRight
+      // are baked bottom-aligned (feet at the cell's bottom edge) because by
+      // this point the keeper is grounded, not mid-flight. Using
+      // _drawDivingSprite's center-anchor here (as before) put the world
+      // anchor at the character's hip instead of their feet, sinking the
+      // sprite visibly below the pitch.
+      _drawIdleSprite(
         game,
         canvas,
         base: base,
-        direction: direction,
-        lift: lift,
-        progress: 1.0,
+        lift: 0,
         image: pose.$1,
         sourceRect: pose.$2,
         visualScale: visualScale,
-        diveStyle: diveStyle,
       );
       return;
     }
 
     // 2. Crouch/prep phase — keeper plants and leans toward dive target.
-    if (direction != 0 && diveProgress > 0.08 && diveProgress < 0.28) {
+    //    Skipped for center: he has nowhere to lean toward.
+    if (!isCenter && reacting && diveProgress > 0.08 && diveProgress < 0.28) {
       final prep = _smoothStep((diveProgress - 0.08) / 0.2);
       final pose = _motionPose(_KeeperMotion.ready, prep, fallback: idleSprite);
       _drawIdleSprite(
@@ -2725,13 +2906,11 @@ class _GoalkeeperModel {
       return;
     }
 
-    // 3. Dive launch — the actual leap.
-    if (direction != 0 && diveProgress >= 0.28) {
-      final motion = switch (diveStyle) {
-        _KeeperDive.low => _KeeperMotion.diveLow,
-        _KeeperDive.mid => _KeeperMotion.diveMid,
-        _KeeperDive.high => _KeeperMotion.diveHigh,
-      };
+    // 3. Dive launch — native left/right animation per side. Center never
+    //    reaches here — he holds his idle stance through the whole shot
+    //    (phase 4 below) since the ball is coming straight at him.
+    if (!isCenter && reacting && diveProgress >= 0.28) {
+      final motion = _diveMotionFor(diveStyle, diveSide);
       final fallbackSprite = switch (diveStyle) {
         _KeeperDive.low => diveLowLeftSprite ?? diveMidLeftSprite,
         _KeeperDive.mid => diveMidLeftSprite,
@@ -2750,14 +2929,12 @@ class _GoalkeeperModel {
         sourceRect: pose.$2,
         visualScale: visualScale,
         diveStyle: diveStyle,
+        flip: needsFlip,
       );
       return;
     }
 
-    // 4. Idle cycle — slow bobble while waiting for the shot.
-    //    Uses `_KeeperMotion.idle` (not `.ready`) — idle is anchored on the
-    //    standing pose; `.ready` walks through crouch prep and would look
-    //    like the keeper is anticipating a shot that isn't happening.
+    // 4. Idle cycle — crouch-sway loop while waiting for the shot.
     final cycleLen = _atlas != null
         ? _motionFrames[_KeeperMotion.idle]!.length
         : (_readySheet?.frames ?? 0);
@@ -2788,8 +2965,8 @@ class _GoalkeeperModel {
   }
 
   /// Look up `(image, sourceRect)` for a logical motion at the given progress.
-  /// Prefers the single 8×4 atlas; falls back to the legacy per-motion sheet,
-  /// and finally to the static single-pose [fallback].
+  /// Prefers the 8×10 atlas; falls back to the legacy per-motion sheet, and
+  /// finally to the static single-pose [fallback].
   (ui.Image, Rect?) _motionPose(
       _KeeperMotion motion,
       double progress, {
@@ -2802,14 +2979,15 @@ class _GoalkeeperModel {
       return (atlas.image, atlas.cellRect(frames[idx]));
     }
     final sheet = switch (motion) {
-      _KeeperMotion.idle => _readySheet,
-      _KeeperMotion.ready => _readySheet,
-      _KeeperMotion.diveMid => _diveMidLeftSheet,
-      _KeeperMotion.diveLow => _diveLowLeftSheet ?? _diveMidLeftSheet,
-      _KeeperMotion.diveHigh => _diveHighLeftSheet ?? _diveMidLeftSheet,
-      _KeeperMotion.saveRecover => _saveRecoverSheet,
-      _KeeperMotion.missedReact => _missedReactionSheet,
-      _KeeperMotion.conceded => _concededSheet,
+      _KeeperMotion.idle || _KeeperMotion.ready => _readySheet,
+      _KeeperMotion.diveLowLeft ||
+      _KeeperMotion.diveLowRight ||
+      _KeeperMotion.diveLowCenter => _diveLowLeftSheet ?? _diveMidLeftSheet,
+      _KeeperMotion.diveUpCenter ||
+      _KeeperMotion.diveUpRight => _diveHighLeftSheet ?? _diveMidLeftSheet,
+      _KeeperMotion.celebrate => _saveRecoverSheet,
+      _KeeperMotion.groundLeft ||
+      _KeeperMotion.groundRight => _missedReactionSheet ?? _concededSheet,
     };
     if (sheet != null) {
       return (sheet.image, _sheetFrame(sheet, progress));
@@ -2892,6 +3070,7 @@ class _GoalkeeperModel {
         Rect? sourceRect,
         double visualScale = 1,
         required _KeeperDive diveStyle,
+        bool flip = false,
       }) {
     final launch = progress.clamp(0.0, 1.0).toDouble();
     final baseHeight = switch (diveStyle) {
@@ -2946,7 +3125,7 @@ class _GoalkeeperModel {
     );
 
     canvas.save();
-    if (direction > 0) {
+    if (flip) {
       canvas.translate(dst.center.dx, dst.center.dy);
       canvas.scale(-1, 1);
       canvas.translate(-dst.center.dx, -dst.center.dy);
