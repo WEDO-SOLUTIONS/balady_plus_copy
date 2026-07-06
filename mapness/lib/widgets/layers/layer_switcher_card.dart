@@ -58,70 +58,88 @@ class LayerSwitcherCard extends ConsumerWidget {
 
     final (imageType, assetPath) = value.imageAsset();
     final image = switch (imageType) {
-      ImageAssetType.svg => SvgPicture.asset(
-        assetPath,
-        fit: BoxFit.cover,
-        height: 80,
-        colorFilter: ColorFilter.mode(
-          Colors.black.withAlpha(40),
-          BlendMode.overlay,
+      ImageAssetType.svg => Semantics(
+        label: '',
+        image: true,
+        enabled: false,
+        child: SvgPicture.asset(
+          assetPath,
+          fit: BoxFit.cover,
+          height: 80,
+          colorFilter: ColorFilter.mode(
+            Colors.black.withAlpha(40),
+            BlendMode.overlay,
+          ),
         ),
       ),
-      ImageAssetType.image => Image.asset(
-        assetPath,
-        fit: BoxFit.cover,
-        height: 80,
+      ImageAssetType.image => Semantics(
+        label: '',
+        image: true,
+        enabled: false,
+        child: Image.asset(
+          assetPath,
+          fit: BoxFit.cover,
+          height: 80,
+        ),
       ),
     };
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              strokeAlign: BorderSide.strokeAlignOutside,
-              color: isSelected != true ? Colors.transparent : colors.accentDefault,
-              width: 3,
+    return Semantics(
+      label: value.titleLocale(context.l10n),
+      enabled: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                strokeAlign: BorderSide.strokeAlignOutside,
+                color: isSelected != true ? Colors.transparent : colors.accentDefault,
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(RadiusBorder.m),
             ),
-            borderRadius: BorderRadius.circular(RadiusBorder.m),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(RadiusBorder.m),
+              child: image,
+            ),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.m),
-            child: image,
-          ),
-        ),
-      //  const SizedBox(height: Spacing.$1x),
-        // BE-153: when this is the parking layer card, the whole title row
-        // (text + chevron) opens the parking menu — not only the chevron icon.
-        GestureDetector(
-          onTap: withIcon ? () => onIconTap?.call(value) : null,
-          behavior: HitTestBehavior.opaque,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Text(
-                  value.titleLocale(context.l10n),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: textStyles.bodySmallMedium.copyWith(
-                    color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+          //  const SizedBox(height: Spacing.$1x),
+          // BE-153: when this is the parking layer card, the whole title row
+          // (text + chevron) opens the parking menu — not only the chevron icon.
+          GestureDetector(
+            onTap: withIcon ? () => onIconTap?.call(value) : null,
+            behavior: HitTestBehavior.opaque,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Semantics(
+                    label: '',
+                    enabled: false,
+                    child: Text(
+                      value.titleLocale(context.l10n),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: textStyles.bodySmallMedium.copyWith(
+                        color: isSelected ? colors.accentOnContainer : colors.foregroundDefault,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              if (withIcon)
-                Icon(
-                  Icons.chevron_right,
-                  size: 22,
-                  color: colors.foregroundSoft,
-                ),
-            ],
+                if (withIcon)
+                  Icon(
+                    Icons.chevron_right,
+                    size: 22,
+                    color: colors.foregroundSoft,
+                  ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: Spacing.$2x),
-      ],
+          const SizedBox(height: Spacing.$2x),
+        ],
+      ),
     );
   }
 }
