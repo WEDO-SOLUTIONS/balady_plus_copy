@@ -262,10 +262,32 @@ class DgisMapView(
 
     override fun loadStyles(asset: String, callback: (Result<Unit>) -> Unit) {
         val styleAsset = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(asset)
+        loadStyleFile(File.fromAsset(sdkContext, styleAsset), callback)
+    }
 
+    override fun loadStylesFromPath(absolutePath: String, callback: (Result<Unit>) -> Unit) {
+        val javaFile = java.io.File(absolutePath)
+        if (!javaFile.isFile) {
+            callback(
+                    Result.failure(
+                            FileNotFoundException(
+                                    "Style file does not exist at <$absolutePath>"
+                            )
+                    )
+            )
+            return
+        }
+        // Use the File(path) constructor — NOT File.fromString(), which builds an
+        // in-memory file from the string's *contents* (the SDK would then try to
+        // parse the path text itself as a style and fail with "Can't load style
+        // from file"). The constructor's parameter is a filesystem path.
+        loadStyleFile(File(absolutePath), callback)
+    }
+
+    private fun loadStyleFile(file: File, callback: (Result<Unit>) -> Unit) {
         val builder = StyleBuilder(sdkContext)
         closables.add(
-                builder.loadStyle(File.fromAsset(sdkContext, styleAsset)).apply {
+                builder.loadStyle(file).apply {
                     onResult {
                         map?.style = it
                         callback(Result.success(Unit))

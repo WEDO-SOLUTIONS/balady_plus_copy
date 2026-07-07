@@ -246,28 +246,58 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
-        
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
-        
-        let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
+
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else {
+            completion(
+                Result.failure(FlutterError(
+                    code: "FileNotFoundException",
+                    message: "Failed to resolve asset <\(asset)>",
+                    details: nil
+                ))
+            )
+            return
+        }
+
+        loadStyleFile(at: assetPath, completion: completion)
+    }
+
+    func loadStylesFromPath(absolutePath: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard FileManager.default.fileExists(atPath: absolutePath) else {
+            completion(
+                Result.failure(FlutterError(
+                    code: "FileNotFoundException",
+                    message: "Style file does not exist at <\(absolutePath)>",
+                    details: nil
+                ))
+            )
+            return
+        }
+
+        loadStyleFile(at: absolutePath, completion: completion)
+    }
+
+    private func loadStyleFile(at path: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        let styleFuture = try! self.sdk.styleFactory.loadFile(path: path)
         cancelable.append(
-            styleFuture.sink (
+            styleFuture.sink(
                 receiveValue: { [map = self.map] style in
                     map?.style = style
-                     completion(Result.success(()))
+                    completion(Result.success(()))
                 },
                 failure: { error in
                     completion(
-                Result.failure(FlutterError(
-                        code: "FileNotFoundException",
-                        message: "Failed to load style from <\(assetPath)>. Error: \(error)",
-                        details: nil
-                    )))
-                })
+                        Result.failure(FlutterError(
+                            code: "FileNotFoundException",
+                            message: "Failed to load style from <\(path)>. Error: \(error)",
+                            details: nil
+                        ))
+                    )
+                }
+            )
         )
     }
-    
-        
+
+
     func overrideLocales(locales: [String], completion: @escaping (Result<Void, any Error>) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales.map {
