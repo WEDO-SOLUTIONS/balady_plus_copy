@@ -600,6 +600,242 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     });
   }
 
+  bool _shouldShowField({required bool isEditable, String? value}) {
+    if (isEditable) return true;
+    return value != null && value.trim().isNotEmpty;
+  }
+
+  bool _shouldShowGender({required bool isEditable}) {
+    if (isEditable) return true;
+    final sex = widget.userInfo.sex;
+    if (sex == null || sex.trim().isEmpty) return false;
+    return (int.tryParse(sex) ?? 0) > 0;
+  }
+
+  bool _shouldShowBirthDate({required bool isEditable, required String display}) {
+    if (isEditable) return true;
+    return display.trim().isNotEmpty;
+  }
+
+  List<Widget> _buildProfileFieldSections(
+    BuildContext context, {
+    required Language language,
+    required SsoUserInfo userInfo,
+    required String birthDateDisplay,
+  }) {
+    final colors = context.colors;
+    final textStyles = context.textStyles;
+    final sections = <Widget>[];
+
+    void addSection(Widget section) {
+      if (sections.isNotEmpty) {
+        sections.add(const SizedBox(height: 16));
+      }
+      sections.add(section);
+    }
+
+    final firstName = userInfo.getLocalizedFirstName(language);
+    if (_shouldShowField(isEditable: _canEditProfile, value: firstName)) {
+      addSection(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel(context, 'account_first_name'.tr()),
+            const SizedBox(height: 6),
+            if (_canEditProfile) ...[
+              _buildPillField(
+                context,
+                controller: _firstNameController,
+                hintText: 'account_first_name_hint'.tr(),
+                errorText: _firstNameError,
+                maxLength: _nameMaxLength,
+                onChanged: (_) => setState(() {
+                  _firstNameError = _firstNameController.text.trim().length > _nameMaxLength
+                      ? 'account_error_name_max'.tr()
+                      : null;
+                }),
+              ),
+              if (_firstNameError != null) _buildErrorText(context, _firstNameError!),
+            ] else
+              _buildReadOnlyPill(context, firstName),
+          ],
+        ),
+      );
+    }
+
+    final lastName = userInfo.getLocalizedLastName(language);
+    if (_shouldShowField(isEditable: _canEditProfile, value: lastName)) {
+      addSection(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel(context, 'account_last_name'.tr()),
+            const SizedBox(height: 6),
+            if (_canEditProfile) ...[
+              _buildPillField(
+                context,
+                controller: _lastNameController,
+                hintText: 'account_last_name_hint'.tr(),
+                errorText: _lastNameError,
+                maxLength: _nameMaxLength,
+                onChanged: (_) => setState(() {
+                  _lastNameError = _lastNameController.text.trim().length > _nameMaxLength
+                      ? 'account_error_name_max'.tr()
+                      : null;
+                }),
+              ),
+              if (_lastNameError != null) _buildErrorText(context, _lastNameError!),
+            ] else
+              _buildReadOnlyPill(context, lastName),
+          ],
+        ),
+      );
+    }
+
+    final showGender = _shouldShowGender(isEditable: _canEditProfile);
+    final showBirthDate = _shouldShowBirthDate(isEditable: _canEditProfile, display: birthDateDisplay);
+    if (showGender || showBirthDate) {
+      addSection(
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (showGender) ...[
+              Flexible(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel(context, 'account_gender'.tr()),
+                    const SizedBox(height: 6),
+                    _GenderToggle(
+                      selected: _canEditProfile ? _selectedGender : int.tryParse(userInfo.sex ?? '') ?? 0,
+                      onChanged: _canEditProfile ? (value) => setState(() => _selectedGender = value) : null,
+                    ),
+                  ],
+                ),
+              ),
+              if (showBirthDate) const SizedBox(width: 12),
+            ],
+            if (showBirthDate)
+              Flexible(
+                flex: 5,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLabel(context, 'date_of_birth'.tr()),
+                    const SizedBox(height: 6),
+                    if (_canEditProfile)
+                      GestureDetector(
+                        onTap: _pickBirthDate,
+                        child: _buildReadOnlyPill(context, birthDateDisplay),
+                      )
+                    else
+                      _buildReadOnlyPill(context, birthDateDisplay),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    final email = userInfo.mail ?? '';
+    if (_shouldShowField(isEditable: _canEditEmail, value: email)) {
+      addSection(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel(context, 'account_email'.tr()),
+            const SizedBox(height: 6),
+            if (_canEditEmail) ...[
+              _buildPillField(
+                context,
+                controller: _emailController,
+                hintText: 'emailFieldHint'.tr(),
+                keyboardType: TextInputType.emailAddress,
+                errorText: _emailError,
+                onChanged: (_) {
+                  final trimmedEmail = _emailController.text.trim();
+                  setState(() {
+                    _emailError = trimmedEmail.isNotEmpty && !_isValidEmail(trimmedEmail)
+                        ? 'account_error_email_format'.tr()
+                        : null;
+                  });
+                },
+              ),
+              if (_emailError != null) _buildErrorText(context, _emailError!),
+              if (!_otpPending) ...[
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(
+                      _isEmailVerified ? Icons.check_circle : Icons.warning_amber_rounded,
+                      color: _isEmailVerified ? colors.successDefault : colors.warningDefault,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      _isEmailVerified ? 'account_email_verified'.tr() : 'account_email_not_verified'.tr(),
+                      style: textStyles.captionMediumRegular.copyWith(
+                        color: _isEmailVerified ? colors.successDefault : colors.warningOnContainer,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ] else
+              _buildReadOnlyEmailPill(
+                context,
+                value: email,
+                isVerified: _isEmailVerified,
+              ),
+          ],
+        ),
+      );
+    }
+
+    if (_shouldShowField(isEditable: false, value: userInfo.arName)) {
+      addSection(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel(context, 'arabicFullName'.tr()),
+            const SizedBox(height: 6),
+            _buildReadOnlyPill(context, userInfo.arName!),
+          ],
+        ),
+      );
+    }
+
+    if (_shouldShowField(isEditable: false, value: userInfo.enName)) {
+      addSection(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel(context, 'englishFullName'.tr()),
+            const SizedBox(height: 6),
+            _buildReadOnlyPill(context, userInfo.enName!),
+          ],
+        ),
+      );
+    }
+
+    if (_shouldShowField(isEditable: false, value: userInfo.nationality)) {
+      addSection(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabel(context, 'nationality'.tr()),
+            const SizedBox(height: 6),
+            _buildReadOnlyPill(context, userInfo.nationality!),
+          ],
+        ),
+      );
+    }
+
+    return sections;
+  }
+
   // ─── Build ─────────────────────────────────────────────────────────────
 
   @override
@@ -612,6 +848,12 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     final hasFieldErrors = _firstNameError != null || _lastNameError != null || _emailError != null;
     final hasChanges = _hasUnsavedChanges();
     final birthDateDisplay = _displayBirthDate();
+    final profileFields = _buildProfileFieldSections(
+      context,
+      language: language,
+      userInfo: userInfo,
+      birthDateDisplay: birthDateDisplay,
+    );
 
     return Stack(
       children: [
@@ -629,150 +871,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildLabel(context, 'account_first_name'.tr()),
-                const SizedBox(height: 6),
-                if (_canEditProfile) ...[
-                  _buildPillField(
-                    context,
-                    controller: _firstNameController,
-                    hintText: 'account_first_name_hint'.tr(),
-                    errorText: _firstNameError,
-                    maxLength: _nameMaxLength,
-                    onChanged: (_) => setState(() {
-                      _firstNameError = _firstNameController.text.trim().length > _nameMaxLength
-                          ? 'account_error_name_max'.tr()
-                          : null;
-                    }),
-                  ),
-                  if (_firstNameError != null) _buildErrorText(context, _firstNameError!),
-                ] else
-                  _buildReadOnlyPill(context, userInfo.getLocalizedFirstName(language)),
-
-                const SizedBox(height: 16),
-
-                _buildLabel(context, 'account_last_name'.tr()),
-                const SizedBox(height: 6),
-                if (_canEditProfile) ...[
-                  _buildPillField(
-                    context,
-                    controller: _lastNameController,
-                    hintText: 'account_last_name_hint'.tr(),
-                    errorText: _lastNameError,
-                    maxLength: _nameMaxLength,
-                    onChanged: (_) => setState(() {
-                      _lastNameError = _lastNameController.text.trim().length > _nameMaxLength
-                          ? 'account_error_name_max'.tr()
-                          : null;
-                    }),
-                  ),
-                  if (_lastNameError != null) _buildErrorText(context, _lastNameError!),
-                ] else
-                  _buildReadOnlyPill(context, userInfo.getLocalizedLastName(language)),
-
-                const SizedBox(height: 16),
-
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildLabel(context, 'account_gender'.tr()),
-                          const SizedBox(height: 6),
-                          _GenderToggle(
-                            selected: _canEditProfile ? _selectedGender : int.tryParse(userInfo.sex ?? '') ?? 0,
-                            onChanged: _canEditProfile ? (value) => setState(() => _selectedGender = value) : null,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Flexible(
-                      flex: 5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildLabel(context, 'date_of_birth'.tr()),
-                          const SizedBox(height: 6),
-                          if (_canEditProfile)
-                            GestureDetector(
-                              onTap: _pickBirthDate,
-                              child: _buildReadOnlyPill(context, birthDateDisplay),
-                            )
-                          else
-                            _buildReadOnlyPill(context, birthDateDisplay),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
-                _buildLabel(context, 'account_email'.tr()),
-                const SizedBox(height: 6),
-                if (_canEditEmail) ...[
-                  _buildPillField(
-                    context,
-                    controller: _emailController,
-                    hintText: 'emailFieldHint'.tr(),
-                    keyboardType: TextInputType.emailAddress,
-                    errorText: _emailError,
-                    onChanged: (_) {
-                      final email = _emailController.text.trim();
-                      setState(() {
-                        _emailError = email.isNotEmpty && !_isValidEmail(email)
-                            ? 'account_error_email_format'.tr()
-                            : null;
-                      });
-                    },
-                  ),
-                  if (_emailError != null) _buildErrorText(context, _emailError!),
-                  if (!_otpPending) ...[
-                    const SizedBox(height: 6),
-                    Row(
-                      children: [
-                        Icon(
-                          _isEmailVerified ? Icons.check_circle : Icons.warning_amber_rounded,
-                          color: _isEmailVerified ? colors.successDefault : colors.warningDefault,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _isEmailVerified ? 'account_email_verified'.tr() : 'account_email_not_verified'.tr(),
-                          style: textStyles.captionMediumRegular.copyWith(
-                            color: _isEmailVerified ? colors.successDefault : colors.warningOnContainer,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ] else
-                  _buildReadOnlyEmailPill(
-                    context,
-                    value: userInfo.mail ?? '',
-                    isVerified: _isEmailVerified,
-                  ),
-
-                const SizedBox(height: 16),
-                _buildLabel(context, 'arabicFullName'.tr()),
-                const SizedBox(height: 6),
-                _buildReadOnlyPill(context, userInfo.arName ?? ''),
-
-                const SizedBox(height: 16),
-                _buildLabel(context, 'englishFullName'.tr()),
-                const SizedBox(height: 6),
-                _buildReadOnlyPill(context, userInfo.enName ?? ''),
-
-                const SizedBox(height: 16),
-                _buildLabel(context, 'nationality'.tr()),
-                const SizedBox(height: 6),
-                _buildReadOnlyPill(context, userInfo.nationality ?? ''),
-
+                ...profileFields,
                 if (_errorText != null && _errorText!.isNotEmpty) ...[
-                  const SizedBox(height: 12),
+                  if (profileFields.isNotEmpty) const SizedBox(height: 12),
                   Text(
                     _errorText!,
                     style: textStyles.captionMediumRegular.copyWith(color: colors.errorDefault),

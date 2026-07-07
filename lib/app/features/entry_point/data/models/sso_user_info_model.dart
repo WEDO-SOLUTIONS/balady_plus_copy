@@ -48,7 +48,7 @@ class SsoUserInfoModel extends SsoUserInfo {
       isEmailVerified: json['isEmailVerified'] == true,
       isEmailEditable: json['isEmailEditable'] ?? true,
       isSSOLocked: json['isSSOLocked'] ?? false,
-      completeProfile: json['complete_profile'] ?? json['completeProfile'] ?? true,
+      completeProfile: json['complete_profile'] ?? json['completeProfile'] ?? false,
     );
   }
 
