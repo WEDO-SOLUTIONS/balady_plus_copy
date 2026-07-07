@@ -1,5 +1,5 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.38.5",
+  "dart.flutterSdkPath": ".fvm/versions/3.44.5",
   "explorer.excludeGitIgnore": false,
   "debug.onTaskErrors": "debugAnyway",
   "problems.decorations.enabled": true,
