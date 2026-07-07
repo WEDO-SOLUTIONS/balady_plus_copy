@@ -293,6 +293,7 @@ flutter:
     - assets/images/themes/ramadan/
     - assets/langs/
     - assets/maps/configs/
+    - assets/maps/styles/user_models/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/
