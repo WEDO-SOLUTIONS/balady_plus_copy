@@ -89,21 +89,17 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
               body: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
                       children: [
-                        if (userData != null)
-                          PersonalData(
-                            userInfo: userData,
-                            showImpl: kPersonalDataShowImpl,
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              if (userData != null) PersonalData(userInfo: userData),
+                            ],
                           ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' hide TextDirection;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -17,18 +18,11 @@ import 'package:mapness/widgets/profile/profile_account_service.dart';
 /// Pill radius for fields / buttons (matches existing layout; not all tokens expose radius).
 const _kFieldRadius = 10.0;
 
-/// Flip to `true` when profile edit, save, and email OTP flows are enabled in this build.
-const kPersonalDataShowImpl = false;
-
 class PersonalData extends ConsumerStatefulWidget {
   final SsoUserInfo userInfo;
 
-  /// When `false`, all fields are read-only: no text inputs, save button, or OTP sheet.
-  final bool showImpl;
-
   const PersonalData({
     required this.userInfo,
-    this.showImpl = kPersonalDataShowImpl,
     super.key,
   });
 
@@ -60,6 +54,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   String _initialLastName = '';
   String _currentFirstName = '';
   String _currentLastName = '';
+  int _selectedGender = 0;
+  int _initialGender = 0;
+  DateTime? _selectedBirthDate;
+  DateTime? _initialBirthDate;
 
   @override
   void initState() {
@@ -85,6 +83,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
     _initialFirstName = _currentFirstName;
     _initialLastName = _currentLastName;
+    _selectedGender = int.tryParse(userInfo.sex ?? '') ?? 0;
+    _initialGender = _selectedGender;
+    _selectedBirthDate = _parseBirthDate(userInfo.dob);
+    _initialBirthDate = _selectedBirthDate;
     _pendingEmail = null;
     _errorText = null;
 
@@ -137,6 +139,10 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _isEmailVerified = freshUserInfo.isEmailVerified;
         _initialFirstName = _currentFirstName;
         _initialLastName = _currentLastName;
+        _selectedGender = int.tryParse(freshUserInfo.sex ?? '') ?? _selectedGender;
+        _initialGender = _selectedGender;
+        _selectedBirthDate = _parseBirthDate(freshUserInfo.dob) ?? _selectedBirthDate;
+        _initialBirthDate = _selectedBirthDate;
       });
 
       if (updateAuthProvider) {
@@ -155,8 +161,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     super.dispose();
   }
 
-  bool get _isSsoUser => widget.userInfo.loginType == SsoLoginType.nationalId;
-
   bool get _isOtpUser => widget.userInfo.loginType == SsoLoginType.otp;
 
   /// Returned by `MobileLoginVerifyOtp`:
@@ -165,19 +169,85 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   ///   so editing must be blocked even though they logged in via OTP.
   bool get _hasCompleteOtpProfile => widget.userInfo.completeProfile;
 
-  bool get _canEditProfile => widget.showImpl && _isOtpUser && _hasCompleteOtpProfile;
+  bool get _canEditProfile => _isOtpUser && _hasCompleteOtpProfile;
 
-  bool get _canEditEmail =>
-      widget.showImpl && _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
+  bool get _canEditEmail => _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
 
-  /// True when first name, last name, or email differs from the last saved values.
+  DateTime? _parseBirthDate(String? dob) {
+    if (dob == null || dob.trim().isEmpty) return null;
+
+    final normalized = dob.trim();
+    final dashParts = normalized.split('-');
+    if (dashParts.length == 3) {
+      final year = int.tryParse(dashParts[0]);
+      final month = int.tryParse(dashParts[1]);
+      final day = int.tryParse(dashParts[2]);
+      if (year != null && month != null && day != null) {
+        return DateTime(year, month, day);
+      }
+    }
+
+    final slashParts = normalized.split('/');
+    if (slashParts.length == 3) {
+      final a = int.tryParse(slashParts[0]) ?? 0;
+      final b = int.tryParse(slashParts[1]) ?? 0;
+      final c = int.tryParse(slashParts[2]) ?? 0;
+      if (c > 1800) {
+        return DateTime(c, b, a);
+      }
+      if (a > 1800) {
+        return DateTime(a, b, c);
+      }
+    }
+
+    return null;
+  }
+
+  String _formatBirthDateForDisplay(SsoUserInfo userInfo) {
+    final hijri = userInfo.getHijriBirthDate();
+    if (hijri.isNotEmpty) return hijri;
+    return userInfo.dob?.trim() ?? '';
+  }
+
+  String _displayBirthDate() {
+    if (_selectedBirthDate != null) {
+      final date = _selectedBirthDate!;
+      final gregorian = '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+      final hijri = widget.userInfo.copyWith(dob: gregorian).getHijriBirthDate();
+      if (hijri.isNotEmpty) return hijri;
+      return _formatBirthDateForApi(date);
+    }
+    return _formatBirthDateForDisplay(widget.userInfo);
+  }
+
+  String _formatBirthDateForApi(DateTime date) => DateFormat('yyyy-MM-dd').format(date);
+
+  Future<void> _pickBirthDate() async {
+    if (!_canEditProfile) return;
+
+    final now = DateTime.now();
+    final initial = _selectedBirthDate ?? DateTime(now.year - 25, now.month, now.day);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial.isAfter(now) ? now : initial,
+      firstDate: DateTime(1900),
+      lastDate: now,
+    );
+    if (picked != null && mounted) {
+      setState(() => _selectedBirthDate = picked);
+    }
+  }
+
+  /// True when first name, last name, email, gender, or birth date differs from saved values.
   bool _hasUnsavedChanges() {
     final first = _firstNameController.text.trim();
     final last = _lastNameController.text.trim();
     final email = _emailController.text.trim();
     final nameChanged = first != _currentFirstName || last != _currentLastName;
     final emailChanged = email != _activeEmail;
-    return nameChanged || emailChanged;
+    final genderChanged = _selectedGender != _initialGender;
+    final birthDateChanged = _selectedBirthDate != _initialBirthDate;
+    return nameChanged || emailChanged || genderChanged || birthDateChanged;
   }
 
   bool _validateForm() {
@@ -216,7 +286,6 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   }
 
   Future<void> _save() async {
-    if (!widget.showImpl) return;
     if (!_validateForm()) return;
 
     final newFirstName = _firstNameController.text.trim();
@@ -224,6 +293,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     final newEmail = _emailController.text.trim();
     final emailChanged = newEmail != _activeEmail;
     final nameChanged = newFirstName != _currentFirstName || newLastName != _currentLastName;
+    final genderChanged = _selectedGender != _initialGender;
+    final birthDateChanged = _selectedBirthDate != _initialBirthDate;
 
     setState(() {
       _isLoading = true;
@@ -231,15 +302,21 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     });
 
     try {
-      if ((nameChanged && _canEditProfile) || (emailChanged && _canEditEmail)) {
-        final completeProfileData = <String, dynamic>{
-          'firstname': newFirstName,
-          'lastname': newLastName,
-        };
-        if (!emailChanged) completeProfileData['email'] = _activeEmail;
+      final profileChanges = <String, dynamic>{};
+      if (nameChanged && _canEditProfile) {
+        profileChanges['firstname'] = newFirstName;
+        profileChanges['lastname'] = newLastName;
+      }
+      if (genderChanged && _canEditProfile && _selectedGender > 0) {
+        profileChanges['gender'] = _selectedGender.toString();
+      }
+      if (birthDateChanged && _canEditProfile && _selectedBirthDate != null) {
+        profileChanges['birthDate'] = _formatBirthDateForApi(_selectedBirthDate!);
+      }
 
-        await _service.updateUserProfile(changes: completeProfileData);
-        // Avoid auth-provider rebuild while opening the OTP sheet (can dispose this widget).
+      final hasProfileChanges = profileChanges.isNotEmpty;
+      if (hasProfileChanges) {
+        await _service.updateUserProfile(changes: profileChanges);
         await _fetchLatestUserInfo(
           updateAuthProvider: !emailChanged,
           overrideFirstName: nameChanged ? newFirstName : null,
@@ -247,16 +324,22 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         );
 
         setState(() {
-          _currentFirstName = newFirstName;
-          _currentLastName = newLastName;
-          _initialFirstName = newFirstName;
-          _initialLastName = newLastName;
+          if (nameChanged) {
+            _currentFirstName = newFirstName;
+            _initialFirstName = newFirstName;
+            _currentLastName = newLastName;
+            _initialLastName = newLastName;
+          }
+          if (genderChanged) {
+            _initialGender = _selectedGender;
+          }
+          if (birthDateChanged) {
+            _initialBirthDate = _selectedBirthDate;
+          }
           if (!emailChanged) {
             _activeEmail = newEmail;
             _emailController.text = _activeEmail;
           } else {
-            // `_fetchLatestUserInfo` just ran and filled the field from the API,
-            // which still has the previous email (or none). Restore what the user typed.
             _emailController.text = newEmail;
           }
         });
@@ -286,7 +369,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           );
           _showOtpBottomSheet();
         });
-      } else if (!emailChanged && nameChanged) {
+      } else if (!emailChanged && hasProfileChanges) {
         setState(() => _isLoading = false);
       } else {
         setState(() => _isLoading = false);
@@ -523,23 +606,19 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   Widget build(BuildContext context) {
     final language = ref.read(appLanguageProvider);
     final userInfo = widget.userInfo;
-    final isSso = _isSsoUser;
-    final isOtp = _isOtpUser;
     final colors = context.colors;
     final textStyles = context.textStyles;
 
     final hasFieldErrors = _firstNameError != null || _lastNameError != null || _emailError != null;
     final hasChanges = _hasUnsavedChanges();
-    // When saving, use a no-op onPressed so the button stays in the "enabled" style;
-    // `onPressed: null` would apply disabled styling and fade the white saving text.
+    final birthDateDisplay = _displayBirthDate();
 
     return Stack(
       children: [
-        // ── Scrollable content ────────────────────────────────────────
         SingleChildScrollView(
           padding: EdgeInsets.only(
             top: 20,
-            bottom: widget.showImpl ? MediaQuery.of(context).size.height - 500 : 20,
+            bottom: _canEditProfile ? MediaQuery.of(context).size.height - 500 : 20,
           ),
           child: Container(
             decoration: BoxDecoration(
@@ -550,10 +629,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── First Name ────────────────────────────────────
                 _buildLabel(context, 'account_first_name'.tr()),
                 const SizedBox(height: 6),
-                if (isOtp && _canEditProfile) ...[
+                if (_canEditProfile) ...[
                   _buildPillField(
                     context,
                     controller: _firstNameController,
@@ -572,10 +650,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
                 const SizedBox(height: 16),
 
-                // ── Last Name ─────────────────────────────────────
                 _buildLabel(context, 'account_last_name'.tr()),
                 const SizedBox(height: 6),
-                if (isOtp && _canEditProfile) ...[
+                if (_canEditProfile) ...[
                   _buildPillField(
                     context,
                     controller: _lastNameController,
@@ -594,51 +671,49 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
                 const SizedBox(height: 16),
 
-                // ── Gender + Date of Birth (SSO) ──────────────────
-                if (isSso) ...[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (userInfo.sex != null)
-                        Flexible(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildLabel(context, 'account_gender'.tr()),
-                              const SizedBox(height: 6),
-                              _GenderToggle(
-                                selected: int.tryParse(userInfo.sex ?? '') ?? 0,
-                              ),
-                            ],
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel(context, 'account_gender'.tr()),
+                          const SizedBox(height: 6),
+                          _GenderToggle(
+                            selected: _canEditProfile ? _selectedGender : int.tryParse(userInfo.sex ?? '') ?? 0,
+                            onChanged: _canEditProfile ? (value) => setState(() => _selectedGender = value) : null,
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Flexible(
+                      flex: 5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildLabel(context, 'date_of_birth'.tr()),
+                          const SizedBox(height: 6),
+                          if (_canEditProfile)
+                            GestureDetector(
+                              onTap: _pickBirthDate,
+                              child: _buildReadOnlyPill(context, birthDateDisplay),
+                            )
+                          else
+                            _buildReadOnlyPill(context, birthDateDisplay),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
 
-                      if ((userInfo.sex != null && userInfo.sex!.isNotEmpty) &&
-                          (userInfo.dob != null && userInfo.dob!.isNotEmpty))
-                        const SizedBox(width: 12),
+                const SizedBox(height: 16),
 
-                      if (userInfo.dob != null && userInfo.dob!.isNotEmpty)
-                        Flexible(
-                          flex: 5,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildLabel(context, 'date_of_birth'.tr()),
-                              const SizedBox(height: 6),
-                              _buildReadOnlyPill(context, userInfo.dob!),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
-
-                // ── Email ─────────────────────────────────────────
                 _buildLabel(context, 'account_email'.tr()),
                 const SizedBox(height: 6),
-                if (isOtp && _canEditEmail) ...[
+                if (_canEditEmail) ...[
                   _buildPillField(
                     context,
                     controller: _emailController,
@@ -674,45 +749,28 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                       ],
                     ),
                   ],
-                ] else ...[
-                  Row(
-                    children: [
-                      Expanded(child: _buildReadOnlyPill(context, userInfo.mail ?? '')),
-                      if (isOtp) ...[
-                        const SizedBox(width: 8),
-                        Icon(
-                          _isEmailVerified ? Icons.check_circle : Icons.warning_amber_rounded,
-                          color: _isEmailVerified ? colors.successDefault : colors.warningDefault,
-                          size: 20,
-                        ),
-                      ],
-                    ],
+                ] else
+                  _buildReadOnlyEmailPill(
+                    context,
+                    value: userInfo.mail ?? '',
+                    isVerified: _isEmailVerified,
                   ),
-                ],
 
-                // ── SSO extra fields ──────────────────────────────
-                if (isSso) ...[
-                  if (userInfo.arName != null && userInfo.arName!.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    _buildLabel(context, 'arabicFullName'.tr()),
-                    const SizedBox(height: 6),
-                    _buildReadOnlyPill(context, userInfo.arName!),
-                  ],
-                  if (userInfo.enName != null && userInfo.enName!.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    _buildLabel(context, 'englishFullName'.tr()),
-                    const SizedBox(height: 6),
-                    _buildReadOnlyPill(context, userInfo.enName!),
-                  ],
-                  if (userInfo.nationality != null && userInfo.nationality!.isNotEmpty) ...[
-                    const SizedBox(height: 16),
-                    _buildLabel(context, 'nationality'.tr()),
-                    const SizedBox(height: 6),
-                    _buildReadOnlyPill(context, userInfo.nationality!),
-                  ],
-                ],
+                const SizedBox(height: 16),
+                _buildLabel(context, 'arabicFullName'.tr()),
+                const SizedBox(height: 6),
+                _buildReadOnlyPill(context, userInfo.arName ?? ''),
 
-                // ── Global error ──────────────────────────────────
+                const SizedBox(height: 16),
+                _buildLabel(context, 'englishFullName'.tr()),
+                const SizedBox(height: 6),
+                _buildReadOnlyPill(context, userInfo.enName ?? ''),
+
+                const SizedBox(height: 16),
+                _buildLabel(context, 'nationality'.tr()),
+                const SizedBox(height: 6),
+                _buildReadOnlyPill(context, userInfo.nationality ?? ''),
+
                 if (_errorText != null && _errorText!.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   Text(
@@ -822,6 +880,41 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     );
   }
 
+  Widget _buildReadOnlyEmailPill(
+    BuildContext context, {
+    required String value,
+    required bool isVerified,
+  }) {
+    final colors = context.colors;
+    final textStyles = context.textStyles;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: context.profileFieldFillColor,
+        borderRadius: BorderRadius.circular(_kFieldRadius),
+      ),
+      child: Row(
+        children: [
+          if (!isVerified && value.isNotEmpty) ...[
+            Icon(
+              Icons.warning_amber_rounded,
+              color: colors.warningDefault,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+          ],
+          Expanded(
+            child: Text(
+              value,
+              style: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildPillField(
     BuildContext context, {
     required TextEditingController controller,
@@ -886,8 +979,9 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
 class _GenderToggle extends StatelessWidget {
   final int selected;
+  final ValueChanged<int>? onChanged;
 
-  const _GenderToggle({required this.selected});
+  const _GenderToggle({required this.selected, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -896,25 +990,29 @@ class _GenderToggle extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: ['M', 'F'].map((g) {
+        final genderValue = g == 'M' ? 1 : 2;
         final isSelected = (g == 'M' && selected == 1) || (g == 'F' && selected == 2);
         return Padding(
           padding: const EdgeInsets.only(right: 6),
-          child: Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: context.profileFieldFillColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: isSelected ? colors.accentDefault : colors.borderSoft,
-                width: isSelected ? 2 : 1,
+          child: GestureDetector(
+            onTap: onChanged == null ? null : () => onChanged!(genderValue),
+            child: Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: context.profileFieldFillColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSelected ? colors.accentDefault : colors.borderSoft,
+                  width: isSelected ? 2 : 1,
+                ),
               ),
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              g,
-              style: textStyles.bodyLargeSemiBold.copyWith(
-                color: isSelected ? colors.accentDefault : colors.foregroundSoft,
+              alignment: Alignment.center,
+              child: Text(
+                g,
+                style: textStyles.bodyLargeSemiBold.copyWith(
+                  color: isSelected ? colors.accentDefault : colors.foregroundSoft,
+                ),
               ),
             ),
           ),
