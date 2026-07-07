@@ -154,6 +154,11 @@ class DgisMapController {
   /// Load map styles from asset.
   Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
 
+  /// Load map styles from an absolute filesystem path.
+  /// Use it when the `.2gis` archive lives outside the app bundle — e.g. a
+  /// repacked copy in the support directory with overridden GLB models.
+  Future<void> loadStylesFromPath(String absolutePath) async => _instance.loadStylesFromPath(absolutePath);
+
   /// Override locale for map. Uses string format "en-US", "ar-SA".
   Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
 
