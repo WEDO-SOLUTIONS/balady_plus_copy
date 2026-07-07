@@ -951,6 +951,11 @@ enum _KeeperMotion {
   celebrate,
 }
 
+/// Striker motion — each is exactly one 8-frame row of `striker_atlas.png`,
+/// in this declaration order (`.index` doubles as the atlas row index; see
+/// [_StrikerModel._drawAtlasFrame]).
+enum _StrikerMotion { idle, windup, kick, settle }
+
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   PenaltyGame({this.onComplete});
 
@@ -2363,22 +2368,139 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 }
 
 class _StrikerModel {
+  // Preferred path: single 8×4 atlas (idle/windup/kick/settle rows, 8
+  // frames each — see [_StrikerMotion]), baked from the SP_idle/SP_kick
+  // render sets. Real per-frame art replaces the old single-pose-plus-
+  // procedural-skew rig below, which now only serves as a fallback.
+  _KeeperAtlas? _atlas;
+
   ui.Image? _ready;
   ui.Image? _windup;
   ui.Image? _kick;
 
   Future<void> load() async {
-    final sprites = await Future.wait([
-      _loadUiImage('packages/mapness/assets/tifo/sprites/striker_ready.png'),
-      _loadUiImage('packages/mapness/assets/tifo/sprites/striker_windup.png'),
-      _loadUiImage('packages/mapness/assets/tifo/sprites/striker_kick.png'),
-    ]);
-    _ready = sprites[0];
-    _windup = sprites[1];
-    _kick = sprites[2];
+    final atlasImage = await _loadOptionalUiImage(
+      'packages/mapness/assets/tifo/sprites/striker_atlas.png',
+    );
+    if (atlasImage != null) {
+      _atlas = _KeeperAtlas(
+        // 512px cells (vs the keeper's 256px) — the striker sits much
+        // closer to the camera (world z ≈ -0.25 vs the keeper's z ≈ 22.3),
+        // so the SAME projected.scale factor renders him roughly 3x
+        // larger on screen. 256px cells upscaled that hard looked soft/
+        // "low-res" (reported as looking semi-transparent at the edges).
+        image: atlasImage,
+        cellWidth: 512,
+        cellHeight: 512,
+        cols: 8,
+        rows: 4,
+      );
+      return;
+    }
+
+    try {
+      final sprites = await Future.wait([
+        _loadUiImage('packages/mapness/assets/tifo/sprites/striker_ready.png'),
+        _loadUiImage('packages/mapness/assets/tifo/sprites/striker_windup.png'),
+        _loadUiImage('packages/mapness/assets/tifo/sprites/striker_kick.png'),
+      ]);
+      _ready = sprites[0];
+      _windup = sprites[1];
+      _kick = sprites[2];
+    } catch (_) {
+      // Falls through to the fully-procedural _renderFallback silhouette.
+    }
   }
 
   void render(
+      PenaltyGame game,
+      Canvas canvas, {
+        required _Vec3 base,
+        required _ShotState state,
+        required double shotTime,
+        required double elapsed,
+      }) {
+    final atlas = _atlas;
+    if (atlas == null) {
+      _renderLegacy(game, canvas, base: base, state: state, shotTime: shotTime, elapsed: elapsed);
+      return;
+    }
+
+    final isAiming = state == _ShotState.aiming;
+    final idleShift = math.sin(elapsed * math.pi * 0.9);
+    final plantedBase = _Vec3(
+      base.x + (isAiming ? idleShift * 0.035 : 0),
+      base.y,
+      base.z,
+    );
+    game._drawShadow(
+      canvas,
+      _Vec3(plantedBase.x - 0.05, 0, plantedBase.z + 0.1),
+      isAiming ? 0.86 : 0.96,
+      isAiming ? 0.22 : 0.27,
+    );
+
+    // Real walk-in-place loop while aiming, instead of one static pose
+    // with a fake breathing skew.
+    const idleCycleSeconds = 1.1;
+    if (isAiming) {
+      final cycle = (elapsed % idleCycleSeconds) / idleCycleSeconds;
+      _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.idle,
+          progress: cycle, base: plantedBase);
+      return;
+    }
+
+    if (shotTime < 0.1) {
+      _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.windup,
+          progress: shotTime / 0.1, base: plantedBase);
+      return;
+    }
+
+    if (shotTime < 0.24) {
+      _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.kick,
+          progress: (shotTime - 0.1) / 0.14, base: plantedBase);
+      return;
+    }
+
+    final settle = _easeOutCubic(((shotTime - 0.24) / 0.7).clamp(0, 1));
+    _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.settle,
+        progress: settle, base: plantedBase);
+  }
+
+  /// Foot-anchored draw of one atlas cell — `motion.index` is the atlas row,
+  /// `progress` (0..1) picks the frame within that row's 8 cells.
+  void _drawAtlasFrame(
+      PenaltyGame game,
+      Canvas canvas, {
+        required _KeeperAtlas atlas,
+        required _StrikerMotion motion,
+        required double progress,
+        required _Vec3 base,
+      }) {
+    final projected = game._project(base);
+    if (projected == null) {
+      return;
+    }
+    final frame = (progress.clamp(0.0, 1.0) * 7).round();
+    final sourceRect = atlas.cellRect(motion.index * 8 + frame);
+    // Cells are baked square with generous padding around the figure — see
+    // the bake script notes. 3.9 keeps the on-screen figure size matching
+    // the old tightly-cropped single-pose sprites (measured compensation:
+    // old sprites were ~93% figure-fill vs ~80% for the new square cells).
+    const worldHeight = 3.9;
+    final height = math.max(70.0, projected.scale * worldHeight);
+    final dst = Rect.fromLTWH(
+      projected.offset.dx - height / 2,
+      projected.offset.dy - height,
+      height,
+      height,
+    );
+    canvas.drawImageRect(atlas.image, sourceRect, dst, _spritePaint());
+  }
+
+  /// Legacy single-pose-plus-procedural-skew rig — only reached if
+  /// `striker_atlas.png` fails to load.
+  void _renderLegacy(
       PenaltyGame game,
       Canvas canvas, {
         required _Vec3 base,
