@@ -326,6 +326,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.loadStyles(asset);
   }
 
+  /// Load styles from an absolute filesystem path (e.g. a repacked `.2gis`
+  /// written to the app's support/cache directory).
+  Future<void> loadStylesFromPath(String absolutePath) {
+    return _api.loadStylesFromPath(absolutePath);
+  }
+
   /// Override locales.
   Future<void> overrideLocales(List<String> locales) {
     return _api.overrideLocales(locales);
