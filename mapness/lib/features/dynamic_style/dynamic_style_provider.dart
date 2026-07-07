@@ -24,9 +24,12 @@ class DynamicStyleController extends _$DynamicStyleController {
   @override
   void build() {}
 
-  /// Repack the bundled archive with [overrides] and write the result over
-  /// the store's canonical file. Empty [overrides] means "return to bundled",
-  /// which we delegate to the store's reset.
+  /// Apply [overrides] on top of the store's current `.2gis` in place.
+  ///
+  /// Accumulative: reads the current on-disk archive, overwrites the listed
+  /// entries, writes back atomically. To start from a clean bundled archive,
+  /// call [resetToBundled] first (or pass empty [overrides], which shortcuts
+  /// to reset).
   Future<void> applyOverrides(List<StyleEntryOverride> overrides) async {
     if (overrides.isEmpty) {
       return resetToBundled();
@@ -62,4 +65,4 @@ class DynamicStyleController extends _$DynamicStyleController {
 }
 
 @Riverpod(keepAlive: true)
-DynamicStyleService dynamicStyleService(Ref ref) => DynamicStyleService();
+DynamicStyleService dynamicStyleService(Ref ref) => const DynamicStyleService();
