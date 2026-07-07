@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 const _logTag = '[dynamic_style]';
@@ -29,28 +28,24 @@ class StyleEntryOverride {
 
 /// Repack + network primitives around the `styles.2gis` archive.
 ///
-/// This service is intentionally stateless with respect to *where* the archive
-/// lives on disk — that is [MapStyleStore]'s job. Callers pass an explicit
-/// [targetPath] into [repackInto], and [downloadStyleBytes] returns raw bytes
-/// which the store then writes atomically to the canonical location.
+/// Stateless file→file pipe: [repackInto] reads the current on-disk archive
+/// at [targetPath], applies overrides, and writes the result back to the same
+/// path atomically. [downloadStyleBytes] returns raw bytes.
+///
+/// The bundled asset is owned exclusively by [MapStyleStore] — this service
+/// never touches [rootBundle]. Callers that want a clean "from bundled" repack
+/// must call [MapStyleStore.resetToBundled] first, so a single asset key
+/// exists in the whole feature.
 class DynamicStyleService {
-  DynamicStyleService({
-    String bundledAsset = 'assets/maps/styles/styles.2gis',
-    AssetBundle? bundle,
-  }) : _bundledAsset = bundledAsset,
-       _bundle = bundle ?? rootBundle;
+  const DynamicStyleService();
 
-  final String _bundledAsset;
-  final AssetBundle _bundle;
-
-  /// Repack the bundled `styles.2gis` with [overrides] and atomically write
-  /// the result to [targetPath] (the store's canonical `current.2gis`).
+  /// Repack the archive at [targetPath] with [overrides] and atomically
+  /// overwrite it in place.
   ///
-  /// The bundled asset is always used as the source — repack does not chain
-  /// on top of a previous repack. This makes mode switching deterministic:
-  /// e.g. selecting "utka_boss" after "car_buhanka" produces exactly the
-  /// bundled archive with utka_boss overrides, not utka_boss layered on top
-  /// of buhanka.
+  /// Reads the current on-disk archive (not the bundled asset), so overrides
+  /// accumulate: `apply(X)` then `apply(Y)` results in both X and Y present.
+  /// To drop previous mutations first, callers must call
+  /// [MapStyleStore.resetToBundled] before this method.
   Future<void> repackInto({
     required String targetPath,
     required List<StyleEntryOverride> overrides,
@@ -59,8 +54,12 @@ class DynamicStyleService {
     final overrideSummary = overrides.map((o) => '${o.archivePath} (${o.bytes.length}B)').join(', ');
     logger.log('$_logTag repack: start, ${overrides.length} override(s) → $targetPath: $overrideSummary');
 
-    final source = await _loadBundledBytes();
-    logger.log('$_logTag repack: bundled styles.2gis loaded (${source.length}B) in ${sw.elapsedMilliseconds}ms');
+    final srcFile = File(targetPath);
+    if (!await srcFile.exists()) {
+      throw StateError('Style file not found at $targetPath — did MapStyleStore.build() run?');
+    }
+    final source = await srcFile.readAsBytes();
+    logger.log('$_logTag repack: read source ${source.length}B in ${sw.elapsedMilliseconds}ms');
 
     // Do everything in the isolate — including writing the file. Returning a
     // 10 MB Uint8List back to the main isolate and then doing writeAsBytes on
@@ -116,27 +115,6 @@ class DynamicStyleService {
     }
     sw.stop();
     return bytes;
-  }
-
-  /// Read the raw (decompressed) bytes of a single entry from the bundled
-  /// `styles.2gis`. Useful for debug tooling that needs to round-trip an
-  /// existing GLB through [repackInto] — e.g. swap day↔night car models.
-  ///
-  /// Throws [StateError] when the entry is missing.
-  Future<Uint8List> readBundledEntry(String archivePath) async {
-    final bytes = await _loadBundledBytes();
-    final archive = ZipDecoder().decodeBytes(bytes);
-    for (final file in archive.files) {
-      if (file.isFile && file.name == archivePath) {
-        return Uint8List.fromList(file.content as List<int>);
-      }
-    }
-    throw StateError('Entry "$archivePath" not found in bundled styles.2gis');
-  }
-
-  Future<Uint8List> _loadBundledBytes() async {
-    final data = await _bundle.load(_bundledAsset);
-    return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
   }
 }
 
@@ -212,7 +190,7 @@ Future<_RepackResult> _repackInIsolate(_RepackInput input) async {
 
   // Write atomically — no fsync. The atomic rename guarantees readers
   // never see a half-written file, and durability is not required (the
-  // bundled asset is always the source of truth).
+  // store can always re-seed from the bundled asset).
   final tmp = File('${input.targetPath}.tmp');
   await tmp.writeAsBytes(bytes);
   await tmp.rename(input.targetPath);
