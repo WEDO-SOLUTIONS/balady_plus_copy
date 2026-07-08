@@ -87,9 +87,15 @@ class PathNavPage extends StatefulHookConsumerWidget {
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
   final panelKey = GlobalKey();
   bool _isSwitchingToPedestrian = false;
+  bool _supportsIndoor = false;
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
   bool _isEndingTrip = false;
+
+  // Restoring navigation restarts it on the native side, which emits transient
+  // disabled/finished events before the restored navigation actually starts.
+  // Ignore end-of-trip events until the first `navigation` event arrives.
+  bool _ignoreEndEventsUntilNavigation = false;
 
   // Cache for indoor support check to avoid network delay on arrival
   bool? _cachedIndoorSupport;
@@ -156,6 +162,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     startControlsDisapearTimer();
     ref.read(layersControlsProvider.notifier).hideLayer(LayerType.metro);
     WakelockPlus.enable();
+  }
+
+  @override
+  void didUpdateWidget(covariant PathNavPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.navType != oldWidget.navType ||
+        widget.initAction != oldWidget.initAction ||
+        widget.isHomeOrWork != oldWidget.isHomeOrWork) {
+      _initNavigation();
+    }
   }
 
   @override
@@ -273,8 +289,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
       final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
       if (isPortrait && widget.navType != RouteSearchOptionsMessage.publicTransport) {
-        final stableInset = uikit.Spacing.$3x;
-        final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
+        final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? uikit.Spacing.$3x : 0;
         final bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         _bottomHeightNotifier.value = bottomHeight;
@@ -282,8 +297,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
     }
   }
+
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    _supportsIndoor = false;
+    _ignoreEndEventsUntilNavigation = widget.initAction == PathNavPageInitAction.restoreFromState;
     if (!mounted) {
       return;
     }
@@ -544,7 +562,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     : null,
                 child: NaviSheetPanel(
                   key: panelKey,
+                  supportsIndoor: _supportsIndoor,
                   isSwitchingToFoot: isSwitchingToFoot,
+                  onSwitchToPedestrian: _switchToPedestrian,
+                  onCancelSwitchToPedestrian: onCancelSwitchToPedestrian,
                   navType: widget.navType,
                   navigationState: _navigationState,
                   onShowRoutePressed: _onShowRoutePressed,
@@ -711,7 +732,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final toastCtx = rootNavigatorKey.currentContext ?? context;
         if (toastCtx.mounted) {
-          ToastOverlay.of(toastCtx).show(title: context.l10n.youArrived);
+          ToastOverlay.of(toastCtx).show(title: toastCtx.l10n.youArrived);
         }
       });
     }
@@ -843,10 +864,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _naviEvent(NavigationEvent event) async {
     switch (event) {
       case NavigationEvent.navigation:
+        _ignoreEndEventsUntilNavigation = false;
+        break;
       case NavigationEvent.routeSearch:
         break;
       case NavigationEvent.disabled:
-        if (_isSwitchingToPedestrian) {
+        if (_isSwitchingToPedestrian || _ignoreEndEventsUntilNavigation) {
           return;
         }
         if (context.mounted && _navigationState.value != PathNavState.finished) {
@@ -854,6 +877,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         }
         break;
       case NavigationEvent.finished:
+        if (_ignoreEndEventsUntilNavigation) {
+          return;
+        }
         if (widget.navType == RouteSearchOptionsMessage.car) {
           _isSwitchingToPedestrian = true;
           _checkAndSwitchToPedestrian();
@@ -965,48 +991,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           }
         }
 
+        if (_supportsIndoor != supportsIndoor) {
+          setState(() {
+            _supportsIndoor = supportsIndoor;
+          });
+        }
+
         if (supportsIndoor) {
-          // Switch to pedestrian
-          final startPoint = RouteParamsPoint(latitude: location.latitude, longitude: location.longitude);
-          final points = [startPoint, finishPoint];
-          final intermediatePoints = points.getIntermediatePoints();
-
-          ref.read(
-            routesProvider(
-              startPoint: startPoint,
-              finishPoint: finishPoint,
-              navType: RouteSearchOptionsMessage.pedestrian,
-              intermediatePoints: intermediatePoints,
-              showOnlyActiveRoute: true,
-            ),
-          );
-
-          // Navigate to new navigation session
-          if (mounted) {
-            // Start navigation on the newly calculated route
-            await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
-
-            // Save the navigation state so it can be restored on the new page
-            final state = await dgisController.saveNavigationState();
-            await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
-            await ref
-                .read(sharedPrefsProvider)
-                .setString(MapnessConstants.navigatorStateTypeKey, RouteSearchOptionsMessage.pedestrian.name);
-
-            // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
-
-            // Replace current page with pedestrian navigation
-            // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
-            isSwitchingToFoot.value = false;
-            await context.router.replace(
-              PathNavRoute(
-                navType: RouteSearchOptionsMessage.pedestrian,
-                isHomeOrWork: widget.isHomeOrWork,
-                initAction: PathNavPageInitAction.restoreFromState,
-              ),
-            );
-            return;
-          }
+          // we show button on map using _supportsIndoor so just return here
+          return;
         }
       }
       _isSwitchingToPedestrian = false;
@@ -1021,6 +1014,82 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+  Future<void> _switchToPedestrian() async {
+    final finishPoint = ref.read(currentNavigationDestinationProvider);
+    final dgisController = ref.read(dgisControllerProvider).value;
+    final location = ref.read(locationProvider);
+    if (finishPoint == null || location == null || dgisController == null) {
+      return;
+    }
+
+    final startPoint = RouteParamsPoint(latitude: location.latitude, longitude: location.longitude);
+    final points = [startPoint, finishPoint];
+    final intermediatePoints = points.getIntermediatePoints();
+
+    // wait route to build properly before starting navigation
+    isSwitchingToFoot.value = true;
+    try {
+      await ref.read(
+        routesProvider(
+          startPoint: startPoint,
+          finishPoint: finishPoint,
+          navType: RouteSearchOptionsMessage.pedestrian,
+          intermediatePoints: intermediatePoints,
+          showOnlyActiveRoute: true,
+        ).future,
+      );
+    } catch (e) {
+      logger.log('PathNavPage: failed to build pedestrian route: $e', logLevel: MapnessLogLevel.error);
+      if (mounted) {
+        isSwitchingToFoot.value = false;
+        _isSwitchingToPedestrian = false;
+        await _finishNavigation();
+        if (mounted) {
+          await _endTripAndShowHome();
+        }
+      }
+      return;
+    }
+
+    // Navigate to new navigation session
+    if (mounted) {
+      // Start navigation on the newly calculated route
+      await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
+
+      // Save the navigation state so it can be restored on the new page
+      final state = await dgisController.saveNavigationState();
+      await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
+      await ref
+          .read(sharedPrefsProvider)
+          .setString(MapnessConstants.navigatorStateTypeKey, RouteSearchOptionsMessage.pedestrian.name);
+
+      // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
+
+      // Replace current page with pedestrian navigation
+      // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
+      isSwitchingToFoot.value = false;
+      _isSwitchingToPedestrian = false;
+      await context.router.popAndPush(
+        PathNavRoute(
+          navType: RouteSearchOptionsMessage.pedestrian,
+          isHomeOrWork: widget.isHomeOrWork,
+          initAction: PathNavPageInitAction.restoreFromState,
+        ),
+      );
+      return;
+    }
+  }
+
+  Future<void> onCancelSwitchToPedestrian() async {
+    isSwitchingToFoot.value = false;
+    _isSwitchingToPedestrian = false;
+    _supportsIndoor = false;
+    await _finishNavigation();
+    if (mounted) {
+      await _endTripAndShowHome();
+    }
+  }
+
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
@@ -1031,7 +1100,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: 17.5,
+            zoom: targetZoom,
             tilt: 50,
             bearing: 0,
           ),
