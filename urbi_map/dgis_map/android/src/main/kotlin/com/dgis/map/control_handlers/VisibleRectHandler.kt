@@ -14,14 +14,13 @@ class VisibleRectHandler(
     private val closeables = mutableListOf<AutoCloseable>()
 
     init {
-        closeables.add(map.camera.visibleRectChannel.connect {
+        // 2GIS SDK 13: BaseCamera.changed replaces the separate visibleRectChannel /
+        // positionChannel / stateChannel. We read the current values off `map.camera`
+        // on every change notification instead of getting them from the event payload.
+        closeables.add(map.camera.changed.connect {
             visibleRectChanged()
-        })
-        closeables.add(map.camera.positionChannel.connect {
-            positionChanged(it)
-        })
-        closeables.add(map.camera.stateChannel.connect {
-            stateChanged(it)
+            positionChanged(map.camera.position)
+            stateChanged(map.camera.state)
         })
     }
 

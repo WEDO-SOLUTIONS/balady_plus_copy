@@ -30,7 +30,7 @@ class SearchScreen(
     private val searchItemsLimit = carContext.getCarService(ConstraintManager::class.java)
         .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_PLACE_LIST)
 
-    private val searchHistory = SearchHistory(DgisMapInitializer.getSdkContext())
+    private val searchHistory = SearchHistory.instance(DgisMapInitializer.getSdkContext())
 
     init {
         if (initialQuery != null) {

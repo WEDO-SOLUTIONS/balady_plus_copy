@@ -51,7 +51,7 @@ class PlaceListScreen(
             .build()
     }
 
-    private val searchHistory = SearchHistory(DgisMapInitializer.getSdkContext())
+    private val searchHistory = SearchHistory.instance(DgisMapInitializer.getSdkContext())
 
     init {
         val searchItemsLimit = carContext.getCarService(ConstraintManager::class.java)

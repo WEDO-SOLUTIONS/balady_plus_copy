@@ -100,8 +100,10 @@ class MapControls @JvmOverloads constructor(
     override fun attachToMap(map: Map) {
         val camera = map.camera
         closeables.add(camera)
-        closeables.add(camera.stateChannel.connect {
-            if (it == CameraState.BUSY) {
+        // 2GIS SDK 13: BaseCamera.changed replaces the old stateChannel; read the
+        // current state off `camera` on every change notification instead.
+        closeables.add(camera.changed.connect {
+            if (camera.state == CameraState.BUSY) {
                 setVisible(true)
                 hideHandler.removeCallbacksAndMessages(null)
             }

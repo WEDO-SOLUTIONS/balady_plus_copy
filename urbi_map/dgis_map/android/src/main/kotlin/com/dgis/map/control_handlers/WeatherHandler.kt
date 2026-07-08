@@ -9,11 +9,9 @@ import ru.dgis.sdk.map.RasterTileSource
 import ru.dgis.sdk.map.RasterUrlTemplate
 import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.navigation.VoiceManager
-import ru.dgis.sdk.navigation.getVoiceManager
 import ru.dgis.sdk.update.PackageInfo
 import ru.dgis.sdk.update.PackageManager
 import ru.dgis.sdk.update.PackageUpdateStatus
-import ru.dgis.sdk.update.getPackageManager
 
 class WeatherHandler(
         val sdkContext: Context,

@@ -248,7 +248,7 @@ class ParkingInfoMessage {
 class LevelInfoMessage {
   LevelInfoMessage(this.id, this.name);
 
-  final int id;
+  final int? id;
   final String name;
 }
 
@@ -414,7 +414,7 @@ class DirectoryObjectMessage {
   final BuildingLevelsMessage? buildingLevels;
   final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
-  final BuildingInfoMessage buildingInfo;
+  final BuildingInfoMessage? buildingInfo;
   final List<int> rubricIds;
   final OrgInfoMessage? orgInfo;
   final List<GroupItemMessage> group;
@@ -1497,6 +1497,12 @@ abstract class MapApi {
 
   @async
   void loadStyles(String asset);
+
+  /// Load a compiled `.2gis` style from an absolute filesystem path on the
+  /// device (e.g. a repacked copy written to the app's support directory).
+  /// Use this when the style file isn't bundled as a Flutter asset.
+  @async
+  void loadStylesFromPath(String absolutePath);
 
   @async
   void overrideLocales(List<String> locales);

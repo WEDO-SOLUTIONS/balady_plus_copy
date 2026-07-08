@@ -252,7 +252,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
-    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo.buildingName;
+    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo?.buildingName;
     if (name != null && parkingPoi == false) {
       widget.data.title = name;
     }

@@ -49,7 +49,7 @@ class NavigationHandler(
         private val appContext: Context,
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
-        private val voicesManager = getVoiceManager(sdkContext)
+        private val voicesManager = VoiceManager.instance(sdkContext)
         private var dashboardControlModel: DashboardControlModel
 
         private val stateClosable: AutoCloseable
@@ -147,12 +147,15 @@ class NavigationHandler(
                                                                 .routeDistanceMillimeters
                                                                 .toLong()
                                         ),
+                                roadClassesStyleZooms = emptyMap(),
+                                roadClassesTilts = emptyMap(),
                                 styleZoom =
                                         StyleZoom(
                                                 value =
                                                         speedRangeZoom.styleZoomValue
                                                                 .toFloat()
-                                        )
+                                        ),
+                                styleTilt = Tilt(55f)
                         )
                 }
                 navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = zooms

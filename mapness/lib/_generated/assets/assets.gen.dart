@@ -450,6 +450,13 @@ class $AssetsMapsGen {
   $AssetsMapsConfigsGen get configs => const $AssetsMapsConfigsGen();
 }
 
+class $AssetsTifoGen {
+  const $AssetsTifoGen();
+
+  /// Directory path: assets/tifo/sprites
+  $AssetsTifoSpritesGen get sprites => const $AssetsTifoSpritesGen();
+}
+
 class $AssetsIconsLottieGen {
   const $AssetsIconsLottieGen();
 
@@ -1175,6 +1182,10 @@ class $AssetsMapsConfigsGen {
 
   /// List of all assets
   List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
+}
+
+class $AssetsTifoSpritesGen {
+  const $AssetsTifoSpritesGen();
 }
 
 class $AssetsIconsSvgAudioGen {
@@ -3375,6 +3386,7 @@ class Assets {
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
   static const String quickActionsConfig = 'packages/mapness/assets/quick_actions_config.json';
+  static const $AssetsTifoGen tifo = $AssetsTifoGen();
 
   /// List of all assets
   static List<String> get values => [config, quickActionsConfig];

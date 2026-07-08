@@ -125,7 +125,7 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo.buildingName;
+    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo?.buildingName;
     if (name != null) {
       widget.data.title = name;
     }

@@ -20,10 +20,12 @@ import java.io.FileNotFoundException
 import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.Executors
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.Meter
+import ru.dgis.sdk.ScreenDistance
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -563,11 +565,11 @@ class ObjectTapHandler(
                                     // TODO: fix force unwrap
                                     contour.points.map { it.toGeoPoint() }
                                 },
-                        color = polygon.options.color?.let { Color(argb = it.toInt()) } ?: Color(),
+                        color = polygon.options.color?.let { Color(it.toInt()) } ?: Color(),
                         strokeWidth =
                                 polygon.options.strokeWidth?.let { LogicalPixel(it.toFloat()) }
                                         ?: LogicalPixel(0f),
-                        strokeColor = polygon.options.strokeColor?.let { Color(argb = it.toInt()) }
+                        strokeColor = polygon.options.strokeColor?.let { Color(it.toInt()) }
                                         ?: Color(),
                         userData = PolygonId(polygon.id)
                 )
@@ -620,11 +622,11 @@ class ObjectTapHandler(
             CircleOptions(
                 position = circle.options.position.toGeoPoint(),
                 radius = Meter(circle.options.radius.toFloat()),
-                color = circle.options.color?.let { Color(argb = it.toInt()) } ?: Color(),
+                color = circle.options.color?.let { Color(it.toInt()) } ?: Color(),
                 strokeWidth =
                 circle.options.strokeWidth?.let { LogicalPixel(it.toFloat()) }
                     ?: LogicalPixel(0f),
-                strokeColor = circle.options.strokeColor?.let { Color(argb = it.toInt()) }
+                strokeColor = circle.options.strokeColor?.let { Color(it.toInt()) }
                     ?: Color(),
                 userData = CircleId(circle.id)
             )
@@ -674,7 +676,7 @@ class ObjectTapHandler(
     /// --- POLYLINE ---
 
     private fun mapPolyline(polyline: PolylineMessage): Polyline {
-        val color = polyline.options.color?.let { Color(argb = it.toInt()) } ?: Color()
+        val color = polyline.options.color?.let { Color(it.toInt()) } ?: Color()
         val options =
                 PolylineOptions(
                         points = polyline.options.points.map { it.toGeoPoint() },
@@ -691,7 +693,7 @@ class ObjectTapHandler(
                                                         ?: LogicalPixel(0f),
                                         borderColor =
                                                 polyline.options.borderColor?.let {
-                                                    Color(argb = it.toInt())
+                                                    Color(it.toInt())
                                                 }
                                                         ?: Color(),
                                         colors = listOf(color),

@@ -6,18 +6,16 @@ import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.navigation.VoiceManager
-import ru.dgis.sdk.navigation.getVoiceManager
 import ru.dgis.sdk.update.Package
 import ru.dgis.sdk.update.PackageInfo
 import ru.dgis.sdk.update.PackageManager
 import ru.dgis.sdk.update.PackageUpdateStatus
-import ru.dgis.sdk.update.getPackageManager
 class PackagesHandler(
     sdkContext: Context,
     private val eventSink: EventChannel.EventSink
 ): AutoCloseable {
-    private val packageManager: PackageManager = getPackageManager(sdkContext)
-    private val voiceManager: VoiceManager = getVoiceManager(sdkContext)
+    private val packageManager: PackageManager = PackageManager.instance(sdkContext)
+    private val voiceManager: VoiceManager = VoiceManager.instance(sdkContext)
     private val closeables = mutableListOf<AutoCloseable>()
     private val installTasks = mutableListOf<InstallTask>()
 

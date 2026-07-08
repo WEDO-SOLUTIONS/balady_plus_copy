@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers.public_transport
 
 
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.routing.*
@@ -127,8 +128,9 @@ private val PublicTransportTransfer.transportNames: List<String>
         if (routeParts.isEmpty()) {
             return listOf()
         }
-        return routeParts.first().transports.flatMapTo(LinkedHashSet()) {
-            it.names
+        // SDK 13: PublicTransportInfo.names was replaced by routeInfos, each with a name.
+        return routeParts.first().transports.flatMapTo(LinkedHashSet()) { transport ->
+            transport.routeInfos.map { it.name }
         }.toList()
     }
 
@@ -203,7 +205,8 @@ fun PublicTransportTransferRouteLongEntry.toMap(): Map<String, Any?> {
                 "transports" to routePart.transports.map { transport ->
                     mapOf(
                         "type" to transport.type.name,
-                        "names" to transport.names,
+                        // SDK 13: PublicTransportInfo.names was replaced by routeInfos.
+                        "names" to transport.routeInfos.map { it.name },
                         "suggestedCarNumbers" to transport.suggestedCarNumbers,
                         "boardingSuggest" to transport.boardingSuggest,
                         "routeLogo" to transport.routeLogo,

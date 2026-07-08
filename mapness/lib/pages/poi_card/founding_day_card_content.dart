@@ -195,7 +195,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
-    final name = widget.data.buildingInfo.buildingName;
+    final name = widget.data.buildingInfo?.buildingName;
     if (name != null && parkingPoi == false) {
       widget.data.title = name;
     }

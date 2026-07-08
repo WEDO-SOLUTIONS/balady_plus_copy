@@ -31,8 +31,12 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
             parkingInfo = this.parkingInfo?.toMessage(),
             workStatus = this.workStatus?.toMessage(),
             levelId = this.levelId?.value,
-            buildingLevels = this.buildingLevels?.toMessage(),
-            buildingInfo = this.buildingInfo.toMessage(),
+            // 2GIS SDK 13: DirectoryObject.buildingLevels was removed; levels now live
+            // under the (now-nullable) BuildingInfo.buildingLevels.
+            buildingLevels = this.buildingInfo?.buildingLevels?.toMessage(),
+            // BuildingInfo is nullable in SDK 13; DirectoryObjectMessage.buildingInfo
+            // was widened to match instead of inventing an empty-building sentinel.
+            buildingInfo = this.buildingInfo?.toMessage(),
             entrances = this.entrances.map { it.toMessage() },
             tradeLicense = this.tradeLicense?.toMessage(),
             rubricIds = this.rubricIds.map { it.value },
@@ -235,7 +239,9 @@ fun BuildingInfo.toMessage(): BuildingInfoMessage {
 }
 
 fun LevelInfo.toMessage(): LevelInfoMessage {
-    return LevelInfoMessage(id = this.id.value, name = this.name)
+    // SDK 13: LevelInfo.id is now LevelId? (optional); LevelInfoMessage.id was
+    // widened to match instead of inventing a 0 sentinel.
+    return LevelInfoMessage(id = this.id?.value, name = this.name)
 }
 
 fun EntranceInfo.toMessage(): EntranceInfoMessage {
@@ -307,7 +313,8 @@ fun PublicTransportDirectoryRouteInfo.toMessage(): PublicTransportDirectoryRoute
     return PublicTransportDirectoryRouteInfoMessage(
             id = this.id.toMessage(),
             name = this.name,
-            color = this.color?.toLong(),
+            // SDK 13: color is now ru.dgis.sdk.Color? instead of Int?.
+            color = this.color?.argb?.toLong(),
             fromToStationNames = this.fromToStationNames?.toMessage(),
             directions = this.directions.map { it.toMessage() }
     )
@@ -374,7 +381,8 @@ fun PublicTransportPlatformTransition.toMessage(): PublicTransportPlatformTransi
             routeId = this.routeId.toMessage(),
             routeName = this.routeName,
             routeType = this.routeType.toMessage(),
-            color = this.color?.toLong(),
+            // SDK 13: color is now ru.dgis.sdk.Color? instead of Int?.
+            color = this.color?.argb?.toLong(),
             stationId = this.stationId.toMessage(),
             stationName = this.stationName
     )
@@ -446,7 +454,8 @@ fun PublicTransportTransfer.toMessage(): PublicTransportTransferMessage {
 fun PublicTransportInfo.toMessage(): PublicTransportInfoMessage {
     return PublicTransportInfoMessage(
         type = this.type.toMessage(),
-        names = this.names,
+        // SDK 13: PublicTransportInfo.names was replaced by routeInfos, each with a name.
+        names = this.routeInfos.map { it.name },
         suggestedCarNumbers = this.suggestedCarNumbers.map { it.toLong() },
         boardingSuggest = this.boardingSuggest,
         color = this.color?.toLong(),

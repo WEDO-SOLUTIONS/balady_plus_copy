@@ -31,7 +31,7 @@ import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.map.Map as DgisMap
 import ru.dgis.sdk.platform.Locale
-import ru.dgis.sdk.platform.getLocaleManager
+import ru.dgis.sdk.platform.LocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
@@ -237,8 +237,29 @@ class DgisMapView(
         )
     }
 
+    override fun loadStylesFromPath(absolutePath: String, callback: (Result<Unit>) -> Unit) {
+        val builder = StyleBuilder(sdkContext)
+        closables.add(
+                builder.loadStyle(File.fromString(absolutePath)).apply {
+                    onResult {
+                        map?.style = it
+                        callback(Result.success(Unit))
+                    }
+                    onError {
+                        callback(
+                                Result.failure(
+                                        FileNotFoundException(
+                                                "Failed to load style Error: ${it.message}"
+                                        )
+                                )
+                        )
+                    }
+                }
+        )
+    }
+
     override fun overrideLocales(locales: List<String>, callback: (Result<Unit>) -> Unit) {
-        getLocaleManager(sdkContext)
+        LocaleManager.instance(sdkContext)
                 .overrideLocales(
                         locales.map {
                             val parts = it.split("-")
@@ -1177,7 +1198,7 @@ class DgisMapView(
                         map,
                         SearchManager.createOnlineManager(sdkContext),
                         locationSource,
-                        SearchHistory(DgisMapInitializer.getSdkContext()),
+                        SearchHistory.instance(DgisMapInitializer.getSdkContext()),
                 )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler =

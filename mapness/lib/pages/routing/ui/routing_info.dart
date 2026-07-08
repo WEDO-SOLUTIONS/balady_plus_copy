@@ -244,7 +244,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       else if (dgisObjectId != null && distance < 0.7 && time.floor() <= 7) {
         // Check if finish point is in building, if we have building name then it's in building)
         final objectInfo = await dgisController.searchByObjectId(dgisObjectId);
-        if (objectInfo.buildingInfo.buildingName != null) {
+        if (objectInfo.buildingInfo?.buildingName != null) {
           navType = RouteSearchOptionsMessage.pedestrian;
         }
       }

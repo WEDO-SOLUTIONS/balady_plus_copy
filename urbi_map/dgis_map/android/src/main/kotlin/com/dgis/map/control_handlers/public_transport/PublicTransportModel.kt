@@ -1,7 +1,7 @@
 package com.dgis.map.control_handlers.public_transport
 
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.Duration
-import ru.dgis.sdk.map.Color
 import ru.dgis.sdk.routing.*
 import java.util.*
 
@@ -162,7 +162,8 @@ private val PublicTransportTransfer.transports: List<BriefPublicTransportModel.T
                     value = it.type.name,
                     color = if (it.type.isMetro) color?.argb else null,
                 ),
-                names = it.names
+                // SDK 13: PublicTransportInfo.names was replaced by routeInfos.
+                names = it.routeInfos.map { routeInfo -> routeInfo.name }
             )
         }
     }

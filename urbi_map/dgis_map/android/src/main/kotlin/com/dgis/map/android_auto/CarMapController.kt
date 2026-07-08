@@ -38,9 +38,9 @@ import ru.dgis.sdk.map.ZoomControlModel
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.map.setAttribute
 import ru.dgis.sdk.navigation.RouteBuildOptions
-import ru.dgis.sdk.navigation.getVoiceManager
+import ru.dgis.sdk.navigation.VoiceManager
 import ru.dgis.sdk.platform.Locale as SdkLocale
-import ru.dgis.sdk.platform.getLocaleManager
+import ru.dgis.sdk.platform.LocaleManager
 import ru.dgis.sdk.positioning.DesiredAccuracy
 import ru.dgis.sdk.routing.CarRouteSearchOptions
 import ru.dgis.sdk.routing.RouteEditor
@@ -176,7 +176,7 @@ class CarMapController(
 
     private fun setupLocale(locale: Locale) {
         val sdkLocale = SdkLocale(locale.language, "SA")
-        getLocaleManager(sdkContext).overrideLocales(listOf(sdkLocale))
+        LocaleManager.instance(sdkContext).overrideLocales(listOf(sdkLocale))
     }
 
     private fun setupNavigatorVoice(locale: Locale) {
@@ -188,7 +188,7 @@ class CarMapController(
             }
         }
 
-        val voice = getVoiceManager(sdkContext).voices.firstOrNull { it.id == voiceId } ?: return
+        val voice = VoiceManager.instance(sdkContext).voices.firstOrNull { it.id == voiceId } ?: return
 
         if (!voice.info.installed) {
             closeables.add(voice.progressChannel.connect { progress ->

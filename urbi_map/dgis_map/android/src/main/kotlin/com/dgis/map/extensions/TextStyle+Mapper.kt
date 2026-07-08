@@ -2,7 +2,7 @@ package com.dgis.map.extensions
 
 import com.dgis.map.map_api.MarkerTextStyleMessage
 import com.dgis.map.map_api.TextPlacementMessage
-import ru.dgis.sdk.map.Color
+import ru.dgis.sdk.Color
 import ru.dgis.sdk.map.LogicalPixel
 import ru.dgis.sdk.map.TextPlacement
 import ru.dgis.sdk.map.TextStyle
@@ -35,13 +35,13 @@ fun MarkerTextStyleMessage.toTextStyle(): TextStyle {
             LogicalPixel(value = it.toFloat())
         } ?: LogicalPixel(8f),
         color = this.color?.let {
-            Color(argb = it.toInt())
+            Color(it.toInt())
         } ?: Color(),
         strokeWidth = this.strokeWidth?.let {
             LogicalPixel(it.toFloat())
         } ?: LogicalPixel(0.35f),
         strokeColor = this.strokeColor?.let {
-            Color(argb = it.toInt())
+            Color(it.toInt())
         } ?: Color(),
         textPlacement = this.textPlacement?.placement?.toTextPlacement() ?: TextPlacement.BOTTOM_CENTER,
         textOffset = this.textOffset?.let {

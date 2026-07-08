@@ -15,7 +15,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     final parkingInfoJson = parkingInfo?.toJson();
     final workStatusJson = workStatus?.toJson();
     final buildingLevelsJson = buildingLevels?.toJson();
-    final buildingInfoJson = buildingInfo.toJson();
+    final buildingInfoJson = buildingInfo?.toJson();
     final entrancesList = entrances.map((item) {
       final json = item.toJson();
       return json;
@@ -96,7 +96,9 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     buildingLevels: json['buildingLevels'] != null
         ? BuildingLevelsMessageExtension.fromJson(json['buildingLevels'] as Map<String, dynamic>)
         : null,
-    buildingInfo: BuildingInfoMessageExtension.fromJson(json['buildingInfo'] as Map<String, dynamic>),
+    buildingInfo: json['buildingInfo'] != null
+        ? BuildingInfoMessageExtension.fromJson(json['buildingInfo'] as Map<String, dynamic>)
+        : null,
     entrances: (json['entrances'] as List<dynamic>?)!
         .map((e) => EntranceInfoMessageExt.fromJson(e as Map<String, dynamic>?))
         .toList(),
@@ -661,7 +663,7 @@ extension LevelInfoMessageExtension on LevelInfoMessage {
   };
 
   static LevelInfoMessage fromJson(Map<String, dynamic> json) => LevelInfoMessage(
-    id: json['id'] as int,
+    id: json['id'] as int?,
     name: json['name'] as String,
   );
 }
