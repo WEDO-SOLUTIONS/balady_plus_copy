@@ -7,7 +7,7 @@ import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/shared/providers/map/car_route_estimate.dart';
 
 class DirectoryObjectCarEstimate extends ConsumerWidget {
   final DirectoryObjectMessage directoryObjectMessage;
@@ -21,14 +21,11 @@ class DirectoryObjectCarEstimate extends ConsumerWidget {
       dgisObjectId: directoryObjectMessage.id!,
     );
 
-    final briefRouteInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-      ),
-    );
-
-    final durationEstimate = briefRouteInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '';
+    final durationSeconds = ref.watch(carRouteEstimateSecondsProvider(finishPoint: finishPoint)).value;
+    if (durationSeconds == null) {
+      return const SizedBox.shrink();
+    }
+    final durationEstimate = formatRouteDurationDescription(durationSeconds, context.l10n);
 
     return Text.rich(
       TextSpan(
