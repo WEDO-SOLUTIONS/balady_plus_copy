@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -105,11 +107,20 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       // original value captured on the existing `widget.userInfo` so the
       // edit/read-only gating doesn't get reset to the default after a refresh.
       final previousAuth = ref.read(authProvider).value;
-      var freshUserInfo = SsoUserInfo.fromJson(userInfoJson).copyWith(
+      final freshParsed = SsoUserInfo.fromJson(userInfoJson);
+      // `/api/user/userinfo` may omit a previously-saved but still-unverified
+      // email. Fall back to the last known address so it stays visible.
+      final freshHasEmail = freshParsed.mail?.trim().isNotEmpty ?? false;
+      final fallbackEmail = previousAuth?.mail ?? widget.userInfo.mail;
+      var freshUserInfo = freshParsed.copyWith(
         completeProfile: previousAuth?.completeProfile ?? widget.userInfo.completeProfile,
         loginType: previousAuth?.loginType ?? widget.userInfo.loginType,
         isEmailEditable: previousAuth?.isEmailEditable ?? widget.userInfo.isEmailEditable,
         isSSOLocked: previousAuth?.isSSOLocked ?? widget.userInfo.isSSOLocked,
+        mail: freshHasEmail ? freshParsed.mail : fallbackEmail,
+        isEmailVerified: freshHasEmail
+            ? freshParsed.isEmailVerified
+            : (previousAuth?.isEmailVerified ?? widget.userInfo.isEmailVerified),
       );
 
       if (overrideFirstName != null && overrideLastName != null) {
@@ -439,6 +450,47 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     }
   }
 
+  /// Sends a verification code for the already-saved (but unverified) email and
+  /// opens the OTP sheet. Used when the address hasn't changed, so the normal
+  /// "Save" path (which only triggers OTP on an email change) wouldn't fire.
+  Future<void> _verifySavedEmail() async {
+    final email = _activeEmail.trim();
+    if (email.isEmpty || !_canEditEmail) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorText = null;
+    });
+
+    try {
+      final sessionId = await _service.sendVerificationEmail(email);
+      if (!mounted) return;
+      setState(() {
+        _sessionId = sessionId;
+        _otpPending = true;
+        _pendingEmail = email;
+        _isEmailVerified = false;
+        _isLoading = false;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('verification_code_sent'.tr())),
+        );
+        _showOtpBottomSheet();
+      });
+    } on DioException catch (e) {
+      _handleDioError(e);
+      setState(() => _isLoading = false);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _errorText = 'account_error_save_failed'.tr();
+        _isLoading = false;
+      });
+    }
+  }
+
   void _showOtpBottomSheet() {
     // Use listen:false — this runs from async save / post-frame callbacks.
     final colors = context.themeRead.colors;
@@ -513,16 +565,19 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     }
   }
 
-  Future<void> _resendOtp() async {
-    if (_sessionId == null) {
+  /// Returns `true` when the code was re-sent successfully. The bottom sheet
+  /// uses the result to (re)start its resend countdown only on success.
+  Future<bool> _resendOtp() async {
+    final email = _pendingEmail?.trim() ?? '';
+    if (email.isEmpty) {
       setState(() => _errorText = 'account_error_session_expired'.tr());
-      return;
+      return false;
     }
     if (_resendAttemptsLeft <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('account_error_no_resend_attempts'.tr())),
       );
-      return;
+      return false;
     }
 
     setState(() {
@@ -531,17 +586,18 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     });
 
     try {
-      await _service.resendEmailOtp(_sessionId!);
+      // The generic `/api/user/ReSendOtp` endpoint has no valid `reSendOtpType`
+      // for the email-verification flow (server rejects it as invalid), so we
+      // re-issue the code through `SendVerificationEmail`, which returns a fresh
+      // session id that the next verify step must use.
+      final newSessionId = await _service.sendVerificationEmail(email);
       setState(() {
+        _sessionId = newSessionId;
         _resendAttemptsLeft--;
         _errorText = null;
         _isLoading = false;
       });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('account_otp_resent_success'.tr())),
-        );
-      }
+      return true;
     } on DioException catch (e) {
       final code = e.response?.statusCode;
       final msg = code == 409
@@ -551,11 +607,13 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           : (e.message ?? 'account_error_resend_failed'.tr());
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
       setState(() => _isLoading = false);
+      return false;
     } catch (_) {
       setState(() {
         _errorText = 'account_error_resend_failed'.tr();
         _isLoading = false;
       });
+      return false;
     }
   }
 
@@ -782,6 +840,29 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                     ),
                   ],
                 ),
+                // Saved-but-unverified email that the user hasn't changed:
+                // offer an explicit action to verify it (Save won't fire since
+                // there's no change to persist).
+                if (!_isEmailVerified && _activeEmail.isNotEmpty && _emailController.text.trim() == _activeEmail) ...[
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 44,
+                    child: OutlinedButton(
+                      onPressed: _isLoading ? null : _verifySavedEmail,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: colors.accentDefault,
+                        side: BorderSide(color: colors.accentDefault),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(_kFieldRadius),
+                        ),
+                      ),
+                      child: Text(
+                        'account_verify_email_button'.tr(),
+                        style: textStyles.buttonM.copyWith(color: colors.accentDefault),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ] else
               _buildReadOnlyEmailPill(
@@ -1133,9 +1214,15 @@ class OtpBottomSheetWidget extends StatefulWidget {
   /// inside the sheet — the parent's `setState` cannot reach this widget
   /// because it lives in a separate modal route.
   final Future<bool> Function(String otp) onVerify;
-  final VoidCallback onResend;
+
+  /// Returns `true` when the code was re-sent successfully, so the sheet can
+  /// restart its countdown; `false` leaves the countdown untouched.
+  final Future<bool> Function() onResend;
   final VoidCallback onCancel;
   final int resendAttemptsLeft;
+
+  /// Seconds the user must wait between resend requests (server-enforced).
+  final int resendIntervalSeconds;
 
   const OtpBottomSheetWidget({
     super.key,
@@ -1144,6 +1231,7 @@ class OtpBottomSheetWidget extends StatefulWidget {
     required this.onResend,
     required this.onCancel,
     this.resendAttemptsLeft = 3,
+    this.resendIntervalSeconds = 60,
   });
 
   @override
@@ -1151,15 +1239,86 @@ class OtpBottomSheetWidget extends StatefulWidget {
 }
 
 class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
+  /// Maximum number of wrong OTP entries before verification is blocked and the
+  /// user must request a fresh code.
+  static const int _maxVerifyAttempts = 3;
+
   String _otpValue = '';
   bool _isVerifying = false;
+  bool _isResending = false;
+
+  /// Persistent count of failed verification attempts. Only reset when a new
+  /// code is sent (resend) — NOT when the user simply retypes, otherwise the
+  /// 3-attempt limit could never be reached.
   int _failureCount = 0;
 
-  bool get _hasError => _failureCount > 0;
-  bool get _showResendHint => _failureCount >= 1;
+  /// Drives the red box styling for the most recent failure; cleared visually
+  /// once the user starts a fresh entry (without resetting `_failureCount`).
+  bool _showErrorStyling = false;
+
+  Timer? _resendTimer;
+  int _secondsRemaining = 0;
+
+  bool get _hasError => _showErrorStyling;
+  bool get _attemptsExhausted => _failureCount >= _maxVerifyAttempts;
+  bool get _canResend => _secondsRemaining <= 0 && !_isResending && widget.resendAttemptsLeft > 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // The first code was just sent before the sheet opened, so start the
+    // countdown immediately.
+    _startResendCountdown();
+  }
+
+  @override
+  void dispose() {
+    _resendTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startResendCountdown() {
+    _resendTimer?.cancel();
+    setState(() => _secondsRemaining = widget.resendIntervalSeconds);
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (_secondsRemaining <= 1) {
+        timer.cancel();
+        setState(() => _secondsRemaining = 0);
+      } else {
+        setState(() => _secondsRemaining--);
+      }
+    });
+  }
+
+  String get _formattedCountdown {
+    final minutes = (_secondsRemaining ~/ 60).toString().padLeft(2, '0');
+    final seconds = (_secondsRemaining % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
+  Future<void> _handleResend() async {
+    if (!_canResend) return;
+    setState(() => _isResending = true);
+    final ok = await widget.onResend();
+    if (!mounted) return;
+    setState(() {
+      _isResending = false;
+      _otpValue = '';
+      // A fresh code resets both the failure counter and the error styling.
+      _failureCount = 0;
+      _showErrorStyling = false;
+    });
+    if (ok) {
+      _startResendCountdown();
+    }
+  }
 
   Future<void> _submit() async {
-    if (_isVerifying || _otpValue.length != 4) return;
+    if (_isVerifying || _otpValue.length != 4 || _attemptsExhausted) return;
 
     setState(() => _isVerifying = true);
     final success = await widget.onVerify(_otpValue);
@@ -1171,21 +1330,23 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
       return;
     }
 
-    // Wrong / expired OTP → clear the boxes, mark error, let user retry.
+    // Wrong / expired OTP → clear the boxes, mark error, count the attempt.
     setState(() {
       _isVerifying = false;
       _failureCount++;
+      _showErrorStyling = true;
       _otpValue = '';
     });
   }
 
   void _appendDigit(String d) {
-    if (_isVerifying || _otpValue.length >= 4) return;
+    if (_isVerifying || _otpValue.length >= 4 || _attemptsExhausted) return;
     setState(() {
       _otpValue += d;
-      // Clear previous error styling once the user starts typing again.
-      if (_failureCount > 0 && _otpValue.length == 1) {
-        _failureCount = 0;
+      // Clear only the red styling once the user starts a fresh entry — keep
+      // `_failureCount` so the 3-attempt limit still applies.
+      if (_showErrorStyling && _otpValue.length == 1) {
+        _showErrorStyling = false;
       }
     });
     if (_otpValue.length == 4) {
@@ -1194,7 +1355,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   }
 
   void _deleteDigit() {
-    if (_isVerifying) return;
+    if (_isVerifying || _attemptsExhausted) return;
     if (_otpValue.isNotEmpty) {
       setState(() => _otpValue = _otpValue.substring(0, _otpValue.length - 1));
     }
@@ -1261,9 +1422,9 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_showResendHint && widget.resendAttemptsLeft > 0)
+              if (_attemptsExhausted)
                 Text(
-                  'account_resend_attempts'.tr().replaceFirst('%s', '${widget.resendAttemptsLeft}'),
+                  'account_error_max_otp_attempts'.tr(),
                   style: textStyles.captionLargeRegular.copyWith(color: colors.errorDefault),
                 )
               else
@@ -1285,35 +1446,39 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
         // ── 4-box OTP display ─────────────────────────────────────────
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(4, (i) {
-              final char = i < _otpValue.length ? _otpValue[i] : '';
-              final isActive = i == _otpValue.length && _otpValue.length < 4;
-              final boxError = hasError;
+          // OTP is always entered/displayed left-to-right, even in Arabic (RTL).
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(4, (i) {
+                final char = i < _otpValue.length ? _otpValue[i] : '';
+                final isActive = i == _otpValue.length && _otpValue.length < 4;
+                final boxError = hasError;
 
-              return Container(
-                width: 70,
-                height: 70,
-                decoration: BoxDecoration(
-                  color: context.profileFieldFillColor,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: boxError
-                        ? colors.errorDefault
-                        : isActive
-                        ? colors.accentDefault
-                        : Colors.transparent,
-                    width: 2,
+                return Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: context.profileFieldFillColor,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: boxError
+                          ? colors.errorDefault
+                          : isActive
+                          ? colors.accentDefault
+                          : Colors.transparent,
+                      width: 2,
+                    ),
                   ),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  char,
-                  style: textStyles.h3SemiBold.copyWith(color: colors.foregroundDefault),
-                ),
-              );
-            }),
+                  alignment: Alignment.center,
+                  child: Text(
+                    char,
+                    style: textStyles.h3SemiBold.copyWith(color: colors.foregroundDefault),
+                  ),
+                );
+              }),
+            ),
           ),
         ),
 
@@ -1326,16 +1491,17 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
             width: double.infinity,
             height: 52,
             child: FilledButton(
-              onPressed: _isVerifying || widget.resendAttemptsLeft <= 0 ? null : widget.onResend,
+              onPressed: _isVerifying || !_canResend ? null : _handleResend,
               style: FilledButton.styleFrom(
                 backgroundColor: colors.accentDefault,
                 disabledBackgroundColor: colors.neutralContainerMuted,
                 foregroundColor: colors.accentOnAccent,
+                disabledForegroundColor: colors.foregroundMuted,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(_kFieldRadius),
                 ),
               ),
-              child: _isVerifying
+              child: _isResending
                   ? SizedBox(
                       width: 18,
                       height: 18,
@@ -1345,8 +1511,12 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
                       ),
                     )
                   : Text(
-                      'account_resend_code'.tr(),
-                      style: textStyles.buttonM.copyWith(color: colors.accentOnAccent),
+                      _secondsRemaining > 0
+                          ? 'account_resend_code_in'.tr().replaceFirst('%s', _formattedCountdown)
+                          : 'account_resend_code'.tr(),
+                      style: textStyles.buttonM.copyWith(
+                        color: _canResend ? colors.accentOnAccent : colors.foregroundMuted,
+                      ),
                     ),
             ),
           ),
@@ -1358,7 +1528,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
         _NumPad(
           onDigit: _appendDigit,
           onDelete: _deleteDigit,
-          onDone: isCodeComplete && !_isVerifying ? _submit : null,
+          onDone: isCodeComplete && !_isVerifying && !_attemptsExhausted ? _submit : null,
         ),
 
         SizedBox(height: MediaQuery.of(context).padding.bottom + 8),
