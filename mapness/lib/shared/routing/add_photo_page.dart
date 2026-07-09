@@ -48,7 +48,9 @@ class AddPhotoPage extends ConsumerWidget {
   ) async {
     try {
       ref.read(feedbackImageTypeProvider.notifier).type = type;
-      await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
+      await ref
+          .read(feedbackImageSelectorProvider.notifier)
+          .pickImages(
             acceptedFormats: _acceptedFormats,
             maxSize: _maxSizeInBytes,
             maxImages: _maxImages,
