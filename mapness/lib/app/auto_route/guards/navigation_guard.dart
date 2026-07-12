@@ -47,7 +47,7 @@ final class NavigationGuard extends AutoRouteGuard {
         ),
       );
     } else if (_implicitNaviRoutes.routeMatches(resolver, router)) {
-      // stop navigation after user confirmation
+      // hide routes silently
       await ref.read(dgisControllerProvider).value?.hideRoutes();
       resolver.next();
     } else {
