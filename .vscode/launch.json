@@ -37,5 +37,16 @@
                 "prod"
             ],
         },
+        {
+            "name": "Launch production (release)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_prod.dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "prod"
+            ],
+        },
     ],
 }
