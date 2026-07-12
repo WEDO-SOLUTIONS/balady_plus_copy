@@ -337,6 +337,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
+        forcedMarkerType: searchState.markerType,
         activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
