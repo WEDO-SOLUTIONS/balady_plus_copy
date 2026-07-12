@@ -193,9 +193,7 @@ class NavigationHandler(
                 }
 
                 if (oldSource != null) {
-                        if (map.sources.isNotEmpty()) {
-                                map.removeSource(map.sources.first { it is MyLocationMapObjectSource })
-                        }
+                        map.sources.firstOrNull { it is MyLocationMapObjectSource }?.let { map.removeSource(it) }
                         map.addSource(oldSource!!)
                         oldSource = null
                 }
@@ -207,9 +205,11 @@ class NavigationHandler(
                 speedControlModel.close()
                 stateClosable.close()
                 routeInfoCloseable.close()
-                speedControlModel.close()
                 maneuverControlModel.close()
                 betterRouteCloseable.close()
+                // Detach the map from the shared NavigationManager so it stops
+                // rendering into a map that is about to be closed.
+                navigationManager.mapManager.removeMap(map)
         }
 
         fun toggleVoiceInstruction(toggleType: SoundToggleType) {
@@ -291,7 +291,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -300,9 +301,10 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                if (oldSource == null && map.sources.isNotEmpty()) {
-                        oldSource = map.sources.first { it is MyLocationMapObjectSource }
-                        map.removeSource(oldSource!!)
+                val currentLocationSource = map.sources.firstOrNull { it is MyLocationMapObjectSource }
+                if (oldSource == null && currentLocationSource != null) {
+                        oldSource = currentLocationSource
+                        map.removeSource(currentLocationSource)
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
@@ -345,7 +347,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )

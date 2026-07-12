@@ -16,6 +16,7 @@ import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
+import 'package:mapness/pages/path_nav/countdown_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
@@ -44,9 +45,12 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
   final VoidCallback onTapRoute;
   final VoidCallback endTripAndBuildAnotherRoute;
   final VoidCallback onEndTripPressed;
+  final VoidCallback onSwitchToPedestrian;
+  final VoidCallback onCancelSwitchToPedestrian;
   final ToggleSheetController sheetController;
   final bool isLandscape;
   final bool isHomeOrWork;
+  final bool supportsIndoor;
   final ValueNotifier<bool> isSwitchingToFoot;
 
   const NaviSheetPanel({
@@ -62,9 +66,12 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
     required this.onSearchPressed,
     required this.onTapRoute,
     required this.onEndTripPressed,
+    required this.onSwitchToPedestrian,
+    required this.onCancelSwitchToPedestrian,
     required this.sheetController,
     required this.isLandscape,
     required this.isHomeOrWork,
+    required this.supportsIndoor,
     required this.isSwitchingToFoot,
     super.key,
   });
@@ -175,6 +182,17 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
         shapeBorderDelegate: shapeDelegate,
         paddingDelegate: paddingDelegate,
         barrierColorDelegate: barrierDelegate,
+        outside: widget.supportsIndoor
+            ? Padding(
+                padding: const EdgeInsets.all(Spacing.$2x),
+                child: CountdownButton(
+                  primaryLabel: context.l10n.switchToPedestrianMode,
+                  duration: const Duration(seconds: 10),
+                  onTap: widget.onSwitchToPedestrian,
+                  onAnimationCompleted: widget.onCancelSwitchToPedestrian,
+                ),
+              )
+            : null,
         topHeader: ValueListenableBuilder(
           valueListenable: widget.betterRouteDurationProfit,
           builder: (context, duration, child) => duration != null
