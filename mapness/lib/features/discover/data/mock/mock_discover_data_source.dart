@@ -1,13 +1,8 @@
-import 'package:mapness/entities/city_contain/dto/location_point.dart';
 import 'package:mapness/features/discover/data/discover_data_source.dart';
 
-class MockDiscoverDataSource implements DiscoverDataSource {
+class MockDiscoverDataSource extends DiscoverDataSource {
   @override
-  Future<List<String>> getDiscoverItems({
-    LocationPoint? location,
-    int pageSize = 7,
-    int page = 1,
-  }) async => [
+  Future<List<String>> getDiscoverItems() async => [
     'riyadh park',
     'Model Plan Park',
     'Coffee',

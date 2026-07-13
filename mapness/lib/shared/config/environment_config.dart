@@ -22,8 +22,6 @@ class EnvironmentConfig {
   final String shareEtaApi;
   final String? shortLinkUrl;
   final String? shortLinkApiKey;
-  final String bytedanceApiUrl;
-  final String bytedanceApiKey;
 
   // TODO(Demezy): very probably will be changed in the future
   final String feedbackApi;
@@ -47,8 +45,6 @@ class EnvironmentConfig {
     required this.shareEtaApi,
     required this.shortLinkUrl,
     required this.shortLinkApiKey,
-    required this.bytedanceApiUrl,
-    required this.bytedanceApiKey,
     required this.feedbackApi,
     required this.proxy,
     required this.appFeedbackEnable,
@@ -81,8 +77,6 @@ class EnvironmentConfig {
     shareEtaApi: json['shareEtaApi'] as String,
     shortLinkUrl: json['shortLinkUrl'] as String? ?? 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: json['shortLinkApiKey'] as String? ?? 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
-    bytedanceApiUrl: json['bytedanceApiUrl'] as String? ?? 'https://oci-r-004c5etql0w7.escloud.bytepluses.com',
-    bytedanceApiKey: json['bytedanceApiKey'] as String? ?? 'f9d37a8c1-b52e-def-71a4-2a9275146d9f',
     feedbackApi: json['feedbackApi'] as String,
     appFeedbackEnable: json['appFeedbackEnable'] as bool,
     appFeedbackApi: json['appFeedbackApi'] as String,
@@ -117,8 +111,6 @@ class EnvironmentConfig {
     'baseApiDomain': baseApiDomain,
     'shareEtaApi': shareEtaApi,
     'shortLinkApiKey': shortLinkApiKey,
-    'bytedanceApiUrl': bytedanceApiUrl,
-    'bytedanceApiKey': bytedanceApiKey,
     'feedbackApi': feedbackApi,
     'appFeedbackEnable': appFeedbackEnable,
     'appFeedbackApi': appFeedbackApi,
@@ -137,8 +129,6 @@ class EnvironmentConfig {
     shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
     shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
-    bytedanceApiUrl: 'https://oci-r-004c5etql0w7.escloud.bytepluses.com',
-    bytedanceApiKey: 'f9d37a8c1-b52e-def-71a4-2a9275146d9f',
 
     /// swagger: https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/docs/
     feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
@@ -163,8 +153,6 @@ class EnvironmentConfig {
     shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momah.gov.sa',
     shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
-    bytedanceApiUrl: 'https://oci-r-004c5etql0w7.escloud.bytepluses.com',
-    bytedanceApiKey: 'f9d37a8c1-b52e-def-71a4-2a9275146d9f',
     feedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api/2.0/',
     appFeedbackApi: 'https://urbi-lifestyle-stg.momah.gov.sa/api',
     appFeedbackEnable: true,
@@ -188,8 +176,6 @@ class EnvironmentConfig {
     shareEtaApi: 'https://geostream-urbi-lifestyle.momah.gov.sa',
     shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
-    bytedanceApiUrl: 'https://oci-r-004c5etql0w7.escloud.bytepluses.com',
-    bytedanceApiKey: 'f9d37a8c1-b52e-def-71a4-2a9275146d9f',
     feedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api/2.0/',
     appFeedbackApi: 'https://urbi-lifestyle.momah.gov.sa/api',
     appFeedbackEnable: true,
@@ -214,8 +200,6 @@ class EnvironmentConfig {
     shareEtaApi: 'https://momrah-balady-dev-geo.iaas.urbi-sa.com',
     shortLinkUrl: 'https://urbi-lifestyle.momah.gov.sa/1.0/short/link',
     shortLinkApiKey: 'b32b12d2-4edb-4774-abbb-00b6b4a02c8e',
-    bytedanceApiUrl: 'https://oci-r-004c5etql0w7.escloud.bytepluses.com',
-    bytedanceApiKey: 'f9d37a8c1-b52e-def-71a4-2a9275146d9f',
 
     /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
     feedbackApi: 'https://momrah-balady-discrepancy.iaas.urbi-sa.com/api/2.0/',

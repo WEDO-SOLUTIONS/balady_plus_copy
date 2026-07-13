@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/nearby/model/nearby_model.dart';
-import 'package:mapness/features/nearby/providers/data/bytedance/bytedance_nearby_data_source.dart';
 import 'package:mapness/features/nearby/providers/data/mock/mock_nearby_data_source.dart';
 import 'package:mapness/features/nearby/providers/data/nearby_data_source.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -11,7 +10,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'nearby.g.dart';
 
 @riverpod
-NearbyDataSource _nearbyDataSource(Ref ref) => BytedanceTrendingDataSource(ref);
+NearbyDataSource _nearbyDataSource(Ref ref) => MockNearbyDataSource();
 
 @riverpod
 class Nearby extends _$Nearby {
