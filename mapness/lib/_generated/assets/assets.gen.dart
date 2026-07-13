@@ -176,6 +176,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
   AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
+  /// Directory path: assets/images/layers
+  $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
+
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
 
@@ -940,6 +943,16 @@ class $AssetsImagesAudioPlaceholdersGen {
   List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
 }
 
+class $AssetsImagesLayersGen {
+  const $AssetsImagesLayersGen();
+
+  /// File path: assets/images/layers/img_layer_jeddah_bus.png
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [imgLayerJeddahBus];
+}
+
 class $AssetsImagesMakkahQuickActionsGen {
   const $AssetsImagesMakkahQuickActionsGen();
 
@@ -1056,6 +1069,9 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/3D.svg
   SvgGenImage get a3D => const SvgGenImage('assets/images_svg/layers/3D.svg');
 
+  /// File path: assets/images_svg/layers/bus_sub_menu.svg
+  SvgGenImage get busSubMenu => const SvgGenImage('assets/images_svg/layers/bus_sub_menu.svg');
+
   /// File path: assets/images_svg/layers/favourites.svg
   SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
 
@@ -1078,7 +1094,17 @@ class $AssetsImagesSvgLayersGen {
   SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [a3D, favourites, makkahBus, metro, parking, roadEvents, shuttleBus, traffic];
+  List<SvgGenImage> get values => [
+    a3D,
+    busSubMenu,
+    favourites,
+    makkahBus,
+    metro,
+    parking,
+    roadEvents,
+    shuttleBus,
+    traffic,
+  ];
 }
 
 class $AssetsImagesSvgSaudiPassGen {
@@ -1109,6 +1135,12 @@ class $AssetsImagesSvgSaudiPassGen {
 class $AssetsMapsBusesGen {
   const $AssetsMapsBusesGen();
 
+  /// File path: assets/maps/buses/jeddah_bus_lines.geojson
+  String get jeddahBusLines => 'packages/mapness/assets/maps/buses/jeddah_bus_lines.geojson';
+
+  /// File path: assets/maps/buses/jeddah_bus_stations.geojson
+  String get jeddahBusStations => 'packages/mapness/assets/maps/buses/jeddah_bus_stations.geojson';
+
   /// File path: assets/maps/buses/makkah_bus.geojson
   String get makkahBus => 'packages/mapness/assets/maps/buses/makkah_bus.geojson';
 
@@ -1116,7 +1148,7 @@ class $AssetsMapsBusesGen {
   String get shuttleBus => 'packages/mapness/assets/maps/buses/shuttle_bus.geojson';
 
   /// List of all assets
-  List<String> get values => [makkahBus, shuttleBus];
+  List<String> get values => [jeddahBusLines, jeddahBusStations, makkahBus, shuttleBus];
 }
 
 class $AssetsMapsConfigsGen {
@@ -3332,9 +3364,10 @@ class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+  static const String quickActionsConfig = 'packages/mapness/assets/quick_actions_config.json';
 
   /// List of all assets
-  static List<String> get values => [config];
+  static List<String> get values => [config, quickActionsConfig];
 }
 
 class AssetGenImage {

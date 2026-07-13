@@ -20,7 +20,7 @@ on:
       - "feat/*"
       - "feature/*"
       - "urbi"
-      - "urbi-service/release-*"
+      - "release/*"
     paths-ignore:
       - "**.md"
       - "doc/**"
@@ -180,6 +180,73 @@ jobs:
             echo "Teams mapping warning sent."
           fi
 
+      - name: 🔔 Notify reviewers in Telegram
+        shell: bash
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TG_MAPPING_FILE: ${{ github.workspace }}/.github/tg_mapping.yml
+
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_API_URL: ${{ github.event.pull_request.url }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          EVENT_ACTION: ${{ github.event.action }}
+
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+          REVIEWERS="$(curl -sS \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            "${PR_API_URL}/requested_reviewers" \
+            | jq -r '.users // [] | map(.login) | join(" ")')"
+
+          if [ -z "${REVIEWERS}" ]; then
+            echo "No reviewers to notify."
+            exit 0
+          fi
+
+          case "${EVENT_ACTION}" in
+            opened|reopened|ready_for_review) HEADER="You were assigned as a reviewer" ;;
+            synchronize) HEADER="There are some changes" ;;
+            *) echo "Action ${EVENT_ACTION} does not require notification."; exit 0 ;;
+          esac
+
+          MENTION_TEXT=""
+          for reviewer in ${REVIEWERS}; do
+            tg_id="$(reviewer=${reviewer} yq e '.[env(reviewer)] // ""' "${TG_MAPPING_FILE}" || true)"
+            if [ -n "${tg_id}" ] && [ "${tg_id}" != "null" ]; then
+              MENTION_TEXT="${MENTION_TEXT}<a href=\"tg://user?id=${tg_id}\">${reviewer}</a> "
+            else
+              MENTION_TEXT="${MENTION_TEXT}${reviewer} "
+            fi
+          done
+
+          MSG="$(printf '👀 PR review request\n\n%s\n<b>%s</b>\n\n<b>PR:</b> <a href="%s">%s</a>\n<b>Branch:</b> %s\n<b>Author:</b> %s' \
+            "$MENTION_TEXT" "$HEADER" "$PR_URL" "$PR_TITLE" "$PR_BRANCH" "$PR_AUTHOR")"
+
+          payload=$(jq -n \
+            --arg chat_id "$TELEGRAM_CHAT_ID" \
+            --arg text "$MSG" \
+            '{
+              "chat_id": $chat_id,
+              "text": $text,
+              "parse_mode": "HTML",
+              "disable_web_page_preview": true
+            }')
+
+          curl -sS -X POST \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H "Content-Type: application/json" \
+            --data "$payload"
+          echo "Telegram notification sent."
+
   linter:
     # runs-on: [self-hosted, Linux]
     runs-on: ubuntu-latest
@@ -201,9 +268,12 @@ jobs:
 
       - name: Generate locale
         run: |
+          # Re-apply keys referenced in code but not published in Localazy
+          # (see mapness/l10n_overrides.json). Must run after download, before gen-l10n.
+          sudo chown -R "$USER:$USER" mapness/lib/l10n || true
+          python3 justscripts/apply_l10n_overrides.py
           cd mapness
           # FIXME: Workaround, see https://github.com/localazy/download/issues/3
-          sudo chown -R "$USER:$USER" lib/l10n || true
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 

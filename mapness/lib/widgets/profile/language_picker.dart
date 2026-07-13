@@ -41,22 +41,30 @@ class LanguageRow extends ConsumerWidget {
         color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.only(
           bottomLeft: border ? radius12 : radiusZero,
-          bottomRight: (border ? radius12 : radiusZero),
+          bottomRight: border ? radius12 : radiusZero,
         ),
         child: InkWell(
           borderRadius: BorderRadius.only(
             bottomLeft: border ? radius12 : radiusZero,
-            bottomRight: (border ? radius12 : radiusZero),
+            bottomRight: border ? radius12 : radiusZero,
           ),
           onTap: () {
             ref.read(appLanguageProvider.notifier).update(language);
           },
-          child: ContentRow(
-            leading: leadingIcon,
-            text: ContentRowTextOptions(title: language.title),
-            trailing: ContentRowTextTrailingOptions(
-              icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
-              iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
+          child: Semantics(
+            label: language == Language.arabic ? 'Arabic' : 'English',
+            button: true,
+            selected: currentLanguage == language,
+            child: ExcludeSemantics(
+              child: ContentRowV2(
+                leading: leadingIcon,
+                isDividerEnabled: true,
+                text: ContentRowTextOptions(title: language.title),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+                  iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
+                ),
+              ),
             ),
           ),
         ),

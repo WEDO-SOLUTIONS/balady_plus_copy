@@ -11,6 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
@@ -60,7 +62,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet>  _multiStateSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -91,6 +93,15 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   @override
   void initState() {
     super.initState();
+
+    // DataFinder: this is the Explore-tab map search (scope=map). Opening it is
+    // an Explore-tab entry control, so reset the journey origin to `explore`
+    // (BRD "Explore Tab → Main Page → Search Bar"). This clears any sticky `map`
+    // origin left by an earlier map-POI tap. Deferred: can't modify a provider
+    // during initState. The Map→POI→Go nav search uses NaviSearch, not this.
+    Future(() {
+      ref.read(dataFinderSourceTrackerProvider.notifier).stampOrigin(DataFinderOrigin.explore);
+    });
 
     _multiStateSheetController = MultiStateSheetController(
       forceMultiplier: 2,
@@ -287,6 +298,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               ),
             ),
           ),
+          //TODO: check why ?
+          if (MediaQuery.paddingOf(context).bottom > 0)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                height: MediaQuery.paddingOf(context).bottom,
+                child: ColoredBox(color: containerColor),
+              ),
+            ),
         ],
       ),
     );
@@ -386,7 +408,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
+    if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
     _expandSheet();
@@ -396,11 +418,24 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   /// reliable on Android — BALADY-3580) and to the keyboard visibility signal
   /// (fallback for programmatic focus requests, e.g. after Loading → Results).
   /// Idempotent: a no-op if the sheet is already at expanded.
+  ///
+  /// The sheet mutation is deferred to a post-frame callback: tapping the field
+  /// opens the keyboard, which drives the sheet snap animation. Mutating the
+  /// sheet controller synchronously (from `onTap` / keyboard-visibility) lands
+  /// inside the same frame's layout + semantics pass and reparents the sheet's
+  /// slivers while semantics are being flushed, tripping the framework
+  /// `!semantics.parentDataDirty` assertion (Flutter 3.38). Deferring runs the
+  /// state change on a clean frame boundary.
   void _expandSheet() {
     if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
-    _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || _multiStateSheetController.state == ThreeStateSheet.expanded) {
+        return;
+      }
+      _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    });
   }
 
   void onClose() {

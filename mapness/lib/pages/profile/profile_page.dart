@@ -26,6 +26,7 @@ import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
 
@@ -47,19 +48,23 @@ class ProfilePage extends HookConsumerWidget {
         Icon(icon, color: context.colors.accentDefault, size: 24);
     final userData = ref.watch(authProvider);
     final isAuth = userData.value != null;
-
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
     final activeEvent = ref.watch(activeCityEventProvider);
     final isFoundingDay = activeEvent == CityEventType.foundingDay;
     final backgroundColor = isAuth
         ? context.colors.backgroundSurface1
         : isFoundingDay
-        ? const Color(0xFFDFC6A8)
+        ? context.colors.accentDefault
+        : isDGA
+        ? context.colors.accentDefault
         : context.colorsV3.staticDarkblue;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.read<ThemeController>().systemOverlayStyle,
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: context.colors.accentDefault,
         body: SafeArea(
           bottom: false,
           child: Directionality(
@@ -95,7 +100,7 @@ class ProfilePage extends HookConsumerWidget {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(RadiusBorder.l),
                                 child: ContentWrapper(
-                                  color: context.colors.backgroundSurface1,
+                                  color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                                   children: [
                                     userData.maybeWhen(
                                       orElse: () => const SizedBox.shrink(),
@@ -132,36 +137,9 @@ class ProfilePage extends HookConsumerWidget {
                                   ],
                                 ),
                               ),
-                              if (isAuth)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: Spacing.$4x),
-                                  child: ContentWrapper(
-                                    color: context.colors.backgroundSurface1,
-                                    children: [
-                                      ContentRowV2(
-                                        isDividerEnabled: true,
-                                        onTap: () => context.router.push(const ProfilePreferencesRoute()),
-                                        trailing: trailing,
-                                        leading: Assets.icons.svg.percent.svg(
-                                          colorFilter: ColorFilter.mode(
-                                            context.colors.accentDefault,
-                                            BlendMode.srcATop,
-                                          ),
-                                        ),
-                                        text: ContentRowTextOptions(title: context.l10n.preferences),
-                                      ),
-                                      ContentRowV2(
-                                        onTap: () => context.router.push(const FavouriteOffersScreenViewRoute()),
-                                        trailing: trailing,
-                                        leading: leadingIconBuilder(GeneralIcons.heart),
-                                        text: ContentRowTextOptions(title: context.l10n.favoriteOffers),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               const SizedBox(height: Spacing.$4x),
                               ContentWrapper(
-                                color: context.colors.backgroundSurface1,
+                                color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                                 children: [
                                   ContentRowV2(
                                     isDividerEnabled: true,
@@ -169,12 +147,6 @@ class ProfilePage extends HookConsumerWidget {
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                     text: ContentRowTextOptions(title: context.l10n.helpCenter),
-                                    options: ContentRowOptions(
-                                      dividerEnabled: true,
-                                      wrapperEnabled: true,
-                                      title: context.l10n.helpCenter,
-                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                                    ),
                                   ),
                                   ContentRowV2(
                                     isDividerEnabled: true,
@@ -184,13 +156,8 @@ class ProfilePage extends HookConsumerWidget {
                                     trailing: trailing,
                                     leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                     text: ContentRowTextOptions(title: context.l10n.aboutApp),
-                                    options: ContentRowOptions(
-                                      wrapperEnabled: true,
-                                      title: context.l10n.aboutApp,
-                                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                                    ),
                                   ),
-                                  ContentRow(
+                                  ContentRowV2(
                                     onTap: () {
                                       context.router.push(const PrivacyAndTermsOfUseRoute());
                                     },
@@ -212,9 +179,14 @@ class ProfilePage extends HookConsumerWidget {
                                 data: (data) => data == null
                                     ? const SizedBox.shrink()
                                     : ContentWrapper(
-                                        color: context.colors.backgroundSurface1,
+                                        color: isDGA
+                                            ? context.colors.accentSecondarySoft
+                                            : context.colors.backgroundSurface1,
                                         children: [
                                           ContentRowV2(
+                                            backgroundColor: isDGA
+                                                ? context.colors.accentSecondarySoft
+                                                : context.colors.backgroundSurface1,
                                             onTap: () => _logOut(context, ref, isLoading),
                                             text: ContentRowTextOptions(
                                               title: context.l10n.signOut,

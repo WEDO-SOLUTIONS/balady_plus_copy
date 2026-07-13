@@ -29,9 +29,7 @@ class ParkingLotRow extends ConsumerWidget {
     final selectedStyle = context.textStyles.bodyLargeMedium.copyWith(
       color: selectedColor,
     );
-    final textStyle = context.textStyles.bodyLargeRegular.copyWith(
-      color: context.colors.foregroundDefault,
-    );
+
 
     final isSelected = type == state.parkingFilter;
     return Padding(
@@ -51,12 +49,9 @@ class ParkingLotRow extends ConsumerWidget {
           ),
           wrapperEnabled: true,
           title: type.title(context.l10n),
-          titleStyle: textStyle,
-          actionWidget: isSelected
-              ? ContentRowActionOptions(
-                  actionIcon: General16Icons.checkmarkLTR.icon(),
-                )
-              : null,
+          titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+            color: isSelected ? selectedColor : context.colors.foregroundSoft,
+          ),
         ),
       ),
     );

@@ -42,6 +42,14 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
               padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
               child: widget.maneuverAndLimitWidget,
             ),
+             const SizedBox(height: uikit.Spacing.$6x),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsets.only(left: widget.padding.left),
+                child: const SoundControl(),
+              ),
+            ),
             Expanded(
               child: ValueListenableBuilder(
                 valueListenable: widget.showControls,
@@ -102,8 +110,7 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // TODO: MBC - Uncomment for next release
-                                    // const RadioContextualButton(),
+                                    const RadioContextualButton(),
                                     const SizedBox(height: 10),
                                     ValueListenableBuilder(
                                       valueListenable: widget.navigationState,

@@ -7,6 +7,8 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart' as ui;
@@ -32,6 +34,14 @@ class NaviSearchHistory extends ConsumerWidget {
       contentColor: context.colors.backgroundSurface1,
       // TODO: Implement BSS for it
       onTap: (item, index, historyList) async {
+        // DataFinder: tapping a past search = History input + History search_type.
+        ref
+            .read(appAnalyticsProvider)
+            .searchBoxInput(
+              operationType: DataFinderInputOperation.history,
+              inputText: item.title,
+            );
+        ref.read(searchProvider(scope.value).notifier).markSearchFromHistory();
         if (item.id?.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
           try {

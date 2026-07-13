@@ -89,86 +89,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     });
     refreshAPIGeeToken();
     // Restore authentication state on app startup (non-blocking)
-    unawaited(_restoreAuthState());
+   // unawaited(_restoreAuthState());
   }
 
   /// Restore authentication state from storage when app starts
-  Future<void> _restoreAuthState() async {
-    try {
-      // Check if there's stored authentication data
-      final failureOrSuccess = await _checkAuth(NoParams());
-      await failureOrSuccess.fold(
-        (failure) {
-          // No stored auth data, keep initial state
-          return;
-        },
-        (token) async {
-          // Found stored token, restore state
-          final failureOrSuccessForProfile = await _checkSSOProfile(NoParams());
-          failureOrSuccessForProfile.fold(
-            (failure) {
-              // Profile not found, clear auth
-              emit(state.copyWith(status: AuthStatus.notAuthenticated));
-            },
-            (profile) {
-              // Restore authenticated state
-              emit(
-                state.copyWith(
-                  status: AuthStatus.authenticated,
-                  token: token,
-                  userInfo: profile,
-                  errorMessage: "",
-                ),
-              );
-              if (profile.idNo != null) {
-                FlutterUxcam.setUserIdentity(profile.idNo);
-                FlutterUxcam.setUserProperty("name", profile.arName ?? "");
-              }
-            },
-          );
-        },
-      );
-    } catch (e) {
-      // Error restoring state, keep initial state
-      // Don't emit error to avoid blocking app startup
-    }
-  }
 
   void hideSplash() {
     emit(state.copyWith(showSplash: false));
   }
-
-  // Future<void> onLoadingApp() async {
-  //   emit(state.copyWith(status: AuthStatus.loading));
-  //   sl<LocationCubit>().getLocationInit();
-  //   final failureOrSuccess = await _checkAuth(NoParams());
-  //   await failureOrSuccess.fold((failure) {
-  //     emit(state.copyWith(
-  //       status: AuthStatus.failure,
-  //     ));
-  //   }, (token) async {
-  //     final failureOrSuccess = await _checkSSOProfile(NoParams());
-  //     failureOrSuccess.fold((failure) {}, (profile) {
-  //       emit(state.copyWith(
-  //         status: AuthStatus.notAuthenticated,
-  //         token: token,
-  //         userInfo: profile,
-  //         errorMessage: "",
-  //       ));
-  //       FlutterUxcam.setUserIdentity(profile.idNo);
-  //       FlutterUxcam.setUserProperty("name", profile.arName ?? "");
-  //     });
-  //     //MM sl<EtmamEntryPointCubit>().onLoadingApp();
-  //
-  //     //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
-  //     if (sharedPrefs.getFirstDateTime() == null) {
-  //       sharedPrefs.setFirstDateTime();
-  //     }
-  //     refreshSSOProfile();
-  //     getEkramPermissions();
-  //   });
-  //   refreshAPIGeeToken();
-  // }
 
   String? mainPage;
 
@@ -238,20 +166,31 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         authState: authState,
       );
     } else {
-      final data = authState.profileData;
+      final profileData = authState.profileData;
+      // `complete_profile` comes from the OTP login API (`MobileLoginVerifyOtp`).
+      // - true  → user signed up via OTP only → personal data is editable.
+      // - false → user already has an SSO/Nafath account → profile is read-only.
+      final bool completeProfile = authState.loginData.completeProfile;
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
           token: token,
           userInfo: SsoUserInfo(
-            name: data.firstNameArabic,
-            sname: data.lastNameArabic,
-            enName: data.enName,
-            arName: data.arName,
-            idNo: data.sub,
-            mail: data.email,
-            phone: data.phoneNumber,
+            name: profileData.firstNameArabic,
+            sname: profileData.lastNameArabic,
+            enName: profileData.enName,
+            arName: profileData.arName,
+            idNo: profileData.sub,
+            // `sub` is the SSO subject id and the ONE identifier that means the
+            // same thing across phone (OTP) and national-id (SSO) login. On this
+            // OTP path `profileData.sub` is a required non-null String, so set it
+            // explicitly (previously only `idNo` carried it, leaving
+            // `userInfo.sub` null on phone login).
+            sub: profileData.sub,
+            mail: profileData.email,
+            phone: profileData.phoneNumber,
             loginType: SsoLoginType.otp,
+            completeProfile: completeProfile,
           ),
           errorMessage: "",
         ),
@@ -259,9 +198,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       Sentry.configureScope((scope) {
         scope.setUser(
           SentryUser(
-            id: data.sub.toString(),
-            username: data.enName,
-            email: data.email,
+            id: profileData.sub.toString(),
+            username: profileData.enName,
+            email: profileData.email,
           ),
         );
       });
@@ -300,12 +239,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               dataLogin: {
                 "access_token": success.accessToken,
                 "idToken": success.idToken,
-                "expires_in":
-                    success.accessTokenExpirationDateTime != null
-                        ? DateTime.now()
-                            .difference(success.accessTokenExpirationDateTime!)
-                            .inSeconds
-                        : 3500000,
+                "expires_in": success.accessTokenExpirationDateTime != null
+                    ? DateTime.now()
+                          .difference(success.accessTokenExpirationDateTime!)
+                          .inSeconds
+                    : 3500000,
                 "token_type": success.tokenType,
                 "refresh_token": success.refreshToken,
                 "scope": success.scopes ?? "",
@@ -475,6 +413,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     EasyLoading.dismiss();
   }
 
+  /// Persists and broadcasts profile edits (e.g. OTP user name changes from mapness).
+  Future<void> applyUserInfo(SsoUserInfo userInfo) async {
+    final failureOrSuccess = await _saveSSOProfile(userInfo);
+    if (failureOrSuccess.isRight()) {
+      emit(state.copyWith(userInfo: userInfo));
+    }
+  }
+
   Future<void> refreshSSOProfile() async {
     try {
       AuthenticatedState authState =
@@ -484,9 +430,24 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         await failureOrSuccessForProfile.fold((failure) async {}, (
           success,
         ) async {
-          final failureOrSuccess = await _saveSSOProfile(success);
+          // `/connect/userinfo` does not return `complete_profile`,
+          // `loginType`, etc. Preserve them from the value captured at login
+          // (`MobileLoginVerifyOtp` / `_saveDataLogin`) so editing rules stay
+          // consistent across profile refreshes.
+          final previous = state.userInfo;
+          final merged = success.copyWith(
+            loginType: previous?.loginType ?? success.loginType,
+            completeProfile:
+                previous?.completeProfile ?? success.completeProfile,
+            isEmailVerified:
+                previous?.isEmailVerified ?? success.isEmailVerified,
+            isEmailEditable:
+                previous?.isEmailEditable ?? success.isEmailEditable,
+            isSSOLocked: previous?.isSSOLocked ?? success.isSSOLocked,
+          );
+          final failureOrSuccess = await _saveSSOProfile(merged);
           if (failureOrSuccess.isRight()) {
-            emit(state.copyWith(userInfo: success));
+            emit(state.copyWith(userInfo: merged));
           }
         });
       }
@@ -614,39 +575,66 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           ),
         );
 
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
-      SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-      final failureOrSuccess =
-          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
-      if (failureOrSuccess.isRight()) {
-        emit(
-          state.copyWith(
-            status: AuthStatus.authenticated,
-            token: token,
-            userInfo: user.copyWith(
-              name: authState.profileData.firstNameArabic,
-              sname: authState.profileData.lastNameArabic,
-              enName: authState.profileData.enName,
-              arName: authState.profileData.arName,
-              mail: authState.profileData.email,
-              phone: authState.profileData.phoneNumber,
-              loginType: SsoLoginType.nationalId,
-            ),
-            errorMessage: "",
-          ),
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(
+          token.token ?? "",
         );
-        FlutterUxcam.setUserIdentity(user.idNo);
-        FlutterUxcam.setUserProperty("name", user.arName ?? "");
-        Sentry.configureScope((scope) {
-          scope.setUser(
-            SentryUser(
-              id: user.idNo,
-              username: user.enName,
-              email: user.mail,
+        SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+        // TEMP verification: confirm the SSO JWT actually carries a `sub` claim so
+        // `userInfo.sub` is reliable on national-id login (it is guaranteed on the
+        // phone/OTP path). Remove once confirmed on a real SSO login.
+        // ignore: avoid_print
+        assert(() {
+          print(
+            '[AUTH][SSO] jwt has sub=${decodedToken.containsKey('sub')} value=${decodedToken['sub']}',
+          );
+          return true;
+        }());
+        final failureOrSuccess = await _saveSSOProfile(
+          SsoUserInfoModel.fromJson(decodedToken),
+        );
+        if (failureOrSuccess.isRight()) {
+          emit(
+            state.copyWith(
+              status: AuthStatus.authenticated,
+              token: token,
+              userInfo: user.copyWith(
+                name: authState.profileData.firstNameArabic,
+                sname: authState.profileData.lastNameArabic,
+                enName: authState.profileData.enName,
+                arName: authState.profileData.arName,
+                mail: authState.profileData.email,
+                phone: authState.profileData.phoneNumber,
+                loginType: SsoLoginType.nationalId,
+                completeProfile: authState.loginData.completeProfile,
+              ),
+              errorMessage: "",
             ),
           );
-        });
-      }
+          FlutterUxcam.setUserIdentity(user.idNo);
+          FlutterUxcam.setUserProperty("sub", user.sub ?? "");
+          FlutterUxcam.setUserProperty("name", user.arName ?? "");
+          FlutterUxcam.setUserProperty("en_name", user.enName ?? "");
+          FlutterUxcam.setUserProperty("login_type", user.loginType.name ?? "");
+          FlutterUxcam.setUserProperty(
+            "sex",
+            user.sex == "1"
+                ? "male"
+                : user.sex == "2"
+                ? "female"
+                : "N/A",
+          );
+          FlutterUxcam.setUserProperty("nationality", user.nationality ?? "N/A");
+          FlutterUxcam.setUserProperty("birthday", user.dob ?? "N/A");
+          // Sentry.configureScope((scope) {
+          //   scope.setUser(
+          //     SentryUser(
+          //       id: user.idNo,
+          //       username: user.enName,
+          //       email: user.mail,
+          //     ),
+          //   );
+          // });
+        }
 
         final failureOrSuccessForCookie = await _getCookie(true);
 

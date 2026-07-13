@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.3+568
-version: 3.13.1+450
+#version: 3.30.3+586
+version: 3.13.2+456
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -71,7 +71,7 @@ dependencies:
   # Native APP to open files with string result
   open_filex: ^4.7.0
   # for getting commonly used locations on host platform file
-  path_provider: ^2.1.5
+  path_provider: ^2.1.6
   # Launching a URL, Open contacts and others.
   url_launcher: ^6.3.2
   ##! UI
@@ -113,7 +113,7 @@ dependencies:
   flutter_timezone: ^5.0.1
   # launch_review: ^3.0.1  # Replaced with store_redirect due to Registrar compatibility issues
   mocktail: ^1.0.4
-  flutter_riverpod: ^3.1.0
+  flutter_riverpod: 3.1.0
   app_tracking_transparency: ^2.0.6+1
   adjust_sdk: ^5.5.0
   flutter_appauth: ^11.0.0
@@ -139,7 +139,7 @@ dependencies:
   #    git:
   #      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker_plus:
-    hosted: https://baladyapp-unpub.urbi.ae/
+    hosted: https://unpub.balady.gov.sa/
     version: ^1.5.4
   percent_indicator: ^4.2.5
   # flutter_cached_pdfview: ^0.4.2
@@ -169,13 +169,15 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.11
+    hosted: https://unpub.balady.gov.sa/
+    version: 5.1.7
+
 
   sheetify: ^1.1.3
 
   mapness:
     path: mapness
+  quick_actions: ^1.1.0
 
   provider: ^6.1.5+1
 
@@ -199,8 +201,8 @@ dependencies:
   ############################################################
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^1.0.12
+    hosted: https://unpub.balady.gov.sa/
+    version: 1.0.16
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -211,8 +213,8 @@ dependencies:
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
-     hosted: https://baladyapp-unpub.urbi.ae/
-     version: 0.0.3
+     hosted: https://unpub.balady.gov.sa/
+     version: 0.0.18
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
@@ -292,7 +294,6 @@ flutter:
     - assets/images/themes/ramadan/
     - assets/langs/
     - assets/maps/configs/
-    - assets/maps/styles/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/
@@ -386,4 +387,9 @@ sentry:
   upload_sources: true          # <— optional: also upload .dart/.js sources
   wait_for_processing: true     # optional
   log_level: debug              # optional
+
+dependency_overrides:
+  # Pin to avoid objective_c FFI crash on iOS Simulator
+  # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
+  path_provider_foundation: 2.4.0
 

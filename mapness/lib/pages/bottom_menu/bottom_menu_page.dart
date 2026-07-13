@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
@@ -58,6 +60,16 @@ class _BottomMenuPageState extends ConsumerState<BottomMenuPage> with TickerProv
   }
 
   void _onTabChanged(int index) {
+    // DataFinder: the bottom-menu tab sets the journey origin. Tab 0 = Explore
+    // (Landing), tab 1 = Routes. Other tabs don't drive DataFinder search, so
+    // leave the origin as-is.
+    final tracker = ref.read(dataFinderSourceTrackerProvider.notifier);
+    if (index == 0) {
+      tracker.stampOrigin(DataFinderOrigin.explore);
+    } else if (index == 1) {
+      tracker.stampOrigin(DataFinderOrigin.routes);
+    }
+
     final controller = switch (index) {
       0 => landingController,
       1 => routingController,

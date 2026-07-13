@@ -15,7 +15,7 @@ class NavigationSessionManeuvers {
         self.model = model
         self.mapTemplate = mapTemplate
         self.eventChannel = eventChannel
-}
+    }
 
     private var routePositionChannelCancellable: Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
@@ -50,7 +50,7 @@ class NavigationSessionManeuvers {
             for: model.route.trip
         )
         self.navigationSession = navigationSession
-        
+
         everyMinuteTimer?.invalidate()
         everyMinuteTimer = Timer.everyMinuteStart {
             [self] _ in
@@ -69,18 +69,18 @@ class NavigationSessionManeuvers {
                 )
             }
     }
-    
+
     private func updateRouteDetails() {
         guard let duration = self.model.duration, let distance = self.model.distance else {
             return
         }
 
         eventChannel?.success([
-            "event": DashboardControlModel.Events.dashboardEvent,
-            "duration": Int(duration),
-            "distance": distance.value / 1000.0,
-            "arrivalTime": DashboardControlModel.dateFormatter.string(from: Date().addingTimeInterval(duration))
-        ])
+                                  "event": DashboardControlModel.Events.dashboardEvent,
+                                  "duration": Int(duration),
+                                  "distance": distance.value / 1000.0,
+                                  "arrivalTime": DashboardControlModel.dateFormatter.string(from: Date().addingTimeInterval(duration))
+                              ])
     }
 
     func finish() {
@@ -131,7 +131,7 @@ class NavigationSessionManeuvers {
         guard actualInstructions.count <= allInstructions.count else { return }
 
         if actualInstructions.count
-            != navigationSession.upcomingManeuvers.count
+               != navigationSession.upcomingManeuvers.count
         {
             navigationSession.upcomingManeuvers = actualInstructions.map(
                 mapCPManeuver
@@ -145,7 +145,7 @@ class NavigationSessionManeuvers {
 
         let millimetersRemaining =
             (nextInstruction.point.distance.millimeters
-            - routePoint.distance.millimeters).millimeters
+                - routePoint.distance.millimeters).millimeters
 
         navigationSession.updateEstimates(
             mapCPTravelEstimates(millimetersRemaining), for: nextManeuver
@@ -177,8 +177,11 @@ class NavigationSessionManeuvers {
             instructionEntry.point.distance.millimeters.millimeters)
 
         if let iconName = mapIconName(instruction.extraInstructionInfo) {
-            cpManeuver.symbolImage = UIImage(named: iconName)!
-            cpManeuver.dashboardSymbolImage = UIImage(named: iconName)!
+            let raw = UIImage(named: iconName)!
+            let desiredSize = CGSize(width: 15, height: 15)
+            let resized = raw.resized(to: desiredSize).withRenderingMode(.alwaysOriginal)
+            cpManeuver.symbolImage = resized
+            cpManeuver.dashboardSymbolImage = resized
         }
 
         return cpManeuver
@@ -200,54 +203,54 @@ class NavigationSessionManeuvers {
             switch getInstructionManeuver(
                 extraInstructionInfo: extraInstructionInfo
             )
-        {
-        case .none:
-            nil
-        case .finish:
-            "Road_finish"
-        case .start, .crossroadStraight:
-            "Crossroad_straight"
-        case .crossroadSlightlyLeft:
-            "Crossroad_slightly_left"
-        case .crossroadLeft:
-            "Crossroad_left"
-        case .crossroadSharplyLeft:
-            "Crossroad_sharply_left"
-        case .crossroadSlightlyRight:
-            "Crossroad_slightly_right"
-        case .crossroadRight:
-            "Crossroad_right"
-        case .crossroadSharplyRight:
-            "Crossroad_sharply_right"
-        case .crossroadKeepLeft:
-            "Crossroad_keep_left"
-        case .crossroadKeepRight:
-            "Crossroad_keep_right"
-        case .roundaboutForward:
-            "Ringroad_forward"
-        case .roundaboutLeft45:
-            "Ringroad_left_45"
-        case .roundaboutLeft90:
-            "Ringroad_left_90"
-        case .roundaboutLeft135:
-            "Ringroad_left_135"
-        case .roundaboutRight45:
-            "Ringroad_right_45"
-        case .roundaboutRight90:
-            "Ringroad_right_90"
-        case .roundaboutRight135:
-            "Ringroad_right_135"
-        case .roundaboutBackward:
-            "Ringroad_backward"
-        case .roundaboutExit:
-            "Ringroad_exit"
-        case .uTurn, .crossroadUTurn:
-            "Turn_over_right_hand"
-        case .roadCrossing:
-            nil
-        @unknown default:
-            nil
-        }
+            {
+            case .none:
+                nil
+            case .finish:
+                "Road_finish"
+            case .start, .crossroadStraight:
+                "Crossroad_straight"
+            case .crossroadSlightlyLeft:
+                "Crossroad_slightly_left"
+            case .crossroadLeft:
+                "Crossroad_left"
+            case .crossroadSharplyLeft:
+                "Crossroad_sharply_left"
+            case .crossroadSlightlyRight:
+                "Crossroad_slightly_right"
+            case .crossroadRight:
+                "Crossroad_right"
+            case .crossroadSharplyRight:
+                "Crossroad_sharply_right"
+            case .crossroadKeepLeft:
+                "Crossroad_keep_left"
+            case .crossroadKeepRight:
+                "Crossroad_keep_right"
+            case .roundaboutForward:
+                "Ringroad_forward"
+            case .roundaboutLeft45:
+                "Ringroad_left_45"
+            case .roundaboutLeft90:
+                "Ringroad_left_90"
+            case .roundaboutLeft135:
+                "Ringroad_left_135"
+            case .roundaboutRight45:
+                "Ringroad_right_45"
+            case .roundaboutRight90:
+                "Ringroad_right_90"
+            case .roundaboutRight135:
+                "Ringroad_right_135"
+            case .roundaboutBackward:
+                "Ringroad_backward"
+            case .roundaboutExit:
+                "Ringroad_exit"
+            case .uTurn, .crossroadUTurn:
+                "Turn_over_right_hand"
+            case .roadCrossing:
+                nil
+            @unknown default:
+                nil
+            }
     }
 }
 
@@ -344,3 +347,21 @@ extension RouteInfo {
         )
     }
 }
+
+extension UIImage {
+    /// Return a new UIImage scaled to `size` (points). Uses renderer so it respects scale.
+    func resized(to size: CGSize, opaque: Bool = false) -> UIImage {
+        let format = UIGraphicsImageRendererFormat.default()
+        format.opaque = opaque
+        format.scale = self.scale
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        let img = renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+        return img
+    }
+}
+
+
+
+

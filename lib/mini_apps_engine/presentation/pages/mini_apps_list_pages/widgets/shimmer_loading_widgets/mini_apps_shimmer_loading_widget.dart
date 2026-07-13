@@ -1,6 +1,3 @@
-// assumes you already have these extensions in your project:
-// context.screenWidth, context.w(...), context.h(...)
-
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
@@ -42,85 +39,52 @@ class _ShimmerCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Premium-ish shimmer palette (not pure black)
-    final baseColor = isDark
-        ? const Color(0xFF2A2F3A)
-        : const Color(0xFFE7E9EF);
-    final highlightColor = isDark
-        ? const Color(0xFF3A4150)
-        : const Color(0xFFF5F6FA);
+    final baseColor = isDark ? const Color(0xFF2A2F3A) : const Color(0xFFE7E9EF);
+    final highlightColor = isDark ? const Color(0xFF3A4150) : const Color(0xFFF5F6FA);
 
     // Card + placeholders (use soft surfaces)
     final cardBg = isDark ? const Color(0xFF141821) : Colors.white;
-    final cardBorder = isDark
-        ? const Color(0xFF232A36)
-        : const Color(0xFFE9ECF3);
+    final cardBorder = isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04);
 
     final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
     final placeholderSoft = isDark ? const Color(0xFF202838) : Colors.white;
 
-    final shadowColor = isDark
-        ? Colors.black.withOpacity(0.35)
-        : Colors.black.withOpacity(0.06);
+    final shadowColor = isDark ? Colors.black.withOpacity(0.35) : Colors.black.withOpacity(0.06);
 
     return Shimmer.fromColors(
       baseColor: baseColor,
       highlightColor: highlightColor,
       child: Container(
-        width: context.w(87.12268829345703),
-        height: context.h(87.12268829345703),
+        width: context.w(104),
+        height: context.h(104),
         decoration: BoxDecoration(
           color: cardBg,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(color: cardBorder, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: shadowColor,
-              blurRadius: isDark ? 10 : 8,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          boxShadow: [BoxShadow(color: shadowColor, blurRadius: isDark ? 10 : 8, offset: const Offset(0, 6))],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: context.w(10), vertical: context.h(12)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Icon placeholder (slight border for premium look)
               Container(
-                width: 60,
-                height: 60,
+                width: context.w(48),
+                height: context.h(48),
                 decoration: BoxDecoration(
                   color: placeholder,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: isDark
-                        ? Colors.white.withOpacity(0.06)
-                        : Colors.black.withOpacity(0.04),
-                    width: 1,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: cardBorder, width: 1),
                 ),
               ),
-              const SizedBox(height: 14),
+              SizedBox(height: context.h(10)),
 
               // Title placeholder
               Container(
-                width: 82,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: placeholderSoft,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // Subtitle placeholder
-              Container(
-                width: 58,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: placeholderSoft,
-                  borderRadius: BorderRadius.circular(6),
-                ),
+                width: context.w(60),
+                height: context.h(14),
+                decoration: BoxDecoration(color: placeholderSoft, borderRadius: BorderRadius.circular(6)),
               ),
             ],
           ),

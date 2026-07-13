@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
@@ -81,9 +82,8 @@ class RoutingSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item, index, offers) => SearchItem(
+      itemBuilder: (context, item, index) => SearchItem(
         result: item,
-        offers: offers,
         language: language,
         myLocation: myLocation == null
             ? null
@@ -118,8 +118,10 @@ class RoutingSearchResults extends ConsumerWidget {
               .put(
                 SearchHistoryItem.fromDirectoryObject(item).toMessage(),
               );
+          ref.read(searchProvider(scope.value).notifier).reportSearchResultsClick(item: item, rank: index + 1);
           context.router.pop(RoutePointDirectoryObject(item));
         },
+        index: index,
       ),
     );
   }

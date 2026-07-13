@@ -10,9 +10,7 @@ import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class InAppWebViewPage extends StatefulWidget {
-  const InAppWebViewPage({
-    super.key,
-  });
+  const InAppWebViewPage({super.key});
 
   @override
   State<InAppWebViewPage> createState() => _InAppWebViewPageState();
@@ -26,7 +24,11 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   void initState() {
     super.initState();
     //CookieManager.instance().deleteAllCookies();
-
+    CookieManager.instance().setCookie(
+      url: WebUri.uri(Uri.parse("balady.gov.sa")),
+      name: "balady-lang",
+      value: translator.activeLanguageCode,
+    );
     //  _progessStream = StreamController<double?>();
   }
 
@@ -35,81 +37,59 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
     ({String requestNum, String url, bool? isObjections}) args =
         ModalRoute.of(context)!.settings.arguments as ({String requestNum, String url, bool? isObjections});
 
-   String url = args.url.replaceAll("\n", "");
+    String url = args.url.replaceAll("\n", "");
     return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: "back".tr(),
-      ),
-      body: Stack(
-        children: [
-          InAppWebView(
-
-            initialSettings: InAppWebViewSettings(
-              useHybridComposition: true,
-              javaScriptEnabled: true,
-              useShouldOverrideUrlLoading: true,
-            ),
-            shouldOverrideUrlLoading: (controller, action) async {
-              return NavigationActionPolicy.ALLOW;
-            },
-            onWebViewCreated: (InAppWebViewController controller) {
-              _controller = controller;
-            },
-            initialUrlRequest: URLRequest(
-              // url: Uri.parse('https://flutter.dev/'),
-              url: WebUri(url),
-              headers: {
-                "Authorization": "Bearer ${CommonProperties.token}",
-                "authToken": CommonProperties.token,
-              },
-            ),
-            initialOptions: InAppWebViewGroupOptions(
-              android: AndroidInAppWebViewOptions(
+      appBar: DefaultAppBarWidget(title: "back".tr()),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: Stack(
+          children: [
+            InAppWebView(
+              initialSettings: InAppWebViewSettings(
                 useHybridComposition: true,
-                // safeBrowsingEnabled: false,
-              ),
-              crossPlatform: InAppWebViewOptions(
+                javaScriptEnabled: true,
                 useShouldOverrideUrlLoading: true,
               ),
-            ),
-            onLoadStart: (controller, Uri? url) {},
-            onLoadStop: (controller, Uri? url) {
-              /* 
-              if (url?.path.endsWith("/dashboardclient/dashboard") ??
-                  false) {
-                Timer(const Duration(milliseconds: 1300), () async {
-                  _controller.loadUrl(
-                      urlRequest: URLRequest(
-                    url: Uri.parse(widget.args.url),
-                  ));
-                });
-              }*/
-              // setState(() {
-              //   this.url = url!.path;
-              // });
+              shouldOverrideUrlLoading: (controller, action) async {
+                return NavigationActionPolicy.ALLOW;
+              },
+              onWebViewCreated: (InAppWebViewController controller) {
+                _controller = controller;
+              },
+              initialUrlRequest: URLRequest(
+                // url: Uri.parse('https://flutter.dev/'),
+                url: WebUri(url),
+                headers: {"Authorization": "Bearer ${CommonProperties.token}", "authToken": CommonProperties.token},
+              ),
+              initialOptions: InAppWebViewGroupOptions(
+                android: AndroidInAppWebViewOptions(
+                  useHybridComposition: true,
+                  // safeBrowsingEnabled: false,
+                ),
+                crossPlatform: InAppWebViewOptions(useShouldOverrideUrlLoading: true),
+              ),
+              onLoadStart: (controller, Uri? url) {},
+              onLoadStop: (controller, Uri? url) {
+                /* 
+                if (url?.path.endsWith("/dashboardclient/dashboard") ??
+                    false) {
+                  Timer(const Duration(milliseconds: 1300), () async {
+                    _controller.loadUrl(
+                        urlRequest: URLRequest(
+                      url: Uri.parse(widget.args.url),
+                    ));
+                  });
+                }*/
+                // setState(() {
+                //   this.url = url!.path;
+                // });
 
-              try {
-                _controller?.evaluateJavascript(
-                    source:
-                        "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
-              } catch (error, stackTrace) {
-                LogsViewModel().sendEventFromModel(
-                  event: ErrorExceptionModel(
-                    nameEvent: EventsName.handledException,
-                    message: error.toString(),
-                    stackTrace: stackTrace.toString(),
-                  ),
-                );
-              }
-
-              if (args.isObjections == true &&
-                  ((url?.path.toLowerCase().contains("permits/permitsDetails/index") ?? false) ||
-                      (url?.path.contains("dashboardclient/requests/details") ?? false) ||
-                      (url?.path.contains("dashboardclient/licenses/details") ?? false))) {
                 try {
-                  print("HIDEEE");
                   _controller?.evaluateJavascript(
-                      source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                    source:
+                        "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'",
+                  );
                 } catch (error, stackTrace) {
                   LogsViewModel().sendEventFromModel(
                     event: ErrorExceptionModel(
@@ -120,14 +100,15 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   );
                 }
 
-                const Duration interval = Duration(seconds: 2);
-                const Duration timeout = Duration(minutes: 2);
-
-                Timer.periodic(interval, (Timer timer) {
+                if (args.isObjections == true &&
+                    ((url?.path.toLowerCase().contains("permits/permitsDetails/index") ?? false) ||
+                        (url?.path.contains("dashboardclient/requests/details") ?? false) ||
+                        (url?.path.contains("dashboardclient/licenses/details") ?? false))) {
                   try {
                     print("HIDEEE");
                     _controller?.evaluateJavascript(
-                        source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'");
+                      source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'",
+                    );
                   } catch (error, stackTrace) {
                     LogsViewModel().sendEventFromModel(
                       event: ErrorExceptionModel(
@@ -137,30 +118,47 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                       ),
                     );
                   }
-                  if (timer.tick >= timeout.inSeconds) {
-                    timer.cancel();
-                    print('Timer stopped after 2 minutes.');
-                  }
+
+                  const Duration interval = Duration(seconds: 2);
+                  const Duration timeout = Duration(minutes: 2);
+
+                  Timer.periodic(interval, (Timer timer) {
+                    try {
+                      print("HIDEEE");
+                      _controller?.evaluateJavascript(
+                        source: "document.getElementsByClassName('btn-text-danger')[0].style.display='none'",
+                      );
+                    } catch (error, stackTrace) {
+                      LogsViewModel().sendEventFromModel(
+                        event: ErrorExceptionModel(
+                          nameEvent: EventsName.handledException,
+                          message: error.toString(),
+                          stackTrace: stackTrace.toString(),
+                        ),
+                      );
+                    }
+                    if (timer.tick >= timeout.inSeconds) {
+                      timer.cancel();
+                      print('Timer stopped after 2 minutes.');
+                    }
+                  });
+                }
+                setState(() {
+                  isLoading = false;
                 });
-              }
-              setState(() {
-                isLoading = false;
-              });
-            },
-            onLoadError: (controller, url, code, message) => print(message),
-            onProgressChanged: (controller, int progress) {
-              final percent = progress / 100;
-            },
-            onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
-              "$consoleMessage".warningLog();
-              "Message coming from Dart side: ${consoleMessage.message}".warningLog();
-            },
-          ),
-          if (isLoading)
-            const Center(
-              child: CustomLoadingWidget(),
+              },
+              onLoadError: (controller, url, code, message) => print(message),
+              onProgressChanged: (controller, int progress) {
+                final percent = progress / 100;
+              },
+              onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
+                "$consoleMessage".warningLog();
+                "Message coming from Dart side: ${consoleMessage.message}".warningLog();
+              },
             ),
-        ],
+            if (isLoading) const Center(child: CustomLoadingWidget()),
+          ],
+        ),
       ),
     );
   }

@@ -296,8 +296,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       'Will show in subtitle: ${poiHeaderSubTitle != null}',
     );
 
-    final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     return Directionality(
       textDirection: Directionality.of(context),
@@ -409,7 +407,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
                           ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
-                          : (widget.data.subtitle == 'تسوية' ? 'نطاق' : widget.data.subtitle)),
+                          : (['تسوية','مستوطنة'].contains(widget.data.subtitle )? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
                       const TextSpan(text: ' • '),
@@ -434,20 +432,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       baseline: TextBaseline.ideographic,
                       alignment: PlaceholderAlignment.middle,
                     ),
-                    if (hasOffers) ...[
-                      const TextSpan(text: ' • '),
-                      WidgetSpan(
-                        child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
-                        baseline: TextBaseline.ideographic,
-                        alignment: PlaceholderAlignment.middle,
-                      ),
-                      TextSpan(
-                        text: ' ${context.l10n.offer}',
-                        style: context.textStyleV3.bodySmallRegular.copyWith(
-                          color: context.colorsV3.warningOnContainer,
-                        ),
-                      ),
-                    ],
                   ],
                   parkingInfo: widget.data.parkingInfo,
                   poiCardState: poiCardState,

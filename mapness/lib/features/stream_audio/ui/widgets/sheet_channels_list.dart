@@ -1,7 +1,9 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/channel_item.dart';
 
 class MediaCatalogList extends ConsumerWidget {
@@ -17,7 +19,7 @@ class MediaCatalogList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(streamAudioProvider);
-    // final programs = provider.liveNow?.programs ?? [];
+    final theme = context.streamAudioColors;
     final channels = provider.filteredChannels;
 
     if (channels.isEmpty) {
@@ -25,9 +27,7 @@ class MediaCatalogList extends ConsumerWidget {
         height: isLandscape ? null : 136,
         alignment: Alignment.center,
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(
-            Colors.white.withOpacity(0.5),
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(theme.accent),
         ),
       );
     }

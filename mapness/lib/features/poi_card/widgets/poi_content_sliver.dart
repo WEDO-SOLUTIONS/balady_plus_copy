@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/jeddah_bus/repo.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
@@ -23,19 +23,16 @@ import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dar
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_search_by_object.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
-import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart';
-import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_bus.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_container.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_jeddah_bus.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
@@ -86,8 +83,8 @@ class PoiContentSliver extends ConsumerWidget {
         isKaaba &&
         isPilgrimFeatureActive;
 
-    final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
+    // final offers = ref.watch(poiOffersProvider);
+    // final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     final finishPoint = RouteSearchPoint(
       coordinates: data.markerPosition?.toGeoPointMessage() ?? GeoPointMessage(latitude: 0, longitude: 0),
@@ -212,6 +209,10 @@ class PoiContentSliver extends ConsumerWidget {
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
 
+    final jeddahBusData = ref.watch(jeddahBusLayerRepoProvider).value;
+    final jeddahBusStation = jeddahBusData?.getStationByDirectoryObject(data);
+    final jeddahBusStationLines = jeddahBusStation?.lineIds.map((e) => jeddahBusData?.lines[e]).nonNulls.toList();
+
     return SliverPadding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
       sliver: SliverToBoxAdapter(
@@ -317,20 +318,26 @@ class PoiContentSliver extends ConsumerWidget {
                 padding: itemPadding,
                 child: PoiContentParkingCard(data: parking),
               ),
-            if (hasOffers)
-              PoiContentOffersCard(
-                offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
-                contentPadding: itemPadding,
-              ),
+            // if (hasOffers)
+            //   PoiContentOffersCard(
+            //     offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
+            //     contentPadding: itemPadding,
+            //   ),
             if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
-            ...routeInfos
-                .map(
-                  (e) => Padding(
-                    padding: itemPadding,
-                    child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
-                  ),
-                )
-                .toList(),
+            if (jeddahBusStation != null)
+              PoiLinesJeddahBus(
+                station: jeddahBusStation,
+                lines: jeddahBusStationLines,
+              )
+            else
+              ...routeInfos
+                  .map(
+                    (e) => Padding(
+                      padding: itemPadding,
+                      child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
+                    ),
+                  )
+                  .toList(),
             PoiLinesContainer(
               model: makkahDeparturesModel,
             ),
@@ -355,7 +362,7 @@ class PoiContentSliver extends ConsumerWidget {
               padding: itemPadding,
               child: PoiContentDataIncorrectCard(data: feedback),
             ),
-            if (license != null) //
+            if (license != null)
               Padding(
                 padding: itemPadding,
                 child: PoiContentLicenseCard(license: license),

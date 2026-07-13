@@ -29,19 +29,36 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
     final controller = p.Provider.of<AccessibilityController>(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: context.read<ThemeController>().systemOverlayStyle,
+      value: SystemUiOverlayStyle.dark,
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
           color: context.colors.backgroundSurface4,
+
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
-              appBar: BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+              appBar: BaladyTopBar(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.accessibility,
-                colorEnabled: context.colors.accentDefault,
-                leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+                onLeadingPressed: () => context.router.pop(),
+                leading: Semantics(
+                  label: 'a11yBack'.tr(),
+                  button: true,
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: Spacing.$4x),
+                        Icon(
+                          SystemIcons.arrowCornerLeftLarge,
+                          color: context.colors.accentDefault,
+                        ),
+                        const SizedBox(width: Spacing.$4x),
+                      ],
+                    ),
+                  ),
+                ),
               ),
               body: Padding(
                 padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
@@ -118,7 +135,15 @@ class _AccessibilitySettingsPageState extends ConsumerState<AccessibilitySetting
                             ),
                           ),
                           options: ContentRowOptions(
-                            leadingIcon: SvgPicture.asset("assets/icons/svg/voice_reader_icon.svg"),
+                            leadingIcon: SvgPicture.asset(
+                              'assets/icons/svg/voice_reader_icon.svg',
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(
+                                context.colors.accentDefault,
+                                BlendMode.srcIn,
+                              ),
+                            ),
                             title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(

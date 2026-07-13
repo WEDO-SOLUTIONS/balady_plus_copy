@@ -84,6 +84,9 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.makkahBus() =>
       const MapObjectManagerSettings._(name: 'makkah-bus', layerId: MapObjectLayers.defaultLayerId);
 
+  factory MapObjectManagerSettings.jeddahBus() =>
+      const MapObjectManagerSettings._(name: 'jeddah-bus', layerId: MapObjectLayers.defaultLayerId);
+
   factory MapObjectManagerSettings.shuttleBus() =>
       const MapObjectManagerSettings._(name: 'shuttle-bus', layerId: MapObjectLayers.defaultLayerId);
 
@@ -122,6 +125,8 @@ class MapObjectManager extends _$MapObjectManager {
         element.options.position.latitude == geoPoint.latitude &&
         element.options.position.longitude == geoPoint.longitude,
   );
+
+  Marker? markerById(String id) => _markers.firstWhereOrNull((element) => element.id == id);
 
   Future<void> addMarker(Marker marker) async {
     await ref.read(dgisControllerProvider).value?.addMarker(marker, toManager: await future);

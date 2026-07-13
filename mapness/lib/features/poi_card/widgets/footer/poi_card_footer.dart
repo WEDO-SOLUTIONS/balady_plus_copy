@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
-import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -21,11 +21,40 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/ui/lifestyle_action_bar_style.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
 
 const _buttonColorScheme = ButtonColorScheme.accentSecondary;
+
+ItemActionBar _footerSecondary({
+  required LifestyleActionBarStyle? lifestyleStyle,
+  required IconData icon,
+  required VoidCallback onPressed,
+  String? label,
+  EdgeInsetsGeometry? innerPadding,
+  ButtonType buttonType = ButtonType.secondary,
+}) {
+  if (lifestyleStyle != null) {
+    return lifestyleStyle.secondary(
+      icon: icon,
+      label: label,
+      innerPadding: innerPadding,
+      buttonType: buttonType,
+      onPressed: onPressed,
+    );
+  }
+
+  return ItemActionBar(
+    icon: icon,
+    buttonType: buttonType,
+    colorScheme: _buttonColorScheme,
+    label: label,
+    innerPadding: innerPadding,
+    onPressed: onPressed,
+  );
+}
 
 class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
@@ -115,9 +144,8 @@ class PoiCardFooter extends HookConsumerWidget {
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final parkingPoi = objectId == parkingObjectId;
-    final isFoundingDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
-
-    final colorScheme = isFoundingDay ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent;
+    final useLifestyleStyle = LifestyleActionBarStyle.isEnabled(ref);
+    final lifestyleStyle = useLifestyleStyle ? LifestyleActionBarStyle.of(context) : null;
 
     return ThrottledCallbackWidget(
       callback: () {
@@ -130,98 +158,91 @@ class PoiCardFooter extends HookConsumerWidget {
         color: color,
         displayShadow: displayShadow.value,
         items: [
-          ItemActionBar(
-            icon: TransportIcons.locationDirectionNavigator,
-            buttonType: ButtonType.primary,
-            colorScheme: _buttonColorScheme,
-            label: context.l10n.poiCardDirections,
-            innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
-            onPressed: onTapCar,
-          ),
-          if (!parkingPoi && isFavourite)
+          if (lifestyleStyle != null)
+            lifestyleStyle.directions(context: context, onPressed: onTapCar)
+          else
             ItemActionBar(
-              icon: iconData,
+              icon: TransportIcons.locationDirectionNavigator,
               buttonType: ButtonType.primary,
               colorScheme: _buttonColorScheme,
+              label: context.l10n.poiCardDirections,
+              innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+              onPressed: onTapCar,
+            ),
+          if (!parkingPoi && isFavourite)
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
+              icon: iconData,
+              buttonType: ButtonType.primary,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
-              ItemActionBar(
+              _footerSecondary(
+                lifestyleStyle: lifestyleStyle,
                 icon: TransportIcons.addStop,
-                buttonType: ButtonType.secondary,
-                colorScheme: _buttonColorScheme,
                 label: context.l10n.addStop,
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
                 onPressed: onAddPointToRoute,
               )
             else
-              ItemActionBar(
+              _footerSecondary(
+                lifestyleStyle: lifestyleStyle,
                 icon: SystemIcons.closeSmall,
                 buttonType: ButtonType.primary,
-                colorScheme: _buttonColorScheme,
                 label: context.l10n.deletePoint,
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
                 onPressed: onRemovePointFromRoute,
               ),
           if (hasContactsAndHasEntrances && callPhone != null)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: context.isLTR ? GeneralIcons.phoneLTR : GeneralIcons.phoneRTL,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
             ),
           if (website != null && data != null)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: GeneralIcons.web,
-              colorScheme: _buttonColorScheme,
-              buttonType: ButtonType.secondary,
               onPressed: () {
                 BssService.instance.trackLinkTap(data!, BssContactType.website, website);
                 poiActions.launch(website);
               },
             ),
           if (hasEntrances && onEntranceTap != null && !hasMetro)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: GeneralIcons.doorEntrance,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi && !isFavourite)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: iconData,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
-          ItemActionBar(
+          _footerSecondary(
+            lifestyleStyle: lifestyleStyle,
             icon: SystemIcons.share,
-            buttonType: ButtonType.secondary,
-            colorScheme: _buttonColorScheme,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: SystemIcons.parkingAdd,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
-
           if (parkingPoi)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: SystemIcons.edit,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
-            ItemActionBar(
+            _footerSecondary(
+              lifestyleStyle: lifestyleStyle,
               icon: GeneralIcons.trash,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

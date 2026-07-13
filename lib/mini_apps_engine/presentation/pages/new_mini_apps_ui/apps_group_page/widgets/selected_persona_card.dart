@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -18,7 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-
+//!
 class SelectedPersonaCard extends StatelessWidget {
   const SelectedPersonaCard({
     super.key,
@@ -41,9 +42,9 @@ class SelectedPersonaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selected = !isListItem || this.selected;
+    // final selected = !isListItem || this.selected;
     final name = (agent?.grantorName ?? delegator?.entityName) ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
-    String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
+    // String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
 
     return Consumer<BaladyThemeNotifier>(
       builder: (context, themeNotifier, child) {
@@ -100,8 +101,8 @@ class SelectedPersonaCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: ShapeDecoration(
-                    color: const Color(0x2629B2A9),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    color: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,7 +111,7 @@ class SelectedPersonaCard extends StatelessWidget {
                         "switch_account".tr(),
                         textAlign: TextAlign.right,
                         style: TextStyle(
-                          color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
+                          color: Colors.white,
                           fontSize: 14,
                           fontFamily: GeneralKey.appFontType,
                           fontWeight: FontWeight.w400,
@@ -118,11 +119,8 @@ class SelectedPersonaCard extends StatelessWidget {
                           letterSpacing: -0.24,
                         ),
                       ),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
-                        size: 20,
-                      ),
+                      SizedBox(width: context.screenWidth * 0.01),
+                      Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: 20),
                     ],
                   ),
                 ),
@@ -135,10 +133,10 @@ class SelectedPersonaCard extends StatelessWidget {
   }
 
   Future<void> _handleAccountSelection(
-      BuildContext context, {
-        DelegatorEntity? newDelegator,
-        AgentEntity? newAgent,
-      }) async {
+    BuildContext context, {
+    DelegatorEntity? newDelegator,
+    AgentEntity? newAgent,
+  }) async {
     final cubit = context.read<DelegatorsCubit>();
 
     if (groupId != null) {
@@ -165,7 +163,7 @@ class SelectedPersonaCard extends StatelessWidget {
                 PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, __, ___) => AppsGroupPage(groupId: targetGroupId),
+                  pageBuilder: (_, _, _) => AppsGroupPage(groupId: targetGroupId),
                 ),
               );
             } else {

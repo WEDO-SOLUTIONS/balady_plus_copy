@@ -25,18 +25,40 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
   int tapsToGo = 7;
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) {
+    final isDGA =
+        context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
     value: context.read<ThemeController>().systemOverlayStyle,
     child: Material(
       color: context.colors.backgroundSurface4,
       child: Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: Scaffold(
-          appBar: BaladyTopBar.iconAndText(
+          appBar: BaladyTopBar(
             systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
             title: context.l10n.helpCenter,
             textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-            leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+            onLeadingPressed: () => context.router.pop(),
+            leading: Semantics(
+              label: context.l10n.a11yBack,
+              button: true,
+              child: ExcludeSemantics(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: Spacing.$4x),
+                    Icon(
+                      SystemIcons.arrowCornerLeftLarge,
+                      color: context.colors.foregroundDefault,
+                    ),
+                    const SizedBox(width: Spacing.$4x),
+                  ],
+                ),
+              ),
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.all(Spacing.$4x),
@@ -44,7 +66,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ContentWrapper(
-                  color: context.colors.backgroundSurface1,
+                  color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                   children: [
                     ContentRow(
                       onTap: () => context.router.push(const MomraWebsiteRoute()),
@@ -89,4 +111,5 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
       ),
     ),
   );
+  }
 }

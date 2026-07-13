@@ -1,13 +1,8 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_number_of_apps_sub_card.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_sub_cards_of_larg_card.dart';
 import 'package:flutter/material.dart';
 
 class CustomLargMoreApps extends StatelessWidget {
@@ -27,6 +22,9 @@ class CustomLargMoreApps extends StatelessWidget {
   final List<MiniApp> apps;
   final int totalAppCount;
 
+  final String categoryName;
+  final String categoryIconPath;
+
   const CustomLargMoreApps({
     super.key,
     this.width,
@@ -44,135 +42,57 @@ class CustomLargMoreApps extends StatelessWidget {
     required this.onTap,
     required this.apps,
     required this.totalAppCount,
+    required this.categoryName,
+    required this.categoryIconPath,
   });
 
   @override
   @override
   Widget build(BuildContext context) {
-    final List<BoxShadow> defaultShadow = withCardEffect
-        ? [
-            BoxShadow(
-              color: const Color(0xFF000000).withOpacity(0.08),
-              blurRadius: 4.2,
-              offset: const Offset(0, 1.05),
-            ),
-            BoxShadow(
-              color: const Color(0xFF000000).withOpacity(0.04),
-              blurRadius: 0,
-              spreadRadius: 0.52,
-              offset: Offset.zero,
-            ),
-          ]
-        : [];
-
-    final random = Random();
-    final displayApps = List<MiniApp>.from(apps)..shuffle(random);
-    // final displayAppsToShow = displayApps.take(3).toList();
-    //  final displayApps = apps.take(3).toList();
-    final remainingCount = totalAppCount - 3;
-    final isArabic = CommonFunctions.isAppAR;
-
-    /// Helper: returns app cards aligned based on language
-    List<Widget> buildTopRow() {
-      final widgets = [
-        displayApps.isNotEmpty
-            ? CustomSubCardsOfLargCard(iconPath: displayApps[0].iconPath)
-            : const EmptyCardWidget(),
-        displayApps.length >= 2
-            ? CustomSubCardsOfLargCard(iconPath: displayApps[1].iconPath)
-            : const EmptyCardWidget(),
-      ];
-      return isArabic ? widgets.reversed.toList() : widgets;
-    }
-
-    List<Widget> buildBottomRow() {
-      Widget thirdAppWidget = displayApps.length >= 3
-          ? CustomSubCardsOfLargCard(iconPath: displayApps[2].iconPath)
-          : const SizedBox(
-              width: 64.37,
-              height: 64.37,
-            );
-
-      Widget remainingWidget = remainingCount > 0
-          ? CustomNumberOfAppsSubCard(count: remainingCount)
-          : const SizedBox(
-              width: 64.37,
-              height: 64.37,
-            );
-
-      final widgets = isArabic
-          ? [remainingWidget, thirdAppWidget]
-          : [thirdAppWidget, remainingWidget];
-
-      return CommonFunctions.isAppAR ? widgets.reversed.toList() : widgets;
-    }
+    final textScale = MediaQuery.of(context).textScaler.scale(1.0);
+    final cardHeight = height ?? (context.h(98) * (1.0 + (textScale - 1.0) * 0.45));
 
     return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: borderRadius ?? BorderRadius.circular(16),
-              boxShadow: boxShadow ?? defaultShadow,
-            ),
-            child: SizedBox(
-              width: width ?? context.w(168),
-              height: height ?? context.h(168),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Color(0xFF01222E)
-                      : Colors.white,
-                  borderRadius: borderRadius ?? BorderRadius.circular(16),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      textDirection:
-                          isArabic ? TextDirection.rtl : TextDirection.ltr,
-                      children: buildTopRow(),
-                    ),
-                    SizedBox(height: context.screenHeight * 0.02),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      textDirection:
-                          isArabic ? TextDirection.rtl : TextDirection.ltr,
-                      children: buildBottomRow(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: context.screenHeight * 0.01),
-          Builder(
-            builder: (context) {
-              final textScale =
-                  MediaQuery.textScalerOf(context).scale(1.0);
-              final minFont = (8 * textScale).round().clamp(1, 30);
-              final maxFont = (30 * textScale).round().clamp(minFont, 100);
-              return SizedBox(
-                width: textWidth ?? context.screenWidth * 0.40,
-                height: (textHeight ?? context.screenHeight * 0.03) * textScale,
-                child: Center(
-                  child: AutoSizeText(
-                    text ?? "example",
-                    maxLines: 3,
-                    maxFontSize: maxFont.toDouble(),
-                    minFontSize: minFont.toDouble(),
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: isArabic ? TextAlign.right : TextAlign.left,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontFamily: GeneralKey.appFontType,
+          SizedBox(
+            width: context.w(117),
+            height: cardHeight,
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              color: Theme.of(context).primaryColorLight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomNetworkImageWidget(
+                    categoryIconPath,
+                    isVerifyingKey: true,
+                    imageFit: BoxFit.contain,
+                    imageWidth: context.w(51),
+                    imageHeight: context.h(51),
+                  ),
+                  const SizedBox(height: 4),
+                  Expanded(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: AutoSizeText(
+                          maxLines: 3,
+                          maxFontSize: 14,
+                          minFontSize: 10,
+                          categoryName,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center, // Good practice for grid items
+                          style: const TextStyle(fontFamily: GeneralKey.appFontType, fontWeight: FontWeight.w500),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -181,9 +101,7 @@ class CustomLargMoreApps extends StatelessWidget {
 }
 
 class EmptyCardWidget extends StatelessWidget {
-  const EmptyCardWidget({
-    super.key,
-  });
+  const EmptyCardWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -191,10 +109,7 @@ class EmptyCardWidget extends StatelessWidget {
       width: context.w(64.37),
       height: context.h(64.37),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-        ),
+        decoration: BoxDecoration(color: Colors.transparent, borderRadius: BorderRadius.circular(16)),
       ),
     );
   }

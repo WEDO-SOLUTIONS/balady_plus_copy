@@ -848,10 +848,10 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
-  static const textFieldSuffixTextStyle = TextStyle(
+  static final textFieldSuffixTextStyle = TextStyle(
     color: Color(0x7F1A1A1A),
     fontSize: 14,
-    fontFamily: 'packages/balady_uikit/Frutiger',
+    fontFamily: fontFamily,
     fontWeight: FontWeight.w600,
   );
 

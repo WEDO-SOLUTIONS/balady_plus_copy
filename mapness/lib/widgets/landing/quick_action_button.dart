@@ -1,6 +1,8 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
@@ -15,7 +17,7 @@ class QuickActionButton extends ConsumerWidget {
   final String? assetPath;
   final SpecialThemeMode? themeMode;
 
-  static const buttonSize = 76.0;
+  static const buttonSize = 60.0;
 
   const QuickActionButton({
     required this.text,
@@ -35,6 +37,7 @@ class QuickActionButton extends ConsumerWidget {
     // Determine if Makkah theme is active based on explicit theme mode
     final isMekkahTheme = themeMode == SpecialThemeMode.mekkahBase || themeMode == SpecialThemeMode.ramadan;
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final isDGADark = context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA;
 
     final baseTextStyle = context.textStyles.captionSmallMedium.copyWith(
       fontSize: 11,
@@ -56,49 +59,66 @@ class QuickActionButton extends ConsumerWidget {
 
       // Keep default icon centered inside the button
       return Center(
-        child: child ?? Icon(
-          icon,
-          size: Spacing.$6x + Spacing.$1x,
-          color: colors.accentDefault,
-        ),
+        child:
+            child ??
+            Icon(
+              icon,
+              size: Spacing.$6x ,
+              color: colors.accentDefault,
+            ),
       );
     }
 
+
     final tileColor = isMekkahTheme && isDark
         ? MakkahPoiConstants.darkSheet
-        : colors.backgroundSurface1;
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            height: buttonSize,
-            width: buttonSize,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                color: tileColor,
-                boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                child: buildIcon(),
+        : isDGADark ?colors.accentSecondarySoft :colors.backgroundSurface1;
+
+    return Semantics(
+      button: true,
+      label: displayText,
+      child: InkWell(
+        onTap: onTap,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: buttonSize,
+              width: buttonSize,
+              child: ExcludeSemantics(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    color: tileColor,
+                    boxShadow: isMekkahTheme && isDark ? const [] : Shadows.s,
+                border: Border.all(
+                  color:colors.borderSoft,
+                  width: 1,
+                ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    child: buildIcon(),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        SizedBox(
-          width: buttonSize,
-          child: Padding(
-            padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
-            child: Text(
-              displayText,
-              style: textStyle,
-              textAlign: TextAlign.center,
+            ExcludeSemantics(
+              child: SizedBox(
+                width: buttonSize,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
+                  child: Text(
+                    displayText,
+                    style: textStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

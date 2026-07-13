@@ -1,5 +1,6 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -8,19 +9,13 @@ class FilterButtomSheet extends StatefulWidget {
 
   const FilterButtomSheet({super.key, this.initialSelectedType});
 
-  static Future<FilterOptionType?> show(
-    BuildContext context, {
-    FilterOptionType? initialSelectedType,
-  }) async {
+  static Future<FilterOptionType?> show(BuildContext context, {FilterOptionType? initialSelectedType}) async {
     return await showModalBottomSheet<FilterOptionType>(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) =>
-          FilterButtomSheet(initialSelectedType: initialSelectedType),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (context) => FilterButtomSheet(initialSelectedType: initialSelectedType),
     );
   }
 
@@ -34,21 +29,10 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
   @override
   void initState() {
     super.initState();
-    selectedOption =
-        widget.initialSelectedType ?? FilterOptionType.ServiceDateAscending;
+    selectedOption = widget.initialSelectedType ?? FilterOptionType.ServiceDateAscending;
   }
 
   List<FilterOptionModel> filterOptions = [
-    // FilterOptionModel(
-    //   translationKey: 'service_date_ascending',
-    //   type: FilterOptionType.ServiceDateAscending,
-    //   isEnabled: true,
-    // ),
-    // FilterOptionModel(
-    //   translationKey: 'service_date_descending',
-    //   type: FilterOptionType.ServiceDateDescending,
-    //   isEnabled: true,
-    // ),
     FilterOptionModel(
       translationKey: 'alphabetical_ascending',
       type: FilterOptionType.AlphabeticalAscending,
@@ -70,52 +54,40 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 20,
-            bottom: 0,
-          ),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header with close button and title
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'sort_by'.tr(),
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontFamily: GeneralKey.appFontType,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 20,
-                      height: 1.0,
-                      letterSpacing: 0,
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                  Container(
-                    width: 40,
-                    height: 40,
+              Center(
+                child: SizedBox(
+                  height: context.screenHeight * 0.006,
+                  width: context.w(36),
+                  child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(
-                        Icons.close,
-                        color: Theme.of(context).colorScheme.onSurface,
-                        size: 20,
-                      ),
-                      onPressed: () => Navigator.of(context).pop(),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(13),
+                      borderRadius: BorderRadius.circular(4),
                     ),
                   ),
-                ],
+                ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: context.screenHeight * 0.02),
+              Center(
+                child: Text(
+                  'sort_by'.tr(),
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontFamily: GeneralKey.appFontType,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    height: 1.0,
+                    letterSpacing: 0,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
 
               ...filterOptions.map((option) {
                 final isDisabled = !option.isEnabled;
@@ -131,32 +103,7 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                             });
                           },
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Text with strikethrough if disabled
-                        Expanded(
-                          child: Text(
-                            option.translationKey.tr(),
-                            style: TextStyle(
-                              fontFamily: GeneralKey.appFontType,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                              height:
-                                  20 /
-                                  16, // line-height: 20px / font-size: 16px
-                              letterSpacing: 0,
-                              color: isDisabled
-                                  ? Theme.of(context).disabledColor
-                                  : Theme.of(context).colorScheme.onSurface,
-                              decoration: isDisabled
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                              decorationColor: Colors.blue,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        // Custom Radio button
                         GestureDetector(
                           onTap: isDisabled
                               ? null
@@ -166,37 +113,55 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                                   });
                                 },
                           child: Container(
-                            width: 24,
-                            height: 24,
+                            width: context.w(22),
+                            height: context.h(22),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: isDisabled
                                   ? Colors.transparent
-                                  : (selectedOption == option.type
-                                        ? const Color(0xFF1CA9A6)
-                                        : Colors.transparent),
+                                  : (selectedOption == option.type ? Colors.white : Colors.transparent),
                               border: Border.all(
                                 color: isDisabled
-                                    ? Colors.grey.withOpacity(0.5)
+                                    ? Colors.black
                                     : (selectedOption == option.type
-                                          ? AppColor.primary600Light
-                                          : const Color(0xFFE0E0E0)),
-                                width: 2,
+                                          ? Theme.of(context).primaryColor
+                                          : Theme.of(context).colorScheme.onSurface),
+                                width: 1,
                               ),
                             ),
                             child: selectedOption == option.type && !isDisabled
                                 ? Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
+                                    width: 15,
+                                    height: 15,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
                                       shape: BoxShape.circle,
                                     ),
                                   )
                                 : null,
                           ),
                         ),
+                        SizedBox(width: context.screenWidth * 0.03),
+                        Expanded(
+                          child: Text(
+                            option.translationKey.tr(),
+                            style: TextStyle(
+                              fontFamily: GeneralKey.appFontType,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                              height: 20 / 16,
+                              letterSpacing: 0,
+                              color: isDisabled
+                                  ? Theme.of(context).disabledColor
+                                  : Theme.of(context).colorScheme.onSurface,
+                              decoration: isDisabled ? TextDecoration.lineThrough : TextDecoration.none,
+                              decorationColor: Colors.blue,
+                            ),
+                          ),
+                        ),
+
+                        // Custom Radio button
                       ],
                     ),
                   ),
@@ -212,10 +177,8 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                     Navigator.of(context).pop(selectedOption);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.primary600Light,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    // backgroundColor: AppColor.primary600Light,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
                   child: Text(
@@ -224,6 +187,7 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
+                      fontFamily: GeneralKey.appFontType,
                     ),
                   ),
                 ),
@@ -241,16 +205,7 @@ class FilterOptionModel {
   final FilterOptionType type;
   final bool isEnabled;
 
-  FilterOptionModel({
-    required this.translationKey,
-    required this.type,
-    this.isEnabled = true,
-  });
+  FilterOptionModel({required this.translationKey, required this.type, this.isEnabled = true});
 }
 
-enum FilterOptionType {
-  ServiceDateAscending,
-  ServiceDateDescending,
-  AlphabeticalAscending,
-  AlphabeticalDescending,
-}
+enum FilterOptionType { ServiceDateAscending, ServiceDateDescending, AlphabeticalAscending, AlphabeticalDescending }

@@ -1,7 +1,9 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
 class PlayingAudioTile extends ConsumerStatefulWidget {
@@ -44,14 +46,15 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
+    final theme = context.streamAudioColors;
 
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: widget.isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider),
+      child: widget.isLandscape ? _buildLandscapeLayout(provider, theme) : _buildPortraitLayout(provider, theme),
     );
   }
 
-  Widget _buildPortraitLayout(StreamAudioProvider provider) => Column(
+  Widget _buildPortraitLayout(StreamAudioProvider provider, StreamAudioColors theme) => Column(
         children: [
           // Simplified audio player row
           Container(
@@ -59,37 +62,37 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
             child: Row(
               children: [
                 // Album art with subtle animation
-                _buildAlbumArt(provider, 48),
+                _buildAlbumArt(provider, 48, theme),
                 const SizedBox(width: 16),
                 // Title and subtitle
-                Expanded(child: _buildTitleSubtitle(provider, CrossAxisAlignment.start)),
+                Expanded(child: _buildTitleSubtitle(provider, CrossAxisAlignment.start, theme)),
                 // Play/Pause button with animation
                 const SizedBox(width: 12),
-                _buildControls(provider, isVertical: false),
+                _buildControls(provider, theme, isVertical: false),
               ],
             ),
           ),
         ],
       );
 
-  Widget _buildLandscapeLayout(StreamAudioProvider provider) => Container(
+  Widget _buildLandscapeLayout(StreamAudioProvider provider, StreamAudioColors theme) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Album art (larger in landscape)
-            _buildAlbumArt(provider, 120),
+            _buildAlbumArt(provider, 120, theme),
             const SizedBox(height: 20),
             // Title and subtitle (center aligned)
-            _buildTitleSubtitle(provider, CrossAxisAlignment.center),
+            _buildTitleSubtitle(provider, CrossAxisAlignment.center, theme),
             const SizedBox(height: 24),
             // Play/Pause and Seek buttons (vertically stacked)
-            _buildControls(provider, isVertical: true),
+            _buildControls(provider, theme, isVertical: true),
           ],
         ),
       );
 
-  Widget _buildAlbumArt(StreamAudioProvider provider, double size) {
+  Widget _buildAlbumArt(StreamAudioProvider provider, double size, StreamAudioColors theme) {
     final channel = provider.selectedChannel;
 
     final programLogo = channel?.currentPlayedProgram?.image;
@@ -103,10 +106,10 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: Colors.grey[300],
+        color: const Color(0xFF161B26),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: theme.playerShadow,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -123,7 +126,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
                   errorBuilder: (_, __, ___) => Padding(
                     padding: const EdgeInsets.all(4),
                     child: Assets.icons.svg.icMbcMood.svg(
-                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                     ),
                   ),
                 ),
@@ -134,23 +137,27 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
               placeholderBuilder: (_) => Padding(
                 padding: const EdgeInsets.all(4),
                 child: Assets.icons.svg.icMbcMood.svg(
-                  colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                 ),
               ),
             ),
     );
   }
 
-  Widget _buildTitleSubtitle(StreamAudioProvider provider, CrossAxisAlignment alignment) => Column(
+  Widget _buildTitleSubtitle(
+    StreamAudioProvider provider,
+    CrossAxisAlignment alignment,
+    StreamAudioColors theme,
+  ) => Column(
         crossAxisAlignment: alignment,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             provider.selectedChannel?.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: Colors.white,
+              color: theme.playerText,
               letterSpacing: -0.3,
             ),
             maxLines: 2,
@@ -162,7 +169,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
             provider.selectedChannel?.name ?? '-',
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withOpacity(0.5),
+              color: theme.playerMutedText,
               letterSpacing: -0.2,
             ),
             maxLines: 2,
@@ -172,7 +179,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         ],
       );
 
-  Widget _buildControls(StreamAudioProvider provider, {required bool isVertical}) {
+  Widget _buildControls(StreamAudioProvider provider, StreamAudioColors theme, {required bool isVertical}) {
     final backwardButton = Transform.flip(
       flipX: Directionality.of(context) == TextDirection.rtl,
       child: AnimatedOpacity(
@@ -188,10 +195,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
               Assets.icons.svg.audio.seekBackward.keyName,
               width: 18,
               height: 18,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
+              colorFilter: ColorFilter.mode(theme.playerText, BlendMode.srcIn),
             ),
           ),
         ),
@@ -209,7 +213,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         child: Center(
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
-            child: _buildPlayPauseIcon(provider),
+            child: _buildPlayPauseIcon(provider, theme),
           ),
         ),
       ),
@@ -230,10 +234,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
               Assets.icons.svg.audio.seekForward.keyName,
               width: 18,
               height: 18,
-              colorFilter: const ColorFilter.mode(
-                Colors.white,
-                BlendMode.srcIn,
-              ),
+              colorFilter: ColorFilter.mode(theme.playerText, BlendMode.srcIn),
             ),
           ),
         ),
@@ -265,7 +266,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
     }
   }
 
-  Widget _buildPlayPauseIcon(StreamAudioProvider provider) {
+  Widget _buildPlayPauseIcon(StreamAudioProvider provider, StreamAudioColors theme) {
     // Ensure UI reflects actual audio state, not just the playing flag
     // This handles cases where audio is interrupted by phone calls, etc.
 
@@ -275,9 +276,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         height: 20,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(
-            Colors.white.withOpacity(0.8),
-          ),
+          valueColor: AlwaysStoppedAnimation<Color>(theme.playerText.withValues(alpha: 0.8)),
         ),
       );
     }
@@ -290,10 +289,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       shouldShowPlayIcon ? Assets.icons.svg.audio.resume.keyName : Assets.icons.svg.audio.pause.keyName,
       width: 20,
       height: 20,
-      colorFilter: const ColorFilter.mode(
-        Colors.white,
-        BlendMode.srcIn,
-      ),
+      colorFilter: ColorFilter.mode(theme.playerText, BlendMode.srcIn),
     );
   }
 }

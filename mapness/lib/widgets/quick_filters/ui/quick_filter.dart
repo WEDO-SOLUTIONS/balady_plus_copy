@@ -41,7 +41,7 @@ class QuickFilter extends ConsumerWidget {
 
     final leadingIcon = item.icon != null
         ? ChipIconWidget(
-            ({color}) => Icon(item.icon, size: 24, color: color ?? iconColor),
+            ({color}) => Icon(item.icon, size: 18, color: color ?? iconColor),
           )
         : null;
     final label = item.title;
@@ -61,24 +61,51 @@ class QuickFilter extends ConsumerWidget {
       if (leadingIcon == null) {
         return const SizedBox.shrink();
       }
-      return ChipsElement(
+      final chip = Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          border: Border.all(
+            color: context.colors.borderDefault,
+            width: 0,
+          ),
+        ),
+        child: ChipsElement(
+          colors: chipsColors,
+          onPressed: item.onTap,
+          isSelected: item.selected,
+          type: chipsType,
+          options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
+        ),
+      );
+      final a11yLabel = item.semanticsLabel;
+      if (a11yLabel != null && a11yLabel.isNotEmpty) {
+        return Semantics(
+          label: a11yLabel,
+          button: true,
+          child: ExcludeSemantics(child: chip),
+        );
+      }
+      return chip;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(RadiusBorder.m),
+        border: Border.all(
+          color: context.colors.borderDefault,
+          width: 0,
+        ),
+      ),
+      child: ChipsElement(
         colors: chipsColors,
         onPressed: item.onTap,
         isSelected: item.selected,
         type: chipsType,
-        options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
-      );
-    }
-    return ChipsElement(
-      colors: chipsColors,
-      onPressed: item.onTap,
-      isSelected: item.selected,
-      type: chipsType,
-      options: ChipsLabelOptions(
-        labelFirst: label,
-        leadingIcon: leadingIcon,
-        leadingIconColor: iconColor,
-        labelFirstColor: labelColor,
+        options: ChipsLabelOptions(
+          labelFirst: label,
+          leadingIcon: leadingIcon,
+          leadingIconColor: iconColor,
+          labelFirstColor: labelColor,
+        ),
       ),
     );
   }

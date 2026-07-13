@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/channel_item.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
@@ -37,27 +38,44 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
     value: context.read<ThemeController>().systemOverlayStyle,
     child: Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
-      appBar: BaladyTopBar.iconAndText(
+      appBar: BaladyTopBar(
         systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         title: Directionality.of(context) == TextDirection.rtl ? 'كتالوج الوسائط' : 'media catalog',
-        colorEnabled: context.color.textAndIconsStatusAccent,
-        leading: ActionModel(
-          onPressed: () => context.router.pop(),
-          icon: SystemIcons.arrowCornerLeftLarge,
+        onLeadingPressed: () => context.router.pop(),
+        leading: Semantics(
+          label: context.l10n.a11yBack,
+          button: true,
+          child: ExcludeSemantics(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: Spacing.$4x),
+                Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.accentDefault),
+                const SizedBox(width: Spacing.$4x),
+              ],
+            ),
+          ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                DashboardTitle(Directionality.of(context) == TextDirection.rtl ? 'مباشر الآن' : 'Live now'),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: MBCMood(color: Color.fromRGBO(242, 74, 56, 1)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: MBCMood(color: context.streamAudioColors.brandAccent),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: DashboardTitle(
+                    Directionality.of(context) == TextDirection.rtl ? 'مباشر الآن' : 'Live now',
+                  ),
                 ),
               ],
             ),
@@ -69,8 +87,8 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               final isLoading = streamAudio.isLoadingChannels;
 
               if (isLoading) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.44,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 48),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -89,8 +107,8 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               }
 
               if (channels.isEmpty) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.44,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 48),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -116,11 +134,10 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                 );
               }
 
-              return SizedBox(
-                height: MediaQuery.of(context).size.height * 0.44,
-                child: ReorderableListView.builder(
-                  shrinkWrap: true,
-                  onReorder: (oldIndex, newIndex) => ref.read(streamAudioProvider).reorderChannels(oldIndex, newIndex),
+              return ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                onReorder: (oldIndex, newIndex) => ref.read(streamAudioProvider).reorderChannels(oldIndex, newIndex),
                   itemCount: channels.length,
                   proxyDecorator: (child, index, animation) => Material(
                     type: MaterialType.transparency,
@@ -142,6 +159,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
 
                     final hasProgram = channel.currentPlayedProgram != null;
                     final imagesWidth = MediaQuery.of(context).size.width * 0.25;
+                    final accent = context.colors.accentDefault;
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
                       key: ValueKey(channel.id),
@@ -161,12 +179,12 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                           },
                           shape: RoundedRectangleBorder(
                             side: isSelected
-                                ? BorderSide(color: const Color(0xff9547E9).withOpacity(0.4))
+                                ? BorderSide(color: accent.withValues(alpha: 0.4))
                                 : BorderSide.none,
                             borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
                           contentPadding: const EdgeInsets.only(left: 8, right: 16),
-                          tileColor: context.colors.backgroundSurface1,
+                          tileColor: context.streamAudioColors.catalogCard,
                           minLeadingWidth: imagesWidth,
                           leading: SizedBox(
                             width: imagesWidth,
@@ -181,7 +199,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                           title: Text(
                             channel.name ?? context.l10n.name,
                             style: TextStyle(
-                              color: isSelected ? const Color(0xff9547E9) : context.colors.foregroundDefault,
+                              color: isSelected ? accent : context.colors.foregroundDefault,
                             ),
                           ),
                           subtitle: Column(
@@ -191,18 +209,14 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                 channel.currentPlayedProgram?.name ??
                                     (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
                                 style: TextStyle(
-                                  color: isSelected
-                                      ? const Color(0xff9547E9).withOpacity(0.7)
-                                      : context.colors.foregroundDefault,
+                                  color: isSelected ? accent.withValues(alpha: 0.7) : context.colors.foregroundDefault,
                                 ),
                               ),
                               if (channel.currentPlayedProgram?.date != null)
                                 Text(
                                   channel.currentPlayedProgram!.date!,
                                   style: TextStyle(
-                                    color: isSelected
-                                        ? const Color(0xff9547E9).withOpacity(0.7)
-                                        : context.colors.foregroundDefault,
+                                    color: isSelected ? accent.withValues(alpha: 0.7) : context.colors.foregroundDefault,
                                   ),
                                 ),
                             ],
@@ -214,7 +228,10 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                               children: [
                                 if (isSelected) ...[
                                   Assets.icons.svg.audio.waves.svg(
-                                    colorFilter: const ColorFilter.mode(Color(0xff9547E9), BlendMode.srcIn),
+                                    colorFilter: ColorFilter.mode(
+                                      context.streamAudioColors.waveGradientStart,
+                                      BlendMode.srcIn,
+                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                 ],
@@ -226,8 +243,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                       ),
                     );
                   },
-                ),
-              );
+                );
             },
           ),
           const SizedBox(
@@ -238,6 +254,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           ),
           const ArrivingSoon(),
         ],
+        ),
       ),
     ),
   );
@@ -258,7 +275,10 @@ class MediaImages extends StatelessWidget {
   final String channelUrl;
 
   @override
-  Widget build(BuildContext context) => Stack(
+  Widget build(BuildContext context) {
+    final theme = context.streamAudioColors;
+
+    return Stack(
     children: [
       Positioned(
         height: (imagesWidth / 2) + 4,
@@ -290,12 +310,13 @@ class MediaImages extends StatelessWidget {
                         begin: const Alignment(0.50, -0.00),
                         end: const Alignment(0.50, 1.00),
                         stops: const [0.00, 1.00],
-                        colors: [Colors.black.withOpacity(0.10), Colors.black.withOpacity(0)],
+                        colors: [
+                          Colors.black.withValues(alpha: 0.10),
+                          Colors.black.withValues(alpha: 0),
+                        ],
                       ),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.black.withOpacity(0.10),
-                      ),
+                      border: Border.all(color: theme.playerBorder),
                     ),
                   ),
                 ),
@@ -305,6 +326,7 @@ class MediaImages extends StatelessWidget {
       ),
     ],
   );
+  }
 }
 
 class ArrivingSoon extends StatelessWidget {

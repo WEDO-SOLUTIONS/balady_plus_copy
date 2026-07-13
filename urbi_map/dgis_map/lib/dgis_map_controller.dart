@@ -172,6 +172,10 @@ class DgisMapController {
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) => _instance.selectIndoorLevel(level.levelIndex);
 
+  /// Enables or disables indoor floor plans.
+  Future<void> setIndoorFloorPlansEnabled({required bool enabled}) =>
+      _instance.setIndoorFloorPlansEnabled(enabled: enabled);
+
   /// Changes map camera position immediately without animation.
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) => _instance.setCameraPosition(cameraPosition);
 
@@ -659,6 +663,10 @@ class DgisMapController {
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, {required bool value}) =>
       _instance.setMapAttributeBool(name, value: value);
+
+  ///Set map attribute String
+  Future<void> setMapAttributeString(String name,  {required String value} ) =>
+      _instance.setMapAttributeString(name, value);
 
   /// Getting Android Auto/CarPlay connection state
   Future<bool> getCarConnectionState() => _instance.getCarConnectionState();

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/stream_audio_colors.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/audio_wave_icon.dart';
 
 class DraggableFloatingPlayerControls extends StatefulWidget {
@@ -256,6 +258,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
   Widget build(BuildContext context) => AnimatedBuilder(
     animation: Listenable.merge([_scaleAnimation, _snapController, _shapeAnimation, _momentumController]),
     builder: (context, child) {
+      final theme = context.streamAudioColors;
       final currentPosition = _snapController.isAnimating && _snapAnimation != null ? _snapAnimation!.value : _position;
 
       final currentWidth = widgetWidth + (circleSize - widgetWidth) * _shapeAnimation.value;
@@ -423,35 +426,29 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
               width: currentWidth,
               height: currentHeight,
               decoration: BoxDecoration(
-                // Debug visuals - remove for production
-                // color: Colors.red.withOpacity(0.2),
-                border: Border.all(color: Colors.white.withOpacity(0.15)),
+                border: Border.all(color: theme.playerBorder),
                 borderRadius: BorderRadius.circular(currentBorderRadius),
               ),
               child: Container(
                 decoration: ShapeDecoration(
                   shadows: [
                     BoxShadow(
-                      color: const Color(0x7F212222),
+                      color: theme.playerShadow,
                       blurRadius: _isDragging ? 24 : 16,
                       offset: _isDragging ? const Offset(0, 12) : const Offset(0, 8),
                       spreadRadius: -8,
                     ),
                   ],
-                  gradient: const LinearGradient(
-                    begin: Alignment(0.50, -0.00),
-                    end: Alignment(0.50, 1.00),
-                    colors: [Color(0xFF212222), Color(0xFF212222)],
-                  ),
+                  color: theme.playerBackground,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(currentBorderRadius)),
                     side: BorderSide(
                       width: 2,
-                      color: Colors.white.withOpacity(0.15),
+                      color: theme.playerBorder,
                     ),
                   ),
                 ),
-                child: _buildContent(),
+                child: _buildContent(theme),
               ),
             ),
           ),
@@ -460,7 +457,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
     },
   );
 
-  Widget _buildContent() {
+  Widget _buildContent(StreamAudioColors theme) {
     if (_shapeAnimation.value > 0.1) {
       return const Center(
         child: AudioWaveIcon(
@@ -471,12 +468,14 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
       );
     }
 
-    return const Content();
+    return Content(theme: theme);
   }
 }
 
 class Content extends ConsumerStatefulWidget {
-  const Content({super.key});
+  const Content({required this.theme, super.key});
+
+  final StreamAudioColors theme;
 
   @override
   ConsumerState<Content> createState() => _ContentState();
@@ -487,12 +486,13 @@ class _ContentState extends ConsumerState<Content> {
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
     final selectedChannel = provider.selectedChannel;
+    final theme = widget.theme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Row(
         children: [
-          buildProgramImage(provider),
+          buildProgramImage(provider, theme),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -506,8 +506,8 @@ class _ContentState extends ConsumerState<Content> {
                         (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: theme.playerText,
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       height: 1.2,
@@ -522,7 +522,7 @@ class _ContentState extends ConsumerState<Content> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: theme.playerMutedText,
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
                       height: 1.2,
@@ -549,7 +549,7 @@ class _ContentState extends ConsumerState<Content> {
                   height: 48,
                   color: Colors.transparent,
                   alignment: Alignment.center,
-                  child: _buildPlayPauseIcon(provider),
+                  child: _buildPlayPauseIcon(provider, theme),
                 ),
               ),
               // Forward button
@@ -570,7 +570,7 @@ class _ContentState extends ConsumerState<Content> {
                         Assets.icons.svg.audio.seekForward.keyName,
                         width: 14,
                         height: 14,
-                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(theme.playerText, BlendMode.srcIn),
                       ),
                     ),
                   ),
@@ -583,31 +583,29 @@ class _ContentState extends ConsumerState<Content> {
     );
   }
 
-  Widget _buildPlayPauseIcon(StreamAudioProvider provider) {
+  Widget _buildPlayPauseIcon(StreamAudioProvider provider, StreamAudioColors theme) {
     if (provider.isLoading) {
-      return const SizedBox(
+      return SizedBox(
         width: 16,
         height: 16,
         child: CircularProgressIndicator(
           strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          valueColor: AlwaysStoppedAnimation<Color>(theme.playerText),
         ),
       );
     }
 
-    // Show play icon if not playing OR if there's an error
-    // This ensures the UI correctly reflects when audio is paused by external factors
     final shouldShowPlayIcon = !provider.isPlaying || provider.hasError;
 
     return SvgPicture.asset(
       shouldShowPlayIcon ? Assets.icons.svg.audio.resume.keyName : Assets.icons.svg.audio.pause.keyName,
       width: 16,
       height: 16,
-      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(theme.playerText, BlendMode.srcIn),
     );
   }
 
-  Widget buildProgramImage(StreamAudioProvider provider) {
+  Widget buildProgramImage(StreamAudioProvider provider, StreamAudioColors theme) {
     final channel = provider.selectedChannel;
     final hasProgram = channel?.currentPlayedProgram != null;
     final programLogo = channel?.currentPlayedProgram?.image;
@@ -634,7 +632,7 @@ class _ContentState extends ConsumerState<Content> {
                       errorBuilder: (_, __, ___) => Padding(
                         padding: const EdgeInsets.all(4),
                         child: Assets.icons.svg.icMbcMood.svg(
-                          colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                         ),
                       ),
                     ),
@@ -645,7 +643,7 @@ class _ContentState extends ConsumerState<Content> {
                   placeholderBuilder: (_) => Padding(
                     padding: const EdgeInsets.all(4),
                     child: Assets.icons.svg.icMbcMood.svg(
-                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(theme.placeholderIcon, BlendMode.srcIn),
                     ),
                   ),
                 ),
@@ -663,7 +661,7 @@ class _ContentState extends ConsumerState<Content> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     stops: const [0.00, 1.00],
-                    colors: [Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.2)],
+                    colors: [Colors.black.withValues(alpha: 0.6), Colors.black.withValues(alpha: 0.2)],
                   ),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(),

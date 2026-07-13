@@ -64,7 +64,6 @@ import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
@@ -82,6 +81,8 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_mappers.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -115,6 +116,7 @@ class PoiCardWidgetPage extends StatelessWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
   final PoiCardDataFromGoogle? poiCardDataFromGoogle;
+  final bool showHighlight;
 
   const PoiCardWidgetPage({
     this.objectId,
@@ -122,6 +124,7 @@ class PoiCardWidgetPage extends StatelessWidget {
     this.closestPoint,
     this.cameraConfig,
     this.poiCardDataFromGoogle,
+    this.showHighlight = true,
     super.key,
   });
 
@@ -136,6 +139,7 @@ class PoiCardWidgetPage extends StatelessWidget {
       cameraConfig: cameraConfig,
       poiCardDataFromGoogle: poiCardDataFromGoogle,
       closestPoint: closestPoint,
+      showHighlight: showHighlight,
       key: key,
     ),
   );

@@ -9,10 +9,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 class DashboardButton extends StatelessWidget {
   final MiniApp dashboardMinApp;
 
-  const DashboardButton({
-    super.key,
-    required this.dashboardMinApp,
-  });
+  const DashboardButton({super.key, required this.dashboardMinApp});
 
   @override
   Widget build(BuildContext context) {
@@ -21,27 +18,13 @@ class DashboardButton extends StatelessWidget {
         context.read<NewMiniAppLogicCubit>().openMiniApp(dashboardMinApp);
       },
       child: Container(
-        // width: 117,
-        // height: 33,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 3,
-          vertical: 4,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18.5),
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 4),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(18.5)),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                color: const Color(0XFFE5EBED),
-                borderRadius: BorderRadius.circular(13.5),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(color: const Color(0XFFE5EBED), borderRadius: BorderRadius.circular(13.5)),
               child: CustomNetworkImageWidget(
                 dashboardMinApp.iconPath,
                 isVerifyingKey: true,
@@ -49,20 +32,16 @@ class DashboardButton extends StatelessWidget {
                 imageHeight: context.h(24),
               ),
             ),
-            SizedBox(
-              width: context.w(8),
-            ),
+            SizedBox(width: context.w(8)),
             Text(
               "dashboard".tr(),
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'Frutiger',
+                fontFamily: 'packages/balady_design_system/IBMPlexSansArabic',
                 fontWeight: FontWeight.w400,
               ),
             ),
-            SizedBox(
-              width: context.w(9),
-            ),
+            SizedBox(width: context.w(9)),
           ],
         ),
       ),

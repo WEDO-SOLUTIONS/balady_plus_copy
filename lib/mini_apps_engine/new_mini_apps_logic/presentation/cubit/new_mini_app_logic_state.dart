@@ -30,8 +30,6 @@ class NewMiniAppLogicState {
   //! Sort
   final FilterOptionType? selectedSortType;
 
-  final BlocStatus? status;
-
   NewMiniAppLogicState({
     required this.isFavLoading,
     required this.favError,
@@ -52,7 +50,6 @@ class NewMiniAppLogicState {
     required this.isRefreshing,
     required this.reachLimitNumber,
     this.selectedSortType,
-    this.status,
   });
 
   factory NewMiniAppLogicState.initial() {
@@ -94,9 +91,9 @@ class NewMiniAppLogicState {
 
   NewMiniAppLogicState copyWith({
     bool? isFavLoading,
-    String? favError,
+    Nullable<String?>? favError,
     bool? isUnFavLoading,
-    String? unFavError,
+    Nullable<String?>? unFavError,
     List<MiniApp>? favoriteApps,
     List<MiniApp>? unFavoriteApps,
     List<MiniApp>? allMiniApps,
@@ -105,37 +102,35 @@ class NewMiniAppLogicState {
     List<MiniApp>? searchResults,
     Map<String, MiniApp>? parentMiniApp,
     bool? isSearching,
-    String? searchError,
+    Nullable<String?>? searchError,
     bool? isEntryPointsLoading,
-    String? entryPointsError,
+    Nullable<String?>? entryPointsError,
     List<EntryPoints>? entryPoints,
     MiniApp? miniApp,
     bool? isRefreshing,
     int? reachLimitNumber,
     FilterOptionType? selectedSortType,
-    BlocStatus? status,
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,
       parentMiniApp: parentMiniApp ?? this.parentMiniApp,
       allMiniApps: allMiniApps ?? this.allMiniApps,
-      favError: favError ?? this.favError,
+      favError: favError == null ? this.favError : favError.value,
       favoriteApps: favoriteApps ?? this.favoriteApps,
       unFavoriteApps: unFavoriteApps ?? this.unFavoriteApps,
       isUnFavLoading: isUnFavLoading ?? this.isUnFavLoading,
-      unFavError: unFavError ?? this.unFavError,
+      unFavError: unFavError == null ? this.unFavError : unFavError.value,
       isAppsGroupLoading: isAppsGroupLoading ?? this.isAppsGroupLoading,
       appGroups: appGroups ?? this.appGroups,
       searchResults: searchResults ?? this.searchResults,
       isSearching: isSearching ?? this.isSearching,
-      searchError: searchError ?? this.searchError,
+      searchError: searchError == null ? this.searchError : searchError.value,
       isEntryPointsLoading: isEntryPointsLoading ?? this.isEntryPointsLoading,
-      entryPointsError: entryPointsError ?? this.entryPointsError,
+      entryPointsError: entryPointsError == null ? this.entryPointsError : entryPointsError.value,
       entryPoints: entryPoints ?? this.entryPoints,
       isRefreshing: isRefreshing ?? this.isRefreshing,
       reachLimitNumber: reachLimitNumber ?? this.reachLimitNumber,
       selectedSortType: selectedSortType ?? this.selectedSortType,
-      status: status ?? this.status,
     );
   }
 

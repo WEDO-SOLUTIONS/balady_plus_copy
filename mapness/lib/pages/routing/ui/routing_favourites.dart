@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,11 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
+
+import '../../../shared/extensions/build_context_ext.dart';
+import '../../../widgets/navi_search/vertical_chip.dart';
 
 part 'widgets/routing_favourites_button.dart';
 
@@ -95,19 +100,50 @@ class RoutingFavourites extends ConsumerWidget {
         textDirection: TextDirection.ltr,
         child: Row(
             children: <Widget>[
-          if (showBookmark)
-            _FavButton(
-              icon: SystemIcons.bookmark,
-              onTap: onFavouritesTap,
-            ),
-          _FavButton(
-            icon: GeneralIcons.home,
-            onTap: onHomeTap,
-          ),
-          _FavButton(
-            icon: GeneralIcons.briefcase,
-            onTap: onWorkTap,
-          ),
+              // _FavButton(
+              //   icon: GeneralIcons.briefcase,
+              //   onTap: onWorkTap,
+              //   label: context.l10n.work,
+              // ),
+              Expanded(
+                child: VerticalChip(
+                  icon:  GeneralIcons.briefcase,
+                  title: context.l10n.work,
+                  onTap: onWorkTap,
+                    width:double.infinity,
+                    height: 75
+                ),
+              ),
+
+              Expanded(
+                child: VerticalChip(
+                  icon:  GeneralIcons.home,
+                  title: context.l10n.home,
+                  onTap: onHomeTap,
+                    width:double.infinity,
+                    height: 75,
+                ),
+              ),
+          // _FavButton(
+          //   icon: GeneralIcons.home,
+          //   onTap: onHomeTap,
+          //   label: context.l10n.home,
+          // ),
+              if (showBookmark)
+                Expanded(
+                  child: VerticalChip(
+                    icon:  SystemIcons.bookmark,
+                    title: context.l10n.favorites,
+                    onTap: onFavouritesTap,
+                      width:double.infinity,
+                      height: 75
+                  ),
+                ),
+                // _FavButton(
+                //   icon: SystemIcons.bookmark,
+                //   onTap: onFavouritesTap,
+                //   label: context.l10n.favorites,
+                // ),
         ].insertBetween(Spacing.$3x.widthBox).toList()),
       ),
     );

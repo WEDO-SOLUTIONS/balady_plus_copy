@@ -144,14 +144,9 @@ class AppWidgetState extends State<AppWidget> {
 
                         // [NEW CODE]: We first wrap builtChild with StreamAudio so the floating audio player
                         // is always present in the widget tree, regardless of the grayscale filter.
-                    // TODO: MBC - Uncomment for next release
-                    // final streamAudioChild = Material(
-                    //   type: MaterialType.transparency,
-                    //   child: StreamAudio(child: builtChild),
-                    // );
                         final streamAudioChild = Material(
                           type: MaterialType.transparency,
-                      child: builtChild,
+                          child: StreamAudio(child: builtChild),
                         );
 
                         if (grayscaleFilter == null) return streamAudioChild;

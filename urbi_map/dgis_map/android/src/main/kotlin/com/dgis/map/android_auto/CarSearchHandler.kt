@@ -60,6 +60,8 @@ class CarSearchHandler(
                 .setPageSize(pageSize).setAreaOfInterest(map.camera.visibleRect)
                 .setSpatialRestriction(saRestrictions).build()
 
+        suggestFuture?.close()
+        searchFuture?.close()
         searchFuture = searchManager.search(query).apply {
             onResult { searchResult ->
                 resultCallback(
@@ -86,6 +88,7 @@ class CarSearchHandler(
                 .build()
 
         suggestFuture?.close()
+        searchFuture?.close()
         suggestFuture =
             searchManager.suggest(suggestQuery).apply {
                 onResult { response -> resultCallback(response.suggests) }

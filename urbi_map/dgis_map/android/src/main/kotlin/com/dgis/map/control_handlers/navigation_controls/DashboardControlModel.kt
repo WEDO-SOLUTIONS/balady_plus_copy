@@ -151,18 +151,14 @@ class DashboardControlModel(
     fun toggleVoiceInstruction(toggleType: SoundToggleType) {
         val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
 
+        // Mirror iOS: sdk.audioSettings?.mute = (toggleType == .none)
+        // This directly silences the SDK audio pipeline (including any in-flight utterance)
+        // instead of relying on the audio-focus request/abandon trick which is not synchronous.
+        this.navigationManager.soundNotificationSettings.mute = (toggleType == SoundToggleType.NONE)
+
         val updatedCategories = when (toggleType) {
-            SoundToggleType.NONE -> {
-                EnumSet.noneOf(SoundCategory::class.java).apply {
-                    addAll(currentCategories)
-                    removeAll(EnumSet.allOf(SoundCategory::class.java))
-                }
-            }
-            SoundToggleType.ALL -> {
-                EnumSet.allOf(SoundCategory::class.java).apply {
-                    addAll(currentCategories)
-                }
-            }
+            SoundToggleType.NONE -> EnumSet.noneOf(SoundCategory::class.java)
+            SoundToggleType.ALL -> EnumSet.allOf(SoundCategory::class.java)
             SoundToggleType.IMPORTANT -> {
                 EnumSet.copyOf(currentCategories).apply {
                     remove(SoundCategory.INSTRUCTIONS)

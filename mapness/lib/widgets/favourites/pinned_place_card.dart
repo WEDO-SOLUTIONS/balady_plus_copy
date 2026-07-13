@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/saudi_pass/widgets/favorite_dialog_menu.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PinnedPlaceCard extends StatelessWidget {
@@ -30,24 +29,24 @@ class PinnedPlaceCard extends StatelessWidget {
   final VoidCallback onTapShare;
   final VoidCallback onTapChange;
 
-  Future<void> showBottomSheet(BuildContext context) async {
-    await showDialog(
-      context: context,
-      useSafeArea: false,
-      builder: (_) => FavoriteDialogMenu(
-        onDelete: onDelete,
-        onTapRoute: onTapRoute,
-        onTapShare: onTapShare,
-        onTapChange: onTapChange,
-        change: context.l10n.change,
-        delete: context.l10n.delete,
-        route: context.l10n.route,
-        share: context.l10n.share,
-        title: context.l10n.action,
-        close: context.l10n.saudiPassTermAndConditionsClose,
-      ),
-    );
-  }
+  // Future<void> showBottomSheet(BuildContext context) async {
+  //   await showDialog(
+  //     context: context,
+  //     useSafeArea: false,
+  //     builder: (_) => FavoriteDialogMenu(
+  //       onDelete: onDelete,
+  //       onTapRoute: onTapRoute,
+  //       onTapShare: onTapShare,
+  //       onTapChange: onTapChange,
+  //       change: context.l10n.change,
+  //       delete: context.l10n.delete,
+  //       route: context.l10n.route,
+  //       share: context.l10n.share,
+  //       title: context.l10n.action,
+  //       close: context.l10n.saudiPassTermAndConditionsClose,
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) => Container(
@@ -63,7 +62,7 @@ class PinnedPlaceCard extends StatelessWidget {
           children: [
             const SizedBox(height: Spacing.$2x),
             InkWell(
-              onTap: isAdded ? () => showBottomSheet(context) : onTap,
+              onTap: isAdded ? () {} : onTap,
               child: Container(
                 height: 56,
                 width: 56,

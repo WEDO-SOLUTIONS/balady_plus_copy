@@ -13,6 +13,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
+//!
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
   const WebMiniAppsScreen({super.key});
 
@@ -34,15 +35,11 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     bool clearCache = false;
 
     _currentLanguage = translator.activeLanguageCode;
-    _cachedMiniAppsLanguage = ref
-        .read(appLanguageProvider.notifier)
-        .getCachedMiniAppsLanguage();
+    _cachedMiniAppsLanguage = ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
 
     if (_currentLanguage != _cachedMiniAppsLanguage) {
       clearCache = true;
-      ref
-          .read(appLanguageProvider.notifier)
-          .updateCachedMiniAppsLanguage(_currentLanguage);
+      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(_currentLanguage);
     }
 
     late final PlatformWebViewControllerCreationParams params;
@@ -51,8 +48,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
       mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
     );
 
-    final DWebViewController controller =
-        DWebViewController.fromPlatformCreationParams(params);
+    final DWebViewController controller = DWebViewController.fromPlatformCreationParams(params);
     _controller = controller;
 
     controller.setBackgroundColor(Colors.transparent);
@@ -88,14 +84,10 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     }
 
     if (Platform.isAndroid) {
-      final androidController =
-          _controller.platform as AndroidWebViewController;
+      final androidController = _controller.platform as AndroidWebViewController;
       androidController.setGeolocationPermissionsPromptCallbacks(
         onShowPrompt: (request) async {
-          return const GeolocationPermissionsResponse(
-            allow: true,
-            retain: true,
-          );
+          return const GeolocationPermissionsResponse(allow: true, retain: true);
         },
       );
       androidController.setAllowContentAccess(true);
@@ -113,12 +105,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     if (!_initialized) {
       _controller
         ..loadRequest(Uri.parse("${state.servicePath}#${state.path}"))
-        ..addJavaScriptObject(
-          JsBridgeListener(
-            miniAppsEngineBloc: miniAppsEngineBloc,
-            isLoading: _isLoading,
-          ),
-        );
+        ..addJavaScriptObject(JsBridgeListener(miniAppsEngineBloc: miniAppsEngineBloc, isLoading: _isLoading));
       _initialized = true;
     }
 
@@ -135,9 +122,9 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
         valueListenable: _isLoading,
         builder: (context, isLoading, child) {
           return Visibility(
-              visible: !isLoading,
-              child: DWebViewWidget(controller: _controller),
-            );
+            visible: !isLoading,
+            child: DWebViewWidget(controller: _controller),
+          );
         },
       ),
     );
