@@ -19,6 +19,18 @@ enum DynamicStyleDebugMode {
   /// Replace every user-position model with `car_buhanka_fixed.glb`.
   carBuhanka,
 
+  /// Replace every user-position model with `car_sport_fixed.glb`.
+  carSport,
+
+  /// Replace every user-position model with `car_fly_fixed.glb`.
+  carFly,
+
+  /// Replace every user-position model with `car_jeep_fixed.glb`.
+  carJeep,
+
+  /// Replace every user-position model with `utka_default_fixed.glb`.
+  utkaDefault,
+
   /// Replace every user-position model with `utka_boss_fixed.glb`.
   utkaBoss,
 
@@ -41,6 +53,14 @@ String? _customAssetFor(DynamicStyleDebugMode mode) {
   switch (mode) {
     case DynamicStyleDebugMode.carBuhanka:
       return '$_userModelsAssetDir/car_buhanka_fixed.glb';
+    case DynamicStyleDebugMode.carSport:
+      return '$_userModelsAssetDir/car_sport_fixed.glb';
+    case DynamicStyleDebugMode.carFly:
+      return '$_userModelsAssetDir/car_fly_fixed.glb';
+    case DynamicStyleDebugMode.carJeep:
+      return '$_userModelsAssetDir/car_jeep_fixed.glb';
+    case DynamicStyleDebugMode.utkaDefault:
+      return '$_userModelsAssetDir/utka_default_fixed.glb';
     case DynamicStyleDebugMode.utkaBoss:
       return '$_userModelsAssetDir/utka_boss_fixed.glb';
     case DynamicStyleDebugMode.utkaGetpack:
@@ -67,6 +87,10 @@ class DynamicStyleDebugController extends _$DynamicStyleDebugController {
         case DynamicStyleDebugMode.bundled:
           styleController.resetToBundled();
         case DynamicStyleDebugMode.carBuhanka:
+        case DynamicStyleDebugMode.carSport:
+        case DynamicStyleDebugMode.carFly:
+        case DynamicStyleDebugMode.carJeep:
+        case DynamicStyleDebugMode.utkaDefault:
         case DynamicStyleDebugMode.utkaBoss:
         case DynamicStyleDebugMode.utkaGetpack:
           final assetPath = _customAssetFor(mode)!;
