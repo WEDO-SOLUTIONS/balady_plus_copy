@@ -22,6 +22,26 @@ class _DynamicStyleDebugSwitcherState extends ConsumerState<DynamicStyleDebugSwi
       'car_buhanka_fixed.glb (car nav marker)',
     ),
     (
+      DynamicStyleDebugMode.carSport,
+      'Car: sport',
+      'car_sport_fixed.glb (car nav marker)',
+    ),
+    (
+      DynamicStyleDebugMode.carFly,
+      'Car: fly',
+      'car_fly_fixed.glb (car nav marker)',
+    ),
+    (
+      DynamicStyleDebugMode.carJeep,
+      'Car: jeep',
+      'car_jeep_fixed.glb (car nav marker)',
+    ),
+    (
+      DynamicStyleDebugMode.utkaDefault,
+      'Utka: default',
+      'utka_default_fixed.glb (car nav marker)',
+    ),
+    (
       DynamicStyleDebugMode.utkaBoss,
       'Utka: boss',
       'utka_boss_fixed.glb (car nav marker)',
