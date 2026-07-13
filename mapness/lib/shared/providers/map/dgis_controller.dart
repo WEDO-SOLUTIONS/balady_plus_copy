@@ -8,6 +8,7 @@ import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/map_recreation.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -92,7 +93,30 @@ class DgisController extends _$DgisController {
   Future<void> _initialize(DgisMapController controller) async {
     await _setupControllerItself(controller);
     await _setupLocation(controller);
+    await _restorePendingCamera(controller);
     await _setupVisibleRectUpdates(controller);
+  }
+
+  /// Applies a camera position stashed by [PendingCameraSnapshot] before a
+  /// MapView recreate (e.g. car-model swap). Called after the style loads and
+  /// the default-location intro finishes, so the user lands back where they
+  /// were rather than at the Kingdom Tower fallback. No-op when nothing is
+  /// pending.
+  Future<void> _restorePendingCamera(DgisMapController controller) async {
+    final pending = ref.read(pendingCameraSnapshotProvider);
+    if (pending == null) {
+      return;
+    }
+    ref.read(pendingCameraSnapshotProvider.notifier).clear();
+    try {
+      await controller.setCameraPosition(pending);
+      logger.log('[dgis_controller] restored pending camera after MapView recreate');
+    } on PlatformException catch (e) {
+      logger.log(
+        '[dgis_controller] failed to restore pending camera: $e',
+        logLevel: MapnessLogLevel.warning,
+      );
+    }
   }
 
   Future<void> _setupControllerItself(DgisMapController controller) async {
@@ -127,14 +151,23 @@ class DgisController extends _$DgisController {
   }
 
   Future<void> _setupLocation(DgisMapController controller) async {
-    await _setDefaultLocation(controller);
+    // When a MapView recreate is in flight (e.g. car-model swap), the user
+    // already had a camera position we're about to restore in
+    // [_restorePendingCamera]. Skip the Kingdom Tower intro and the
+    // first-fix snap so we don't overwrite the restored position.
+    final hasPendingCamera = ref.read(pendingCameraSnapshotProvider) != null;
+    if (!hasPendingCamera) {
+      await _setDefaultLocation(controller);
+    }
 
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
 
     await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
     await controller.toggleFollowState();
-    _moveToUserLocationOnFirstFix(controller);
+    if (!hasPendingCamera) {
+      _moveToUserLocationOnFirstFix(controller);
+    }
   }
 
   /// After the Kingdom Tower intro animation, waits for the first real GPS fix

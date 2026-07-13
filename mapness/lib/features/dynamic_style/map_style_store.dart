@@ -14,17 +14,16 @@ const _logTag = '[style_store]';
 
 /// Immutable snapshot of the resolved style file on disk.
 ///
-/// [path] is stable across mutations (see [MapStyleStore]); [revision]
-/// increments on every mutation so downstream listeners can force a reload
-/// even though the path stays constant.
+/// [path] changes on every mutation because the 2GIS SDK (12.8.0) caches
+/// decoded resources by archive-path and re-loading the same absolute path
+/// does not force a re-read — see [MapStyleStore]. [revision] mirrors the
+/// numeric suffix inside [path] and monotonically increases.
 @immutable
 class StyleFile {
   const StyleFile({required this.path, required this.revision});
 
   final String path;
   final int revision;
-
-  StyleFile bumped() => StyleFile(path: path, revision: revision + 1);
 
   @override
   bool operator ==(Object other) =>
@@ -37,38 +36,46 @@ class StyleFile {
   String toString() => 'StyleFile(path=$path, rev=$revision)';
 }
 
-/// Owns the single canonical `.2gis` file that the 2GIS SDK loads.
+/// Owns the canonical `.2gis` file that the 2GIS SDK loads.
 ///
 /// Design:
+/// * The rotating filename is `current-<N>.2gis`. Every mutation writes to
+///   the next N and then hands the SDK the new absolute path. This is a
+///   workaround for a 2GIS SDK 12.8.0 limitation: `loadStylesFromPath` on
+///   the same absolute path returns cached decoded resources (in particular
+///   GLB car models keyed by internal archive path like
+///   `zmap/vidoc/models/day_LIGHT_THEME_CAR_MODEL.glb`). No public
+///   invalidate/unload API exists, so we force a fresh identity on-disk.
 /// * On first build the bundled asset ([MapnessConstants.mapStylesPath]) is
-///   copied to `${applicationSupportDirectory}/map_styles/current.2gis`.
-/// * The SDK is **always** handed the same absolute path — never an asset key
-///   (asset loading is kept in [DgisMapController.loadStyles] only for
-///   CarPlay / legacy).
-/// * Mutations (repack, network download, file picker) atomically overwrite
-///   `current.2gis` in place. A [_mutatedFlag] file marks the archive as
-///   user-mutated so subsequent app updates that ship a new bundled asset do
-///   **not** clobber it. Reset explicitly clears both the file and the flag.
-/// * [StyleFile.revision] is bumped after every mutation so consumers can
-///   trigger a reload via `ref.listen`.
+///   copied to `current-0.2gis`. On subsequent boots the highest-N file is
+///   picked up.
+/// * The SDK is **always** handed the same absolute file path — never an
+///   asset key.
+/// * Mutations (repack, network download, file picker) allocate the next
+///   filename, write it atomically, then bump state. The previous file is
+///   deleted once the swap is committed.
+/// * A [_mutatedFlag] file marks the archive as user-mutated so app updates
+///   that ship a new bundled asset do not clobber it. Reset explicitly
+///   clears every rotated file plus the flag and marker.
 @Riverpod(keepAlive: true)
 class MapStyleStore extends _$MapStyleStore {
-  /// Filename of the canonical style file on disk. Kept constant so the SDK
-  /// can be handed the same absolute path on every load.
-  static const _fileName = 'current.2gis';
+  static const _fileNamePrefix = 'current-';
+  static const _fileNameSuffix = '.2gis';
 
   /// Sidecar file storing the bundled asset's byte length that was used on
   /// the last copy. Used to detect app updates that ship a new bundled asset.
   static const _bundleLengthMarker = 'bundle_length.txt';
 
-  /// Sentinel file that, when present, signals `current.2gis` holds a
-  /// user-mutated archive. Kept across app updates until explicit reset.
+  /// Sentinel file that, when present, signals the current rotated file
+  /// holds a user-mutated archive. Kept across app updates until explicit
+  /// reset.
   static const _mutatedFlag = 'mutated.flag';
 
   late final Directory _dir;
-  late final File _target;
   late final File _lengthMarker;
   late final File _flag;
+  int _revision = 0;
+  late File _target;
 
   @override
   Future<StyleFile> build() async {
@@ -78,69 +85,160 @@ class MapStyleStore extends _$MapStyleStore {
     if (!await _dir.exists()) {
       await _dir.create(recursive: true);
     }
-    _target = File('${_dir.path}/$_fileName');
     _lengthMarker = File('${_dir.path}/$_bundleLengthMarker');
     _flag = File('${_dir.path}/$_mutatedFlag');
 
+    // Pick up the highest existing rotation on boot; delete any stragglers.
+    _revision = await _collectRevisions(deleteAllButLatest: true);
+    _target = _pathForRevision(_revision);
+
     await _ensureCurrentFile();
-    logger.log('$_logTag ready at ${_target.path} in ${sw.elapsedMilliseconds}ms');
-    return StyleFile(path: _target.path, revision: 0);
+    logger.log('$_logTag ready at ${_target.path} rev=$_revision in ${sw.elapsedMilliseconds}ms');
+    return StyleFile(path: _target.path, revision: _revision);
   }
 
-  /// Canonical absolute path of the style file. Stable across mutations.
-  ///
-  /// Prefer awaiting `future` for the async-initialised path; this getter is
-  /// safe to call only after [build] has completed.
+  /// Absolute path of the currently-live style file.
   String get currentPath => _target.path;
 
-  /// Replace `current.2gis` with an in-memory blob (atomically) and mark the
-  /// archive as user-mutated.
-  Future<void> replaceWithBytes(Uint8List bytes) async {
-    logger.log('$_logTag replaceWithBytes: ${bytes.length}B');
-    final tmp = File('${_target.path}.tmp');
-    await tmp.writeAsBytes(bytes);
-    await tmp.rename(_target.path);
+  /// Absolute path allocated for the next mutation. Callers that write
+  /// externally (e.g. [DynamicStyleService.repackInto]) target this path and
+  /// then call [publishExternallyWritten] to commit.
+  ///
+  /// Idempotent: repeated calls without a commit return the same path.
+  String allocateNextPath() => _pathForRevision(_revision + 1).path;
+
+  /// Revision number that will be assigned to the next mutation. Used by the
+  /// repack service as a suffix when renaming overridden entries inside the
+  /// archive (see [DynamicStyleService.repackInto]) so the SDK's per-name GLB
+  /// cache misses on each swap.
+  int get nextRevision => _revision + 1;
+
+  /// Commit a mutation written externally to [newPath]. [newPath] must equal
+  /// the value returned by the most recent [allocateNextPath] call.
+  Future<void> publishExternallyWritten(String newPath) async {
+    final expected = allocateNextPath();
+    if (newPath != expected) {
+      throw StateError('publishExternallyWritten: got $newPath, expected $expected');
+    }
+    logger.log('$_logTag publishExternallyWritten: $newPath');
+    await _swapTargetTo(File(newPath));
     await _markMutated();
-    _publish();
   }
 
-  /// Replace `current.2gis` with the file at [srcPath] (atomically) and mark
-  /// the archive as user-mutated. Copies bytes — the source file is
-  /// untouched and can safely be a picker/cache path.
+  /// Replace the current file with an in-memory blob. Writes to the next
+  /// rotation slot atomically, then commits.
+  Future<void> replaceWithBytes(Uint8List bytes) async {
+    logger.log('$_logTag replaceWithBytes: ${bytes.length}B');
+    final next = _pathForRevision(_revision + 1);
+    final tmp = File('${next.path}.tmp');
+    await tmp.writeAsBytes(bytes);
+    await tmp.rename(next.path);
+    await _swapTargetTo(next);
+    await _markMutated();
+  }
+
+  /// Copy an existing file into the next rotation slot and commit. The
+  /// source at [srcPath] is left untouched.
   Future<void> replaceWithFile(String srcPath) async {
     final src = File(srcPath);
     if (!await src.exists()) {
       throw StateError('Source style file not found: $srcPath');
     }
     logger.log('$_logTag replaceWithFile: $srcPath (${await src.length()}B)');
-    final tmp = File('${_target.path}.tmp');
-    await src.copy(tmp.path);
-    await tmp.rename(_target.path);
+    final next = _pathForRevision(_revision + 1);
+    await src.copy(next.path);
+    await _swapTargetTo(next);
     await _markMutated();
-    _publish();
   }
 
-  /// Notify listeners after an in-place mutation performed by an external
-  /// writer (e.g. [DynamicStyleService.repackInto], which writes directly to
-  /// [currentPath] via an isolate).
-  Future<void> notifyMutated() async {
-    logger.log('$_logTag notifyMutated: external in-place write');
-    await _markMutated();
-    _publish();
-  }
-
-  /// Drop any user mutation and re-seed `current.2gis` from the bundled
-  /// asset. Removes the mutated flag and the length marker so
-  /// [_ensureCurrentFile] can re-run its first-copy path.
+  /// Drop any user mutation, delete every rotated file, and re-seed
+  /// `current-0.2gis` from the bundled asset.
   Future<void> resetToBundled() async {
-    logger.log('$_logTag reset: clearing current.2gis + markers');
-    for (final f in [_target, _flag, _lengthMarker]) {
+    logger.log('$_logTag reset: clearing rotated files + markers');
+    if (await _dir.exists()) {
+      await for (final entity in _dir.list()) {
+        if (entity is! File) {
+          continue;
+        }
+        final name = _basename(entity.path);
+        if (name.startsWith(_fileNamePrefix) && name.endsWith(_fileNameSuffix)) {
+          try {
+            await entity.delete();
+          } catch (e) {
+            logger.log('$_logTag reset: failed to delete ${entity.path}: $e');
+          }
+        }
+      }
+    }
+    for (final f in [_flag, _lengthMarker]) {
       if (await f.exists()) {
         await f.delete();
       }
     }
+    _revision = 0;
+    _target = _pathForRevision(_revision);
     await _ensureCurrentFile();
     _publish();
+  }
+
+  File _pathForRevision(int rev) => File('${_dir.path}/$_fileNamePrefix$rev$_fileNameSuffix');
+
+  String _basename(String path) => path.split(Platform.pathSeparator).last;
+
+  /// Scan the directory for `current-<N>.2gis` files. If [deleteAllButLatest]
+  /// is true, keeps the highest N and deletes the rest. Returns the highest
+  /// N found (or 0 if none).
+  Future<int> _collectRevisions({required bool deleteAllButLatest}) async {
+    if (!await _dir.exists()) {
+      return 0;
+    }
+    final revs = <int, File>{};
+    await for (final entity in _dir.list()) {
+      if (entity is! File) {
+        continue;
+      }
+      final name = _basename(entity.path);
+      if (!name.startsWith(_fileNamePrefix) || !name.endsWith(_fileNameSuffix)) {
+        continue;
+      }
+      final numPart = name.substring(_fileNamePrefix.length, name.length - _fileNameSuffix.length);
+      final n = int.tryParse(numPart);
+      if (n != null) {
+        revs[n] = entity;
+      }
+    }
+    if (revs.isEmpty) {
+      return 0;
+    }
+    final highest = revs.keys.reduce((a, b) => a > b ? a : b);
+    if (deleteAllButLatest) {
+      for (final entry in revs.entries) {
+        if (entry.key == highest) {
+          continue;
+        }
+        try {
+          await entry.value.delete();
+          logger.log('$_logTag pruned stray ${entry.value.path}');
+        } catch (e) {
+          logger.log('$_logTag failed to prune ${entry.value.path}: $e');
+        }
+      }
+    }
+    return highest;
+  }
+
+  Future<void> _swapTargetTo(File newTarget) async {
+    final oldTarget = _target;
+    _target = newTarget;
+    _revision += 1;
+    _publish();
+    if (oldTarget.path != newTarget.path && await oldTarget.exists()) {
+      try {
+        await oldTarget.delete();
+      } catch (e) {
+        logger.log('$_logTag warn: failed to delete old file ${oldTarget.path}: $e');
+      }
+    }
   }
 
   Future<void> _ensureCurrentFile() async {
@@ -152,7 +250,6 @@ class MapStyleStore extends _$MapStyleStore {
     final markerText = await _lengthMarker.exists() ? await _lengthMarker.readAsString() : null;
 
     if (!targetExists) {
-      // First install (or file was manually deleted) — copy fresh from asset.
       await _copyBundled(data, assetLen);
       if (flagExists) {
         // Stale mutation flag without an actual file — clear it.
@@ -162,7 +259,7 @@ class MapStyleStore extends _$MapStyleStore {
     }
     if (flagExists) {
       // User mutation — keep it, even if the bundled asset has changed.
-      logger.log('$_logTag ensure: user mutation persisted, keeping current.2gis');
+      logger.log('$_logTag ensure: user mutation persisted, keeping ${_target.path}');
       return;
     }
     if (markerText != '$assetLen') {
@@ -171,7 +268,7 @@ class MapStyleStore extends _$MapStyleStore {
       await _copyBundled(data, assetLen);
       return;
     }
-    logger.log('$_logTag ensure: current.2gis up to date (${assetLen}B)');
+    logger.log('$_logTag ensure: ${_target.path} up to date (${assetLen}B)');
   }
 
   Future<void> _copyBundled(ByteData data, int assetLen) async {
@@ -190,9 +287,6 @@ class MapStyleStore extends _$MapStyleStore {
   }
 
   void _publish() {
-    final current = state.value;
-    if (current != null) {
-      state = AsyncData(current.bumped());
-    }
+    state = AsyncData(StyleFile(path: _target.path, revision: _revision));
   }
 }
