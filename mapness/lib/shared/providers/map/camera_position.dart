@@ -26,9 +26,15 @@ class CameraPosition extends _$CameraPosition {
   }
 
   Future<void> animateTo(CameraPositionMessage position) async {
-    final dgisController = ref.read(dgisControllerProvider);
+    // Await the controller future: on a cold-start deep link this runs before
+    // onMapCreated completes, and reading `.value` would silently drop the move.
+    final dgisController = await ref.read(dgisControllerProvider.future);
 
-    await dgisController.value?.moveCamera(
+    // An explicit camera move must win over the startup first-GPS-fix snap,
+    // which on Android can arrive seconds later and re-center on the user.
+    ref.read(dgisControllerProvider.notifier).cancelFirstFixCameraMove();
+
+    await dgisController.moveCamera(
       position,
       0.3,
       CameraAnimationTypeMessage.linear,
