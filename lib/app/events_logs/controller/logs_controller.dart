@@ -1,4 +1,4 @@
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -37,11 +37,10 @@ class LogsViewModel {
   }
 
   void sendEventFromModel({required EventModel event}) async {
-// UX Cam Events
     try{
-      FlutterUxcam.logEventWithProperties(
+      BaladyAnalytics.instance.track(
         event.nameEvent,
-        event.toJson(),
+        properties: event.toJson(),
       );
       Sentry.captureException(
         SentryException(

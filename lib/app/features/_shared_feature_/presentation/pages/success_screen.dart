@@ -12,7 +12,7 @@ import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
-import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../core/utils/constants/analytics_events.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_features/rating_feature/models/rating_request.dart';
 import '../../../_shared_features/rating_feature/widgets/submit_rating_widget.dart';
@@ -94,16 +94,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
     switch (type) {
       case PAGE_TYPE.emtethal:
         CommonFunctions.sendEventToAnalytics(AppEvents.createComplianceSuccess);
-        CommonFunctions.sendUXCamEvent(
-          UXCamEvents.finishServiceComplianceCertificate,
+        CommonFunctions.sendAnalyticsEvent(
+          AnalyticsEvents.finishServiceComplianceCertificate,
         );
         break;
       case PAGE_TYPE.deleteEmtethal:
         break;
       case PAGE_TYPE.appointmentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
-        CommonFunctions.sendUXCamEvent(
-          UXCamEvents.finishServiceAppointmentBooking,
+        CommonFunctions.sendAnalyticsEvent(
+          AnalyticsEvents.finishServiceAppointmentBooking,
         );
 
         break;
@@ -126,22 +126,22 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
       case PAGE_TYPE.daem:
         CommonFunctions.sendEventToAnalytics(AppEvents.DaemSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceDaem);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceDaem);
         break;
 
       case PAGE_TYPE.dc:
         CommonFunctions.sendEventToAnalytics(
           AppEvents.damagedCarsReportSuccess,
         );
-        CommonFunctions.sendUXCamEvent(
-          UXCamEvents.finishServiceReportWriteOffVehicle,
+        CommonFunctions.sendAnalyticsEvent(
+          AnalyticsEvents.finishServiceReportWriteOffVehicle,
         );
         break;
 
       case PAGE_TYPE.vhr:
         CommonFunctions.sendEventToAnalytics(AppEvents.vhrRequestSuccess);
-        CommonFunctions.sendUXCamEvent(
-          UXCamEvents.finishServiceRetrieveImpoundedVehicle,
+        CommonFunctions.sendAnalyticsEvent(
+          AnalyticsEvents.finishServiceRetrieveImpoundedVehicle,
         );
 
         break;
@@ -155,13 +155,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
       case PAGE_TYPE.facilityIncidentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceSnapAndSend);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
       case PAGE_TYPE.incidentsScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceSnapAndSend);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
@@ -172,31 +172,31 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
       case PAGE_TYPE.msr:
         CommonFunctions.sendEventToAnalytics(AppEvents.municipalRequestSuccess);
-        CommonFunctions.sendUXCamEvent(
-          UXCamEvents.finishServiceMunicipalServiceRequest,
+        CommonFunctions.sendAnalyticsEvent(
+          AnalyticsEvents.finishServiceMunicipalServiceRequest,
         );
 
         break;
       case PAGE_TYPE.newVD:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceSnapAndSend);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
       case PAGE_TYPE.objction:
         CommonFunctions.sendEventToAnalytics(AppEvents.objectableSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceAppealRequest);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceAppealRequest);
 
         break;
       case PAGE_TYPE.qrDetailsScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceSnapAndSend);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 
       case PAGE_TYPE.qrDialog:
         CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
-        CommonFunctions.sendUXCamEvent(UXCamEvents.finishServiceSnapAndSend);
+        CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.finishServiceSnapAndSend);
 
         break;
 

@@ -155,7 +155,10 @@ class RemoteConfig {
   static Map<String, dynamic> get MunicipalServicesIDs =>
       _RemoteConfig.municipal_services_IDS[env]!;
 
-  static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
+  // BaladyAnalytics (our own pipeline) — mode read per-flavor from the loaded
+  // .env: legacy | dual | ours. Absent/unknown value falls back to `legacy`.
+  static String get baladyAnalyticsMode =>
+      dotenv.env['BALADY_ANALYTICS_MODE'] ?? 'legacy';
 
   static String get movingVeichleCategoryKey =>
       _RemoteConfig.movingVeichleCategoryKey[env]!;
@@ -267,14 +270,6 @@ class _RemoteConfig {
   );
 
   /////////////////////////
-
-  static final uxCamKey = _initValues<String>(
-    devVal: "",
-    stgVal: "3i45abbyrbljp32",
-    preVal: "3i45abbyrbljp32",
-    prodVal: "2w1otnta9bvvhzo",
-    urbiPreVal: "",
-  );
 
   static final mapRadius = _initValues<double>(
     devVal: 20000000000000.0,

@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/core/utils/constants/analytics_events.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
@@ -79,7 +79,7 @@ class SelectedPersonaCard extends StatelessWidget {
                     // Handle account selection with cross-group navigation
                     await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
                   } else {
-                    CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
+                    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
                     await BottomSheetDialog.showDraggableSheet(
                       context,
                       dialogKeyName: DialogName.delegatorsDialog,

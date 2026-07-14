@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_style.dart';
-import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../core/utils/constants/analytics_events.dart';
 import '../../../../core/utils/enums/date_form.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
@@ -66,7 +66,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
     sortBy = widget.params.sortBy;
     textEditingController?.text = widget.params.keyword ?? "";
 
-    CommonFunctions.sendUXCamEvent(UXCamEvents.Events_List_Click_Filter_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Filter_Event);
   }
 
   @override
@@ -403,8 +403,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                             selectedFees: Nullable(selectedFees),
                           ));
 
-                      CommonFunctions.sendUXCamEvent(
-                          UXCamEvents.Events_List_Click_Apply_Filter_Event);
+                      CommonFunctions.sendAnalyticsEvent(
+                          AnalyticsEvents.Events_List_Click_Apply_Filter_Event);
                     },
                   ),
                   const SizedBox(height: 16),

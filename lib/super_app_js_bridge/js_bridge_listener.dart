@@ -37,7 +37,7 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:path_provider/path_provider.dart';
@@ -823,11 +823,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           'MiniAppVersion': miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
         };
         if (data['type'] == "marketing") {
-          FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
-          Sentry.addBreadcrumb(Breadcrumb(message: data['event_name'], data: miniAppData));
+          BaladyAnalytics.instance.track(data['event_name'], properties: miniAppData);
+          Sentry.addBreadcrumb(
+            Breadcrumb(message: data['event_name'], data: miniAppData),
+          );
         } else if (data['type'] == "exception") {
           data.addAll(miniAppData);
-          FlutterUxcam.logEventWithProperties(data['event_name'], data);
+          BaladyAnalytics.instance.track(data['event_name'], properties: data);
           Sentry.captureEvent(
             SentryEvent(
               message: SentryMessage(data['event_name']),
@@ -857,7 +859,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         message: "Event tracked successfully",
         data: null,
       );
-      CommonFunctions.sendUXCamEvent(msg);
+      CommonFunctions.sendAnalyticsEvent(msg);
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -880,7 +882,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         message: "Event tracked successfully",
         data: null,
       );
-      CommonFunctions.sendUXCamEvent(msg);
+      CommonFunctions.sendAnalyticsEvent(msg);
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(

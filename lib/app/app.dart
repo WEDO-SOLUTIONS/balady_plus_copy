@@ -12,9 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/stream_audio/ui/pages/stream_audio_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -39,18 +39,10 @@ class App extends StatelessWidget {
       systemNavigationBarDividerColor: Color(0x00000000),
     ));
 
-    if (RemoteConfig.uxCamKey.isNotEmpty) {
-      FlutterUxConfig config = FlutterUxConfig(
-        enableAdvancedGestureRecognition: true,
-        enableCrashHandling: true,
-        enableMultiSessionRecord: true,
-        enableNetworkLogging: true,
-        userAppKey: RemoteConfig.uxCamKey,
-        enableAutomaticScreenNameTagging: false,
-      );
-      FlutterUxcam.optIntoSchematicRecordings();
-      FlutterUxcam.startWithConfiguration(config);
-    }
+    // Idempotent: mapness `entry_point` calls configure too, first one wins.
+    BaladyAnalytics.instance.configure(
+      mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
+    );
 
     return MultiProvider(
       providers: [
@@ -156,7 +148,7 @@ class AppWidgetState extends State<AppWidget> {
                       navigatorObservers: [
                         SentryNavigatorObserver(),
                         BotToastNavigatorObserver(),
-                        FlutterUxcamNavigatorObserver(),
+                        BaladyAnalyticsNavigatorObserver(),
                         MapnessRouteObserver(),
                       ],
                       localizationsDelegates: translator.delegates.toList()..add(CountryLocalizations.delegate),

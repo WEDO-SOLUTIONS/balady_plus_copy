@@ -28,7 +28,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:hijri/hijri_calendar.dart';
 import 'package:http/http.dart' as http;
@@ -36,6 +35,7 @@ import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart' show getExternalStorageDirectory, getTemporaryDirectory;
@@ -68,7 +68,7 @@ import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../errors/exceptions.dart';
 import './utils_exports.dart' show AppColor, AppLanguage, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
 import 'constants/dialog_names.dart';
-import 'constants/ux_cam_events.dart';
+import 'constants/analytics_events.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -1298,8 +1298,8 @@ class CommonFunctions {
         },
       );
 
-      // UX Cam Events
-      if (RemoteConfig.uxCamKey.isNotEmpty) {
+      // API error analytics event
+      if (BaladyAnalytics.instance.mode.sendToOurs) {
         Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ?? response?.requestOptions.headers) ?? {};
         headersMap.remove("Authorization");
         headersMap.remove("authorization");
@@ -1326,7 +1326,7 @@ class CommonFunctions {
         String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
 
         if (URL != null) {
-          FlutterUxcam.logEventWithProperties("APIError", {
+          BaladyAnalytics.instance.track("APIError", properties: {
             "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
             "Data": data.length <= 1024 ? data : data.substring(0, 1023),
             "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
@@ -1478,7 +1478,7 @@ class CommonFunctions {
   }
 
   static void openSnapAndSend() async {
-    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.SnapAndSend_Open_From_Home_Event);
 
     NavigationService.navigatorKey.currentState!.pushNamed(RouteName.vDAllTypesScreen);
   }
@@ -1534,9 +1534,9 @@ class CommonFunctions {
     //     .add(DashboardEventInitial());
   }
 
-  static void sendUXCamEvent(String event) {
+  static void sendAnalyticsEvent(String event) {
     try {
-      FlutterUxcam.logEvent(event);
+      BaladyAnalytics.instance.track(event);
       Sentry.addBreadcrumb(Breadcrumb(message: event));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -1549,9 +1549,9 @@ class CommonFunctions {
     }
   }
 
-  static void sendUXCamEventWithProperties(String event, Map<String, dynamic> data) {
+  static void sendAnalyticsEventWithProperties(String event, Map<String, dynamic> data) {
     try {
-      FlutterUxcam.logEventWithProperties(event, data);
+      BaladyAnalytics.instance.track(event, properties: data);
       Sentry.addBreadcrumb(Breadcrumb(message: event, data: data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

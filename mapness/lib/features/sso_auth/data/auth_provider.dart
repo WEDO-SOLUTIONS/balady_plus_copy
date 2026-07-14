@@ -2,8 +2,8 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
@@ -44,7 +44,7 @@ class Auth extends _$Auth {
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logOut');
     await mixpanel?.reset();
-    await FlutterUxcam.setUserIdentity(null);
+    BaladyAnalytics.instance.resetIdentity();
 
     // Notify the map about authorization change
     await notifyAuthorizationChange(isAuthorized: false);
@@ -114,7 +114,7 @@ class Auth extends _$Auth {
     final userId = CommonProperties.userInfo?.idNo;
     await mixpanel?.identify('$userId');
 
-    await FlutterUxcam.setUserIdentity(userId);
+    BaladyAnalytics.instance.identify(userId: userId);
     return CommonProperties.userInfo;
   }
 
