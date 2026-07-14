@@ -5,6 +5,7 @@ class RoutingPublicPedestrian extends StatelessWidget {
   final double? topPadding;
   final double? bottomPadding;
   final double? horizontalPadding;
+
   const RoutingPublicPedestrian({
     required this.data,
     this.topPadding,
@@ -33,7 +34,7 @@ class RoutingPublicPedestrian extends StatelessWidget {
                 size: 16,
               ),
               Text(
-                context.l10n.toSwitch,
+                data.isTransfer ? context.l10n.toSwitch : context.l10n.onFoot,
                 style: textStyle.copyWith(color: context.colors.foregroundSoft),
               ),
               Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),
