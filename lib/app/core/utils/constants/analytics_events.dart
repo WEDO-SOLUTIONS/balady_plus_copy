@@ -1,4 +1,4 @@
-class UXCamEvents {
+class AnalyticsEvents {
 // Quran
   static String startServiceQuran = "Start_Service_Quran"; //Done
 

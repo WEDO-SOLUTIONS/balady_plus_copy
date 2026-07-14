@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../core/utils/constants/analytics_events.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../shared_feature_exports.dart';
 import 'dialog_header.dart';
@@ -29,7 +29,7 @@ class _BuildingRequirementsDialogState
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.buildingCompliance);
 
-    CommonFunctions.sendUXCamEvent(UXCamEvents.complianceCondition);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.complianceCondition);
     readComplianceData();
   }
 

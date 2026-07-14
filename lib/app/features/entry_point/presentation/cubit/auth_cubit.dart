@@ -15,7 +15,7 @@ import 'package:flutter/widgets.dart' show WidgetsBinding;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -610,21 +610,22 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               errorMessage: "",
             ),
           );
-          FlutterUxcam.setUserIdentity(user.idNo);
-          FlutterUxcam.setUserProperty("sub", user.sub ?? "");
-          FlutterUxcam.setUserProperty("name", user.arName ?? "");
-          FlutterUxcam.setUserProperty("en_name", user.enName ?? "");
-          FlutterUxcam.setUserProperty("login_type", user.loginType.name ?? "");
-          FlutterUxcam.setUserProperty(
-            "sex",
-            user.sex == "1"
-                ? "male"
-                : user.sex == "2"
-                ? "female"
-                : "N/A",
+          BaladyAnalytics.instance.identify(
+            userId: user.idNo,
+            traits: {
+              "sub": user.sub ?? "",
+              "name": user.arName ?? "",
+              "en_name": user.enName ?? "",
+              "login_type": user.loginType.name ?? "",
+              "sex": user.sex == "1"
+                  ? "male"
+                  : user.sex == "2"
+                  ? "female"
+                  : "N/A",
+              "nationality": user.nationality ?? "N/A",
+              "birthday": user.dob ?? "N/A",
+            },
           );
-          FlutterUxcam.setUserProperty("nationality", user.nationality ?? "N/A");
-          FlutterUxcam.setUserProperty("birthday", user.dob ?? "N/A");
           // Sentry.configureScope((scope) {
           //   scope.setUser(
           //     SentryUser(

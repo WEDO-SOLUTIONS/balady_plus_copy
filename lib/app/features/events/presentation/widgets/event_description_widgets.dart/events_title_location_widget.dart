@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
-import '../../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../../core/utils/constants/analytics_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../bloc/events_bloc.dart';
 import '../../bloc/events_state.dart';
@@ -69,8 +69,8 @@ class EventsTitleLocationWidget extends StatelessWidget {
                     ),
                   );
 
-                  CommonFunctions.sendUXCamEvent(
-                      UXCamEvents.Events_List_Click_Item_AddToCalender_Event);
+                  CommonFunctions.sendAnalyticsEvent(
+                      AnalyticsEvents.Events_List_Click_Item_AddToCalender_Event);
                 },
                 child: Container(
                   width: 36,

@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/core/utils/constants/analytics_events.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -97,7 +97,7 @@ class DashboardProductDropDown extends StatelessWidget {
   }
 
   Future<void> showProducts({required BuildContext context, required DashboardState state}) async {
-    CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Dashboard_Filter_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Dashboard_Filter_Event);
     final items = state.cardsStates[card]?.products.map((e) => e.name).toList() ?? [];
     items.insert(0, "all".tr());
 

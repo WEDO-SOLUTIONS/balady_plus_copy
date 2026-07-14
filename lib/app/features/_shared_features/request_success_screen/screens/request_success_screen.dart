@@ -31,8 +31,8 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
 //     // TODO: implement initState
 //     super.initState();
 //     CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
-//     CommonFunctions.sendUXCamEvent(
-//       UXCamEvents.finishServiceCancelLicenseService,
+//     CommonFunctions.sendAnalyticsEvent(
+//       AnalyticsEvents.finishServiceCancelLicenseService,
 //     );
 //   }
 

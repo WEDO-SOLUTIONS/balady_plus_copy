@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/core/utils/constants/analytics_events.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/message_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
@@ -30,8 +30,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
   void initState() {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.delegators);
-    CommonFunctions.sendUXCamEvent(UXCamEvents.openDashboard);
-    CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Dashboard_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.openDashboard);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Dashboard_Event);
   }
 
   @override

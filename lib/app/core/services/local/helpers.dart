@@ -9,7 +9,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:geolocator/geolocator.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -22,7 +22,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
 import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../dependency_injection/injection_container.dart';
-import '../../utils/constants/remote_config.dart';
 
 // use it insead of print() or debugPrint()
 extension Log<T extends Object> on T {
@@ -326,7 +325,7 @@ class Helpers {
       );
       Sentry.captureEvent(event);
 
-      if (RemoteConfig.uxCamKey.isNotEmpty) {
+      if (BaladyAnalytics.instance.mode.sendToOurs) {
         String data = body != null ? body.toString() : "";
 
         String queryString = qeuryParms ?? "";
@@ -335,7 +334,7 @@ class Helpers {
         String? URL = url;
 
         if (URL != null) {
-          FlutterUxcam.logEventWithProperties(url ?? "Error", {
+          BaladyAnalytics.instance.track(url ?? "Error", properties: {
             "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
             "Data": data.length <= 1024 ? data : data.substring(0, 1023),
             "QueryString":

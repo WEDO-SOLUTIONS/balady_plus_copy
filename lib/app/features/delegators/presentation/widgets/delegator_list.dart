@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../core/utils/constants/analytics_events.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonFunctions, CommonProperties;
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
@@ -38,7 +38,7 @@ class _DelegatorListState extends State<DelegatorList> {
   @override
   void initState() {
     super.initState();
-    CommonFunctions.sendUXCamEvent(UXCamEvents.openDelegators);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.openDelegators);
   }
 
   @override

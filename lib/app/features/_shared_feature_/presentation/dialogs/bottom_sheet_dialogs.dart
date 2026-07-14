@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart' show showCupertinoModalPopup;
 import 'package:flutter/material.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 
 import '../../../../core/utils/utils_exports.dart' show ContextConversion;
 
@@ -20,7 +20,7 @@ class BottomSheetDialog {
     final screenHeight = context.screenHeight;
     final screenStatusBarHeight = context.topPadding + 20.0;
 
-    if (dialogKeyName != null) await FlutterUxcam.tagScreenName(dialogKeyName);
+    if (dialogKeyName != null) BaladyAnalytics.instance.screen(dialogKeyName);
 
     dynamic value = (await showModalBottomSheet(
           context: context,
@@ -46,7 +46,7 @@ class BottomSheetDialog {
         )) ??
         false;
 
-    if (currentRouteName != null) await FlutterUxcam.tagScreenName(currentRouteName);
+    if (currentRouteName != null) BaladyAnalytics.instance.screen(currentRouteName);
 
     return value;
   }

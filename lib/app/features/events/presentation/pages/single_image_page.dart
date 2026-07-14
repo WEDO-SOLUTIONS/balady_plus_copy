@@ -16,7 +16,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../core/utils/constants/analytics_events.dart';
 import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
 
 class SingleEventDescriptionPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _SingleEventDescriptionPageState
   void initState() {
     super.initState();
 
-    CommonFunctions.sendUXCamEvent(UXCamEvents.Events_Open_Item_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_Open_Item_Event);
   }
 
   String img = "";
@@ -151,8 +151,8 @@ class _SingleEventDescriptionPageState
                                             );
                                           }
 
-                                          CommonFunctions.sendUXCamEvent(
-                                            UXCamEvents
+                                          CommonFunctions.sendAnalyticsEvent(
+                                            AnalyticsEvents
                                                 .Events_List_Click_Item_Share_Event,
                                           );
                                         },
@@ -237,8 +237,8 @@ class _SingleEventDescriptionPageState
                                   state.eventDetails.ticketUrl,
                                 );
 
-                                CommonFunctions.sendUXCamEvent(
-                                  UXCamEvents
+                                CommonFunctions.sendAnalyticsEvent(
+                                  AnalyticsEvents
                                       .Events_List_Click_Item_Move_To_Details_Event,
                                 );
                               },
