@@ -1,5 +1,9 @@
 package com.dgis.map.android_auto
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.graphics.Color
@@ -7,6 +11,7 @@ import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import androidx.core.content.ContextCompat
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
@@ -97,6 +102,31 @@ class NavigationScreen(
         }
     }
 
+    private val locationModeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
+                checkLocationPermissionAndState()
+            }
+        }
+    }
+
+    private fun registerLocationModeReceiver() {
+        ContextCompat.registerReceiver(
+            carContext,
+            locationModeReceiver,
+            IntentFilter(LocationManager.MODE_CHANGED_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    private fun unregisterLocationModeReceiver() {
+        try {
+            carContext.unregisterReceiver(locationModeReceiver)
+        } catch (_: IllegalArgumentException) {
+            // Receiver was not registered.
+        }
+    }
+
     private fun hasLocationPermission(): Boolean {
         return carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
@@ -107,7 +137,12 @@ class NavigationScreen(
 
     private fun checkLocationPermissionAndState() {
         if (!hasLocationPermission()) {
-            if (screenManager.top !is RequestPermissionScreen) {
+            if (isNavigation || isFreeRoam) {
+                if (locationState != LocationState.NOT_AVAILABLE) {
+                    locationState = LocationState.NOT_AVAILABLE
+                    invalidate()
+                }
+            } else if (screenManager.top !is RequestPermissionScreen) {
                 screenManager.push(
                     RequestPermissionScreen(carContext) {
                         mapController.onLocationOPermissionGranted()
@@ -163,17 +198,20 @@ class NavigationScreen(
                 override fun onResume(owner: LifecycleOwner) {
                     checkLocationPermissionAndState()
                     registerLocationSettingsObserver()
+                    registerLocationModeReceiver()
                     tryToShowFavourites()
                 }
 
                 override fun onPause(owner: LifecycleOwner) {
                     unregisterLocationSettingsObserver()
+                    unregisterLocationModeReceiver()
                 }
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                     favouritesUpdateJob?.cancel()
                     unregisterLocationSettingsObserver()
+                    unregisterLocationModeReceiver()
                     coroutineScope.cancel()
                 }
             }
