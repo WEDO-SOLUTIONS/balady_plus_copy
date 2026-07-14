@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -41,6 +40,11 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
@@ -55,11 +59,6 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -106,6 +105,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
+import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -195,6 +195,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
   StreamSubscription? _navigationEventsListener;
+
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
     return language == Language.arabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
@@ -887,7 +888,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
               .read(appRouterProvider)
               .replaceOrPush(
                 route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
-                toCompareRoutes: [RoutingRoutesRoute.page],
+                shouldPopAndPush: true,
+                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
               );
 
         case ShortLinkResponseTrip(:final payload):
@@ -898,7 +900,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
                   points: payload.route.toRouteParamsPointWithLabels(),
                   navType: payload.route.type.toMessage(),
                 ),
-                toCompareRoutes: [RoutingRoutesRoute.page],
+                shouldPopAndPush: true,
+                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
               );
       }
       return true;
@@ -1304,7 +1307,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         closestPoint: location,
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
+      toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
     );
   }
 
