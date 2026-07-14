@@ -1455,14 +1455,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.2"
-  flutter_uxcam:
-    dependency: "direct main"
-    description:
-      name: flutter_uxcam
-      sha256: "234783e815353269b36c203416ed0140db5dc4a8b288adaa3a437ebd39d7aa8a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.7.13"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
