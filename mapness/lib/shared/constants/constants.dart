@@ -19,13 +19,13 @@ class MapnessConstants {
   static const analyticsTripStopped = 'tripStopped';
   static const analyticsSearchInThisAreaPressed = 'analyticsSearchInThisAreaPressed';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+  static const activeNavigationCursorPrefsKey = 'activeNavigationCursor';
 
   ///config region
   static const envConfigBoxKey = 'envConfigKey_4.7.3';
   static const envTypeKey = 'envTypeKey';
   static const vendorConfigKey = 'vendorConfigKey';
   static const firebaseAppEnvConfigKey = 'app_env_config';
-
 
   ///styles region
   //uncomment for tests

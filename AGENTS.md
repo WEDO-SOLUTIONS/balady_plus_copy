@@ -75,6 +75,8 @@ Detailed context is also split into nearest subtree agent files so future edits 
 - `mapness/lib/shared/providers/map/AGENTS.md`
 - `mapness/lib/features/ai_summary/AGENTS.md`
 - `mapness/lib/features/satellite/AGENTS.md`
+- `mapness/lib/features/navigation_cursor/AGENTS.md`
+- `mapness/lib/pages/navigator_settings/pages/cursors_page/AGENTS.md`
 - `urbi_map/AGENTS.md`
 
 - Do **not** build a new APK unless the user explicitly asks. The user asked to avoid accidental production APK rebuilds during diagnosis.
@@ -89,6 +91,7 @@ Detailed context is also split into nearest subtree agent files so future edits 
 - AI Summary header layout was adjusted for long English/Arabic labels: use constrained `AutoSizeText`/ellipsis in the title and keep the badge compact with `Flexible`, not a full-width `Expanded` gap.
 - Indoor floor-plan display is controlled through the `urbi_map` bridge method `setIndoorFloorPlansEnabled`. `DgisController` disables floor plans at map initialization and enables them when visible-rect zoom reaches the configured near-max threshold.
 - Satellite base-map ([BE-243](https://wedosolutions-sa.atlassian.net/browse/BE-243)) is a separate `toggleSatellite` bridge in `urbi_map` (not the weather heatmap bridge). The Dart provider is `@Riverpod(keepAlive: true)` because layers-sheet close would otherwise auto-dispose it and the UI would desync from the native raster source on reopen. Tile URL + token live in Firebase Remote Config under `satellite_config` with a bundled default; `{TOKEN}` is substituted Dart-side. See `mapness/lib/features/satellite/AGENTS.md`.
+- Navigation cursor picker ([BE-252](https://wedosolutions-sa.atlassian.net/browse/BE-252)) lets the user pick a 3D car model for turn-by-turn navigation. Bundled `classic` uses `styles.2gis` as-is; seven other models live on OCI Object Storage (`balady-plus-assets/cursors/`, region `me-jeddah-1`) and download on-demand into Application Support. Applying a non-classic cursor pipes bytes through BE-184's `DynamicStyleController.applyOverrides`. Full feature writeup in [`docs/features/BE-252-navigation-cursors.md`](docs/features/BE-252-navigation-cursors.md); CRUD scripts for the OCI bucket in [`scripts/cdn/`](scripts/cdn/) (write PAR is never in git — kept in shell env). Cache is filename-keyed: overwriting the same GLB on CDN does NOT propagate to installed apps — rename in the enum + ship, or add a manifest.
 
 Useful verification commands from this session:
 
