@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,39 @@ String _routeModeTabTitle(AppLocalizations l10n, RouteSearchOptionsMessage mode)
   }
   return l10n.nav_route;
 }
+
+TabsV2IconBuilder _routeModeTabIcon(
+  BuildContext context, {
+  required RouteSearchOptionsMessage mode,
+  required String semanticsLabel,
+  required bool noPublicTransportData,
+  required bool isPedestrianBlocked,
+  required bool isOffline,
+}) => TabsV2WidgetBuilder(
+  ({required bool isSelected}) {
+    final colors = context.colors;
+    return Semantics(
+      button: true,
+      selected: isSelected,
+      label: semanticsLabel,
+      child: ExcludeSemantics(
+        child: SizedBox(
+          height: Spacing.$6x,
+          width: Spacing.$6x,
+          child: Icon(
+            mode.icon(
+              context,
+              noPublicTransportData: noPublicTransportData,
+              isPedestrianBlocked: isPedestrianBlocked,
+              isOffline: isOffline,
+            ),
+            color: isSelected ? colors.foregroundDefault : colors.foregroundSoft,
+          ),
+        ),
+      ),
+    );
+  },
+);
 
 class RouteTabBar extends ConsumerWidget {
   final void Function(RouteSearchOptionsMessage) onChanged;
@@ -76,9 +110,13 @@ class RouteTabBar extends ConsumerWidget {
         onIndexChanged: (_) {},
         tabsContent: [
           TabsRowV2Content(
-            title: _routeModeTabTitle(l10n, lockedNavType!),
-            leadingIcon: TabsV2IconData(
-              lockedNavType!.icon(context, noPublicTransportData: false, isPedestrianBlocked: false, isOffline: false),
+            leadingIcon: _routeModeTabIcon(
+              context,
+              mode: lockedNavType!,
+              semanticsLabel: _routeModeTabTitle(l10n, lockedNavType!),
+              noPublicTransportData: false,
+              isPedestrianBlocked: false,
+              isOffline: false,
             ),
             onTap: () {},
           ),
@@ -105,14 +143,13 @@ class RouteTabBar extends ConsumerWidget {
         tabsContent: chips
             .map(
               (chip) => TabsRowV2Content(
-                title: _routeModeTabTitle(l10n, chip),
-                leadingIcon: TabsV2IconData(
-                  chip.icon(
-                    context,
-                    noPublicTransportData: !hasPublicTransport,
-                    isPedestrianBlocked: errorPedestrian,
-                    isOffline: noInternetException,
-                  ),
+                leadingIcon: _routeModeTabIcon(
+                  context,
+                  mode: chip,
+                  semanticsLabel: _routeModeTabTitle(l10n, chip),
+                  noPublicTransportData: !hasPublicTransport,
+                  isPedestrianBlocked: errorPedestrian,
+                  isOffline: noInternetException,
                 ),
                 onTap: () => onChanged(chip),
               ),

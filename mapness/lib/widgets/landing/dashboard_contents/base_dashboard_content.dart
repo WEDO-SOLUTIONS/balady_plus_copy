@@ -89,6 +89,7 @@ class BaseDashboardContent extends ConsumerWidget {
                 gradientColors: themeConfig.feedbackBannerGradient,
                 title: context.l10n.contribute,
                 subtitle: context.l10n.buildBaladyTogether,
+                semanticsLabel: context.l10n.a11yContributeBanner,
                 imageSizeCalculator: themeConfig.imageSizeCalculator,
               ),
             ),

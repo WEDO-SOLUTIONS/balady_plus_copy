@@ -36,7 +36,10 @@ class DashboardButton extends StatelessWidget {
             Text(
               "dashboard".tr(),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Frutiger', fontWeight: FontWeight.w400),
+              style: const TextStyle(
+                fontFamily: 'packages/balady_design_system/IBMPlexSansArabic',
+                fontWeight: FontWeight.w400,
+              ),
             ),
             SizedBox(width: context.w(9)),
           ],
