@@ -22,7 +22,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # echo "80.225.75.31 balady-unpub-stg.momah.gov.sa" | sudo tee -a /etc/hosts
 # 80.225.75.31 - balady-unpub-stg.momah.gov.sa
 
-version: 3.30.3+576
+version: 3.30.1+864
 #version: 3.13.1+452
 
 environment:
@@ -207,11 +207,11 @@ dependencies:
   ############################################################
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
-#    hosted: https://balady-unpub-stg.momah.gov.sa/
-#    version: 1.0.13
+   hosted: https://balady-unpub-stg.momah.gov.sa/
+   version: 1.0.13
     # TODO(Shady) update the latest version on new unpup
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.16
+    # hosted: https://baladyapp-unpub.urbi.ae/
+    # version: 1.0.16
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
