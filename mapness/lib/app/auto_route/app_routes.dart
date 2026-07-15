@@ -326,6 +326,11 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'cursors',
+          page: CursorsRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'voice_settings',
           page: VoiceSettingsRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
