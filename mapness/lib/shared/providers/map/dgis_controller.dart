@@ -40,7 +40,6 @@ DgisMapController? activeDgisController;
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
   late LocationSetupHelper _locationHelper;
-
   // Non-final so build() can replace it with a fresh open subject on each rebuild.
   BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
   bool? _indoorFloorPlansEnabled;
@@ -122,7 +121,19 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    await controller.loadStyles(MapnessConstants.mapStylesPath);
+    await _loadActiveStyle(controller);
+
+    // React to store revision bumps at runtime — repack / network / picker
+    // mutations all overwrite the same canonical file in place, so all we
+    // need to do here is re-run loadStylesFromPath on the (unchanged) path.
+    ref.listen<AsyncValue<StyleFile>>(mapStyleStoreProvider, (previous, next) {
+      final prevRev = previous?.value?.revision;
+      final nextFile = next.value;
+      if (nextFile == null || prevRev == nextFile.revision) {
+        return;
+      }
+      unawaited(_loadStyle(controller, nextFile.path));
+    });
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);
@@ -147,6 +158,31 @@ class DgisController extends _$DgisController {
       await controller.installVoice('voice-saud');
     } on PlatformException catch (e) {
       logger.log('Voice installation error: $e');
+    }
+  }
+
+  Future<void> _loadActiveStyle(DgisMapController controller) async {
+    final styleFile = await ref.read(mapStyleStoreProvider.future);
+    await _loadStyle(controller, styleFile.path);
+  }
+
+  Future<void> _loadStyle(DgisMapController controller, String absolutePath) async {
+    final sw = Stopwatch()..start();
+    try {
+      logger.log('[dynamic_style] loadStyle: loadStylesFromPath($absolutePath)');
+      await controller.loadStylesFromPath(absolutePath);
+      logger.log('[dynamic_style] loadStyle: applied in ${sw.elapsedMilliseconds}ms');
+    } on PlatformException catch (e) {
+      // If the canonical file is corrupt or missing, fall back to the
+      // bundled asset via the legacy loadStyles() path. This keeps the map
+      // functional; a subsequent app restart will let the store re-copy.
+      logger
+        ..log(
+          '[dynamic_style] loadStyle: FAILED $absolutePath after ${sw.elapsedMilliseconds}ms: $e',
+          logLevel: MapnessLogLevel.error,
+        )
+        ..log('[dynamic_style] loadStyle: falling back to bundled asset ${MapnessConstants.mapStylesPath}');
+      await controller.loadStyles(MapnessConstants.mapStylesPath);
     }
   }
 
@@ -181,16 +217,14 @@ class DgisController extends _$DgisController {
     _firstFixSubscription = Geolocator.getPositionStream(locationSettings: const LocationSettings())
         .take(1)
         .listen(
-          (position) {
-            controller.setCameraPosition(
-              CameraPositionMessage(
-                point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-                zoom: 17,
-                tilt: 0,
-                bearing: 0,
-              ),
-            );
-          },
+          (position) => controller.setCameraPosition(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+              zoom: 17,
+              tilt: 0,
+              bearing: 0,
+            ),
+          ),
           onError: (Object e) => logger.log('First GPS fix error: $e'),
           cancelOnError: true,
         );
