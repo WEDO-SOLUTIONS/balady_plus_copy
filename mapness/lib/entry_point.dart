@@ -720,6 +720,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
     );
+    // First legacy stream under the facade umbrella: events tracked with
+    // channels: {..., urbi} keep flowing to balady-metrics.urbi.ae.
+    BaladyAnalytics.instance.registerChannel(
+      BaladyAnalyticsChannel.urbi,
+      UrbiBaladyAnalyticsSink(analyticsClient),
+    );
     logger.log('BaladyAnalytics mode: ${BaladyAnalytics.instance.mode.name}');
   }
 
