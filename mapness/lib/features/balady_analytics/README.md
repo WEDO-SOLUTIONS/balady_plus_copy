@@ -1,11 +1,11 @@
-# BaladyAnalytics — собственная аналитика Balady+
+# BaladyAnalytics — Balady+ first-party analytics
 
-Фасад для сбора продуктовых и технических событий в **наш** self-hosted
-бэкенд (целевой стек — PostHog self-hosted, см. `docs/analytics/DEVOPS_BRIEF.md`).
-Появился при выпиливании мёртвого UXCam: все ~200 бывших UXCam-вызовов
-(теги экранов, кастомные события, исключения, identity) теперь стекаются сюда.
+A facade for collecting product and technical events into **our own** self-hosted
+backend (target stack — PostHog self-hosted, see `docs/analytics/DEVOPS_BRIEF.md`).
+It was introduced while ripping out the dead UXCam: all ~200 former UXCam calls
+(screen tags, custom events, exceptions, identity) now flow here.
 
-## Как пользоваться
+## Usage
 
 ```dart
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
@@ -16,36 +16,36 @@ BaladyAnalytics.instance.error(e, stack);
 BaladyAnalytics.instance.identify(userId: sub, traits: {...}); // null = logout
 ```
 
-В `mapness` продолжайте использовать существующую обёртку `Metrics`
-(`shared/lib/urbi_metrics.dart`) — она уже пишет в фасад. В host-оболочке —
-`CommonFunctions.sendAnalyticsEvent[WithProperties]`.
+Inside `mapness`, keep using the existing `Metrics` wrapper
+(`shared/lib/urbi_metrics.dart`) — it already writes to the facade. In the host
+shell, use `CommonFunctions.sendAnalyticsEvent[WithProperties]`.
 
-## Рубильник (режимы)
+## Kill switch (modes)
 
-`BALADY_ANALYTICS_MODE` в `.env.<flavor>` (compile-time):
+`BALADY_ANALYTICS_MODE` in `.env.<flavor>` (compile-time):
 
-| Режим | Legacy-потоки (Insider, BytePlus, Mixpanel, Urbi, Adjust, BSS) | Наш пайплайн |
+| Mode | Legacy streams (Insider, BytePlus, Mixpanel, Urbi, Adjust, BSS) | Our pipeline |
 |---|---|---|
-| `legacy` | работают как раньше | события фасада дропаются |
-| `dual` | работают как раньше | события фасада уходят к нам |
-| `ours` | пока работают (не сведены в фасад) | события фасада уходят к нам |
+| `legacy` | work as before | facade events are dropped |
+| `dual` | work as before | facade events are sent to us |
+| `ours` | still work for now (not yet folded into the facade) | facade events are sent to us |
 
-Сейчас `prod` = `legacy`, остальные флейворы = `dual`.
+Currently `prod` = `legacy`, all other flavors = `dual`.
 
-## Транспорт
+## Transport
 
-Пока `LoggingBaladyAnalyticsSink`: в debug печатает события в лог
-(`[BaladyAnalytics] ...`), в release — no-op, **ничего никуда не отправляется**.
-Боевой транспорт (PostHog `capture` batch) подключается заменой синка в
-`BaladyAnalytics.configure(...)` — call sites не трогаются.
+For now it is `LoggingBaladyAnalyticsSink`: in debug it prints events to the log
+(`[BaladyAnalytics] ...`), in release it is a no-op — **nothing is sent anywhere**.
+The production transport (PostHog `capture` batch) is wired up by swapping the sink in
+`BaladyAnalytics.configure(...)` — call sites remain untouched.
 
-## План миграции legacy-потоков (следующие шаги)
+## Legacy stream migration plan (next steps)
 
-1. ~~UXCam~~ — удалён, события ретаргечены в фасад (этот PR).
-2. Mixpanel (тайминги) → `track` с `duration_ms`.
-3. Urbi Analytics + AdvancedMetrics → фасад (наш же бэкенд, сменить endpoint).
-4. Insider/BytePlus продуктовые события → фасад дополнительным приёмником
-   через существующий `appAnalyticsProvider` (реализовать `AppAnalyticsRepository`).
-5. BSS **остаётся как есть** — важный серверный поток для поиска/карты;
-   в перспективе фасад может дублировать его события в наш бэкенд.
-6. Adjust (атрибуция) и Sentry (краши) — вне скоупа фасада.
+1. ~~UXCam~~ — removed, events retargeted to the facade (this PR).
+2. Mixpanel (timings) → `track` with `duration_ms`.
+3. Urbi Analytics + AdvancedMetrics → facade (same backend of ours, just switch the endpoint).
+4. Insider/BytePlus product events → facade via an additional receiver
+   through the existing `appAnalyticsProvider` (implement `AppAnalyticsRepository`).
+5. BSS **stays as is** — an important server-side stream for search/map;
+   eventually the facade may mirror its events into our backend.
+6. Adjust (attribution) and Sentry (crashes) — out of scope for the facade.
