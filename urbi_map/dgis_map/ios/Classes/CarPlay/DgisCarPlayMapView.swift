@@ -7,20 +7,26 @@ protocol DgisCarPlayMapViewDelegate {
     func viewDidLoad(with map: Map)
 }
 
-class DgisCarPlayMapView: UIViewController {
+class DgisCarPlayMapView: UIViewController, CPSessionConfigurationDelegate {
     static let defaultCameraPositionPoint = CameraPositionPoint(x: 0.5, y: 0.8)
     static let defaultCameraPosition = GeoPoint(latitude: 24.712301, longitude: 46.674175)
     static let defaultCameraZoom = Zoom(value: 17)
-    
+
     private let map: Map
     private let mapView: (UIView & IMapView)
     private let cpWindow: CPWindow
     private lazy var speedControl = createSpeedControlView()
-    
+
     private var myLocationControlModel: MyLocationControlModel?
     private var myLocationSource: MyLocationMapObjectSource?
-    
+
     private var cancellables = Set<Cancellable>()
+
+    // Day/night handling: driven by CarPlay's own content style plus tunnel detection on
+    // the active route. Neither of these existed for the CarPlay map before this change.
+    private var sessionConfiguration: CPSessionConfiguration?
+    private var tunnelDetector: TunnelDetector?
+    private var isInTunnel = false
     
     init(
         map: Map,
@@ -124,12 +130,14 @@ class DgisCarPlayMapView: UIViewController {
         ])
         view.addSubview(speedControl.view)
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
-        
+
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
+
+        setupAppearance()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         DgisMapInitializer.shared.getNavigationManager().mapManager.removeMap(map: map)
         mapView.subviews.forEach { $0.removeFromSuperview() }
@@ -139,6 +147,40 @@ class DgisCarPlayMapView: UIViewController {
         }
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
+
+        tunnelDetector?.cancel()
+        tunnelDetector = nil
+        sessionConfiguration = nil
+    }
+
+    // MARK: - Day/night appearance
+
+    private func setupAppearance() {
+        let sessionConfiguration = CPSessionConfiguration(delegate: self)
+        self.sessionConfiguration = sessionConfiguration
+
+        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
+            guard let self else { return }
+            self.isInTunnel = isInTunnel
+            self.applyAppearance(contentStyle: self.sessionConfiguration?.contentStyle ?? [])
+        }
+
+        applyAppearance(contentStyle: sessionConfiguration.contentStyle)
+    }
+
+    /// Combines CarPlay's suggested content style with tunnel detection: night style wins
+    /// if either the system asks for dark content or the vehicle is currently in a tunnel.
+    private func applyAppearance(contentStyle: CPContentStyle) {
+        let isNight = contentStyle.contains(.dark) || isInTunnel
+        mapView.appearance = isNight ? .universal("night") : .universal("day")
+    }
+
+    func sessionConfiguration(
+        _ sessionConfiguration: CPSessionConfiguration,
+        contentStyleChanged contentStyle: CPContentStyle
+    ) {
+        applyAppearance(contentStyle: contentStyle)
     }
     
     private func createSpeedControlView() -> (
