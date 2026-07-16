@@ -100,6 +100,7 @@ build_apk_qa:
     #!/bin/bash
     set -euo pipefail
     print_style '' 'yellow' '> build apk...'
+    rm -rf android/app/build
     fvm flutter build apk --flavor stg --target lib/main_stg.dart --release  {{ dart_define }}
     print_style '' 'yellow' '< build ready'
 
