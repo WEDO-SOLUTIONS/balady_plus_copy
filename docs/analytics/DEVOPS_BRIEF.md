@@ -16,14 +16,22 @@
 
 ## What to deploy
 
-**PostHog self-hosted** (https://posthog.com/docs/self-host):
+**PostHog self-hosted** (https://posthog.com/docs/self-host).
+**The pilot is already deployed** on a temporary host (Selectel, `153.80.192.8.sslip.io`) —
+the step-by-step runbook with the server spec, the secrets involved and the teardown
+procedure: **`infra/analytics/README.md`**. For the permanent perimeter, repeat the same steps:
 
-- Option A (starter/pilot): `docker compose` on a single VM —
-  4 vCPU / 16 GB RAM / 200 GB SSD is enough to begin with.
-- Option B (production): Helm chart on k8s. Inside: ClickHouse (events),
-  PostgreSQL (metadata), Redis, MinIO/S3 (session recordings, if enabled).
-- A domain like `analytics.<our-perimeter>` + TLS. UI access — via team SSO/VPN.
-- Backups: ClickHouse + PostgreSQL, event retention — 12 months (negotiable).
+- A VM with Ubuntu 22.04/24.04 x86_64, 4 vCPU / 16 GB RAM / 100+ GB SSD, ports 80/443.
+- The official `deploy-hobby` (docker compose, ~30 containers: ClickHouse,
+  Kafka, PostgreSQL, Redis, Temporal and others). k8s/Helm is no longer
+  supported by the vendor — compose only.
+- A domain like `analytics.<our-perimeter>` + TLS (Caddy obtains LetsEncrypt
+  certificates itself). UI access — via team SSO/VPN.
+- Backups: ClickHouse + PostgreSQL + `/opt/posthog/.env`, event retention —
+  12 months (negotiable).
+- Keep in mind: there is no vendor support for self-hosted (the product is "as is"),
+  upgrades are on us (`bin/upgrade-hobby`); the rust services are pulled with the
+  `:master` tag — pin image digests before going beyond the pilot.
 
 ## What requests the app will send (and why)
 
