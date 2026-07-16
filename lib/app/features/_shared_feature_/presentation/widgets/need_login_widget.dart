@@ -32,8 +32,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
   Widget build(BuildContext context) {
     return BlocListener<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.authenticated &&
-            widget.onSuccessLogin != null) {
+        if (state.status == AuthStatus.authenticated && widget.onSuccessLogin != null) {
           widget.onSuccessLogin!(true);
         }
       },
@@ -46,12 +45,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             mainAxisSize: MainAxisSize.min,
             children: [
               /// Content
-              Image.asset(
-                "assets/icons/png/lockv.png",
-                width: 73,
-                height: 88,
-                fit: BoxFit.cover,
-              ),
+              Image.asset("assets/icons/png/lockv.webp", width: 73, height: 88, fit: BoxFit.cover),
               // const CustomSvgIconWidget(
               //   IconPath.lock,
               //   iconSize: 82,
@@ -80,10 +74,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
               /// Actions Buttons
               if (!widget.withoutActions) ...[
                 EnhancedCustomElevatedButtonWidget(
-                  btnPressed: () => CommonFunctions.onLogin(
-                    isMunicipality: true,
-                    mainPage: widget.mainPage,
-                  ),
+                  btnPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: widget.mainPage),
                   btnText: ("signInButton").tr(),
                   btnTextSize: 18,
                   btnTextWeight: AppFontWeight.bold,
@@ -148,12 +139,7 @@ class EmptyListWidget extends StatelessWidget {
           children: [
             Image.asset(img, width: imgWidth, height: imgHeight),
             const CustomVerticalSpace(height: 48),
-            CustomTextWidget(
-              title ?? "",
-              fontSize: 17,
-              fontColor: AppColor.black800,
-              maxLines: 2,
-            ),
+            CustomTextWidget(title ?? "", fontSize: 17, fontColor: AppColor.black800, maxLines: 2),
             const CustomVerticalSpace(height: 13),
             CustomTextWidget(
               desc ?? "",
@@ -162,8 +148,7 @@ class EmptyListWidget extends StatelessWidget {
               fontColor: AppColor.black500,
               fontWeight: AppFontWeight.medium,
             ),
-            if (btnText.isNotEmpty && btnPressed != null)
-              const CustomVerticalSpace(height: 30),
+            if (btnText.isNotEmpty && btnPressed != null) const CustomVerticalSpace(height: 30),
             if (btnText.isNotEmpty && btnPressed != null)
               EnhancedCustomElevatedButtonWidget(
                 btnPressed: btnPressed,
