@@ -969,8 +969,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         finishPoint.geoPoint.longitude,
       );
 
-      // If distance > 20 meters, check for indoor support (switch to pedestrian)
-      if (distance > 0.02) {
+      // If distance > 10 meters, check for indoor support (switch to pedestrian)
+      if (distance > 0.01) {
         bool supportsIndoor = false;
         // Check if we have objectId to fetch building info
         if (finishPoint.dgisObjectId != null) {
