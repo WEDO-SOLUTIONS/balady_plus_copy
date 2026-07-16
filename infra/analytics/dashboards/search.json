@@ -1,0 +1,68 @@
+{
+  "dashboard": {
+    "name": "Balady+ · Search",
+    "description": "What users search for, the search funnel and empty-result share. Provisioned from infra/analytics/dashboards/search.json."
+  },
+  "insights": [
+    {
+      "name": "Top search queries (tag cloud as table)",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [
+            { "kind": "EventsNode", "event": "searchByText", "name": "searchByText" },
+            { "kind": "EventsNode", "event": "quickSearch", "name": "quickSearch" }
+          ],
+          "breakdownFilter": { "breakdown": "query", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsTable" }
+        }
+      }
+    },
+    {
+      "name": "Search funnel: initiated → results → result opened",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "FunnelsQuery",
+          "series": [
+            { "kind": "EventsNode", "event": "Search::unique_search_initialized", "name": "Search initiated" },
+            { "kind": "EventsNode", "event": "Search::search_result", "name": "Results shown" },
+            { "kind": "EventsNode", "event": "Search::full_search_result_pressed", "name": "Result opened" }
+          ],
+          "funnelsFilter": { "funnelVizType": "steps" }
+        }
+      }
+    },
+    {
+      "name": "Suggest funnel: suggestions shown → suggestion pressed",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "FunnelsQuery",
+          "series": [
+            { "kind": "EventsNode", "event": "Search::suggest_result", "name": "Suggestions shown" },
+            { "kind": "EventsNode", "event": "Search::suggestion_pressed", "name": "Suggestion pressed" }
+          ],
+          "funnelsFilter": { "funnelVizType": "steps" }
+        }
+      }
+    },
+    {
+      "name": "Empty search results, % of searches",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [
+            { "kind": "EventsNode", "event": "Search::empty_search_result", "name": "Empty results" },
+            { "kind": "EventsNode", "event": "Search::search_result", "name": "Results shown" }
+          ],
+          "trendsFilter": { "display": "ActionsLineGraph", "formula": "A / (A + B) * 100" }
+        }
+      }
+    }
+  ]
+}

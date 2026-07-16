@@ -1,0 +1,66 @@
+{
+  "dashboard": {
+    "name": "Balady+ · Audience",
+    "description": "DAU/WAU/MAU, retention and platform/app-version breakdowns. Provisioned from infra/analytics/dashboards/audience.json — edit there, not here."
+  },
+  "insights": [
+    {
+      "name": "DAU / WAU / MAU",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [
+            { "kind": "EventsNode", "event": null, "name": "All events", "custom_name": "DAU", "math": "dau" },
+            { "kind": "EventsNode", "event": null, "name": "All events", "custom_name": "WAU", "math": "weekly_active" },
+            { "kind": "EventsNode", "event": null, "name": "All events", "custom_name": "MAU", "math": "monthly_active" }
+          ],
+          "trendsFilter": { "display": "ActionsLineGraph" }
+        }
+      }
+    },
+    {
+      "name": "Retention (first-time, daily)",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "RetentionQuery",
+          "retentionFilter": {
+            "retentionType": "retention_first_time",
+            "period": "Day",
+            "totalIntervals": 8,
+            "targetEntity": { "id": null, "type": "events" },
+            "returningEntity": { "id": null, "type": "events" }
+          }
+        }
+      }
+    },
+    {
+      "name": "Active users by platform",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": null, "name": "All events", "math": "dau" }],
+          "breakdownFilter": { "breakdown": "$os", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsLineGraph" }
+        }
+      }
+    },
+    {
+      "name": "Active users by app version",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": null, "name": "All events", "math": "dau" }],
+          "breakdownFilter": { "breakdown": "$app_version", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsBar" }
+        }
+      }
+    }
+  ]
+}

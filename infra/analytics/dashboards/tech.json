@@ -1,0 +1,96 @@
+{
+  "dashboard": {
+    "name": "Balady+ · Tech",
+    "description": "Handled exceptions, API errors and search response times. Provisioned from infra/analytics/dashboards/tech.json."
+  },
+  "insights": [
+    {
+      "name": "Handled exceptions ($exception)",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": "$exception", "name": "$exception" }],
+          "trendsFilter": { "display": "ActionsLineGraph" }
+        }
+      }
+    },
+    {
+      "name": "Top exceptions",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": "$exception", "name": "$exception" }],
+          "breakdownFilter": { "breakdown": "exception", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsTable" }
+        }
+      }
+    },
+    {
+      "name": "API errors by endpoint",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": "APIError", "name": "APIError" }],
+          "breakdownFilter": { "breakdown": "Url", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsTable" }
+        }
+      }
+    },
+    {
+      "name": "Search response time, avg & p90 (ms)",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "event": "search_duration",
+              "name": "search_duration",
+              "custom_name": "avg",
+              "math": "avg",
+              "math_property": "search_response_duration"
+            },
+            {
+              "kind": "EventsNode",
+              "event": "search_duration",
+              "name": "search_duration",
+              "custom_name": "p90",
+              "math": "p90",
+              "math_property": "search_response_duration"
+            }
+          ],
+          "trendsFilter": { "display": "ActionsLineGraph" }
+        }
+      }
+    },
+    {
+      "name": "Search response time by query type",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [
+            {
+              "kind": "EventsNode",
+              "event": "search_duration",
+              "name": "search_duration",
+              "math": "avg",
+              "math_property": "search_response_duration"
+            }
+          ],
+          "breakdownFilter": { "breakdown": "search_query_type", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsBar" }
+        }
+      }
+    }
+  ]
+}

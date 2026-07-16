@@ -1,0 +1,43 @@
+{
+  "dashboard": {
+    "name": "Balady+ · Screens & navigation",
+    "description": "Most visited screens and user paths, from $screen events. Provisioned from infra/analytics/dashboards/screens.json."
+  },
+  "insights": [
+    {
+      "name": "Top screens",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": "$screen", "name": "$screen" }],
+          "breakdownFilter": { "breakdown": "$screen_name", "breakdown_type": "event" },
+          "trendsFilter": { "display": "ActionsTable" }
+        }
+      }
+    },
+    {
+      "name": "Screen views over time",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "TrendsQuery",
+          "interval": "day",
+          "series": [{ "kind": "EventsNode", "event": "$screen", "name": "$screen" }],
+          "trendsFilter": { "display": "ActionsLineGraph" }
+        }
+      }
+    },
+    {
+      "name": "User paths between screens",
+      "query": {
+        "kind": "InsightVizNode",
+        "source": {
+          "kind": "PathsQuery",
+          "pathsFilter": { "includeEventTypes": ["$screen"] }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# Generated/pulled artifacts of a PostHog hobby deployment — never commit.
+# (The deployment itself lives on the server; this repo keeps only our own
+# runbook, smoke test and dashboard definitions.)
+posthog/
+share/
+compose/
+.env
+.env.services
+docker-compose.yml
+docker-compose.base.yml
+deploy.log
