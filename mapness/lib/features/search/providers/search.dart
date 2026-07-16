@@ -368,7 +368,7 @@ class Search extends _$Search {
       await ref
           .read(urbiAnalyticsProvider.notifier)
           .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
-      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider.notifier).trackWithPrint);
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
     } on Exception catch (_) {
@@ -443,7 +443,7 @@ class Search extends _$Search {
       await _ensureQuickFilterPlacesAreVisible(results: results);
 
       // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider.notifier).trackWithPrint);
       await mixpanel?.track('Search: quickSearch');
       // -- Analytics
 
@@ -524,7 +524,7 @@ class Search extends _$Search {
       await ref
           .read(urbiAnalyticsProvider.notifier)
           .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
-      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider.notifier).trackWithPrint);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
     } on Exception catch (_) {
@@ -592,7 +592,7 @@ class Search extends _$Search {
           : await _handleResults(results, text);
       _result = results;
       // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
+      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider.notifier).trackWithPrint);
       await mixpanel?.track('Search: searchByQuery');
       // -- Analytics
     } on Exception catch (_) {

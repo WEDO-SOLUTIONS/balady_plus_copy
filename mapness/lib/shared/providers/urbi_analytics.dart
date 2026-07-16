@@ -1,3 +1,4 @@
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:urbi_analytics/analytics.dart' show Analytics;
@@ -15,8 +16,15 @@ class UrbiAnalytics extends _$UrbiAnalytics {
   @override
   Analytics build() => analyticsClient;
 
+  /// Routed through the [BaladyAnalytics] facade: the event still reaches the
+  /// Urbi stream (via the `urbi` channel) AND our own pipeline. Signature is
+  /// [TrackEvent]-compatible so `AdvancedMetrics.stop*` helpers can take it.
   Future<void> trackWithPrint(String event, {Map<String, dynamic>? properties}) async {
     logger.log(event);
-    await state.track(event, properties: properties);
+    BaladyAnalytics.instance.track(
+      event,
+      properties: properties,
+      channels: const {BaladyAnalyticsChannel.ours, BaladyAnalyticsChannel.urbi},
+    );
   }
 }
