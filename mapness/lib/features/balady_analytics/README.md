@@ -34,10 +34,19 @@ Currently `prod` = `legacy`, all other flavors = `dual`.
 
 ## Transport
 
-For now it is `LoggingBaladyAnalyticsSink`: in debug it prints events to the log
-(`[BaladyAnalytics] ...`), in release it is a no-op — **nothing is sent anywhere**.
-The production transport (PostHog `capture` batch) is wired up by swapping the sink in
-`BaladyAnalytics.configure(...)` — call sites remain untouched.
+`PosthogBaladyAnalyticsSink` — the PostHog SDK (`posthog_flutter`), set up
+programmatically from `.env.<flavor>`:
+
+- `BALADY_ANALYTICS_URL` — the self-hosted PostHog host (see
+  `infra/analytics/README.md` for the server side);
+- `BALADY_ANALYTICS_KEY` — the project API key (`phc_…`, a public client-side
+  write key).
+
+When either value is empty the facade keeps `LoggingBaladyAnalyticsSink`: in
+debug it prints events to the log (`[BaladyAnalytics] ...`), in release it is a
+no-op — **nothing leaves the device**. `com.posthog.posthog.AUTO_INIT=false` is
+set in AndroidManifest.xml / Info.plist because the SDK is configured in code,
+not from the manifest.
 
 ## Channels (legacy streams under the facade umbrella)
 

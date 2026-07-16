@@ -4,6 +4,7 @@ import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_mode.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_navigator_observer.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
+export 'package:mapness/features/balady_analytics/posthog_balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/urbi_balady_analytics_sink.dart';
 
 /// Named destinations an event can be routed to. [ours] is our own pipeline

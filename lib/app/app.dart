@@ -42,6 +42,10 @@ class App extends StatelessWidget {
     // Idempotent: mapness `entry_point` calls configure too, first one wins.
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
+      sink: PosthogBaladyAnalyticsSink.tryCreate(
+        host: RemoteConfig.baladyAnalyticsUrl,
+        apiKey: RemoteConfig.baladyAnalyticsKey,
+      ),
     );
 
     return MultiProvider(
