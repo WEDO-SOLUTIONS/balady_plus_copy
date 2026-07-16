@@ -52,15 +52,30 @@ class LayerSliverList extends ConsumerWidget {
           behavior: HitTestBehavior.opaque,
           onTap: () async {
             if (value == layers_state.LayerType.favourites) {
+              // BALADY-3730: must be authAndOpen, not authOrOpen. doAuth()
+              // only OPENS the login screen and resolves immediately
+              // (EntryPointCubit.onLogin pushes the route and returns), so
+              // authOrOpen re-checks isLoggedIn while the user is still on
+              // the login form and silently skips the callback. authAndOpen
+              // subscribes to userStateStream and runs the callback after
+              // login actually completes.
               await ref
                   .read(authMethodsProvider.notifier)
-                  .authOrOpen(
+                  .authAndOpen(
                     context,
                     callback: () async {
-                      layersControl.handleTap(value);
+                      // Read the notifier fresh inside the callback — the
+                      // widget-scoped `layersControl` can be disposed while
+                      // the auth flow covers the sheet.
+                      await ref.read(layersControlsProvider.notifier).toggleFavourites();
                     },
                   );
-            } else if (value != layers_state.LayerType.busSubMenu) {
+            } else if (value == layers_state.LayerType.busSubMenu) {
+              // BALADY-3726: tap anywhere on the Bus card (incl. the thumbnail)
+              // opens the bus submenu — same behavior the label + chevron row
+              // already has via LayerSwitcherCard's inner gesture detector.
+              onIconTap?.call(value);
+            } else {
               layersControl.handleTap(value);
             }
 

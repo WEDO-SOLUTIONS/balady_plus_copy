@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/discover/discover.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -11,6 +15,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/features/trending/trending.dart';
 import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
@@ -25,6 +30,8 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/navi_search/navi_find_in_fav.dart';
 import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
+import 'package:mapness/widgets/search/ui/search_discover.dart';
+import 'package:mapness/widgets/search/ui/search_trending.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
@@ -261,6 +268,8 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
         final history = ref.watch(searchHistoryProvider(scope.value));
         final shouldShowHistoryAndFavorites = !widget.showMoreQuickFilters;
+        final discoverItems = ref.watch(discoverProvider).value ?? [];
+        final trendingItems = ref.watch(trendingProvider).value ?? [];
 
         return SafeArea(
           top: false,
@@ -301,6 +310,25 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                 ),
               if (shouldShowHistoryAndFavorites && history.isEmpty) const SizedBox(height: Spacing.$4x),
               if (shouldShowHistoryAndFavorites) const MapSearchHistory(),
+              if (discoverItems.isNotEmpty) ...[
+                const SizedBox(height: Spacing.$4x),
+                SearchDiscover(
+                  discoverItems: discoverItems,
+                  onItemTap: ref.read(searchProvider(scope.value).notifier).fetchSuggest,
+                ),
+              ],
+              if (trendingItems.isNotEmpty) ...[
+                const SizedBox(height: Spacing.$4x),
+                SearchTrending(
+                  items: trendingItems,
+                  onItemTap: (item) {
+                    context.router.replaceOrPush(
+                      route: PoiCardWidgetRoute(objectId: item.object.id),
+                      toCompareRoutes: [PoiCardWidgetRoute.page],
+                    );
+                  },
+                ),
+              ],
             ],
           ),
         );

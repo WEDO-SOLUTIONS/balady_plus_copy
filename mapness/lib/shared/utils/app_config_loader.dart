@@ -10,6 +10,38 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/remote_config_constants.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
+/// Bundled default for `satellite_config` so the satellite layer works
+/// out-of-the-box before Firebase Console is wired up. Firebase Remote
+/// Config overrides this value at runtime — rotating the ESRI token is
+/// just editing the JSON in the Console (no app release needed).
+///
+/// **Current default — Saudi Geoportal** (production endpoint). Token is
+/// KSA-restricted, server caps expiry at ~30 days regardless of the
+/// requested duration. Rotate via Firebase Console under the
+/// `satellite_config` key.
+///
+/// Alternate (dev/staging when Geoportal is unreachable — e.g. behind
+/// non-KSA network) — ESRI World Imagery, public, no token required.
+/// Restricted by ESRI ToS to non-commercial use; do not ship to prod.
+/// ```json
+/// {
+///   "layer_name": "satellite",
+///   "url_template": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+///   "token": "",
+///   "expires": 0
+/// }
+/// ```
+///
+/// Schema: `layer_name`, `url_template`, `token`, `expires`. `{TOKEN}`
+/// in the template is substituted at runtime; omit it for token-less
+/// servers.
+const String kSatelliteConfigBundledDefault =
+    '{"layer_name":"satellite",'
+    '"url_template":"https://www.geoportal.sa/basemap/rest/services/Imagery/BasemapImagery/MapServer/tile/{z}/{y}/{x}?token={TOKEN}",'
+    // '"token":"qiCZf9ZHurs_jUeR2KSOrJNpujNC13mbFVNxzpPwmUpe5d7TqEV2Nl0I9VmVPD5OsHMVSHcvVqYHaVLm94FhiItxsGpAcz2flsjDNB7AITA.",'
+    '"token":"qiCZf9ZHurs_jUeR2KSOrIk41Cwepa6yQkV5XY4CG-2MMKuA_S_CIwkZNy3M9AEa2CQomyYYZNTvALaKJdxEr5GX-8XnZjz1LbUvsKX3MNE.",'
+    '"expires":1784245894893}';
+
 class AppConfigLoader {
   AppConfigLoader._();
 
@@ -36,6 +68,14 @@ class AppConfigLoader {
           minimumFetchInterval: const Duration(minutes: 2),
         ),
       );
+
+      /// In-code defaults used until the Firebase Console value is fetched.
+      await remoteConfig.setDefaults({
+        RemoteConfigConstants.satelliteConfig: kSatelliteConfigBundledDefault,
+        // BALADY-3754: base-map switcher hidden until the satellite tile
+        // source is production-ready.
+        RemoteConfigConstants.baseMapSwitcherEnabled: false,
+      });
 
       /// Ensure Remote Config is initialized and activate the config values
       await remoteConfig.ensureInitialized();
@@ -86,6 +126,47 @@ class AppConfigLoader {
   static Future<String?> getDynamicPoiVisibility() async {
     final config = await _config?.future;
     return config?.getValue(RemoteConfigConstants.dynamicPoiVisibility).asString();
+  }
+
+  /// Returns the JSON string for the satellite raster tile overlay.
+  /// Expected shape:
+  /// `{"layer_name": "satellite",
+  ///   "url_template": "https://.../tile/{z}/{y}/{x}?token={TOKEN}",
+  ///   "token": "...",
+  ///   "expires": 1784245894893}`.
+  /// `expires` is milliseconds since epoch and is informational — the
+  /// controller logs a warning when the token is past expiry. Token is
+  /// substituted into url_template at runtime so it can rotate without
+  /// changing the URL field.
+  ///
+  /// Falls back to [kSatelliteConfigBundledDefault] when Firebase Remote Config
+  /// failed to initialize or returned an empty value, so the satellite
+  /// layer works offline / before Firebase Console is wired up.
+  static Future<String?> getSatelliteConfig() async {
+    final snapshot = await getSatelliteConfigSnapshot();
+    return snapshot.raw.isEmpty ? kSatelliteConfigBundledDefault : snapshot.raw;
+  }
+
+  /// Returns the raw FRC value together with its source flag — lets the
+  /// caller distinguish a `valueRemote` (server-supplied) value from a
+  /// `valueDefault` (bundled in `setDefaults`) one. When Firebase Remote
+  /// Config failed to initialize, returns the bundled default with source
+  /// `valueStatic` so the caller doesn't have to special-case nulls.
+  static Future<({String raw, ValueSource source})> getSatelliteConfigSnapshot() async {
+    final config = await _config?.future;
+    if (config == null) {
+      return (raw: kSatelliteConfigBundledDefault, source: ValueSource.valueStatic);
+    }
+    final value = config.getValue(RemoteConfigConstants.satelliteConfig);
+    return (raw: value.asString(), source: value.source);
+  }
+
+  /// BALADY-3754: whether the Default/Satellite base-map tiles are shown in
+  /// the layers sheet. Defaults to `false` (hidden) — both via `setDefaults`
+  /// and when Firebase Remote Config failed to initialize.
+  static Future<bool> isBaseMapSwitcherEnabled() async {
+    final config = await _config?.future;
+    return config?.getValue(RemoteConfigConstants.baseMapSwitcherEnabled).asBool() ?? false;
   }
 
   static Future<void> _saveAppConfig(FirebaseRemoteConfig? remoteConfig, EnvType envType) async {

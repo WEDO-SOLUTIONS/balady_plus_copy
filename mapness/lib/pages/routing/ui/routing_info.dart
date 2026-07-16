@@ -48,20 +48,31 @@ class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPointWithLabel> pointsWithLabel;
   final List<RouteParamsPoint?> points;
   final bool isHomeOrWork;
+  final ValueChanged<RouteSearchOptionsMessage>? onNavTypeChanged;
+  final ValueChanged<int>? onRouteIndexChanged;
+  final RouteSearchOptionsMessage? navType;
 
-  RoutingInfo({required this.pointsWithLabel, this.isHomeOrWork = false, super.key})
-    : points = pointsWithLabel.map((e) => e.value).toList();
+  RoutingInfo({
+    required this.pointsWithLabel,
+    this.isHomeOrWork = false,
+    this.onNavTypeChanged,
+    this.onRouteIndexChanged,
+    this.navType,
+    super.key,
+  }) : points = pointsWithLabel.map((e) => e.value).toList();
 
   @override
   ConsumerState<RoutingInfo> createState() => _RoutingInfoState();
 }
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
-  final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(_defaultNavType);
+  late final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(_initialNavType);
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
 
   bool _navigationStarted = false;
   RouteSearchOptionsMessage? _lockedNavType;
+
+  RouteSearchOptionsMessage get _initialNavType => widget.navType ?? _defaultNavType;
 
   @override
   void initState() {
@@ -73,17 +84,20 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _initialize() async {
+    _navType.addListener(_onNavTypeChanged);
     final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
     if (navState.isActive) {
       _lockedNavType = navState.navType;
       _navType.value = navState.navType!;
+      widget.onNavTypeChanged?.call(_navType.value);
       _isNavTypeLoading.value = false;
       setCameraPadding();
       hideActiveLayer();
       return;
     }
 
+    widget.onNavTypeChanged?.call(_navType.value);
     await _initializeNavType();
     setCameraPadding();
     hideActiveLayer();
@@ -163,7 +177,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _calculateNavigationType(Position? location) async {
-    var navType = _defaultNavType;
+    var navType = _initialNavType;
     final dgisController = ref.read(dgisControllerProvider).value;
     final carConnected = await ref.read(carConnectionProvider.future);
 
@@ -253,6 +267,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     Assets.icons.svg.intermediateStopNumbers.a09,
     Assets.icons.svg.intermediateStopNumbers.a10,
   ];
+
+  void _onNavTypeChanged() => widget.onNavTypeChanged?.call(_navType.value);
 
   Future<void> _updateIntermediateStopMarkers() async {
     final settings = MapObjectManagerSettings.intermediateStops();
@@ -392,13 +408,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   navType: navigatingType,
                   publicTransportVisibility: publicTransportVisibility,
                   routes: routes,
+                  onRouteIndexChanged: widget.onRouteIndexChanged,
                 ),
                 Spacing.$3x.heightBox,
                 RouteTabBar(
                   active: navigatingType,
                   onChanged: _onChanged,
                   points: widget.points,
-                  hasPublicTransport: publicTransportVisibility.asData?.value.hasPublicTransportRoutes ?? false,
+                  hasPublicTransport: publicTransportVisibility.value?.hasPublicTransportRoutes ?? false,
                   routes: routes,
                   lockedNavType: _lockedNavType,
                 ),
@@ -411,7 +428,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
-    if (_navigationStarted) return;
+    if (_navigationStarted) {
+      return;
+    }
     _navigationStarted = true;
     if (!ref.context.mounted) {
       _navigationStarted = false;

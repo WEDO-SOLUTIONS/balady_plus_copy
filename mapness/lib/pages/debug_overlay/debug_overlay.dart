@@ -21,22 +21,22 @@ class _DebugOverlayState extends State<DebugOverlay> {
 
   @override
   Widget build(BuildContext context) => Theme(
-        data: Theme.of(rootNavigatorKey.currentContext!),
-        child: Stack(
-          children: [
-            BugButton(
-              onTap: () {
-                _draggableController.animateTo(
-                  0.8,
-                  duration: const Duration(milliseconds: 250),
-                  curve: Curves.linear,
-                );
-              },
-            ),
-            DebugSheet(
-              draggableController: _draggableController,
-            ),
-          ],
+    data: Theme.of(rootNavigatorKey.currentContext!),
+    child: Stack(
+      children: [
+        BugButton(
+          onTap: () {
+            _draggableController.animateTo(
+              0.8,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.linear,
+            );
+          },
         ),
-      );
+        DebugSheet(
+          draggableController: _draggableController,
+        ),
+      ],
+    ),
+  );
 }

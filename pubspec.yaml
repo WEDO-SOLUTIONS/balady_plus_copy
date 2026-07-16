@@ -220,7 +220,6 @@ dependencies:
   #        ref: main
   #    path: /Users/abdelrahmanismail/StudioProjects/balady_design_system
 
-
   ############################################################
 
   huawei_location: ^6.16.0+300

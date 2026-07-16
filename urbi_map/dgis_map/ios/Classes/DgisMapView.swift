@@ -38,6 +38,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
     private var weatherHandler: WeatherHandler?
+    private var satelliteHandler: SatelliteHandler?
 
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
@@ -156,6 +157,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         self.weatherHandler = WeatherHandler(
+            sdkContext: self.sdk,
+            map: map
+        )
+
+        self.satelliteHandler = SatelliteHandler(
             sdkContext: self.sdk,
             map: map
         )
@@ -1207,6 +1213,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
     func toggleHeatmap(message: WeatherMapMessage, completion: @escaping (Result<Bool, any Error>) -> Void) {
         weatherHandler?.toggleHeatmap(message,completion: completion)
+    }
+
+    func toggleSatellite(message: SatelliteMapMessage, completion: @escaping (Result<Bool, any Error>) -> Void) {
+        satelliteHandler?.toggleSatellite(message, completion: completion)
     }
     
     func betterRouteResponse(response: BetterRouteResponseMessage, completion: @escaping (Result<Void, any Error>) -> Void) {

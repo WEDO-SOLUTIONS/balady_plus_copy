@@ -22,8 +22,10 @@ extension LayerTypeExt on LayerType {
     LayerType.metro ||
     LayerType.parkingLots ||
     LayerType.traffic ||
+    LayerType.three3D ||
+    LayerType.defaultMap ||
     LayerType
-        .three3D // || LayerType.roadEvents
+        .satellite // || LayerType.roadEvents
         => null,
   };
 
@@ -39,8 +41,10 @@ extension LayerTypeExt on LayerType {
     LayerType.jeddahBus => PlacesIcons.qibla,
     LayerType.parkingLots => TransportIcons.parkingEnable,
     LayerType.traffic ||
+    LayerType.three3D ||
+    LayerType.defaultMap ||
     LayerType
-        .three3D // || LayerType.roadEvents
+        .satellite // || LayerType.roadEvents
         => GeneralIcons.placeholder,
   };
 
@@ -57,7 +61,12 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => (ImageAssetType.svg, Assets.imagesSvg.layers.parking.keyName),
     LayerType.traffic => (ImageAssetType.svg, Assets.imagesSvg.layers.traffic.keyName),
     LayerType.three3D => (ImageAssetType.svg, Assets.imagesSvg.layers.a3D.keyName),
-    // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
+    // Raster thumbnails — LayerSwitcherCard switches to Image.asset based on
+    // file extension. Use .keyName (not .path) so the package prefix is
+    // applied — mapness is consumed as a package by balady_plus, so bare
+    // asset paths do not resolve from the host app.
+    LayerType.defaultMap => (ImageAssetType.image, Assets.images.layers.defaultMap.keyName),
+    LayerType.satellite => (ImageAssetType.image, Assets.images.layers.satellite.keyName),
   };
 
   String titleLocale(AppLocalizations l10n) => switch (this) {
@@ -73,6 +82,9 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => l10n.layersParking,
     LayerType.traffic => l10n.layersTraffic,
     LayerType.three3D => l10n.threeDee,
+    // TODO(satellite): switch to l10n keys once added to Localazy.
+    LayerType.defaultMap => l10n.defaultLayerTitle,
+    LayerType.satellite => l10n.satelliteLayerTitle,
     //LayerType.roadEvents => l10n.roadEvents.toLowerCase().toCapitalized(),
   };
 }

@@ -378,8 +378,8 @@ class _MakkahFooterSquareButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final iconColor = isFilled
         ? (colors.actionButtonIconColor == MakkahPoiConstants.normalActionIconColor
-            ? MakkahPoiConstants.filledActionIconColor
-            : colors.actionButtonIconColor)
+              ? MakkahPoiConstants.filledActionIconColor
+              : colors.actionButtonIconColor)
         : colors.actionButtonIconColor;
     return AppButton(
       buttonColorScheme: ButtonColorScheme.neutral,

@@ -4,6 +4,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -12,6 +13,8 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../shared/ui/toast/toast_overlay.dart';
 
 part 'poi_card_actions_provider.g.dart';
 
@@ -64,6 +67,13 @@ class PoiCardActions extends _$PoiCardActions {
       if (context == null) {
         return;
       }
+
+      ToastOverlay.of(context).show(
+        title: context.l10n.copyToastMsg,
+        actions: [
+          ToastAction(title: context.l10n.feedbackBreaksSheetClose),
+        ],
+      );
 
       final shareLink = await ShareUtil.getSharePOILink(
         context: context,
