@@ -31,6 +31,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
+import 'package:balady_plus/super_app_js_bridge/model/call_back_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
@@ -872,11 +873,36 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 },
               ),
             );
+            BaseResponse response = BaseResponse(
+              code: 200,
+              eventName: "openWebView",
+              message: "pdf_opened",
+              data: null,
+            );
+            handler.complete(response.jsonEncodeModel());
           } else {
-            CommonFunctions.openBaladyWebView(
+            List<String>? callbackUrls;
+            final cbList = data['callbackUrls'];
+            if (cbList is List) {
+              callbackUrls = cbList.map((e) => e.toString()).toList();
+            }
+
+            final result = await CommonFunctions.openBaladyWebView(
               data["url"],
               needLogin: data["needLogin"] ?? true,
+              callbackUrls: callbackUrls,
+              isObjections: data["isObjections"] ?? false,
             );
+
+            BaseResponse response = BaseResponse(
+              code: 200,
+              eventName: "openWebView",
+              message: "done",
+              data: result != null
+                  ? CallBackModel.fromJson(result as Map<String, dynamic>)
+                  : null,
+            );
+            handler.complete(response.jsonEncodeModel());
           }
         } else {
           BaseResponse response = BaseResponse(

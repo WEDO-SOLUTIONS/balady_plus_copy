@@ -20,6 +20,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   ///late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
   bool isLoading = true;
+  List<String> _callbackUrls = const [];
+  bool _didPop = false;
+
   @override
   void initState() {
     super.initState();
@@ -32,12 +35,59 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
     //  _progessStream = StreamController<double?>();
   }
 
+  bool _isAnyCallbackUrl(Uri? current, List<String> callbackUrls) {
+    if (current == null || callbackUrls.isEmpty) return false;
+
+    final currentStr = current.toString();
+
+    for (final cb in callbackUrls) {
+      final cleaned = cb.trim();
+      if (cleaned.isEmpty) continue;
+
+      if (currentStr.startsWith(cleaned)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  String? _matchedCallbackUrl(Uri? current, List<String> callbackUrls) {
+    if (current == null || callbackUrls.isEmpty) return null;
+    final currentStr = current.toString();
+
+    for (final cb in callbackUrls) {
+      final cleaned = cb.trim();
+      if (cleaned.isEmpty) continue;
+
+      if (currentStr.startsWith(cleaned)) {
+        return cleaned;
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    ({String requestNum, String url, bool? isObjections}) args =
-        ModalRoute.of(context)!.settings.arguments as ({String requestNum, String url, bool? isObjections});
+    final ({
+      String requestNum,
+      String url,
+      bool? isObjections,
+      List<String>? callbackUrls,
+    }) args = ModalRoute.of(context)!.settings.arguments as ({
+      String requestNum,
+      String url,
+      bool? isObjections,
+      List<String>? callbackUrls,
+    });
 
     String url = args.url.replaceAll("\n", "");
+
+    _callbackUrls = (args.callbackUrls ?? const [])
+        .map((e) => e.replaceAll("\n", "").trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
     return Scaffold(
       appBar: DefaultAppBarWidget(title: "back".tr()),
       body: SafeArea(
@@ -52,10 +102,34 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 useShouldOverrideUrlLoading: true,
               ),
               shouldOverrideUrlLoading: (controller, action) async {
+                final Uri? uri = action.request.url?.uriValue;
+
+                if (!_didPop && _isAnyCallbackUrl(uri, _callbackUrls)) {
+                  _didPop = true;
+
+                  final matched = _matchedCallbackUrl(uri, _callbackUrls);
+
+                  try {
+                    await controller.stopLoading();
+                  } catch (_) {}
+
+                  if (mounted) {
+                    Navigator.of(context).pop({
+                      "hitUrl": uri.toString(),
+                      "matchedCallback": matched,
+                      "query": uri?.queryParameters,
+                      "path": uri?.path,
+                    });
+                  }
+
+                  return NavigationActionPolicy.CANCEL;
+                }
+
                 return NavigationActionPolicy.ALLOW;
               },
               onWebViewCreated: (InAppWebViewController controller) {
                 _controller = controller;
+                _didPop = false;
               },
               initialUrlRequest: URLRequest(
                 // url: Uri.parse('https://flutter.dev/'),
