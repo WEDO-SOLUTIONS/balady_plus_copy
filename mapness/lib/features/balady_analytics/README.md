@@ -39,13 +39,42 @@ For now it is `LoggingBaladyAnalyticsSink`: in debug it prints events to the log
 The production transport (PostHog `capture` batch) is wired up by swapping the sink in
 `BaladyAnalytics.configure(...)` — call sites remain untouched.
 
+## Channels (legacy streams under the facade umbrella)
+
+An event can fan out to a legacy stream alongside ours while that stream is
+being migrated:
+
+```dart
+BaladyAnalytics.instance.track(
+  'stopSearchResponse',
+  properties: {...},
+  channels: {BaladyAnalyticsChannel.ours, BaladyAnalyticsChannel.urbi},
+);
+```
+
+`ours` is the sink passed to `configure(...)`; other channels are attached with
+`registerChannel(...)` (see `setupMapness` in `entry_point.dart`). The default
+is `{ours}` — steady state once a legacy stream is retired.
+
+Live legacy streams status (probed 2026-07-16 — all three vendor endpoints
+respond, none can be deleted yet):
+
+- **Urbi** — first stream under the umbrella: `UrbiBaladyAnalyticsSink`,
+  call sites fan out with `channels: {ours, urbi}`.
+- **Insider + BytePlus (DataFinder)** — keep flowing through
+  `appAnalyticsProvider`; `AppAnalyticsBaladyMirrorImpl` mirrors the exact same
+  events (names and property shapes match the BytePlus impl) into the facade.
+- **Mixpanel** — event flow already fully retargeted to the facade; the SDK
+  remains only for `identify`/super-properties and is a removal candidate in a
+  follow-up PR.
+
 ## Legacy stream migration plan (next steps)
 
-1. ~~UXCam~~ — removed, events retargeted to the facade (this PR).
-2. Mixpanel (timings) → `track` with `duration_ms`.
-3. Urbi Analytics + AdvancedMetrics → facade (same backend of ours, just switch the endpoint).
-4. Insider/BytePlus product events → facade via an additional receiver
-   through the existing `appAnalyticsProvider` (implement `AppAnalyticsRepository`).
+1. ~~UXCam~~ — removed, events retargeted to the facade.
+2. ~~Urbi Analytics~~ — under the umbrella as the `urbi` channel.
+3. ~~Insider/BytePlus product events~~ — mirrored into the facade via
+   `AppAnalyticsBaladyMirrorImpl` in `appAnalyticsProvider`.
+4. Mixpanel — remove the leftover SDK (`identify`/super-properties only).
 5. BSS **stays as is** — an important server-side stream for search/map;
    eventually the facade may mirror its events into our backend.
 6. Adjust (attribution) and Sentry (crashes) — out of scope for the facade.
