@@ -391,4 +391,13 @@ dependency_overrides:
   # Pin to avoid objective_c FFI crash on iOS Simulator
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
+  # Firebase 16.4.2 / 12.4.4 / 6.5.4 (current "latest" patch) reference a
+  # `FirebasePlugin` base class that does NOT exist in the latest published
+  # firebase_core_platform_interface (7.1.0, which only exports
+  # `FirebasePluginPlatform`). This breaks the Dart->kernel compile with
+  # "Type 'FirebasePlugin' not found". Pin to the last good patch until
+  # upstream flutterfire ships a fixed release.
+  firebase_messaging: 16.4.1
+  firebase_analytics: 12.4.3
+  firebase_remote_config: 6.5.3
 

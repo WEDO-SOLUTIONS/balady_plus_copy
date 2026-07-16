@@ -25,20 +25,37 @@ allprojects {
     }
 
     subprojects {
+        // home_widget declares glance "1.+", which resolves to 1.3.0-alpha02 requiring
+        // compileSdk 37 + AGP 9.x. The same force in app/build.gradle only covers :app's
+        // classpath — subprojects resolve their own, so pin here too.
+        configurations.all {
+            resolutionStrategy {
+                force 'androidx.glance:glance-appwidget:1.1.0'
+                force 'androidx.glance:glance:1.1.0'
+            }
+        }
         afterEvaluate { project ->
             if (project.hasProperty('android')) {
                 project.android {
                     if (namespace == null) {
                         namespace project.group
                     }
-                    // Set minimum compileSdkVersion/compileSdk to 30+ (required for Java 9+)
-                    // Ensure all plugins have at least SDK 30 for Java 17 compatibility
-                    def minSdk = 30
+                    // Set minimum compileSdkVersion/compileSdk to 34+ (androidx.fragment 1.7 /
+                    // androidx.window 1.2 refuse to compile against anything older).
+                    // otp_autofill 4.1.0 / smart_auth 1.1.1 / urbi_analytics 0.0.4 are pinned
+                    // to exactly 34: androidx.fragment 1.7 in their classpath demands >=34,
+                    // while the SDK 35+ stubs add @Nullable annotations (PackageInfo.signatures,
+                    // SigningInfo) that their Kotlin sources predate and fail to compile against.
+                    def legacyKotlinPlugins = ['otp_autofill', 'smart_auth', 'urbi_analytics']
+                    def pinnedSdk = legacyKotlinPlugins.contains(project.name) ? 34 : null
+                    def minSdk = 34
                     def targetSdk = 36
 
                     // Set compileSdk (new syntax)
                     try {
-                        if (compileSdk == null || (compileSdk instanceof Number && compileSdk < minSdk)) {
+                        if (pinnedSdk != null) {
+                            compileSdk = pinnedSdk
+                        } else if (compileSdk == null || (compileSdk instanceof Number && compileSdk < minSdk)) {
                             compileSdk = targetSdk
                         }
                     } catch (Exception e) {
@@ -47,7 +64,9 @@ allprojects {
 
                     // Set compileSdkVersion (old syntax) as fallback
                     try {
-                        if (compileSdkVersion == null || (compileSdkVersion instanceof Number && compileSdkVersion < minSdk)) {
+                        if (pinnedSdk != null) {
+                            compileSdkVersion = pinnedSdk
+                        } else if (compileSdkVersion == null || (compileSdkVersion instanceof Number && compileSdkVersion < minSdk)) {
                             compileSdkVersion = targetSdk
                         }
                     } catch (Exception e) {
