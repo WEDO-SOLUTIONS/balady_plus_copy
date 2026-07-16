@@ -1,26 +1,27 @@
-# UXCam — полный список событий (поток B)
+# UXCam — full event list (stream B)
 
-> **UPDATE 2026-07-14:** UXCam удалён; перечисленные события теперь идут через
-> фасад `BaladyAnalytics` (имя события = `name`, а `group`/`screen`/`action` —
-> структурные properties, а не склейка `group::screen::name`). Документ
-> сохранён как каталог событий и их call sites.
+> **UPDATE 2026-07-14:** UXCam has been removed; the events listed here now go
+> through the `BaladyAnalytics` facade (event name = `name`, while
+> `group`/`screen`/`action` are structural properties rather than the
+> concatenated `group::screen::name`). This document is kept as a catalog of
+> events and their call sites.
 
-> Приложение к `ANALYTICS_REPORT.md`. Все события UXCam отправлялись через
-> статическую обёртку `Metrics` (`mapness/lib/shared/lib/urbi_metrics.dart`):
-> `Metrics.logEventAdvanced(name, group:, screen:, action:, props:)` и
+> Companion to `ANALYTICS_REPORT.md`. All UXCam events were sent through the
+> static `Metrics` wrapper (`mapness/lib/shared/lib/urbi_metrics.dart`):
+> `Metrics.logEventAdvanced(name, group:, screen:, action:, props:)` and
 > `Metrics.logEvent(name, object:, extras:)` → `FlutterUxcam.logEvent[WithProperties]`.
 
-> **Формат итоговой строки события в UXCam:** `group::screen::name => action`
-> (для `logEvent` — `object::name`). Ниже колонка **Событие** — это `name` (уже
-> разрешённый из `MetricsConstants`), **Тег** — `group`. Всего **145** вызовов,
-> **82** файла.
+> **Format of the final event string in UXCam:** `group::screen::name => action`
+> (for `logEvent` — `object::name`). In the tables below, the **Event** column
+> is `name` (already resolved from `MetricsConstants`), and **Tag** is `group`.
+> **145** calls total across **82** files.
 
-Теги (`group`) = экранные домены из `MetricsConstants`:
+Tags (`group`) = screen domains from `MetricsConstants`:
 
 
-## Explore — Лендинг/Explore-таб (навбар, баннеры, иконки, быстрые фильтры)  (25)
+## Explore — Landing/Explore tab (navbar, banners, icons, quick filters)  (25)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Bookmark icon | tap | `` | `widgets/landing/map_quick_filters.dart:76` |
 | Bookmark icon | tap | `` | `widgets/landing/map_quick_filters.dart:121` |
@@ -48,9 +49,9 @@
 | Traffic light button | tap | `` | `widgets/landing/traffic_control.dart:27` |
 | Weather icon | tap | `` | `widgets/weather/weather_control.dart:23` |
 
-## Poi — Карточка POI (действия: маршрут, звонок, избранное, шэр, фото)  (22)
+## Poi — POI card (actions: route, call, favorites, share, photos)  (22)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Add to favorite | tap | `` | `pages/poi_card/poi_card_wrapper.dart:406` |
 | Call | tap | `` | `pages/poi_card/founding_day_card_content.dart:269` |
@@ -75,9 +76,9 @@
 | Tab | tap | `` | `features/poi_card/widgets/poi_tabs.dart:59` |
 | Tab | tap | `` | `features/poi_card/widgets/poi_tabs.dart:76` |
 
-## Routes — Экран маршрутов (поиск точек, выбор маршрута, spec-on-map)  (21)
+## Routes — Routes screen (point search, route selection, specify-on-map)  (21)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Change location | tap | `` | `pages/routing/routing_points.dart:196` |
 | Change location | tap | `` | `pages/routing/ui/routing_change_path_sheet.dart:203` |
@@ -101,9 +102,9 @@
 | Specify on map/Exit | tap | `` | `pages/routing/routing_map_select.dart:194` |
 | Start route from favorite | tap | `` | `pages/routing/routing_points.dart:243` |
 
-## Search — Поиск (suggest/результаты, тайминги)  (12)
+## Search — Search (suggest/results, timings)  (12)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Exit icon | tap | `` | `pages/map_search/map_search_sheet.dart:442` |
 | Exit icon | tap | `` | `pages/navi_search/navi_bottom_sheet.dart:278` |
@@ -118,9 +119,9 @@
 | Suggestion | tap | `` | `widgets/favourites/search/favourites_search_history.dart:75` |
 | Suggestion | tap | `` | `widgets/favourites/search/favourites_suggest_list.dart:43` |
 
-## Navigation — Активная навигация (звук, тема, завершение поездки)  (5)
+## Navigation — Active navigation (sound, theme, trip completion)  (5)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | End trip and build another | tap | `` | `pages/path_nav/path_nav_page.dart:676` |
 | End trip and show home | tap | `` | `features/free_roam/free_roam_manager.dart:71` |
@@ -128,9 +129,9 @@
 | End trip and show home | tap | `` | `pages/path_nav/path_nav_page.dart:722` |
 | Show route | tap | `` | `pages/path_nav/path_nav_page.dart:819` |
 
-## Layers — Слои карты + Compliance  (6)
+## Layers — Map layers + Compliance  (6)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Compliance/open_create_compliance | tap | `` | `widgets/landing/compliance_card.dart:16` |
 | Exit icon | tap | `` | `pages/free_roam/ui/road_panel_sheet.dart:67` |
@@ -139,22 +140,22 @@
 | Exit icon | tap | `` | `widgets/lifestyle_layers/parking_details_content.dart:37` |
 | Layer select | tap | `` | `features/lifestyle_layers/providers/layers_controls.dart:376` |
 
-## Login — Экран логина  (1)
+## Login — Login screen  (1)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Sign-in | tap | `` | `shared/lib/auth/auth_methods.dart:83` |
 
-## Favorite — Избранное (добавление/удаление)  (2)
+## Favorite — Favorites (add/remove)  (2)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Add items |  | `` | `features/favourites/providers/favourite_cache.dart:357` |
 | Delete items |  | `` | `features/favourites/providers/favourite_cache.dart:344` |
 
-## Themes — Спец-темы (Makkah/Ramadan/Hajj/Foundation/National Day)  (20)
+## Themes — Special themes (Makkah/Ramadan/Hajj/Foundation/National Day)  (20)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Config asset fallback |  | `` | `features/special_themes/core/places_activation_config.dart:368` |
 | Config cache used |  | `` | `features/special_themes/core/places_activation_config.dart:342` |
@@ -177,9 +178,9 @@
 | Theme activated |  | `` | `entry_point.dart:557` |
 | Theme deactivated |  | `` | `entry_point.dart:548` |
 
-## KaabaTour — Виртуальный тур Кааба  (6)
+## KaabaTour — Kaaba virtual tour  (6)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Card tapped | tap | `` | `widgets/landing/dashboard_contents/base_dashboard_content.dart:100` |
 | Card tapped | tap | `` | `widgets/landing/dashboard_contents/makkah_based_dashboard_content.dart:87` |
@@ -188,9 +189,9 @@
 | Page load failed |  | `` | `pages/gaussian_splatting/gaussian_splatting_page.dart:83` |
 | Page opened |  | `` | `pages/gaussian_splatting/gaussian_splatting_page.dart:45` |
 
-## MakkahPlaces — Фича Makkah Places  (11)
+## MakkahPlaces — Makkah Places feature  (11)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | Map camera animated |  | `` | `features/makkah_places/makkah_places_layer_provider.dart:192` |
 | Map marker tapped | tap | `` | `features/makkah_places/makkah_places_layer_provider.dart:126` |
@@ -204,18 +205,18 @@
 | Places load failed |  | `` | `features/makkah_places/makkah_places_repository.dart:32` |
 | Places loaded |  | `` | `features/makkah_places/makkah_places_repository.dart:23` |
 
-## AppIconQuickActions — Шорткаты с иконки приложения  (1)
+## AppIconQuickActions — App icon shortcuts  (1)
 
-| Событие (`name`) | action | screen | Где (`file:line`) |
+| Event (`name`) | action | screen | Where (`file:line`) |
 |---|---|---|---|
 | App icon quick action handled | tap | `` | `features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart:340` |
 
-## Прочие (`Metrics.logEvent`, префикс `object::name`)  (13)
+## Miscellaneous (`Metrics.logEvent`, `object::name` prefix)  (13)
 
-> Это простые вызовы `Metrics.logEvent(name, object: runtimeType)` — обычно
-> обёртка тайминга/латентности вокруг async-операций (часто рядом с `mixpanel?.track`).
+> These are plain `Metrics.logEvent(name, object: runtimeType)` calls — usually
+> a timing/latency wrapper around async operations (often next to `mixpanel?.track`).
 
-| Событие (`name`) | Где (`file:line`) |
+| Event (`name`) | Where (`file:line`) |
 |---|---|
 | Auth/doAuth | `features/sso_auth/data/auth_provider.dart:20` |
 | Auth/logOut | `features/sso_auth/data/auth_provider.dart:31` |
@@ -233,7 +234,7 @@
 
 ---
 
-**Итого: 145 вызовов** (145 распарсено). Плюс вне таблиц:
-- `Metrics.logException(ex, stack)` → `FlutterUxcam.reportExceptionEvent` — репорт исключений (1 место, `urbi_metrics.dart`, вызывается по коду).
-- `CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event)` — `entry_point.dart:1188` (прямое событие, enum вне `mapness/lib`).
-- Теги экранов: `FlutterUxcam.tagScreenName(path)` в `routes_observer.dart` — на каждый push/смену таба.
+**Total: 145 calls** (145 parsed). Additionally, outside the tables:
+- `Metrics.logException(ex, stack)` → `FlutterUxcam.reportExceptionEvent` — exception reporting (1 call site, `urbi_metrics.dart`, invoked from code).
+- `CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event)` — `entry_point.dart:1188` (direct event, enum outside `mapness/lib`).
+- Screen tagging: `FlutterUxcam.tagScreenName(path)` in `routes_observer.dart` — on every push/tab change.
