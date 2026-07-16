@@ -43,9 +43,18 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
       // value already captured at login (from `MobileLoginVerifyOtp`) so we
       // don't accidentally re-enable editing for SSO-backed OTP users.
       final existing = ref.read(authProvider).value;
-      final freshUserInfo = SsoUserInfo.fromJson(userInfoJson).copyWith(
+      final freshParsed = SsoUserInfo.fromJson(userInfoJson);
+      // `/api/user/userinfo` may omit a previously-saved but still-unverified
+      // email. Fall back to the address captured at login (kept in the auth
+      // provider) so it shows immediately without the user having to edit it.
+      final freshHasEmail = freshParsed.mail?.trim().isNotEmpty ?? false;
+      final freshUserInfo = freshParsed.copyWith(
         completeProfile: existing?.completeProfile,
         loginType: existing?.loginType,
+        isEmailEditable: existing?.isEmailEditable,
+        isSSOLocked: existing?.isSSOLocked,
+        mail: freshHasEmail ? freshParsed.mail : existing?.mail,
+        isEmailVerified: freshHasEmail ? freshParsed.isEmailVerified : (existing?.isEmailVerified ?? false),
       );
 
       setState(() {
@@ -89,21 +98,17 @@ class _ProfileInfoPageState extends ConsumerState<ProfileInfoPage> {
               body: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
                       children: [
-                        if (userData != null)
-                          PersonalData(
-                            userInfo: userData,
-                            showImpl: kPersonalDataShowImpl,
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              if (userData != null) PersonalData(userInfo: userData),
+                            ],
                           ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ),
         ),
