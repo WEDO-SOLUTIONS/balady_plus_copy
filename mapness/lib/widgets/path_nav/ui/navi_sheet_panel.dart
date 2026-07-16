@@ -16,13 +16,13 @@ import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
-import 'package:mapness/pages/path_nav/countdown_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
+import 'package:mapness/widgets/path_nav/ui/countdown_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 import 'package:sheetify/sheetify.dart';
@@ -182,34 +182,39 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
         shapeBorderDelegate: shapeDelegate,
         paddingDelegate: paddingDelegate,
         barrierColorDelegate: barrierDelegate,
-        outside: widget.supportsIndoor
-            ? Padding(
-                padding: const EdgeInsets.all(Spacing.$2x),
-                child: CountdownButton(
-                  primaryLabel: context.l10n.switchToPedestrianMode,
-                  duration: const Duration(seconds: 10),
-                  onTap: widget.onSwitchToPedestrian,
-                  onAnimationCompleted: widget.onCancelSwitchToPedestrian,
-                ),
-              )
-            : null,
-        topHeader: ValueListenableBuilder(
-          valueListenable: widget.betterRouteDurationProfit,
-          builder: (context, duration, child) => duration != null
-              ? Padding(
-                  padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
-                  child: BetterRouteButton(
-                    title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
-                    onTap: () => widget.acceptBetterRoute(context),
-                    onCloseTap: () => widget.rejectBetterRoute(context),
-                  ),
-                )
-              : ParkingBanner(
-                  navigatorType: widget.navType,
-                  navigationState: widget.navigationState,
-                  isHomeOrWork: widget.isHomeOrWork,
-                  bottomSheetController: widget.sheetController,
-                ),
+        topHeader: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder(
+              valueListenable: widget.betterRouteDurationProfit,
+              builder: (context, duration, child) => duration != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                      child: BetterRouteButton(
+                        title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
+                        onTap: () => widget.acceptBetterRoute(context),
+                        onCloseTap: () => widget.rejectBetterRoute(context),
+                      ),
+                    )
+                  : ParkingBanner(
+                      navigatorType: widget.navType,
+                      navigationState: widget.navigationState,
+                      isHomeOrWork: widget.isHomeOrWork,
+                      bottomSheetController: widget.sheetController,
+                    ),
+            ),
+            if (widget.supportsIndoor)
+              CountdownBanner(
+                text: context.l10n.switchToPedestrianMode,
+                onTap: widget.onSwitchToPedestrian,
+                onClose: widget.onCancelSwitchToPedestrian,
+                onTimeout: widget.onCancelSwitchToPedestrian,
+                leadingIcon: switch (Directionality.of(context)) {
+                  TextDirection.ltr => General16Icons.walkLTR,
+                  TextDirection.rtl => General16Icons.walkRTL,
+                },
+              ),
+          ],
         ),
         header: ValueListenableBuilder<PathNavState>(
           valueListenable: widget.navigationState,

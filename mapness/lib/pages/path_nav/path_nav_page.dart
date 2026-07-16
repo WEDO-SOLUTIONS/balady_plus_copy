@@ -88,6 +88,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final panelKey = GlobalKey();
   bool _isSwitchingToPedestrian = false;
   bool _supportsIndoor = false;
+
+  // Set from the moment the user accepts the switch until the page is replaced.
+  // Guards against double taps and against the countdown cancel firing mid-switch.
+  bool _pedestrianSwitchInProgress = false;
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
   bool _isEndingTrip = false;
@@ -1015,10 +1019,27 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _switchToPedestrian() async {
+    if (_pedestrianSwitchInProgress) {
+      return;
+    }
+    _pedestrianSwitchInProgress = true;
+
+    // Hide the countdown button immediately: disposing it also stops its timer,
+    // so onAnimationCompleted can't cancel the trip while the switch is in flight.
+    setState(() {
+      _supportsIndoor = false;
+    });
+
     final finishPoint = ref.read(currentNavigationDestinationProvider);
     final dgisController = ref.read(dgisControllerProvider).value;
     final location = ref.read(locationProvider);
     if (finishPoint == null || location == null || dgisController == null) {
+      _pedestrianSwitchInProgress = false;
+      _isSwitchingToPedestrian = false;
+      await _finishNavigation();
+      if (mounted) {
+        await _endTripAndShowHome();
+      }
       return;
     }
 
@@ -1026,42 +1047,67 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final points = [startPoint, finishPoint];
     final intermediatePoints = points.getIntermediatePoints();
 
+    final pedestrianRoutesProvider = routesProvider(
+      startPoint: startPoint,
+      finishPoint: finishPoint,
+      navType: RouteSearchOptionsMessage.pedestrian,
+      intermediatePoints: intermediatePoints,
+      showOnlyActiveRoute: true,
+    );
+    // The provider is autoDispose and nothing watches it here: hold a manual
+    // subscription so it isn't disposed (cancelling the route search) mid-await.
+    final routesSubscription = ref.listenManual(pedestrianRoutesProvider, (_, _) {});
+
     // wait route to build properly before starting navigation
     isSwitchingToFoot.value = true;
     try {
-      await ref.read(
-        routesProvider(
-          startPoint: startPoint,
-          finishPoint: finishPoint,
-          navType: RouteSearchOptionsMessage.pedestrian,
-          intermediatePoints: intermediatePoints,
-          showOnlyActiveRoute: true,
-        ).future,
-      );
+      final routes = await ref.read(pedestrianRoutesProvider.future);
     } catch (e) {
       logger.log('PathNavPage: failed to build pedestrian route: $e', logLevel: MapnessLogLevel.error);
       if (mounted) {
+        _showPedestrianSwitchError(e);
         isSwitchingToFoot.value = false;
         _isSwitchingToPedestrian = false;
+        _pedestrianSwitchInProgress = false;
         await _finishNavigation();
         if (mounted) {
           await _endTripAndShowHome();
         }
       }
       return;
+    } finally {
+      routesSubscription.close();
     }
 
     // Navigate to new navigation session
     if (mounted) {
-      // Start navigation on the newly calculated route
-      await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
+      try {
+        // Start navigation on the newly calculated route
+        await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
 
-      // Save the navigation state so it can be restored on the new page
-      final state = await dgisController.saveNavigationState();
-      await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
-      await ref
-          .read(sharedPrefsProvider)
-          .setString(MapnessConstants.navigatorStateTypeKey, RouteSearchOptionsMessage.pedestrian.name);
+        // Save the navigation state so it can be restored on the new page
+        final state = await dgisController.saveNavigationState();
+        await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
+        await ref
+            .read(sharedPrefsProvider)
+            .setString(MapnessConstants.navigatorStateTypeKey, RouteSearchOptionsMessage.pedestrian.name);
+      } catch (e) {
+        logger.log(
+          'PathNavPage: failed to start pedestrian navigation: $e',
+          logLevel: MapnessLogLevel.error,
+        );
+        if (mounted) {
+          _showPedestrianSwitchError(e);
+          isSwitchingToFoot.value = false;
+          _isSwitchingToPedestrian = false;
+          _pedestrianSwitchInProgress = false;
+          await _finishNavigation();
+          if (mounted) {
+            await _endTripAndShowHome();
+          }
+        }
+        return;
+      }
 
       // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
 
@@ -1069,6 +1115,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
       isSwitchingToFoot.value = false;
       _isSwitchingToPedestrian = false;
+      _pedestrianSwitchInProgress = false;
       await context.router.popAndPush(
         PathNavRoute(
           navType: RouteSearchOptionsMessage.pedestrian,
@@ -1080,7 +1127,24 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+  void _showPedestrianSwitchError(Object error) {
+    final toastCtx = rootNavigatorKey.currentContext ?? context;
+    if (!toastCtx.mounted) {
+      return;
+    }
+    final message = switch (error) {
+      NoInternetException() => toastCtx.l10n.noInternetConnection,
+      WalkingDistanceException() => toastCtx.l10n.walkingDistanceTooLong,
+      _ => toastCtx.l10n.routeNotFound,
+    };
+    ToastOverlay.of(toastCtx).show(title: message);
+  }
+
   Future<void> onCancelSwitchToPedestrian() async {
+    if (_pedestrianSwitchInProgress) {
+      // The user already accepted the switch — a late countdown callback must not end the trip.
+      return;
+    }
     isSwitchingToFoot.value = false;
     _isSwitchingToPedestrian = false;
     _supportsIndoor = false;
