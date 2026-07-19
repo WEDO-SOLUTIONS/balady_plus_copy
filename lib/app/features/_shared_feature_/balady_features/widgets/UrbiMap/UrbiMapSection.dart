@@ -161,8 +161,8 @@
 //             width: 15.0,
 //             child: Image.asset(
 //               isLocationAllowed
-//                   ? "assets/images/marker@3x.png"
-//                   : "assets/images/redPinMarker@3x.png",
+//                   ? "assets/images/marker@3x.webp"
+//                   : "assets/images/redPinMarker@3x.webp",
 //             ),
 //           ),
 //         ],

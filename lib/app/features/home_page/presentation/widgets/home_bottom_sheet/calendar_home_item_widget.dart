@@ -98,7 +98,7 @@
 //                           ),
 //                         ],
 //                         image: calendarImage(
-//                             item.logoURL, "assets/images/calendar_bg_home.png"),
+//                             item.logoURL, "assets/images/calendar_bg_home.webp"),
 //                       ),
 //                       child: Stack(
 //                         children: [
