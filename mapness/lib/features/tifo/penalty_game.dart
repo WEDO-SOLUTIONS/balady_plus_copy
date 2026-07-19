@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:audio_session/audio_session.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -10,6 +12,10 @@ import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
+import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
 
 class PenaltyApp extends StatelessWidget {
   const PenaltyApp({super.key, this.onComplete});
@@ -42,6 +48,66 @@ class PenaltyGamePage extends StatefulWidget {
 
 class _PenaltyGamePageState extends State<PenaltyGamePage> {
   _PenaltyView _view = _PenaltyView.perspective;
+
+  // Crowd-ambience tracks — one is picked at random each time this page
+  // opens, so repeat playthroughs don't always hear the same loop. Add more
+  // file paths here as additional tracks become available; nothing else
+  // needs to change.
+  static const List<String> _ambienceTracks = [
+    'packages/mapness/assets/tifo/audio/crowd_ambience_1.mp3',
+  ];
+
+  AudioPlayer? _ambiencePlayer;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_startAmbience());
+  }
+
+  Future<void> _startAmbience() async {
+    final track = _ambienceTracks[math.Random().nextInt(_ambienceTracks.length)];
+    final player = AudioPlayer();
+    _ambiencePlayer = player;
+    try {
+      // Without this, the session stays on the OS default `soloAmbient`
+      // category, which iOS silences whenever the ringer/mute switch is on —
+      // the game would render fine but play no sound at all. `.music()`
+      // picks the `playback` category (ignores the mute switch) and mirrors
+      // what the radio feature configures for itself elsewhere in the app.
+      final session = await AudioSession.instance;
+      await session.configure(const AudioSessionConfiguration.music());
+      // just_audio_background is active app-wide (radio feature) and asserts
+      // every AudioSource carries a MediaItem tag — setAsset() doesn't set
+      // one, which throws and gets swallowed below as a silent "no sound".
+      await player.setAudioSource(
+        AudioSource.asset(
+          track,
+          tag: const MediaItem(id: 'tifo_ambience', title: 'Tifo ambience'),
+        ),
+      );
+      await player.setLoopMode(LoopMode.one);
+      await player.setVolume(0.35);
+      // The page may have been disposed while the asset was loading.
+      if (!mounted) {
+        await player.dispose();
+        return;
+      }
+      await player.play();
+      debugPrint('[tifo-audio] ambience playing: $track');
+    } catch (e, st) {
+      // Ambience is a nice-to-have — a missing/corrupt asset shouldn't take
+      // the whole penalty game down with it. Still log it: this swallows the
+      // one signal we'd otherwise have for diagnosing "no sound" reports.
+      debugPrint('[tifo-audio] ambience failed: $e\n$st');
+    }
+  }
+
+  @override
+  void dispose() {
+    unawaited(_ambiencePlayer?.dispose());
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1221,6 +1287,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _shootAtTarget(_Vec3 target, double power) {
+    unawaited(_playRandomSfx(_kickSounds));
     _aimTarget = target;
     _state = _ShotState.flying;
     _shotTime = 0;
@@ -3981,6 +4048,50 @@ class _KeeperAtlas {
       cellWidth.toDouble(),
       cellHeight.toDouble(),
     );
+  }
+}
+
+// Ball-kick SFX — one is picked at random per shot; add more file paths
+// here as additional clips become available, nothing else needs to change.
+const List<String> _kickSounds = [
+  'packages/mapness/assets/tifo/audio/kick_1.mp3',
+];
+
+/// Fire-and-forget one-shot SFX: picks a random clip from [tracks], plays
+/// it once, and disposes itself when done. A missing/corrupt asset is
+/// swallowed rather than thrown — sound effects are a nice-to-have and must
+/// never take the game down with them.
+Future<void> _playRandomSfx(List<String> tracks) async {
+  if (tracks.isEmpty) {
+    return;
+  }
+  final track = tracks[math.Random().nextInt(tracks.length)];
+  // just_audio_background allows exactly one background-registered player
+  // app-wide, and _startAmbience's looping player holds that slot for the
+  // whole game — a second AudioPlayer() here throws "supports only a single
+  // player instance". A one-shot kick doesn't need lock-screen/background
+  // integration, so borrow the plain (non-background) platform just for
+  // this player's lifetime, then hand the slot back to just_audio_background.
+  final backgroundPlatform = JustAudioPlatform.instance;
+  JustAudioPlatform.instance = MethodChannelJustAudio();
+  final player = AudioPlayer();
+  try {
+    await player.setAsset(track);
+    await player.play();
+    // `play()` completes once the native play *request* is sent, not once
+    // the clip finishes — disposing right after would cut the sound off
+    // before it's audible. Wait for it to actually reach `completed` first.
+    await player.playerStateStream.firstWhere(
+      (state) => state.processingState == ProcessingState.completed,
+    );
+    debugPrint('[tifo-audio] sfx played: $track');
+  } catch (e, st) {
+    // Ignored at runtime — see doc comment above. Still log it: this is the
+    // only signal we'd otherwise have for diagnosing "no sound" reports.
+    debugPrint('[tifo-audio] sfx failed: $e\n$st');
+  } finally {
+    await player.dispose();
+    JustAudioPlatform.instance = backgroundPlatform;
   }
 }
 
