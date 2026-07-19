@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'life_sycle_event_handler.dart';
-
 class AccessibilityController extends ChangeNotifier {
   // Text & Reading
   double textScale = 1.0;
@@ -38,7 +36,7 @@ class AccessibilityController extends ChangeNotifier {
   // Platform integration
   bool followSystemSettings = true;
 
-  static Map<FontWeight, String> fontWeightLabels = {
+  static const Map<FontWeight, String> fontWeightLabels = {
     FontWeight.w100: 'Thin',
     FontWeight.w300: 'Light',
     FontWeight.w400: 'Regular',
