@@ -1,3 +1,0 @@
-export-release-26.06
-hash=afd2caa6f349073ae57506a86f540fe1bc1f4875
-tilesforge_compat=export-release-24.11
