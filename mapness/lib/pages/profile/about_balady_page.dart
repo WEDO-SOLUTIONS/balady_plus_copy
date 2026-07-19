@@ -119,18 +119,18 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                                       child: Center(
                                         child: isBuffering
                                             ? SizedBox(
-                                          width: 18,
-                                          height: 18,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.5,
-                                            color: context.colors.accentDefault,
-                                          ),
-                                        )
+                                                width: 18,
+                                                height: 18,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2.5,
+                                                  color: context.colors.accentDefault,
+                                                ),
+                                              )
                                             : Icon(
-                                          Icons.play_arrow_rounded,
-                                          size: 24,
-                                          color: context.colors.backgroundSurface1,
-                                        ),
+                                                Icons.play_arrow_rounded,
+                                                size: 24,
+                                                color: context.colors.backgroundSurface1,
+                                              ),
                                       ),
                                     ),
                                   ),

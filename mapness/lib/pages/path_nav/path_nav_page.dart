@@ -289,7 +289,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
       final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
       if (isPortrait && widget.navType != RouteSearchOptionsMessage.publicTransport) {
-        final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? uikit.Spacing.$3x : 0;
+        const stableInset = uikit.Spacing.$3x;
+        final stableBottomInset = MediaQuery.paddingOf(context).bottom == 0 ? stableInset : 0;
         final bottomHeight = sheetController.sheetHeight + uikit.Spacing.$3x + uikit.Spacing.$4x + stableBottomInset;
 
         _bottomHeightNotifier.value = bottomHeight;
@@ -671,6 +672,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       final pathInfo = ref.read(pathNavEtaProvider);
       final location = ref.read(cityByLocationProvider.notifier);
+      //!
+      final appAnalytics = ref.read(appAnalyticsProvider);
       final results = await Future.wait([
         location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon),
         location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon),
@@ -678,15 +681,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       final originCity = results[0];
       final destinationCity = results[1];
 
-      ref
-          .read(appAnalyticsProvider)
-          .navigationCompleted(
-            origin: route.startPoint?.analyticsLabel ?? '',
-            destination: route.endPoint?.analyticsLabel ?? '',
-            originCity: originCity.name,
-            destinationCity: destinationCity.name,
-            spentTime: pathInfo?.spentTime ?? Duration.zero,
-          );
+      appAnalytics.navigationCompleted(
+        origin: route.startPoint?.analyticsLabel ?? '',
+        destination: route.endPoint?.analyticsLabel ?? '',
+        originCity: originCity.name,
+        destinationCity: destinationCity.name,
+        spentTime: pathInfo?.spentTime ?? Duration.zero,
+      );
     } catch (_) {
       // Analytics failure should not affect trip ending
     }
