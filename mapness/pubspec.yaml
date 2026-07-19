@@ -46,25 +46,19 @@ dependencies:
   balady_plus:
     path: ..
   balady_uikit:
-    # unpub недоступен — с GitHub (последний опубликованный тег v5.1.4)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/balady_uikit.git
-      ref: v5.1.4
+    hosted: https://unpub.balady.gov.sa/
+    version: 5.1.7
 
   sheetify: ^1.1.3
   smooth_corner: ^1.1.1
 
   urbi_analytics:
-    # unpub недоступен — с GitHub (main = 0.0.4)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/urbi_analytics.git
-      ref: main
+    hosted: https://unpub.balady.gov.sa/
+    version: 0.0.4
 
   urbi_utils:
-    # unpub недоступен — с GitHub (main = 1.0.5)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/urbi_utils.git
-      ref: main
+    hosted: https://unpub.balady.gov.sa/
+    version: 1.0.5
 
   localize_and_translate:
     git:
@@ -118,10 +112,8 @@ dependencies:
   infinite_scroll_pagination: ^5.1.1
   audio_session: ^0.1.19
   another_transformer_page_view:
-    # unpub недоступен — с GitHub (main = 2.2.0)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/another_transformer_page_view.git
-      ref: main
+    hosted: https://unpub.balady.gov.sa/
+    version: 2.2.0
   cached_network_image: 3.4.1
   # Scrollable list
   scrollable_positioned_list: 0.3.8
@@ -157,10 +149,8 @@ dependencies:
   talker_flutter: ^5.1.10
 
   map_styles:
-    # unpub недоступен — с GitHub (тег v.1.3.10, добавлен IBMPlexSansArabic_Bold — BALADY-3757)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/map_styles.git
-      ref: v.1.3.10
+    hosted: https://unpub.balady.gov.sa/
+    version: 1.3.10
 
   equatable: ^2.0.8
   flutter_insider: ^4.0.6+nh
@@ -169,18 +159,6 @@ dependencies:
   thermal: ^1.1.12
   battery_plus: ^7.0.0
   dart_suncalc: ^0.2.1
-
-dependency_overrides:
-  # balady_uikit@v5.1.4 внутри себя тянет urbi_utils с unpub (hosted) —
-  # override на GitHub, пока unpub недоступен.
-  urbi_utils:
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/urbi_utils.git
-      ref: main
-  # GitHub main (0.0.6) не собирается на Flutter 3.38 (CardTheme → CardThemeData) —
-  # локальная пропатченная копия main.
-  balady_design_system:
-    path: /Users/ve/development/local_packages/balady-design-system
 
 dev_dependencies:
   flutter_test:
