@@ -165,4 +165,43 @@ class NavigationCursorController extends _$NavigationCursorController {
     }
     state = state.copyWith(clearError: true);
   }
+
+  /// TEMP (debug): drop [cursor]'s cached GLB and its entry from
+  /// downloadedIds so the next tap re-downloads from CDN. If it was the
+  /// active cursor, roll back to [NavigationCursor.classic] and reload the
+  /// bundled style. Returns true if something was actually deleted.
+  Future<bool> deleteLocal(NavigationCursor cursor) async {
+    if (!cursor.requiresDownload) {
+      return false;
+    }
+    final deleted = await ref.read(cursorDownloaderProvider).deleteLocal(cursor);
+    if (!deleted && !state.downloadedIds.contains(cursor.id)) {
+      return false;
+    }
+    final previousActive = state.active;
+    final newDownloaded = <String>{...state.downloadedIds}..remove(cursor.id);
+    var newActive = previousActive;
+    if (previousActive == cursor) {
+      newActive = NavigationCursor.classic;
+      try {
+        await ref.read(dynamicStyleControllerProvider.notifier).resetToBundled();
+      } catch (e, st) {
+        logger.log(
+          '$_logTag deleteLocal: resetToBundled FAILED for ${cursor.id}: $e\n$st',
+          logLevel: MapnessLogLevel.warning,
+        );
+      }
+    }
+    state = state.copyWith(active: newActive, downloadedIds: newDownloaded);
+    final prefs = ref.read(sharedPrefsProvider);
+    if (newActive != previousActive) {
+      await prefs.setString(MapnessConstants.activeNavigationCursorPrefsKey, newActive.id);
+    }
+    await prefs.setStringList(
+      _downloadedIdsPrefsKey,
+      newDownloaded.where((id) => id != NavigationCursor.classic.id).toList(),
+    );
+    logger.log('$_logTag deleteLocal: ${cursor.id} dropped (activeNow=${newActive.id})');
+    return deleted;
+  }
 }
