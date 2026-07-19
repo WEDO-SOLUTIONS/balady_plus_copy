@@ -196,6 +196,9 @@ class NavigationScreen(
 
     private var isEndTripShown: Boolean = false
 
+    private var isBetterRouteAlertShown: Boolean = false
+    private var shownBetterRouteMinutes: Int? = null
+
     private var navigationState = NavigationState.DISABLED
     private var locationState = LocationState.AVAILABLE
 
@@ -525,9 +528,14 @@ class NavigationScreen(
     }
 
     private fun showBetterRouteAlert(durationProfit: Int) {
+        val minutes = max(round(durationProfit / 60.0).toInt(), 1)
+        // Alerts with the same id are considered equal by the host: re-posting tears the
+        // displayed alert down and re-creates it, dropping clicks that land in between.
+        // The channel re-emits while the offer is active, so only post when something changed.
+        if (isBetterRouteAlertShown && minutes == shownBetterRouteMinutes) return
+
         val appManager = carContext.getCarService(AppManager::class.java)
         val title = CarText.create(getString(R.string.better_route_alert_title))
-        val minutes = max(round(durationProfit / 60.0).toInt(), 1)
         val subtitle = CarText.create(getString(R.string.better_route_alert_subtitle, minutes))
         val closeAction =
             Action.Builder()
@@ -535,8 +543,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_DEFAULT)
                 .setBackgroundColor(betterRouteCloseButtonColor)
                 .setOnClickListener {
-                    mapController.rejectBetterRoute()
                     appManager.dismissAlert(betterRouteAlertId)
+                    mapController.rejectBetterRoute()
                 }
         val chooseAction =
             Action.Builder()
@@ -544,8 +552,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_PRIMARY)
                 .setBackgroundColor(CarColor.PRIMARY)
                 .setOnClickListener {
-                    mapController.acceptBetterRoute()
                     appManager.dismissAlert(betterRouteAlertId)
+                    mapController.acceptBetterRoute()
                 }
 
         val betterRouteAlert =
@@ -553,6 +561,26 @@ class NavigationScreen(
                 .setSubtitle(subtitle)
                 .addAction(closeAction.build())
                 .addAction(chooseAction.build())
+                .setCallback(
+                    object : AlertCallback {
+                        override fun onCancel(reason: Int) {
+                            isBetterRouteAlertShown = false
+                            shownBetterRouteMinutes = null
+                            if (reason == AlertCallback.REASON_TIMEOUT) {
+                                // The SDK expects a three-way response; the stock 2GIS prompt
+                                // reports TIMEOUT when the user ignores the offer.
+                                mapController.timeoutBetterRoute()
+                            }
+                        }
+
+                        override fun onDismiss() {
+                            isBetterRouteAlertShown = false
+                            shownBetterRouteMinutes = null
+                        }
+                    }
+                )
+        isBetterRouteAlertShown = true
+        shownBetterRouteMinutes = minutes
         appManager.showAlert(betterRouteAlert.build())
     }
 
