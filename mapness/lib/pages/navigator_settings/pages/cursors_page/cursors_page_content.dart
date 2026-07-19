@@ -52,6 +52,7 @@ class CursorsPageContent extends ConsumerWidget {
                         trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
                         busy: data.inProgress == cursor,
                         onTap: cursor == data.active ? null : () => controller.select(cursor),
+                        onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
                       ),
                   ],
                 ),
@@ -70,6 +71,7 @@ class CursorsPageContent extends ConsumerWidget {
                           trailing: _CursorTrailing.downloadable,
                           busy: data.inProgress == cursor,
                           onTap: () => controller.select(cursor),
+                          onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
                         ),
                     ],
                   ),
@@ -83,6 +85,26 @@ class CursorsPageContent extends ConsumerWidget {
 }
 
 enum _CursorTrailing { selected, pickable, downloadable }
+
+// TEMP debug: dispatched from _CursorRow.onLongPress. Delete the cached
+// GLB via the controller and confirm via snackbar. Safe to remove once
+// CDN rotation flow (rename in enum + release) is in place.
+Future<void> _dropLocal(
+  BuildContext context,
+  NavigationCursorController controller,
+  NavigationCursor cursor,
+) async {
+  final deleted = await controller.deleteLocal(cursor);
+  if (!context.mounted) {
+    return;
+  }
+  final label = cursor.title(context);
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(content: Text(deleted ? '$label: cache cleared' : '$label: nothing cached')),
+    );
+}
 
 class _SubtitleRow extends StatelessWidget {
   const _SubtitleRow({required this.text});
@@ -104,12 +126,17 @@ class _CursorRow extends StatelessWidget {
     required this.trailing,
     required this.busy,
     required this.onTap,
+    this.onLongPress,
   });
 
   final NavigationCursor cursor;
   final _CursorTrailing trailing;
   final bool busy;
   final VoidCallback? onTap;
+  // TEMP debug: long-press drops the cached GLB from disk so the next tap
+  // re-downloads from CDN. Remove alongside the corresponding controller /
+  // downloader methods when the CDN model rotation flow stabilises.
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +152,19 @@ class _CursorRow extends StatelessWidget {
       // `ContentRowActionOptions.actionIcon`.
       customActionWidget: _trailing(),
     );
-    return ContentRow(onTap: busy ? null : onTap, options: options);
+    final row = ContentRow(onTap: busy ? null : onTap, options: options);
+    if (busy || onLongPress == null) {
+      return row;
+    }
+    // Wrap in a transparent GestureDetector layered ABOVE the ContentRow.
+    // HitTestBehavior.opaque swallows the long-press so ContentRow's own
+    // InkWell doesn't fire onTap alongside; short taps still reach it
+    // because our detector only listens to onLongPress.
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onLongPress: onLongPress,
+      child: row,
+    );
   }
 
   Widget? _trailing() {

@@ -72,6 +72,22 @@ class CursorDownloader {
     return stat.size > 0;
   }
 
+  /// TEMP (debug): delete [cursor]'s cached GLB from disk so the next
+  /// select() re-downloads from CDN. Returns true if the file existed.
+  /// Safe to call on [NavigationCursor.classic] (no-op — bundled).
+  Future<bool> deleteLocal(NavigationCursor cursor) async {
+    if (!cursor.requiresDownload) {
+      return false;
+    }
+    final file = await localFile(cursor);
+    if (!await file.exists()) {
+      return false;
+    }
+    await file.delete();
+    logger.log('$_logTag ${cursor.id}: deleted ${file.path}');
+    return true;
+  }
+
   /// IDs of every cursor whose GLB is on disk. Used by
   /// [NavigationCursorController.build] to reconcile SharedPreferences with
   /// reality after an app reinstall/clear-cache.
