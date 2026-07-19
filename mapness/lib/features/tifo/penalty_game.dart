@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -89,9 +88,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
           ),
       ],
     );
-    if (_view == _PenaltyView.topDown ||
-        _view == _PenaltyView.miniGame ||
-        _view == _PenaltyView.styles) {
+    if (_view == _PenaltyView.topDown || _view == _PenaltyView.miniGame || _view == _PenaltyView.styles) {
       return content;
     }
     return Material(color: Colors.black, child: content);
@@ -322,8 +319,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       if (_ball.y <= _goalY) {
         _ball.y = _goalY;
         _resolveShot();
-      } else if (_ball.x.abs() > _pitchHalfWidth + 1.2 ||
-          _ball.y > _fieldBottomY + 1.5) {
+      } else if (_ball.x.abs() > _pitchHalfWidth + 1.2 || _ball.y > _fieldBottomY + 1.5) {
         _finish(_TopDownShotState.missed);
       }
       return;
@@ -374,9 +370,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
     if (saved) {
       final deflectSide = (_ball.x - _keeperX).signOrZero;
-      final side = deflectSide == 0
-          ? (_random.nextBool() ? 1.0 : -1.0)
-          : deflectSide;
+      final side = deflectSide == 0 ? (_random.nextBool() ? 1.0 : -1.0) : deflectSide;
       _velocity = Vector2(side * (3.2 + _random.nextDouble() * 1.4), 4.7);
       _finish(_TopDownShotState.saved);
     } else if (insideFrame) {
@@ -431,8 +425,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     const height = 1.36;
     const postColor = Color(0xFFF8FCFF);
     const backPostColor = Color(0xFFC9D2DC);
-    final netFill = Paint()
-      ..color = const Color(0xFFE8F7FF).withValues(alpha: 0.15);
+    final netFill = Paint()..color = const Color(0xFFE8F7FF).withValues(alpha: 0.15);
     final netStroke = Paint()
       ..color = Colors.white.withValues(alpha: 0.42)
       ..style = PaintingStyle.stroke
@@ -622,9 +615,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   void _drawTopDownKeeper(Canvas canvas) {
     final active = _state != _TopDownShotState.aiming;
-    final progress = active
-        ? _easeOutCubic((_shotTime / 0.54).clamp(0, 1))
-        : 0.0;
+    final progress = active ? _easeOutCubic((_shotTime / 0.54).clamp(0, 1)) : 0.0;
     final direction = active ? _diveDirection : 0.0;
     final foot = _toScreen(
       Vector2(_keeperX + direction * progress * 0.38, _keeperY),
@@ -744,15 +735,15 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawGoal3DLine(
-      Canvas canvas,
-      double ax,
-      double ay,
-      double az,
-      double bx,
-      double by,
-      double bz,
-      Paint paint,
-      ) {
+    Canvas canvas,
+    double ax,
+    double ay,
+    double az,
+    double bx,
+    double by,
+    double bz,
+    Paint paint,
+  ) {
     canvas.drawLine(
       _toGoalScreen(ax, ay, az),
       _toGoalScreen(bx, by, bz),
@@ -765,16 +756,16 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawGoalPost3D(
-      Canvas canvas,
-      double ax,
-      double ay,
-      double az,
-      double bx,
-      double by,
-      double bz,
-      Color color,
-      double worldWidth,
-      ) {
+    Canvas canvas,
+    double ax,
+    double ay,
+    double az,
+    double bx,
+    double by,
+    double bz,
+    Color color,
+    double worldWidth,
+  ) {
     final a = _toGoalScreen(ax, ay, az);
     final b = _toGoalScreen(bx, by, bz);
     final stroke = math.max(3.2, _screenScale * worldWidth);
@@ -805,15 +796,15 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawPixelRect(
-      Canvas canvas,
-      Offset origin,
-      double unit,
-      int x,
-      int y,
-      int width,
-      int height,
-      Color color,
-      ) {
+    Canvas canvas,
+    Offset origin,
+    double unit,
+    int x,
+    int y,
+    int width,
+    int height,
+    Color color,
+  ) {
     canvas.drawRect(
       Rect.fromLTWH(
         (origin.dx + x * unit).roundToDouble(),
@@ -828,15 +819,15 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawPixelatedSprite(
-      Canvas canvas,
-      ui.Image image,
-      Offset feet, {
-        required double height,
-        double anchorX = 0.5,
-        bool flipX = false,
-        double rotation = 0,
-        double opacity = 1,
-      }) {
+    Canvas canvas,
+    ui.Image image,
+    Offset feet, {
+    required double height,
+    double anchorX = 0.5,
+    bool flipX = false,
+    double rotation = 0,
+    double opacity = 1,
+  }) {
     final width = height * image.width / image.height;
     final dst = Rect.fromLTWH(-width * anchorX, -height, width, height);
     final paint = _spritePaint(opacity)..filterQuality = FilterQuality.none;
@@ -860,8 +851,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     final y = _worldTopY + (point.y - _screenTop) / _screenScaleY;
     final depthScale = _depthScaleForY(y);
     return Vector2(
-      (point.x - canvasSize.x / 2 - _isoSkewForY(y)) /
-          (_screenScaleX * depthScale),
+      (point.x - canvasSize.x / 2 - _isoSkewForY(y)) / (_screenScaleX * depthScale),
       y,
     );
   }
@@ -869,9 +859,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   Offset _toScreen(Vector2 point) {
     final depthScale = _depthScaleForY(point.y);
     return Offset(
-      canvasSize.x / 2 +
-          _isoSkewForY(point.y) +
-          point.x * _screenScaleX * depthScale,
+      canvasSize.x / 2 + _isoSkewForY(point.y) + point.x * _screenScaleX * depthScale,
       _screenTop + (point.y - _worldTopY) * _screenScaleY,
     );
   }
@@ -881,8 +869,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       1.0,
       canvasSize.y - _topInset - _bottomInset,
     );
-    return _topInset +
-        (availableHeight - (_worldBottomY - _worldTopY) * _screenScaleY) / 2;
+    return _topInset + (availableHeight - (_worldBottomY - _worldTopY) * _screenScaleY) / 2;
   }
 
   double get _screenScaleX {
@@ -903,17 +890,13 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   double get _maxDepthScale => 1.08;
 
   double _depthScaleForY(double y) {
-    final normalized = ((y - _goalY) / _fieldBottomY)
-        .clamp(0.0, 1.0)
-        .toDouble();
+    final normalized = ((y - _goalY) / _fieldBottomY).clamp(0.0, 1.0).toDouble();
     return 0.58 + normalized * (_maxDepthScale - 0.58);
   }
 
-  double _isoSkewForY(double y) =>
-      (y - _fieldBottomY * 0.55) * _screenScaleX * 0.055;
+  double _isoSkewForY(double y) => (y - _fieldBottomY * 0.55) * _screenScaleX * 0.055;
 
-  double get _playerPixelUnit =>
-      (_screenScale * 0.095).clamp(2.7, 4.8).toDouble();
+  double get _playerPixelUnit => (_screenScale * 0.095).clamp(2.7, 4.8).toDouble();
 
   double get _topInset => math.min(86.0, canvasSize.y * 0.12);
 
@@ -936,6 +919,7 @@ enum _KeeperSide { left, center, right }
 enum _KeeperMotion {
   /// Loop while waiting for the shot (crouch sway, from GSP_crouch_moving).
   idle,
+
   /// Crouch-prep transition played once while the striker winds up.
   ready,
   diveLowLeft,
@@ -943,17 +927,19 @@ enum _KeeperMotion {
   diveLowCenter,
   diveUpCenter,
   diveUpRight,
+
   /// Post-dive slide/recover after a leftward (or center) dive.
   groundLeft,
+
   /// Post-dive slide/recover after a rightward dive.
   groundRight,
+
   /// Save celebration (punt-the-ball clip ending in a frontal stance).
   celebrate,
 }
 
-/// Striker motion — each is exactly one 8-frame row of `striker_atlas.png`,
-/// in this declaration order (`.index` doubles as the atlas row index; see
-/// [_StrikerModel._drawAtlasFrame]).
+/// Striker motion — each has its own atlas in `striker_v2/` (see
+/// [_StrikerModel._atlasSpecs]) baked at native frame density.
 enum _StrikerMotion { idle, windup, kick, settle }
 
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
@@ -1047,6 +1033,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   _KeeperDive _keeperDive = _KeeperDive.mid;
   _KeeperSide _keeperSide = _KeeperSide.center;
   double _spin = 0;
+
   /// Seconds after the kick before the keeper's dive clock starts ticking —
   /// he holds his idle stance until the ball has covered [_reactionDelayFraction]
   /// of its flight, instead of committing to a dive the instant it's struck.
@@ -1086,8 +1073,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     if (_completed) return;
-    if (_state == _ShotState.aiming &&
-        _isTouchingBall(event.canvasPosition)) {
+    if (_state == _ShotState.aiming && _isTouchingBall(event.canvasPosition)) {
       _shootAt(event.canvasPosition, 0.74);
     }
   }
@@ -1203,8 +1189,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     if (ballScreen == null) {
       return false;
     }
-    final visualRadius =
-        (_ballRadius * ballScreen.scale).clamp(8.0, 58.0).toDouble();
+    final visualRadius = (_ballRadius * ballScreen.scale).clamp(8.0, 58.0).toDouble();
     final hitRadius = math.max(visualRadius * 1.6, 44.0);
     final ballPos = Vector2(ballScreen.offset.dx, ballScreen.offset.dy);
     return (point - ballPos).length <= hitRadius;
@@ -1231,10 +1216,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       ballScreen.offset.dx + direction.x * targetDistance,
       ballScreen.offset.dy + direction.y * targetDistance,
     );
-    final power =
-    (0.55 + swipeVelocity.length / 1800 + fallbackDelta.length / 520)
-        .clamp(0.55, 1.0)
-        .toDouble();
+    final power = (0.55 + swipeVelocity.length / 1800 + fallbackDelta.length / 520).clamp(0.55, 1.0).toDouble();
     _shootAtTarget(_targetFromCanvas(screenTarget), power);
   }
 
@@ -1253,8 +1235,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
     _velocity = _Vec3(
       (flightTarget.x - _ball.x) / flightTime,
-      (flightTarget.y - _ball.y - 0.5 * _gravity * flightTime * flightTime) /
-          flightTime,
+      (flightTarget.y - _ball.y - 0.5 * _gravity * flightTime * flightTime) / flightTime,
       (flightTarget.z - _ball.z) / flightTime,
     );
 
@@ -1317,8 +1298,8 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   void _resolveShot() {
     final insideFrame =
         _ball.x.abs() < _goalHalfWidth - _ballRadius * 0.4 &&
-            _ball.y > _ballRadius * 0.8 &&
-            _ball.y < _goalHeight - _ballRadius * 0.15;
+        _ball.y > _ballRadius * 0.8 &&
+        _ball.y < _goalHeight - _ballRadius * 0.15;
 
     // Dynamic hitbox — reach grows from "just standing there" to the dive
     // style's full extension as the *actual* on-screen dive completes,
@@ -1360,8 +1341,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     final reachCenterX = _keeperX + direction * diveProgress * 0.32;
     final keeperReachX = (_ball.x - reachCenterX).abs();
     final keeperReachY = (_ball.y - reachCenterY).abs();
-    final saved =
-        keeperReachX < reachX && keeperReachY < reachY && _ball.y < _goalHeight;
+    final saved = keeperReachX < reachX && keeperReachY < reachY && _ball.y < _goalHeight;
 
     if (saved) {
       _saves++;
@@ -1404,12 +1384,8 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   _Vec3 _targetFromCanvas(Vector2 point) {
     final depth = _goalZ - _cameraZ;
     final scale = _focalLength / depth;
-    final x = ((point.x - _centerX) / scale)
-        .clamp(-_goalHalfWidth - 0.8, _goalHalfWidth + 0.8)
-        .toDouble();
-    final y = (_cameraY - (point.y - _horizonY) / scale)
-        .clamp(0.45, _goalHeight + 0.75)
-        .toDouble();
+    final x = ((point.x - _centerX) / scale).clamp(-_goalHalfWidth - 0.8, _goalHalfWidth + 0.8).toDouble();
+    final y = (_cameraY - (point.y - _horizonY) / scale).clamp(0.45, _goalHeight + 0.75).toDouble();
     return _Vec3(x, y, _goalZ);
   }
 
@@ -1496,14 +1472,14 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       sunRadius * 1.25,
       Paint()
         ..shader =
-        RadialGradient(
-          colors: [
-            const Color(0xFFFFFFBF).withValues(alpha: 0.52),
-            const Color(0xFFFFFFBF).withValues(alpha: 0),
-          ],
-        ).createShader(
-          Rect.fromCircle(center: sunCenter, radius: sunRadius * 1.25),
-        ),
+            RadialGradient(
+              colors: [
+                const Color(0xFFFFFFBF).withValues(alpha: 0.52),
+                const Color(0xFFFFFFBF).withValues(alpha: 0),
+              ],
+            ).createShader(
+              Rect.fromCircle(center: sunCenter, radius: sunRadius * 1.25),
+            ),
     );
     canvas.drawCircle(
       sunCenter,
@@ -1520,13 +1496,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       Rect.fromLTRB(rect.left, standTop, rect.right, standBottom),
       Paint()
         ..shader =
-        const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFF243547), Color(0xFF172638), Color(0xFF22364B)],
-        ).createShader(
-          Rect.fromLTRB(rect.left, standTop, rect.right, standBottom),
-        ),
+            const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF243547), Color(0xFF172638), Color(0xFF22364B)],
+            ).createShader(
+              Rect.fromLTRB(rect.left, standTop, rect.right, standBottom),
+            ),
     );
     canvas.drawRect(
       Rect.fromLTRB(
@@ -1538,8 +1514,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       Paint()..color = const Color(0xFF172333),
     );
 
-    final seatPaint = Paint()
-      ..color = const Color(0xFF6E8EA5).withValues(alpha: 0.42);
+    final seatPaint = Paint()..color = const Color(0xFF6E8EA5).withValues(alpha: 0.42);
     final seatTop = standTop + rect.height * 0.033;
     final seatHeight = math.max(4.0, rect.height * 0.01);
     final seatWidth = rect.width * 0.04;
@@ -1551,8 +1526,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       );
     }
 
-    final rowPaint = Paint()
-      ..color = const Color(0xFF9DB8C8).withValues(alpha: 0.2);
+    final rowPaint = Paint()..color = const Color(0xFF9DB8C8).withValues(alpha: 0.2);
     for (var i = 1; i < 5; i++) {
       final y = standTop + i * (standBottom - standTop) / 5;
       canvas.drawLine(
@@ -1650,8 +1624,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       ..strokeWidth = 1;
     for (var i = 0; i < 80; i++) {
       final z = nearZ + (farZ - nearZ) * ((i * 37 % 100) / 100);
-      final x =
-          -_fieldHalfWidth(z) + _fieldHalfWidth(z) * 2 * ((i * 53 % 100) / 100);
+      final x = -_fieldHalfWidth(z) + _fieldHalfWidth(z) * 2 * ((i * 53 % 100) / 100);
       final projected = _project(_Vec3(x, 0.025, z));
       if (projected != null) {
         canvas.drawLine(
@@ -1716,12 +1689,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawPitchRect(
-      Canvas canvas, {
-        required double halfWidth,
-        required double zNear,
-        required double zFar,
-        required Color color,
-      }) {
+    Canvas canvas, {
+    required double halfWidth,
+    required double zNear,
+    required double zFar,
+    required Color color,
+  }) {
     _drawWorldLine(
       canvas,
       _Vec3(-halfWidth, 0.05, zNear),
@@ -1746,12 +1719,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawGroundCircle(
-      Canvas canvas,
-      _Vec3 center,
-      double radius,
-      Color color,
-      double worldWidth,
-      ) {
+    Canvas canvas,
+    _Vec3 center,
+    double radius,
+    Color color,
+    double worldWidth,
+  ) {
     _Projected? previous;
     for (var i = 0; i <= 48; i++) {
       final angle = math.pi * 2 * i / 48;
@@ -1938,16 +1911,14 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     // doesn't gate on `actionTime` anyway.
     final actionTime = math.max(0.0, _shotTime - _reactionDelay);
     final direction = isReacting ? (_keeperTargetX - _keeperX).signOrZero : 0.0;
-    final progress = isReacting
-        ? _easeOutCubic((actionTime / 0.58).clamp(0, 1))
-        : 0.0;
+    final progress = isReacting ? _easeOutCubic((actionTime / 0.58).clamp(0, 1)) : 0.0;
     final lift =
         switch (_keeperDive) {
           _KeeperDive.low => 0.02,
           _KeeperDive.mid => 0.14,
           _KeeperDive.high => 0.3,
         } *
-            progress;
+        progress;
     _goalkeeperModel.render(
       this,
       canvas,
@@ -2015,8 +1986,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     // Push below the status bar / notch area. `_stageRect` covers the whole
     // canvas so we can't pull MediaQuery padding here — pick a generous
     // fixed offset (~status bar + 12 px breathing room).
-    final y = _stageRect.top +
-        math.max(56.0, _stageRect.height * 0.07);
+    final y = _stageRect.top + math.max(56.0, _stageRect.height * 0.07);
 
     final fill = Paint()..style = PaintingStyle.fill;
     final ring = Paint()
@@ -2056,8 +2026,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     if (projected.length != points.length) {
       return;
     }
-    final path = Path()
-      ..moveTo(projected.first.offset.dx, projected.first.offset.dy);
+    final path = Path()..moveTo(projected.first.offset.dx, projected.first.offset.dy);
     for (final point in projected.skip(1)) {
       path.lineTo(point.offset.dx, point.offset.dy);
     }
@@ -2066,12 +2035,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawWorldLine(
-      Canvas canvas,
-      _Vec3 a,
-      _Vec3 b,
-      Color color,
-      double worldWidth,
-      ) {
+    Canvas canvas,
+    _Vec3 a,
+    _Vec3 b,
+    Color color,
+    double worldWidth,
+  ) {
     final pa = _project(a);
     final pb = _project(b);
     if (pa == null || pb == null) {
@@ -2102,13 +2071,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawCapsule(
-      Canvas canvas,
-      _Vec3 a,
-      _Vec3 b,
-      double radius,
-      Color color, {
-        Color? endColor,
-      }) {
+    Canvas canvas,
+    _Vec3 a,
+    _Vec3 b,
+    double radius,
+    Color color, {
+    Color? endColor,
+  }) {
     final limbColor = endColor ?? color;
     _drawWorldLine(canvas, a, b, _darken(color, 0.08), radius * 2.2);
     _drawWorldLine(canvas, a, b, color, radius * 1.64);
@@ -2117,13 +2086,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawWorldOval(
-      Canvas canvas,
-      _Vec3 center,
-      double width,
-      double height,
-      Color color, {
-        double tilt = 0,
-      }) {
+    Canvas canvas,
+    _Vec3 center,
+    double width,
+    double height,
+    Color color, {
+    double tilt = 0,
+  }) {
     final projected = _project(center);
     if (projected == null) {
       return;
@@ -2149,11 +2118,11 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawJerseyTorso(
-      Canvas canvas,
-      _Vec3 center,
-      double lean,
-      Color baseColor,
-      ) {
+    Canvas canvas,
+    _Vec3 center,
+    double lean,
+    Color baseColor,
+  ) {
     final shoulders = [
       _Vec3(center.x - 0.52 + lean * 0.14, center.y + 0.55, center.z),
       _Vec3(center.x + 0.52 + lean * 0.14, center.y + 0.55, center.z),
@@ -2190,11 +2159,11 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawWorldSphere(
-      Canvas canvas,
-      _Vec3 center,
-      double radius,
-      Color color,
-      ) {
+    Canvas canvas,
+    _Vec3 center,
+    double radius,
+    Color color,
+  ) {
     final projected = _project(center);
     if (projected == null) {
       return;
@@ -2256,8 +2225,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     );
   }
 
-  double _fieldHalfWidth(double z) =>
-      5.4 + z.clamp(0, _goalZ + 5).toDouble() * 0.12;
+  double _fieldHalfWidth(double z) => 5.4 + z.clamp(0, _goalZ + 5).toDouble() * 0.12;
 
   Rect get _stageRect {
     return Rect.fromLTWH(
@@ -2268,8 +2236,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     );
   }
 
-  RRect get _stageRRect =>
-      RRect.fromRectAndRadius(_stageRect, Radius.circular(_stageRadius));
+  RRect get _stageRRect => RRect.fromRectAndRadius(_stageRect, Radius.circular(_stageRadius));
 
   double get _stageRadius => math.min(
     16.0,
@@ -2327,11 +2294,11 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     );
     final sourceWidth = stage.width / scale;
     final sourceHeight = stage.height / scale;
-    final sourceLeft = ((_photoIntrinsicWidth - sourceWidth) / 2)
-        .clamp(0.0, _photoIntrinsicWidth);
-    final sourceTop =
-        ((_photoIntrinsicHeight - sourceHeight) * _photoCropVerticalBias)
-            .clamp(0.0, _photoIntrinsicHeight);
+    final sourceLeft = ((_photoIntrinsicWidth - sourceWidth) / 2).clamp(0.0, _photoIntrinsicWidth);
+    final sourceTop = ((_photoIntrinsicHeight - sourceHeight) * _photoCropVerticalBias).clamp(
+      0.0,
+      _photoIntrinsicHeight,
+    );
     return Rect.fromLTRB(
       (_photoGoalSrcLeft - sourceLeft) * scale,
       (_photoGoalSrcTop - sourceTop) * scale,
@@ -2368,33 +2335,54 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 }
 
 class _StrikerModel {
-  // Preferred path: single 8×4 atlas (idle/windup/kick/settle rows, 8
-  // frames each — see [_StrikerMotion]), baked from the SP_idle/SP_kick
-  // render sets. Real per-frame art replaces the old single-pose-plus-
-  // procedural-skew rig below, which now only serves as a fallback.
-  _KeeperAtlas? _atlas;
+  // Preferred path: one small atlas PER MOTION, baked at native frame
+  // density from the SP_idle/SP_kick render sets (see _atlasSpecs — frame
+  // counts vary 8..20 depending on how much real footage each phase has).
+  // Real per-frame art replaces the old single-pose-plus-procedural-skew
+  // rig below, which now only serves as a fallback.
+  final Map<_StrikerMotion, _KeeperAtlas> _atlases = {};
+
+  // (file name in striker_v2/, grid cols, grid rows, cell px). Cells are
+  // 640px (bumped from 512px, which itself was bumped from the keeper's
+  // 256px) — the striker sits much closer to the camera (world z ≈ -0.25
+  // vs the keeper's z ≈ 22.3), so the same projected.scale factor renders
+  // him roughly 3x larger on screen. Even at 512px, thin high-frequency
+  // silhouette detail (hanging arm, fingers) still visibly softened under
+  // FilterQuality.high bicubic upscaling on high-DPI devices, which read
+  // as "the sprite is transparent" rather than "it's blurry".
+  static const Map<_StrikerMotion, (String, int, int)> _atlasSpecs = {
+    _StrikerMotion.idle: ('striker_idle.png', 5, 4),
+    _StrikerMotion.windup: ('striker_windup.png', 4, 2),
+    _StrikerMotion.kick: ('striker_kick.png', 4, 2),
+    // 4x4 (not 7x2) — 7 cols at 640px would be 4480px wide, over the safe
+    // 4096px GPU texture limit. 16 cells for 13 real frames wastes 3, but
+    // stays comfortably inside the limit.
+    _StrikerMotion.settle: ('striker_settle.png', 4, 4),
+  };
 
   ui.Image? _ready;
   ui.Image? _windup;
   ui.Image? _kick;
 
   Future<void> load() async {
-    final atlasImage = await _loadOptionalUiImage(
-      'packages/mapness/assets/tifo/sprites/striker_atlas.png',
+    await Future.wait(
+      _atlasSpecs.entries.map((entry) async {
+        final (file, cols, rows) = entry.value;
+        final image = await _loadOptionalUiImage(
+          'packages/mapness/assets/tifo/sprites/striker_v2/$file',
+        );
+        if (image != null) {
+          _atlases[entry.key] = _KeeperAtlas(
+            image: image,
+            cellWidth: 640,
+            cellHeight: 640,
+            cols: cols,
+            rows: rows,
+          );
+        }
+      }),
     );
-    if (atlasImage != null) {
-      _atlas = _KeeperAtlas(
-        // 512px cells (vs the keeper's 256px) — the striker sits much
-        // closer to the camera (world z ≈ -0.25 vs the keeper's z ≈ 22.3),
-        // so the SAME projected.scale factor renders him roughly 3x
-        // larger on screen. 256px cells upscaled that hard looked soft/
-        // "low-res" (reported as looking semi-transparent at the edges).
-        image: atlasImage,
-        cellWidth: 512,
-        cellHeight: 512,
-        cols: 8,
-        rows: 4,
-      );
+    if (_atlases.isNotEmpty) {
       return;
     }
 
@@ -2413,15 +2401,14 @@ class _StrikerModel {
   }
 
   void render(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 base,
-        required _ShotState state,
-        required double shotTime,
-        required double elapsed,
-      }) {
-    final atlas = _atlas;
-    if (atlas == null) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 base,
+    required _ShotState state,
+    required double shotTime,
+    required double elapsed,
+  }) {
+    if (_atlases.isEmpty) {
       _renderLegacy(game, canvas, base: base, state: state, shotTime: shotTime, elapsed: elapsed);
       return;
     }
@@ -2445,44 +2432,45 @@ class _StrikerModel {
     const idleCycleSeconds = 1.1;
     if (isAiming) {
       final cycle = (elapsed % idleCycleSeconds) / idleCycleSeconds;
-      _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.idle,
-          progress: cycle, base: plantedBase);
+      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.idle, progress: cycle, base: plantedBase);
       return;
     }
 
     if (shotTime < 0.1) {
-      _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.windup,
-          progress: shotTime / 0.1, base: plantedBase);
+      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.windup, progress: shotTime / 0.1, base: plantedBase);
       return;
     }
 
     if (shotTime < 0.24) {
-      _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.kick,
-          progress: (shotTime - 0.1) / 0.14, base: plantedBase);
+      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.kick, progress: (shotTime - 0.1) / 0.14, base: plantedBase);
       return;
     }
 
     final settle = _easeOutCubic(((shotTime - 0.24) / 0.7).clamp(0, 1));
-    _drawAtlasFrame(game, canvas, atlas: atlas, motion: _StrikerMotion.settle,
-        progress: settle, base: plantedBase);
+    _drawAtlasFrame(game, canvas, motion: _StrikerMotion.settle, progress: settle, base: plantedBase);
   }
 
-  /// Foot-anchored draw of one atlas cell — `motion.index` is the atlas row,
-  /// `progress` (0..1) picks the frame within that row's 8 cells.
+  /// Foot-anchored draw of one atlas cell — `progress` (0..1) picks the
+  /// frame within that motion's own atlas (native frame count, varies per
+  /// motion — see _atlasSpecs).
   void _drawAtlasFrame(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _KeeperAtlas atlas,
-        required _StrikerMotion motion,
-        required double progress,
-        required _Vec3 base,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _StrikerMotion motion,
+    required double progress,
+    required _Vec3 base,
+  }) {
+    final atlas = _atlases[motion];
+    if (atlas == null) {
+      return;
+    }
     final projected = game._project(base);
     if (projected == null) {
       return;
     }
-    final frame = (progress.clamp(0.0, 1.0) * 7).round();
-    final sourceRect = atlas.cellRect(motion.index * 8 + frame);
+    final total = atlas.cols * atlas.rows;
+    final frame = (progress.clamp(0.0, 1.0) * (total - 1)).round();
+    final sourceRect = atlas.cellRect(frame);
     // Cells are baked square with generous padding around the figure — see
     // the bake script notes. 3.9 keeps the on-screen figure size matching
     // the old tightly-cropped single-pose sprites (measured compensation:
@@ -2498,16 +2486,16 @@ class _StrikerModel {
     canvas.drawImageRect(atlas.image, sourceRect, dst, _spritePaint());
   }
 
-  /// Legacy single-pose-plus-procedural-skew rig — only reached if
-  /// `striker_atlas.png` fails to load.
+  /// Legacy single-pose-plus-procedural-skew rig — only reached if none of
+  /// the per-motion atlases in `striker_v2/` load.
   void _renderLegacy(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 base,
-        required _ShotState state,
-        required double shotTime,
-        required double elapsed,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 base,
+    required _ShotState state,
+    required double shotTime,
+    required double elapsed,
+  }) {
     final ready = _ready;
     final windup = _windup;
     final kick = _kick;
@@ -2598,18 +2586,18 @@ class _StrikerModel {
   }
 
   void _drawFrame(
-      PenaltyGame game,
-      Canvas canvas, {
-        required ui.Image image,
-        required _Vec3 base,
-        required double worldHeight,
-        required double anchorX,
-        double opacity = 1,
-        double rotation = 0,
-        double scaleX = 1,
-        double scaleY = 1,
-        Offset screenOffset = Offset.zero,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required ui.Image image,
+    required _Vec3 base,
+    required double worldHeight,
+    required double anchorX,
+    double opacity = 1,
+    double rotation = 0,
+    double scaleX = 1,
+    double scaleY = 1,
+    Offset screenOffset = Offset.zero,
+  }) {
     if (opacity <= 0.01) {
       return;
     }
@@ -2641,15 +2629,13 @@ class _StrikerModel {
   }
 
   void _renderFallback(
-      PenaltyGame game,
-      Canvas canvas,
-      _Vec3 base,
-      _ShotState state,
-      double shotTime,
-      ) {
-    final kick = state == _ShotState.flying
-        ? (1 - (shotTime / 0.32)).clamp(0.0, 1.0).toDouble()
-        : 0.0;
+    PenaltyGame game,
+    Canvas canvas,
+    _Vec3 base,
+    _ShotState state,
+    double shotTime,
+  ) {
+    final kick = state == _ShotState.flying ? (1 - (shotTime / 0.32)).clamp(0.0, 1.0).toDouble() : 0.0;
     game._drawWorldLine(
       canvas,
       _Vec3(base.x - 0.27, 0.9, base.z - 0.75),
@@ -2679,34 +2665,30 @@ class _GoalkeeperModel {
   _SpriteSheet? _saveRecoverSheet;
   _SpriteSheet? _missedReactionSheet;
   _SpriteSheet? _concededSheet;
-  // Preferred path: single 8×4 atlas + per-motion atlas-cell index lists.
-  // When loaded, supersedes every per-motion sheet above.
-  _KeeperAtlas? _atlas;
+  // Preferred path: one small atlas PER MOTION (native frame density, up to
+  // 24 frames each — see the bake script in project notes), superseding the
+  // legacy per-motion sheets above wherever a motion's atlas loaded OK.
+  // Each motion gets its own image/grid because their real available frame
+  // counts differ a lot (8 for `ready`, up to 24 for the longer clips) —
+  // a single shared atlas can't give every row its own natural length
+  // without wasting cells or blowing past safe GPU texture dimensions.
+  final Map<_KeeperMotion, _KeeperAtlas> _atlases = {};
 
-  // 0-based cell indices into the 8×10 atlas. One row per motion, all
-  // sourced from the GSP render set (see the bake script in project notes):
-  //
-  //   row 0 (0..7)   idle          — crouch sway loop
-  //   row 1 (8..15)  ready/prep    — stance → launch-ready (lower_left 0-7)
-  //   row 2 (16..23) diveLowLeft   — lower_left flight
-  //   row 3 (24..31) diveLowRight  — lower_right flight (NATIVE, no flip)
-  //   row 4 (32..39) diveLowCenter — lower_center collapse on the ball
-  //   row 5 (40..47) diveUpCenter  — vertical jump, catch overhead
-  //   row 6 (48..55) diveUpRight   — upper-right leap (flip for upper-left)
-  //   row 7 (56..63) groundLeft    — slide → kneel → rise (lower_left tail)
-  //   row 8 (64..71) groundRight   — slide → rise (lower_right tail)
-  //   row 9 (72..79) celebrate     — punt the ball, end frontal
-  static const Map<_KeeperMotion, List<int>> _motionFrames = {
-    _KeeperMotion.idle:          [0, 1, 2, 3, 4, 5, 6, 7],
-    _KeeperMotion.ready:         [8, 9, 10, 11, 12, 13, 14, 15],
-    _KeeperMotion.diveLowLeft:   [15, 16, 17, 18, 19, 20, 21, 22, 23],
-    _KeeperMotion.diveLowRight:  [15, 24, 25, 26, 27, 28, 29, 30, 31],
-    _KeeperMotion.diveLowCenter: [15, 32, 33, 34, 35, 36, 37, 38, 39],
-    _KeeperMotion.diveUpCenter:  [15, 40, 41, 42, 43, 44, 45, 46, 47],
-    _KeeperMotion.diveUpRight:   [15, 48, 49, 50, 51, 52, 53, 54, 55],
-    _KeeperMotion.groundLeft:    [56, 57, 58, 59, 60, 61, 62, 63],
-    _KeeperMotion.groundRight:   [64, 65, 66, 67, 68, 69, 70, 71],
-    _KeeperMotion.celebrate:     [72, 73, 74, 75, 76, 77, 78, 79],
+  // (file name in goalkeeper_v2/, grid cols, grid rows). Grid shape just
+  // packs that motion's native frame count (see bake notes) into a compact
+  // roughly-square grid — frame order is row-major through the grid,
+  // independent of shape.
+  static const Map<_KeeperMotion, (String, int, int)> _atlasSpecs = {
+    _KeeperMotion.idle: ('keeper_idle.png', 6, 4),
+    _KeeperMotion.ready: ('keeper_ready.png', 4, 2),
+    _KeeperMotion.diveLowLeft: ('keeper_diveLowLeft.png', 6, 3),
+    _KeeperMotion.diveLowRight: ('keeper_diveLowRight.png', 6, 4),
+    _KeeperMotion.diveLowCenter: ('keeper_diveLowCenter.png', 6, 4),
+    _KeeperMotion.diveUpCenter: ('keeper_diveUpCenter.png', 6, 4),
+    _KeeperMotion.diveUpRight: ('keeper_diveUpRight.png', 6, 4),
+    _KeeperMotion.groundLeft: ('keeper_groundLeft.png', 6, 4),
+    _KeeperMotion.groundRight: ('keeper_groundRight.png', 6, 4),
+    _KeeperMotion.celebrate: ('keeper_celebrate.png', 6, 4),
   };
 
   /// Dive motion for a given height/side combo. Upper-left has no native
@@ -2749,24 +2731,24 @@ class _GoalkeeperModel {
       _diveMidLeftSprite = sprites[1];
       _diveLowLeftSprite = sprites[2];
       _diveHighLeftSprite = sprites[3];
-      // Preferred source — single 8×4 atlas (32 cells of 384×384). Holds
-      // every keeper pose; motion sequences index into it via [_motionFrames].
-      final atlasImage = await _loadOptionalUiImage(
-        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/keeper_atlas.png',
+      // Preferred source — one small atlas per motion (see _atlasSpecs).
+      await Future.wait(
+        _atlasSpecs.entries.map((entry) async {
+          final (file, cols, rows) = entry.value;
+          final image = await _loadOptionalUiImage(
+            'packages/mapness/assets/tifo/sprites/goalkeeper_v2/$file',
+          );
+          if (image != null) {
+            _atlases[entry.key] = _KeeperAtlas(
+              image: image,
+              cellWidth: 256,
+              cellHeight: 256,
+              cols: cols,
+              rows: rows,
+            );
+          }
+        }),
       );
-      if (atlasImage != null) {
-        _atlas = _KeeperAtlas(
-          image: atlasImage,
-          // 2048×2560 atlas — square 256×256 cells, 8 cols × 10 rows.
-          // One row per motion (see _motionFrames for the row map); frames
-          // baked from the GSP keeper render set (native left/right/center
-          // dives, crouch idle loop, punt celebration).
-          cellWidth: 256,
-          cellHeight: 256,
-          cols: 8,
-          rows: 10,
-        );
-      }
       // Legacy per-motion sheets — fallback if the atlas asset is missing.
       _readySheet = await _loadOptionalSheet(
         'packages/mapness/assets/tifo/sprites/goalkeeper_v2/ready_sheet.png',
@@ -2836,19 +2818,19 @@ class _GoalkeeperModel {
   }
 
   void render(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 base,
-        required double dive,
-        required double lift,
-        required double actionTime,
-        required _KeeperDive diveStyle,
-        _KeeperSide diveSide = _KeeperSide.center,
-        bool reacting = false,
-        double visualScale = 1,
-        _ShotState? shotState,
-        double resultTime = 0,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 base,
+    required double dive,
+    required double lift,
+    required double actionTime,
+    required _KeeperDive diveStyle,
+    _KeeperSide diveSide = _KeeperSide.center,
+    bool reacting = false,
+    double visualScale = 1,
+    _ShotState? shotState,
+    double resultTime = 0,
+  }) {
     final idleSprite = _idleSprite;
     final diveMidLeftSprite = _diveMidLeftSprite;
     if (idleSprite != null && diveMidLeftSprite != null) {
@@ -2920,23 +2902,23 @@ class _GoalkeeperModel {
   }
 
   void _renderSprite(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 base,
-        required double dive,
-        required double lift,
-        required double actionTime,
-        required _KeeperDive diveStyle,
-        required _KeeperSide diveSide,
-        required bool reacting,
-        required double visualScale,
-        required ui.Image idleSprite,
-        required ui.Image diveMidLeftSprite,
-        required ui.Image? diveLowLeftSprite,
-        required ui.Image? diveHighLeftSprite,
-        _ShotState? shotState,
-        double resultTime = 0,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 base,
+    required double dive,
+    required double lift,
+    required double actionTime,
+    required _KeeperDive diveStyle,
+    required _KeeperSide diveSide,
+    required bool reacting,
+    required double visualScale,
+    required ui.Image idleSprite,
+    required ui.Image diveMidLeftSprite,
+    required ui.Image? diveLowLeftSprite,
+    required ui.Image? diveHighLeftSprite,
+    _ShotState? shotState,
+    double resultTime = 0,
+  }) {
     // `dive` still positions the sprite along the dive trajectory, but the
     // reaction gate is the explicit [reacting] flag — a pure center dive has
     // direction 0 and would otherwise read as "idle".
@@ -2944,8 +2926,7 @@ class _GoalkeeperModel {
     // Flip only for upper-left: every other side has a native render. This
     // is purely a mirror-the-image flag — it must NOT affect positioning
     // (world-space left/right still comes from the real `direction`).
-    final needsFlip =
-        diveStyle == _KeeperDive.high && diveSide == _KeeperSide.left;
+    final needsFlip = diveStyle == _KeeperDive.high && diveSide == _KeeperSide.left;
     final diveProgress = (actionTime / 0.54).clamp(0.0, 1.0).toDouble();
 
     // A shot placed dead-center never sends the keeper anywhere — he plants
@@ -2955,8 +2936,7 @@ class _GoalkeeperModel {
     // 1. Result phase — once `_finish` has flipped `shotState` to a terminal
     //    outcome, play the outcome motion: celebration for a save, the
     //    slide-and-rise ground sequence otherwise.
-    final groundMotion =
-        diveSide == _KeeperSide.right ? _KeeperMotion.groundRight : _KeeperMotion.groundLeft;
+    final groundMotion = diveSide == _KeeperSide.right ? _KeeperMotion.groundRight : _KeeperMotion.groundLeft;
     final resultMotion = switch (shotState) {
       _ShotState.saved => _KeeperMotion.celebrate,
       // A center shot leaves the keeper standing — there's no lying/
@@ -2978,14 +2958,12 @@ class _GoalkeeperModel {
       // Right) for the first half of the reaction, THEN celebrate — high
       // dives and center saves skip this since the keeper is already
       // upright/airborne (high) or never left his feet (center).
-      final needsStandUp = shotState == _ShotState.saved &&
-          diveStyle != _KeeperDive.high &&
-          !isCenter;
+      final needsStandUp = shotState == _ShotState.saved && diveStyle != _KeeperDive.high && !isCenter;
       final (motion, motionProgress) = !needsStandUp
           ? (resultMotion, resultProgress)
           : resultProgress < 0.5
-              ? (groundMotion, resultProgress * 2)
-              : (_KeeperMotion.celebrate, (resultProgress - 0.5) * 2);
+          ? (groundMotion, resultProgress * 2)
+          : (_KeeperMotion.celebrate, (resultProgress - 0.5) * 2);
       final pose = _motionPose(
         motion,
         motionProgress,
@@ -3057,12 +3035,9 @@ class _GoalkeeperModel {
     }
 
     // 4. Idle cycle — crouch-sway loop while waiting for the shot.
-    final cycleLen = _atlas != null
-        ? _motionFrames[_KeeperMotion.idle]!.length
-        : (_readySheet?.frames ?? 0);
-    final idleCycle = cycleLen > 1
-        ? ((game._elapsed * 7).floor() % cycleLen) / (cycleLen - 1)
-        : null;
+    final idleAtlas = _atlases[_KeeperMotion.idle];
+    final cycleLen = idleAtlas != null ? idleAtlas.cols * idleAtlas.rows : (_readySheet?.frames ?? 0);
+    final idleCycle = cycleLen > 1 ? ((game._elapsed * 7).floor() % cycleLen) / (cycleLen - 1) : null;
     if (idleCycle != null) {
       final pose = _motionPose(_KeeperMotion.idle, idleCycle, fallback: idleSprite);
       _drawIdleSprite(
@@ -3087,29 +3062,27 @@ class _GoalkeeperModel {
   }
 
   /// Look up `(image, sourceRect)` for a logical motion at the given progress.
-  /// Prefers the 8×10 atlas; falls back to the legacy per-motion sheet, and
-  /// finally to the static single-pose [fallback].
+  /// Prefers that motion's own atlas; falls back to the legacy per-motion
+  /// sheet, and finally to the static single-pose [fallback].
   (ui.Image, Rect?) _motionPose(
-      _KeeperMotion motion,
-      double progress, {
-        required ui.Image fallback,
-      }) {
-    final atlas = _atlas;
+    _KeeperMotion motion,
+    double progress, {
+    required ui.Image fallback,
+  }) {
+    final atlas = _atlases[motion];
     if (atlas != null) {
-      final frames = _motionFrames[motion]!;
-      final idx = (progress.clamp(0.0, 1.0) * (frames.length - 1)).round();
-      return (atlas.image, atlas.cellRect(frames[idx]));
+      final total = atlas.cols * atlas.rows;
+      final idx = (progress.clamp(0.0, 1.0) * (total - 1)).round();
+      return (atlas.image, atlas.cellRect(idx));
     }
     final sheet = switch (motion) {
       _KeeperMotion.idle || _KeeperMotion.ready => _readySheet,
       _KeeperMotion.diveLowLeft ||
       _KeeperMotion.diveLowRight ||
       _KeeperMotion.diveLowCenter => _diveLowLeftSheet ?? _diveMidLeftSheet,
-      _KeeperMotion.diveUpCenter ||
-      _KeeperMotion.diveUpRight => _diveHighLeftSheet ?? _diveMidLeftSheet,
+      _KeeperMotion.diveUpCenter || _KeeperMotion.diveUpRight => _diveHighLeftSheet ?? _diveMidLeftSheet,
       _KeeperMotion.celebrate => _saveRecoverSheet,
-      _KeeperMotion.groundLeft ||
-      _KeeperMotion.groundRight => _missedReactionSheet ?? _concededSheet,
+      _KeeperMotion.groundLeft || _KeeperMotion.groundRight => _missedReactionSheet ?? _concededSheet,
     };
     if (sheet != null) {
       return (sheet.image, _sheetFrame(sheet, progress));
@@ -3126,16 +3099,16 @@ class _GoalkeeperModel {
   }
 
   void _drawIdleSprite(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 base,
-        required double lift,
-        required ui.Image image,
-        Rect? sourceRect,
-        double visualScale = 1,
-        double lean = 0,
-        double crouch = 0,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 base,
+    required double lift,
+    required ui.Image image,
+    Rect? sourceRect,
+    double visualScale = 1,
+    double lean = 0,
+    double crouch = 0,
+  }) {
     final foot = game._project(_Vec3(base.x + lean * 0.04, 0, base.z));
     if (foot == null) {
       return;
@@ -3151,22 +3124,11 @@ class _GoalkeeperModel {
 
     final height = math.max(
       40.0,
-      foot.scale *
-          (2.75 + lift * 0.25) *
-          visualScale *
-          (1 + breath * 0.012 - crouch * 0.055),
+      foot.scale * (2.75 + lift * 0.25) * visualScale * (1 + breath * 0.012 - crouch * 0.055),
     );
-    final source =
-        sourceRect ??
-            Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
-    final width =
-        height *
-            source.width /
-            source.height *
-            (1 - breath * 0.006 + crouch * 0.05);
-    final bottom =
-        foot.offset +
-            Offset(weightShift * 1.8 + lean * foot.scale * 0.035, height * 0.015);
+    final source = sourceRect ?? Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
+    final width = height * source.width / source.height * (1 - breath * 0.006 + crouch * 0.05);
+    final bottom = foot.offset + Offset(weightShift * 1.8 + lean * foot.scale * 0.035, height * 0.015);
     final dst = Rect.fromLTWH(
       bottom.dx - width / 2,
       bottom.dy - height,
@@ -3182,18 +3144,18 @@ class _GoalkeeperModel {
   }
 
   void _drawDivingSprite(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 base,
-        required double direction,
-        required double lift,
-        required double progress,
-        required ui.Image image,
-        Rect? sourceRect,
-        double visualScale = 1,
-        required _KeeperDive diveStyle,
-        bool flip = false,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 base,
+    required double direction,
+    required double lift,
+    required double progress,
+    required ui.Image image,
+    Rect? sourceRect,
+    double visualScale = 1,
+    required _KeeperDive diveStyle,
+    bool flip = false,
+  }) {
     final launch = progress.clamp(0.0, 1.0).toDouble();
     final baseHeight = switch (diveStyle) {
       _KeeperDive.low => 0.58,
@@ -3236,9 +3198,7 @@ class _GoalkeeperModel {
       72.0,
       projected.scale * (widthBase + launch * 0.28) * visualScale,
     );
-    final source =
-        sourceRect ??
-            Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
+    final source = sourceRect ?? Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
     final height = width * source.height / source.width;
     final dst = Rect.fromCenter(
       center: projected.offset,
@@ -3260,13 +3220,13 @@ class _GoalkeeperModel {
   }
 
   void _drawLegs(
-      PenaltyGame game,
-      Canvas canvas,
-      double x,
-      double z,
-      double lift,
-      double lean,
-      ) {
+    PenaltyGame game,
+    Canvas canvas,
+    double x,
+    double z,
+    double lift,
+    double lean,
+  ) {
     for (final side in [-1.0, 1.0]) {
       final hip = _Vec3(x + side * 0.22 - lean * 0.08, 0.67 + lift, z);
       final knee = _Vec3(
@@ -3292,13 +3252,13 @@ class _GoalkeeperModel {
   }
 
   void _drawArms(
-      PenaltyGame game,
-      Canvas canvas,
-      double x,
-      double z,
-      double lift,
-      double lean,
-      ) {
+    PenaltyGame game,
+    Canvas canvas,
+    double x,
+    double z,
+    double lift,
+    double lean,
+  ) {
     final reach = lean * 0.72;
     for (final side in [-1.0, 1.0]) {
       final shoulder = _Vec3(
@@ -3337,13 +3297,13 @@ class _GoalkeeperModel {
   }
 
   void _drawHead(
-      PenaltyGame game,
-      Canvas canvas,
-      double x,
-      double z,
-      double lift,
-      double lean,
-      ) {
+    PenaltyGame game,
+    Canvas canvas,
+    double x,
+    double z,
+    double lift,
+    double lean,
+  ) {
     final head = _Vec3(x, 1.78 + lift, z - 0.08);
     game._drawWorldSphere(canvas, head, 0.24, _skin);
     game._drawWorldOval(
@@ -3378,16 +3338,16 @@ class _GoalkeeperModel {
 
 class _SoccerBallModel {
   _SoccerBallModel()
-      : _panels = [
-    _BallPanel(_Vec3(0, 0, 1), 0.23),
-    _BallPanel(_Vec3(0.76, 0.18, 0.63), 0.18),
-    _BallPanel(_Vec3(-0.72, 0.14, 0.68), 0.18),
-    _BallPanel(_Vec3(0.2, 0.72, 0.66), 0.17),
-    _BallPanel(_Vec3(-0.15, -0.72, 0.68), 0.17),
-    _BallPanel(_Vec3(0.62, -0.55, 0.55), 0.15),
-    _BallPanel(_Vec3(-0.64, 0.56, 0.52), 0.15),
-    _BallPanel(_Vec3(0.0, 0.0, -1), 0.2),
-  ];
+    : _panels = [
+        _BallPanel(_Vec3(0, 0, 1), 0.23),
+        _BallPanel(_Vec3(0.76, 0.18, 0.63), 0.18),
+        _BallPanel(_Vec3(-0.72, 0.14, 0.68), 0.18),
+        _BallPanel(_Vec3(0.2, 0.72, 0.66), 0.17),
+        _BallPanel(_Vec3(-0.15, -0.72, 0.68), 0.17),
+        _BallPanel(_Vec3(0.62, -0.55, 0.55), 0.15),
+        _BallPanel(_Vec3(-0.64, 0.56, 0.52), 0.15),
+        _BallPanel(_Vec3(0.0, 0.0, -1), 0.2),
+      ];
 
   final List<_BallPanel> _panels;
   ui.Image? _sprite;
@@ -3408,8 +3368,7 @@ class _SoccerBallModel {
       'packages/mapness/assets/tifo/models/soccer_ball.model.json',
     );
     final data = jsonDecode(raw) as Map<String, dynamic>;
-    _modelRadius =
-        (data['baseRadius'] as num?)?.toDouble() ?? PenaltyGame._ballRadius;
+    _modelRadius = (data['baseRadius'] as num?)?.toDouble() ?? PenaltyGame._ballRadius;
     final sourceAsset = data['sourceAsset'] as String? ?? '';
     if (sourceAsset.isNotEmpty) {
       final glbData = await rootBundle.load(sourceAsset);
@@ -3425,9 +3384,7 @@ class _SoccerBallModel {
       ..addAll(
         panels.map((panel) {
           final map = panel as Map<String, dynamic>;
-          final normal = (map['normal'] as List<dynamic>)
-              .map((value) => (value as num).toDouble())
-              .toList();
+          final normal = (map['normal'] as List<dynamic>).map((value) => (value as num).toDouble()).toList();
           return _BallPanel(
             _Vec3(normal[0], normal[1], normal[2]),
             (map['size'] as num).toDouble(),
@@ -3437,11 +3394,11 @@ class _SoccerBallModel {
   }
 
   void render(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 center,
-        required double spin,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 center,
+    required double spin,
+  }) {
     final sprite = _sprite;
     if (sprite != null) {
       _renderSprite(game, canvas, center: center, spin: spin, image: sprite);
@@ -3461,9 +3418,7 @@ class _SoccerBallModel {
     }
 
     final sourceScale = _sourceModelBytes > 0 ? 1.0 : 0.92;
-    final radius = (_modelRadius * sourceScale * projected.scale)
-        .clamp(5.0, 38.0)
-        .toDouble();
+    final radius = (_modelRadius * sourceScale * projected.scale).clamp(5.0, 38.0).toDouble();
     final ballRect = Rect.fromCircle(center: projected.offset, radius: radius);
     final ballClip = Path()..addOval(ballRect);
 
@@ -3505,9 +3460,7 @@ class _SoccerBallModel {
         continue;
       }
       final shade = (0.45 + normal.z * 0.45).clamp(0.18, 0.92).toDouble();
-      final panelCenter =
-          projected.offset +
-              Offset(normal.x, -normal.y) * radius * (0.72 + normal.z * 0.08);
+      final panelCenter = projected.offset + Offset(normal.x, -normal.y) * radius * (0.72 + normal.z * 0.08);
       final panelRadius = radius * panel.size * (0.72 + normal.z * 0.25);
       _drawPolygon(
         canvas,
@@ -3552,12 +3505,12 @@ class _SoccerBallModel {
   }
 
   void _renderSprite(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 center,
-        required double spin,
-        required ui.Image image,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 center,
+    required double spin,
+    required ui.Image image,
+  }) {
     game._drawShadow(
       canvas,
       _Vec3(center.x, 0, center.z),
@@ -3602,8 +3555,7 @@ class _SoccerBallModel {
     for (var i = 0; i < 4; i++) {
       final phase = spin * 0.42 + i * math.pi / 4;
       final rect = Rect.fromCenter(
-        center:
-        center + Offset(math.cos(phase), math.sin(phase)) * radius * 0.04,
+        center: center + Offset(math.cos(phase), math.sin(phase)) * radius * 0.04,
         width: radius * (1.45 - i * 0.08),
         height: radius * (0.72 + i * 0.12),
       );
@@ -3622,13 +3574,13 @@ class _SoccerBallModel {
   }
 
   void _drawPolygon(
-      Canvas canvas,
-      Offset center,
-      int sides,
-      double radius,
-      double rotation,
-      Paint paint,
-      ) {
+    Canvas canvas,
+    Offset center,
+    int sides,
+    double radius,
+    double rotation,
+    Paint paint,
+  ) {
     final path = Path();
     for (var i = 0; i < sides; i++) {
       final angle = rotation - math.pi / 2 + i * math.pi * 2 / sides;
@@ -3682,9 +3634,7 @@ class _GlbModel {
         break;
       }
       if (chunkType == _jsonChunk) {
-        document =
-        jsonDecode(utf8.decode(bytes.sublist(chunkStart, chunkEnd)))
-        as Map<String, dynamic>;
+        document = jsonDecode(utf8.decode(bytes.sublist(chunkStart, chunkEnd))) as Map<String, dynamic>;
       } else if (chunkType == _binChunk) {
         binOffset = chunkStart;
       }
@@ -3709,8 +3659,7 @@ class _GlbModel {
     for (final mesh in meshes.cast<Map<String, dynamic>>()) {
       final primitives = mesh['primitives'] as List<dynamic>? ?? [];
       for (final primitive in primitives.cast<Map<String, dynamic>>()) {
-        final attributes =
-            primitive['attributes'] as Map<String, dynamic>? ?? {};
+        final attributes = primitive['attributes'] as Map<String, dynamic>? ?? {};
         final positionAccessor = attributes['POSITION'] as int?;
         if (positionAccessor == null) {
           continue;
@@ -3737,18 +3686,16 @@ class _GlbModel {
         final indices = indexAccessor == null
             ? List<int>.generate(positions.length, (index) => index)
             : _readIndexAccessor(
-          bytes,
-          binOffset,
-          accessors[indexAccessor] as Map<String, dynamic>,
-          bufferViews,
-        );
+                bytes,
+                binOffset,
+                accessors[indexAccessor] as Map<String, dynamic>,
+                bufferViews,
+              );
         for (var i = 0; i + 2 < indices.length; i += 3) {
           final a = indices[i];
           final b = indices[i + 1];
           final c = indices[i + 2];
-          if (a < positions.length &&
-              b < positions.length &&
-              c < positions.length) {
+          if (a < positions.length && b < positions.length && c < positions.length) {
             triangles.add(
               _GlbTriangle(positions[a], positions[b], positions[c]),
             );
@@ -3757,22 +3704,20 @@ class _GlbModel {
       }
     }
 
-    final center = minX.isFinite
-        ? _Vec3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2)
-        : _Vec3.zero();
+    final center = minX.isFinite ? _Vec3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2) : _Vec3.zero();
     return _GlbModel(triangles, center);
   }
 
   void render(
-      PenaltyGame game,
-      Canvas canvas, {
-        required _Vec3 origin,
-        required double scale,
-        required Color tint,
-        double yaw = 0,
-        double pitch = 0,
-        double roll = 0,
-      }) {
+    PenaltyGame game,
+    Canvas canvas, {
+    required _Vec3 origin,
+    required double scale,
+    required Color tint,
+    double yaw = 0,
+    double pitch = 0,
+    double roll = 0,
+  }) {
     if (_triangles.isEmpty) {
       return;
     }
@@ -3816,13 +3761,13 @@ class _GlbModel {
   }
 
   _Vec3 _transform(
-      _Vec3 source,
-      _Vec3 origin,
-      double scale,
-      double yaw,
-      double pitch,
-      double roll,
-      ) {
+    _Vec3 source,
+    _Vec3 origin,
+    double scale,
+    double yaw,
+    double pitch,
+    double roll,
+  ) {
     var x = source.x - _center.x;
     var y = source.z;
     var z = source.y - _center.y;
@@ -3854,22 +3799,18 @@ class _GlbModel {
   }
 
   static List<_Vec3> _readVec3Accessor(
-      Uint8List bytes,
-      int binOffset,
-      Map<String, dynamic> accessor,
-      List<dynamic> bufferViews,
-      ) {
+    Uint8List bytes,
+    int binOffset,
+    Map<String, dynamic> accessor,
+    List<dynamic> bufferViews,
+  ) {
     if (accessor['componentType'] != 5126 || accessor['type'] != 'VEC3') {
       return const [];
     }
-    final view =
-    bufferViews[accessor['bufferView'] as int] as Map<String, dynamic>;
+    final view = bufferViews[accessor['bufferView'] as int] as Map<String, dynamic>;
     final count = accessor['count'] as int;
     final stride = view['byteStride'] as int? ?? 12;
-    final start =
-        binOffset +
-            (view['byteOffset'] as int? ?? 0) +
-            (accessor['byteOffset'] as int? ?? 0);
+    final start = binOffset + (view['byteOffset'] as int? ?? 0) + (accessor['byteOffset'] as int? ?? 0);
     final data = ByteData.sublistView(bytes);
     return List<_Vec3>.generate(count, (index) {
       final offset = start + index * stride;
@@ -3882,13 +3823,12 @@ class _GlbModel {
   }
 
   static List<int> _readIndexAccessor(
-      Uint8List bytes,
-      int binOffset,
-      Map<String, dynamic> accessor,
-      List<dynamic> bufferViews,
-      ) {
-    final view =
-    bufferViews[accessor['bufferView'] as int] as Map<String, dynamic>;
+    Uint8List bytes,
+    int binOffset,
+    Map<String, dynamic> accessor,
+    List<dynamic> bufferViews,
+  ) {
+    final view = bufferViews[accessor['bufferView'] as int] as Map<String, dynamic>;
     final count = accessor['count'] as int;
     final componentType = accessor['componentType'] as int;
     final componentSize = switch (componentType) {
@@ -3901,10 +3841,7 @@ class _GlbModel {
       return const [];
     }
     final stride = view['byteStride'] as int? ?? componentSize;
-    final start =
-        binOffset +
-            (view['byteOffset'] as int? ?? 0) +
-            (accessor['byteOffset'] as int? ?? 0);
+    final start = binOffset + (view['byteOffset'] as int? ?? 0) + (accessor['byteOffset'] as int? ?? 0);
     final data = ByteData.sublistView(bytes);
     return List<int>.generate(count, (index) {
       final offset = start + index * stride;
@@ -3917,8 +3854,7 @@ class _GlbModel {
     });
   }
 
-  static int _u32(Uint8List bytes, int offset) =>
-      ByteData.sublistView(bytes).getUint32(offset, Endian.little);
+  static int _u32(Uint8List bytes, int offset) => ByteData.sublistView(bytes).getUint32(offset, Endian.little);
 
   static String _ascii(Uint8List bytes, int start, int length) =>
       String.fromCharCodes(bytes.sublist(start, start + length));
@@ -3951,9 +3887,7 @@ class _GlbModel {
   }
 
   static Color _mixShade(Color color, double shade) {
-    final target = shade > 0.55
-        ? _lighten(color, shade - 0.55)
-        : _darken(color, 0.55 - shade);
+    final target = shade > 0.55 ? _lighten(color, shade - 0.55) : _darken(color, 0.55 - shade);
     return Color.lerp(color, target, 0.8)!;
   }
 }
@@ -4067,11 +4001,11 @@ Future<ui.Image?> _loadOptionalUiImage(String assetPath) async {
 }
 
 Future<_SpriteSheet?> _loadOptionalSheet(
-    String assetPath, {
-      required int frameWidth,
-      required int frameHeight,
-      required int frames,
-    }) async {
+  String assetPath, {
+  required int frameWidth,
+  required int frameHeight,
+  required int frames,
+}) async {
   try {
     final image = await _loadUiImage(assetPath);
     return _SpriteSheet(
@@ -4086,9 +4020,9 @@ Future<_SpriteSheet?> _loadOptionalSheet(
 }
 
 Future<ui.Image> _loadPixelatedUiImage(
-    String assetPath,
-    int targetHeight,
-    ) async {
+  String assetPath,
+  int targetHeight,
+) async {
   final source = await _loadUiImage(assetPath);
   final targetWidth = math.max(
     1,
@@ -4141,16 +4075,12 @@ extension on double {
 
 Color _lighten(Color color, double amount) {
   final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness + amount).clamp(0.0, 1.0).toDouble())
-      .toColor();
+  return hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0).toDouble()).toColor();
 }
 
 Color _darken(Color color, double amount) {
   final hsl = HSLColor.fromColor(color);
-  return hsl
-      .withLightness((hsl.lightness - amount).clamp(0.0, 1.0).toDouble())
-      .toColor();
+  return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0).toDouble()).toColor();
 }
 
 Color _colorFromHex(String value) {
@@ -4518,9 +4448,7 @@ class _StylesGalleryWidgetState extends State<StylesGalleryWidget> {
                     width: active ? 22 : 8,
                     height: 8,
                     decoration: BoxDecoration(
-                      color: active
-                          ? Colors.white
-                          : Colors.white.withValues(alpha: 0.32),
+                      color: active ? Colors.white : Colors.white.withValues(alpha: 0.32),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   );
@@ -5066,7 +4994,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
 
     switch (_state) {
       case _MiniShotState.aiming:
-      // Плавное покачивание вратаря
+        // Плавное покачивание вратаря
         _keeperX = 0.5 + math.sin(_hintPhase * 1.4) * 0.18;
         break;
       case _MiniShotState.flying:
@@ -5089,8 +5017,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
           // мяч продолжает лететь чуть вверх и затухает
           _ballPos = Vector2(_ballTarget.x, _ballTarget.y - _resultTime * 0.08);
         } else if (_state == _MiniShotState.saved) {
-          final bounce =
-              math.sin(_resultTime * 8) * 0.04 * math.exp(-_resultTime * 2);
+          final bounce = math.sin(_resultTime * 8) * 0.04 * math.exp(-_resultTime * 2);
           _ballPos = Vector2(_ballTarget.x + bounce, _ballTarget.y + 0.02);
         } else {
           _ballPos = Vector2(
@@ -5463,8 +5390,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
         ..strokeWidth = 3.5,
     );
     // Halftone-точки для атмосферы (только в небе).
-    final dot = Paint()
-      ..color = const Color(0xFF111111).withValues(alpha: 0.18);
+    final dot = Paint()..color = const Color(0xFF111111).withValues(alpha: 0.18);
     final dotR = math.max(w, h) * 0.006;
     final stepX = w / 16;
     final stepY = h * 0.6 / 12;
@@ -5533,8 +5459,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final bbl = toBack(fbl);
     final bbr = toBack(fbr);
 
-    Offset lerp(Offset a, Offset b, double t) =>
-        Offset(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
+    Offset lerp(Offset a, Offset b, double t) => Offset(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
 
     final netLine = Paint()
       ..color = const Color(0xFFB46BFF).withValues(alpha: 0.42)
@@ -5648,8 +5573,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final vpX = (gl + gr) / 2;
     final vpY = (gt + gb) / 2 - (gb - gt) * 0.04;
     const depth = 0.42;
-    Offset toBack(Offset f) =>
-        Offset(f.dx + (vpX - f.dx) * depth, f.dy + (vpY - f.dy) * depth);
+    Offset toBack(Offset f) => Offset(f.dx + (vpX - f.dx) * depth, f.dy + (vpY - f.dy) * depth);
     final ftl = Offset(gl, gt);
     final ftr = Offset(gr, gt);
     final fbl = Offset(gl, gb);
@@ -5670,8 +5594,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final c = _goalCorners(w, h);
     final ftl = c[0], ftr = c[1], fbl = c[2], fbr = c[3];
     final btl = c[4], btr = c[5], bbl = c[6], bbr = c[7];
-    Offset lerp(Offset a, Offset b, double t) =>
-        Offset(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
+    Offset lerp(Offset a, Offset b, double t) => Offset(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
 
     // Тёмная подсветка глубины сетки.
     canvas.drawPath(
@@ -5748,8 +5671,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     );
 
     // Тонкая ненавязчивая сетка из точек.
-    final dot = Paint()
-      ..color = const Color(0xFF59489E).withValues(alpha: 0.15);
+    final dot = Paint()..color = const Color(0xFF59489E).withValues(alpha: 0.15);
     final cols = 9;
     final rows = 6;
     for (var i = 1; i < cols; i++) {
@@ -5777,8 +5699,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final c = _goalCorners(w, h);
     final ftl = c[0], ftr = c[1], fbl = c[2], fbr = c[3];
     final btl = c[4], btr = c[5], bbl = c[6], bbr = c[7];
-    Offset lerp(Offset a, Offset b, double t) =>
-        Offset(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
+    Offset lerp(Offset a, Offset b, double t) => Offset(a.dx + (b.dx - a.dx) * t, a.dy + (b.dy - a.dy) * t);
 
     // Задняя стенка — белая, с яркой обводкой.
     final backPath = Path()
@@ -5838,8 +5759,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
   // === PIXEL ART ============================================================
 
   // Размер одного «пикселя» в текущем кадре.
-  double _pixelUnit(double w, double h) =>
-      math.max(2.0, math.min(w, h) * 0.012);
+  double _pixelUnit(double w, double h) => math.max(2.0, math.min(w, h) * 0.012);
 
   void _paintFieldPixel(Canvas canvas, double w, double h) {
     final px = _pixelUnit(w, h);
@@ -6184,11 +6104,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     }
 
     final active = _state != _MiniShotState.aiming;
-    final progress = active
-        ? (_state == _MiniShotState.flying ? _shotProgress : 1.0)
-        .clamp(0.0, 1.0)
-        .toDouble()
-        : 0.0;
+    final progress = active ? (_state == _MiniShotState.flying ? _shotProgress : 1.0).clamp(0.0, 1.0).toDouble() : 0.0;
 
     ui.Image sprite;
     bool flipX = false;
@@ -6199,8 +6115,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
       sprite = switch (_diveStyle) {
         _KeeperDive.low => _keeperDiveLowSprite ?? _keeperDiveMidSprite ?? idle,
         _KeeperDive.mid => _keeperDiveMidSprite ?? idle,
-        _KeeperDive.high =>
-        _keeperDiveHighSprite ?? _keeperDiveMidSprite ?? idle,
+        _KeeperDive.high => _keeperDiveHighSprite ?? _keeperDiveMidSprite ?? idle,
       };
       flipX = _diveDirection > 0; // спрайты — прыжок влево, флипаем для правого
       drawHeight = goalHeight * 0.58;
@@ -6248,8 +6163,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     }
 
     // Тень под спрайтом — приклеена к нижней линии ворот.
-    final shadowWidth =
-        drawWidth * (active && _diveDirection != 0 ? 0.85 : 0.6);
+    final shadowWidth = drawWidth * (active && _diveDirection != 0 ? 0.85 : 0.6);
     canvas.drawOval(
       Rect.fromCenter(
         center: Offset(center.dx, goalBottom - 2),
@@ -6327,11 +6241,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final cx = w * _keeperX;
 
     final active = _state != _MiniShotState.aiming;
-    final progress = active
-        ? (_state == _MiniShotState.flying ? _shotProgress : 1.0)
-        .clamp(0.0, 1.0)
-        .toDouble()
-        : 0.0;
+    final progress = active ? (_state == _MiniShotState.flying ? _shotProgress : 1.0).clamp(0.0, 1.0).toDouble() : 0.0;
 
     List<String> sprite;
     bool flipX = false;
@@ -6399,13 +6309,13 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
   }
 
   void _paintKeeperFallback(
-      Canvas canvas,
-      double w,
-      double h,
-      double cx,
-      double goalTop,
-      double goalBottom,
-      ) {
+    Canvas canvas,
+    double w,
+    double h,
+    double cx,
+    double goalTop,
+    double goalBottom,
+  ) {
     final keeperY = goalBottom - (goalBottom - goalTop) * 0.18;
     final keeperWidth = w * (_keeperReach * 0.95);
     final keeperHeight = (goalBottom - goalTop) * 0.55;
@@ -6441,9 +6351,7 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final cx = w * _ballPos.x;
     final cy = h * _ballPos.y;
     final base = math.min(w, h) * 0.028;
-    final radius = _state == _MiniShotState.flying
-        ? base * (1 + math.sin(_shotProgress * math.pi) * 0.35)
-        : base;
+    final radius = _state == _MiniShotState.flying ? base * (1 + math.sin(_shotProgress * math.pi) * 0.35) : base;
     // Тень под мячом.
     canvas.drawOval(
       Rect.fromCenter(
@@ -6510,12 +6418,12 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
   ];
 
   void _paintBallPixel(
-      Canvas canvas,
-      double cx,
-      double cy,
-      double radius,
-      _MiniPalette pal,
-      ) {
+    Canvas canvas,
+    double cx,
+    double cy,
+    double radius,
+    _MiniPalette pal,
+  ) {
     final cell = (radius * 2) / 6;
     final originX = cx - 7 * cell / 2;
     final originY = cy - 7 * cell / 2;
