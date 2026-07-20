@@ -535,6 +535,10 @@ class CarNavigationHandler(
         navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.REJECT)
     }
 
+    fun timeoutBetterRoute() {
+        navigationManager.uiModel.betterRouteResponse(BetterRouteResponse.TIMEOUT)
+    }
+
     fun stopNavigation() {
         navigationManager.stop()
     }
