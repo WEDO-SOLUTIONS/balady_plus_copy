@@ -34,6 +34,8 @@ class PersonalData extends ConsumerStatefulWidget {
 
 class _PersonalDataState extends ConsumerState<PersonalData> {
   static const int _nameMaxLength = 100;
+  static const int _otpResendIntervalSeconds = 60;
+  static const int _otpMaxVerifyAttempts = 3;
 
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
@@ -46,6 +48,13 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
   String? _errorText;
   bool _isEmailVerified = false;
   int _resendAttemptsLeft = 3;
+  /// Wall-clock time when the next OTP send/resend is allowed. Survives sheet
+  /// dismiss/reopen so the cooldown cannot be bypassed by leaving the screen.
+  DateTime? _otpResendAvailableAt;
+  /// Failed verify attempts for the current OTP session. Survives sheet reopen.
+  int _otpVerifyFailureCount = 0;
+  /// Ticks while a cooldown is active so the profile UI can show the remaining time.
+  Timer? _otpCooldownTicker;
   String? _firstNameError;
   String? _lastNameError;
   String? _emailError;
@@ -93,6 +102,49 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     _errorText = null;
 
     print('📱 Loaded user data - Email: $_activeEmail, isEmailVerified: $_isEmailVerified');
+  }
+
+  /// Seconds left before another OTP can be sent. Based on wall clock so it
+  /// remains correct after the sheet is dismissed and reopened.
+  int get _otpResendSecondsRemaining {
+    final until = _otpResendAvailableAt;
+    if (until == null) return 0;
+    final remaining = until.difference(DateTime.now()).inSeconds;
+    return remaining > 0 ? remaining : 0;
+  }
+
+  String get _formattedOtpCountdown {
+    final remaining = _otpResendSecondsRemaining;
+    final minutes = (remaining ~/ 60).toString().padLeft(2, '0');
+    final seconds = (remaining % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
+  void _startOtpResendCooldown() {
+    _otpResendAvailableAt = DateTime.now().add(
+      const Duration(seconds: _otpResendIntervalSeconds),
+    );
+    _startOtpCooldownTicker();
+  }
+
+  void _startOtpCooldownTicker() {
+    _otpCooldownTicker?.cancel();
+    if (_otpResendSecondsRemaining <= 0) return;
+    _otpCooldownTicker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      if (_otpResendSecondsRemaining <= 0) {
+        _otpCooldownTicker?.cancel();
+        _otpCooldownTicker = null;
+      }
+      setState(() {});
+    });
+  }
+
+  void _clearOtpCooldownState() {
+    _otpCooldownTicker?.cancel();
+    _otpCooldownTicker = null;
+    _otpResendAvailableAt = null;
+    _otpVerifyFailureCount = 0;
   }
 
   Future<void> _fetchLatestUserInfo({
@@ -166,6 +218,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
   @override
   void dispose() {
+    _otpCooldownTicker?.cancel();
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
@@ -363,6 +416,18 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       }
 
       if (emailChanged && newEmail.isNotEmpty && _canEditEmail) {
+        if (_otpResendSecondsRemaining > 0) {
+          if (!mounted) return;
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('account_error_wait_before_resend'.tr())),
+          );
+          if (_sessionId != null && _pendingEmail != null) {
+            setState(() => _otpPending = true);
+            _showOtpBottomSheet();
+          }
+          return;
+        }
         final sessionId = await _service.sendVerificationEmail(newEmail);
         if (!mounted) return;
         setState(() {
@@ -372,6 +437,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
           _isEmailVerified = false;
           _errorText = null;
           _isLoading = false;
+          _otpVerifyFailureCount = 0;
+          _startOtpResendCooldown();
         });
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
@@ -430,6 +497,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _otpPending = false;
         _sessionId = null;
         _pendingEmail = null;
+        _clearOtpCooldownState();
         _currentFirstName = currentFirstName;
         _currentLastName = currentLastName;
         _initialFirstName = currentFirstName;
@@ -457,6 +525,24 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
     final email = _activeEmail.trim();
     if (email.isEmpty || !_canEditEmail) return;
 
+    // Cooldown still active from a previous send — reopen the sheet with the
+    // remaining timer instead of issuing a fresh code that would bypass it.
+    if (_otpResendSecondsRemaining > 0) {
+      if (_sessionId != null && (_pendingEmail ?? email).isNotEmpty) {
+        setState(() {
+          _otpPending = true;
+          _pendingEmail ??= email;
+        });
+        _showOtpBottomSheet();
+        return;
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('account_error_wait_before_resend'.tr())),
+      );
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorText = null;
@@ -471,6 +557,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         _pendingEmail = email;
         _isEmailVerified = false;
         _isLoading = false;
+        _otpVerifyFailureCount = 0;
+        _startOtpResendCooldown();
       });
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
@@ -508,11 +596,16 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
         onVerify: _verifyOtp,
         onResend: _resendOtp,
         onCancel: _cancelOtpVerification,
+        onFailureCountChanged: (count) {
+          _otpVerifyFailureCount = count;
+        },
         resendAttemptsLeft: _resendAttemptsLeft,
+        initialFailureCount: _otpVerifyFailureCount,
+        initialSecondsRemaining: _otpResendSecondsRemaining,
       ),
-    ).then((_) {
-      if (_otpPending && mounted) _cancelOtpVerification();
-    });
+    );
+    // Do not cancel OTP on dismiss — countdown and failure count must survive
+    // leaving and reopening the sheet. Explicit close (X) still cancels.
   }
 
   /// Verifies the OTP entered in the bottom sheet.
@@ -573,6 +666,12 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       setState(() => _errorText = 'account_error_session_expired'.tr());
       return false;
     }
+    if (_otpResendSecondsRemaining > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('account_error_wait_before_resend'.tr())),
+      );
+      return false;
+    }
     if (_resendAttemptsLeft <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('account_error_no_resend_attempts'.tr())),
@@ -594,6 +693,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       setState(() {
         _sessionId = newSessionId;
         _resendAttemptsLeft--;
+        _otpVerifyFailureCount = 0;
+        _startOtpResendCooldown();
         _errorText = null;
         _isLoading = false;
       });
@@ -623,6 +724,8 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
       _otpPending = false;
       _pendingEmail = null;
       _sessionId = null;
+      // Keep cooldown + failure count so leaving and coming back cannot bypass
+      // the retry timeout. Cleared only after a successful verification.
       // Keep the address the user was verifying (dismiss sheet / swipe / back).
       // Server still has `_activeEmail` until they complete OTP.
       if (emailToKeep.isNotEmpty) {
@@ -822,7 +925,51 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                 },
               ),
               if (_emailError != null) _buildErrorText(context, _emailError!),
-              if (!_otpPending) ...[
+              if (_otpPending) ...[
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(Icons.mark_email_unread_outlined, color: colors.warningDefault, size: 14),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        'account_verify_email_instruction'.tr(),
+                        style: textStyles.captionMediumRegular.copyWith(
+                          color: colors.warningOnContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (_otpResendSecondsRemaining > 0) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    'account_resend_code_in'.tr().replaceFirst('%s', _formattedOtpCountdown),
+                    style: textStyles.captionMediumRegular.copyWith(
+                      color: colors.foregroundMuted,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: 44,
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: _isLoading ? null : _showOtpBottomSheet,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: colors.accentDefault,
+                      side: BorderSide(color: colors.accentDefault),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(_kFieldRadius),
+                      ),
+                    ),
+                    child: Text(
+                      'account_enter_code_from_email'.tr(),
+                      style: textStyles.buttonM.copyWith(color: colors.accentDefault),
+                    ),
+                  ),
+                ),
+              ] else ...[
                 const SizedBox(height: 6),
                 Row(
                   children: [
@@ -843,22 +990,39 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
                 // Saved-but-unverified email that the user hasn't changed:
                 // offer an explicit action to verify it (Save won't fire since
                 // there's no change to persist).
-                if (!_isEmailVerified && _activeEmail.isNotEmpty && _emailController.text.trim() == _activeEmail) ...[
+                // Also show while a cooldown is still running after cancel, so
+                // the remaining wait time stays visible.
+                if ((!_isEmailVerified &&
+                        _activeEmail.isNotEmpty &&
+                        _emailController.text.trim() == _activeEmail) ||
+                    _otpResendSecondsRemaining > 0) ...[
                   const SizedBox(height: 10),
                   SizedBox(
                     height: 44,
+                    width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: _isLoading ? null : _verifySavedEmail,
+                      onPressed: _isLoading || _otpResendSecondsRemaining > 0 ? null : _verifySavedEmail,
                       style: OutlinedButton.styleFrom(
                         foregroundColor: colors.accentDefault,
-                        side: BorderSide(color: colors.accentDefault),
+                        disabledForegroundColor: colors.foregroundDefault,
+                        side: BorderSide(
+                          color: _otpResendSecondsRemaining > 0
+                              ? colors.borderSoft
+                              : colors.accentDefault,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(_kFieldRadius),
                         ),
                       ),
                       child: Text(
-                        'account_verify_email_button'.tr(),
-                        style: textStyles.buttonM.copyWith(color: colors.accentDefault),
+                        _otpResendSecondsRemaining > 0
+                            ? 'account_resend_code_in'.tr().replaceFirst('%s', _formattedOtpCountdown)
+                            : 'account_verify_email_button'.tr(),
+                        style: textStyles.buttonM.copyWith(
+                          color: _otpResendSecondsRemaining > 0
+                              ? colors.foregroundDefault
+                              : colors.accentDefault,
+                        ),
                       ),
                     ),
                   ),
@@ -1224,14 +1388,29 @@ class OtpBottomSheetWidget extends StatefulWidget {
   /// Seconds the user must wait between resend requests (server-enforced).
   final int resendIntervalSeconds;
 
+  /// Failed verify attempts restored when reopening the sheet.
+  final int initialFailureCount;
+
+  /// Remaining cooldown seconds restored when reopening the sheet.
+  final int initialSecondsRemaining;
+
+  final int maxVerifyAttempts;
+
+  /// Keeps the parent in sync so failure count survives sheet dismiss/reopen.
+  final ValueChanged<int> onFailureCountChanged;
+
   const OtpBottomSheetWidget({
     super.key,
     required this.pendingEmail,
     required this.onVerify,
     required this.onResend,
     required this.onCancel,
+    required this.onFailureCountChanged,
     this.resendAttemptsLeft = 3,
     this.resendIntervalSeconds = 60,
+    this.initialFailureCount = 0,
+    this.initialSecondsRemaining = 60,
+    this.maxVerifyAttempts = 3,
   });
 
   @override
@@ -1239,10 +1418,6 @@ class OtpBottomSheetWidget extends StatefulWidget {
 }
 
 class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
-  /// Maximum number of wrong OTP entries before verification is blocked and the
-  /// user must request a fresh code.
-  static const int _maxVerifyAttempts = 3;
-
   String _otpValue = '';
   bool _isVerifying = false;
   bool _isResending = false;
@@ -1250,25 +1425,29 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   /// Persistent count of failed verification attempts. Only reset when a new
   /// code is sent (resend) — NOT when the user simply retypes, otherwise the
   /// 3-attempt limit could never be reached.
-  int _failureCount = 0;
+  late int _failureCount;
 
   /// Drives the red box styling for the most recent failure; cleared visually
   /// once the user starts a fresh entry (without resetting `_failureCount`).
   bool _showErrorStyling = false;
 
   Timer? _resendTimer;
-  int _secondsRemaining = 0;
+  late int _secondsRemaining;
 
   bool get _hasError => _showErrorStyling;
-  bool get _attemptsExhausted => _failureCount >= _maxVerifyAttempts;
+  bool get _attemptsExhausted => _failureCount >= widget.maxVerifyAttempts;
   bool get _canResend => _secondsRemaining <= 0 && !_isResending && widget.resendAttemptsLeft > 0;
 
   @override
   void initState() {
     super.initState();
-    // The first code was just sent before the sheet opened, so start the
-    // countdown immediately.
-    _startResendCountdown();
+    _failureCount = widget.initialFailureCount;
+    // Restore remaining cooldown from the parent (wall-clock), so leaving and
+    // reopening the sheet cannot reset or bypass the retry timeout.
+    _secondsRemaining = widget.initialSecondsRemaining;
+    if (_secondsRemaining > 0) {
+      _tickResendCountdown();
+    }
   }
 
   @override
@@ -1280,6 +1459,11 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
   void _startResendCountdown() {
     _resendTimer?.cancel();
     setState(() => _secondsRemaining = widget.resendIntervalSeconds);
+    _tickResendCountdown();
+  }
+
+  void _tickResendCountdown() {
+    _resendTimer?.cancel();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
         timer.cancel();
@@ -1312,6 +1496,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
       _failureCount = 0;
       _showErrorStyling = false;
     });
+    widget.onFailureCountChanged(0);
     if (ok) {
       _startResendCountdown();
     }
@@ -1337,6 +1522,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
       _showErrorStyling = true;
       _otpValue = '';
     });
+    widget.onFailureCountChanged(_failureCount);
   }
 
   void _appendDigit(String d) {
@@ -1494,9 +1680,11 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
               onPressed: _isVerifying || !_canResend ? null : _handleResend,
               style: FilledButton.styleFrom(
                 backgroundColor: colors.accentDefault,
-                disabledBackgroundColor: colors.neutralContainerMuted,
-                foregroundColor: colors.accentOnAccent,
-                disabledForegroundColor: colors.foregroundMuted,
+                // Use the same visible surface as OTP fields — neutralContainerMuted
+                // blends into the sheet in dark mode and hides the countdown label.
+                disabledBackgroundColor: context.profileFieldFillColor,
+                foregroundColor: colors.staticWhite,
+                disabledForegroundColor: colors.foregroundDefault,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(_kFieldRadius),
                 ),
@@ -1507,7 +1695,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(colors.accentOnAccent),
+                        valueColor: AlwaysStoppedAnimation<Color>(colors.staticWhite),
                       ),
                     )
                   : Text(
@@ -1515,7 +1703,7 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
                           ? 'account_resend_code_in'.tr().replaceFirst('%s', _formattedCountdown)
                           : 'account_resend_code'.tr(),
                       style: textStyles.buttonM.copyWith(
-                        color: _canResend ? colors.accentOnAccent : colors.foregroundMuted,
+                        color: _canResend ? colors.staticWhite : colors.foregroundDefault,
                       ),
                     ),
             ),
@@ -1573,65 +1761,69 @@ class _NumPad extends StatelessWidget {
       ['', '0', '⌫'],
     ];
 
-    return Column(
-      children: rows
-          .map(
-            (row) => IntrinsicHeight(
-              child: Row(
-                children: row.map((key) {
-                  final isDelete = key == '⌫';
-                  final isEmpty = key == '';
+    // Numpad digits must stay LTR (1-2-3) even when the app locale is RTL.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        children: rows
+            .map(
+              (row) => IntrinsicHeight(
+                child: Row(
+                  children: row.map((key) {
+                    final isDelete = key == '⌫';
+                    final isEmpty = key == '';
 
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: isEmpty
-                          ? null
-                          : isDelete
-                          ? onDelete
-                          : () => onDigit(key),
-                      child: Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: isEmpty ? null : context.profileFieldFillColor,
-                          border: Border(
-                            top: borderSide,
-                            right: borderSide,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: isEmpty
-                            ? const SizedBox.shrink()
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: isEmpty
+                            ? null
                             : isDelete
-                            ? Icon(
-                                Icons.backspace_outlined,
-                                size: 20,
-                                color: colors.foregroundDefault,
-                              )
-                            : Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    key,
-                                    style: textStyles.h3Medium.copyWith(color: colors.foregroundDefault),
-                                  ),
-                                  if (_subLabels.containsKey(key))
+                            ? onDelete
+                            : () => onDigit(key),
+                        child: Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: isEmpty ? null : context.profileFieldFillColor,
+                            border: Border(
+                              top: borderSide,
+                              right: borderSide,
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: isEmpty
+                              ? const SizedBox.shrink()
+                              : isDelete
+                              ? Icon(
+                                  Icons.backspace_outlined,
+                                  size: 20,
+                                  color: colors.foregroundDefault,
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
                                     Text(
-                                      _subLabels[key]!,
-                                      style: textStyles.captionSmallMedium.copyWith(
-                                        color: colors.foregroundMuted,
-                                        letterSpacing: 1,
-                                      ),
+                                      key,
+                                      style: textStyles.h3Medium.copyWith(color: colors.foregroundDefault),
                                     ),
-                                ],
-                              ),
+                                    if (_subLabels.containsKey(key))
+                                      Text(
+                                        _subLabels[key]!,
+                                        style: textStyles.captionSmallMedium.copyWith(
+                                          color: colors.foregroundMuted,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                        ),
                       ),
-                    ),
-                  );
-                }).toList(),
+                    );
+                  }).toList(),
+                ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 }
