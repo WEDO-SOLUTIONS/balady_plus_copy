@@ -98,7 +98,8 @@ class DgisMapController {
 
   /// Navi speed controller events.
   late NaviSpeedController naviSpeedController = NaviSpeedController(
-      _instance.naviSpeedEvents.asBroadcastStream());
+    _instance.naviSpeedEvents.asBroadcastStream(),
+  );
 
   /// Navi message controller
   late NaviMessageController naviMessageController = NaviMessageController(
@@ -133,7 +134,9 @@ class DgisMapController {
     onParkingClicked: _instance.onParkingClicked,
     setParkingFilter: (filter) =>
         _instance.setMapAttributeString(
-            NaviTrafficParkingController.parkingFilterAttribute, filter.attributeValue),
+          NaviTrafficParkingController.parkingFilterAttribute,
+          filter.attributeValue,
+        ),
   );
 
   /// Free roam controller
@@ -217,17 +220,15 @@ class DgisMapController {
 
   /// Calculates camera position for given list of markers to be visible
   Future<CameraPositionMessage> calcPositionForMarkers(List<String> markers,
-      CalcPositionOptionsMessage options) =>
-      _instance.calcPositionForMarkers(markers, options);
+      CalcPositionOptionsMessage options,) => _instance.calcPositionForMarkers(markers, options);
 
   /// Calculates camera position for given list of polygons to be visible
   Future<CameraPositionMessage> calcPositionForPolygons(List<String> polygons,
-      CalcPositionOptionsMessage options) =>
-      _instance.calcPositionForPolygons(polygons, options);
+      CalcPositionOptionsMessage options,) => _instance.calcPositionForPolygons(polygons, options);
 
   /// Calculates camera position for given list of polylines to be visible
   Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines,
-      CalcPositionOptionsMessage options) =>
+      CalcPositionOptionsMessage options,) =>
       _instance.calcPositionForPolylines(polylines, options);
 
   /// Calculates camera position for given list of geo points to be visible
@@ -252,7 +253,11 @@ class DgisMapController {
   Future<void> setPanoramasPaddings({int left = 0, int top = 0, int right = 0, int bottom = 0}) =>
       _instance.setPanoramasPaddings(
         CameraSetPaddingMessage(
-            leftPadding: left, topPadding: top, rightPadding: right, bottomPadding: bottom),
+          leftPadding: left,
+          topPadding: top,
+          rightPadding: right,
+          bottomPadding: bottom,
+        ),
       );
 
   /// Center camera on selected panorama marker.
@@ -395,9 +400,10 @@ class DgisMapController {
       _instance.removeMapObjectManager(manager);
 
   /// Changes [MapObjectManagerMessage] visibility
-  Future<void> setMapObjectManagerIsVisible(
-      {required bool isVisible, MapObjectManagerMessage? manager}) =>
-      _instance.setMapObjectManagerIsVisible(isVisible: isVisible, manager: manager);
+  Future<void> setMapObjectManagerIsVisible({
+    required bool isVisible,
+    MapObjectManagerMessage? manager,
+  }) => _instance.setMapObjectManagerIsVisible(isVisible: isVisible, manager: manager);
 
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) =>
@@ -583,8 +589,9 @@ class DgisMapController {
 
   /// Used to setup platform. Should be called when permission was granted.
   /// Does not request permission by itself.
-  Future<void> onLocationPermissionGranted(
-      {DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low}) {
+  Future<void> onLocationPermissionGranted({
+    DesiredAccuracyMessage desiredAccuracy = DesiredAccuracyMessage.low,
+  }) {
     return _instance.onLocationPermissionGranted(desiredAccuracy);
   }
 
@@ -653,7 +660,11 @@ class DgisMapController {
     List<RouteSearchPointMessage>? intermediatePoints,
   }) {
     return _instance.findRoute(
-        startPoint, finishPoint, options, intermediatePoints: intermediatePoints);
+      startPoint,
+      finishPoint,
+      options,
+      intermediatePoints: intermediatePoints,
+    );
   }
 
   ///toggle heatmap
