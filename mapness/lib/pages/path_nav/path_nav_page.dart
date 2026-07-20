@@ -20,6 +20,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
+import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
@@ -627,6 +628,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       clearNavigationState(),
       ref.read(selectedMarkerProvider.notifier).removeAllMarkers(),
     ]);
+
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      ref.read(freeRoamStarterProvider.notifier).reset();
+    }
 
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
 
