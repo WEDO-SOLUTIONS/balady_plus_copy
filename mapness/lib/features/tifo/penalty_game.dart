@@ -16,13 +16,18 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
+import 'package:mapness/features/tifo/data/tifo_models.dart';
 
 class PenaltyApp extends StatelessWidget {
-  const PenaltyApp({super.key, this.onComplete});
+  const PenaltyApp({super.key, this.onComplete, this.missesAllowed = 3});
 
-  /// Fires after the 5-shot session ends. Argument is the number of goals
-  /// scored in the session (0..5).
-  final ValueChanged<int>? onComplete;
+  /// Fires once the session ends. Carries goals, misses and the per-kick event
+  /// log — the log must be forwarded to `/buildings/{id}/play`, since the
+  /// backend recomputes the score from it (anti-cheat).
+  final ValueChanged<TifoShootoutOutcome>? onComplete;
+
+  /// Session ends after this many misses (from `/config`, default 3).
+  final int missesAllowed;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,7 @@ class PenaltyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Penalty 3D',
       theme: ThemeData.dark(useMaterial3: true),
-      home: PenaltyGamePage(onComplete: onComplete),
+      home: PenaltyGamePage(onComplete: onComplete, missesAllowed: missesAllowed),
     );
   }
 }
@@ -38,9 +43,10 @@ class PenaltyApp extends StatelessWidget {
 enum _PenaltyView { perspective, topDown, miniGame, styles }
 
 class PenaltyGamePage extends StatefulWidget {
-  const PenaltyGamePage({super.key, this.onComplete});
+  const PenaltyGamePage({super.key, this.onComplete, this.missesAllowed = 3});
 
-  final ValueChanged<int>? onComplete;
+  final ValueChanged<TifoShootoutOutcome>? onComplete;
+  final int missesAllowed;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -117,7 +123,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
         body = ClipRect(
           child: GameWidget<PenaltyGame>.controlled(
             key: const ValueKey('penalty-game'),
-            gameFactory: () => PenaltyGame(onComplete: widget.onComplete),
+            gameFactory: () => PenaltyGame(onComplete: widget.onComplete, missesAllowed: widget.missesAllowed),
           ),
         );
         break;
@@ -1009,14 +1015,23 @@ enum _KeeperMotion {
 enum _StrikerMotion { idle, windup, kick, settle }
 
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
-  PenaltyGame({this.onComplete});
+  PenaltyGame({this.onComplete, this.missesAllowed = 3});
 
-  /// Fired exactly once, after [_maxAttempts] shots have been resolved.
-  /// Argument is the number of goals scored across the session.
-  final ValueChanged<int>? onComplete;
+  /// Fired exactly once, when the session ends. Carries goals, misses and the
+  /// per-kick event log (for anti-cheat submit).
+  final ValueChanged<TifoShootoutOutcome>? onComplete;
 
-  /// Session length — game closes after this many attempts.
+  /// Session ends after this many misses (BRD rule; from `/config`).
+  final int missesAllowed;
+
+  /// Hard upper bound on shots (HUD renders this many attempt pips); the
+  /// session usually ends earlier on the [missesAllowed]-th miss.
   static const int _maxAttempts = 5;
+
+  /// Per-kick log + a monotonic clock, submitted to the backend which
+  /// recomputes the score from these events.
+  final List<TifoKickEvent> _events = [];
+  final Stopwatch _sessionClock = Stopwatch()..start();
 
   static const double _goalZ = 23;
   // World goal dimensions are intentionally larger than a real goal so the
@@ -1430,9 +1445,20 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _message = message;
     _resultTime = 0;
     _shotHistory.add(state);
-    if (_shotHistory.length >= _maxAttempts && !_completed) {
+
+    // Record the kick for the anti-cheat event log. Only `goal` counts as
+    // scored; both `saved` and `missed` are misses.
+    final scored = state == _ShotState.goal;
+    _events.add(
+      TifoKickEvent(index: _events.length, scored: scored, atMs: _sessionClock.elapsedMilliseconds),
+    );
+    final misses = _shotHistory.where((s) => s != _ShotState.goal).length;
+
+    // End on the Nth miss (BRD) or when the attempt cap is hit, whichever
+    // comes first.
+    if (!_completed && (misses >= missesAllowed || _shotHistory.length >= _maxAttempts)) {
       _completed = true;
-      onComplete?.call(_goals);
+      onComplete?.call(TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events)));
     }
   }
 

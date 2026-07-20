@@ -90,9 +90,10 @@ class PenaltyEntryScreen extends ConsumerWidget {
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => PenaltyApp(
-          onComplete: (goals) {
+          onComplete: (outcome) {
             if (handled) return;
             handled = true;
+            final goals = outcome.goals;
             // Brief delay so the user sees the last result message,
             // then unconditionally pop back to the dashboard map.
             Future<void>.delayed(const Duration(milliseconds: 850), () {
