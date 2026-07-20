@@ -20,6 +20,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
 import 'package:mapness/widgets/path_nav/ui/countdown_banner.dart';
@@ -50,7 +51,8 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
   final ToggleSheetController sheetController;
   final bool isLandscape;
   final bool isHomeOrWork;
-  final bool supportsIndoor;
+  final bool showPedestrianPrompt;
+  final Duration pedestrianPromptAutoDismiss;
   final ValueNotifier<bool> isSwitchingToFoot;
 
   const NaviSheetPanel({
@@ -71,7 +73,8 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
     required this.sheetController,
     required this.isLandscape,
     required this.isHomeOrWork,
-    required this.supportsIndoor,
+    required this.showPedestrianPrompt,
+    required this.pedestrianPromptAutoDismiss,
     required this.isSwitchingToFoot,
     super.key,
   });
@@ -203,9 +206,10 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                       bottomSheetController: widget.sheetController,
                     ),
             ),
-            if (widget.supportsIndoor)
+            if (widget.showPedestrianPrompt)
               CountdownBanner(
                 text: context.l10n.switchToPedestrianMode,
+                duration: widget.pedestrianPromptAutoDismiss,
                 onTap: widget.onSwitchToPedestrian,
                 onClose: widget.onCancelSwitchToPedestrian,
                 onTimeout: widget.onCancelSwitchToPedestrian,
