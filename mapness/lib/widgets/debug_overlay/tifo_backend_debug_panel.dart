@@ -5,6 +5,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/tifo/data/tifo_api.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
 /// Debug console for the TIFO staging backend: preset requests for the main
@@ -29,6 +32,10 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
   final TextEditingController _userIdController = TextEditingController(text: 'debug-tester');
   final TextEditingController _pathController = TextEditingController(text: '/districts/summary');
   final TextEditingController _bodyController = TextEditingController();
+  // Admin (x-api-key) auth for /api/v1/admin/tifo/* endpoints. Entered at
+  // runtime only — never persisted or committed.
+  final TextEditingController _adminKeyController = TextEditingController();
+  bool _adminMode = false;
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -53,6 +60,7 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
     _userIdController.dispose();
     _pathController.dispose();
     _bodyController.dispose();
+    _adminKeyController.dispose();
     _dio.close();
     super.dispose();
   }
@@ -88,6 +96,18 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
         ),
         const SizedBox(height: 4),
         DebugTextField(controller: _userIdController, hint: 'debug-tester'),
+        const SizedBox(height: 8),
+        DebugToggleRow(
+          title: 'Admin mode (x-api-key)',
+          subtitle: 'For /api/v1/admin/tifo/* — send the admin key instead of the bearer',
+          value: _adminMode,
+          gradient: DebugTheme.gradientTeal,
+          onChanged: (value) => setState(() => _adminMode = value),
+        ),
+        if (_adminMode) ...[
+          const SizedBox(height: 8),
+          DebugTextField(controller: _adminKeyController, hint: 'x-api-key (admin)'),
+        ],
         const SizedBox(height: 12),
         Text(
           'Presets',
@@ -106,6 +126,32 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
             _presetButton(label: 'leaderboards', path: '/leaderboards?scope=both'),
             _presetButton(label: 'daily tokens', path: '/tokens/daily', method: 'POST'),
           ],
+        ),
+        const DebugDivider(),
+        Text(
+          'Gameplay',
+          style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+        ),
+        const SizedBox(height: 8),
+        Consumer(
+          builder: (context, ref, _) {
+            final enabled = ref.watch(tifoBuildingsMapLayerProvider);
+            return DebugToggleRow(
+              title: 'Buildings layer on map',
+              subtitle: 'Fetch + draw viewport buildings; tap one to play',
+              value: enabled,
+              gradient: DebugTheme.gradientTeal,
+              onChanged: (value) {
+                // Feed the console's Base URL + User ID into the shared config
+                // the layer/API read from, so one place drives everything.
+                ref.read(tifoConfigProvider.notifier)
+                  ..setBaseUrl(_baseUrlController.text)
+                  ..setUserToken(_userIdController.text);
+                final layer = ref.read(tifoBuildingsMapLayerProvider.notifier);
+                unawaited(value ? layer.enable() : layer.disable());
+              },
+            );
+          },
         ),
         const DebugDivider(),
         Text(
@@ -221,6 +267,7 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
   }) async {
     final baseUrl = _baseUrlController.text.trim();
     final userId = _userIdController.text.trim();
+    final adminKey = _adminKeyController.text.trim();
     if (baseUrl.isEmpty || path.isEmpty) {
       return;
     }
@@ -245,7 +292,12 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
           method: method,
           headers: {
             'Content-Type': 'application/json',
-            if (userId.isNotEmpty) 'Authorization': 'Bearer $userId',
+            // Admin endpoints (/api/v1/admin/tifo/*) authenticate with
+            // x-api-key; everything else uses the user id as a bearer token.
+            if (_adminMode && adminKey.isNotEmpty)
+              'x-api-key': adminKey
+            else if (userId.isNotEmpty)
+              'Authorization': 'Bearer $userId',
           },
         ),
         data: body.isEmpty ? null : body,
