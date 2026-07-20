@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart' as mappness;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
+import 'package:mapness/features/navigation_cursor/navigation_cursor.dart';
+import 'package:mapness/features/navigation_cursor/navigation_cursor_controller.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
@@ -39,93 +41,93 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 ContentWrapper(
                   color: cardColor,
                   children: [
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
 
-                          return ContentRow(
-                            onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
-                            options: ContentRowOptions(
-                              title: context.l10n.avoidTollRoads,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
-                              ),
+                        return ContentRow(
+                          onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
+                          options: ContentRowOptions(
+                            title: context.l10n.avoidTollRoads,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
-                          return ContentRow(
-                            onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
-                            options: ContentRowOptions(
-                              title: context.l10n.avoidUnpavedRoads,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
-                              ),
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                        return ContentRow(
+                          onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
+                          options: ContentRowOptions(
+                            title: context.l10n.avoidUnpavedRoads,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
-                          return ContentRow(
-                            onToggle: (_) => betterRouteSettingsNotifier.toggle(),
-                            options: ContentRowOptions(
-                              title: context.l10n.suggestRouteBetter,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: betterRouteSettings,
-                              ),
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
+                        return ContentRow(
+                          onToggle: (_) => betterRouteSettingsNotifier.toggle(),
+                          options: ContentRowOptions(
+                            title: context.l10n.suggestRouteBetter,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: betterRouteSettings,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, _) {
-                          final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider) ?? false;
-                          return ContentRow(
-                            onToggle: (_) => ref
-                                .read(navigatorAutoEnableParkingProvider.notifier)
-                                .toggleAutoEnableParking(value: !autoEnableParking),
-                            options: ContentRowOptions(
-                              title: context.l10n.automaticParkingLayer,
-                              dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              actionWidget: ContentRowActionOptions(
-                                enabledToggle: true,
-                                toggleInitialValue: autoEnableParking,
-                              ),
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider) ?? false;
+                        return ContentRow(
+                          onToggle: (_) => ref
+                              .read(navigatorAutoEnableParkingProvider.notifier)
+                              .toggleAutoEnableParking(value: !autoEnableParking),
+                          options: ContentRowOptions(
+                            title: context.l10n.automaticParkingLayer,
+                            dividerEnabled: true,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            actionWidget: ContentRowActionOptions(
+                              enabledToggle: true,
+                              toggleInitialValue: autoEnableParking,
                             ),
-                          );
-                        },
-                      ),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+                          ),
+                        );
+                      },
+                    ),
+                    Consumer(
+                      builder: (context, ref, child) {
+                        final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
 
-                          return ContentRow(
-                            onToggle: (_) => ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
-                            options: ContentRowOptions(
-                              title: context.l10n.autorunNavigator,
-                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                              subtitle: context.l10n.automaticallyLaunchNavigator,
-                              subtitleMaxlines: 2,
-                              actionWidget: ContentRowActionOptions(enabledToggle: true, toggleInitialValue: autorun),
-                            ),
-                          );
-                        },
-                      ),
+                        return ContentRow(
+                          onToggle: (_) => ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
+                          options: ContentRowOptions(
+                            title: context.l10n.autorunNavigator,
+                            titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            subtitle: context.l10n.automaticallyLaunchNavigator,
+                            subtitleMaxlines: 2,
+                            actionWidget: ContentRowActionOptions(enabledToggle: true, toggleInitialValue: autorun),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -192,6 +194,35 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                         ),
                       ),
                       onToggle: (val) => navigatorCamerasSettingsNotifier.toggle(),
+                    );
+                  },
+                ),
+              ],
+            ),
+            ContentColumn(
+              // Reuse the single Localazy string for both the section-header
+              // (upper case per existing conventions like `soundAndAlerts:
+              // "SOUND AND ALERTS"`) and the picker page title.
+              headerTitle: context.l10n.cursorsNavigatorCustomization.toUpperCase(),
+              content: [
+                Consumer(
+                  builder: (context, ref, _) {
+                    final active = ref.watch(navigationCursorControllerProvider).active;
+                    return ContentRow(
+                      onTap: () => context.router.push(const CursorsRoute()),
+                      options: ContentRowOptions(
+                        wrapperColor: cardColor,
+                        wrapperEnabled: true,
+                        title: context.l10n.cursors,
+                        titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                        actionWidget: ContentRowActionOptions(
+                          actionText: active.title(context),
+                          actionIcon: AppIcons(
+                            iconData: SystemIcons.arrowCornerRightSmall,
+                            color: context.colors.foregroundSoft,
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),

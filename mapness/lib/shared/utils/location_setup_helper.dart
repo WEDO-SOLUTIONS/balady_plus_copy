@@ -25,6 +25,13 @@ class LocationSetupHelper with WidgetsBindingObserver {
     }
   }
 
+  /// Detach from the widgets binding. Must be called when the owning
+  /// provider is disposed, otherwise each rebuild leaks a live observer
+  /// bound to a stale controller reference.
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
   Future<void> _tryActivate() async {
     // don't access PermissionManager concurrently
     if (_requestInProgress) {
