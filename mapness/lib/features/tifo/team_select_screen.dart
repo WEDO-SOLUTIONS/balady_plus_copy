@@ -1,73 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/tifo/tifo_flow_provider.dart';
-import 'package:mapness/features/tifo/tifo_settings_screen.dart';
-import 'package:mapness/features/tifo/tifo_team.dart';
+import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 
-/// STEP 1 of 3 — Choose Your Team. Figma node 1:7137 (idle) / 1:7526 (selected).
+/// STEP 1 OF 2 — Choose your team. Roster is data-driven from `GET /clubs`
+/// (BRD: the club list is per-season data, not a fixed enum). Confirming calls
+/// `POST /clubs/select` (which grants the welcome bonus) and pops `true`;
+/// "Maybe Later" / back pops `false` → browse-only.
 class TifoTeamSelectScreen extends ConsumerStatefulWidget {
   const TifoTeamSelectScreen({super.key});
 
   static const Color _bg = Color(0xFF0A0A0A);
   static const Color _cardBg = Color(0xFF141414);
-  static const Color _cardBorder = Color(0x12FFFFFF); // rgba(255,255,255,0.07)
+  static const Color _cardBorder = Color(0x12FFFFFF);
   static const Color _textPrimary = Color(0xFFF5F5F5);
-  static const Color _textMuted = Color(0xFF616161);
-  static const Color _accent = Color(0xFF16A34A);
-  static const Color _accentLight = Color(0xFF22C55E);
-  static const Color _accentMenlo = Color(0xFF22C55E);
+  static const Color _textMuted = Color(0xFF9E9E9E);
+  static const Color _accent = Color(0xFF1B8354); // flat-green per current design
 
   @override
-  ConsumerState<TifoTeamSelectScreen> createState() =>
-      _TifoTeamSelectScreenState();
+  ConsumerState<TifoTeamSelectScreen> createState() => _TifoTeamSelectScreenState();
 }
 
 class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
-  TifoTeam? _selected;
+  String? _selectedId;
+  bool _isBusy = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    // Ensure the roster is loaded (journey usually pre-loads, but be safe).
+    if (ref.read(tifoSessionProvider).clubs.isEmpty) {
+      Future.microtask(() => ref.read(tifoSessionProvider.notifier).load());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final clubs = ref.watch(tifoSessionProvider.select((s) => s.clubs));
+
     return Scaffold(
       backgroundColor: TifoTeamSelectScreen._bg,
       body: Column(
         children: [
-          _StepHeader(
-            stepText: 'STEP 1 OF 3',
-            title: 'Choose Your Team',
-            progress: 1,
-            onBack: () => Navigator.of(context).maybePop(),
-          ),
+          const _StepHeader(stepText: 'STEP 1 OF 2', title: 'Choose your team'),
+          const _SeasonLockBanner(),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Column(
-                children: [
-                  _TeamsGrid(
-                    selected: _selected,
-                    onTap: (team) => setState(() => _selected = team),
+            child: clubs.isEmpty
+                ? const Center(child: CircularProgressIndicator(color: TifoTeamSelectScreen._accent))
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+                    children: [
+                      for (final club in clubs)
+                        _ClubRow(
+                          club: club,
+                          isSelected: _selectedId == club.id,
+                          onTap: () => setState(() => _selectedId = club.id),
+                        ),
+                      if (_error != null) ...[
+                        const SizedBox(height: 8),
+                        Text(_error!, style: const TextStyle(color: Color(0xFFF04438), fontSize: 13)),
+                      ],
+                    ],
                   ),
-                  if (_selected != null) ...[
-                    const SizedBox(height: 16),
-                    _SelectedCard(team: _selected!),
-                  ],
-                ],
-              ),
-            ),
           ),
           _BottomCta(
-            label: 'Confirm Team',
-            enabled: _selected != null,
-            onTap: () {
-              final team = _selected;
-              if (team == null) return;
-              ref.read(tifoFlowProvider.notifier).setSelectedTeam(team);
-              Navigator.of(context).push<void>(
-                MaterialPageRoute<void>(
-                  fullscreenDialog: true,
-                  builder: (_) => TifoSettingsScreen(team: team),
-                ),
-              );
-            },
+            enabled: _selectedId != null && !_isBusy,
+            isBusy: _isBusy,
+            onConfirm: _confirm,
+            onMaybeLater: () => Navigator.of(context).pop(false),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirm() async {
+    final clubId = _selectedId;
+    if (clubId == null) {
+      return;
+    }
+    setState(() {
+      _isBusy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(tifoSessionProvider.notifier).selectClub(clubId);
+      if (!mounted) {
+        return;
+      }
+      // Step 2 of the BRD flow — the welcome-bonus acknowledgement.
+      await _showWelcomeBonus();
+      if (mounted) {
+        Navigator.of(context).pop(true);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isBusy = false;
+          _error = e.toString();
+        });
+      }
+    }
+  }
+
+  Future<void> _showWelcomeBonus() {
+    final balance = ref.read(tifoSessionProvider).profile?.balance;
+    return showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: TifoTeamSelectScreen._cardBg,
+        title: const Text('Welcome bonus', style: TextStyle(color: TifoTeamSelectScreen._textPrimary)),
+        content: Text(
+          balance == null
+              ? 'Your team is locked in for the season. Tokens have been added to your balance.'
+              : 'Your team is locked in for the season. You now have $balance tokens.',
+          style: const TextStyle(color: TifoTeamSelectScreen._textMuted),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text("Let's go", style: TextStyle(color: TifoTeamSelectScreen._accent)),
           ),
         ],
       ),
@@ -75,33 +128,26 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
   }
 }
 
-// ─── Header (back + step + progress dots) ────────────────────────────────────
+// ─── Header (step + 2 progress dots) ─────────────────────────────────────────
 
 class _StepHeader extends StatelessWidget {
-  const _StepHeader({
-    required this.stepText,
-    required this.title,
-    required this.progress,
-    required this.onBack,
-  });
+  const _StepHeader({required this.stepText, required this.title});
 
   final String stepText;
   final String title;
-  final int progress; // 1, 2 or 3
-  final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                _BackButton(onTap: onBack),
+                _BackButton(onTap: () => Navigator.of(context).pop(false)),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,10 +157,9 @@ class _StepHeader extends StatelessWidget {
                       stepText,
                       style: const TextStyle(
                         fontFamily: 'monospace',
-                        fontSize: 8,
-                        height: 12 / 8,
+                        fontSize: 9,
                         letterSpacing: 0.8,
-                        color: TifoTeamSelectScreen._accentMenlo,
+                        color: TifoTeamSelectScreen._accent,
                       ),
                     ),
                     Text(
@@ -122,7 +167,6 @@ class _StepHeader extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
-                        height: 24 / 16,
                         color: TifoTeamSelectScreen._textPrimary,
                       ),
                     ),
@@ -130,27 +174,59 @@ class _StepHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Row(
               children: [
-                for (var i = 1; i <= 3; i++) ...[
+                for (var i = 1; i <= 2; i++) ...[
                   Expanded(
                     child: Container(
                       height: 4,
                       decoration: BoxDecoration(
-                        color: i <= progress
-                            ? TifoTeamSelectScreen._accentLight
-                            : Colors.white.withOpacity(0.12),
+                        color: i == 1 ? TifoTeamSelectScreen._accent : Colors.white.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
                   ),
-                  if (i < 3) const SizedBox(width: 6),
+                  if (i < 2) const SizedBox(width: 6),
                 ],
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SeasonLockBanner extends StatelessWidget {
+  const _SeasonLockBanner();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.lock_clock_rounded, size: 18, color: TifoTeamSelectScreen._textMuted),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Your team will be locked for the season',
+                  style: TextStyle(color: TifoTeamSelectScreen._textPrimary, fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'You can change teams when the next season begins.',
+                  style: TextStyle(color: TifoTeamSelectScreen._textMuted, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -175,273 +251,138 @@ class _BackButton extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         alignment: Alignment.center,
-        child: const Icon(
-          Icons.arrow_back_ios_new,
-          size: 14,
-          color: TifoTeamSelectScreen._textPrimary,
-        ),
+        child: const Icon(Icons.arrow_back_ios_new, size: 14, color: TifoTeamSelectScreen._textPrimary),
       ),
     );
   }
 }
 
-// ─── Teams grid (2×2) ─────────────────────────────────────────────────────────
+// ─── Club row (data-driven) ──────────────────────────────────────────────────
 
-class _TeamsGrid extends StatelessWidget {
-  const _TeamsGrid({required this.selected, required this.onTap});
+class _ClubRow extends StatelessWidget {
+  const _ClubRow({required this.club, required this.isSelected, required this.onTap});
 
-  final TifoTeam? selected;
-  final ValueChanged<TifoTeam> onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 175 / 128,
-      children: [
-        for (final team in TifoTeam.values)
-          _TeamCard(
-            team: team,
-            isSelected: selected == team,
-            onTap: () => onTap(team),
-          ),
-      ],
-    );
-  }
-}
-
-class _TeamCard extends StatelessWidget {
-  const _TeamCard({
-    required this.team,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final TifoTeam team;
+  final TifoClubInfo club;
   final bool isSelected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected
-              ? team.primary.withOpacity(0.14)
-              : TifoTeamSelectScreen._cardBg,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected
-                ? team.primary
-                : TifoTeamSelectScreen._cardBorder,
-            width: 1.5,
+    final color = Color(club.colorArgb);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Container(
+          height: 80,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: isSelected ? color.withOpacity(0.14) : TifoTeamSelectScreen._cardBg,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: isSelected ? color : TifoTeamSelectScreen._cardBorder, width: 1.5),
           ),
-        ),
-        padding: const EdgeInsets.all(17.5),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: team.primary.withOpacity(0.14),
-                    border: Border.all(
-                      color: team.primary.withOpacity(0.19),
-                      width: 0.75,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    '🏟',
-                    style: TextStyle(fontSize: 22, height: 1.0),
-                  ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12)),
+                alignment: Alignment.center,
+                child: Text(
+                  club.short,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13),
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  team.name,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  club.name,
                   style: TextStyle(
+                    color: isSelected ? color : TifoTeamSelectScreen._textPrimary,
                     fontWeight: FontWeight.w600,
-                    fontSize: 12,
-                    height: 18 / 12,
-                    color: isSelected
-                        ? team.primary
-                        : TifoTeamSelectScreen._textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  team.code,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 9,
-                    height: 13.5 / 9,
-                    color: TifoTeamSelectScreen._textMuted,
-                  ),
-                ),
-              ],
-            ),
-            if (isSelected)
-              Positioned(
-                right: 0,
-                top: 0,
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: team.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.check,
-                    size: 12,
-                    color: Color(0xFF0A0A0A),
+                    fontSize: 15,
                   ),
                 ),
               ),
-          ],
+              if (isSelected)
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+                  alignment: Alignment.center,
+                  child: const Icon(Icons.check, size: 12, color: Colors.white),
+                ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// ─── "SELECTED" card ─────────────────────────────────────────────────────────
-
-class _SelectedCard extends StatelessWidget {
-  const _SelectedCard({required this.team});
-
-  final TifoTeam team;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: team.primary.withOpacity(0.14),
-        border: Border.all(color: team.primary.withOpacity(0.19), width: 0.75),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'SELECTED',
-                  style: TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 9,
-                    height: 13.5 / 9,
-                    letterSpacing: 0.225,
-                    color: team.primary,
-                  ),
-                ),
-                Text(
-                  team.name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    height: 19.5 / 13,
-                    color: team.primary,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                const Text(
-                  'Ready to fight for Riyadh?',
-                  style: TextStyle(
-                    fontSize: 10,
-                    height: 15 / 10,
-                    color: Color(0xFF9E9E9E),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Text('🏟', style: TextStyle(fontSize: 30, height: 1.0)),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Bottom CTA ───────────────────────────────────────────────────────────────
+// ─── Bottom CTA (Confirm + Maybe Later) ──────────────────────────────────────
 
 class _BottomCta extends StatelessWidget {
   const _BottomCta({
-    required this.label,
     required this.enabled,
-    required this.onTap,
+    required this.isBusy,
+    required this.onConfirm,
+    required this.onMaybeLater,
   });
 
-  final String label;
   final bool enabled;
-  final VoidCallback onTap;
+  final bool isBusy;
+  final VoidCallback onConfirm;
+  final VoidCallback onMaybeLater;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Color(0x0FFFFFFF), width: 0.75),
-        ),
+        border: Border(top: BorderSide(color: Color(0x0FFFFFFF), width: 0.75)),
       ),
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: enabled ? onTap : null,
-            child: Container(
-              height: 54,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: enabled ? null : Colors.white.withOpacity(0.06),
-                gradient: enabled
-                    ? const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          TifoTeamSelectScreen._accent,
-                          TifoTeamSelectScreen._accentLight,
-                        ],
-                      )
-                    : null,
-                boxShadow: enabled
-                    ? [
-                        BoxShadow(
-                          color: TifoTeamSelectScreen._accent.withOpacity(0.28),
-                          offset: const Offset(0, 4),
-                          blurRadius: 10,
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            children: [
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: enabled ? onConfirm : null,
+                child: Container(
+                  height: 54,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: enabled ? TifoTeamSelectScreen._accent : Colors.white.withOpacity(0.06),
+                  ),
+                  child: isBusy
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : Text(
+                          'Confirm Team',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15,
+                            color: enabled ? Colors.white : TifoTeamSelectScreen._textMuted,
+                          ),
                         ),
-                      ]
-                    : null,
-              ),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
-                  height: 22.5 / 15,
-                  color: enabled
-                      ? Colors.white
-                      : TifoTeamSelectScreen._textMuted,
                 ),
               ),
-            ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: isBusy ? null : onMaybeLater,
+                child: const Text(
+                  'Maybe Later',
+                  style: TextStyle(color: TifoTeamSelectScreen._textMuted, fontSize: 14),
+                ),
+              ),
+            ],
           ),
         ),
       ),
