@@ -120,7 +120,7 @@ class MakkahPoiConstants {
   static const String ramadanMarkersPath = 'assets/icons/ramadan_markers';
 
   /// Path to Makkah places background image
-  static const String makkahPlacesBackgroundImage = 'assets/images/themes/makkah/places_makkah.png';
+  static const String makkahPlacesBackgroundImage = 'assets/images/themes/makkah/places_makkah.webp';
 
   /// Path to clock icon
   static const String clockIconPath = 'assets/icons/makkah/clock.svg';

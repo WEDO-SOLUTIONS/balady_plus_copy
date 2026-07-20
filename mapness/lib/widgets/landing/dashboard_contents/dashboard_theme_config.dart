@@ -71,7 +71,7 @@ DashboardThemeConfig dashboardThemeConfigFor(
             : const [Colors.transparent, Color(0xFFD19D3F)],
         exploreBackgroundImageBuilder: isDark
             ? null
-            : () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
+            : () => const AssetImage('assets/images/themes/makkah/places_makkah.webp'),
         backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
         searchHintColor: isDark ? const Color.fromRGBO(255, 255, 255, 0.8 * 255) : null,
       );
@@ -90,7 +90,7 @@ DashboardThemeConfig dashboardThemeConfigFor(
             : const [Colors.transparent, Colors.transparent],
         exploreBackgroundImageBuilder: isDark
             ? null
-            : () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
+            : () => const AssetImage('assets/images/themes/ramadan/places_ramadan.webp'),
         backgroundColor: isDark ? const Color(0xFF00141C) : const Color(0xFFFAF5EE),
       );
 

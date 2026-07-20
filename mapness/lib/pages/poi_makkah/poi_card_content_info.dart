@@ -20,7 +20,7 @@ class _MakkahNearbySection extends StatelessWidget {
         ? BoxDecoration(
             color: MakkahPoiConstants.darkSheet,
             image: const DecorationImage(
-              image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
+              image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.webp'),
               matchTextDirection: true,
               fit: BoxFit.fitWidth,
               alignment: Alignment.bottomCenter,
@@ -29,7 +29,7 @@ class _MakkahNearbySection extends StatelessWidget {
           )
         : const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/themes/makkah/places_makkah.png'),
+              image: AssetImage('assets/images/themes/makkah/places_makkah.webp'),
               matchTextDirection: true,
               fit: BoxFit.fitWidth,
               alignment: Alignment.bottomCenter,

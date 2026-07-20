@@ -1,5 +1,9 @@
 package com.dgis.map.android_auto
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.database.ContentObserver
 import android.graphics.Color
@@ -7,6 +11,7 @@ import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import androidx.core.content.ContextCompat
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
@@ -97,6 +102,31 @@ class NavigationScreen(
         }
     }
 
+    private val locationModeReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
+                checkLocationPermissionAndState()
+            }
+        }
+    }
+
+    private fun registerLocationModeReceiver() {
+        ContextCompat.registerReceiver(
+            carContext,
+            locationModeReceiver,
+            IntentFilter(LocationManager.MODE_CHANGED_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    private fun unregisterLocationModeReceiver() {
+        try {
+            carContext.unregisterReceiver(locationModeReceiver)
+        } catch (_: IllegalArgumentException) {
+            // Receiver was not registered.
+        }
+    }
+
     private fun hasLocationPermission(): Boolean {
         return carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
@@ -107,7 +137,12 @@ class NavigationScreen(
 
     private fun checkLocationPermissionAndState() {
         if (!hasLocationPermission()) {
-            if (screenManager.top !is RequestPermissionScreen) {
+            if (isNavigation || isFreeRoam) {
+                if (locationState != LocationState.NOT_AVAILABLE) {
+                    locationState = LocationState.NOT_AVAILABLE
+                    invalidate()
+                }
+            } else if (screenManager.top !is RequestPermissionScreen) {
                 screenManager.push(
                     RequestPermissionScreen(carContext) {
                         mapController.onLocationOPermissionGranted()
@@ -163,17 +198,20 @@ class NavigationScreen(
                 override fun onResume(owner: LifecycleOwner) {
                     checkLocationPermissionAndState()
                     registerLocationSettingsObserver()
+                    registerLocationModeReceiver()
                     tryToShowFavourites()
                 }
 
                 override fun onPause(owner: LifecycleOwner) {
                     unregisterLocationSettingsObserver()
+                    unregisterLocationModeReceiver()
                 }
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                     favouritesUpdateJob?.cancel()
                     unregisterLocationSettingsObserver()
+                    unregisterLocationModeReceiver()
                     coroutineScope.cancel()
                 }
             }
@@ -195,6 +233,9 @@ class NavigationScreen(
     }
 
     private var isEndTripShown: Boolean = false
+
+    private var isBetterRouteAlertShown: Boolean = false
+    private var shownBetterRouteMinutes: Int? = null
 
     private var navigationState = NavigationState.DISABLED
     private var locationState = LocationState.AVAILABLE
@@ -525,9 +566,14 @@ class NavigationScreen(
     }
 
     private fun showBetterRouteAlert(durationProfit: Int) {
+        val minutes = max(round(durationProfit / 60.0).toInt(), 1)
+        // Alerts with the same id are considered equal by the host: re-posting tears the
+        // displayed alert down and re-creates it, dropping clicks that land in between.
+        // The channel re-emits while the offer is active, so only post when something changed.
+        if (isBetterRouteAlertShown && minutes == shownBetterRouteMinutes) return
+
         val appManager = carContext.getCarService(AppManager::class.java)
         val title = CarText.create(getString(R.string.better_route_alert_title))
-        val minutes = max(round(durationProfit / 60.0).toInt(), 1)
         val subtitle = CarText.create(getString(R.string.better_route_alert_subtitle, minutes))
         val closeAction =
             Action.Builder()
@@ -535,8 +581,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_DEFAULT)
                 .setBackgroundColor(betterRouteCloseButtonColor)
                 .setOnClickListener {
-                    mapController.rejectBetterRoute()
                     appManager.dismissAlert(betterRouteAlertId)
+                    mapController.rejectBetterRoute()
                 }
         val chooseAction =
             Action.Builder()
@@ -544,8 +590,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_PRIMARY)
                 .setBackgroundColor(CarColor.PRIMARY)
                 .setOnClickListener {
-                    mapController.acceptBetterRoute()
                     appManager.dismissAlert(betterRouteAlertId)
+                    mapController.acceptBetterRoute()
                 }
 
         val betterRouteAlert =
@@ -553,6 +599,26 @@ class NavigationScreen(
                 .setSubtitle(subtitle)
                 .addAction(closeAction.build())
                 .addAction(chooseAction.build())
+                .setCallback(
+                    object : AlertCallback {
+                        override fun onCancel(reason: Int) {
+                            isBetterRouteAlertShown = false
+                            shownBetterRouteMinutes = null
+                            if (reason == AlertCallback.REASON_TIMEOUT) {
+                                // The SDK expects a three-way response; the stock 2GIS prompt
+                                // reports TIMEOUT when the user ignores the offer.
+                                mapController.timeoutBetterRoute()
+                            }
+                        }
+
+                        override fun onDismiss() {
+                            isBetterRouteAlertShown = false
+                            shownBetterRouteMinutes = null
+                        }
+                    }
+                )
+        isBetterRouteAlertShown = true
+        shownBetterRouteMinutes = minutes
         appManager.showAlert(betterRouteAlert.build())
     }
 

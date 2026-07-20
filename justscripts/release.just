@@ -129,6 +129,7 @@ apk-release version: apply-patches prebuild (_apk-urbi_pre-prod version) (apk-mo
 
 _apk-urbi_pre-prod version:
     print_style '' 'yellow' 'build urbi pre'
+    rm -rf android/app/build
     VENDOR_CONFIG="urbi-pre-prod"
     fvm flutter build apk --flavor pre --target lib/main_urbi_pre.dart {{ dart_define }}
     mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/urbi-pre-{{ version }}.apk
@@ -136,6 +137,7 @@ _apk-urbi_pre-prod version:
 
 apk-momrah-prod version:
     print_style '' 'yellow' 'build momrah prod'
+    rm -rf android/app/build
     VENDOR_CONFIG="momrah-prod"
     fvm flutter build apk --flavor prod --target lib/main_prod.dart {{ dart_define }}
     mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
@@ -143,6 +145,7 @@ apk-momrah-prod version:
 
 _apk-momrah-pre version:
     print_style '' 'yellow' 'build momrah pre'
+    rm -rf android/app/build
     VENDOR_CONFIG="momrah-prod"
     fvm flutter build apk --flavor pre --target lib/main_pre.dart {{ dart_define }}
     mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
@@ -150,6 +153,7 @@ _apk-momrah-pre version:
 
 apk-momrah-stage version:
     print_style '' 'yellow' 'build momrah stage'
+    rm -rf android/app/build
     VENDOR_CONFIG="momrah-stage"
     fvm flutter build apk --flavor stg --target lib/main_stg.dart {{ dart_define }}
     mv build/app/outputs/flutter-apk/app-stg-release.apk build/app/outputs/flutter-apk/momrah-stage-{{ version }}.apk
@@ -160,6 +164,7 @@ apk-momrah-stage version:
 
 _apk-momrah-stage-debug version:
     print_style '' 'yellow' 'build momrah stage debug'
+    rm -rf android/app/build
     VENDOR_CONFIG="momrah-stage"
     fvm flutter build apk --flavor stg --target lib/main_stg.dart --debug {{ dart_define }}
     mv build/app/outputs/flutter-apk/app-stg-debug.apk build/app/outputs/flutter-apk/momrah-stage-debug-{{ version }}.apk

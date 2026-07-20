@@ -20,6 +20,18 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var paddingFlowJob: Job? = null
 
+    /**
+     * Layout direction of the current locale. When true (e.g. Arabic) the speed and speed-limit
+     * widgets are anchored to the start (left) edge instead of the end (right) edge so they mirror
+     * correctly in RTL. Updated by the session whenever the locale changes.
+     */
+    var isRtl: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            update()
+        }
+
     init {
         paddingFlowJob = CoroutineScope(Dispatchers.Default).launch {
             paddingProvider.paddingFlow.collect {
@@ -89,7 +101,11 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
             style = Paint.Style.FILL
             setShadowLayer(2f, 0f, 0f, Color.parseColor("#12000000"))
         }
-        val centerX = canvas.width - paddingProvider.paddingFlow.value.right - 40f
+        val centerX = if (isRtl) {
+            paddingProvider.paddingFlow.value.left + 40f
+        } else {
+            canvas.width - paddingProvider.paddingFlow.value.right - 40f
+        }
         val centerY = canvas.height - paddingProvider.paddingFlow.value.bottom - 51f
         canvas.drawCircle(centerX, centerY, 36f, paint)
         paint.apply {
@@ -109,7 +125,11 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
     }
 
     private fun drawSpeedLimit(speedLimit: Int, exceeded: Boolean, canvas: Canvas) {
-        val centerX = canvas.width - paddingProvider.paddingFlow.value.right - 93f
+        val centerX = if (isRtl) {
+            paddingProvider.paddingFlow.value.left + 93f
+        } else {
+            canvas.width - paddingProvider.paddingFlow.value.right - 93f
+        }
         val centerY = canvas.height - paddingProvider.paddingFlow.value.bottom - 45f
         if (exceeded) {
             paint.apply {

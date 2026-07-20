@@ -53,7 +53,7 @@
 //             children: [
 //               DrawIconBasedTypeWidget(
 //                 icon:
-//                     "assets/icons/png/new_services/recover_veichle.png", //service.image,
+//                     "assets/icons/png/new_services/recover_veichle.webp", //service.image,
 //                 iconSize: 68,
 //               ),
 //               const SizedBox(width: 16),

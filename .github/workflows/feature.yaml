@@ -19,7 +19,7 @@ on:
       - "bugfix/*"
       - "feat/*"
       - "feature/*"
-      - "urbi"
+      - "core"
       - "release/*"
     paths-ignore:
       - "**.md"
@@ -333,7 +333,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.38.5"
+          flutter-version: "3.44.5"
           channel: "stable"
 
       - name: Download Localazy #wait secrets from 2gis
