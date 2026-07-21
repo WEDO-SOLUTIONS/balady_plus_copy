@@ -38,50 +38,50 @@ class CursorsPageContent extends ConsumerWidget {
     final yourCursors = NavigationCursor.values.where(data.isDownloaded).toList();
     final available = NavigationCursor.values.where((c) => !data.isDownloaded(c)).toList();
 
+    // BALADY-3762: section headers are h4SemiBold with the subtitle under
+    // "Your cursors", and the list keeps a full bottom padding (Figma
+    // 2287-3295) — not the uikit ContentColumn caption-label layout.
     final body = Padding(
-      padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+      padding: const EdgeInsets.all(Spacing.$4x),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          _SectionHeader(text: l10n.yourCursors),
+          const SizedBox(height: Spacing.$0_5x),
           _SubtitleRow(text: l10n.selectNavigatorType),
-          ContentColumn(
-            headerTitle: l10n.yourCursors,
-            content: [
-              ContentWrapper(
-                color: cardColor,
-                children: [
-                  for (final cursor in yourCursors)
-                    _CursorRow(
-                      cursor: cursor,
-                      trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
-                      busy: data.inProgress == cursor,
-                      onTap: cursor == data.active ? null : () => controller.select(cursor),
-                      onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
-                    ),
-                ],
-              ),
+          const SizedBox(height: Spacing.$4x),
+          ContentWrapper(
+            color: cardColor,
+            children: [
+              for (final cursor in yourCursors)
+                _CursorRow(
+                  cursor: cursor,
+                  trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
+                  busy: data.inProgress == cursor,
+                  onTap: cursor == data.active ? null : () => controller.select(cursor),
+                  onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
+                ),
             ],
           ),
-          if (available.isNotEmpty)
-            ContentColumn(
-              headerTitle: l10n.cursorsAvailable,
-              content: [
-                ContentWrapper(
-                  color: cardColor,
-                  children: [
-                    for (final cursor in available)
-                      _CursorRow(
-                        cursor: cursor,
-                        trailing: _CursorTrailing.downloadable,
-                        busy: data.inProgress == cursor,
-                        onTap: () => controller.select(cursor),
-                        onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
-                      ),
-                  ],
-                ),
+          if (available.isNotEmpty) ...[
+            const SizedBox(height: Spacing.$3x),
+            _SectionHeader(text: l10n.cursorsAvailable),
+            const SizedBox(height: Spacing.$4x),
+            ContentWrapper(
+              color: cardColor,
+              children: [
+                for (final cursor in available)
+                  _CursorRow(
+                    cursor: cursor,
+                    trailing: _CursorTrailing.downloadable,
+                    busy: data.inProgress == cursor,
+                    onTap: () => controller.select(cursor),
+                    onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
+                  ),
               ],
             ),
-        ].insertBetween(Spacing.$4x.heightBox).toList(),
+          ],
+        ],
       ),
     );
     return scrollable ? SingleChildScrollView(child: body) : body;
@@ -110,17 +110,25 @@ Future<void> _dropLocal(
     );
 }
 
+class _SectionHeader extends StatelessWidget {
+  const _SectionHeader({required this.text});
+  final String text;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    text,
+    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+  );
+}
+
 class _SubtitleRow extends StatelessWidget {
   const _SubtitleRow({required this.text});
   final String text;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: Spacing.$2x, left: Spacing.$4x, right: Spacing.$4x),
-    child: Text(
-      text,
-      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-    ),
+  Widget build(BuildContext context) => Text(
+    text,
+    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
   );
 }
 
