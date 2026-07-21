@@ -197,7 +197,11 @@ class NavigationScreen(
     private var isEndTripShown: Boolean = false
 
     private var isBetterRouteAlertShown: Boolean = false
-    private var shownBetterRouteMinutes: Int? = null
+
+    // Guards the three-way SDK response so exactly one reply is sent per offer. A user tap that
+    // lands at the same instant as the 10s host timeout, or a reply after the SDK already withdrew
+    // the offer, would otherwise answer the same offer twice — which crashes the native SDK.
+    private var betterRouteAwaitingResponse: Boolean = false
 
     private var navigationState = NavigationState.DISABLED
     private var locationState = LocationState.AVAILABLE
@@ -439,7 +443,10 @@ class NavigationScreen(
         if (durationProfit != null) {
             showBetterRouteAlert(durationProfit)
         } else {
-            appManager.dismissAlert(betterRouteAlertId)
+            // SDK retracted the offer: drop the alert but do NOT send a response for an offer
+            // that no longer exists.
+            betterRouteAwaitingResponse = false
+            dismissBetterRouteAlert()
         }
     }
 
@@ -475,6 +482,9 @@ class NavigationScreen(
         stepRemainingDistance = null
         destination = null
         destinationTravelEstimate = null
+        isBetterRouteAlertShown = false
+        betterRouteAwaitingResponse = false
+        dismissBetterRouteAlert()
         navigationManager.navigationEnded()
         val notification = NavigationCarAppService.getDefaultNotification(carContext)
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
@@ -524,17 +534,23 @@ class NavigationScreen(
                     }
                 }
             )
-        appManager.showAlert(endTripAlert.build())
+        try {
+            appManager.showAlert(endTripAlert.build())
+        } catch (e: Exception) {
+            // Host can reject showAlert; the end-of-trip prompt is not worth crashing over.
+            e.printStackTrace()
+            isEndTripShown = false
+        }
     }
 
     private fun showBetterRouteAlert(durationProfit: Int) {
-        val minutes = max(round(durationProfit / 60.0).toInt(), 1)
         // Alerts with the same id are considered equal by the host: re-posting tears the
-        // displayed alert down and re-creates it, dropping clicks that land in between.
-        // The channel re-emits while the offer is active, so only post when something changed.
-        if (isBetterRouteAlertShown && minutes == shownBetterRouteMinutes) return
+        // displayed alert down and re-creates it, dropping clicks that land in between. The
+        // channel re-emits while the offer is active, so keep the first alert on screen until it
+        // is answered or times out instead of replacing it on every emit.
+        if (isBetterRouteAlertShown) return
 
-        val appManager = carContext.getCarService(AppManager::class.java)
+        val minutes = max(round(durationProfit / 60.0).toInt(), 1)
         val title = CarText.create(getString(R.string.better_route_alert_title))
         val subtitle = CarText.create(getString(R.string.better_route_alert_subtitle, minutes))
         val closeAction =
@@ -543,8 +559,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_DEFAULT)
                 .setBackgroundColor(betterRouteCloseButtonColor)
                 .setOnClickListener {
-                    appManager.dismissAlert(betterRouteAlertId)
-                    mapController.rejectBetterRoute()
+                    dismissBetterRouteAlert()
+                    respondToBetterRouteOnce { mapController.rejectBetterRoute() }
                 }
         val chooseAction =
             Action.Builder()
@@ -552,8 +568,8 @@ class NavigationScreen(
                 .setFlags(Action.FLAG_PRIMARY)
                 .setBackgroundColor(CarColor.PRIMARY)
                 .setOnClickListener {
-                    appManager.dismissAlert(betterRouteAlertId)
-                    mapController.acceptBetterRoute()
+                    dismissBetterRouteAlert()
+                    respondToBetterRouteOnce { mapController.acceptBetterRoute() }
                 }
 
         val betterRouteAlert =
@@ -565,23 +581,50 @@ class NavigationScreen(
                     object : AlertCallback {
                         override fun onCancel(reason: Int) {
                             isBetterRouteAlertShown = false
-                            shownBetterRouteMinutes = null
                             if (reason == AlertCallback.REASON_TIMEOUT) {
                                 // The SDK expects a three-way response; the stock 2GIS prompt
                                 // reports TIMEOUT when the user ignores the offer.
-                                mapController.timeoutBetterRoute()
+                                respondToBetterRouteOnce { mapController.timeoutBetterRoute() }
+                            } else {
+                                // The host pulled the alert for another reason (replaced,
+                                // system-dismissed): stop awaiting so a later callback can't
+                                // answer an offer that is already gone.
+                                betterRouteAwaitingResponse = false
                             }
                         }
 
                         override fun onDismiss() {
                             isBetterRouteAlertShown = false
-                            shownBetterRouteMinutes = null
                         }
                     }
                 )
         isBetterRouteAlertShown = true
-        shownBetterRouteMinutes = minutes
-        appManager.showAlert(betterRouteAlert.build())
+        betterRouteAwaitingResponse = true
+        try {
+            appManager.showAlert(betterRouteAlert.build())
+        } catch (e: Exception) {
+            // The host can reject showAlert (rate limiting / unsupported head unit). Roll the
+            // guards back so a later offer can still be shown, and never crash the process.
+            e.printStackTrace()
+            isBetterRouteAlertShown = false
+            betterRouteAwaitingResponse = false
+        }
+    }
+
+    // Sends at most one better-route reply per offer. Guards against a user tap racing the 10s
+    // host timeout, and against replying to an offer the SDK already withdrew.
+    private fun respondToBetterRouteOnce(response: () -> Unit) {
+        if (!betterRouteAwaitingResponse) return
+        betterRouteAwaitingResponse = false
+        response()
+    }
+
+    private fun dismissBetterRouteAlert() {
+        try {
+            appManager.dismissAlert(betterRouteAlertId)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun getManeuverWithExitNumberAndAngle(
