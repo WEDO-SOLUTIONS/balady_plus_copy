@@ -64,10 +64,7 @@ class CursorsSheet extends HookWidget {
           ),
         ],
       ),
-      content: const [
-        CursorsPageContent(scrollable: false),
-        SizedBox(height: Spacing.$4x),
-      ],
+      content: const [CursorsPageContent(scrollable: false)],
     );
   }
 }
