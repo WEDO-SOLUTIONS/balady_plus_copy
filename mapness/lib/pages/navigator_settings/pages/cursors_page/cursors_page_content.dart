@@ -53,11 +53,12 @@ class CursorsPageContent extends ConsumerWidget {
           ContentWrapper(
             color: cardColor,
             children: [
-              for (final cursor in yourCursors)
+              for (final (i, cursor) in yourCursors.indexed)
                 _CursorRow(
                   cursor: cursor,
                   trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
                   busy: data.inProgress == cursor,
+                  dividerEnabled: i < yourCursors.length - 1,
                   onTap: cursor == data.active ? null : () => controller.select(cursor),
                   onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
                 ),
@@ -70,11 +71,12 @@ class CursorsPageContent extends ConsumerWidget {
             ContentWrapper(
               color: cardColor,
               children: [
-                for (final cursor in available)
+                for (final (i, cursor) in available.indexed)
                   _CursorRow(
                     cursor: cursor,
                     trailing: _CursorTrailing.downloadable,
                     busy: data.inProgress == cursor,
+                    dividerEnabled: i < available.length - 1,
                     onTap: () => controller.select(cursor),
                     onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
                   ),
@@ -154,6 +156,7 @@ class _CursorRow extends StatelessWidget {
     required this.cursor,
     required this.trailing,
     required this.busy,
+    required this.dividerEnabled,
     required this.onTap,
     this.onLongPress,
   });
@@ -161,6 +164,7 @@ class _CursorRow extends StatelessWidget {
   final NavigationCursor cursor;
   final _CursorTrailing trailing;
   final bool busy;
+  final bool dividerEnabled;
   final VoidCallback? onTap;
   // TEMP debug: long-press drops the cached GLB from disk so the next tap
   // re-downloads from CDN. Remove alongside the corresponding controller /
@@ -174,7 +178,7 @@ class _CursorRow extends StatelessWidget {
       title: cursor.title(context),
       titleStyle: context.textStyle.text.copyWith(color: colors.foregroundDefault),
       leadingIcon: _CursorThumbnail(cursor: cursor),
-      dividerEnabled: true,
+      dividerEnabled: dividerEnabled,
       // Every trailing state goes through `customActionWidget` (Widget?) so
       // the design-team SVGs for checkmark and download render as-is,
       // without shoehorning them into balady_uikit's IconData-only
