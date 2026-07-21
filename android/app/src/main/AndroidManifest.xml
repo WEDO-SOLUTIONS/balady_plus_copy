@@ -264,13 +264,16 @@
                 <data android:scheme="insiderbaladyapp" />
             </intent-filter>
 
-            <intent-filter>
+        </activity>
+
+        <activity android:name="com.useinsider.insider.InsiderLoginActivity"
+            tools:node="merge">
+            <intent-filter tools:node="remove">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="insiderbaladyappuat" />
+                <data android:scheme="insiderbaladyapp" />
             </intent-filter>
-
         </activity>
 
         <activity
