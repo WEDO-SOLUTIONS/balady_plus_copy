@@ -249,7 +249,8 @@ class _CursorThumbnail extends StatelessWidget {
   const _CursorThumbnail({required this.cursor});
   final NavigationCursor cursor;
 
-  static const _size = 32.0;
+  // Figma 2287-3295: 28px thumbnail slot in the cursor rows.
+  static const _size = 28.0;
   static const _palette = <Color>[
     Color(0xFFF6BC00),
     Color(0xFFE07A5F),
