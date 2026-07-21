@@ -215,10 +215,11 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                         wrapperEnabled: true,
                         title: context.l10n.cursors,
                         titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                        // BALADY-3761: value only — regular weight, no icon
+                        // next to the selected cursor name (Figma 2287-3277).
                         actionWidget: ContentRowActionOptions(
                           actionText: active.title(context),
-                          actionIcon: AppIcons(
-                            iconData: SystemIcons.arrowCornerRightSmall,
+                          actionTextStyle: context.textStyles.bodySmallRegular.copyWith(
                             color: context.colors.foregroundSoft,
                           ),
                         ),
