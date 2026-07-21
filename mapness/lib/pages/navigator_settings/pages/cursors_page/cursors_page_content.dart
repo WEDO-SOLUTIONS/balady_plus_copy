@@ -10,7 +10,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class CursorsPageContent extends ConsumerWidget {
-  const CursorsPageContent({super.key});
+  const CursorsPageContent({super.key, this.scrollable = true});
+
+  /// `false` when embedded into an outer scrollable (the ToggleSheet in
+  /// cursors_sheet.dart provides its own SliverList; a nested scroll view
+  /// would swallow the sheet's drag gestures).
+  final bool scrollable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,54 +38,53 @@ class CursorsPageContent extends ConsumerWidget {
     final yourCursors = NavigationCursor.values.where(data.isDownloaded).toList();
     final available = NavigationCursor.values.where((c) => !data.isDownloaded(c)).toList();
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _SubtitleRow(text: l10n.selectNavigatorType),
+    final body = Padding(
+      padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _SubtitleRow(text: l10n.selectNavigatorType),
+          ContentColumn(
+            headerTitle: l10n.yourCursors,
+            content: [
+              ContentWrapper(
+                color: cardColor,
+                children: [
+                  for (final cursor in yourCursors)
+                    _CursorRow(
+                      cursor: cursor,
+                      trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
+                      busy: data.inProgress == cursor,
+                      onTap: cursor == data.active ? null : () => controller.select(cursor),
+                      onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
+                    ),
+                ],
+              ),
+            ],
+          ),
+          if (available.isNotEmpty)
             ContentColumn(
-              headerTitle: l10n.yourCursors,
+              headerTitle: l10n.cursorsAvailable,
               content: [
                 ContentWrapper(
                   color: cardColor,
                   children: [
-                    for (final cursor in yourCursors)
+                    for (final cursor in available)
                       _CursorRow(
                         cursor: cursor,
-                        trailing: cursor == data.active ? _CursorTrailing.selected : _CursorTrailing.pickable,
+                        trailing: _CursorTrailing.downloadable,
                         busy: data.inProgress == cursor,
-                        onTap: cursor == data.active ? null : () => controller.select(cursor),
+                        onTap: () => controller.select(cursor),
                         onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
                       ),
                   ],
                 ),
               ],
             ),
-            if (available.isNotEmpty)
-              ContentColumn(
-                headerTitle: l10n.cursorsAvailable,
-                content: [
-                  ContentWrapper(
-                    color: cardColor,
-                    children: [
-                      for (final cursor in available)
-                        _CursorRow(
-                          cursor: cursor,
-                          trailing: _CursorTrailing.downloadable,
-                          busy: data.inProgress == cursor,
-                          onTap: () => controller.select(cursor),
-                          onLongPress: cursor.requiresDownload ? () => _dropLocal(context, controller, cursor) : null,
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-          ].insertBetween(Spacing.$4x.heightBox).toList(),
-        ),
+        ].insertBetween(Spacing.$4x.heightBox).toList(),
       ),
     );
+    return scrollable ? SingleChildScrollView(child: body) : body;
   }
 }
 
