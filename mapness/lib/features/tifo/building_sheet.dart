@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -9,14 +10,17 @@ import 'package:mapness/features/tifo/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
+import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 
 /// Opens the capture sheet for [building] on the root navigator, so it floats
 /// above the map regardless of who triggered it (a polygon tap from the map
-/// layer, which isn't a widget).
+/// layer, which isn't a widget). Rebuilt to the Figma light "building details"
+/// sheet (BRD US-08), with the three status states (available / live /
+/// cooldown).
 Future<void> showTifoBuildingSheet(BuildContext context, TifoBuilding building) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
-  backgroundColor: const Color(0xFF10241C),
+  backgroundColor: TifoColors.surface,
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
   ),
@@ -36,20 +40,23 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   bool _isBusy = false;
   String? _error;
 
+  /// Captured before the sheet is popped so the post-game submit (which runs
+  /// after this State is disposed) can still read providers.
+  ProviderContainer? _container;
+
   TifoBuilding get _building => widget.building;
 
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(tifoSessionProvider);
     final ownerClub = session.clubById(_building.ownerClubSlug);
-    final ownerColor = ownerClub == null ? const Color(0xFFB9B29C) : Color(ownerClub.colorArgb);
+    final ownerColor = ownerClub == null ? TifoColors.neutralFill : Color(ownerClub.colorArgb);
     final isClaim = _building.isNeutral;
-    final cost = isClaim ? session.config.claimCost : session.config.challengeCost;
-    final canPlay = _building.isAvailable && !_isBusy;
 
     return SafeArea(
+      top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,90 +65,208 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               child: Container(
                 width: 40,
                 height: 4,
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(2)),
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(color: TifoColors.border, borderRadius: BorderRadius.circular(2)),
               ),
             ),
-            Text(
-              _building.displayName,
-              style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 4),
-            Text('ID: ${_building.id}', style: const TextStyle(color: Colors.white38, fontSize: 12)),
-            const SizedBox(height: 16),
-
-            // Ownership
             Row(
               children: [
-                Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(color: ownerColor, shape: BoxShape.circle),
+                const SizedBox(width: 32),
+                const Expanded(
+                  child: Center(
+                    child: Text('Claim the building', style: TifoText.h2, textAlign: TextAlign.center),
+                  ),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  ownerClub?.name ?? 'No team owns this building yet',
-                  style: TextStyle(color: ownerColor, fontSize: 14, fontWeight: FontWeight.w600),
-                ),
+                _CloseBtn(onTap: () => Navigator.of(context).pop()),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 16),
 
-            // Score to beat + contested + status
-            _InfoRow(label: 'Score to beat', value: isClaim ? '0 (unclaimed)' : '${_building.scoreToBeat}'),
-            _InfoRow(label: 'Contested (7d)', value: '${_building.contested7d}'),
-            _InfoRow(label: 'Status', value: _statusLabel(_building.status)),
-            _InfoRow(label: isClaim ? 'Claim cost' : 'Challenge cost', value: '$cost token${cost == 1 ? '' : 's'}'),
+            // Owner / unclaimed
+            _card(
+              child: isClaim
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Unclaimed', style: TifoText.captionMedium),
+                        const SizedBox(height: 8),
+                        Text(_building.displayName, style: TifoText.bodyLSemi),
+                        const SizedBox(height: 2),
+                        const Text("This building hasn't been claimed yet.", style: TifoText.captionRegular),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Current Owner', style: TifoText.captionMedium),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(color: ownerColor, borderRadius: BorderRadius.circular(12)),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(child: Text(ownerClub?.name ?? _building.displayName, style: TifoText.bodyLSemi)),
+                          ],
+                        ),
+                      ],
+                    ),
+            ),
+            const SizedBox(height: 12),
 
-            if (!_building.isAvailable) ...[
-              const SizedBox(height: 10),
-              Text(
-                _building.status == 'live'
-                    ? 'Someone is playing this building right now.'
-                    : 'This building is cooling down. Try again shortly.',
-                style: const TextStyle(color: Color(0xFFF2C94C), fontSize: 12),
+            // Current score to beat
+            _card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Current score to beat', style: TifoText.captionMedium),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${isClaim ? 0 : _building.scoreToBeat}',
+                        style: TifoText.h2.copyWith(color: TifoColors.accentSoft),
+                      ),
+                      const SizedBox(width: 6),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 3),
+                        child: Text('goals', style: TifoText.captionRegular),
+                      ),
+                      const Spacer(),
+                      const Text('⚽', style: TextStyle(fontSize: 30)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // Contested (7d)
+            _card(
+              child: Row(
+                children: [
+                  Text('${_building.contested7d}', style: TifoText.h3),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      'This building has been played ${_building.contested7d} '
+                      'time${_building.contested7d == 1 ? '' : 's'} in the last 7 days.',
+                      style: TifoText.captionRegular,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            if (_building.isAvailable) ...[
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: TifoColors.accentContainer,
+                  borderRadius: BorderRadius.circular(TifoRadii.ml),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.bolt_rounded, size: 18, color: TifoColors.accentSoft),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        isClaim
+                            ? 'Be the first to claim it for your team.'
+                            : 'Win the challenge and dominate with your team.',
+                        style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
+
             if (_error != null) ...[
               const SizedBox(height: 12),
               Text(_error!, style: const TextStyle(color: Color(0xFFE5484D), fontSize: 13)),
             ],
             const SizedBox(height: 20),
 
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: canPlay ? const Color(0xFF1B8354) : Colors.white12,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                onPressed: canPlay ? _onPlayPressed : null,
-                icon: _isBusy
-                    ? const SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Icon(Icons.sports_soccer_rounded),
-                label: Text(_isBusy ? 'Starting…' : (isClaim ? 'Claim building' : 'Challenge')),
+            // CTA by status.
+            if (_building.isAvailable)
+              TifoPrimaryButton(
+                label: isClaim ? 'Claim building' : 'Challenge',
+                leadingEmoji: '⚽',
+                busy: _isBusy,
+                onPressed: _isBusy ? null : _onPlayPressed,
+              )
+            else
+              _disabledBar(
+                _building.status == 'live'
+                    ? 'Hold on… this building is currently being played for.'
+                    : 'Cooling down — try again shortly.',
               ),
-            ),
+
+            if (kDebugMode) ...[
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: TifoColors.amber,
+                    side: const BorderSide(color: Color(0x33D9A400)),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                  onPressed: (_building.isAvailable && !_isBusy) ? _mockCapture : null,
+                  icon: const Icon(Icons.bolt_rounded, size: 18),
+                  label: const Text('Mock capture (skip game)'),
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  String _statusLabel(String status) => switch (status) {
-    'available' => 'Available',
-    'cooldown' => 'Cooldown',
-    'live' => 'Live',
-    _ => status,
-  };
+  Widget _card({required Widget child}) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: TifoColors.surface,
+      borderRadius: BorderRadius.circular(TifoRadii.ml),
+      border: Border.all(color: TifoColors.border),
+    ),
+    child: child,
+  );
+
+  Widget _disabledBar(String message) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+    decoration: BoxDecoration(
+      color: TifoColors.neutralFill.withValues(alpha: 0.85),
+      borderRadius: BorderRadius.circular(TifoRadii.l),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.sports_soccer_rounded, size: 18, color: Colors.white),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TifoText.button.copyWith(fontSize: 14),
+          ),
+        ),
+      ],
+    ),
+  );
 
   /// Runs the BRD play-gate (login → tutorial → team) before starting. If the
   /// player isn't ready and doesn't complete the gate, we stop.
   Future<void> _onPlayPressed() async {
+    _container = ProviderScope.containerOf(context, listen: false);
     setState(() {
       _isBusy = true;
       _error = null;
@@ -188,7 +313,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     if (navigator == null) {
       return;
     }
-    final missesAllowed = ref.read(tifoSessionProvider).config.missesAllowed;
+    final missesAllowed = (_container ?? ProviderScope.containerOf(context, listen: false))
+        .read(tifoSessionProvider)
+        .config
+        .missesAllowed;
     var handled = false;
     unawaited(
       navigator.push<void>(
@@ -213,8 +341,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   }
 
   Future<void> _submit({required TifoPlaySession playSession, required TifoShootoutOutcome outcome}) async {
-    final api = ref.read(tifoApiProvider);
-    final messenger = _messenger();
+    // Reads go through the captured container: by the time the post-game submit
+    // fires, this State is already disposed and `ref` would throw.
+    final container = _container ?? ProviderScope.containerOf(rootNavigatorKey.currentContext!, listen: false);
+    final api = container.read(tifoApiProvider);
     try {
       final result = await api.submitPlay(
         buildingId: _building.id,
@@ -225,9 +355,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       // Reflect capture immediately using the player's own club; the next
       // viewport refresh reconciles from the server regardless.
       if (result.isWin) {
-        final myClub = ref.read(tifoSessionProvider).myClub;
+        final myClub = container.read(tifoSessionProvider).myClub;
         if (myClub != null) {
-          ref
+          container
               .read(tifoBuildingsProvider.notifier)
               .applyOwnership(
                 buildingId: _building.id,
@@ -236,18 +366,90 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               );
         }
       }
-      unawaited(ref.read(tifoSessionProvider.notifier).refreshProfile());
-      messenger?.showSnackBar(SnackBar(content: Text(_outcomeMessage(result))));
+      unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+      _showResult(_outcomeMessage(result), win: result.isWin);
     } catch (e) {
-      messenger?.showSnackBar(
-        SnackBar(content: Text('Submit failed: ${e is TifoApiException ? e.message : e}')),
-      );
+      _showResult('Submit failed: ${e is TifoApiException ? e.message : e}', win: false);
     }
   }
 
-  ScaffoldMessengerState? _messenger() {
+  /// Debug-only: run the full server capture loop (play/start → play) with a
+  /// synthetic winning event log, skipping the penalty mini-game. The backend
+  /// still validates the events, so this exercises the real anti-cheat path.
+  /// Kept mounted through the submit (no pre-pop) so `ref`/container stay valid.
+  Future<void> _mockCapture() async {
+    _container = ProviderScope.containerOf(context, listen: false);
+    setState(() {
+      _isBusy = true;
+      _error = null;
+    });
+
+    // Make sure the player is play-ready (logged in + team) — the server
+    // rejects a start otherwise.
+    final ready = await TifoJourney(ref).ensurePlayReady(context);
+    if (!mounted) {
+      return;
+    }
+    if (!ready) {
+      setState(() => _isBusy = false);
+      return;
+    }
+
+    final api = ref.read(tifoApiProvider);
+    try {
+      final playSession = await api.startPlay(_building.id);
+      // Enough goals to win: claim needs ≥1; challenge needs > scoreToBeat.
+      final winScore = _building.isNeutral ? 1 : _building.scoreToBeat + 1;
+      final events = <TifoKickEvent>[
+        for (var i = 0; i < winScore; i++) TifoKickEvent(index: i, scored: true, atMs: i * 800),
+        // Three misses end the session (matches missesAllowed default).
+        for (var i = 0; i < 3; i++) TifoKickEvent(index: winScore + i, scored: false, atMs: (winScore + i) * 800),
+      ];
+      final outcome = TifoShootoutOutcome(goals: winScore, misses: 3, events: events);
+      await _submit(playSession: playSession, outcome: outcome);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isBusy = false;
+          _error = e is TifoApiException ? '${e.statusCode}: ${e.message}' : e.toString();
+        });
+      }
+    }
+  }
+
+  /// Win/Loss feedback via a dialog on the root navigator — the map/landing
+  /// route has no Scaffold, so a ScaffoldMessenger snackbar asserts. Interim
+  /// until the dedicated Win/Loss result screen (US-14) is built.
+  void _showResult(String message, {required bool win}) {
     final ctx = rootNavigatorKey.currentContext;
-    return ctx == null ? null : ScaffoldMessenger.maybeOf(ctx);
+    if (ctx == null) {
+      return;
+    }
+    unawaited(
+      showDialog<void>(
+        context: ctx,
+        builder: (dctx) => AlertDialog(
+          backgroundColor: TifoColors.surface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(TifoRadii.l)),
+          content: Row(
+            children: [
+              Text(win ? '🏆' : '⚽', style: const TextStyle(fontSize: 28)),
+              const SizedBox(width: 12),
+              Expanded(child: Text(message, style: TifoText.bodyL)),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dctx).pop(),
+              child: Text('Continue', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent)),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // BRD: result is Win/Loss, no numeric scoreline.
@@ -260,24 +462,23 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
   };
 }
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
+class _CloseBtn extends StatelessWidget {
+  const _CloseBtn({required this.onTap});
 
-  final String label;
-  final String value;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 3),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: const TextStyle(color: Colors.white54, fontSize: 13)),
-        Text(
-          value,
-          style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
-        ),
-      ],
+  Widget build(BuildContext context) => Material(
+    color: TifoColors.surface,
+    shape: const CircleBorder(side: BorderSide(color: TifoColors.border)),
+    child: InkWell(
+      customBorder: const CircleBorder(),
+      onTap: onTap,
+      child: const SizedBox(
+        width: 32,
+        height: 32,
+        child: Icon(Icons.close_rounded, size: 18, color: TifoColors.textSoft),
+      ),
     ),
   );
 }

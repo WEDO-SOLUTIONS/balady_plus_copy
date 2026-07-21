@@ -1,0 +1,319 @@
+import 'package:flutter/material.dart';
+
+/// TIFO design tokens, pulled from the Figma variables (`accent/*`,
+/// `neutral/*`, `English/*` type ramp). The design font is "Golos Text" — not
+/// bundled in the app yet, so styles fall back to the default family with the
+/// correct size/weight/height. Add the font later for pixel-parity.
+abstract final class TifoColors {
+  static const Color accent = Color(0xFF1B8354); // accent/default
+  static const Color accentSoft = Color(0xFF25935F); // accent/soft
+  static const Color accentMuted = Color(0xFF54C08A); // accent/muted
+  static const Color accentContainer = Color(0x1A25935F); // accent/container-default (~10%)
+  static const Color onAccent = Color(0xFFFFFFFF);
+
+  static const Color surface = Color(0xFFFFFFFF); // background/surface1
+  static const Color textDefault = Color(0xFF161616); // Text/text-default
+  static const Color textStrong = Color(0xFF1B1B1B); // foreground/default
+  static const Color textSoft = Color(0xFF9DA4AE); // neutral/foreground-soft
+  static const Color border = Color(0xFFE7EAEE);
+  static const Color amber = Color(0xFFD9A400);
+
+  /// Fallback fill for a neutral / unowned entity.
+  static const Color neutralFill = Color(0xFF9DA4AE);
+}
+
+abstract final class TifoRadii {
+  static const double m = 8;
+  static const double ml = 10;
+  static const double l = 16;
+  static const double xxl = 24;
+  static const double full = 999;
+}
+
+abstract final class TifoSpacing {
+  static const double x1 = 4;
+  static const double x2 = 8;
+  static const double x3 = 12;
+  static const double x4 = 16;
+  static const double x6 = 24;
+}
+
+/// Type ramp (`English/*` in Figma). Uses the "Golos" family bundled in the
+/// `balady_uikit` package (weights 400–900); sizes/weights match the design.
+abstract final class TifoText {
+  /// The design font, shipped as fonts in `balady_uikit`.
+  static const String family = 'Golos';
+  static const String package = 'balady_uikit';
+
+  static const TextStyle h2 = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: 1.1,
+    color: TifoColors.textDefault,
+  );
+  static const TextStyle h3 = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+    height: 1.1,
+    color: TifoColors.textDefault,
+  );
+  static const TextStyle h4 = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    height: 1.1,
+    color: TifoColors.textDefault,
+  );
+  static const TextStyle bodyL = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    height: 1.25,
+    color: TifoColors.textDefault,
+  );
+  static const TextStyle bodyLSemi = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.25,
+    color: TifoColors.textDefault,
+  );
+  static const TextStyle button = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    height: 1.5,
+    color: TifoColors.onAccent,
+  );
+  static const TextStyle captionRegular = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 11,
+    fontWeight: FontWeight.w400,
+    height: 14 / 11,
+    color: TifoColors.textSoft,
+  );
+  static const TextStyle captionMedium = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    height: 14 / 11,
+    color: TifoColors.textSoft,
+  );
+  static const TextStyle overline = TextStyle(
+    fontFamily: family,
+    package: package,
+    fontSize: 11,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.6,
+    color: TifoColors.accent,
+  );
+}
+
+/// Readable text color for a filled swatch — dark ink on light team colors
+/// (Yellow/Sand), white on dark ones (Blue/Black/Red).
+Color tifoInkOn(Color background) => background.computeLuminance() > 0.6 ? TifoColors.textStrong : Colors.white;
+
+/// Full-width primary CTA (green, radius 16, white label) matching every
+/// "Dominate with your team" / "Confirm Team" / "START" button in the design.
+class TifoPrimaryButton extends StatelessWidget {
+  const TifoPrimaryButton({
+    required this.label,
+    super.key,
+    this.onPressed,
+    this.busy = false,
+    this.leadingEmoji,
+    this.trailingArrow = false,
+    this.color = TifoColors.accent,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool busy;
+  final String? leadingEmoji;
+  final bool trailingArrow;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onPressed != null && !busy;
+    return Opacity(
+      opacity: enabled ? 1 : 0.5,
+      child: Material(
+        color: color,
+        borderRadius: BorderRadius.circular(TifoRadii.l),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(TifoRadii.l),
+          onTap: enabled ? onPressed : null,
+          child: SizedBox(
+            height: 56,
+            child: Center(
+              child: busy
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (leadingEmoji != null) ...[
+                          Text(leadingEmoji!, style: const TextStyle(fontSize: 18)),
+                          const SizedBox(width: 8),
+                        ],
+                        Text(label, style: TifoText.button),
+                        if (trailingArrow) ...[
+                          const SizedBox(width: 8),
+                          const Icon(Icons.arrow_forward_rounded, size: 18, color: TifoColors.onAccent),
+                        ],
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// "Maybe Later" style ghost button.
+class TifoGhostButton extends StatelessWidget {
+  const TifoGhostButton({required this.label, super.key, this.onPressed});
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => TextButton(
+    onPressed: onPressed,
+    child: Text(label, style: TifoText.captionMedium.copyWith(fontSize: 14, color: TifoColors.textSoft)),
+  );
+}
+
+/// Onboarding step header: back chevron + "STEP n OF m" + title + a segmented
+/// progress bar (`filled` of `total` segments in accent).
+class TifoStepHeader extends StatelessWidget {
+  const TifoStepHeader({
+    required this.step,
+    required this.total,
+    required this.title,
+    super.key,
+    this.onBack,
+  });
+
+  final int step;
+  final int total;
+  final String title;
+  final VoidCallback? onBack;
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+    bottom: false,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (onBack != null) _CircleIconButton(icon: Icons.arrow_back_ios_new_rounded, onTap: onBack!),
+              if (onBack != null) const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('STEP $step OF $total', style: TifoText.overline),
+                  const SizedBox(height: 2),
+                  Text(title, style: TifoText.h3),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              for (var i = 1; i <= total; i++) ...[
+                Expanded(
+                  child: Container(
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: i <= step ? TifoColors.accent : TifoColors.border,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                if (i < total) const SizedBox(width: 6),
+              ],
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// Green info banner (accent-container bg) with an icon + title + subtitle —
+/// the season-lock / hint banners across the design.
+class TifoInfoBanner extends StatelessWidget {
+  const TifoInfoBanner({required this.icon, required this.title, super.key, this.subtitle});
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: TifoColors.accentContainer,
+      borderRadius: BorderRadius.circular(TifoRadii.ml),
+      border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.4)),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: TifoColors.accentSoft),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: TifoText.bodyLSemi.copyWith(fontSize: 14)),
+              if (subtitle != null) ...[
+                const SizedBox(height: 2),
+                Text(subtitle!, style: TifoText.captionRegular),
+              ],
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _CircleIconButton extends StatelessWidget {
+  const _CircleIconButton({required this.icon, required this.onTap});
+
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: TifoColors.surface,
+    shape: const CircleBorder(side: BorderSide(color: TifoColors.border)),
+    child: InkWell(
+      customBorder: const CircleBorder(),
+      onTap: onTap,
+      child: SizedBox(width: 36, height: 36, child: Icon(icon, size: 16, color: TifoColors.textDefault)),
+    ),
+  );
+}

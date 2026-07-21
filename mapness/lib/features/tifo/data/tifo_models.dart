@@ -34,9 +34,11 @@ enum TifoClub {
   }
 }
 
-/// Neutral (unclaimed) building — green, matching the demo's default fill.
-const int kTifoNeutralFillArgb = 0x7322C55E;
-const int kTifoNeutralStrokeArgb = 0xE622C55E;
+/// Neutral (unclaimed) building — sandy, NOT a club color (BRD FR-08) and
+/// distinct from the host map's green base buildings. Ideally sourced from the
+/// server `palette.neutral` (GET /config) — hardcoded until we parse it.
+const int kTifoNeutralFillArgb = 0x59D9A441;
+const int kTifoNeutralStrokeArgb = 0xE6D9A441;
 
 /// One entry of the data-driven season roster (`GET /clubs`). The BRD makes
 /// the roster per-season data, so screens must render from this list rather
@@ -157,10 +159,12 @@ class TifoKickEvent {
   /// Milliseconds since the session started.
   final int atMs;
 
+  /// Shape required by `POST /buildings/{id}/play` (API v2.4 §4.2):
+  /// `{ "kick": 1, "result": "goal" }`. The backend recomputes the score from
+  /// these, so the field names must match or the session resolves as `voided`.
   Map<String, Object?> toJson() => {
-    'index': index,
-    'outcome': scored ? 'goal' : 'miss',
-    'atMs': atMs,
+    'kick': index + 1,
+    'result': scored ? 'goal' : 'miss',
   };
 }
 
@@ -175,6 +179,39 @@ class TifoShootoutOutcome {
   final List<TifoKickEvent> events;
 }
 
+/// One club row of `GET /leaderboards` (scope=clubs). BRD US-09 columns:
+/// rank · team · districts claimed · buildings claimed · map dominance %.
+@immutable
+class TifoLeaderRow {
+  const TifoLeaderRow({
+    required this.rank,
+    required this.clubId,
+    required this.buildings,
+    required this.districts,
+    required this.ownershipPct,
+  });
+
+  final int rank;
+  final String clubId;
+  final int buildings;
+  final int districts;
+  final int ownershipPct;
+
+  static TifoLeaderRow? fromJson(Map<String, dynamic> json) {
+    final club = json['club']?.toString();
+    if (club == null || club.isEmpty) {
+      return null;
+    }
+    return TifoLeaderRow(
+      rank: (json['rank'] as num?)?.toInt() ?? 0,
+      clubId: club,
+      buildings: (json['buildings'] as num?)?.toInt() ?? 0,
+      districts: (json['districtsLed'] as num?)?.toInt() ?? 0,
+      ownershipPct: (json['ownershipPct'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
 /// A single ring of a polygon: an ordered list of (lat, lng) points.
 typedef TifoRing = List<TifoLatLng>;
 
@@ -184,6 +221,163 @@ class TifoLatLng {
 
   final double latitude;
   final double longitude;
+}
+
+/// GeoJSON `geometry` → list of outer rings. Coordinates are `[lng, lat]`
+/// (GeoJSON order). Supports `Polygon` (`coordinates: [ring, hole…]`) and
+/// `MultiPolygon` (`coordinates: [[ring, hole…], …]`); only outer rings kept.
+/// Shared by buildings and districts (both come from the catalog as GeoJSON).
+List<TifoRing> tifoParseGeoJsonRings(Object? geometry) {
+  if (geometry is! Map) {
+    return const [];
+  }
+  final type = geometry['type'];
+  final coords = geometry['coordinates'];
+  if (coords is! List) {
+    return const [];
+  }
+  final result = <TifoRing>[];
+  try {
+    if (type == 'Polygon') {
+      final ring = _tifoParseRing(coords.isNotEmpty ? coords.first : null);
+      if (ring != null) {
+        result.add(ring);
+      }
+    } else if (type == 'MultiPolygon') {
+      for (final poly in coords) {
+        if (poly is List && poly.isNotEmpty) {
+          final ring = _tifoParseRing(poly.first);
+          if (ring != null) {
+            result.add(ring);
+          }
+        }
+      }
+    }
+  } catch (_) {
+    return const [];
+  }
+  return result;
+}
+
+TifoRing? _tifoParseRing(Object? raw) {
+  if (raw is! List || raw.length < 3) {
+    return null;
+  }
+  final ring = <TifoLatLng>[];
+  for (final p in raw) {
+    if (p is List && p.length >= 2) {
+      final lng = (p[0] as num).toDouble();
+      final lat = (p[1] as num).toDouble();
+      ring.add(TifoLatLng(lat, lng));
+    }
+  }
+  return ring.length >= 3 ? ring : null;
+}
+
+/// A district polygon from `GET /districts` (geometry, fetched once).
+@immutable
+class TifoDistrict {
+  const TifoDistrict({required this.id, required this.rings, this.name});
+
+  final String id;
+  final List<TifoRing> rings;
+  final String? name;
+
+  static TifoDistrict? fromJson(Map<String, dynamic> json) {
+    final id = json['id']?.toString();
+    if (id == null) {
+      return null;
+    }
+    final rings = tifoParseGeoJsonRings(json['geometry']);
+    if (rings.isEmpty) {
+      return null;
+    }
+    return TifoDistrict(id: id, rings: rings, name: json['name'] as String?);
+  }
+
+  /// Compact form for the on-disk geometry cache — pre-flattened `[lat,lng]`
+  /// rings (no GeoJSON nesting/holes), so a cache hit skips both the network
+  /// and the GeoJSON parse. Short keys keep the ~2.8 MB payload smaller.
+  Map<String, dynamic> toCacheJson() => {
+    'id': id,
+    if (name != null) 'n': name,
+    'r': [
+      for (final ring in rings)
+        [
+          for (final p in ring) [p.latitude, p.longitude],
+        ],
+    ],
+  };
+
+  static TifoDistrict? fromCacheJson(Map<String, dynamic> json) {
+    final id = json['id']?.toString();
+    if (id == null) {
+      return null;
+    }
+    final rings = <TifoRing>[];
+    for (final ring in (json['r'] as List?) ?? const []) {
+      if (ring is! List) {
+        continue;
+      }
+      final pts = <TifoLatLng>[];
+      for (final p in ring) {
+        if (p is List && p.length >= 2) {
+          pts.add(TifoLatLng((p[0] as num).toDouble(), (p[1] as num).toDouble()));
+        }
+      }
+      if (pts.length >= 3) {
+        rings.add(pts);
+      }
+    }
+    if (rings.isEmpty) {
+      return null;
+    }
+    return TifoDistrict(id: id, rings: rings, name: json['n'] as String?);
+  }
+}
+
+/// A district standing from `GET /districts/summary` (polled). Paint-ready
+/// `leaderColor` is provided by the server; null `leaderClub` = neutral.
+@immutable
+class TifoDistrictSummary {
+  const TifoDistrictSummary({
+    required this.id,
+    this.name,
+    this.leaderClub,
+    this.leaderColorArgb,
+    this.controlPct = 0,
+    this.totalBuildings = 0,
+    this.claimed = 0,
+    this.free = 0,
+  });
+
+  final String id;
+  final String? name;
+  final String? leaderClub;
+  final int? leaderColorArgb;
+  final int controlPct;
+  final int totalBuildings;
+  final int claimed;
+  final int free;
+
+  bool get isNeutral => leaderClub == null || leaderClub!.isEmpty;
+
+  static TifoDistrictSummary? fromJson(Map<String, dynamic> json) {
+    final id = json['id']?.toString();
+    if (id == null) {
+      return null;
+    }
+    return TifoDistrictSummary(
+      id: id,
+      name: json['name'] as String?,
+      leaderClub: json['leaderClub'] as String?,
+      leaderColorArgb: TifoClubInfo._parseHexColor(json['leaderColor']?.toString()),
+      controlPct: (json['controlPct'] as num?)?.toInt() ?? 0,
+      totalBuildings: (json['totalBuildings'] as num?)?.toInt() ?? 0,
+      claimed: (json['claimed'] as num?)?.toInt() ?? 0,
+      free: (json['free'] as num?)?.toInt() ?? 0,
+    );
+  }
 }
 
 /// A capturable building returned by `GET /buildings?bbox=…`.
@@ -253,7 +447,7 @@ class TifoBuilding {
     if (id == null) {
       return null;
     }
-    final rings = _parseGeometry(json['geometry']);
+    final rings = tifoParseGeoJsonRings(json['geometry']);
     if (rings.isEmpty) {
       return null;
     }
@@ -267,56 +461,6 @@ class TifoBuilding {
       status: json['status']?.toString() ?? 'available',
       contested7d: (json['contested7d'] as num?)?.toInt() ?? 0,
     );
-  }
-
-  /// GeoJSON → list of outer rings. Coordinates are `[lng, lat]` (GeoJSON
-  /// order). Supports `Polygon` (`coordinates: [ring, hole…]`) and
-  /// `MultiPolygon` (`coordinates: [[ring, hole…], …]`); only outer rings kept.
-  static List<TifoRing> _parseGeometry(Object? geometry) {
-    if (geometry is! Map) {
-      return const [];
-    }
-    final type = geometry['type'];
-    final coords = geometry['coordinates'];
-    if (coords is! List) {
-      return const [];
-    }
-    final result = <TifoRing>[];
-    try {
-      if (type == 'Polygon') {
-        final ring = _parseRing(coords.isNotEmpty ? coords.first : null);
-        if (ring != null) {
-          result.add(ring);
-        }
-      } else if (type == 'MultiPolygon') {
-        for (final poly in coords) {
-          if (poly is List && poly.isNotEmpty) {
-            final ring = _parseRing(poly.first);
-            if (ring != null) {
-              result.add(ring);
-            }
-          }
-        }
-      }
-    } catch (_) {
-      return const [];
-    }
-    return result;
-  }
-
-  static TifoRing? _parseRing(Object? raw) {
-    if (raw is! List || raw.length < 3) {
-      return null;
-    }
-    final ring = <TifoLatLng>[];
-    for (final p in raw) {
-      if (p is List && p.length >= 2) {
-        final lng = (p[0] as num).toDouble();
-        final lat = (p[1] as num).toDouble();
-        ring.add(TifoLatLng(lat, lng));
-      }
-    }
-    return ring.length >= 3 ? ring : null;
   }
 }
 

@@ -83,6 +83,16 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
                 ),
         ),
         const SizedBox(height: 12),
+        Consumer(
+          builder: (context, ref, _) => DebugToggleRow(
+            title: 'Override system config',
+            subtitle: 'Off = system SSO auth + env URL. On = use the Base URL / User ID below.',
+            value: ref.watch(tifoDebugModeProvider),
+            gradient: DebugTheme.gradientTeal,
+            onChanged: (value) => ref.read(tifoDebugModeProvider.notifier).set(value),
+          ),
+        ),
+        const SizedBox(height: 12),
         Text(
           'Base URL',
           style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
@@ -137,16 +147,19 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
           builder: (context, ref, _) {
             final enabled = ref.watch(tifoBuildingsMapLayerProvider);
             return DebugToggleRow(
-              title: 'Buildings layer on map',
-              subtitle: 'Fetch + draw viewport buildings; tap one to play',
+              title: 'TIFO map layer',
+              subtitle: 'zoom <16 → districts (tint by leader), ≥16 → buildings (tap to play)',
               value: enabled,
               gradient: DebugTheme.gradientTeal,
               onChanged: (value) {
-                // Feed the console's Base URL + User ID into the shared config
-                // the layer/API read from, so one place drives everything.
-                ref.read(tifoConfigProvider.notifier)
-                  ..setBaseUrl(_baseUrlController.text)
-                  ..setUserToken(_userIdController.text);
+                // Only when the master debug switch is on do the panel fields
+                // override the system config; otherwise the layer uses system
+                // SSO auth + env base URL.
+                if (ref.read(tifoDebugModeProvider)) {
+                  ref.read(tifoDebugConfigProvider.notifier)
+                    ..setBaseUrl(_baseUrlController.text)
+                    ..setUserToken(_userIdController.text);
+                }
                 final layer = ref.read(tifoBuildingsMapLayerProvider.notifier);
                 unawaited(value ? layer.enable() : layer.disable());
               },

@@ -13,6 +13,8 @@ import 'package:mapness/widgets/landing/eta_sharing_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
+import 'package:mapness/widgets/landing/tifo_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
@@ -75,6 +77,12 @@ class MapDashboardControls extends ConsumerWidget {
                       const LayersControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
                       const DimensionControl(),
+                      const SizedBox(height: uikit.Spacing.$2x),
+                      const TifoControl(),
+                      if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        const TifoLeaderboardControl(),
+                      ],
                       const SizedBox(height: uikit.Spacing.$2x),
                       if (kDebugMode) ...[
                         const Spacer(),

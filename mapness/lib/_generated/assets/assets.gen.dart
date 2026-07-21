@@ -472,6 +472,9 @@ class $AssetsModelsGen {
 class $AssetsTifoGen {
   const $AssetsTifoGen();
 
+  /// Directory path: assets/tifo/audio
+  $AssetsTifoAudioGen get audio => const $AssetsTifoAudioGen();
+
   /// Directory path: assets/tifo/backgrounds
   $AssetsTifoBackgroundsGen get backgrounds => const $AssetsTifoBackgroundsGen();
 
@@ -1216,6 +1219,22 @@ class $AssetsMapsConfigsGen {
   List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
 }
 
+class $AssetsTifoAudioGen {
+  const $AssetsTifoAudioGen();
+
+  /// File path: assets/tifo/audio/crowd_ambience_1.mp3
+  String get crowdAmbience1 => 'packages/mapness/assets/tifo/audio/crowd_ambience_1.mp3';
+
+  /// File path: assets/tifo/audio/kick_1.mp3
+  String get kick1 => 'packages/mapness/assets/tifo/audio/kick_1.mp3';
+
+  /// File path: assets/tifo/audio/kick_1.mp3.orig-backup
+  String get kick1Mp3 => 'packages/mapness/assets/tifo/audio/kick_1.mp3.orig-backup';
+
+  /// List of all assets
+  List<String> get values => [crowdAmbience1, kick1, kick1Mp3];
+}
+
 class $AssetsTifoBackgroundsGen {
   const $AssetsTifoBackgroundsGen();
 
@@ -1301,11 +1320,17 @@ class $AssetsTifoSpritesGen {
   /// File path: assets/tifo/sprites/soccer_ball.png
   AssetGenImage get soccerBall => const AssetGenImage('assets/tifo/sprites/soccer_ball.png');
 
+  /// File path: assets/tifo/sprites/striker_atlas.png
+  AssetGenImage get strikerAtlas => const AssetGenImage('assets/tifo/sprites/striker_atlas.png');
+
   /// File path: assets/tifo/sprites/striker_kick.png
   AssetGenImage get strikerKick => const AssetGenImage('assets/tifo/sprites/striker_kick.png');
 
   /// File path: assets/tifo/sprites/striker_ready.png
   AssetGenImage get strikerReady => const AssetGenImage('assets/tifo/sprites/striker_ready.png');
+
+  /// Directory path: assets/tifo/sprites/striker_v2
+  $AssetsTifoSpritesStrikerV2Gen get strikerV2 => const $AssetsTifoSpritesStrikerV2Gen();
 
   /// File path: assets/tifo/sprites/striker_windup.png
   AssetGenImage get strikerWindup => const AssetGenImage('assets/tifo/sprites/striker_windup.png');
@@ -1318,6 +1343,7 @@ class $AssetsTifoSpritesGen {
     goalkeeperDiveLowLeft,
     goalkeeperIdle,
     soccerBall,
+    strikerAtlas,
     strikerKick,
     strikerReady,
     strikerWindup,
@@ -2628,6 +2654,42 @@ class $AssetsTifoSpritesGoalkeeperV2Gen {
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_atlas.png
   AssetGenImage get keeperAtlas => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_atlas.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_celebrate.png
+  AssetGenImage get keeperCelebrate => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_celebrate.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter.png
+  AssetGenImage get keeperDiveLowCenter =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft.png
+  AssetGenImage get keeperDiveLowLeft =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight.png
+  AssetGenImage get keeperDiveLowRight =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter.png
+  AssetGenImage get keeperDiveUpCenter =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight.png
+  AssetGenImage get keeperDiveUpRight =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft.png
+  AssetGenImage get keeperGroundLeft => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight.png
+  AssetGenImage get keeperGroundRight =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle.png
+  AssetGenImage get keeperIdle => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready.png
+  AssetGenImage get keeperReady => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready.png');
+
   /// File path: assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png
   AssetGenImage get missedReactionSheet =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png');
@@ -2677,10 +2739,39 @@ class $AssetsTifoSpritesGoalkeeperV2Gen {
     diveLowLeftSheet,
     diveMidLeftSheet,
     keeperAtlas,
+    keeperCelebrate,
+    keeperDiveLowCenter,
+    keeperDiveLowLeft,
+    keeperDiveLowRight,
+    keeperDiveUpCenter,
+    keeperDiveUpRight,
+    keeperGroundLeft,
+    keeperGroundRight,
+    keeperIdle,
+    keeperReady,
     missedReactionSheet,
     readySheet,
     saveRecoverSheet,
   ];
+}
+
+class $AssetsTifoSpritesStrikerV2Gen {
+  const $AssetsTifoSpritesStrikerV2Gen();
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle.png
+  AssetGenImage get strikerIdle => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick.png
+  AssetGenImage get strikerKick => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle.png
+  AssetGenImage get strikerSettle => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup.png
+  AssetGenImage get strikerWindup => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [strikerIdle, strikerKick, strikerSettle, strikerWindup];
 }
 
 class $AssetsIconsSvgDynamicPoiGlyphsGen {
