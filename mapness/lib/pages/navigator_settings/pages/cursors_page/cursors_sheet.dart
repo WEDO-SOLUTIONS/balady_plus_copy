@@ -7,6 +7,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
 final _barrierColorDelegate = ToggleSheetDelegateFunction<Color?>(
@@ -33,7 +34,14 @@ class CursorsSheet extends HookWidget {
     final sheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
     final colors = context.colors;
 
-    return ToggleSheet(
+    // BALADY-3763: in landscape the sheet is pinned to the leading edge at
+    // the standard navi-panel width, like EndTripModal / NaviSheetPanel;
+    // full-width rows would push trailing icons across the whole screen.
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final mediaQueryPadding = MediaQuery.paddingOf(context);
+    final panelWidth = NaviSheetPanel.landscapeWidth + mediaQueryPadding.left + mediaQueryPadding.right;
+
+    final sheet = ToggleSheet(
       backgroundColor: colors.backgroundSurface4,
       safeAreaColor: colors.backgroundSurface4,
       dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
@@ -65,6 +73,17 @@ class CursorsSheet extends HookWidget {
         ],
       ),
       content: const [CursorsPageContent(scrollable: false)],
+    );
+
+    return Align(
+      alignment: AlignmentDirectional.bottomStart,
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(start: isLandscape ? Spacing.$3x : 0.0),
+        child: SizedBox(
+          width: isLandscape ? panelWidth : double.infinity,
+          child: sheet,
+        ),
+      ),
     );
   }
 }
