@@ -4,16 +4,17 @@ import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_mode.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_navigator_observer.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
+export 'package:mapness/features/balady_analytics/posthog_balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/urbi_balady_analytics_sink.dart';
 
 /// Named destinations an event can be routed to. [ours] is our own pipeline
-/// (PostHog self-hosted) and obeys [BaladyAnalyticsMode]; the rest are legacy
+/// (PostHog Cloud EU) and obeys [BaladyAnalyticsMode]; the rest are legacy
 /// production streams that keep flowing regardless of mode until their
-/// migration phase ends (see ANALYTICS_MIGRATION_PLAN.md in the repo root).
+/// migration phase ends.
 enum BaladyAnalyticsChannel { ours, urbi }
 
 /// Single entry point for Balady's own analytics pipeline (product + tech
-/// events into our self-hosted backend). See README.md next to this file.
+/// events into our PostHog Cloud EU project). See README.md next to this file.
 ///
 /// Static singleton on purpose: it is called from both the host shell
 /// (`lib/`, bloc-based) and the mapness module (Riverpod), including places

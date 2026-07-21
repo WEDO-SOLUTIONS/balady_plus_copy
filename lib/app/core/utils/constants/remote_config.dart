@@ -160,6 +160,14 @@ class RemoteConfig {
   static String get baladyAnalyticsMode =>
       dotenv.env['BALADY_ANALYTICS_MODE'] ?? 'legacy';
 
+  // PostHog Cloud EU transport for BaladyAnalytics. Both empty in flavors that
+  // have no project configured — the facade then keeps its logging sink.
+  static String get baladyAnalyticsUrl =>
+      dotenv.env['BALADY_ANALYTICS_URL'] ?? '';
+
+  static String get baladyAnalyticsKey =>
+      dotenv.env['BALADY_ANALYTICS_KEY'] ?? '';
+
   static String get movingVeichleCategoryKey =>
       _RemoteConfig.movingVeichleCategoryKey[env]!;
 

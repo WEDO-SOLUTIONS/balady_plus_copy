@@ -719,6 +719,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     // Idempotent: the host shell may have configured the facade already.
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
+      sink: PosthogBaladyAnalyticsSink.tryCreate(
+        host: RemoteConfig.baladyAnalyticsUrl,
+        apiKey: RemoteConfig.baladyAnalyticsKey,
+      ),
     );
     // First legacy stream under the facade umbrella: events tracked with
     // channels: {..., urbi} keep flowing to balady-metrics.urbi.ae.

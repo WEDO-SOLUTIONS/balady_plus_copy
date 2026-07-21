@@ -1,7 +1,7 @@
 # BaladyAnalytics — Balady+ first-party analytics
 
-A facade for collecting product and technical events into **our own** self-hosted
-backend (target stack — PostHog self-hosted, see `docs/analytics/DEVOPS_BRIEF.md`).
+A facade for collecting product and technical events into **our own** PostHog
+project (PostHog Cloud EU, `https://eu.i.posthog.com`).
 It was introduced while ripping out the dead UXCam: all ~200 former UXCam calls
 (screen tags, custom events, exceptions, identity) now flow here.
 
@@ -30,14 +30,23 @@ shell, use `CommonFunctions.sendAnalyticsEvent[WithProperties]`.
 | `dual` | work as before | facade events are sent to us |
 | `ours` | still work for now (not yet folded into the facade) | facade events are sent to us |
 
-Currently `prod` = `legacy`, all other flavors = `dual`.
+Currently analytics is being validated on **`prod` only** (`prod` = `dual`, using
+the production PostHog project key); all other flavors stay `legacy`.
 
 ## Transport
 
-For now it is `LoggingBaladyAnalyticsSink`: in debug it prints events to the log
-(`[BaladyAnalytics] ...`), in release it is a no-op — **nothing is sent anywhere**.
-The production transport (PostHog `capture` batch) is wired up by swapping the sink in
-`BaladyAnalytics.configure(...)` — call sites remain untouched.
+`PosthogBaladyAnalyticsSink` — the PostHog SDK (`posthog_flutter`), set up
+programmatically from `.env.<flavor>`:
+
+- `BALADY_ANALYTICS_URL` — the PostHog Cloud EU host (`https://eu.i.posthog.com`);
+- `BALADY_ANALYTICS_KEY` — the project API key (`phc_…`, a public client-side
+  write key from *Project Settings → Project API Key*).
+
+When either value is empty the facade keeps `LoggingBaladyAnalyticsSink`: in
+debug it prints events to the log (`[BaladyAnalytics] ...`), in release it is a
+no-op — **nothing leaves the device**. `com.posthog.posthog.AUTO_INIT=false` is
+set in AndroidManifest.xml / Info.plist because the SDK is configured in code,
+not from the manifest.
 
 ## Channels (legacy streams under the facade umbrella)
 
