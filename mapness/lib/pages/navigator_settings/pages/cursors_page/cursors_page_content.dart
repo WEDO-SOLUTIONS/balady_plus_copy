@@ -84,8 +84,25 @@ class CursorsPageContent extends ConsumerWidget {
         ],
       ),
     );
-    return scrollable ? SingleChildScrollView(child: body) : body;
+    if (!scrollable) {
+      // Sheet mode: the ToggleSheet already constrains the width in
+      // landscape (see cursors_sheet.dart).
+      return body;
+    }
+    // BALADY-3763: full-page mode — cap the content width so landscape does
+    // not stretch rows across the whole screen, pushing trailing icons to
+    // the far edge.
+    return SingleChildScrollView(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+          child: body,
+        ),
+      ),
+    );
   }
+
+  static const _maxContentWidth = 600.0;
 }
 
 enum _CursorTrailing { selected, pickable, downloadable }
