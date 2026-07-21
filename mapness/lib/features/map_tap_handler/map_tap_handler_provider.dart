@@ -11,6 +11,7 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_sheet.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -223,6 +224,21 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       group: MetricsConstants.poiTag,
       action: MetricAction.tap.toString(),
     );
+
+    // BALADY-3764: during turn-by-turn guidance and free roam the
+    // my-location object is the 3D navigation cursor. Tapping it opens
+    // Navigator Customization (Figma 2287-3140) as a bottom sheet so the
+    // driver keeps the route context; the share-location card remains the
+    // behaviour everywhere else.
+    final router = ref.read(appRouterProvider);
+    final topRouteName = router.topRoute.name;
+    if (topRouteName == PathNavRoute.name || topRouteName == FreeRoamRoute.name) {
+      final sheetContext = rootNavigatorKey.currentContext;
+      if (sheetContext != null) {
+        unawaited(showCursorsSheet(sheetContext));
+      }
+      return;
+    }
 
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 

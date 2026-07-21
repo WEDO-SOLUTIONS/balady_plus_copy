@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/utils/constants.dart';
 import 'package:balady_uikit/gen/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart' as mappness;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
@@ -213,10 +214,26 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                       options: ContentRowOptions(
                         wrapperColor: cardColor,
                         wrapperEnabled: true,
+                        // BALADY-3761: leading cursor glyph + regular-weight
+                        // value + chevron, per Figma 2287-3277.
+                        leadingIcon: SizedBox.square(
+                          dimension: 24,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              'assets/icons/cursors/ic_cursor_nav.svg',
+                              width: 17,
+                              height: 17,
+                              colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
+                            ),
+                          ),
+                        ),
                         title: context.l10n.cursors,
                         titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                         actionWidget: ContentRowActionOptions(
                           actionText: active.title(context),
+                          actionTextStyle: context.textStyles.bodySmallRegular.copyWith(
+                            color: context.colors.foregroundSoft,
+                          ),
                           actionIcon: AppIcons(
                             iconData: SystemIcons.arrowCornerRightSmall,
                             color: context.colors.foregroundSoft,
