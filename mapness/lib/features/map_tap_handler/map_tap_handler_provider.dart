@@ -224,6 +224,16 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       action: MetricAction.tap.toString(),
     );
 
+    // BALADY-3764: during turn-by-turn guidance the my-location object is
+    // the 3D navigation cursor. Tapping it opens Navigator Customization
+    // (Figma 2287-3140) so the user can swap the model mid-drive; the
+    // share-location card remains the behaviour everywhere else.
+    final router = ref.read(appRouterProvider);
+    if (router.topRoute.name == PathNavRoute.name) {
+      unawaited(router.push(const CursorsRoute()));
+      return;
+    }
+
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
