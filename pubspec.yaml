@@ -237,7 +237,7 @@ dependencies:
   collection: ^1.19.1
   image: ^4.7.2
   http: ^1.6.0
-  flutter_insider: ^4.0.6+nh
+
   sentry_dio: ^9.9.2
   shelf: ^1.4.2
   timezone: ^0.10.0
