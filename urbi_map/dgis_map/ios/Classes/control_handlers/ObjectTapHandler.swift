@@ -195,13 +195,18 @@ class ObjectTapHandler {
         let tappedObject = objectInfo.item.item
 
         // Dynamic-POI markers open the POI card on short tap (and update
-        // the selected-state). All other markers stay on the long-press-only
-        // contract introduced in iter4 — short taps on them fall through.
+        // the selected-state). The my-location object also reacts to short
+        // tap (BALADY-3764: opens Navigator Customization during guidance).
+        // All other markers stay on the long-press-only contract introduced
+        // in iter4 — short taps on them fall through.
         switch tappedObject {
         case let marker as Marker:
             if let markerId = (marker.userData as? MarkerId)?.id, markerId.hasPrefix("dynamic_poi_") {
                 self.onMarkerTap(marker)
             }
+            return
+        case is MyLocationMapObject:
+            self.sendDgisMyLocationEvent(objectInfo.closestMapPoint)
             return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
