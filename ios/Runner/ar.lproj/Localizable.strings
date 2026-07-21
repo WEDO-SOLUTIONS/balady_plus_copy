@@ -22,6 +22,7 @@
 "settingsScreenSound" = "الصوت";
 "settingsScreenParking" = "الموقف";
 "navigationRerouting" = "إعادة التوجيه…";
+"gpsSignalLost" = "‏انقطعت إشارة GPS";
 "quickFilterEatOut" = "المطاعم";
 "quickFilterMosques" = "المساجد";
 "quickFilterMarkets" = "الآسواق";

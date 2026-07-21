@@ -22,6 +22,7 @@
 "settingsScreenSound" = "Sound";
 "settingsScreenParking" = "Parking";
 "navigationRerouting" = "Rerouting…";
+"gpsSignalLost" = "GPS signal lost";
 "quickFilterEatOut" = "Eat out";
 "quickFilterMosques" = "Mosques";
 "quickFilterMarkets" = "Market";
