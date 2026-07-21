@@ -16,6 +16,7 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
+import 'package:collection/collection.dart';
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -1033,7 +1034,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await router.push(MapnessServicesRoute());
       } else if (url.path == '/parking') {
         _openParking();
-      } else {
+      } else if (url.path == '/media') {
+        _openMediaCatelog();
+      }
+
+      else {
         await router.pushPath(url.toString());
       }
     }
@@ -1062,6 +1067,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await CommonFunctions.onLogin();
   }
 
+
+  Future<void> _openMediaCatelog() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    await router.push(const MediaCatalogRoute());
+  }
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
@@ -1197,37 +1207,55 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openQuickFilter(String filter) async {
     final AppRouter router = await ref.watch(appRouterProvider);
-    final quickFilter = QuickFilter.values.firstWhere(
-      (element) => element.name == filter,
+    final quickFilter = QuickFilter.values.firstWhereOrNull(
+      (element) => element.name.toLowerCase() == filter.toLowerCase(),
     );
-    unawaited(
-      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': quickFilter.name}),
-    );
-    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+    final NaviQuickFilterMore? naviFilter = quickFilter == null
+        ? NaviQuickFilterMore.values.firstWhereOrNull(
+          (element) => element.name.toLowerCase() == filter.toLowerCase(),
+    ) : null;
 
-    final language = ref.read(appLanguageProvider);
+    if (quickFilter == null && naviFilter == null) return;
 
-    final query = quickFilter.query[language];
-    if (query != null) {
+    final String filterName = quickFilter?.name ?? naviFilter!.name;
       unawaited(
-        BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.deeplink,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.searchStart,
-              ownerName: BssUIElementNames.searchBar,
-            ),
-            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-          ),
-        ),
+        ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
       );
-    }
-    unawaited(router.push(SearchRoute(requestFocus: false)));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
-    });
+      ref.read(appAnalyticsProvider).categorySelected(filterName);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+      final language = ref.read(appLanguageProvider);
+
+       final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
+      if (query != null) {
+        unawaited(
+          BssService.instance.sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.deeplink,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.searchStart,
+                ownerName: BssUIElementNames.searchBar,
+              ),
+              payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+            ),
+          ),
+        );
+      }
+      unawaited(router.push(SearchRoute(requestFocus: false)));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
+
+        if (quickFilter != null) {
+          searchNotifier.quickSearch(quickFilter);
+        } else if (naviFilter != null) {
+          searchNotifier.searchByText(naviFilter.name);
+        }
+
+      });
+
+
+
   }
 
   Future<void> _openStories(String id) async {
