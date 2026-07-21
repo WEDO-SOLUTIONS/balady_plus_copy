@@ -437,6 +437,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       return;
     }
 
+    // 2. Initiate loading if allMiniApps is empty and not already loading
+    if (state.allMiniApps.isEmpty && !state.isAppsGroupLoading) {
+      loadMiniApps();
+    }
+
     await _deepLinkSubscription?.cancel();
 
     _deepLinkSubscription = stream.listen((state) {
