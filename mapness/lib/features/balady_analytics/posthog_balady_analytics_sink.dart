@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
@@ -35,8 +36,13 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
         ..host = host
         ..debug = kDebugMode
         ..captureApplicationLifecycleEvents = true
+        // Debug builds flush every event immediately so it lands in PostHog
+        // right away during QA; release keeps the default batching (flushAt 20 /
+        // 30s / on background) for network + battery efficiency.
+        ..flushAt = kDebugMode ? 1 : 20
         ..sessionReplay = false; // PII review pending — see docs/analytics/DEVOPS_BRIEF.md
       await Posthog().setup(config);
+      debugPrint('[BaladyAnalytics] PostHog ready: host=$host, flushAt=${config.flushAt}');
       return true;
     } catch (e) {
       debugPrint('[BaladyAnalytics] PostHog setup failed, events will be dropped: $e');
@@ -46,18 +52,22 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
 
   @override
   void track(BaladyAnalyticsEvent event) {
-    unawaited(
-      _ready.then((ok) {
-        if (!ok) {
-          return null;
-        }
-        if (event.kind == BaladyAnalyticsEventKind.screen) {
-          final path = event.properties['path'] as String? ?? event.name;
-          return Posthog().screen(screenName: path, properties: _sanitize(event.properties));
-        }
-        return Posthog().capture(eventName: event.name, properties: _sanitize(event.properties));
-      }),
-    );
+    try {
+      unawaited(
+        _ready.then((ok) {
+          if (!ok) {
+            return null;
+          }
+          if (event.kind == BaladyAnalyticsEventKind.screen) {
+            final path = event.properties['path'] as String? ?? event.name;
+            return Posthog().screen(screenName: path, properties: _sanitize(event.properties));
+          }
+          return Posthog().capture(eventName: event.name, properties: _sanitize(event.properties));
+        }),
+      );
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   @override
