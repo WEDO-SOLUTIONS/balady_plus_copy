@@ -36,22 +36,35 @@ class MapSwapCurtainState {
 
 class MapSwapCurtain extends Notifier<MapSwapCurtainState> {
   Timer? _failsafe;
+  Timer? _graceHide;
 
   static const _failsafeTimeout = Duration(seconds: 6);
+
+  /// The camera-restore signal fires right after the style loads, but the
+  /// fresh MapView still needs to decode tiles/models before its first real
+  /// frame — hiding immediately exposed a black Metal/GL surface for a few
+  /// hundred ms (video: BALADY-3772, 10.18–10.38s). Keep the snapshot up a
+  /// bit longer; the SDK has no public waitForRendering to key off instead.
+  static const _hideGracePeriod = Duration(milliseconds: 800);
 
   @override
   MapSwapCurtainState build() {
     ref
       ..listen<CameraPositionMessage?>(pendingCameraSnapshotProvider, (previous, next) {
         if (state.visible && previous != null && next == null) {
-          hide();
+          _scheduleHide();
         }
       })
-      ..onDispose(() => _failsafe?.cancel());
+      ..onDispose(() {
+        _failsafe?.cancel();
+        _graceHide?.cancel();
+      });
     return MapSwapCurtainState.hidden;
   }
 
   void show({Uint8List? image}) {
+    _graceHide?.cancel();
+    _graceHide = null;
     _failsafe?.cancel();
     _failsafe = Timer(_failsafeTimeout, () {
       logger.log('$_logTag failsafe timeout — hiding without camera-restore signal');
@@ -61,9 +74,16 @@ class MapSwapCurtain extends Notifier<MapSwapCurtainState> {
     logger.log('$_logTag shown (snapshot: ${image != null ? '${image.length} bytes' : 'none'})');
   }
 
+  void _scheduleHide() {
+    _graceHide?.cancel();
+    _graceHide = Timer(_hideGracePeriod, hide);
+  }
+
   void hide() {
     _failsafe?.cancel();
     _failsafe = null;
+    _graceHide?.cancel();
+    _graceHide = null;
     if (state.visible) {
       // Keep the image so the fade-out animation still draws it while the
       // opacity goes to zero; the next show() replaces it anyway.
