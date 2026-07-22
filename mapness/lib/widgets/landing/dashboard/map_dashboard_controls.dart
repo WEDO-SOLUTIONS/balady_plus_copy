@@ -20,6 +20,8 @@ import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 import 'package:sheetify/sheetify.dart';
 
+import '../map_attribution_label.dart';
+
 class MapDashboardControls extends ConsumerWidget {
   final MultiStateSheetController<ThreeStateSheet> scrollController;
 
@@ -104,7 +106,13 @@ class MapDashboardControls extends ConsumerWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const WeatherControl(),
+                            const Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                WeatherControl(),
+                                MapAttributionLabel(),
+                              ],
+                            ),
                             uikit.Spacing.$1_5x.heightBox,
                             const ParkingControl(),
                           ],
