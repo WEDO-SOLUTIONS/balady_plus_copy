@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
-import 'package:mapness/features/tifo/tifo_tutorial.dart';
+import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 
 /// Drives the BRD play-gate: before a player can challenge a building they must
 /// be logged in, have started the tutorial, and have selected a team — routed
@@ -48,9 +48,7 @@ class TifoJourney {
           if (!context.mounted) {
             return false;
           }
-          await Navigator.of(context).push<void>(
-            MaterialPageRoute<void>(fullscreenDialog: true, builder: (_) => const TifoTutorial()),
-          );
+          await showTifoGuidedTutorial(context);
 
         case TifoJourneyStep.teamSelect:
           final picked = await Navigator.of(context).push<bool>(

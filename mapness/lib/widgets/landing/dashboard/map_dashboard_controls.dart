@@ -14,6 +14,7 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
+import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/widgets/landing/tifo_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
@@ -102,6 +103,12 @@ class MapDashboardControls extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
             child: Column(
               children: [
+                // Floating "Join Tifo" CTA over the map (design node 589:85824)
+                // — only during the very first game launch on this device.
+                if (ref.watch(tifoBuildingsMapLayerProvider) && ref.watch(tifoFlowProvider).showJoinPill) ...[
+                  const TifoJoinPill(),
+                  const SizedBox(height: uikit.Spacing.$3x),
+                ],
                 const SizedBox(height: uikit.Spacing.$2x),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
