@@ -14,13 +14,38 @@ that download on demand from OCI Object Storage:
 | Design name       | Enum id           | CDN filename          |
 | ----------------- | ----------------- | --------------------- |
 | Classic Cursor    | `classic`         | *(bundled)*           |
-| CEO Rubber Ducky  | `ceo_rubber_ducky`| `ceo_rubber_ducky.glb`|
+| Rubber Ducky¹     | `ceo_rubber_ducky`| `ceo_rubber_ducky.glb`|
 | The Boss          | `the_boss`        | `the_boss.glb`        |
 | Jetpack           | `jetpack`         | `jetpack.glb`         |
 | Jeep              | `jeep`            | `jeep.glb`            |
 | Jetsons           | `jetsons`         | `jetsons.glb`         |
 | Sadu              | `sadu`            | `sadu.glb`            |
 | Sadu Bus          | `sadu_bus`        | `sadu_bus.glb`        |
+
+¹ Design dropped the "CEO" prefix late (BALADY-3762 review); the enum id,
+CDN filename and Localazy key `cursorTitleCEORubberDucky` keep it — only
+the EN *value* in Localazy changed to "Rubber Ducky". Never rename
+persisted ids or CDN files for display reasons.
+
+### Entry points
+
+1. **Settings full page** — Profile → Settings → Navigator Settings →
+   Cursors (`CursorsRoute`, Figma 2287-3295). The Cursors row in
+   Navigator Settings shows the active cursor title in
+   `bodySmallRegular` with a leading accent glyph (`ic_cursor_nav.svg`)
+   and a chevron (BALADY-3761, Figma 2287-3277).
+2. **Cursor tap during guidance / free roam** (BALADY-3764, Figma
+   2287-3140) — short tap on the 3D navigation cursor opens the same
+   content as a modal `ToggleSheet` (`showCursorsSheet`) over the map.
+   Native side: `MyLocationMapObject` is handled in the *short*-tap
+   listeners of `ObjectTapHandler` (Android + iOS in
+   `urbi_map/dgis_map`); Dart side routes by top route
+   (`PathNavRoute` / `FreeRoamRoute` → sheet, else share-location card).
+   Sheet chrome per Figma: `surface2` background, pinned
+   "Your cursors" header with the shared `AppCloseButton`, landscape
+   width pinned to `NaviSheetPanel.landscapeWidth`
+   (BALADY-3763/3771). Layout details in
+   [`cursors_page/AGENTS.md`](../../mapness/lib/pages/navigator_settings/pages/cursors_page/AGENTS.md).
 
 Selecting any non-classic cursor pipes bytes through
 [BE-184's dynamic style repack pipeline](../../mapness/lib/features/dynamic_style/dynamic_style_service.dart)
