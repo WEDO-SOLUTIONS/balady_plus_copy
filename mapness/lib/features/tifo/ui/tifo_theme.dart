@@ -143,40 +143,50 @@ class TifoPrimaryButton extends StatelessWidget {
   final bool trailingArrow;
   final Color color;
 
+  /// Green glow under the CTA (design `Button` node 398:8792:
+  /// `0 4 10 rgba(22,163,74,0.3)`).
+  static const BoxShadow _glow = BoxShadow(color: Color(0x4D16A34A), offset: Offset(0, 4), blurRadius: 10);
+
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null && !busy;
     return Opacity(
       opacity: enabled ? 1 : 0.5,
-      child: Material(
-        color: color,
-        borderRadius: BorderRadius.circular(TifoRadii.l),
-        child: InkWell(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(TifoRadii.l),
-          onTap: enabled ? onPressed : null,
-          child: SizedBox(
-            height: 56,
-            child: Center(
-              child: busy
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                    )
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (leadingEmoji != null) ...[
-                          Text(leadingEmoji!, style: const TextStyle(fontSize: 18)),
-                          const SizedBox(width: 8),
+          boxShadow: enabled ? const [_glow] : const [],
+        ),
+        child: Material(
+          color: color,
+          borderRadius: BorderRadius.circular(TifoRadii.l),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(TifoRadii.l),
+            onTap: enabled ? onPressed : null,
+            child: SizedBox(
+              height: 48,
+              child: Center(
+                child: busy
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (leadingEmoji != null) ...[
+                            Text(leadingEmoji!, style: const TextStyle(fontSize: 18)),
+                            const SizedBox(width: 8),
+                          ],
+                          Text(label, style: TifoText.button),
+                          if (trailingArrow) ...[
+                            const SizedBox(width: 8),
+                            const Icon(Icons.arrow_forward_rounded, size: 16, color: TifoColors.onAccent),
+                          ],
                         ],
-                        Text(label, style: TifoText.button),
-                        if (trailingArrow) ...[
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded, size: 18, color: TifoColors.onAccent),
-                        ],
-                      ],
-                    ),
+                      ),
+              ),
             ),
           ),
         ),
