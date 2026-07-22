@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +9,6 @@ import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
-
-final _barrierColorDelegate = ToggleSheetDelegateFunction<Color?>(
-  function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
-);
 
 /// BALADY-3764: Navigator Customization opened from a tap on the navigation
 /// cursor during guidance / free roam. Shown as a modal ToggleSheet over the
@@ -50,7 +45,8 @@ class CursorsSheet extends HookWidget {
       dragger: SheetDragger(backgroundColor: colors.backgroundSurface2),
       useSafeArea: false,
       scrollController: sheetController,
-      barrierColorDelegate: _barrierColorDelegate,
+      // No barrier dimming: the map behind the panel stays at full
+      // brightness so the driver can watch the cursor swap live.
       // Figma 2287-3140: pinned header — "Your cursors" + close button, the
       // subtitle right below; no page-style "Navigator customization" title.
       header: Padding(
