@@ -18,6 +18,13 @@ Future<void> showCursorsSheet(BuildContext context) => showModalBottomSheet<void
   backgroundColor: Colors.transparent,
   barrierColor: Colors.transparent,
   isScrollControlled: true,
+  // The route must never pop around the ToggleSheetController (barrier tap /
+  // route drag): the controller's AnimationController uses the sheet state's
+  // vsync and an instant unmount mid-animation trips the "disposed with an
+  // active Ticker" assert. All closes go through controller.close() — see
+  // the PopScope in [CursorsSheet].
+  isDismissible: false,
+  enableDrag: false,
   context: context,
   builder: (_) => const CursorsSheet(),
 );
@@ -76,13 +83,24 @@ class CursorsSheet extends HookWidget {
       content: const [CursorsPageContent(scrollable: false, showHeader: false)],
     );
 
-    return Align(
-      alignment: AlignmentDirectional.bottomStart,
-      child: Padding(
-        padding: EdgeInsetsDirectional.only(start: isLandscape ? Spacing.$3x : 0.0),
-        child: SizedBox(
-          width: isLandscape ? panelWidth : double.infinity,
-          child: sheet,
+    // System back must not pop the route instantly (see showCursorsSheet):
+    // divert it into the animated close; onClose then pops for real via
+    // Navigator.pop, which PopScope does not intercept.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          sheetController.close();
+        }
+      },
+      child: Align(
+        alignment: AlignmentDirectional.bottomStart,
+        child: Padding(
+          padding: EdgeInsetsDirectional.only(start: isLandscape ? Spacing.$3x : 0.0),
+          child: SizedBox(
+            width: isLandscape ? panelWidth : double.infinity,
+            child: sheet,
+          ),
         ),
       ),
     );
