@@ -64,6 +64,9 @@ class AppAnalyticsBytePlusImpl implements AppAnalyticsRepository, DataFinderAnal
     String? deviceOs,
     String? appVersion,
     String? userId,
+    String? phone,
+    String? firstName,
+    String? lastName,
   }) {
     // Always call: a non-null [userId] (the SSO `sub`) logs the user in; `null`
     // logs them OUT. The RangersAppLog plugin explicitly treats

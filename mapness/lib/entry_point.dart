@@ -24,6 +24,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
@@ -195,7 +196,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   StreamSubscription? _navigationEventsListener;
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
-    return language == Language.arabic ? 'packages/balady_design_system/IBMPlexSansArabic' : 'packages/balady_uikit/Golos';
+    return language == Language.arabic
+        ? 'packages/balady_design_system/IBMPlexSansArabic'
+        : 'packages/balady_uikit/Golos';
   }
 
   @override
@@ -832,6 +835,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           break;
         case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
           _startupLog('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          InsiderCustomActionHandler.handleCustomAction(data);
           break;
         default:
           _startupLog('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
