@@ -16,9 +16,11 @@ class AppCloseButton extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: onPressed,
+        // Figma "Elements / wrapper": 44px square, design-system cross in
+        // foreground/default — not the thin grey Material glyph.
         child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Icon(Icons.close, color: context.colors.neutralOnContainer),
+          padding: const EdgeInsets.all(10),
+          child: Icon(SystemIcons.close, size: 24, color: context.colors.foregroundDefault),
         ),
       ),
     ),
