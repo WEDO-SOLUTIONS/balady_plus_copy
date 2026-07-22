@@ -11,6 +11,7 @@ import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -109,7 +110,7 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
         color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
         strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
         strokeWidth: 1,
-        fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
+        fontName: title.containsArabic() || isRtl ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn,
         textPlacement: MarkerTextPlacementMessage(
           placement: TextPlacementMessage.bottomCenter,
         ),
