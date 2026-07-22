@@ -7,29 +7,33 @@ class AppCloseButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  // Transparent Material: the default (theme-white) rectangle peeks out of
-  // the Ink's rounded corners on dark surfaces.
-  Widget build(BuildContext context) => Material(
-    color: Colors.transparent,
-    child: Ink(
-      decoration: BoxDecoration(
-        color: context.colors.backgroundSurface1,
-        borderRadius: BorderRadius.circular(8),
-        // Figma "Elements / wrapper" shadow — keeps the button visible on
-        // near-white sheet backgrounds (surface2).
-        boxShadow: const [
-          BoxShadow(color: Color(0x0D101828), offset: Offset(0, 1), blurRadius: 3),
-          BoxShadow(color: Color(0x0D101828), offset: Offset(0, 1), blurRadius: 2),
-        ],
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: onPressed,
-        // Figma "Elements / wrapper": 44px square, design-system cross in
-        // foreground/default — not the thin grey Material glyph.
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Icon(SystemIcons.close, size: 24, color: context.colors.foregroundDefault),
+  // Shadow lives on the outer DecoratedBox: painted inside Ink it gets
+  // clipped to the Material bounds and collects in the corners as dark
+  // notches. Transparent Material: the default (theme-white) rectangle
+  // peeks out of the rounded corners on dark surfaces.
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      // Figma "Elements / wrapper" shadow — keeps the button visible on
+      // near-white sheet backgrounds (surface2).
+      boxShadow: const [
+        BoxShadow(color: Color(0x0D101828), offset: Offset(0, 1), blurRadius: 3),
+        BoxShadow(color: Color(0x0D101828), offset: Offset(0, 1), blurRadius: 2),
+      ],
+    ),
+    child: Material(
+      color: Colors.transparent,
+      child: Ink(
+        decoration: BoxDecoration(color: context.colors.backgroundSurface1, borderRadius: BorderRadius.circular(8)),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8),
+          onTap: onPressed,
+          // Figma "Elements / wrapper": 44px square, design-system cross in
+          // foreground/default — not the thin grey Material glyph.
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(SystemIcons.close, size: 24, color: context.colors.foregroundDefault),
+          ),
         ),
       ),
     ),
