@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
-import 'package:mapness/shared/providers/dgis_environment.dart';
 
 /// Debug-only overrides for the TIFO backend. Empty fields fall back to the
 /// system config. Applied ONLY when [tifoDebugModeProvider] is on — in normal
@@ -46,27 +46,43 @@ class TifoDebugModeController extends Notifier<bool> {
 
 final tifoDebugModeProvider = NotifierProvider<TifoDebugModeController, bool>(TifoDebugModeController.new);
 
+/// The TIFO backend is deployed on staging only, so the game intentionally
+/// pins that host on every app environment (prod included) instead of
+/// following `dgisEnvironmentProvider`. Re-point (or re-derive from the env)
+/// once TIFO ships to production.
+const kTifoBaseUrl = 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/tifo';
+
 /// The effective TIFO base URL + bearer, resolved per request.
 ///
-/// Base URL is derived from the active environment (`dgisEnvironmentProvider`) —
-/// same host as the rest of urbi-lifestyle, with the TIFO path. Bearer is the
-/// system SSO access token (`tokenProvider`), so TIFO shares the app's login.
-/// Debug overrides only win when [tifoDebugModeProvider] is on.
+/// Base URL is [kTifoBaseUrl]. Bearer is the system SSO access token
+/// (`tokenProvider`), so TIFO shares the app's login. Debug overrides only win
+/// when [tifoDebugModeProvider] is on.
 typedef TifoResolvedConfig = ({String baseUrl, String token});
 
 Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
   final debug = ref.read(tifoDebugModeProvider);
   final override = debug ? ref.read(tifoDebugConfigProvider) : const TifoConfig();
 
-  var baseUrl = override.baseUrl;
-  if (baseUrl.isEmpty) {
-    final env = await ref.read(dgisEnvironmentProvider.future);
-    baseUrl = '${Uri.parse(env.url).origin}/1.0/api/v1/tifo';
-  }
+  final baseUrl = override.baseUrl.isEmpty ? kTifoBaseUrl : override.baseUrl;
 
   var token = override.userToken;
   if (token.isEmpty) {
-    token = await ref.read(tokenProvider.future); // system SSO access token
+    try {
+      token = await ref.read(tokenProvider.future); // system SSO access token
+    } catch (_) {
+      token = ''; // no session — fall through to the guest bearer
+    }
+  }
+  if (token.isEmpty) {
+    // Not signed in. The backend requires SOME bearer even for browse (401
+    // otherwise), and staging treats it as an opaque user id — identify the
+    // guest by device so browsing works pre-login (BRD US-01).
+    try {
+      final device = await ref.read(deviceInfoProvider.future);
+      token = 'tifo-guest-${device.deviceId ?? 'unknown'}';
+    } catch (_) {
+      token = 'tifo-guest-unknown';
+    }
   }
   return (baseUrl: baseUrl, token: token);
 }
