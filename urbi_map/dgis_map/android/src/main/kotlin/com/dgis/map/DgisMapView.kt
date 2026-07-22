@@ -438,6 +438,51 @@ class DgisMapView(
         )
     }
 
+    override fun takeMapSnapshot(callback: (Result<ByteArray?>) -> Unit) {
+        // Best-effort by contract: any failure resolves to null and the Dart
+        // side falls back to a plain colored curtain (BALADY-3772).
+        if (map == null) {
+            callback(Result.success(null))
+            return
+        }
+        val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        try {
+            mapView.takeSnapshot(Alignment.BOTTOM_LEFT).apply {
+                onResult { imageData ->
+                    val bytes: ByteArray? =
+                            when (imageData.format) {
+                                ImageFormat.PNG -> imageData.data
+                                ImageFormat.RGBA_8888 -> {
+                                    val bitmap =
+                                            android.graphics.Bitmap.createBitmap(
+                                                    imageData.size.width,
+                                                    imageData.size.height,
+                                                    android.graphics.Bitmap.Config.ARGB_8888
+                                            )
+                                    bitmap.copyPixelsFromBuffer(
+                                            java.nio.ByteBuffer.wrap(imageData.data)
+                                    )
+                                    val out = java.io.ByteArrayOutputStream()
+                                    bitmap.compress(
+                                            android.graphics.Bitmap.CompressFormat.PNG,
+                                            100,
+                                            out
+                                    )
+                                    bitmap.recycle()
+                                    out.toByteArray()
+                                }
+                                else -> null
+                            }
+                    mainHandler.post { callback(Result.success(bytes)) }
+                }
+                onError { mainHandler.post { callback(Result.success(null)) } }
+            }
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "takeMapSnapshot failed: $e")
+            callback(Result.success(null))
+        }
+    }
+
     override fun getCameraVisibleArea(callback: (Result<PolygonGeometryMessage>) -> Unit) {
         val map =
                 map
