@@ -1517,6 +1517,12 @@ abstract class MapApi {
   @async
   CameraPositionMessage getCameraPosition();
 
+  /// Capture the current map frame as encoded PNG bytes. Returns null when
+  /// no frame is available (renderer not ready / snapshot failed). Used to
+  /// mask the MapView recreate during dynamic style swaps (BALADY-3772).
+  @async
+  Uint8List? takeMapSnapshot();
+
   @async
   CameraPositionMessage calcPositionForRoute(CalcPositionOptionsMessage options);
 

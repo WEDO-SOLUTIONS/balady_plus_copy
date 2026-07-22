@@ -518,6 +518,30 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func takeMapSnapshot(completion: @escaping (Result<FlutterStandardTypedData?, any Error>) -> Void) {
+        // Best-effort by contract: any failure resolves to nil and the Dart
+        // side falls back to a plain colored curtain (BALADY-3772).
+        guard let snapshotter = self.mapFactory?.snapshotter else {
+            completion(Result.success(nil))
+            return
+        }
+        cancelable.append(
+            snapshotter.makeImage().sink(
+                receiveValue: { image in
+                    let bytes = image.pngData().map { FlutterStandardTypedData(bytes: $0) }
+                    DispatchQueue.main.async {
+                        completion(Result.success(bytes))
+                    }
+                },
+                failure: { _ in
+                    DispatchQueue.main.async {
+                        completion(Result.success(nil))
+                    }
+                }
+            )
+        )
+    }
+
     func getCameraVisibleArea(completion: @escaping (Result<PolygonGeometryMessage, any Error>) -> Void) {
         guard let map = self.map else {
             completion(Result.failure( FlutterError(
@@ -527,7 +551,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
-        
+
         let area = map.camera.visibleArea
         if let polygon = area as? PolygonGeometry {
             let contours = polygon.contours.map { $0.map { $0.toMessage() } }

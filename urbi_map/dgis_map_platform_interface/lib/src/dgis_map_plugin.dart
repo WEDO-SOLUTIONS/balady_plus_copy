@@ -421,6 +421,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.getCameraPosition();
   }
 
+  /// Capture the current map frame as encoded PNG bytes; null when no frame
+  /// is available. Best-effort — used to mask MapView recreates (BALADY-3772).
+  Future<Uint8List?> takeMapSnapshot() {
+    return _api.takeMapSnapshot();
+  }
+
   /// Get nearest objects.
   Future<List<RenderedObjectMessage>> getNearestObjects() async {
     return (await _api.getNearestObjects()).whereType<RenderedObjectMessage>().toList();

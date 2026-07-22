@@ -1,8 +1,11 @@
+import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/features/dynamic_style/dynamic_style_service.dart';
 import 'package:mapness/features/dynamic_style/map_style_store.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/map_recreation.dart';
+import 'package:mapness/shared/providers/map/map_swap_curtain.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -67,6 +70,12 @@ class DynamicStyleController extends _$DynamicStyleController {
       renameSuffix: suffix,
     );
 
+    // BALADY-3772: raise the curtain before tearing the MapView down so the
+    // platform-view swap doesn't flash white. Prefer the freshest real map
+    // frame; the widget falls back to a plain color when the native
+    // snapshot fails. Hidden again when the fresh map restores the camera.
+    ref.read(mapSwapCurtainProvider.notifier).show(image: await _takeMapFrame(currentController));
+
     // Invalidate BEFORE publish. `DgisController._setupControllerItself`
     // subscribes to `mapStyleStoreProvider` and fires
     // `controller.loadStylesFromPath` on any revision bump. If we publish
@@ -123,6 +132,9 @@ class DynamicStyleController extends _$DynamicStyleController {
       }
     }
 
+    // BALADY-3772: same white-flash curtain as in [applyOverrides].
+    ref.read(mapSwapCurtainProvider.notifier).show(image: await _takeMapFrame(currentController));
+
     // Invalidate BEFORE the store publishes — see [applyOverrides] for the
     // reason (avoids a StyleBuilder Future racing against Map.close()).
     ref.invalidate(dgisControllerProvider);
@@ -131,6 +143,22 @@ class DynamicStyleController extends _$DynamicStyleController {
     logger.log('$_logTag resetToBundled: restored bundled asset');
 
     ref.read(mapRecreationCounterProvider.notifier).bump();
+  }
+
+  /// Best-effort capture of the current map frame for the swap curtain
+  /// (BALADY-3772). Bounded by a short timeout so a stuck render queue can't
+  /// delay the actual style swap; any failure degrades to the plain-color
+  /// curtain.
+  Future<Uint8List?> _takeMapFrame(DgisMapController? controller) async {
+    if (controller == null) {
+      return null;
+    }
+    try {
+      return await controller.takeMapSnapshot().timeout(const Duration(milliseconds: 800));
+    } on Exception catch (e) {
+      logger.log('$_logTag failed to take map snapshot for the curtain: $e');
+      return null;
+    }
   }
 }
 

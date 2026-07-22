@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +6,9 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
-
-final _barrierColorDelegate = ToggleSheetDelegateFunction<Color?>(
-  function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
-);
 
 /// BALADY-3764: Navigator Customization opened from a tap on the navigation
 /// cursor during guidance / free roam. Shown as a modal ToggleSheet over the
@@ -22,6 +18,13 @@ Future<void> showCursorsSheet(BuildContext context) => showModalBottomSheet<void
   backgroundColor: Colors.transparent,
   barrierColor: Colors.transparent,
   isScrollControlled: true,
+  // The route must never pop around the ToggleSheetController (barrier tap /
+  // route drag): the controller's AnimationController uses the sheet state's
+  // vsync and an instant unmount mid-animation trips the "disposed with an
+  // active Ticker" assert. All closes go through controller.close() — see
+  // the PopScope in [CursorsSheet].
+  isDismissible: false,
+  enableDrag: false,
   context: context,
   builder: (_) => const CursorsSheet(),
 );
@@ -42,46 +45,62 @@ class CursorsSheet extends HookWidget {
     final panelWidth = NaviSheetPanel.landscapeWidth + mediaQueryPadding.left + mediaQueryPadding.right;
 
     final sheet = ToggleSheet(
-      backgroundColor: colors.backgroundSurface4,
-      safeAreaColor: colors.backgroundSurface4,
-      dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
+      // Figma 2287-3140: the sheet sits on background/surface2, unlike the
+      // full-screen page which uses surface4.
+      backgroundColor: colors.backgroundSurface2,
+      safeAreaColor: colors.backgroundSurface2,
+      dragger: SheetDragger(backgroundColor: colors.backgroundSurface2),
       useSafeArea: false,
       scrollController: sheetController,
-      barrierColorDelegate: _barrierColorDelegate,
-      header: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(Spacing.$2x),
-            child: Center(
-              child: Text(
-                context.l10n.cursorsNavigatorCustomization,
-                style: context.textStyles.h3SemiBold.copyWith(color: colors.foregroundDefault),
-              ),
+      // No barrier dimming: the map behind the panel stays at full
+      // brightness so the driver can watch the cursor swap live.
+      // Figma 2287-3140: pinned header — "Your cursors" + close button, the
+      // subtitle right below; no page-style "Navigator customization" title.
+      header: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    context.l10n.yourCursors,
+                    style: context.textStyles.h4SemiBold.copyWith(color: colors.foregroundDefault),
+                  ),
+                ),
+                AppCloseButton(onPressed: sheetController.close),
+              ],
             ),
-          ),
-          PositionedDirectional(
-            end: Spacing.$4x,
-            child: AppButton(
-              innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
-              size: ButtonSize.small,
-              primaryIcon: SystemIcons.arrowCornerDownLarge,
-              buttonType: ButtonType.secondary,
-              buttonColorScheme: ButtonColorScheme.neutral,
-              onTap: sheetController.close,
+            const SizedBox(height: Spacing.$0_5x),
+            Text(
+              context.l10n.selectNavigatorType,
+              style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      content: const [CursorsPageContent(scrollable: false)],
+      content: const [CursorsPageContent(scrollable: false, showHeader: false)],
     );
 
-    return Align(
-      alignment: AlignmentDirectional.bottomStart,
-      child: Padding(
-        padding: EdgeInsetsDirectional.only(start: isLandscape ? Spacing.$3x : 0.0),
-        child: SizedBox(
-          width: isLandscape ? panelWidth : double.infinity,
-          child: sheet,
+    // System back must not pop the route instantly (see showCursorsSheet):
+    // divert it into the animated close; onClose then pops for real via
+    // Navigator.pop, which PopScope does not intercept.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          sheetController.close();
+        }
+      },
+      child: Align(
+        alignment: AlignmentDirectional.bottomStart,
+        child: Padding(
+          padding: EdgeInsetsDirectional.only(start: isLandscape ? Spacing.$3x : 0.0),
+          child: SizedBox(
+            width: isLandscape ? panelWidth : double.infinity,
+            child: sheet,
+          ),
         ),
       ),
     );
