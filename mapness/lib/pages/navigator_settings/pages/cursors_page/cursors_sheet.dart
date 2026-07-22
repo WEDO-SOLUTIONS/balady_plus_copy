@@ -7,6 +7,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -48,31 +49,33 @@ class CursorsSheet extends HookWidget {
       useSafeArea: false,
       scrollController: sheetController,
       barrierColorDelegate: _barrierColorDelegate,
-      header: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(Spacing.$2x),
-            child: Center(
-              child: Text(
-                context.l10n.cursorsNavigatorCustomization,
-                style: context.textStyles.h3SemiBold.copyWith(color: colors.foregroundDefault),
-              ),
+      // Figma 2287-3140: pinned header — "Your cursors" + close button, the
+      // subtitle right below; no page-style "Navigator customization" title.
+      header: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    context.l10n.yourCursors,
+                    style: context.textStyles.h4SemiBold.copyWith(color: colors.foregroundDefault),
+                  ),
+                ),
+                AppCloseButton(onPressed: sheetController.close),
+              ],
             ),
-          ),
-          PositionedDirectional(
-            end: Spacing.$4x,
-            child: AppButton(
-              innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
-              size: ButtonSize.small,
-              primaryIcon: SystemIcons.arrowCornerDownLarge,
-              buttonType: ButtonType.secondary,
-              buttonColorScheme: ButtonColorScheme.neutral,
-              onTap: sheetController.close,
+            const SizedBox(height: Spacing.$0_5x),
+            Text(
+              context.l10n.selectNavigatorType,
+              style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-      content: const [CursorsPageContent(scrollable: false)],
+      content: const [CursorsPageContent(scrollable: false, showHeader: false)],
     );
 
     return Align(

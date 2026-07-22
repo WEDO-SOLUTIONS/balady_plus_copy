@@ -10,12 +10,17 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class CursorsPageContent extends ConsumerWidget {
-  const CursorsPageContent({super.key, this.scrollable = true});
+  const CursorsPageContent({super.key, this.scrollable = true, this.showHeader = true});
 
   /// `false` when embedded into an outer scrollable (the ToggleSheet in
   /// cursors_sheet.dart provides its own SliverList; a nested scroll view
   /// would swallow the sheet's drag gestures).
   final bool scrollable;
+
+  /// `false` when the enclosing sheet renders "Your cursors" + subtitle in
+  /// its own pinned header (Figma 2287-3140); the full page keeps them
+  /// inline (Figma 2287-3295).
+  final bool showHeader;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -46,10 +51,12 @@ class CursorsPageContent extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _SectionHeader(text: l10n.yourCursors),
-          const SizedBox(height: Spacing.$0_5x),
-          _SubtitleRow(text: l10n.selectNavigatorType),
-          const SizedBox(height: Spacing.$4x),
+          if (showHeader) ...[
+            _SectionHeader(text: l10n.yourCursors),
+            const SizedBox(height: Spacing.$0_5x),
+            _SubtitleRow(text: l10n.selectNavigatorType),
+            const SizedBox(height: Spacing.$4x),
+          ],
           ContentWrapper(
             color: cardColor,
             children: [
