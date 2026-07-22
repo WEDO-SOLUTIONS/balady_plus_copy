@@ -7,7 +7,10 @@ class AppCloseButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
+  // Transparent Material: the default (theme-white) rectangle peeks out of
+  // the Ink's rounded corners on dark surfaces.
   Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
     child: Ink(
       decoration: BoxDecoration(color: context.colors.backgroundSurface1, borderRadius: BorderRadius.circular(8)),
       child: InkWell(
