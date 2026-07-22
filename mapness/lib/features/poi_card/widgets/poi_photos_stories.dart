@@ -267,7 +267,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
     double? interpolation,
   }) {
     if (state == null || interpolation == null) {
-      return initialValue;
+      return finalValue;
     }
 
     if (state == PoiCardBottomSheetState.hidden) {
