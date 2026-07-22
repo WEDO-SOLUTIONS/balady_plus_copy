@@ -43,9 +43,11 @@ class CursorsSheet extends HookWidget {
     final panelWidth = NaviSheetPanel.landscapeWidth + mediaQueryPadding.left + mediaQueryPadding.right;
 
     final sheet = ToggleSheet(
-      backgroundColor: colors.backgroundSurface4,
-      safeAreaColor: colors.backgroundSurface4,
-      dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
+      // Figma 2287-3140: the sheet sits on background/surface2, unlike the
+      // full-screen page which uses surface4.
+      backgroundColor: colors.backgroundSurface2,
+      safeAreaColor: colors.backgroundSurface2,
+      dragger: SheetDragger(backgroundColor: colors.backgroundSurface2),
       useSafeArea: false,
       scrollController: sheetController,
       barrierColorDelegate: _barrierColorDelegate,
