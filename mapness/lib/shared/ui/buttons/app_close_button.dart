@@ -12,7 +12,16 @@ class AppCloseButton extends StatelessWidget {
   Widget build(BuildContext context) => Material(
     color: Colors.transparent,
     child: Ink(
-      decoration: BoxDecoration(color: context.colors.backgroundSurface1, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+        color: context.colors.backgroundSurface1,
+        borderRadius: BorderRadius.circular(8),
+        // Figma "Elements / wrapper" shadow — keeps the button visible on
+        // near-white sheet backgrounds (surface2).
+        boxShadow: const [
+          BoxShadow(color: Color(0x0D101828), offset: Offset(0, 1), blurRadius: 3),
+          BoxShadow(color: Color(0x0D101828), offset: Offset(0, 1), blurRadius: 2),
+        ],
+      ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
         onTap: onPressed,
