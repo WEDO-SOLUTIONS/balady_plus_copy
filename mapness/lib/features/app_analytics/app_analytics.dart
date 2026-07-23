@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
-import 'package:mapness/features/app_analytics/data/app_analytics_balady_mirror_impl.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_byteplus_impl.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_insider_impl.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
@@ -396,10 +395,9 @@ class AppAnalytics extends _$AppAnalytics {
         _CompositeAnalytics([
           AppAnalyticsInsiderImpl(),
           AppAnalyticsBytePlusImpl(),
-          // Mirrors the same stream into the BaladyAnalytics facade (our own
-          // pipeline). Receives DataFinder events too — it implements the
-          // capability interface, unlike Insider.
-          AppAnalyticsBaladyMirrorImpl(),
+          // The BaladyAnalytics (PostHog) mirror was removed on purpose: legacy
+          // UXCam-era events do not migrate. Our pipeline gets its own events
+          // per docs/analytics-tracking-plan.md.
         ]);
     final locale = ref.watch(appLanguageProvider).languageCode;
     final deviceInfo = ref.watch(deviceInfoProvider.future);
