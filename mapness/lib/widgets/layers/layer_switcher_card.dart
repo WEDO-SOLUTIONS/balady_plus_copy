@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/common/image_asset_type.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_layer_visible_provider.dart';
 import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
@@ -52,6 +53,10 @@ class LayerSwitcherCard extends ConsumerWidget {
     if (value == layers_state.LayerType.busSubMenu) {
       final trafficState = ref.watch(traffic.trafficStateProvider);
       isSelected = layers_state.LayerType.bus.contains(layersState.selectedType);
+    }
+
+    if (value == layers_state.LayerType.friends) {
+      isSelected = ref.watch(friendsLayerVisibleProvider);
     }
 
     final withIcon = onIconTap != null && layerTapItems.contains(value);

@@ -137,7 +137,8 @@ class PoiCardProvider extends _$PoiCardProvider {
           )
           .timeout(const Duration(minutes: 10));
 
-      final photosFuture = ref.watch(poiPhotoProvider(objectId).future);
+      final photosFuture =
+          Future.value(DgisPhotosDto(albums: [], items: [])) ?? ref.watch(poiPhotoProvider(objectId).future);
       final organisationsFuture = fetchOrganizationsData(objectId: objectId);
 
       final results = await Future.wait([poiFuture, photosFuture, organisationsFuture]);

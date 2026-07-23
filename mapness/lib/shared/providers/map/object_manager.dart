@@ -33,6 +33,9 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.favourites() =>
       const MapObjectManagerSettings._(name: 'favourite-markers', layerId: MapObjectLayers.defaultLayerId);
 
+  factory MapObjectManagerSettings.friends() =>
+      const MapObjectManagerSettings._(name: 'friends-markers', layerId: MapObjectLayers.defaultLayerId);
+
   factory MapObjectManagerSettings.makkahPlaces() => const MapObjectManagerSettings._(
     name: 'makkah-places',
     layerId: MapObjectLayers.defaultLayerId,

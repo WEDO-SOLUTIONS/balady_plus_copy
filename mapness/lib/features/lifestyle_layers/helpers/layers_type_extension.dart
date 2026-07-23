@@ -22,8 +22,9 @@ extension LayerTypeExt on LayerType {
     LayerType.metro ||
     LayerType.parkingLots ||
     LayerType.traffic ||
+    LayerType.three3D ||
     LayerType
-        .three3D // || LayerType.roadEvents
+        .friends // || LayerType.roadEvents
         => null,
   };
 
@@ -39,8 +40,9 @@ extension LayerTypeExt on LayerType {
     LayerType.jeddahBus => PlacesIcons.qibla,
     LayerType.parkingLots => TransportIcons.parkingEnable,
     LayerType.traffic ||
+    LayerType.three3D ||
     LayerType
-        .three3D // || LayerType.roadEvents
+        .friends // || LayerType.roadEvents
         => GeneralIcons.placeholder,
   };
 
@@ -57,6 +59,8 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => (ImageAssetType.svg, Assets.imagesSvg.layers.parking.keyName),
     LayerType.traffic => (ImageAssetType.svg, Assets.imagesSvg.layers.traffic.keyName),
     LayerType.three3D => (ImageAssetType.svg, Assets.imagesSvg.layers.a3D.keyName),
+    // Placeholder tile art until a dedicated friends-layer asset is designed.
+    LayerType.friends => (ImageAssetType.svg, Assets.imagesSvg.layers.favourites.keyName),
     // LayerType.roadEvents => Assets.imagesSvg.layers.roadEvents.keyName,
   };
 
@@ -73,6 +77,7 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => l10n.layersParking,
     LayerType.traffic => l10n.layersTraffic,
     LayerType.three3D => l10n.threeDee,
+    LayerType.friends => l10n.friendsLayerTitle,
     //LayerType.roadEvents => l10n.roadEvents.toLowerCase().toCapitalized(),
   };
 }

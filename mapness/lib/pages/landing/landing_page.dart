@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_markers_provider.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
@@ -213,6 +214,7 @@ class _LandingPageState extends ConsumerState<LandingPage>
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
+      ..watch(friendsMarkersProvider.select((value) => null))
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(thermalMonitorProvider)

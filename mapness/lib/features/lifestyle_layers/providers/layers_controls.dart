@@ -8,6 +8,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/features/friends_on_map/providers/friends_layer_visible_provider.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/features/jeddah_bus/provider.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
@@ -232,9 +233,16 @@ class LayersControls extends _$LayersControls {
       case LayerType.jeddahBus:
         toggleJeddahBuses();
         break;
+      case LayerType.friends:
+        await toggleFriends();
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
+  }
+
+  Future<void> toggleFriends() async {
+    ref.read(friendsLayerVisibleProvider.notifier).toggle();
   }
 
   Future<void> showActiveLayerOnMap() async {
@@ -625,6 +633,14 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> _tapHandler(LayerType value) async {
+    // the friends layer is
+    // independent of overlay layers — do not clear the active overlay or
+    // its selection state.
+    if (value == LayerType.friends) {
+      await toggleLayers(value);
+      return;
+    }
+
     final currentState = state.selectedType;
 
     _cancelToken?.cancel();
@@ -688,6 +704,8 @@ class LayersControls extends _$LayersControls {
         }
         break;
       case LayerType.three3D:
+      case LayerType.friends:
+        break;
       // case LayerType.roadEvents:
       //   break;
     }
