@@ -16,5 +16,6 @@ enum RequirementEnum {
   checkPermission,
   sendToCalender,
   downloadAndExtractInAssets,
-  openWebView
+  openWebView,
+  rideHailingKey,
 }

@@ -6,11 +6,8 @@ class AccessTokenModel implements BaseData {
   AccessTokenModel({required this.accessToken});
 
   factory AccessTokenModel.fromJson(Map<String, dynamic> json) {
-    return AccessTokenModel(
-      accessToken: json['accessToken'] as String,
-    );
+    return AccessTokenModel(accessToken: json['accessToken'] as String);
   }
-
 
   @override
   Map<String, dynamic> toJson() {
@@ -19,7 +16,6 @@ class AccessTokenModel implements BaseData {
     return data;
   }
 }
-
 
 class CookiesModel implements BaseData {
   String cookies;
@@ -30,6 +26,23 @@ class CookiesModel implements BaseData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['cookies'] = cookies;
+    return data;
+  }
+}
+
+class RideHailingKeyModel implements BaseData {
+  String rideHailingKey;
+
+  RideHailingKeyModel({required this.rideHailingKey});
+
+  factory RideHailingKeyModel.fromJson(Map<String, dynamic> json) {
+    return RideHailingKeyModel(rideHailingKey: json['rideHailingKey'] as String);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['rideHailingKey'] = rideHailingKey;
     return data;
   }
 }
