@@ -15,10 +15,10 @@ class CallBackModel implements BaseData {
 
   factory CallBackModel.fromJson(Map json) {
     return CallBackModel(
-      hitUrl: json['hitUrl'] ?? '',
-      matchedCallback: json['matchedCallback'] ?? '',
+      hitUrl: json['hitUrl']?.toString() ?? '',
+      matchedCallback: json['matchedCallback']?.toString() ?? '',
       query: json['query']?.toString() ?? '',
-      path: json['path'] ?? '',
+      path: json['path']?.toString() ?? '',
     );
   }
 
