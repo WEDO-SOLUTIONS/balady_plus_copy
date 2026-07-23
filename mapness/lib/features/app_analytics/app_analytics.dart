@@ -376,7 +376,8 @@ class _CompositeAnalytics implements AppAnalyticsApi {
   }
 }
 
-@riverpod
+// Prevents auto-dispose to avoid re-initializing analytics on page changes
+@Riverpod(keepAlive: true)
 class AppAnalytics extends _$AppAnalytics {
   @override
   AppAnalyticsApi build() {

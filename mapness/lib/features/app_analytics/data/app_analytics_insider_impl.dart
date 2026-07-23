@@ -8,6 +8,8 @@ import 'package:flutter_insider/src/identifiers.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 
 class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
+  static String? _lastLoggedUserId;
+
   @override
   void onboardingFlowStarted() {
     FlutterInsider.Instance.tagEvent('onboarding_flow_started').build();
@@ -82,10 +84,21 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
     // Handle user logout / clear session
     if (userId == null && (email == null || email.isEmpty) && (phone == null || phone.isEmpty)) {
-      debugPrint('[Insider] User logged out / unauthenticated. Calling logout().');
-      user.logout();
+      if (_lastLoggedUserId != null) {
+        debugPrint('[Insider] User logged out / unauthenticated. Calling logout().');
+        _lastLoggedUserId = null;
+        user.logout();
+      }
       return;
     }
+
+    // Deduplicate: Avoid duplicate login calls and login events for the same user session
+    if (userId != null && userId == _lastLoggedUserId) {
+      debugPrint('[Insider] setUserInfo called for already identified user ($userId). Skipping duplicate login event.');
+      return;
+    }
+
+    _lastLoggedUserId = userId;
 
     final identifiers = FlutterInsiderIdentifiers();
     if (email != null && email.isNotEmpty) {
