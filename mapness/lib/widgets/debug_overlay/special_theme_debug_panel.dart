@@ -18,14 +18,12 @@ class _DebugColors {
   static const surface = Color(0xFF18181B);
   static const surfaceLight = Color(0xFF27272A);
   static const border = Color(0xFF3F3F46);
-  static const borderLight = Color(0xFF52525B);
 
   static const textPrimary = Color(0xFFFAFAFA);
   static const textSecondary = Color(0xFFA1A1AA);
   static const textMuted = Color(0xFF71717A);
 
   static const accent = Color(0xFF8B5CF6);
-  static const accentLight = Color(0xFFA78BFA);
   static const success = Color(0xFF22C55E);
   static const warning = Color(0xFFF59E0B);
   static const error = Color(0xFFEF4444);
@@ -145,12 +143,10 @@ class _Header extends StatelessWidget {
 class _GlassCard extends StatelessWidget {
   const _GlassCard({
     required this.child,
-    this.gradient,
     this.padding = const EdgeInsets.all(14),
   });
 
   final Widget child;
-  final Gradient? gradient;
   final EdgeInsets padding;
 
   @override
@@ -160,7 +156,6 @@ class _GlassCard extends StatelessWidget {
         color: _DebugColors.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _DebugColors.border, width: 1),
-        gradient: gradient,
       ),
       child: Padding(
         padding: padding,
