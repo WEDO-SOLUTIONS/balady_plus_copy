@@ -53,13 +53,20 @@ Penalty-game deep dive (state, mechanics, sprite pipeline, history):
 
 ## First-launch journey (wired in `widgets/landing/tifo_control.dart`)
 
-⚽ tap → entry popup → layer on → tutorial intro sheet → guided tour:
+⚽ tap → entry popup → CTA → layer on → gate walk (BRD FR-04: route to the
+first unmet step; Close(X) leaves the map untouched):
 
 - `entry_screen.dart` — stories hero (Figma node 286:20818), asset
   `assets/tifo/backgrounds/entry_hero.jpg`. Shown once per session
   (`hasSeenEntry`, in-memory).
-- `tifo_tutorial_sheet.dart` — "TIFO TUTORIAL" intro sheet (frame 01,
-  node 601:104469). Shown on first activation (`hasSeenTutorial`, in-memory).
+- The gate walk (`tifo_journey.dart`, also behind the pill and building
+  "Challenge"): **login → tutorial started → team selected** (FR-03), each
+  step re-read from `tifoSessionProvider` after it runs. Login opens the
+  host flow (`tifo_login.dart`) and stops the walk while `isGuest` stays
+  true (staging lazily registers a profile for the guest bearer, so the
+  profile alone can't tell — see `resolveTifoConfig`). The tutorial gate
+  marks the start server-side and pushes the guided tour (FR-05: starting
+  clears the gate forever).
 - `tutorial/tifo_guided_tutorial.dart` — 13-step tour built from the Figma
   sequence (nodes 589:85440 → 721:126548). Transparent route: map steps show
   the live map behind a `ModalBarrier`; the rest are static replicas from
@@ -69,11 +76,10 @@ Penalty-game deep dive (state, mechanics, sprite pipeline, history):
   flag in Hive box `'tifo'` (`TifoFlowController.markGameLaunched`). To see it
   again: wipe the app or clear that box (a debug reset button is a welcome
   addition).
-- The play-gate (`tifo_journey.dart`): login → tutorial → team select, each
-  step re-read from `tifoSessionProvider` after it runs. The tutorial gate
-  pushes the guided tour; the old fullscreen `tifo_tutorial.dart` is legacy
-  (referenced only by the legacy debug `tifo_ball_button.dart` — both are
-  deletion candidates).
+- Legacy: `tifo_tutorial_sheet.dart` (intro sheet, no longer auto-offered —
+  the journey owns the tutorial gate; `consumeTutorialOffer` and its Hive
+  flag are orphaned), fullscreen `tifo_tutorial.dart` + debug
+  `tifo_ball_button.dart` — deletion candidates.
 
 ## Design system (`ui/tifo_theme.dart`)
 

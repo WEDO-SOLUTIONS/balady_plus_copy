@@ -93,6 +93,19 @@ class TifoFlowController extends Notifier<TifoFlowState> {
       state = state.copyWith(showJoinPill: true);
     }
   }
+
+  /// One-shot, persisted gate for the tutorial intro sheet (BRD: the tutorial
+  /// autoruns on the FIRST entry only; replays go through Support / the
+  /// play-gate). Returns true exactly once per install and stamps the flag —
+  /// without persistence the sheet re-offered itself on every app restart.
+  Future<bool> consumeTutorialOffer() async {
+    final box = await ref.read(hiveProvider('tifo').future);
+    if (box.get('tutorialOffered') == true) {
+      return false;
+    }
+    await box.put('tutorialOffered', true);
+    return true;
+  }
 }
 
 final tifoFlowProvider = NotifierProvider<TifoFlowController, TifoFlowState>(TifoFlowController.new);

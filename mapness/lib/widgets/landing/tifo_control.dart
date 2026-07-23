@@ -9,18 +9,17 @@ import 'package:mapness/features/tifo/leaderboard_sheet.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
-import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
-import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// On-map control (⚽) that toggles the TIFO overlay — the production entry
 /// point into the game, matching the Figma landing FAB ("Activate Tifo",
-/// node 589:85528). First tap per session shows the stories entry-popup, and
-/// the first activation follows with the tutorial sheet over the live map.
-/// Active state is a filled green button. Auth is the system SSO token
-/// (resolved in the API layer) — no manual config here.
+/// node 589:85528). First tap per session shows the stories entry-popup; its
+/// CTA routes to the first unmet onboarding gate (login → tutorial → team,
+/// BRD FR-03/FR-04) via [TifoJourney]. Active state is a filled green button.
+/// Auth is the system SSO token (resolved in the API layer) — no manual
+/// config here.
 class TifoControl extends ConsumerWidget {
   const TifoControl({super.key});
 
@@ -56,33 +55,30 @@ class TifoControl extends ConsumerWidget {
       return;
     }
     // First entry this session shows the stories-style intro (Figma
-    // node 286:20818); the CTA opts into the game, closing it leaves the map
-    // untouched. Later taps just toggle the layer. Pushed on the root
-    // navigator — the control's own context may sit outside it.
+    // node 286:20818). Pushed on the root navigator — the control's own
+    // context may sit outside it.
     final flow = ref.read(tifoFlowProvider.notifier);
+    var proceed = false;
     if (!ref.read(tifoFlowProvider).hasSeenEntry) {
       final entryCtx = rootNavigatorKey.currentContext ?? context;
-      final proceed = await showTifoEntry(entryCtx);
+      proceed = await showTifoEntry(entryCtx);
       logger.log('[tifo] entry popup result: $proceed');
       flow.markEntrySeen();
-      if (!proceed) {
-        return;
-      }
     }
+    // FR-01: the ⚽ is the overlay toggle — the tap turns the layer on no
+    // matter how the intro was dismissed (Close(X) → Landing WITH the
+    // overlay the user just switched on; the popup gates only the journey).
     await layer.enable();
     // Very first launch ever → show the floating "Dominate" pill this session.
     await flow.markGameLaunched();
-    // First activation → tutorial intro sheet over the live map (design frame
-    // `01`); "Start Tutorial" hands off to the 13-step guided tour. Dismissing
-    // counts as seen — the play-gate can still re-offer the tour later.
-    if (!ref.read(tifoFlowProvider).hasSeenTutorial) {
-      flow.markTutorialSeen();
-      final ctx = rootNavigatorKey.currentContext;
-      if (ctx != null && await showTifoTutorialSheet(ctx)) {
-        final tourCtx = rootNavigatorKey.currentContext;
-        if (tourCtx != null) {
-          await showTifoGuidedTutorial(tourCtx);
-        }
+    // BRD FR-04: the entry CTA routes to the first unmet gate
+    // (login → tutorial started → team selected, FR-03); an onboarded
+    // player just lands on the map. The journey owns every gate screen,
+    // including the tutorial autorun (FR-05) — no separate offer here.
+    if (proceed) {
+      final journeyCtx = rootNavigatorKey.currentContext;
+      if (journeyCtx != null) {
+        await TifoJourney(ref).ensurePlayReady(journeyCtx);
       }
     }
   }

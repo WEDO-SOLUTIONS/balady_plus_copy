@@ -49,8 +49,17 @@ class TifoEntryScreen extends StatelessWidget {
         ),
         SafeArea(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _StoriesBar(onClose: () => Navigator.of(context).maybePop(false)),
+              // Headline (design node 286:20818 content block).
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                child: Text(
+                  'Capture the city.\nLead your team.',
+                  style: TifoText.h2.copyWith(color: Colors.white, fontSize: 30, height: 1.2),
+                ),
+              ),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
@@ -64,8 +73,8 @@ class TifoEntryScreen extends StatelessWidget {
   );
 }
 
-/// Stories progress track + close button (design `stories-bar`). The track is a
-/// single, currently-empty segment — the intro has one frame.
+/// Close row (design `stories-bar`): the design's stories progress track is an
+/// EMPTY container — no visible line — so only the close button renders.
 class _StoriesBar extends StatelessWidget {
   const _StoriesBar({required this.onClose});
 
@@ -77,19 +86,7 @@ class _StoriesBar extends StatelessWidget {
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: Container(
-              height: 3,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.24),
-                borderRadius: BorderRadius.circular(36),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
+        const Spacer(),
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: onClose,
