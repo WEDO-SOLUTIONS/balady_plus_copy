@@ -35,7 +35,6 @@ import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
-import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart' show getExternalStorageDirectory, getTemporaryDirectory;
@@ -1297,45 +1296,6 @@ class CommonFunctions {
           //  p.addAttachment(attachment)
         },
       );
-
-      // API error analytics event
-      if (BaladyAnalytics.instance.mode.sendToOurs) {
-        Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ?? response?.requestOptions.headers) ?? {};
-        headersMap.remove("Authorization");
-        headersMap.remove("authorization");
-
-        String headers = (headersMap.cast().toString());
-
-        String data = (dioError?.requestOptions.data.toString() ?? response?.requestOptions.data.toString()) ?? "";
-
-        String queryString =
-            (dioError?.requestOptions.queryParameters.toString() ??
-                response?.requestOptions.queryParameters.toString()) ??
-            "";
-
-        String message =
-            (dioError?.response?.data.toString() ?? response?.data.toString()) ?? (errorMessage ?? ex.toString());
-
-        if (dioError != null && dioError is NoDataFoundException) {
-          message = "Data Not Found";
-        }
-
-        message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
-        print("MessageMessage $message");
-
-        String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
-
-        if (URL != null) {
-          BaladyAnalytics.instance.track("APIError", properties: {
-            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
-            "Headers": headers.length <= 1024 ? headers : headers.substring(0, 1023),
-            "Message": message.length <= 1024 ? message : message.substring(0, 1023),
-            "Environment": sl<EnvType>().name,
-          });
-        }
-      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1536,23 +1496,7 @@ class CommonFunctions {
 
   static void sendAnalyticsEvent(String event) {
     try {
-      BaladyAnalytics.instance.track(event);
       Sentry.addBreadcrumb(Breadcrumb(message: event));
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-    }
-  }
-
-  static void sendAnalyticsEventWithProperties(String event, Map<String, dynamic> data) {
-    try {
-      BaladyAnalytics.instance.track(event, properties: data);
-      Sentry.addBreadcrumb(Breadcrumb(message: event, data: data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
