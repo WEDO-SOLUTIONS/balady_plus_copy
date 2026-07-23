@@ -29,3 +29,20 @@ class CookiesModel implements BaseData {
     return data;
   }
 }
+
+class RideHailingKeyModel implements BaseData {
+  String rideHailingKey;
+
+  RideHailingKeyModel({required this.rideHailingKey});
+
+  factory RideHailingKeyModel.fromJson(Map<String, dynamic> json) {
+    return RideHailingKeyModel(rideHailingKey: json['rideHailingKey'] as String);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['rideHailingKey'] = rideHailingKey;
+    return data;
+  }
+}

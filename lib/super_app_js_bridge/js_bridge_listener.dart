@@ -1331,7 +1331,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         code: 200,
         eventName: "getRideHailingKey",
         message: "success",
-        data: AccessTokenModel(accessToken: "test_key"),
+        data: RideHailingKeyModel(rideHailingKey: "test_key"),
       );
       handler.complete(response.jsonEncodeModel());
     } else {
