@@ -16,7 +16,6 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -174,7 +173,7 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
     final headerHintColor = themeConfig.searchHintColor ?? context.colors.foregroundSoft;
 
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         // Here we clean the search query on tap on the search field
         // So the user can see the search history, not previous search results
         final text = ref.read(searchProvider(_scope)).searchText;
@@ -186,11 +185,6 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
         unawaited(context.router.push(SearchRoute(expansion: Expansion.expanded, initialState: text)));
 
         scheduleMicrotask(() {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.searchField,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
           BssService.instance.sendEvent(
             const BssRequest(
               eventType: BSSEventType.action,
@@ -202,14 +196,14 @@ class DashboardHeaderState extends ConsumerState<DashboardHeader> {
           ref
               .read(urbiAnalyticsProvider.notifier)
               .trackWithPrint(
-            '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-          );
+                '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+              );
         });
       },
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.m),
-          color: isDark?context.colors.staticBlack: context.colors.staticWhite,
+          color: isDark ? context.colors.staticBlack : context.colors.staticWhite,
 
           border: Border.all(
             color: context.colors.borderDefault,

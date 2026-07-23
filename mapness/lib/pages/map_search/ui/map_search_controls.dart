@@ -7,9 +7,7 @@ import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart' hide Search;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -46,12 +44,6 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
   final _scope = SearchScopeEnum.map.value;
 
   void _searchInArea() {
-    Metrics.logEventAdvanced(
-      MetricsConstants.searchKeys.searchInThisArea,
-      group: MetricsConstants.searchTag,
-      action: MetricAction.tap.toString(),
-    );
-
     ref.read(searchInRectProvider(_scope).notifier).update();
     ref.read(searchProvider(_scope).notifier).searchInThisArea(_scope);
   }

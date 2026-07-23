@@ -16,9 +16,10 @@ BaladyAnalytics.instance.error(e, stack);
 BaladyAnalytics.instance.identify(userId: sub, traits: {...}); // null = logout
 ```
 
-Inside `mapness`, keep using the existing `Metrics` wrapper
-(`shared/lib/urbi_metrics.dart`) — it already writes to the facade. In the host
-shell, use `CommonFunctions.sendAnalyticsEvent[WithProperties]`.
+Inside `mapness`, call the facade directly (the legacy ex-UXCam `Metrics`
+wrapper has been retired; new deliberate events follow
+`docs/analytics-tracking-plan.md`). In the host shell, use
+`CommonFunctions.sendAnalyticsEvent[WithProperties]`.
 
 ## Kill switch (modes)
 

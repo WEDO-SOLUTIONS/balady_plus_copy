@@ -35,12 +35,8 @@ import 'package:mapness/features/satellite/providers/satellite_map_controller.da
 import 'package:mapness/features/shuttle_bus/provider.dart';
 import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
-import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -438,12 +434,6 @@ class LayersControls extends _$LayersControls {
   void setSelection({LayerType? selectedType}) {
     if (selectedType != null) {
       _saveLayersState(selectedType);
-      Metrics.logEventAdvanced(
-        MetricsConstants.layersKeys.layerSelect,
-        group: MetricsConstants.layersTag,
-        action: MetricAction.tap.toString(),
-        props: {'type': selectedType.titleLocale(AppLocalizationsEn())},
-      );
     } else {
       _removeLayersState();
 
@@ -1042,17 +1032,12 @@ class LayersControls extends _$LayersControls {
       logLevel: MapnessLogLevel.info,
     );
 
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.trafficLightButton,
-      group: MetricsConstants.exploreTag,
-      action: MetricAction.tap.name,
-    );
-
     // BALADY-3615: when enabling traffic while another overlay is on, hide
     // the previous layer first so the two don't render side-by-side.
     if (!wasEnabled && currentState != null && currentState != LayerType.traffic) {
       await _hidePreviousLayers(currentState);
     }
+
 
     trafficNotifier.onTrafficTap();
 

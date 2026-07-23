@@ -253,26 +253,9 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           bottomSheetController: _bottomSheetController,
           data: widget.data,
           share: () {
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.share,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {
-                'object_id': widget.data.id?.objectId,
-                'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
-              },
-            );
-
             return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
           },
           callPhone: () {
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.call,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {'objectId': widget.objectId},
-            );
-
             final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,
             );
