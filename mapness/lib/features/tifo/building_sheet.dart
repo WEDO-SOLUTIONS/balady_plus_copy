@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/penalty_result_screen.dart';
 import 'package:mapness/features/tifo/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
@@ -367,7 +368,11 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
         }
       }
       unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
-      _showResult(_outcomeMessage(result), win: result.isWin);
+      // Fullscreen Win/Loss/voided hero (US-14); errors keep the small dialog.
+      final ctx = rootNavigatorKey.currentContext;
+      if (ctx != null) {
+        unawaited(showTifoPenaltyResult(ctx, result, scoreToBeat: _building.scoreToBeat));
+      }
     } catch (e) {
       _showResult('Submit failed: ${e is TifoApiException ? e.message : e}', win: false);
     }
@@ -451,15 +456,6 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       ),
     );
   }
-
-  // BRD: result is Win/Loss, no numeric scoreline.
-  String _outcomeMessage(TifoPlayResult r) => switch (r.outcome) {
-    TifoOutcome.claimed => 'You claimed this building! 🏆',
-    TifoOutcome.taken => 'You took it from the rival! 🏆',
-    TifoOutcome.failed => 'Not this time — the building holds.',
-    TifoOutcome.voided => 'Session voided.',
-    TifoOutcome.unknown => 'Challenge complete.',
-  };
 }
 
 class _CloseBtn extends StatelessWidget {
