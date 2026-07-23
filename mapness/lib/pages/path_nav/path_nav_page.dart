@@ -88,7 +88,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final panelKey = GlobalKey();
   bool _isSwitchingToPedestrian = false;
   bool _finishedByEta = false;
-  bool _arrivalToastShown = false;
   bool _isEndingTrip = false;
 
   // Cache for indoor support check to avoid network delay on arrival
@@ -705,17 +704,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         }
       },
     );
-
-    // After returning home, show "You arrived" toast once
-    if (!_arrivalToastShown) {
-      _arrivalToastShown = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final toastCtx = rootNavigatorKey.currentContext ?? context;
-        if (toastCtx.mounted) {
-          ToastOverlay.of(toastCtx).show(title: context.l10n.youArrived);
-        }
-      });
-    }
   }
 
   // Show the feedback page after the trip is finished manually
