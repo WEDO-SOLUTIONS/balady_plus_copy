@@ -15,6 +15,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
@@ -257,6 +258,12 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     if (points.every((element) => element.isNotEmpty)) {
       final start = points.first;
       final finish = points.last;
+
+      // Let route_built report the destination district from the directory
+      // object that is already loaded here (no extra lookups happen for it).
+      if (finish is RoutePointDirectoryObject) {
+        BaladyNavigationEvents.rememberRouteDestination(finish.object);
+      }
 
       context.router.push(
         RoutingRoutesRoute(

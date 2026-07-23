@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -126,6 +127,7 @@ class MapQuickFiltersDefault extends ConsumerWidget {
                   .sendEvent(
                     AdvertMetricsKeys.exploreLandingEngagement,
                   );
+              BaladyNavigationEvents.trackFreeRoamStarted(BaladyFreeRoamSource.dashboard);
               await context.router.push(const FreeRoamRoute());
             }
           },

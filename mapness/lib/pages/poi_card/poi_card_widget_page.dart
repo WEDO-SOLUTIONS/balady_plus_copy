@@ -31,6 +31,7 @@ import 'package:mapness/entities/routing/route_search_point_mapper.dart';
 import 'package:mapness/entities/wrc/wrc_event.dart';
 import 'package:mapness/features/ai_summary/domain/ai_summary_scope.dart';
 import 'package:mapness/features/ai_summary/state/ai_summary_notifier.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';

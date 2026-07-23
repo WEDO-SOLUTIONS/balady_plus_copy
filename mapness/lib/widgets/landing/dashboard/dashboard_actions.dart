@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -63,6 +64,7 @@ class DashboardActions {
   /// Opens the Free Roam navigation screen.
   void openFreeRoam(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
+    BaladyNavigationEvents.trackFreeRoamStarted(BaladyFreeRoamSource.dashboard);
     context.router.push(const FreeRoamRoute());
   }
 

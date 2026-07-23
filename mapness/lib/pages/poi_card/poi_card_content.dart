@@ -360,6 +360,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   ),
                   onTapCar: () {
                     _bssOnRouteTap();
+                    // Let route_built report the destination district from the
+                    // POI object that is already loaded on this card.
+                    BaladyNavigationEvents.rememberRouteDestination(widget.data);
                     _onDirectionsTap(
                       context,
                       widget.data.id!.objectId,

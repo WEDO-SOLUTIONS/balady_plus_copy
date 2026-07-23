@@ -19,6 +19,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -296,6 +297,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
+      unawaited(_trackNavigationStarted());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       if (!mounted) {
         return;
@@ -322,6 +324,25 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (widget.navType == RouteSearchOptionsMessage.car) {
       unawaited(_prefetchIndoorInfo());
     }
+  }
+
+  /// Phase-1 `navigation_started` (docs/analytics-tracking-plan.md). Planned
+  /// distance/ETA come from the route selected on the routing screen; the head
+  /// unit is derived from the CarPlay/Android Auto connection state.
+  Future<void> _trackNavigationStarted() async {
+    final plannedRoute = ref.read(currentRouteProvider)?.route;
+    var carConnected = false;
+    try {
+      carConnected = await ref.read(carConnectionProvider.future);
+    } catch (_) {
+      // Unknown connection state counts as no head unit.
+    }
+    BaladyNavigationEvents.trackNavigationStarted(
+      navType: widget.navType,
+      carConnected: carConnected,
+      plannedDistanceM: plannedRoute?.distance,
+      plannedDurationSec: plannedRoute?.duration,
+    );
   }
 
   Future<void> _prefetchIndoorInfo() async {
@@ -594,6 +615,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final route = ref.read(etaRouteInfoProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
+    // Phase-1 navigation_completed / navigation_cancelled — read progress
+    // sources before the route/navigation state is torn down below.
+    final pathInfo = ref.read(pathNavEtaProvider);
+    final plannedRoute = ref.read(currentRouteProvider)?.route;
+    BaladyNavigationEvents.trackNavigationEnded(
+      navType: widget.navType,
+      arrivedDetected: _navigationState.value == PathNavState.finished || _finishedByEta,
+      plannedDistanceM: plannedRoute?.distance,
+      plannedDurationSec: plannedRoute?.duration,
+      remainingDistanceM: pathInfo?.rawDistance,
+      spentTime: pathInfo?.spentTime,
+    );
+
     unawaited(_sendNavigationCompletedAnalytics(route));
 
     await Future.wait([
@@ -820,7 +854,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _naviEvent(NavigationEvent event) async {
     switch (event) {
       case NavigationEvent.navigation:
+        break;
       case NavigationEvent.routeSearch:
+        // The engine recalculates the route mid-guidance (off-route/reroute) —
+        // counted into navigation_completed.reroutes_count.
+        BaladyNavigationEvents.trackReroute();
         break;
       case NavigationEvent.disabled:
         if (_isSwitchingToPedestrian) {
