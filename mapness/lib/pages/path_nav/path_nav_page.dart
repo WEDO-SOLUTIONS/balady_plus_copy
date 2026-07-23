@@ -97,7 +97,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Guards against double taps and against the countdown cancel firing mid-switch.
   bool _pedestrianSwitchInProgress = false;
   bool _finishedByEta = false;
-  bool _arrivalToastShown = false;
   bool _isEndingTrip = false;
 
   // Restoring navigation restarts it on the native side, which emits transient
@@ -770,17 +769,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         }
       },
     );
-
-    // After returning home, show "You arrived" toast once
-    if (!_arrivalToastShown) {
-      _arrivalToastShown = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final toastCtx = rootNavigatorKey.currentContext ?? context;
-        if (toastCtx.mounted) {
-          ToastOverlay.of(toastCtx).show(title: toastCtx.l10n.youArrived);
-        }
-      });
-    }
   }
 
   // Show the feedback page after the trip is finished manually
