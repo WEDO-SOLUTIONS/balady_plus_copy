@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/building_sheet.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/district_sheet.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_districts_provider.dart';
@@ -33,6 +34,27 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// redraw (recolor only what changed) instead of clearing the whole layer.
   final Map<String, int> _drawnFill = {};
   final Map<String, int> _drawnRings = {};
+
+  /// Same diff bookkeeping for the district layer.
+  final Map<String, int> _drawnDistrictFill = {};
+  final Map<String, int> _drawnDistrictRings = {};
+
+  /// Single-flight gate for tap-opened sheets. dgis fires onTap for EVERY
+  /// polygon under the finger (overlapping rings, shared district borders)
+  /// and iOS occasionally double-delivers the event — without the gate one
+  /// tap stacks two identical sheets.
+  bool _sheetShowing = false;
+  DateTime _lastSheetOpen = DateTime.fromMillisecondsSinceEpoch(0);
+
+  bool _acquireSheetGate() {
+    final now = DateTime.now();
+    if (_sheetShowing || now.difference(_lastSheetOpen) < const Duration(milliseconds: 600)) {
+      return false;
+    }
+    _lastSheetOpen = now;
+    _sheetShowing = true;
+    return true;
+  }
 
   /// At/above this zoom we show buildings; below it, districts. API §3 says 16,
   /// but this map's `visibleRectEvent.zoom` reads ~1 lower than the camera's
@@ -123,6 +145,8 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     _districtsDrawn = false;
     _drawnFill.clear();
     _drawnRings.clear();
+    _drawnDistrictFill.clear();
+    _drawnDistrictRings.clear();
     ref.read(tifoBuildingsPollerProvider.notifier).stop();
     try {
       final controller = await ref.read(dgisControllerProvider.future);
@@ -228,7 +252,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       final controller = await ref.read(dgisControllerProvider.future);
 
       // Add new / recolor changed across the whole cache (not just the viewport).
+      // The plugin only removes polygons one id at a time, so removals for a
+      // recolor are collected and fired CONCURRENTLY — N parallel bridge calls
+      // instead of N serialized round-trips — followed by one addPolygons batch.
       final toAdd = <Polygon>[];
+      final toRemove = <String>[];
       for (final building in st.byId.values) {
         final club = building.ownerClub;
         final fill = club?.fillArgb ?? kTifoNeutralFillArgb;
@@ -241,7 +269,10 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           continue; // safety cap on total drawn (recolors of existing still apply)
         }
         if (prev != null) {
-          await _removeBuildingPolygons(controller, manager, building.id); // recolor
+          final rings = _drawnRings[building.id] ?? 0;
+          for (var i = 0; i < rings; i++) {
+            toRemove.add('tifo-bld:${building.id}#$i'); // recolor → replace
+          }
         }
         for (var i = 0; i < building.rings.length; i++) {
           toAdd.add(
@@ -266,25 +297,15 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         _drawnFill[building.id] = fill;
         _drawnRings[building.id] = building.rings.length;
       }
+      if (toRemove.isNotEmpty) {
+        await Future.wait(toRemove.map((id) => controller.removePolygon(id, fromManager: manager)));
+      }
       if (toAdd.isNotEmpty) {
         await controller.addPolygons(toAdd, toManager: manager);
       }
     } catch (error, stackTrace) {
       logger.log('[tifo-map] buildings sync failed: $error\n$stackTrace');
     }
-  }
-
-  Future<void> _removeBuildingPolygons(
-    DgisMapController controller,
-    MapObjectManagerMessage manager,
-    String id,
-  ) async {
-    final rings = _drawnRings[id] ?? 0;
-    for (var i = 0; i < rings; i++) {
-      await controller.removePolygon('tifo-bld:$id#$i', fromManager: manager);
-    }
-    _drawnFill.remove(id);
-    _drawnRings.remove(id);
   }
 
   Future<void> _clearBuildings() async {
@@ -302,14 +323,18 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   void _openBuilding(TifoBuilding building) {
     final context = rootNavigatorKey.currentContext;
-    if (context == null) {
+    if (context == null || !_acquireSheetGate()) {
       return;
     }
-    unawaited(showTifoBuildingSheet(context, building));
+    unawaited(showTifoBuildingSheet(context, building).whenComplete(() => _sheetShowing = false));
   }
 
   // ─── Districts (zoom < 16) ─────────────────────────────────────────────────
 
+  /// Pointwise diff repaint, mirroring the buildings path: a summaries refresh
+  /// repaints ONLY the districts whose leader color actually changed (usually
+  /// 0–2) instead of a full removeAll + ~413-polygon re-add storm through the
+  /// bridge on every poll.
   Future<void> _redrawDistricts(TifoDistrictsState districtsState) async {
     final manager = _districtsManager;
     if (manager == null || districtsState.districts.isEmpty) {
@@ -317,19 +342,29 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     }
     try {
       final controller = await ref.read(dgisControllerProvider.future);
-      await controller.removeAllPolygons(fromManager: manager);
-      final polygons = <Polygon>[];
+      final toAdd = <Polygon>[];
+      final toRemove = <String>[];
       for (final district in districtsState.districts) {
         final summary = districtsState.summaries[district.id];
         // leaderColor is server-side paint-ready — the leader's hex OR the
         // neutral palette color — so use it directly (fallback grey if absent).
         final baseArgb = summary?.leaderColorArgb ?? 0xFF9DA4AE;
         final fill = (baseArgb & 0x00FFFFFF) | 0x40000000;
+        final prev = _drawnDistrictFill[district.id];
+        if (prev == fill) {
+          continue; // unchanged → keep the drawn polygons
+        }
+        if (prev != null) {
+          final rings = _drawnDistrictRings[district.id] ?? 0;
+          for (var i = 0; i < rings; i++) {
+            toRemove.add('tifo-dist:${district.id}#$i'); // recolor → replace
+          }
+        }
         for (var i = 0; i < district.rings.length; i++) {
-          polygons.add(
+          toAdd.add(
             Polygon(
               id: 'tifo-dist:${district.id}#$i',
-              onTap: () => _onDistrictTap(district, summary),
+              onTap: () => _onDistrictTap(district),
               options: PolygonOptionsMessage(
                 contours: [
                   PolylineGeometryMessage(
@@ -345,10 +380,18 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
             ),
           );
         }
+        _drawnDistrictFill[district.id] = fill;
+        _drawnDistrictRings[district.id] = district.rings.length;
       }
-      logger.log('[tifo-map] drawing ${polygons.length} district polygons');
-      if (polygons.isNotEmpty) {
-        await controller.addPolygons(polygons, toManager: manager);
+      if (toRemove.isNotEmpty) {
+        await Future.wait(toRemove.map((id) => controller.removePolygon(id, fromManager: manager)));
+      }
+      if (toAdd.isNotEmpty) {
+        logger.log(
+          '[tifo-map] districts diff: ${toAdd.length} polygons repainted, '
+          '${districtsState.districts.length} total',
+        );
+        await controller.addPolygons(toAdd, toManager: manager);
       }
     } catch (error, stackTrace) {
       logger.log('[tifo-map] districts redraw failed: $error\n$stackTrace');
@@ -356,6 +399,8 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   }
 
   Future<void> _clearDistricts() async {
+    _drawnDistrictFill.clear();
+    _drawnDistrictRings.clear();
     final manager = _districtsManager;
     if (manager == null) {
       return;
@@ -366,17 +411,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
     } catch (_) {}
   }
 
-  /// No district-details screen yet (US-06 gap) — surface the standing inline
-  /// so the layer is verifiable; replace with the details sheet when built.
-  void _onDistrictTap(TifoDistrict district, TifoDistrictSummary? summary) {
+  /// District details sheet (BRD US-06, Figma node 696:119272). The summary is
+  /// read at TAP time — unchanged polygons keep their original onTap closure
+  /// across diff repaints, so a captured summary would go stale.
+  void _onDistrictTap(TifoDistrict district) {
     final context = rootNavigatorKey.currentContext;
-    if (context == null) {
+    if (context == null || !_acquireSheetGate()) {
       return;
     }
-    final owner = summary == null || summary.isNeutral ? 'Neutral' : summary.leaderClub!;
-    final pct = summary?.controlPct ?? 0;
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-      SnackBar(content: Text('${district.name ?? district.id} — $owner · $pct% · ${summary?.claimed ?? 0} claimed')),
+    final summary = ref.read(tifoDistrictsProvider).summaries[district.id];
+    unawaited(
+      showTifoDistrictSheet(context, district: district, summary: summary).whenComplete(() => _sheetShowing = false),
     );
   }
 

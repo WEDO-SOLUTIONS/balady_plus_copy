@@ -349,6 +349,8 @@ class TifoDistrictSummary {
     this.totalBuildings = 0,
     this.claimed = 0,
     this.free = 0,
+    this.standingDays = 0,
+    this.counts = const {},
   });
 
   final String id;
@@ -359,6 +361,12 @@ class TifoDistrictSummary {
   final int totalBuildings;
   final int claimed;
   final int free;
+
+  /// Days the current leader has held the district.
+  final int standingDays;
+
+  /// Buildings claimed per club slug (e.g. `{'al-hilal': 12, …}`).
+  final Map<String, int> counts;
 
   bool get isNeutral => leaderClub == null || leaderClub!.isEmpty;
 
@@ -376,6 +384,12 @@ class TifoDistrictSummary {
       totalBuildings: (json['totalBuildings'] as num?)?.toInt() ?? 0,
       claimed: (json['claimed'] as num?)?.toInt() ?? 0,
       free: (json['free'] as num?)?.toInt() ?? 0,
+      standingDays: (json['standingDays'] as num?)?.toInt() ?? 0,
+      counts: {
+        if (json['counts'] is Map)
+          for (final e in (json['counts'] as Map).entries)
+            if (e.value is num) e.key.toString(): (e.value as num).toInt(),
+      },
     );
   }
 }
