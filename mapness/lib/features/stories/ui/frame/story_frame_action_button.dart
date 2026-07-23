@@ -94,10 +94,12 @@ class _StoryFrameActionButtonState extends ConsumerState<StoryFrameActionButton>
       final urlParams = uri.fragment.isNotEmpty ? Uri.parse(uri.fragment) : uri;
       final params = urlParams.queryParameters;
       if (params['groupId'] != null) {
+        ServiceEvents.setPendingOpenSource(ServiceEvents.sourceStory);
         CommonFunctions.openMiniAppGroupId(
           groupId: params['groupId'].toString(),
         );
       } else if (params['key'] != null) {
+        ServiceEvents.setPendingOpenSource(ServiceEvents.sourceStory);
         CommonFunctions.openMiniApp(serviceKey: params['key'].toString());
       }
       final AppRouter router = ref.read(appRouterProvider)..push(MapnessServicesRoute());

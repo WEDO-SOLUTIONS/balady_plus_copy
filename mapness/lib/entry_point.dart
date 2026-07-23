@@ -48,6 +48,7 @@ import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_ic
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
@@ -1199,12 +1200,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
@@ -1213,6 +1216,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       CommonFunctions.sendAnalyticsEvent(
         AnalyticsEvents.SnapAndSend_Open_From_Home_Event,
       );
+    } else {
+      ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     }
     CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(

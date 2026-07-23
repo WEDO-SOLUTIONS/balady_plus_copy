@@ -9,6 +9,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -52,12 +53,14 @@ class DashboardActions {
   /// Opens the Quran mini-app.
   void openQuran() {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: "Quran");
   }
 
   /// Opens the Athkar mini-app.
   void openAthkar() {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: "Athkar");
   }
 
@@ -99,6 +102,7 @@ class DashboardActions {
   /// Opens the Snap and Send mini-app for reporting issues.
   void openSnapAndSend() {
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: "snapandsend");
   }
 
