@@ -84,7 +84,17 @@ class BaladyAnalytics {
   }
 
   /// Screen view — replaces UXCam `tagScreenName`.
+  ///
+  /// Deferred to tracking-plan Phase 1.5: `$screen` dominates event quota (~80%
+  /// of projected volume) while the dependent screen-time metric is not a
+  /// priority. Call sites stay wired; flip [_screenCaptureEnabled] to re-enable
+  /// (docs/analytics-tracking-plan.md).
+  static const _screenCaptureEnabled = false;
+
   void screen(String path) {
+    if (!_screenCaptureEnabled) {
+      return;
+    }
     _dispatch(
       BaladyAnalyticsEvent(
         name: r'$screen',
