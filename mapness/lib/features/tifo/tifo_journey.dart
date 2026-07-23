@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
+import 'package:mapness/features/tifo/tifo_login.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 
 /// Drives the BRD play-gate: before a player can challenge a building they must
@@ -36,10 +37,16 @@ class TifoJourney {
           return true;
 
         case TifoJourneyStep.login:
-          // Login is owned by the Balady+ host shell, not TIFO. Without a
-          // session we can't gate further — surface it and stop.
-          _toast(context, 'Please sign in to play TIFO.');
-          return false;
+          // Login is owned by the Balady+ host shell — open its login flow,
+          // then re-check the session; the user may cancel, so stop the walk
+          // while the session is still on the guest bearer (a guest profile
+          // exists on staging, so the profile alone can't tell).
+          await openHostLogin();
+          await session.load();
+          final reloaded = ref.read(tifoSessionProvider);
+          if (reloaded.isGuest || reloaded.profile == null) {
+            return false;
+          }
 
         case TifoJourneyStep.tutorial:
           // Starting the tutorial clears the gate permanently (BRD), so mark it
@@ -61,9 +68,5 @@ class TifoJourney {
       }
     }
     return ref.read(tifoSessionProvider).nextStep == TifoJourneyStep.ready;
-  }
-
-  void _toast(BuildContext context, String message) {
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(SnackBar(content: Text(message)));
   }
 }

@@ -1,7 +1,11 @@
+import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// The next gate the player must pass before they can play (BRD US-02:
 /// "logged in, has started the tutorial, and has selected a team", routed in
@@ -15,6 +19,7 @@ class TifoSessionState {
     this.clubs = const [],
     this.config = TifoGameConfig.fallback,
     this.isLoading = false,
+    this.isGuest = true,
     this.error,
   });
 
@@ -22,6 +27,12 @@ class TifoSessionState {
   final List<TifoClubInfo> clubs;
   final TifoGameConfig config;
   final bool isLoading;
+
+  /// True while requests run on the guest device bearer (no host SSO login).
+  /// Staging lazily registers a profile for any bearer, so [profile] being
+  /// non-null does NOT mean the user is signed in — always gate on this.
+  final bool isGuest;
+
   final String? error;
 
   TifoClubInfo? get myClub {
@@ -49,7 +60,7 @@ class TifoSessionState {
   /// BRD gate order: login → tutorial → team select → ready.
   TifoJourneyStep get nextStep {
     final p = profile;
-    if (p == null) {
+    if (p == null || isGuest) {
       return TifoJourneyStep.login;
     }
     if (!p.tutorialCompleted) {
@@ -66,12 +77,14 @@ class TifoSessionState {
     List<TifoClubInfo>? clubs,
     TifoGameConfig? config,
     bool? isLoading,
+    bool? isGuest,
     Object? error = _sentinel,
   }) => TifoSessionState(
     profile: profile ?? this.profile,
     clubs: clubs ?? this.clubs,
     config: config ?? this.config,
     isLoading: isLoading ?? this.isLoading,
+    isGuest: isGuest ?? this.isGuest,
     error: identical(error, _sentinel) ? this.error : error as String?,
   );
 
@@ -82,21 +95,66 @@ class TifoSessionState {
 /// and game config (`/config`). On staging `/me` lazily creates the profile,
 /// so [load] doubles as sign-in.
 class TifoSessionController extends Notifier<TifoSessionState> {
+  String? _lastHostToken;
+
   @override
-  TifoSessionState build() => const TifoSessionState();
+  TifoSessionState build() {
+    // React to host auth changes. `EntryPointCubit.onLogin` returns as soon
+    // as the login screen OPENS, so a "reload after openHostLogin()" runs
+    // while the user is still signed out. Watch the cubit stream directly and
+    // compare the LIVE token (`CommonProperties.token` reads the current
+    // cubit state) so both login and logout reload the session the moment
+    // they actually complete — the mapness tokenProvider cache is not
+    // trusted, it can go stale across a logout.
+    _lastHostToken = CommonProperties.token;
+    final subscription = sl<EntryPointCubit>().stream.listen((_) {
+      final token = CommonProperties.token;
+      if (token == _lastHostToken) {
+        return;
+      }
+      _lastHostToken = token;
+      logger.log('[tifo] host auth changed (signed ${token.isEmpty ? 'out' : 'in'}) → reloading session');
+      load();
+    });
+    ref.onDispose(subscription.cancel);
+    return const TifoSessionState();
+  }
 
   TifoApi get _api => ref.read(tifoApiProvider);
 
   /// Loads profile + roster + config. Safe to call repeatedly (refresh).
+  ///
+  /// The roster and config are public (guest bearer works), so they load even
+  /// when `/me` fails — otherwise a signed-out user got raw club slugs and
+  /// grey crests everywhere because the profile error aborted the whole load.
   Future<void> load() async {
     state = state.copyWith(isLoading: true, error: null);
+    final isGuest = await _api.isGuestSession();
+    TifoProfile? profile;
+    String? error;
     try {
-      final profile = await _api.getMe();
+      profile = await _api.getMe();
+    } catch (e) {
+      error = e is TifoApiException ? e.message : e.toString();
+    }
+    try {
       final clubs = state.clubs.isEmpty ? await _api.getClubs() : state.clubs;
       final config = await _api.getConfig();
-      state = state.copyWith(profile: profile, clubs: clubs, config: config, isLoading: false);
+      state = state.copyWith(
+        profile: profile,
+        clubs: clubs,
+        config: config,
+        isLoading: false,
+        isGuest: isGuest,
+        error: error,
+      );
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e is TifoApiException ? e.message : e.toString());
+      state = state.copyWith(
+        profile: profile,
+        isLoading: false,
+        isGuest: isGuest,
+        error: error ?? (e is TifoApiException ? e.message : e.toString()),
+      );
     }
   }
 

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,8 +60,11 @@ const kTifoBaseUrl = 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/tifo';
 ///
 /// Base URL is [kTifoBaseUrl]. Bearer is the system SSO access token
 /// (`tokenProvider`), so TIFO shares the app's login. Debug overrides only win
-/// when [tifoDebugModeProvider] is on.
-typedef TifoResolvedConfig = ({String baseUrl, String token});
+/// when [tifoDebugModeProvider] is on. [TifoResolvedConfig.isGuest] is true
+/// when the bearer is the device fallback: staging lazily registers a profile
+/// for ANY bearer, so `/me` succeeding does NOT mean the user is signed in —
+/// gate login on this flag, not on the profile.
+typedef TifoResolvedConfig = ({String baseUrl, String token, bool isGuest});
 
 Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
   final debug = ref.read(tifoDebugModeProvider);
@@ -68,23 +75,68 @@ Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
   var token = override.userToken;
   if (token.isEmpty) {
     try {
-      token = await ref.read(tokenProvider.future); // system SSO access token
+      // Triggers the provider's expiry check/refresh side effect; its cached
+      // value is NOT trusted below.
+      await ref.read(tokenProvider.future);
     } catch (_) {
-      token = ''; // no session — fall through to the guest bearer
+      // No session — fall through to the guest bearer.
     }
+    // Read the LIVE cubit value, not the provider cache: the cache is fed by
+    // a stream subscription that can outlive a logout, and staging accepts
+    // any bearer as an opaque user id — a stale token silently keeps
+    // impersonating the previous user.
+    token = CommonProperties.token;
   }
-  if (token.isEmpty) {
-    // Not signed in. The backend requires SOME bearer even for browse (401
-    // otherwise), and staging treats it as an opaque user id — identify the
-    // guest by device so browsing works pre-login (BRD US-01).
-    try {
-      final device = await ref.read(deviceInfoProvider.future);
-      token = 'tifo-guest-${device.deviceId ?? 'unknown'}';
-    } catch (_) {
-      token = 'tifo-guest-unknown';
-    }
+  if (token.isNotEmpty) {
+    return (baseUrl: baseUrl, token: _stableBearer(token), isGuest: false);
   }
-  return (baseUrl: baseUrl, token: token);
+  // Not signed in. The backend requires SOME bearer even for browse (401
+  // otherwise), and staging treats it as an opaque user id — identify the
+  // guest by device so browsing works pre-login (BRD US-01).
+  try {
+    final device = await ref.read(deviceInfoProvider.future);
+    token = 'tifo-guest-${device.deviceId ?? 'unknown'}';
+  } catch (_) {
+    token = 'tifo-guest-unknown';
+  }
+  return (baseUrl: baseUrl, token: token, isGuest: true);
+}
+
+/// Staging keys the player by the RAW bearer string (verified live:
+/// `/me` returns `userId` == the bearer, JWTs are NOT decoded — two tokens
+/// with the same `sub` get two profiles). Sending the SSO JWT as-is would
+/// mint a fresh profile on every re-login and token refresh, losing the
+/// club/balance each time.
+///
+/// Key the player by the PERSON, not the session: sha256 of the
+/// national/iqama id — it's identical across every login method (Nafath/SSO
+/// mints one `sub`, OTP another; the id number never changes), and the hash
+/// keeps PII off the wire. JWT/host `sub` is only a fallback for sessions
+/// where userInfo hasn't arrived. Remove once the backend validates tokens
+/// itself.
+String _stableBearer(String ssoToken) {
+  final idNo = CommonProperties.userInfo?.idNo;
+  if (idNo != null && idNo.isNotEmpty) {
+    return 'tifo-uid-${sha256.convert(utf8.encode(idNo))}';
+  }
+  final sub = _jwtSub(ssoToken) ?? CommonProperties.userInfo?.sub;
+  if (sub != null && sub.isNotEmpty) {
+    return 'tifo-sso-$sub';
+  }
+  return ssoToken;
+}
+
+String? _jwtSub(String token) {
+  final parts = token.split('.');
+  if (parts.length != 3) {
+    return null;
+  }
+  try {
+    final payload = json.decode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+    return payload is Map ? payload['sub']?.toString() : null;
+  } catch (_) {
+    return null;
+  }
 }
 
 /// Thrown for non-2xx responses so callers can surface the backend's message.
@@ -160,6 +212,11 @@ class TifoApi {
   }
 
   Future<TifoProfile> getMe() async => TifoProfile.fromJson(await _get('/me'));
+
+  /// Whether requests are currently running on the guest device bearer (no
+  /// host SSO session). See [resolveTifoConfig] for why the profile alone
+  /// can't answer this.
+  Future<bool> isGuestSession() async => (await _resolve()).isGuest;
 
   Future<List<TifoClubInfo>> getClubs() async {
     final res = await _get('/clubs');

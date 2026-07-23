@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/features/tifo/tifo_journey.dart';
+import 'package:mapness/features/tifo/tifo_login.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 
 /// Club standings, fetched fresh each time the sheet opens.
@@ -83,7 +86,20 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             TifoPrimaryButton(
               label: 'Dominate with your team',
               trailingArrow: true,
-              onPressed: () => Navigator.of(context).pop(),
+              // Play-intent CTA (BRD FR-03/FR-04): walk the gates (login →
+              // tutorial → team select) on top of the sheet — popping first
+              // would dispose this ref mid-journey. Close to the map only
+              // once the player is play-ready; on cancel stay on the sheet.
+              onPressed: () async {
+                final gateCtx = rootNavigatorKey.currentContext;
+                if (gateCtx == null) {
+                  return;
+                }
+                final ready = await TifoJourney(ref).ensurePlayReady(gateCtx);
+                if (ready && mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
             ),
           ],
         ),
@@ -116,8 +132,8 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
               color: TifoColors.surface,
-              borderRadius: BorderRadius.circular(TifoRadii.ml),
-              border: Border.all(color: TifoColors.border),
+              borderRadius: BorderRadius.circular(TifoRadii.l),
+              border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
             ),
             child: Column(
               children: [
@@ -156,12 +172,17 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.bolt_rounded, size: 18, color: TifoColors.accentSoft),
-                const SizedBox(width: 8),
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: const BoxDecoration(color: Color(0xFFEDE9FE), shape: BoxShape.circle),
+                  child: const Icon(Icons.bolt_rounded, size: 16, color: Color(0xFF7C3AED)),
+                ),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Take over more buildings to dominate the table.',
-                    style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
+                    style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft, fontSize: 13),
                   ),
                 ),
               ],
@@ -172,6 +193,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
     );
   }
 
+  /// Profile / dashboard tab — Figma nodes 696:117570 (signed out) and
+  /// 696:117414. Trip counts, daily-allowance countdown, all-time earnings and
+  /// match stats are not in the profile API yet — those tiles render zeros
+  /// until the backend exposes them.
   Widget _buildProfile() {
     final session = ref.watch(tifoSessionProvider);
     final profile = session.profile;
@@ -179,56 +204,183 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
     return ListView(
       shrinkWrap: true,
       children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: TifoColors.accentContainer,
-            borderRadius: BorderRadius.circular(TifoRadii.ml),
+        // Guest bearer gets a lazily-created staging profile, so a non-null
+        // profile alone doesn't mean "signed in" — check isGuest too.
+        if (session.isGuest || profile == null)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            decoration: BoxDecoration(
+              color: TifoColors.accentContainer,
+              borderRadius: BorderRadius.circular(TifoRadii.l),
+              border: Border.all(color: TifoColors.accent, width: 1.5),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Please log in to view your profile.',
+                    style: TifoText.captionMedium.copyWith(color: TifoColors.accent, fontSize: 13),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Material(
+                  color: const Color(0xFFF2F4F7),
+                  borderRadius: BorderRadius.circular(TifoRadii.ml),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(TifoRadii.ml),
+                    // Host login flow (same as the app's Profile tab); the
+                    // session reloads on return so the profile fills in.
+                    onTap: () async {
+                      await openHostLogin();
+                      if (mounted) {
+                        await ref.read(tifoSessionProvider.notifier).load();
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                      child: Text('Log in', style: TifoText.bodyLSemi),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: TifoColors.accentContainer,
+              borderRadius: BorderRadius.circular(TifoRadii.l),
+              border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: club == null ? TifoColors.neutralFill : Color(club.colorArgb),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    club?.name ?? 'No team selected',
+                    style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: club == null ? TifoColors.neutralFill : Color(club.colorArgb),
-                  borderRadius: BorderRadius.circular(12),
-                ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            Expanded(
+              child: _StatTile(
+                label: 'Current tokens',
+                value: '${profile?.balance ?? 0}',
+                chipBg: const Color(0xFFEDE9FE),
+                icon: Icons.bolt_rounded,
+                iconColor: const Color(0xFF7C3AED),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  club?.name ?? (profile == null ? 'Not logged in' : 'No team selected'),
-                  style: TifoText.bodyLSemi,
-                ),
+            ),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: _StatTile(
+                label: 'Next daily tokens in',
+                value: '--',
+                caption: 'mm:ss',
+                chipBg: Color(0xFFFFF1E0),
+                icon: Icons.schedule_rounded,
+                iconColor: Color(0xFFD97706),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            const Expanded(
+              child: _StatTile(
+                label: 'Every trip you complete earns you tokens.',
+                value: '0',
+                chipBg: Color(0xFFE3F5EB),
+                icon: Icons.location_on_rounded,
+                iconColor: TifoColors.accentSoft,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _StatTile(
+                label: 'Tokens earned',
+                value: '${profile?.balance ?? 0}',
+                caption: 'All time',
+                chipBg: const Color(0xFFE3F5EB),
+                icon: Icons.account_balance_rounded,
+                iconColor: TifoColors.accentSoft,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: TifoColors.surface,
+            borderRadius: BorderRadius.circular(TifoRadii.l),
+            border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
+          ),
+          child: const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.sports_esports_rounded, size: 18, color: TifoColors.textStrong),
+                  SizedBox(width: 8),
+                  Text('Matches Played', style: TifoText.bodyLSemi),
+                ],
+              ),
+              SizedBox(height: 14),
+              Row(
+                children: [
+                  _MatchStat(
+                    value: '0',
+                    label: 'Total',
+                    chipBg: Color(0xFFF2F4F7),
+                    icon: Icons.sports_esports_rounded,
+                    iconColor: Color(0xFF6A7282),
+                  ),
+                  _MatchStat(
+                    value: '0',
+                    label: 'Wins',
+                    chipBg: Color(0xFFFFF4D6),
+                    icon: Icons.emoji_events_rounded,
+                    iconColor: Color(0xFFD9A400),
+                  ),
+                  _MatchStat(
+                    value: '0',
+                    label: 'Losses',
+                    chipBg: Color(0xFFFEE4E2),
+                    icon: Icons.cancel_rounded,
+                    iconColor: Color(0xFFF04438),
+                  ),
+                  _MatchStat(
+                    value: '0',
+                    label: 'Claimed',
+                    chipBg: Color(0xFFE3F5EB),
+                    icon: Icons.apartment_rounded,
+                    iconColor: TifoColors.accentSoft,
+                  ),
+                ],
               ),
             ],
           ),
         ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _StatTile(label: 'Current tokens', value: '${profile?.balance ?? 0}'),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _StatTile(label: 'Buildings owned', value: '${profile?.buildingsOwned ?? 0}'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _StatTile(label: 'Free claims left', value: '${profile?.freeClaimsRemaining ?? 0}'),
-            ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: _StatTile(label: 'Recent activity', value: '—'),
-            ),
-          ],
-        ),
+        const SizedBox(height: 14),
+        const Text('Recent Activity', style: TifoText.bodyLSemi),
+        const SizedBox(height: 4),
+        Text('No Data', style: TifoText.captionRegular.copyWith(fontSize: 13)),
       ],
     );
   }
@@ -337,26 +489,92 @@ class _LeaderRowTile extends StatelessWidget {
   }
 }
 
+/// Dashboard stat tile (design 696:117570): caption label on top, icon chip +
+/// big value below, green border.
 class _StatTile extends StatelessWidget {
-  const _StatTile({required this.label, required this.value});
+  const _StatTile({
+    required this.label,
+    required this.value,
+    required this.chipBg,
+    required this.icon,
+    required this.iconColor,
+    this.caption,
+  });
 
   final String label;
   final String value;
+  final String? caption;
+  final Color chipBg;
+  final IconData icon;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(14),
+    padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
       color: TifoColors.surface,
-      borderRadius: BorderRadius.circular(TifoRadii.ml),
-      border: Border.all(color: TifoColors.border),
+      borderRadius: BorderRadius.circular(TifoRadii.l),
+      border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: TifoText.captionRegular),
+        Text(label, style: TifoText.captionRegular.copyWith(fontSize: 12)),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(color: chipBg, shape: BoxShape.circle),
+              child: Icon(icon, size: 16, color: iconColor),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(value, style: TifoText.h3),
+                  if (caption != null) Text(caption!, style: TifoText.captionRegular),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
+/// One column of the "Matches Played" card: colored icon chip, value, label.
+class _MatchStat extends StatelessWidget {
+  const _MatchStat({
+    required this.value,
+    required this.label,
+    required this.chipBg,
+    required this.icon,
+    required this.iconColor,
+  });
+
+  final String value;
+  final String label;
+  final Color chipBg;
+  final IconData icon;
+  final Color iconColor;
+
+  @override
+  Widget build(BuildContext context) => Expanded(
+    child: Column(
+      children: [
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(color: chipBg, borderRadius: BorderRadius.circular(12)),
+          child: Icon(icon, size: 20, color: iconColor),
+        ),
         const SizedBox(height: 6),
-        Text(value, style: TifoText.h3.copyWith(color: TifoColors.accentSoft)),
+        Text(value, style: TifoText.h3),
+        Text(label, style: TifoText.captionRegular),
       ],
     ),
   );
