@@ -9,6 +9,7 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
+import 'package:mapness/features/balady_analytics/events/search_events.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart' as ui;
@@ -32,6 +33,8 @@ class NaviSearchHistory extends ConsumerWidget {
       contentColor: context.colors.backgroundSurface1,
       // TODO: Implement BSS for it
       onTap: (item, index, historyList) async {
+        // Balady analytics: a tapped history record is a selected result.
+        trackSearchResultSelected(query: item.title, rank: index + 1, resultType: SearchResultType.history);
         // DataFinder: tapping a past search = History input + History search_type.
         ref
             .read(appAnalyticsProvider)

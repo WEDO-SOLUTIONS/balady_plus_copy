@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
+import 'package:mapness/features/balady_analytics/events/search_events.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -30,6 +31,8 @@ class MapSearchHistory extends ConsumerWidget {
     return ui.SearchHistory(
       iconColor: context.colors.foregroundMuted,
       onTap: (item, index, historyList) async {
+        // Balady analytics: a tapped history record is a selected result.
+        trackSearchResultSelected(query: item.title, rank: index + 1, resultType: SearchResultType.history);
         // DataFinder: tapping a past search counts as `History` input, and the
         // resulting search_results_exposure must report search_type: History.
         ref
