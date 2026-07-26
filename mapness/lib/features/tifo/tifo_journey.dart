@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
+import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_login.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 
-/// Drives the BRD play-gate: before a player can challenge a building they must
-/// be logged in, have started the tutorial, and have selected a team — routed
-/// in that order (BRD US-02). Each gate screen is pushed in turn; the flow
+/// Drives the BRD V2 play-gate (US-01 BR-01): route to the first unmet step
+/// in the order **tutorial → team selected** — a logged-out user goes to the
+/// tutorial first; login is enforced only where the BRD needs it, at team
+/// confirmation (US-04, BT-23). Each gate screen is pushed in turn; the flow
 /// stops early if the player backs out (e.g. "Maybe Later" on team select).
 ///
 /// Returns true only when every gate is satisfied ([TifoJourneyStep.ready]).
@@ -49,13 +51,29 @@ class TifoJourney {
           }
 
         case TifoJourneyStep.tutorial:
-          // Starting the tutorial clears the gate permanently (BRD), so mark it
-          // before showing — skipping afterwards must not re-gate.
-          await session.markTutorialStarted();
-          if (!context.mounted) {
+          // BRD V2 US-03 BR-06: an interrupted/abandoned tutorial counts as
+          // NOT started — only a completed run clears the gate, so report it
+          // to the backend after the tour finishes, not before. A run
+          // already completed on this device (e.g. as a guest, before the
+          // profile switched identity on login) skips straight to the report.
+          final flow = ref.read(tifoFlowProvider.notifier);
+          var completed = await flow.hasCompletedTutorialOnDevice();
+          if (!completed) {
+            if (!context.mounted) {
+              return false;
+            }
+            completed = await showTifoGuidedTutorial(context);
+          }
+          if (!completed) {
             return false;
           }
-          await showTifoGuidedTutorial(context);
+          await flow.markTutorialCompletedOnDevice();
+          await session.markTutorialStarted();
+          // If the server didn't record it (offline), stop instead of
+          // re-pushing the tour on the next loop iteration.
+          if (ref.read(tifoSessionProvider).profile?.tutorialCompleted != true) {
+            return false;
+          }
 
         case TifoJourneyStep.teamSelect:
           final picked = await Navigator.of(context).push<bool>(

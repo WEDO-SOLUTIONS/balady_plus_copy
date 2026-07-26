@@ -7,9 +7,11 @@ import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
-/// The next gate the player must pass before they can play (BRD US-02:
-/// "logged in, has started the tutorial, and has selected a team", routed in
-/// that order). [ready] means the play CTA goes straight to the game.
+/// The next gate the player must pass before they can play. BRD V2
+/// (US-01 BR-01, US-02 AC-02): route to the first unmet step in the order
+/// **tutorial → team selected**; a logged-out user goes to the TUTORIAL
+/// first, login is required only to confirm a team. [ready] means the play
+/// CTA goes straight to the game.
 enum TifoJourneyStep { login, tutorial, teamSelect, ready }
 
 @immutable
@@ -57,14 +59,15 @@ class TifoSessionState {
     return null;
   }
 
-  /// BRD gate order: login → tutorial → team select → ready.
+  /// BRD V2 gate order: tutorial first (even logged out), then login (it
+  /// gates the team confirmation, US-04/BT-23), then team select → ready.
   TifoJourneyStep get nextStep {
     final p = profile;
-    if (p == null || isGuest) {
-      return TifoJourneyStep.login;
-    }
-    if (!p.tutorialCompleted) {
+    if (p == null || !p.tutorialCompleted) {
       return TifoJourneyStep.tutorial;
+    }
+    if (isGuest) {
+      return TifoJourneyStep.login;
     }
     if (!p.hasClub) {
       return TifoJourneyStep.teamSelect;

@@ -106,6 +106,21 @@ class TifoFlowController extends Notifier<TifoFlowState> {
     await box.put('tutorialOffered', true);
     return true;
   }
+
+  /// Device-side record that the guided tutorial has been COMPLETED at least
+  /// once (BRD V2 US-03: only a finished run clears the gate). The server
+  /// flag lives per profile, and the profile changes when a guest signs in
+  /// (the bearer IS the identity on staging) — without this the player would
+  /// be re-gated into the tour right after logging in.
+  Future<bool> hasCompletedTutorialOnDevice() async {
+    final box = await ref.read(hiveProvider('tifo').future);
+    return box.get('tutorialCompleted') == true;
+  }
+
+  Future<void> markTutorialCompletedOnDevice() async {
+    final box = await ref.read(hiveProvider('tifo').future);
+    await box.put('tutorialCompleted', true);
+  }
 }
 
 final tifoFlowProvider = NotifierProvider<TifoFlowController, TifoFlowState>(TifoFlowController.new);

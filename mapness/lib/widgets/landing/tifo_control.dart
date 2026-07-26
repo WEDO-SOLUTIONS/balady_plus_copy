@@ -16,8 +16,9 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// On-map control (⚽) that toggles the TIFO overlay — the production entry
 /// point into the game, matching the Figma landing FAB ("Activate Tifo",
 /// node 589:85528). First tap per session shows the stories entry-popup; its
-/// CTA routes to the first unmet onboarding gate (login → tutorial → team,
-/// BRD FR-03/FR-04) via [TifoJourney]. Active state is a filled green button.
+/// CTA routes to the first unmet onboarding gate (tutorial → team, login at
+/// team confirmation — BRD V2 US-01 BR-01) via [TifoJourney]. Active state
+/// is a filled green button.
 /// Auth is the system SSO token (resolved in the API layer) — no manual
 /// config here.
 class TifoControl extends ConsumerWidget {
@@ -71,10 +72,10 @@ class TifoControl extends ConsumerWidget {
     await layer.enable();
     // Very first launch ever → show the floating "Dominate" pill this session.
     await flow.markGameLaunched();
-    // BRD FR-04: the entry CTA routes to the first unmet gate
-    // (login → tutorial started → team selected, FR-03); an onboarded
-    // player just lands on the map. The journey owns every gate screen,
-    // including the tutorial autorun (FR-05) — no separate offer here.
+    // BRD V2: the entry CTA routes to the first unmet gate (tutorial →
+    // team selected, login at team confirmation — US-01 BR-01); an
+    // onboarded player just lands on the map. The journey owns every gate
+    // screen, including the tutorial autorun — no separate offer here.
     if (proceed) {
       final journeyCtx = rootNavigatorKey.currentContext;
       if (journeyCtx != null) {
