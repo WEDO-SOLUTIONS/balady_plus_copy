@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -286,26 +288,18 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
               ),
             ),
             const SizedBox(width: 10),
-            const Expanded(
-              child: _StatTile(
-                label: 'Next daily tokens in',
-                value: '--',
-                caption: 'mm:ss',
-                chipBg: Color(0xFFFFF1E0),
-                icon: Icons.schedule_rounded,
-                iconColor: Color(0xFFD97706),
-              ),
-            ),
+            Expanded(child: _NextDailyTile(secondsToNextDaily: profile?.secondsToNextDaily)),
           ],
         ),
         const SizedBox(height: 10),
         Row(
           children: [
-            const Expanded(
+            Expanded(
               child: _StatTile(
                 label: 'Every trip you complete earns you tokens.',
-                value: '0',
-                chipBg: Color(0xFFE3F5EB),
+                value: '${profile?.tripTokensToday ?? 0}',
+                caption: 'Today',
+                chipBg: const Color(0xFFE3F5EB),
                 icon: Icons.location_on_rounded,
                 iconColor: TifoColors.accentSoft,
               ),
@@ -314,7 +308,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             Expanded(
               child: _StatTile(
                 label: 'Tokens earned',
-                value: '${profile?.balance ?? 0}',
+                value: '${profile?.allTimeEarned ?? 0}',
                 caption: 'All time',
                 chipBg: const Color(0xFFE3F5EB),
                 icon: Icons.account_balance_rounded,
@@ -331,44 +325,46 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             borderRadius: BorderRadius.circular(TifoRadii.l),
             border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
           ),
-          child: const Column(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.sports_esports_rounded, size: 18, color: TifoColors.textStrong),
                   SizedBox(width: 8),
                   Text('Matches Played', style: TifoText.bodyLSemi),
                 ],
               ),
-              SizedBox(height: 14),
+              const SizedBox(height: 14),
+              // US-10: Total / Won / Lose (no Draw) + "Claimed" = buildings
+              // currently held. All four come from `/me` (stats block).
               Row(
                 children: [
                   _MatchStat(
-                    value: '0',
+                    value: '${profile?.gamesTotal ?? 0}',
                     label: 'Total',
-                    chipBg: Color(0xFFF2F4F7),
+                    chipBg: const Color(0xFFF2F4F7),
                     icon: Icons.sports_esports_rounded,
-                    iconColor: Color(0xFF6A7282),
+                    iconColor: const Color(0xFF6A7282),
                   ),
                   _MatchStat(
-                    value: '0',
+                    value: '${profile?.gamesWon ?? 0}',
                     label: 'Wins',
-                    chipBg: Color(0xFFFFF4D6),
+                    chipBg: const Color(0xFFFFF4D6),
                     icon: Icons.emoji_events_rounded,
-                    iconColor: Color(0xFFD9A400),
+                    iconColor: const Color(0xFFD9A400),
                   ),
                   _MatchStat(
-                    value: '0',
+                    value: '${profile?.gamesLost ?? 0}',
                     label: 'Losses',
-                    chipBg: Color(0xFFFEE4E2),
+                    chipBg: const Color(0xFFFEE4E2),
                     icon: Icons.cancel_rounded,
-                    iconColor: Color(0xFFF04438),
+                    iconColor: const Color(0xFFF04438),
                   ),
                   _MatchStat(
-                    value: '0',
+                    value: '${profile?.buildingsOwned ?? 0}',
                     label: 'Claimed',
-                    chipBg: Color(0xFFE3F5EB),
+                    chipBg: const Color(0xFFE3F5EB),
                     icon: Icons.apartment_rounded,
                     iconColor: TifoColors.accentSoft,
                   ),
@@ -485,6 +481,78 @@ class _LeaderRowTile extends StatelessWidget {
           const Icon(Icons.chevron_right_rounded, size: 16, color: TifoColors.textSoft),
         ],
       ),
+    );
+  }
+}
+
+/// "Next daily tokens in" tile — counts down locally from the server's
+/// `secondsToNextDaily` (the game day rolls at 00:00 Asia/Riyadh, so the
+/// device clock and timezone can't be trusted to compute it).
+class _NextDailyTile extends StatefulWidget {
+  const _NextDailyTile({required this.secondsToNextDaily});
+
+  final int? secondsToNextDaily;
+
+  @override
+  State<_NextDailyTile> createState() => _NextDailyTileState();
+}
+
+class _NextDailyTileState extends State<_NextDailyTile> {
+  Timer? _ticker;
+  late int _left = widget.secondsToNextDaily ?? 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _restart();
+  }
+
+  @override
+  void didUpdateWidget(_NextDailyTile old) {
+    super.didUpdateWidget(old);
+    // A profile refresh (daily claim, trip reward) re-seeds the countdown.
+    if (old.secondsToNextDaily != widget.secondsToNextDaily) {
+      _left = widget.secondsToNextDaily ?? 0;
+      _restart();
+    }
+  }
+
+  void _restart() {
+    _ticker?.cancel();
+    if (_left <= 0) {
+      return;
+    }
+    _ticker = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() => _left = _left <= 1 ? 0 : _left - 1);
+      if (_left == 0) {
+        timer.cancel();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hours = _left ~/ 3600;
+    final minutes = (_left % 3600) ~/ 60;
+    final seconds = _left % 60;
+    final two = (int v) => v.toString().padLeft(2, '0');
+    return _StatTile(
+      label: 'Next daily tokens in',
+      value: _left <= 0 ? '--' : '${two(hours)}:${two(minutes)}',
+      caption: _left <= 0 ? 'hh:mm' : '${two(seconds)}s',
+      chipBg: const Color(0xFFFFF1E0),
+      icon: Icons.schedule_rounded,
+      iconColor: const Color(0xFFD97706),
     );
   }
 }

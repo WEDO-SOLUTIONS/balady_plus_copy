@@ -298,6 +298,16 @@ class TifoApi {
   /// One-time season club pick; grants the welcome token bonus server-side.
   Future<void> selectClub(String clubId) => _post('/clubs/select', body: {'club': clubId});
 
+  /// Claims the daily allowance (US-15, API v2.4 §4.5). Idempotent per game
+  /// day (00:00 Asia/Riyadh, computed server-side) — nothing credits it on its
+  /// own, the client has to ask.
+  Future<TifoDailyGrant> claimDailyAllowance() async => TifoDailyGrant.fromJson(await _post('/tokens/daily'));
+
+  /// Rewards a completed Balady+ trip (US-16, API v2.4 §4.5). Idempotent per
+  /// [tripId]: a replay returns `alreadyRewarded` and credits nothing.
+  Future<TifoTripReward> completeTrip(String tripId) async =>
+      TifoTripReward.fromJson(await _post('/trips/complete', body: {'tripId': tripId}));
+
   Future<void> completeOnboarding() => _post('/onboarding/complete');
 
   Future<void> completeTutorial() => _post('/tutorial/complete');

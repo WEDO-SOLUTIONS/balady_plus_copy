@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -158,6 +160,31 @@ class TifoSessionController extends Notifier<TifoSessionState> {
         isGuest: isGuest,
         error: error ?? (e is TifoApiException ? e.message : e.toString()),
       );
+    }
+    unawaited(_claimDailyAllowanceIfDue());
+  }
+
+  /// US-15: the daily allowance is an idempotent grant the CLIENT has to ask
+  /// for — the backend never credits it on its own, so without this call the
+  /// player simply never receives their daily tokens.
+  ///
+  /// Skipped for guests (US-15 needs a login) and when `/me` already says the
+  /// grant landed for this game day, so a repeat `load()` costs no request.
+  Future<void> _claimDailyAllowanceIfDue() async {
+    final profile = state.profile;
+    if (profile == null || state.isGuest || profile.dailyAllowanceGranted) {
+      return;
+    }
+    try {
+      final grant = await _api.claimDailyAllowance();
+      if (grant.alreadyGranted || grant.dailyAllowance == 0) {
+        return;
+      }
+      logger.log('[tifo] daily allowance +${grant.dailyAllowance} (balance ${grant.balance})');
+      await refreshProfile();
+    } catch (error) {
+      // Non-fatal: the next load() retries. Never blocks opening the game.
+      logger.log('[tifo] daily allowance failed: $error');
     }
   }
 

@@ -99,6 +99,13 @@ class TifoProfile {
     required this.freeClaimsRemaining,
     required this.buildingsOwned,
     required this.dailyAllowanceGranted,
+    required this.secondsToNextDaily,
+    required this.tripTokensToday,
+    required this.gameplayEarnedToday,
+    required this.gamesTotal,
+    required this.gamesWon,
+    required this.gamesLost,
+    required this.allTimeEarned,
   });
 
   final String userId;
@@ -110,17 +117,64 @@ class TifoProfile {
   final int buildingsOwned;
   final bool dailyAllowanceGranted;
 
+  /// Countdown to the next daily allowance (00:00 Asia/Riyadh, server-side).
+  final int secondsToNextDaily;
+
+  /// Token counters for the current game day.
+  final int tripTokensToday;
+  final int gameplayEarnedToday;
+
+  /// `stats` block — the Matches Played tiles (US-10: Total / Won / Lose,
+  /// "Claimed" is [buildingsOwned]).
+  final int gamesTotal;
+  final int gamesWon;
+  final int gamesLost;
+  final int allTimeEarned;
+
   bool get hasClub => clubId != null && clubId!.isNotEmpty;
 
-  factory TifoProfile.fromJson(Map<String, dynamic> json) => TifoProfile(
-    userId: json['userId']?.toString() ?? '',
-    clubId: json['club']?.toString(),
-    balance: (json['balance'] as num?)?.toInt() ?? 0,
-    onboardingCompleted: json['onboardingCompleted'] == true,
-    tutorialCompleted: json['tutorialCompleted'] == true,
-    freeClaimsRemaining: (json['freeClaimsRemaining'] as num?)?.toInt() ?? 0,
-    buildingsOwned: (json['buildingsOwned'] as num?)?.toInt() ?? 0,
-    dailyAllowanceGranted: json['dailyAllowanceGranted'] == true,
+  factory TifoProfile.fromJson(Map<String, dynamic> json) {
+    final stats = json['stats'] is Map ? (json['stats'] as Map).cast<String, dynamic>() : const <String, dynamic>{};
+    return TifoProfile(
+      userId: json['userId']?.toString() ?? '',
+      clubId: json['club']?.toString(),
+      balance: (json['balance'] as num?)?.toInt() ?? 0,
+      onboardingCompleted: json['onboardingCompleted'] == true,
+      tutorialCompleted: json['tutorialCompleted'] == true,
+      freeClaimsRemaining: (json['freeClaimsRemaining'] as num?)?.toInt() ?? 0,
+      buildingsOwned: (json['buildingsOwned'] as num?)?.toInt() ?? 0,
+      dailyAllowanceGranted: json['dailyAllowanceGranted'] == true,
+      secondsToNextDaily: (json['secondsToNextDaily'] as num?)?.toInt() ?? 0,
+      tripTokensToday: (json['tripTokensToday'] as num?)?.toInt() ?? 0,
+      gameplayEarnedToday: (json['gameplayEarnedToday'] as num?)?.toInt() ?? 0,
+      gamesTotal: (stats['gamesTotal'] as num?)?.toInt() ?? 0,
+      gamesWon: (stats['gamesWon'] as num?)?.toInt() ?? 0,
+      gamesLost: (stats['gamesLost'] as num?)?.toInt() ?? 0,
+      allTimeEarned: (stats['allTimeEarned'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
+/// Result of `POST /tokens/daily` (API v2.4 §4.5) — idempotent per game day.
+@immutable
+class TifoDailyGrant {
+  const TifoDailyGrant({
+    required this.alreadyGranted,
+    required this.dailyAllowance,
+    required this.startingGrant,
+    this.balance,
+  });
+
+  final bool alreadyGranted;
+  final int dailyAllowance;
+  final int startingGrant;
+  final int? balance;
+
+  factory TifoDailyGrant.fromJson(Map<String, dynamic> json) => TifoDailyGrant(
+    alreadyGranted: json['alreadyGranted'] == true,
+    dailyAllowance: (json['dailyAllowance'] as num?)?.toInt() ?? 0,
+    startingGrant: (json['startingGrant'] as num?)?.toInt() ?? 0,
+    balance: (json['balance'] as num?)?.toInt(),
   );
 }
 
@@ -521,5 +575,41 @@ class TifoPlayResult {
     },
     yourScore: (json['yourScore'] as num?)?.toInt() ?? 0,
     balance: (json['balance'] as num?)?.toInt(),
+  );
+}
+
+/// Result of `POST /trips/complete` (API v2.4 §4.5).
+///
+/// [validated] false means the backend rejected the trip on distance /
+/// duration / plausibility grounds. The client shows NOTHING in that case —
+/// silent rejection is deliberate, so abusers can't probe the thresholds.
+@immutable
+class TifoTripReward {
+  const TifoTripReward({
+    required this.reward,
+    required this.validated,
+    required this.alreadyRewarded,
+    required this.tripTokensToday,
+    this.balance,
+    this.dailyTripCap,
+  });
+
+  /// Tokens credited by THIS call (0 on a replay or a rejected trip).
+  final int reward;
+  final bool validated;
+  final bool alreadyRewarded;
+  final int tripTokensToday;
+  final int? balance;
+
+  /// Null when the daily cap is switched off (BRD V2 §12.4 — off at launch).
+  final int? dailyTripCap;
+
+  factory TifoTripReward.fromJson(Map<String, dynamic> json) => TifoTripReward(
+    reward: (json['reward'] as num?)?.toInt() ?? 0,
+    validated: json['validated'] != false,
+    alreadyRewarded: json['alreadyRewarded'] == true,
+    tripTokensToday: (json['tripTokensToday'] as num?)?.toInt() ?? 0,
+    balance: (json['balance'] as num?)?.toInt(),
+    dailyTripCap: (json['dailyTripCap'] as num?)?.toInt(),
   );
 }
