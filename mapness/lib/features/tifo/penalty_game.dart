@@ -17,6 +17,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class PenaltyApp extends StatelessWidget {
@@ -248,7 +249,7 @@ class _PenaltyHudPanel extends StatelessWidget {
                               for (var i = 0; i < remaining; i++)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 2),
-                                  child: Text('⚽', style: TextStyle(fontSize: 15)),
+                                  child: TifoBallIcon(size: 16),
                                 ),
                               for (var i = 0; i < misses; i++)
                                 const Padding(

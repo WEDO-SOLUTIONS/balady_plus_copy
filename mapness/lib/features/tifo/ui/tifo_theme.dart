@@ -327,3 +327,37 @@ class _CircleIconButton extends StatelessWidget {
     ),
   );
 }
+
+/// The game's ball mark — the 3D render supplied by design, used everywhere a
+/// ball is shown (map control, CTA rows, penalty HUD) instead of Material's
+/// `Icons.sports_soccer_rounded` or the ⚽ emoji, which never matched it.
+///
+/// The artwork is black-and-white, so it is NOT tinted: on the green active
+/// control it reads as the ball itself, not as a monochrome glyph.
+class TifoBallIcon extends StatelessWidget {
+  const TifoBallIcon({super.key, this.size = 24});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+    width: size,
+    height: size,
+    // Mirrors how Icon behaves under TIGHT constraints (map buttons hand the
+    // child a fixed 46x46 through Material/InkWell): without the Center the
+    // image is forced to the full box and the ball bleeds past the button's
+    // rounded corners. Center re-loosens the constraints so [size] wins.
+    child: Center(
+      child: Image.asset(
+        'assets/tifo/images/ball.png',
+        package: 'mapness',
+        width: size,
+        height: size,
+        fit: BoxFit.contain,
+        // Falls back to the Material glyph if the asset is ever missing from a
+        // build — a bare exception box in a map control would be worse.
+        errorBuilder: (_, _, _) => Icon(Icons.sports_soccer_rounded, size: size, color: TifoColors.accent),
+      ),
+    ),
+  );
+}

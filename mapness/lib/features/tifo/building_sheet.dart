@@ -252,7 +252,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.sports_soccer_rounded, size: 18, color: Colors.white),
+        const TifoBallIcon(size: 18),
         const SizedBox(width: 8),
         Flexible(
           child: Text(
