@@ -10,6 +10,7 @@ import android.os.Looper
 import android.util.Log
 import com.dgis.map.live_updates.NavEta
 import com.dgis.map.live_updates.NavLiveEventBus
+import com.dgis.map.live_updates.NavTrafficSegment
 import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
@@ -46,6 +47,10 @@ class DashboardControlModel(
     companion object {
         private val dateFormat = SimpleDateFormat("HH:mm")
         private const val DUCK_DURATION_MS = 3000L
+
+        /** ~1px of a 340dp-wide timeline. */
+        private const val MIN_SEGMENT_SHARE = 0.003
+        private const val MAX_SEGMENTS = 32
     }
     
     init {
@@ -57,8 +62,14 @@ class DashboardControlModel(
                 this.update()
             }
         )
+        // Traffic can change without the car moving — keep the timeline fresh.
+        closeables.add(
+            this.model.dynamicRouteInfoChannel.connect {
+                this.update()
+            }
+        )
     }
-    
+
     private fun update() {
         if (this.model.duration == null || model.routePosition == null ) {
             return
@@ -80,11 +91,54 @@ class DashboardControlModel(
             )
         )
 
+        val timeline = buildTrafficTimeline()
         NavLiveEventBus.eta.value = NavEta(
             durationSec = duration.inSeconds.toInt(),
             distanceMeters = distance.toDouble(),
             arrivalTime = arrivalTime,
+            progress = timeline.first,
+            trafficSegments = timeline.second,
         )
+    }
+
+    /**
+     * Travelled fraction of the route plus its traffic colouring, aggregated into
+     * a handful of segments a lock screen timeline can draw.
+     */
+    private fun buildTrafficTimeline(): Pair<Double, List<NavTrafficSegment>> {
+        val totalMm = routeLength.millimeters.toDouble()
+        if (totalMm <= 0) return 0.0 to emptyList()
+
+        val passedMm = model.routePosition?.distance?.millimeters?.toDouble() ?: 0.0
+        val progress = (passedMm / totalMm).coerceIn(0.0, 1.0)
+
+        val shares = mutableListOf<Double>()
+        val levels = mutableListOf<Int>()
+        for (entry in model.dynamicRouteInfo.traffic.speedColors.entries) {
+            val share = entry.length.millimeters.toDouble() / totalMm
+            if (share <= 0) continue
+            val level = entry.value.ordinal
+            // Merge adjacent runs of the same colour and swallow slivers thinner
+            // than a pixel of the timeline.
+            if (levels.isNotEmpty() && (levels.last() == level || share < MIN_SEGMENT_SHARE)) {
+                shares[shares.lastIndex] = shares.last() + share
+            } else {
+                shares.add(share)
+                levels.add(level)
+            }
+        }
+
+        // Live Activity payloads are capped at 4 KB — keep the timeline compact
+        // by folding the thinnest segments into their neighbour.
+        while (shares.size > MAX_SEGMENTS) {
+            val index = shares.indexOf(shares.min())
+            val target = if (index == 0) 1 else index - 1
+            shares[target] = shares[target] + shares[index]
+            shares.removeAt(index)
+            levels.removeAt(index)
+        }
+
+        return progress to shares.indices.map { NavTrafficSegment(shares[it], levels[it]) }
     }
 
     fun setNavigatorVolume(volume: Int) {
