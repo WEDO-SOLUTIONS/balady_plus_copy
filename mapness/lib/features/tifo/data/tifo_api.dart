@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Debug-only overrides for the TIFO backend. Empty fields fall back to the
 /// system config. Applied ONLY when [tifoDebugModeProvider] is on — in normal
@@ -117,13 +118,27 @@ Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
 String _stableBearer(String ssoToken) {
   final idNo = CommonProperties.userInfo?.idNo;
   if (idNo != null && idNo.isNotEmpty) {
-    return 'tifo-uid-${sha256.convert(utf8.encode(idNo))}';
+    return _tagged('idNo-hash', 'tifo-uid-${sha256.convert(utf8.encode(idNo))}');
   }
   final sub = _jwtSub(ssoToken) ?? CommonProperties.userInfo?.sub;
   if (sub != null && sub.isNotEmpty) {
-    return 'tifo-sso-$sub';
+    return _tagged('sub', 'tifo-sso-$sub');
   }
-  return ssoToken;
+  // Raw token = a NEW backend profile on every login/refresh (staging keys by
+  // the bearer string). Logged loudly because it silently resets the player.
+  return _tagged('raw-token (UNSTABLE)', ssoToken);
+}
+
+/// Logs which identity strategy won, once per change — never the value
+/// itself, which is (or derives from) personal data.
+String? _lastIdentityStrategy;
+
+String _tagged(String strategy, String bearer) {
+  if (_lastIdentityStrategy != strategy) {
+    _lastIdentityStrategy = strategy;
+    logger.log('[tifo] player identity from: $strategy');
+  }
+  return bearer;
 }
 
 String? _jwtSub(String token) {
