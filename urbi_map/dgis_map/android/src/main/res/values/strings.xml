@@ -14,7 +14,7 @@
 
   <!-- Navigation live updates (phone ongoing notification) -->
   <string name="live_update_open_action">Open in Balady+</string>
-  <string name="live_update_end_trip_action">End Trip</string>
+  <string name="live_update_end_trip_action">End trip</string>
   <string name="live_update_arrived_message">You have arrived at your destination</string>
   <string name="live_update_eta_format">ETA %1$s</string>
   <string name="live_update_towards_format">Towards %1$s</string>
