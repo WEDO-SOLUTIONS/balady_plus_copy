@@ -21,6 +21,8 @@ final class NavigationLiveActivityController {
     private enum NotificationNames {
         static let dashboardTick = Notification.Name("dgis.navigation.dashboardTick")
         static let maneuverTick = Notification.Name("dgis.navigation.maneuverTick")
+        static let speedTick = Notification.Name("dgis.navigation.speedTick")
+        static let messageTick = Notification.Name("dgis.navigation.messageTick")
         static let stateChanged = Notification.Name("dgis.navigation.stateChanged")
         static let endTripRequested = Notification.Name("balady.endTripRequested")
     }
@@ -36,12 +38,20 @@ final class NavigationLiveActivityController {
         let durationSeconds: Int
         let distanceKm: Double
         let arrivalTime: String
+        let progress: Double
+        let trafficSegments: [NavigationTrafficSegment]
     }
 
     private struct ManeuverData {
         let distanceMm: Double
         let roadName: String
         let instruction: String
+    }
+
+    private struct SpeedData {
+        let speed: Int
+        let speedLimit: Int?
+        let isSpeeding: Bool
     }
 
     /// Best-effort bridge back to Dart, wired up by NavigationLiveUpdatesChannel.
@@ -51,6 +61,9 @@ final class NavigationLiveActivityController {
     private var navigationState: String = "disabled"
     private var dashboard: DashboardData?
     private var maneuver: ManeuverData?
+    private var speed: SpeedData?
+    /// "none" | "gpsLost" | "routeResearch", as posted by MessageControlModel.
+    private var message: String = "none"
 
     private var activity: Activity<NavigationActivityAttributes>?
     private var lastContentState: NavigationActivityAttributes.ContentState?
@@ -84,6 +97,16 @@ final class NavigationLiveActivityController {
             forName: NotificationNames.maneuverTick, object: nil, queue: .main
         ) { [weak self] notification in
             self?.handleManeuverTick(notification.userInfo)
+        })
+        observers.append(center.addObserver(
+            forName: NotificationNames.speedTick, object: nil, queue: .main
+        ) { [weak self] notification in
+            self?.handleSpeedTick(notification.userInfo)
+        })
+        observers.append(center.addObserver(
+            forName: NotificationNames.messageTick, object: nil, queue: .main
+        ) { [weak self] notification in
+            self?.handleMessageTick(notification.userInfo)
         })
         observers.append(center.addObserver(
             forName: NotificationNames.endTripRequested, object: nil, queue: .main
@@ -139,6 +162,18 @@ final class NavigationLiveActivityController {
                         "duration": durationSec,
                         "distanceKm": distanceMm / 1_000_000.0 + 2.4,
                         "arrivalTime": "21:30",
+                        "progress": 1 - distanceMm / 1_200_000,
+                        "trafficShares": [0.45, 0.2, 0.35],
+                        "trafficLevels": [1, 2, 3],
+                    ]
+                )
+                center.post(
+                    name: NotificationNames.speedTick,
+                    object: nil,
+                    userInfo: [
+                        "speed": 100,
+                        "speedLimit": 110,
+                        "exceeding": false,
                     ]
                 )
             }
@@ -165,6 +200,8 @@ final class NavigationLiveActivityController {
         metadata = nil
         dashboard = nil
         maneuver = nil
+        speed = nil
+        message = "none"
         endActivity(dismissalPolicy: .immediate)
     }
 
@@ -180,6 +217,8 @@ final class NavigationLiveActivityController {
         case "disabled":
             dashboard = nil
             maneuver = nil
+            speed = nil
+            message = "none"
             endActivity(dismissalPolicy: .immediate)
         default:
             // "routeSearch" (e.g. rebuilding after going off route) keeps the activity as is.
@@ -194,7 +233,17 @@ final class NavigationLiveActivityController {
             let arrivalTime = userInfo?["arrivalTime"] as? String
         else { return }
 
-        dashboard = DashboardData(durationSeconds: duration, distanceKm: distanceKm, arrivalTime: arrivalTime)
+        let shares = userInfo?["trafficShares"] as? [Double] ?? []
+        let levels = userInfo?["trafficLevels"] as? [Int] ?? []
+        let segments = zip(shares, levels).map { NavigationTrafficSegment(share: $0.0, level: $0.1) }
+
+        dashboard = DashboardData(
+            durationSeconds: duration,
+            distanceKm: distanceKm,
+            arrivalTime: arrivalTime,
+            progress: userInfo?["progress"] as? Double ?? 0,
+            trafficSegments: segments
+        )
         startActivityIfPossible()
         updateActivityIfNeeded()
     }
@@ -208,6 +257,24 @@ final class NavigationLiveActivityController {
 
         maneuver = ManeuverData(distanceMm: distanceMm, roadName: roadName, instruction: instruction)
         startActivityIfPossible()
+        updateActivityIfNeeded()
+    }
+
+    private func handleSpeedTick(_ userInfo: [AnyHashable: Any]?) {
+        guard let value = userInfo?["speed"] as? Int else { return }
+
+        speed = SpeedData(
+            speed: value,
+            speedLimit: userInfo?["speedLimit"] as? Int,
+            isSpeeding: userInfo?["exceeding"] as? Bool ?? false
+        )
+        updateActivityIfNeeded()
+    }
+
+    private func handleMessageTick(_ userInfo: [AnyHashable: Any]?) {
+        guard let state = userInfo?["state"] as? String else { return }
+
+        message = state
         updateActivityIfNeeded()
     }
 
@@ -242,6 +309,7 @@ final class NavigationLiveActivityController {
             destinationName: metadata.destinationName,
             language: language,
             endTripTitle: Self.localized("end_trip", language),
+            openAppTitle: Self.localized("open_app", language),
             arrivedMessage: Self.localized("arrived", language)
         )
         let contentState = buildContentState(isArrived: false)
@@ -288,6 +356,8 @@ final class NavigationLiveActivityController {
         let arrivedState = buildContentState(isArrived: true)
         dashboard = nil
         maneuver = nil
+        speed = nil
+        message = "none"
 
         Task {
             let content = ActivityContent(state: arrivedState, staleDate: nil as Date?)
@@ -341,16 +411,50 @@ final class NavigationLiveActivityController {
             remainingTimeText = ""
         }
 
+        let status = isArrived ? NavigationActivityStatus.arrived : Self.status(forMessage: message)
+        // Speed only makes sense while driving; pedestrian routes hide the cluster.
+        let isCar = (metadata?.routeType ?? "car") == "car"
+
         return NavigationActivityAttributes.ContentState(
+            status: status,
+            statusText: Self.statusText(for: status, language: language),
             instruction: instruction,
             roadName: maneuver?.roadName ?? "",
             distanceToManeuverText: distanceToManeuverText,
-            maneuverSymbol: isArrived ? "checkmark.circle.fill" : Self.maneuverSymbol(for: instruction),
+            maneuverIcon: Self.maneuverIcon(for: instruction),
             etaText: dashboard?.arrivalTime ?? "",
             remainingDistanceText: remainingDistanceText,
             remainingTimeText: remainingTimeText,
-            isArrived: isArrived
+            progress: isArrived ? 1 : (dashboard?.progress ?? 0),
+            trafficSegments: isCar ? (dashboard?.trafficSegments ?? []) : [],
+            speed: isCar ? speed?.speed : nil,
+            speedLimit: isCar ? speed?.speedLimit : nil,
+            isSpeeding: isCar && (speed?.isSpeeding ?? false)
         )
+    }
+
+    private static func status(forMessage message: String) -> NavigationActivityStatus {
+        switch message {
+        case "gpsLost":
+            return .gpsLost
+        case "routeResearch":
+            return .rerouting
+        default:
+            return .navigating
+        }
+    }
+
+    private static func statusText(for status: NavigationActivityStatus, language: String) -> String {
+        switch status {
+        case .gpsLost:
+            return localized("gps_lost", language)
+        case .rerouting:
+            return localized("reroute", language)
+        case .arrived:
+            return localized("arrived", language)
+        case .navigating:
+            return ""
+        }
     }
 
     // MARK: - Formatting
@@ -407,9 +511,14 @@ final class NavigationLiveActivityController {
     // MARK: - Localization (pre-localized in-process; the extension renders plain strings)
 
     private static let strings: [String: [String: String]] = [
+        // Mirrors mapness/lib/l10n/app_{en,ar}.arb:
+        // endTrip, youArrived, gpsLost, routeResearch.
         "en": [
-            "end_trip": "End Trip",
-            "arrived": "You have arrived",
+            "end_trip": "End trip",
+            "open_app": "Open Balady+",
+            "arrived": "You arrived",
+            "gps_lost": "GPS signal lost",
+            "reroute": "Re-route",
             "km": "km",
             "m": "m",
             "h": "h",
@@ -417,7 +526,10 @@ final class NavigationLiveActivityController {
         ],
         "ar": [
             "end_trip": "إنهاء الرحلة",
-            "arrived": "لقد وصلت",
+            "open_app": "فتح بلدي+",
+            "arrived": "لقد وصلت إلى وجهتك",
+            "gps_lost": "انقطعت إشارة GPS",
+            "reroute": "إعادة التوجيه",
             "km": "كم",
             "m": "م",
             "h": "س",
@@ -429,34 +541,52 @@ final class NavigationLiveActivityController {
         strings[language]?[key] ?? strings["en"]?[key] ?? key
     }
 
-    // MARK: - Maneuver symbol mapping
+    // MARK: - Maneuver icon mapping
 
     // Instruction names come from
-    // urbi_map/dgis_map/ios/Classes/Extensions/InstructionManeuver+ToString.swift.
-    static func maneuverSymbol(for instruction: String) -> String {
+    // urbi_map/dgis_map/ios/Classes/Extensions/InstructionManeuver+ToString.swift;
+    // asset names match the in-app glyphs used by CarPlay
+    // (urbi_map/dgis_map/ios/Classes/CarPlay/NavigationSessionManeuvers.swift).
+    static func maneuverIcon(for instruction: String) -> String {
         switch instruction {
         case "crossroad_left", "crossroad_sharply_left":
-            return "arrow.turn.up.left"
+            return "Crossroad_left"
         case "crossroad_right", "crossroad_sharply_right":
-            return "arrow.turn.up.right"
-        case "crossroad_slightly_left", "crossroad_keep_left":
-            return "arrow.up.left"
-        case "crossroad_slightly_right", "crossroad_keep_right":
-            return "arrow.up.right"
-        case "crossroad_straight", "start":
-            return "arrow.up"
+            return "Crossroad_right"
+        case "crossroad_slightly_left":
+            return "Crossroad_slightly_left"
+        case "crossroad_slightly_right":
+            return "Crossroad_slightly_right"
+        case "crossroad_keep_left":
+            return "Crossroad_keep_left"
+        case "crossroad_keep_right":
+            return "Crossroad_keep_right"
+        case "crossroad_straight", "start", "road_crossing":
+            return "Crossroad_straight"
         case "crossroad_uturn", "uturn":
-            return "arrow.uturn.left"
-        case "roundabout_forward", "roundabout_left_45", "roundabout_left_90", "roundabout_left_135",
-             "roundabout_right_45", "roundabout_right_90", "roundabout_right_135",
-             "roundabout_backward", "roundabout_exit":
-            return "arrow.triangle.2.circlepath"
+            return "Turn_over_right_hand"
+        case "roundabout_forward":
+            return "Ringroad_forward"
+        case "roundabout_left_45":
+            return "Ringroad_left_45"
+        case "roundabout_left_90":
+            return "Ringroad_left_90"
+        case "roundabout_left_135":
+            return "Ringroad_left_135"
+        case "roundabout_right_45":
+            return "Ringroad_right_45"
+        case "roundabout_right_90":
+            return "Ringroad_right_90"
+        case "roundabout_right_135":
+            return "Ringroad_right_135"
+        case "roundabout_backward":
+            return "Ringroad_backward"
+        case "roundabout_exit":
+            return "Ringroad_exit"
         case "finish":
-            return "flag.checkered"
-        case "road_crossing":
-            return "figure.walk"
+            return "Road_finish"
         default:
-            return "location.north.line.fill"
+            return "Crossroad_straight"
         }
     }
 }
