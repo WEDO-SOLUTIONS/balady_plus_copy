@@ -127,20 +127,46 @@ final class NavigationLiveActivityController {
     // TEMP-DEBUG-BE90-LADEMO — remove before merge.
     private var demoTimer: Timer?
     private func startDemoDriver() {
+        // `-BaladyLADemoPedestrian` switches the demo to the walking layout.
+        let isPedestrian = ProcessInfo.processInfo.arguments.contains("-BaladyLADemoPedestrian")
         setSessionMetadata(
             destinationName: "King Fahd Road",
-            routeType: "car",
-            language: "en",
+            routeType: isPedestrian ? "pedestrian" : "car",
+            language: ProcessInfo.processInfo.arguments.contains("-BaladyLADemoArabic") ? "ar" : "en",
             enabled: true
         )
         var distanceMm: Double = 1_200_000
         var durationSec = 540
+        var tick = 0
         let center = NotificationCenter.default
         DispatchQueue.main.asyncAfter(deadline: .now() + 8) { [weak self] in
             center.post(name: NotificationNames.stateChanged, object: nil, userInfo: ["state": "navigation"])
             self?.demoTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { timer in
                 distanceMm -= 60_000
                 durationSec -= 4
+                tick += 1
+                // Status pills cycle on their own; `-BaladyLADemoGpsLost` /
+                // `-BaladyLADemoReroute` pin one so it can be eyeballed on the lock
+                // screen (where the app is suspended and the demo timer stops).
+                let arguments = ProcessInfo.processInfo.arguments
+                let message: String
+                if arguments.contains("-BaladyLADemoGpsLost") {
+                    message = "gpsLost"
+                } else if arguments.contains("-BaladyLADemoReroute") {
+                    message = "routeResearch"
+                } else {
+                    message = switch tick {
+                    case 5...7: "gpsLost"
+                    case 8...10: "routeResearch"
+                    default: "none"
+                    }
+                }
+                center.post(name: NotificationNames.messageTick, object: nil, userInfo: ["state": message])
+                if arguments.contains("-BaladyLADemoArrived"), tick >= 2 {
+                    timer.invalidate()
+                    center.post(name: NotificationNames.stateChanged, object: nil, userInfo: ["state": "finished"])
+                    return
+                }
                 if distanceMm <= 0 {
                     timer.invalidate()
                     center.post(name: NotificationNames.stateChanged, object: nil, userInfo: ["state": "finished"])
@@ -167,15 +193,17 @@ final class NavigationLiveActivityController {
                         "trafficLevels": [1, 2, 3],
                     ]
                 )
-                center.post(
-                    name: NotificationNames.speedTick,
-                    object: nil,
-                    userInfo: [
-                        "speed": 100,
-                        "speedLimit": 110,
-                        "exceeding": false,
-                    ]
-                )
+                if !isPedestrian {
+                    center.post(
+                        name: NotificationNames.speedTick,
+                        object: nil,
+                        userInfo: [
+                            "speed": 100,
+                            "speedLimit": 110,
+                            "exceeding": false,
+                        ]
+                    )
+                }
             }
         }
     }
@@ -412,8 +440,9 @@ final class NavigationLiveActivityController {
         }
 
         let status = isArrived ? NavigationActivityStatus.arrived : Self.status(forMessage: message)
-        // Speed only makes sense while driving; pedestrian routes hide the cluster.
-        let isCar = (metadata?.routeType ?? "car") == "car"
+        // Speed only makes sense while driving; pedestrian routes and the arrival
+        // card hide the cluster.
+        let isCar = (metadata?.routeType ?? "car") == "car" && !isArrived
 
         return NavigationActivityAttributes.ContentState(
             status: status,
@@ -549,10 +578,14 @@ final class NavigationLiveActivityController {
     // (urbi_map/dgis_map/ios/Classes/CarPlay/NavigationSessionManeuvers.swift).
     static func maneuverIcon(for instruction: String) -> String {
         switch instruction {
-        case "crossroad_left", "crossroad_sharply_left":
+        case "crossroad_left":
             return "Crossroad_left"
-        case "crossroad_right", "crossroad_sharply_right":
+        case "crossroad_right":
             return "Crossroad_right"
+        case "crossroad_sharply_left":
+            return "Crossroad_sharply_left"
+        case "crossroad_sharply_right":
+            return "Crossroad_sharply_right"
         case "crossroad_slightly_left":
             return "Crossroad_slightly_left"
         case "crossroad_slightly_right":
