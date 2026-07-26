@@ -62,9 +62,11 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   /// street-level threshold here.
   static const double _buildingMinZoom = 15;
 
-  /// Safety cap on TOTAL buildings kept on the map (they accumulate — nothing is
-  /// removed on pan), to bound the bridge/render cost on long sessions.
-  static const int _maxRendered = 1000;
+  /// Safety cap on TOTAL buildings kept on the map, to bound the bridge/render
+  /// cost on long sessions. Viewport-aware: on-screen buildings evict
+  /// off-screen ones when the cap is hit (see [_syncBuildings]). Sized above a
+  /// dense single viewport — ~1500 buildings observed live at z16 in Riyadh.
+  static const int _maxRendered = 2000;
 
   bool get _buildingsMode => _zoom >= _buildingMinZoom;
 
@@ -255,9 +257,22 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       // The plugin only removes polygons one id at a time, so removals for a
       // recolor are collected and fired CONCURRENTLY — N parallel bridge calls
       // instead of N serialized round-trips — followed by one addPolygons batch.
+      //
+      // The render cap is VIEWPORT-AWARE: a single dense viewport can exceed
+      // it (1489 buildings seen live at z16), and a dumb "skip when full" left
+      // every later viewport blank. On-screen buildings are drawn first, and
+      // when the cap is hit an off-screen polygon is evicted to make room —
+      // off-screen cache only fills whatever room is left.
+      final visible = st.visibleIds;
+      final ordered = [
+        ...st.byId.values.where((b) => visible.contains(b.id)),
+        ...st.byId.values.where((b) => !visible.contains(b.id)),
+      ];
+      final evictable = _drawnFill.keys.where((id) => !visible.contains(id)).toList();
+      var evicted = 0;
       final toAdd = <Polygon>[];
       final toRemove = <String>[];
-      for (final building in st.byId.values) {
+      for (final building in ordered) {
         final club = building.ownerClub;
         final fill = club?.fillArgb ?? kTifoNeutralFillArgb;
         final stroke = club?.strokeArgb ?? kTifoNeutralStrokeArgb;
@@ -266,7 +281,17 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           continue; // already drawn, unchanged → keep it
         }
         if (prev == null && _drawnFill.length >= _maxRendered) {
-          continue; // safety cap on total drawn (recolors of existing still apply)
+          // At the cap: an on-screen building may evict an off-screen one;
+          // off-screen additions just wait for room.
+          if (!visible.contains(building.id) || evicted >= evictable.length) {
+            continue;
+          }
+          final victim = evictable[evicted++];
+          final victimRings = _drawnRings.remove(victim) ?? 0;
+          _drawnFill.remove(victim);
+          for (var i = 0; i < victimRings; i++) {
+            toRemove.add('tifo-bld:$victim#$i');
+          }
         }
         if (prev != null) {
           final rings = _drawnRings[building.id] ?? 0;
