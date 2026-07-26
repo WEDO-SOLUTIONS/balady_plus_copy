@@ -344,27 +344,25 @@ private struct RouteTimelineView: View {
                 .frame(width: max(0, passed - markerSize / 2))
             if isPedestrian {
                 Image(systemName: "figure.walk")
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.system(size: 14, weight: .bold))
                     .foregroundColor(.white)
                     .frame(width: markerSize, height: markerSize)
                     .background(NavPalette.accent, in: Circle())
             } else {
-                // TransportIcons.locationDirectionNavigator, extracted from the
-                // uikit icon font into the widget's asset catalog.
-                Image("NavigatorArrow")
-                    .renderingMode(.template)
+                // assets/icons/makkah/directions.svg, already turned 90° clockwise
+                // and recoloured (accent-950 fill, accent/on-container border).
+                Image("RouteProgressMarker")
                     .resizable()
                     .scaledToFit()
                     .frame(width: markerSize, height: markerSize)
-                    // The glyph points left; turn it to face the direction of travel.
-                    .rotationEffect(.degrees(layoutDirection == .rightToLeft ? 0 : 180))
-                    .foregroundColor(NavPalette.accent)
+                    .rotationEffect(.degrees(layoutDirection == .rightToLeft ? 180 : 0))
             }
             Spacer(minLength: 0)
         }
     }
 
-    private var markerSize: CGFloat { isPedestrian ? 18 : 24 }
+    /// Twice the dash height, per the design.
+    private var markerSize: CGFloat { 24 }
 
     /// Falls back to a single neutral bar until the first traffic tick arrives.
     private var resolvedSegments: [NavigationTrafficSegment] {
