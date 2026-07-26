@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/tifo/penalty_game.dart';
+import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 
 /// Penalty Challenge entry screen — Figma node 2:2541.

@@ -1,9 +1,10 @@
 # TIFO penalty game — state & development history
 
-Deep-dive companion to [AGENTS.md](AGENTS.md). Everything lives in
-`penalty_game.dart` (~6 800 lines, one file by design — it started as a
-sandbox and grew; splitting it is a known cleanup) plus
-`penalty_entry_screen.dart` and `assets/tifo/`.
+Deep-dive companion to [../AGENTS.md](../AGENTS.md). The mini-game lives in
+this `penalty/` folder: `penalty_game.dart` (~6 800 lines, one file by
+design — it started as a sandbox and grew; splitting it is a known
+cleanup), `penalty_entry_screen.dart`, `penalty_result_screen.dart`, plus
+`assets/tifo/`.
 
 ## What it is
 

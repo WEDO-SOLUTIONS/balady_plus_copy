@@ -6,7 +6,8 @@ lives in `docs/tifo-brd-v2-reference.md` (repo root; supersedes the v1.2
 digest — gate order is now tutorial-first, result screen is win/lose with no
 scoreline). Jira: BE-233, branch `feat/BE-233/tifo`.
 Penalty-game deep dive (state, mechanics, sprite pipeline, history):
-[PENALTY_GAME.md](PENALTY_GAME.md).
+[penalty/PENALTY_GAME.md](penalty/PENALTY_GAME.md). The mini-game itself
+lives in `penalty/` — everything else in this folder is the map/BRD layer.
 
 ## Backend
 
