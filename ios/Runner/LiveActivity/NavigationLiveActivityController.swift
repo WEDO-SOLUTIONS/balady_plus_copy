@@ -115,93 +115,6 @@ final class NavigationLiveActivityController {
         })
 
         endStaleActivities()
-
-        // TEMP-DEBUG-BE90-LADEMO — remove before merge.
-        // Launch with `-BaladyLADemo` to drive the Live Activity through the real
-        // NotificationCenter contract without a navigation session (network-free check).
-        if ProcessInfo.processInfo.arguments.contains("-BaladyLADemo") {
-            startDemoDriver()
-        }
-    }
-
-    // TEMP-DEBUG-BE90-LADEMO — remove before merge.
-    private var demoTimer: Timer?
-    private func startDemoDriver() {
-        // `-BaladyLADemoPedestrian` switches the demo to the walking layout.
-        let isPedestrian = ProcessInfo.processInfo.arguments.contains("-BaladyLADemoPedestrian")
-        setSessionMetadata(
-            destinationName: "King Fahd Road",
-            routeType: isPedestrian ? "pedestrian" : "car",
-            language: ProcessInfo.processInfo.arguments.contains("-BaladyLADemoArabic") ? "ar" : "en",
-            enabled: true
-        )
-        var distanceMm: Double = 1_200_000
-        var durationSec = 540
-        var tick = 0
-        let center = NotificationCenter.default
-        DispatchQueue.main.asyncAfter(deadline: .now() + 8) { [weak self] in
-            center.post(name: NotificationNames.stateChanged, object: nil, userInfo: ["state": "navigation"])
-            self?.demoTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { timer in
-                distanceMm -= 60_000
-                durationSec -= 4
-                tick += 1
-                // `-BaladyLADemoGpsLost` / `-BaladyLADemoReroute` pin a status pill so
-                // it can be eyeballed on the lock screen (where the app is suspended
-                // and the demo timer stops).
-                let arguments = ProcessInfo.processInfo.arguments
-                let message: String
-                if arguments.contains("-BaladyLADemoGpsLost") {
-                    message = "gpsLost"
-                } else if arguments.contains("-BaladyLADemoReroute") {
-                    message = "routeResearch"
-                } else {
-                    message = "none"
-                }
-                center.post(name: NotificationNames.messageTick, object: nil, userInfo: ["state": message])
-                if arguments.contains("-BaladyLADemoArrived"), tick >= 2 {
-                    timer.invalidate()
-                    center.post(name: NotificationNames.stateChanged, object: nil, userInfo: ["state": "finished"])
-                    return
-                }
-                if distanceMm <= 0 {
-                    timer.invalidate()
-                    center.post(name: NotificationNames.stateChanged, object: nil, userInfo: ["state": "finished"])
-                    return
-                }
-                center.post(
-                    name: NotificationNames.maneuverTick,
-                    object: nil,
-                    userInfo: [
-                        "distanceMm": distanceMm,
-                        "roadName": "Olaya Street",
-                        "instruction": distanceMm > 600_000 ? "crossroad_right" : "crossroad_left",
-                    ]
-                )
-                center.post(
-                    name: NotificationNames.dashboardTick,
-                    object: nil,
-                    userInfo: [
-                        "duration": durationSec,
-                        "distanceKm": distanceMm / 1_000_000.0 + 2.4,
-                        "arrivalTime": "21:30",
-                        "progress": 1 - distanceMm / 1_200_000,
-                        "trafficShares": [0.45, 0.2, 0.35],
-                        "trafficLevels": [1, 2, 3],
-                    ]
-                )
-                if !isPedestrian {
-                    center.post(
-                        name: NotificationNames.speedTick,
-                        object: nil,
-                        userInfo: [
-                            "speed": 100,
-                            "speedLimit": 110,
-                            "exceeding": false,
-                        ]
-                    )
-                }
-            }
-        }
     }
 
     // MARK: - Channel API (called from NavigationLiveUpdatesChannel, main thread)
@@ -312,14 +225,6 @@ final class NavigationLiveActivityController {
     // MARK: - Activity lifecycle
 
     private func startActivityIfPossible() {
-        // TEMP-DEBUG-BE90-LADEMO diagnostics — remove before merge.
-        NSLog(
-            "BaladyLA: startActivityIfPossible activity=%@ metadata=%@ state=%@ enabled=%d",
-            activity == nil ? "nil" : "exists",
-            metadata == nil ? "nil" : "set",
-            navigationState ?? "nil",
-            ActivityAuthorizationInfo().areActivitiesEnabled ? 1 : 0
-        )
         guard activity == nil,
               let metadata = metadata,
               metadata.enabled,
@@ -348,7 +253,6 @@ final class NavigationLiveActivityController {
             )
             lastContentState = contentState
             lastUpdateTime = Date()
-            NSLog("BaladyLA: Live Activity started id=%@", activity?.id ?? "nil")
         } catch {
             NSLog("NavigationLiveActivityController: failed to start Live Activity: \(error)")
         }
