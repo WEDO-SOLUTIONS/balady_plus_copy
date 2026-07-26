@@ -17,9 +17,10 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 class PenaltyApp extends StatelessWidget {
-  const PenaltyApp({super.key, this.onComplete, this.missesAllowed = 3});
+  const PenaltyApp({super.key, this.onComplete, this.missesAllowed = 3, this.scoreToBeat = 0});
 
   /// Fires once the session ends. Carries goals, misses and the per-kick event
   /// log — the log must be forwarded to `/buildings/{id}/play`, since the
@@ -29,13 +30,17 @@ class PenaltyApp extends StatelessWidget {
   /// Session ends after this many misses (from `/config`, default 3).
   final int missesAllowed;
 
+  /// Saved score of the challenged building, shown in the HUD panel
+  /// ("Score to beat", FD-50). 0 for an unclaimed building.
+  final int scoreToBeat;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Penalty 3D',
       theme: ThemeData.dark(useMaterial3: true),
-      home: PenaltyGamePage(onComplete: onComplete, missesAllowed: missesAllowed),
+      home: PenaltyGamePage(onComplete: onComplete, missesAllowed: missesAllowed, scoreToBeat: scoreToBeat),
     );
   }
 }
@@ -43,10 +48,11 @@ class PenaltyApp extends StatelessWidget {
 enum _PenaltyView { perspective, topDown, miniGame, styles }
 
 class PenaltyGamePage extends StatefulWidget {
-  const PenaltyGamePage({super.key, this.onComplete, this.missesAllowed = 3});
+  const PenaltyGamePage({super.key, this.onComplete, this.missesAllowed = 3, this.scoreToBeat = 0});
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
   final int missesAllowed;
+  final int scoreToBeat;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -54,6 +60,13 @@ class PenaltyGamePage extends StatefulWidget {
 
 class _PenaltyGamePageState extends State<PenaltyGamePage> {
   _PenaltyView _view = _PenaltyView.perspective;
+
+  /// Created once so the HUD panel can listen to the same instance the
+  /// GameWidget renders.
+  late final PenaltyGame _perspectiveGame = PenaltyGame(
+    onComplete: widget.onComplete,
+    missesAllowed: widget.missesAllowed,
+  );
 
   // Crowd-ambience tracks — one is picked at random each time this page
   // opens, so repeat playthroughs don't always hear the same loop. Add more
@@ -121,9 +134,9 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
     switch (_view) {
       case _PenaltyView.perspective:
         body = ClipRect(
-          child: GameWidget<PenaltyGame>.controlled(
+          child: GameWidget<PenaltyGame>(
             key: const ValueKey('penalty-game'),
-            gameFactory: () => PenaltyGame(onComplete: widget.onComplete, missesAllowed: widget.missesAllowed),
+            game: _perspectiveGame,
           ),
         );
         break;
@@ -141,6 +154,15 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
     final content = Stack(
       children: [
         Positioned.fill(child: body),
+        // Info panel per Figma 696:112029 (BRD V2 HUD, FD-48…50): misses
+        // remaining / Scored / Score to beat over the live game.
+        if (_view == _PenaltyView.perspective)
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: _PenaltyHudPanel(game: _perspectiveGame, scoreToBeat: widget.scoreToBeat),
+            ),
+          ),
         if (showModeToolbar)
           SafeArea(
             child: Padding(
@@ -165,6 +187,147 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
     }
     return Material(color: Colors.black, child: content);
   }
+}
+
+/// "Penalty challenge" info panel (Figma 696:112029): dark translucent card
+/// with a gradient hairline on top; three columns — misses remaining (ball =
+/// left, red cross = spent), Scored and Score to beat. Fields per BRD V2
+/// FD-48…50 — no "Attempted"/"Missed" counters.
+class _PenaltyHudPanel extends StatelessWidget {
+  const _PenaltyHudPanel({required this.game, required this.scoreToBeat});
+
+  final PenaltyGame game;
+  final int scoreToBeat;
+
+  static const Color _title = Color(0xFF4ADE80);
+  static const Color _label = Color(0xFF86EFAC);
+  static const Color _caption = Color(0xB386EFAC);
+
+  @override
+  Widget build(BuildContext context) => Container(
+    margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+    clipBehavior: Clip.antiAlias,
+    decoration: BoxDecoration(
+      color: const Color(0xCC0A1424),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: const Color(0x2934D399)),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Gradient hairline along the top edge (purple → green in the design).
+        Container(
+          height: 2,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: [Color(0xFF7C3AED), Color(0xFF22C55E)]),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Penalty challenge',
+                style: TextStyle(color: _title, fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: game.missesNotifier,
+                      builder: (_, misses, _) {
+                        final remaining = (game.missesAllowed - misses).clamp(0, game.missesAllowed);
+                        return _HudColumn(
+                          label: 'misses remaining',
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              for (var i = 0; i < remaining; i++)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2),
+                                  child: Text('⚽', style: TextStyle(fontSize: 15)),
+                                ),
+                              for (var i = 0; i < misses; i++)
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 2),
+                                  child: Text('❌', style: TextStyle(fontSize: 14)),
+                                ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: game.goalsNotifier,
+                      builder: (_, goals, _) => _HudColumn(
+                        label: 'Scored',
+                        child: _HudScore(value: goals),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: _HudColumn(
+                      label: 'Score to beat',
+                      child: _HudScore(value: scoreToBeat),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+class _HudColumn extends StatelessWidget {
+  const _HudColumn({required this.label, required this.child});
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        label,
+        style: const TextStyle(color: _PenaltyHudPanel._label, fontSize: 12, fontWeight: FontWeight.w500),
+      ),
+      const SizedBox(height: 6),
+      child,
+    ],
+  );
+}
+
+class _HudScore extends StatelessWidget {
+  const _HudScore({required this.value});
+
+  final int value;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        '$value',
+        style: const TextStyle(
+          color: _PenaltyHudPanel._title,
+          fontSize: 24,
+          fontWeight: FontWeight.w800,
+          height: 1,
+        ),
+      ),
+      const SizedBox(height: 2),
+      const Text('goals', style: TextStyle(color: _PenaltyHudPanel._caption, fontSize: 11)),
+    ],
+  );
 }
 
 class _PenaltyModeToolbar extends StatelessWidget {
@@ -1024,8 +1187,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// Session ends after this many misses (BRD rule; from `/config`).
   final int missesAllowed;
 
-  /// Hard upper bound on shots (HUD renders this many attempt pips); the
-  /// session usually ends earlier on the [missesAllowed]-th miss.
+  /// Live counters for the Flutter HUD panel overlaying the game
+  /// (Figma 696:112029): goals scored and misses spent so far.
+  final ValueNotifier<int> goalsNotifier = ValueNotifier(0);
+  final ValueNotifier<int> missesNotifier = ValueNotifier(0);
+
+  /// Hard upper bound on shots; the session usually ends earlier on the
+  /// [missesAllowed]-th miss.
   static const int _maxAttempts = 5;
 
   /// Per-kick log + a monotonic clock, submitted to the backend which
@@ -1453,11 +1621,19 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       TifoKickEvent(index: _events.length, scored: scored, atMs: _sessionClock.elapsedMilliseconds),
     );
     final misses = _shotHistory.where((s) => s != _ShotState.goal).length;
+    goalsNotifier.value = _goals;
+    missesNotifier.value = misses;
+    logger.log(
+      '[tifo-game] kick #${_shotHistory.length}: ${state.name} → scored=$_goals '
+      'misses=$misses/$missesAllowed',
+    );
 
     // End on the Nth miss (BRD) or when the attempt cap is hit, whichever
     // comes first.
     if (!_completed && (misses >= missesAllowed || _shotHistory.length >= _maxAttempts)) {
       _completed = true;
+      final reason = misses >= missesAllowed ? 'miss limit' : 'attempt cap ($_maxAttempts)';
+      logger.log('[tifo-game] session ended by $reason: scored=$_goals misses=$misses shots=${_shotHistory.length}');
       onComplete?.call(TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events)));
     }
   }
@@ -2048,7 +2224,8 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawHud(Canvas canvas) {
-    _drawAttemptDots(canvas);
+    // Counters live in the Flutter info panel (_PenaltyHudPanel) — only the
+    // GOAL!/SAVE!/MISS! flash is still drawn in-canvas.
     if (_message.isEmpty) {
       return;
     }
@@ -2065,42 +2242,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       anchor: Anchor.center,
     );
     canvas.restore();
-  }
-
-  /// Five result dots near the top of the stage:
-  ///   * white  — attempt not taken yet
-  ///   * red    — saved or missed
-  ///   * green  — goal
-  void _drawAttemptDots(Canvas canvas) {
-    const radius = 5.0;
-    const spacing = 7.0;
-    final totalWidth = _maxAttempts * (radius * 2) + (_maxAttempts - 1) * spacing;
-    final startX = _stageRect.center.dx - totalWidth / 2 + radius;
-    // Push below the status bar / notch area. `_stageRect` covers the whole
-    // canvas so we can't pull MediaQuery padding here — pick a generous
-    // fixed offset (~status bar + 12 px breathing room).
-    final y = _stageRect.top + math.max(56.0, _stageRect.height * 0.07);
-
-    final fill = Paint()..style = PaintingStyle.fill;
-    final ring = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..color = Colors.black.withValues(alpha: 0.45);
-
-    for (var i = 0; i < _maxAttempts; i++) {
-      final cx = startX + i * (radius * 2 + spacing);
-      final Color color;
-      if (i >= _shotHistory.length) {
-        color = Colors.white;
-      } else if (_shotHistory[i] == _ShotState.goal) {
-        color = const Color(0xFF22C55E);
-      } else {
-        color = const Color(0xFFEF4444);
-      }
-      fill.color = color;
-      canvas.drawCircle(Offset(cx, y), radius, fill);
-      canvas.drawCircle(Offset(cx, y), radius, ring);
-    }
   }
 
   void _drawStageBorder(Canvas canvas) {

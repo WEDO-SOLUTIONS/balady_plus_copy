@@ -12,6 +12,7 @@ import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Opens the capture sheet for [building] on the root navigator, so it floats
 /// above the map regardless of who triggered it (a polygon tap from the map
@@ -278,7 +279,14 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return;
     }
     if (!ready) {
-      setState(() => _isBusy = false);
+      // Surface WHY: the gate walk bails silently (cancelled login, skipped
+      // tutorial, "Maybe Later"), and a button that just goes quiet reads as
+      // "Challenge / mock capture is broken".
+      final step = ref.read(tifoSessionProvider).nextStep;
+      setState(() {
+        _isBusy = false;
+        _error = 'Not play-ready — unmet step: ${step.name}';
+      });
       return;
     }
     await _startAndPlay();
@@ -325,6 +333,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
           fullscreenDialog: true,
           builder: (_) => PenaltyApp(
             missesAllowed: missesAllowed,
+            scoreToBeat: _building.scoreToBeat,
             onComplete: (outcome) {
               if (handled) {
                 return;
@@ -346,6 +355,12 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // fires, this State is already disposed and `ref` would throw.
     final container = _container ?? ProviderScope.containerOf(rootNavigatorKey.currentContext!, listen: false);
     final api = container.read(tifoApiProvider);
+    // TifoApi owns a private Dio, so these calls don't show up in the app's
+    // http logger — log the submit here or the capture loop is invisible.
+    logger.log(
+      '[tifo] submit ${_building.id}: score=${outcome.goals} misses=${outcome.misses} '
+      'events=${outcome.events.length} scoreToBeat=${_building.scoreToBeat}',
+    );
     try {
       final result = await api.submitPlay(
         buildingId: _building.id,
@@ -353,6 +368,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
         score: outcome.goals,
         events: outcome.events.map((e) => e.toJson()).toList(),
       );
+      logger.log('[tifo] submit result: outcome=${result.outcome.name} yourScore=${result.yourScore}');
       // Reflect capture immediately using the player's own club; the next
       // viewport refresh reconciles from the server regardless.
       if (result.isWin) {
@@ -396,7 +412,14 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return;
     }
     if (!ready) {
-      setState(() => _isBusy = false);
+      // Surface WHY: the gate walk bails silently (cancelled login, skipped
+      // tutorial, "Maybe Later"), and a button that just goes quiet reads as
+      // "Challenge / mock capture is broken".
+      final step = ref.read(tifoSessionProvider).nextStep;
+      setState(() {
+        _isBusy = false;
+        _error = 'Not play-ready — unmet step: ${step.name}';
+      });
       return;
     }
 
