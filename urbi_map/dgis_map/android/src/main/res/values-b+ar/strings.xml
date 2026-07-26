@@ -37,6 +37,7 @@
 
   <!-- Common -->
   <string name="app">بلدي</string>
+  <string name="balady_maps">خرائط بلدي+</string>
   <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>
   <string name="you_dont_seem_to_have_internet_description">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
   <string name="meter">م</string>

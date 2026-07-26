@@ -37,6 +37,7 @@
 
   <!-- Common -->
   <string name="app">Balady</string>
+  <string name="balady_maps">Balady+ Maps</string>
   <string name="driving_notification_title">Driving with Balady</string>
   <string name="you_dont_seem_to_have_internet_description">You don\'t seem to have internet connection. Please check the connection</string>
   <string name="meter">m</string>

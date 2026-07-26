@@ -173,6 +173,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
         configuration.setLocale(locale)
         configuration.setLayoutDirection(locale)
         carContext.resources.updateConfiguration(configuration, carContext.resources.displayMetrics)
+        customRenderer.label = carContext.getString(com.dgis.map.R.string.balady_maps)
         carContext.getCarService(AppManager::class.java).invalidate()
     }
 
