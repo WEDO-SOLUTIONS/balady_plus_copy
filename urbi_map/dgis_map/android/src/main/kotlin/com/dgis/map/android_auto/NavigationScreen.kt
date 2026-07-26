@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
@@ -50,6 +51,7 @@ import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -57,7 +59,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.platform.Locale as SdkLocale
@@ -88,7 +89,14 @@ class NavigationScreen(
     private val appManager: AppManager
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
-    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    // The handler is what keeps a failure here from becoming a process kill: without one, an
+    // exception escaping a coroutine of this scope reaches the thread's default uncaught handler.
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Log.e(TAG, "Unhandled error in NavigationScreen coroutine", throwable)
+    }
+    private val coroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Main + coroutineExceptionHandler)
+    private val mainHandler = Handler(Looper.getMainLooper())
     private val locationManager: LocationManager =
         carContext.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
 
@@ -219,13 +227,23 @@ class NavigationScreen(
 
         getFavourites()
 
-        favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
-            for (favouritesMessage in FavouritesUpdateNotifier.events) {
-                withContext(Dispatchers.Main) {
+        // Collected on the screen's own main-thread scope: everything downstream touches
+        // ScreenManager, which is @MainThread. A detached CoroutineScope(Dispatchers.Default) here
+        // was a root coroutine with no exception handler, so anything that threw while handling a
+        // favourites update reached the default uncaught handler and killed the whole process —
+        // which on Android Auto means the phone app disappears and the host reports
+        // "encountered an unexpected error".
+        favouritesUpdateJob = coroutineScope.launch {
+            FavouritesUpdateNotifier.events.collect { favouritesMessage ->
+                try {
                     handleFavouritesMessage(favouritesMessage) {
                         favourites = it
-                        tryToShowFavourites(forceUpdate = true)
+                        if (mapController.isMapReady) {
+                            tryToShowFavourites(forceUpdate = true)
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to apply favourites update", e)
                 }
             }
         }
@@ -320,7 +338,7 @@ class NavigationScreen(
             }
 
             NavigationState.FINISHED -> {
-                CoroutineScope(Dispatchers.Main).launch {
+                coroutineScope.launch {
                     mapController.showMyLocation()
                 }
                 customRenderer.clear()
@@ -328,7 +346,7 @@ class NavigationScreen(
             }
 
             NavigationState.DISABLED -> {
-                CoroutineScope(Dispatchers.Main).launch {
+                coroutineScope.launch {
                     mapController.showMyLocation()
                 }
                 customRenderer.clear()
@@ -530,13 +548,13 @@ class NavigationScreen(
         if (!bySystem) {
             tryToShowFavourites()
         } else {
-            CoroutineScope(Dispatchers.Default).launch {
+            // Scoped to the screen (and already on Dispatchers.Main) so the delayed screen-stack
+            // change cannot outlive the session or escape as an uncaught exception.
+            coroutineScope.launch {
                 // We should wait until the system completes the state changes
                 delay(800)
                 if (lifecycle.currentState == Lifecycle.State.RESUMED) {
-                    withContext(Dispatchers.Main) {
-                        tryToShowFavourites()
-                    }
+                    tryToShowFavourites()
                 }
             }
         }
@@ -706,8 +724,11 @@ class NavigationScreen(
         favourites: FavouritesStateMessage?,
         onResult: (FavouritesParams?) -> Unit,
     ) {
+        // Every onResult below goes through runOnMain: this is also called straight from a Pigeon
+        // reply callback (getFavourites), where a throw would land on the platform thread with no
+        // handler and take the process down.
         if (favourites == null) {
-            onResult(null)
+            runOnMain { onResult(null) }
             return
         }
 
@@ -715,7 +736,7 @@ class NavigationScreen(
         val home = favourites.home
         val work = favourites.work
         if (items.isEmpty() && home == null && work == null) {
-            onResult(FavouritesParams())
+            runOnMain { onResult(FavouritesParams()) }
             return
         }
 
@@ -733,56 +754,110 @@ class NavigationScreen(
                     .sortedBy { it.first }
                     .map { it.second }
             }
-            .thenAccept { results ->
-                onResult(
-                    FavouritesParams(
-                        home = home?.toFavouriteItem(),
-                        work = work?.toFavouriteItem(),
-                        items = results
-                    )
-                )
-            }
-    }
-
-
-    fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
-        val locale = mapController.getLocale()
-        mapController.searchByDirectoryObjectIdWithLocale(
-            DgisObjectId(objectId = item.id.toLong()),
-            SdkLocale(locale.language, "SA"),
-            resultCallback = { directoryObject ->
-                if (directoryObject == null) {
-                    onResult(item.toFavouriteItem())
-                    return@searchByDirectoryObjectIdWithLocale
-                }
-
-                hostFlutterApi.getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+            // whenComplete + runOnMain, not thenAccept: these futures are completed from 2GIS SDK
+            // and Pigeon reply callbacks, so the continuation is not guaranteed to run on the main
+            // thread — and onResult ends up in ScreenManager, which throws IllegalStateException
+            // off the main thread. A thenAccept would also have swallowed that exception into the
+            // dependent future, silently dropping the update.
+            .whenComplete { results, error ->
+                runOnMain {
+                    if (error != null || results == null) {
+                        Log.e(TAG, "Failed to resolve favourites for Android Auto", error)
+                        return@runOnMain
+                    }
                     onResult(
-                        FavouriteItem(
-                            id = item.id,
-                            title = directoryObject.title,
-                            subtitle = directoryObject.makeAddressString(),
-                            coordinates = GeoPoint(
-                                latitude = item.coordinates.latitude,
-                                longitude = item.coordinates.longitude
-                            ),
-                            iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                        FavouritesParams(
+                            home = home?.toFavouriteItem(),
+                            work = work?.toFavouriteItem(),
+                            items = results
                         )
                     )
                 }
-            })
+            }
+    }
+
+    /// Runs [block] on the main thread, inline when already there. Never lets an exception escape:
+    /// callers are SDK/Pigeon callbacks and detached continuations where a throw would either kill
+    /// the process or vanish without a trace.
+    private fun runOnMain(block: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            try {
+                block()
+            } catch (e: Exception) {
+                Log.e(TAG, "Favourites update failed on main thread", e)
+            }
+        } else {
+            mainHandler.post {
+                try {
+                    block()
+                } catch (e: Exception) {
+                    Log.e(TAG, "Favourites update failed on main thread", e)
+                }
+            }
+        }
+    }
+
+    fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
+        val locale = mapController.getLocale()
+        // The SDK search is a native call on a handle that CarMapController closes with the
+        // session; a favourites update racing that teardown must not take the process down.
+        try {
+            mapController.searchByDirectoryObjectIdWithLocale(
+                DgisObjectId(objectId = item.id.toLong()),
+                SdkLocale(locale.language, "SA"),
+                resultCallback = { directoryObject ->
+                    if (directoryObject == null) {
+                        onResult(item.toFavouriteItem())
+                        return@searchByDirectoryObjectIdWithLocale
+                    }
+
+                    hostFlutterApi.getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+                        onResult(
+                            FavouriteItem(
+                                id = item.id,
+                                title = directoryObject.title,
+                                subtitle = directoryObject.makeAddressString(),
+                                coordinates = GeoPoint(
+                                    latitude = item.coordinates.latitude,
+                                    longitude = item.coordinates.longitude
+                                ),
+                                iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                            )
+                        )
+                    }
+                },
+                errorCallback = { e ->
+                    Log.e(TAG, "Favourite lookup failed for ${item.id}", e)
+                    onResult(item.toFavouriteItem())
+                },
+            )
+        } catch (e: Exception) {
+            // Must still report a result, otherwise the CompletableFuture for this item never
+            // completes and the whole favourites update stalls forever.
+            Log.e(TAG, "Favourite lookup could not be started for ${item.id}", e)
+            onResult(item.toFavouriteItem())
+        }
     }
 
     private fun tryToShowFavourites(forceUpdate: Boolean = false) {
         val favourites = this.favourites
         if (favourites == null) return
 
+        // Reached from async SDK/Pigeon callbacks, which can land after the session is torn down.
+        // ScreenManager.push() has no DESTROYED guard of its own (unlike pop()), so check here.
+        if (lifecycle.currentState == Lifecycle.State.DESTROYED) return
+
         if (screenManager.top is NavigationScreen && !isNavigation) {
             screenManager.push(
                 FavouritesPreviewScreen(carContext, mapController, favourites)
             )
         } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
+            // Replace rather than plain pop(): popping alone dropped the user back to the
+            // navigation screen on every favourites change instead of showing the new data.
             screenManager.pop()
+            screenManager.push(
+                FavouritesPreviewScreen(carContext, mapController, favourites)
+            )
         } else if (screenManager.top is FavouritesScreen) {
             screenManager.pop()
             screenManager.push(
@@ -839,6 +914,7 @@ class NavigationScreen(
     }
 
     private companion object {
+        const val TAG = "NavigationScreen"
         const val endTripAlertId = 0
         const val betterRouteAlertId = 1
 
