@@ -26,17 +26,17 @@ pubrefresh: clean pubget
 pubget:
     #!/bin/bash
     set -euo pipefail
-    fvm flutter pub get
+    flutter pub get --offline
     cd mapness
-    fvm flutter pub get
+    flutter pub get --offline
     cd ..
 
 clean:
     #!/bin/bash
     set -euo pipefail
-    fvm flutter clean
+    flutter clean
     cd mapness
-    fvm flutter clean
+    flutter clean
 
 delete_codegen:
     fd -HI -tf '\.(g|freezed)\.dart' -X rm
@@ -49,7 +49,7 @@ locale_gen:
     localazy download
     cd mapness
     mkdir -p lib/l10n
-    fvm flutter gen-l10n # --arb-dir=lib/src/l10n/ --template-arb-file=intl_ru.arb --output-localization-file=generated/ --output-class=AppLocalization --output-dir=lib/src/l10n/generated/app_localizations --no-synthetic-package
+    flutter gen-l10n # --arb-dir=lib/src/l10n/ --template-arb-file=intl_ru.arb --output-localization-file=generated/ --output-class=AppLocalization --output-dir=lib/src/l10n/generated/app_localizations --no-synthetic-package
     print_style '' 'yellow' '< locale ready '
 
 codegen:
@@ -57,7 +57,7 @@ codegen:
     set -euo pipefail
     print_style '' 'yellow' '> generate code...'
     cd mapness
-    fvm dart run build_runner build --delete-conflicting-outputs --force-jit || true
+    dart run build_runner build --delete-conflicting-outputs --force-jit || true
     print_style '' 'yellow' '< code generated'
 
 codegen_dir path:
@@ -65,14 +65,14 @@ codegen_dir path:
     set -euo pipefail
     print_style '' 'yellow' '> generate code for: {{path}}'
     cd mapness
-    fvm dart run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs --force-jit || true
+    dart run build_runner build --build-filter="{{path}}" --delete-conflicting-outputs --force-jit || true
     print_style '' 'yellow' '< code generated: {{path}}'
 
 codegen-watch:
     #!/bin/bash
     set -euo pipefail
     cd mapness
-    fvm dart run build_runner watch --delete-conflicting-outputs --force-jit || true
+    dart run build_runner watch --delete-conflicting-outputs --force-jit || true
 
 open_built:
     print_style '' 'yellow' 'Open built folder with:'
@@ -84,27 +84,27 @@ build_pigeon:
     set -euo pipefail
 
     cd urbi_map/dgis_map
-    fvm flutter pub get
-    fvm dart run build_runner build --delete-conflicting-outputs || true
+    flutter pub get --offline
+    dart run build_runner build --delete-conflicting-outputs || true
 
     cd ../dgis_map_platform_interface/
-    fvm flutter pub get
-    fvm dart run build_runner build --delete-conflicting-outputs || true
+    flutter pub get --offline
+    dart run build_runner build --delete-conflicting-outputs || true
 
     print_style '' 'yellow' '> build pigeons...'
     mkdir -p mkdir lib/src/pigeons/ ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/
-    fvm dart pub run pigeon --input pigeons/messages.dart
+    dart pub run pigeon --input pigeons/messages.dart
     print_style '' 'yellow' '< pigeons ready'
 
 build_apk_qa:
     #!/bin/bash
     set -euo pipefail
     print_style '' 'yellow' '> build apk...'
-    fvm flutter build apk --flavor stg --target lib/main_stg.dart --release  {{ dart_define }}
+    flutter build apk --flavor stg --target lib/main_stg.dart --release  {{ dart_define }}
     print_style '' 'yellow' '< build ready'
 
 run:
-    fvm flutter run --target lib/main_dev.dart
+    flutter run --target lib/main_dev.dart
 
 protoc:
     #!/bin/bash
@@ -159,7 +159,7 @@ ios_setup:
     else
         print_style '' 'yellow' '> pod install failed, trying to fix...'
         just pubget
-        fvm flutter precache --ios
+        flutter precache --ios
         rm -f Podfile.lock
         rm -f ${HOME}/.cocoapods/repos/cocoapods/.git/index.lock
         pod repo update || true
@@ -196,7 +196,7 @@ codegen_cached:
     set -euo pipefail
     print_style '' 'yellow' '> generate code...'
     cd mapness
-    fvm dart run cached_build_runner build || true
+    dart run cached_build_runner build || true
     print_style '' 'yellow' '< code generated'
 
 bump_version:

@@ -101,6 +101,7 @@ import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/widgets/debug_overlay/debug_auto_nav.dart'; // TEMP-DEBUG-BE90-AUTONAV — remove before merge
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
@@ -195,7 +196,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   StreamSubscription? _navigationEventsListener;
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
-    return language == Language.arabic ? 'packages/balady_design_system/IBMPlexSansArabic' : 'packages/balady_uikit/Golos';
+    return language == Language.arabic
+        ? 'packages/balady_design_system/IBMPlexSansArabic'
+        : 'packages/balady_uikit/Golos';
   }
 
   @override
@@ -270,6 +273,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       if (mounted) {
         _themeChanged(isDark: initialDark);
       }
+
+      unawaited(debugAutoStartCarNavigation(ref)); // TEMP-DEBUG-BE90-AUTONAV — remove before merge
     });
 
     // call the openAppLink when user click on notification have deep link

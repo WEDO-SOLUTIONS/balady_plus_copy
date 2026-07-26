@@ -7,18 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D65EAD9A0BAA54E5B02004E /* EndTripIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */; };
+		0F222E031D48356CDE178CAE /* NavigationLiveUpdatesChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D356F2DE1748290B504247 /* NavigationLiveUpdatesChannel.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		A1B2C3D4E5F60718293A4B5D /* AudioCoordinationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */; };
-		B2C3D4E5F60718293A4B5D6E /* AppIconQuickActionChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */; };
-		C3D4E5F60718293A4B5D6E70 /* NativeRadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */; };
 		1ED85E2D2A8A4C8000187FA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1ED85E2C2A8A4C8000187FA6 /* GoogleService-Info.plist */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		40B53BCA2DE841D20027D851 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 40B53BC82DE841D20027D851 /* Localizable.strings */; };
-		QA1PLIST000000000000004 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = QA1PLIST000000000000001 /* InfoPlist.strings */; };
 		44C538792A6AC53C003D7D2B /* dgissdk.key in Resources */ = {isa = PBXBuildFile; fileRef = 44C538782A6AC53C003D7D2B /* dgissdk.key */; };
 		47032401C871141FF2BECA70 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4E2F9F997578FE830D684AC /* Pods_Runner.framework */; };
+		54AEAB668989B226D3AF414A /* EndTripIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */; };
 		62ACA24D86ACB71A34F27077 /* Pods_InsiderNotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 058332C35F70E5A4D4547F11 /* Pods_InsiderNotificationContent.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		7EACA3219970F7A322014F81 /* NavigationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B5CE897C7083D79ED0EE3B /* NavigationLiveActivity.swift */; };
+		846A09F77B7902CE5C13E21F /* NavigationLiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97946A2D7F8CC38F1AF1241E /* NavigationLiveActivityController.swift */; };
+		888EA64F5EB04AE505763F01 /* NavigationActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CC4B028195327116501956 /* NavigationActivityAttributes.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -26,6 +28,10 @@
 		98D4B5EA2DA524A700C47939 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D4B5E82DA524A700C47939 /* NotificationViewController.swift */; };
 		98D4B5EC2DA524A700C47939 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98D4B5E72DA524A700C47939 /* MainInterface.storyboard */; };
 		98F4D4E12C6CB1B900CFF6EB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F4D4E02C6CB1B900CFF6EB /* SceneDelegate.swift */; };
+		A1B2C3D4E5F60718293A4B5D /* AudioCoordinationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */; };
+		B2C3D4E5F60718293A4B5D6E /* AppIconQuickActionChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */; };
+		B7ABA527CCFEA163C8D57809 /* NavigationActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CC4B028195327116501956 /* NavigationActivityAttributes.swift */; };
+		C3D4E5F60718293A4B5D6E70 /* NativeRadioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */; };
 		C52373F02CE361F000D6DD2C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C52373EF2CE361F000D6DD2C /* AdSupport.framework */; };
 		C52373F22CE361FC00D6DD2C /* AdServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C52373F12CE361FC00D6DD2C /* AdServices.framework */; };
 		C52373F42CE3620700D6DD2C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C52373F32CE3620700D6DD2C /* StoreKit.framework */; };
@@ -43,6 +49,7 @@
 		F6FE3E092D1126020011838B /* AppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6FE3E082D1126020011838B /* AppIntent.swift */; };
 		F6FE3E0B2D1126030011838B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6FE3E0A2D1126030011838B /* Assets.xcassets */; };
 		F6FE3E0F2D1126030011838B /* MovingViolationsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F6FE3DFC2D1126020011838B /* MovingViolationsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		QA1PLIST000000000000004 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = QA1PLIST000000000000001 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +103,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		00CC4B028195327116501956 /* NavigationActivityAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NavigationActivityAttributes.swift; sourceTree = "<group>"; };
 		012321048511827132D93D0A /* Pods-Runner.release-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release-prod.xcconfig"; sourceTree = "<group>"; };
 		058332C35F70E5A4D4547F11 /* Pods_InsiderNotificationContent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InsiderNotificationContent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
@@ -108,33 +116,32 @@
 		223D8F2E8E742A5993FBDADD /* Pods-Runner.debug-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-prod.xcconfig"; sourceTree = "<group>"; };
 		223FE1D1E437CC5672761639 /* Pods-InsiderNotificationContent.release-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.release-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.release-pre.xcconfig"; sourceTree = "<group>"; };
 		2BF5CB9C7CE6A0AC02972DC2 /* Pods-Runner.profile-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-prod.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-prod.xcconfig"; sourceTree = "<group>"; };
+		33B5CE897C7083D79ED0EE3B /* NavigationLiveActivity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NavigationLiveActivity.swift; sourceTree = "<group>"; };
 		380A6D0C4382EC0E557E55A9 /* Pods-InsiderNotificationContent.debug-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.debug-prod.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.debug-prod.xcconfig"; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		3E892C2484B56A37F8F70B1E /* Pods-Runner.release-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release-pre.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release-pre.xcconfig"; sourceTree = "<group>"; };
 		3F71E3D7D16A9A2B494255A0 /* Pods-Runner.release-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release-dev.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release-dev.xcconfig"; sourceTree = "<group>"; };
 		40B53BC92DE841D20027D851 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		40B53BCC2DE8438E0027D851 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
-		QA1PLIST000000000000002 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		QA1PLIST000000000000003 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4123C12926E377DBC4974293 /* Pods-InsiderNotificationService.release-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.release-prod.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.release-prod.xcconfig"; sourceTree = "<group>"; };
 		44C538782A6AC53C003D7D2B /* dgissdk.key */ = {isa = PBXFileReference; lastKnownFileType = text; path = dgissdk.key; sourceTree = "<group>"; };
 		471017598023697E3F1CC360 /* Pods-InsiderNotificationService.release-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.release-stg.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.release-stg.xcconfig"; sourceTree = "<group>"; };
 		5380D8195D5CEF39A86CD451 /* Pods_InsiderNotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InsiderNotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		55FF1A6F3855A704E50495F7 /* Pods-InsiderNotificationService.debug-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.debug-stg.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.debug-stg.xcconfig"; sourceTree = "<group>"; };
 		65A655D72DC82167394A1533 /* Pods-Runner.release-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release-stg.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release-stg.xcconfig"; sourceTree = "<group>"; };
+		65D356F2DE1748290B504247 /* NavigationLiveUpdatesChannel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NavigationLiveUpdatesChannel.swift; sourceTree = "<group>"; };
 		711639421176DC42A763CD0F /* Pods-InsiderNotificationService.profile-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.profile-dev.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.profile-dev.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCoordinationManager.swift; sourceTree = "<group>"; };
-		B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconQuickActionChannel.swift; sourceTree = "<group>"; };
-		C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeRadioPlayer.swift; sourceTree = "<group>"; };
 		7A79FDAEAB8227BD8CC1ACCB /* Pods-InsiderNotificationContent.release-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.release-stg.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.release-stg.xcconfig"; sourceTree = "<group>"; };
+		7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EndTripIntent.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		8D949DB78817222063156662 /* Pods-Runner.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-pre.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-pre.xcconfig"; sourceTree = "<group>"; };
 		923353CF73393E89D2C7421C /* Pods-InsiderNotificationContent.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.debug-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.debug-pre.xcconfig"; sourceTree = "<group>"; };
 		92DADF9997A4EBCDC5EB0A46 /* Pods-InsiderNotificationService.profile-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.profile-stg.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.profile-stg.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
+		97946A2D7F8CC38F1AF1241E /* NavigationLiveActivityController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NavigationLiveActivityController.swift; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		97C146FB1CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -150,9 +157,12 @@
 		98F4D4E02C6CB1B900CFF6EB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		A0E7147E5B50A57703A55D46 /* Pods-InsiderNotificationContent.release-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.release-dev.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.release-dev.xcconfig"; sourceTree = "<group>"; };
 		A18299E3A6754B9DEA918E02 /* Pods-InsiderNotificationService.profile-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.profile-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.profile-pre.xcconfig"; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B5C /* AudioCoordinationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCoordinationManager.swift; sourceTree = "<group>"; };
 		A1C3B1CC780403165714FDE6 /* Pods-InsiderNotificationService.profile-prod.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.profile-prod.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.profile-prod.xcconfig"; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B5D6F /* AppIconQuickActionChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconQuickActionChannel.swift; sourceTree = "<group>"; };
 		B99C567696B56908BFE3F2E7 /* Pods-InsiderNotificationContent.profile-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.profile-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.profile-pre.xcconfig"; sourceTree = "<group>"; };
 		C27554A0D0245C581231BB34 /* Pods-InsiderNotificationService.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.debug-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.debug-pre.xcconfig"; sourceTree = "<group>"; };
+		C3D4E5F60718293A4B5D6E71 /* NativeRadioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeRadioPlayer.swift; sourceTree = "<group>"; };
 		C52373EF2CE361F000D6DD2C /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		C52373F12CE361FC00D6DD2C /* AdServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdServices.framework; path = System/Library/Frameworks/AdServices.framework; sourceTree = SDKROOT; };
 		C52373F32CE3620700D6DD2C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -184,6 +194,8 @@
 		F6FE3E0A2D1126030011838B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F6FE3E0C2D1126030011838B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F6FE3E1E2D1146470011838B /* MovingViolationsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovingViolationsExtension.entitlements; sourceTree = "<group>"; };
+		QA1PLIST000000000000002 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		QA1PLIST000000000000003 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -314,6 +326,7 @@
 				97C146EF1CF9000F007C117D /* Products */,
 				8C22C2AEAEB985D937E50078 /* Pods */,
 				3D68B916203992069536C4FA /* Frameworks */,
+				D6E00B65E97857A366BEEC82 /* Shared */,
 			);
 			sourceTree = "<group>";
 		};
@@ -347,6 +360,7 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 				40B53BC82DE841D20027D851 /* Localizable.strings */,
 				QA1PLIST000000000000001 /* InfoPlist.strings */,
+				CC9CF6091B5B9C7CA563B4C3 /* LiveActivity */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -372,6 +386,26 @@
 			path = InsiderNotificationContent;
 			sourceTree = "<group>";
 		};
+		CC9CF6091B5B9C7CA563B4C3 /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				97946A2D7F8CC38F1AF1241E /* NavigationLiveActivityController.swift */,
+				65D356F2DE1748290B504247 /* NavigationLiveUpdatesChannel.swift */,
+			);
+			name = LiveActivity;
+			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		D6E00B65E97857A366BEEC82 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				00CC4B028195327116501956 /* NavigationActivityAttributes.swift */,
+				7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */,
+			);
+			name = Shared;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		F6FE3E012D1126020011838B /* MovingViolations */ = {
 			isa = PBXGroup;
 			children = (
@@ -381,6 +415,7 @@
 				F6FE3E082D1126020011838B /* AppIntent.swift */,
 				F6FE3E0A2D1126030011838B /* Assets.xcassets */,
 				F6FE3E0C2D1126030011838B /* Info.plist */,
+				33B5CE897C7083D79ED0EE3B /* NavigationLiveActivity.swift */,
 			);
 			path = MovingViolations;
 			sourceTree = "<group>";
@@ -737,6 +772,10 @@
 				C3D4E5F60718293A4B5D6E70 /* NativeRadioPlayer.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				98F4D4E12C6CB1B900CFF6EB /* SceneDelegate.swift in Sources */,
+				B7ABA527CCFEA163C8D57809 /* NavigationActivityAttributes.swift in Sources */,
+				54AEAB668989B226D3AF414A /* EndTripIntent.swift in Sources */,
+				846A09F77B7902CE5C13E21F /* NavigationLiveActivityController.swift in Sources */,
+				0F222E031D48356CDE178CAE /* NavigationLiveUpdatesChannel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -764,6 +803,9 @@
 				F6FE3E092D1126020011838B /* AppIntent.swift in Sources */,
 				F6FE3E052D1126020011838B /* MovingViolationsLiveActivity.swift in Sources */,
 				F6FE3E032D1126020011838B /* MovingViolationsBundle.swift in Sources */,
+				888EA64F5EB04AE505763F01 /* NavigationActivityAttributes.swift in Sources */,
+				0D65EAD9A0BAA54E5B02004E /* EndTripIntent.swift in Sources */,
+				7EACA3219970F7A322014F81 /* NavigationLiveActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -797,15 +839,6 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		QA1PLIST000000000000001 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				QA1PLIST000000000000002 /* en */,
-				QA1PLIST000000000000003 /* ar */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		97C146FA1CF9000F007C117D /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -828,6 +861,15 @@
 				98D4B5E62DA524A700C47939 /* Base */,
 			);
 			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		QA1PLIST000000000000001 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				QA1PLIST000000000000002 /* en */,
+				QA1PLIST000000000000003 /* ar */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

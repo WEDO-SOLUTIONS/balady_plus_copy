@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import com.dgis.map.live_updates.NavEta
+import com.dgis.map.live_updates.NavLiveEventBus
 import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
@@ -67,14 +69,21 @@ class DashboardControlModel(
 
         val arrival = Calendar.getInstance()
         arrival.add(Calendar.SECOND, duration.inSeconds.toInt())
-        
+        val arrivalTime = dateFormat.format(arrival.time)
+
         eventSink.success(
             mapOf(
                 "event" to Events.dashboardEvent.name,
                 "duration" to duration.inSeconds.toInt(),
                 "distance" to distance,
-                "arrivalTime" to dateFormat.format(arrival.time)
+                "arrivalTime" to arrivalTime
             )
+        )
+
+        NavLiveEventBus.eta.value = NavEta(
+            durationSec = duration.inSeconds.toInt(),
+            distanceMeters = distance.toDouble(),
+            arrivalTime = arrivalTime,
         )
     }
 
