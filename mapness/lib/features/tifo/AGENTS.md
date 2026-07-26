@@ -2,8 +2,9 @@
 
 Territory-capture game on the Balady+ map: buildings are claimed by beating a
 penalty-shootout score, districts are tinted by the leading club. BRD digest
-lives in `docs/tifo-brd-v1.2-reference.md` (repo root). Jira: BE-233, branch
-`feat/BE-233/tifo`.
+lives in `docs/tifo-brd-v2-reference.md` (repo root; supersedes the v1.2
+digest — gate order is now tutorial-first, result screen is win/lose with no
+scoreline). Jira: BE-233, branch `feat/BE-233/tifo`.
 Penalty-game deep dive (state, mechanics, sprite pipeline, history):
 [PENALTY_GAME.md](PENALTY_GAME.md).
 

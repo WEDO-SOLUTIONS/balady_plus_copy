@@ -1,5 +1,7 @@
 # Balady TIFO — BRD V1.2 reference
 
+> **SUPERSEDED (2026-07-23) by [tifo-brd-v2-reference.md](tifo-brd-v2-reference.md)** — BRD V2 (page 632619009, 21 Jul 2026) changed the gate order to tutorial-first, confirmed the no-scoreline/no-draw result, reduced building statuses to Available/Blocked, and reshaped the token economy. Kept for history only.
+
 Condensed, engineering-facing digest of **BRD V1.2 "Balady Tifo"** (Confluence space `BM`, page id `611549185`) cross-referenced with the backend contract **API v2.4** (`619446283`) and the **Solution Design Document** (`618594311`).
 
 - **Document version:** 0.2 · **Date:** 8 July 2026 · **Status:** Draft · **Author:** Wafeer Analysis Team.
