@@ -16,7 +16,8 @@ class DgisCarPlayMapView: UIViewController {
     private let mapView: (UIView & IMapView)
     private let cpWindow: CPWindow
     private lazy var speedControl = createSpeedControlView()
-    
+    private lazy var attributionLabel = createAttributionLabel()
+
     private var myLocationControlModel: MyLocationControlModel?
     private var myLocationSource: MyLocationMapObjectSource?
     
@@ -123,13 +124,35 @@ class DgisCarPlayMapView: UIViewController {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         view.addSubview(speedControl.view)
+        view.addSubview(attributionLabel)
+        NSLayoutConstraint.activate([
+            attributionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 12),
+            attributionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
+        ])
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
     }
-    
+
+    override func traitCollectionDidChange(
+        _ previousTraitCollection: UITraitCollection?
+    ) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard traitCollection.userInterfaceStyle
+                  != previousTraitCollection?.userInterfaceStyle
+        else {
+            return
+        }
+
+        updateAttributionLabel()
+    }
+    private func updateAttributionLabel() {
+        attributionLabel.attributedText = makeAttributionText()
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         DgisMapInitializer.shared.getNavigationManager().mapManager.removeMap(map: map)
         mapView.subviews.forEach { $0.removeFromSuperview() }
@@ -140,7 +163,34 @@ class DgisCarPlayMapView: UIViewController {
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
     }
-    
+    private func createAttributionLabel() -> UILabel {
+        let label = UILabel()
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = false
+        label.numberOfLines = 1
+
+        label.attributedText = makeAttributionText()
+
+        return label
+    }
+
+    private func makeAttributionText() -> NSAttributedString {
+        let isDarkMode = traitCollection.userInterfaceStyle == .dark
+
+        return NSAttributedString(
+            string: "baladyMaps".localized,
+            attributes: [
+                .strokeColor: isDarkMode ? UIColor.black : UIColor.white,
+                .foregroundColor: isDarkMode ? UIColor.white : UIColor.black,
+                .strokeWidth: -1,
+                .font: UIFont.systemFont(
+                    ofSize: 16,
+                    weight: .regular
+                ),
+            ]
+        )
+    }
     private func createSpeedControlView() -> (
         view: UIView, updateConstraints: () -> Void
     ) {
