@@ -15,8 +15,8 @@ private let baladyAppURL = URL(string: "https://plus.balady.sa/#/")
 
 /// Design tokens, mirrored from balady_uikit so the widget matches the app.
 private enum NavPalette {
-    /// BaseColors.accent
-    static let accent = Color(red: 0.192, green: 0.804, blue: 0.761)
+    /// accent/default
+    static let accent = Color(red: 0.165, green: 0.702, blue: 0.663)
     /// BaseColors.error
     static let error = Color(red: 0.878, green: 0.216, blue: 0.239)
     /// BaseColors.success
@@ -30,12 +30,13 @@ private enum NavPalette {
     static let softButton = Color.white.opacity(0.16)
 
     /// DGis `TrafficSpeedColor` raw values, coloured as on the map.
+    /// free — accent/default, jam — extra-02/default, congestion — #F63319.
     static func traffic(level: Int) -> Color {
         switch level {
         case 1: return accent
-        case 2: return Color(red: 0.984, green: 0.722, blue: 0.082)
-        case 3: return error
-        case 4: return Color(red: 0.553, green: 0.063, blue: 0.063)
+        case 2: return Color(red: 1.0, green: 0.937, blue: 0.012)
+        case 3: return Color(red: 0.965, green: 0.200, blue: 0.098)
+        case 4: return Color(red: 0.659, green: 0.122, blue: 0.059)
         default: return Color.white.opacity(0.35)
         }
     }
@@ -279,10 +280,14 @@ private struct RouteTimelineView: View {
     let progress: Double
     let isPedestrian: Bool
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     private static let barHeight: CGFloat = 8
     private static let dashWidth: CGFloat = 3
     private static let dashHeight: CGFloat = 12
     private static let dashGap: CGFloat = 2
+    /// The marker overhangs the bar, so the row is as tall as the marker.
+    private static let rowHeight: CGFloat = 24
 
     var body: some View {
         GeometryReader { proxy in
@@ -297,9 +302,9 @@ private struct RouteTimelineView: View {
                 }
                 marker(passed: passed)
             }
-            .frame(width: width, height: Self.dashHeight, alignment: .center)
+            .frame(width: width, height: Self.rowHeight, alignment: .center)
         }
-        .frame(height: Self.dashHeight)
+        .frame(height: Self.rowHeight)
     }
 
     private func trafficBar(width: CGFloat, passed: CGFloat) -> some View {
@@ -344,34 +349,28 @@ private struct RouteTimelineView: View {
                     .frame(width: markerSize, height: markerSize)
                     .background(NavPalette.accent, in: Circle())
             } else {
-                MarkerArrowShape()
-                    .fill(NavPalette.accent)
-                    .frame(width: 9, height: 13)
+                // TransportIcons.locationDirectionNavigator, extracted from the
+                // uikit icon font into the widget's asset catalog.
+                Image("NavigatorArrow")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: markerSize, height: markerSize)
+                    // The glyph points left; turn it to face the direction of travel.
+                    .rotationEffect(.degrees(layoutDirection == .rightToLeft ? 0 : 180))
+                    .foregroundColor(NavPalette.accent)
             }
             Spacer(minLength: 0)
         }
     }
 
-    private var markerSize: CGFloat { isPedestrian ? 18 : 9 }
+    private var markerSize: CGFloat { isPedestrian ? 18 : 24 }
 
     /// Falls back to a single neutral bar until the first traffic tick arrives.
     private var resolvedSegments: [NavigationTrafficSegment] {
         let total = segments.reduce(0) { $0 + $1.share }
         guard total > 0 else { return [NavigationTrafficSegment(share: 1, level: 0)] }
         return segments.map { NavigationTrafficSegment(share: $0.share / total, level: $0.level) }
-    }
-}
-
-/// The teal chevron that rides along the traffic bar.
-private struct MarkerArrowShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.45, y: rect.midY))
-        path.closeSubpath()
-        return path
     }
 }
 

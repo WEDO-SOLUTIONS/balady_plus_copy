@@ -145,9 +145,9 @@ final class NavigationLiveActivityController {
                 distanceMm -= 60_000
                 durationSec -= 4
                 tick += 1
-                // Status pills cycle on their own; `-BaladyLADemoGpsLost` /
-                // `-BaladyLADemoReroute` pin one so it can be eyeballed on the lock
-                // screen (where the app is suspended and the demo timer stops).
+                // `-BaladyLADemoGpsLost` / `-BaladyLADemoReroute` pin a status pill so
+                // it can be eyeballed on the lock screen (where the app is suspended
+                // and the demo timer stops).
                 let arguments = ProcessInfo.processInfo.arguments
                 let message: String
                 if arguments.contains("-BaladyLADemoGpsLost") {
@@ -155,11 +155,7 @@ final class NavigationLiveActivityController {
                 } else if arguments.contains("-BaladyLADemoReroute") {
                     message = "routeResearch"
                 } else {
-                    message = switch tick {
-                    case 5...7: "gpsLost"
-                    case 8...10: "routeResearch"
-                    default: "none"
-                    }
+                    message = "none"
                 }
                 center.post(name: NotificationNames.messageTick, object: nil, userInfo: ["state": message])
                 if arguments.contains("-BaladyLADemoArrived"), tick >= 2 {
