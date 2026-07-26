@@ -28,6 +28,15 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   Timer? _debounce;
   String? _lastBbox;
   bool _districtsDrawn = false;
+
+  /// Camera tilt the player had before the overlay forced the 2D view, so it
+  /// can be restored on [disable]. Null once restored / never tilted.
+  double? _tiltBeforeEnable;
+
+  /// Anything at or below this counts as already flat — the SDK reports tiny
+  /// residual tilts after an animation, and re-animating on those would make
+  /// the camera twitch on every viewport event.
+  static const double _flatTiltEpsilon = 0.5;
   double _zoom = 0;
 
   /// What's currently painted per building id — drives the pointwise diff
@@ -114,6 +123,10 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         // Leave zoom at 0 → districts mode until the first visibleRectEvent.
       }
       logger.log('[tifo-map] enabled: zoom=$_zoom → ${_buildingsMode ? "buildings" : "districts"} mode');
+      // BRD V2 US-05 BR-05: "The map should be shown in 2D view (bird eye
+      // view)". A tilted camera also hides the flat capture polygons behind
+      // the host map's 3D buildings, so this is functional, not just visual.
+      await _forceTopDown(controller);
       // Long-poll building state while the layer is up (diff → pointwise redraw).
       ref.read(tifoBuildingsPollerProvider.notifier).start();
       // Right after enable the map often isn't ready to report its visible area
@@ -158,6 +171,9 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       if (_districtsManager != null) {
         await controller.removeAllPolygons(fromManager: _districtsManager);
       }
+      // The 2D view is a TIFO rule, not the host map's — give the player
+      // their tilted view back when the overlay goes away.
+      await _restoreTilt(controller);
     } catch (_) {
       // Map already gone.
     }
@@ -167,9 +183,57 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   Future<void> _onViewport(VisibleRect rect) async {
     _zoom = rect.zoom;
+    // Keep the game view flat (BR-05). Re-asserted here rather than on a
+    // camera stream: this runs debounced, after the gesture settles, so a
+    // tilt gesture is undone once instead of being fought frame by frame.
+    try {
+      await _forceTopDown(await ref.read(dgisControllerProvider.future));
+    } catch (_) {
+      // Map gone — the redraw below will fail loudly enough.
+    }
     await _applyForViewport(
       '${rect.southWestLon},${rect.southWestLat},${rect.northEastLon},${rect.northEastLat}',
     );
+  }
+
+  /// Flattens the camera to a bird-eye view, remembering the tilt the player
+  /// had so [disable] can hand their 3D view back. No-op when already flat,
+  /// so the debounced re-assert costs one `getCameraPosition` per viewport.
+  Future<void> _forceTopDown(DgisMapController controller) async {
+    try {
+      final pos = await controller.getCameraPosition();
+      if (pos.tilt <= _flatTiltEpsilon) {
+        return;
+      }
+      _tiltBeforeEnable ??= pos.tilt;
+      logger.log('[tifo-map] flattening camera: tilt ${pos.tilt.toStringAsFixed(1)} → 0 (BRD 2D view)');
+      await controller.moveCamera(
+        CameraPositionMessage(point: pos.point, zoom: pos.zoom, tilt: 0, bearing: pos.bearing),
+        0.25,
+        CameraAnimationTypeMessage.linear,
+      );
+    } catch (error) {
+      logger.log('[tifo-map] camera flatten failed: $error');
+    }
+  }
+
+  /// Puts the player's original tilt back when the overlay goes away.
+  Future<void> _restoreTilt(DgisMapController controller) async {
+    final tilt = _tiltBeforeEnable;
+    _tiltBeforeEnable = null;
+    if (tilt == null || tilt <= _flatTiltEpsilon) {
+      return;
+    }
+    try {
+      final pos = await controller.getCameraPosition();
+      await controller.moveCamera(
+        CameraPositionMessage(point: pos.point, zoom: pos.zoom, tilt: tilt, bearing: pos.bearing),
+        0.25,
+        CameraAnimationTypeMessage.linear,
+      );
+    } catch (_) {
+      // Map gone; nothing to restore onto.
+    }
   }
 
   /// Routes the current viewport to the right layer for the zoom level.
