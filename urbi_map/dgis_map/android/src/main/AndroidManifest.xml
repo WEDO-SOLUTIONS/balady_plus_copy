@@ -3,4 +3,15 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <application>
+        <service
+            android:name="com.dgis.map.live_updates.NavigationForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <receiver
+            android:name="com.dgis.map.live_updates.EndTripReceiver"
+            android:exported="false" />
+    </application>
 </manifest>

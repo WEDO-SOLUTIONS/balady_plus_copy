@@ -12,6 +12,12 @@
   <string name="end_trip_alert_title">لقد وصلت</string>
   <string name="end_trip_alert_action">إنهاء الرحلة</string>
 
+  <!-- Navigation live updates (phone ongoing notification) -->
+  <string name="live_update_open_action">فتح في بلدي+</string>
+  <string name="live_update_end_trip_action">إنهاء الرحلة</string>
+  <string name="live_update_arrived_message">لقد وصلت إلى وجهتك</string>
+  <string name="live_update_eta_format">الوصول %1$s</string>
+
   <!-- Permission request -->
   <string name="location_permission_request_message">يرجى إيقاف السيارة والسماح لتطبيق بلدي بالوصول إلى موقعك على هاتفك</string>
   <string name="grant_access_action">السماح بالوصول</string>

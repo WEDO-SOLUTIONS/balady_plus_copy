@@ -20,6 +20,11 @@ class SpeedControlModel {
     private var speedLimits: FloatRouteLongAttribute?
     private let cameraNotifier: CameraNotifier
 
+    // Mirrored for the Live Activity, which needs speed and limit in one payload.
+    private var currentSpeed: Int = 0
+    private var currentSpeedLimit: Int?
+    private var isExceedingLimit = false
+
     init(model: Model, eventChannel: DgisStreamHandler) {
         self.model = model
         self.eventChannel = eventChannel
@@ -43,11 +48,13 @@ class SpeedControlModel {
         guard let speed = location?.groundSpeed else { return }
         
         let kmph = speed.value * 3.6
+        self.currentSpeed = Int(kmph)
         self.eventChannel.success([
                 "event": SpeedEvents.speedEvent,
                 "speedEvent": SpeedEvents.currentSpeedEvent,
                 "value": Int(kmph),
         ])
+        self.postSpeedTick()
     }
     
     private func routeInfoListener(_ routeInfo: RouteInfo) {
@@ -58,28 +65,50 @@ class SpeedControlModel {
         guard let position = position else { return }
         
         guard let entry = self.speedLimits?.entry(point: position) else {
+            self.currentSpeedLimit = nil
             self.eventChannel.success([
                 "event": SpeedEvents.speedEvent,
                 "speedEvent": SpeedEvents.speedLimitEvent,
                 "value": nil,
             ])
+            self.postSpeedTick()
             return
         }
 
         let maxAllowedSpeed = entry.value * 3.6
+        self.currentSpeedLimit = Int(maxAllowedSpeed)
         self.eventChannel.success([
             "event": SpeedEvents.speedEvent,
             "speedEvent": SpeedEvents.speedLimitEvent,
             "value": Int(maxAllowedSpeed),
         ])
+        self.postSpeedTick()
     }
 
     private func exceedLimitListener(_ isExceed: Bool) {
+        self.isExceedingLimit = isExceed
         self.eventChannel.success([
             "event": SpeedEvents.speedEvent,
             "speedEvent": SpeedEvents.exceedSpeedLimitEvent,
             "value": isExceed,
         ])
+        self.postSpeedTick()
+    }
+
+    private func postSpeedTick() {
+        var userInfo: [String: Any] = [
+            "speed": self.currentSpeed,
+            "exceeding": self.isExceedingLimit,
+        ]
+        if let speedLimit = self.currentSpeedLimit {
+            userInfo["speedLimit"] = speedLimit
+        }
+
+        NotificationCenter.default.post(
+            name: .dgisNavigationSpeedTick,
+            object: nil,
+            userInfo: userInfo
+        )
     }
 
     private func cameraListener(_ cameraInfo: CameraProgressInfo?) {
