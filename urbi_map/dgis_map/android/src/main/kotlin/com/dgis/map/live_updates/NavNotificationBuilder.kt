@@ -7,6 +7,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -33,11 +35,15 @@ object NavNotificationBuilder {
 
     /** Rendered notification content; [key] is used for change detection / throttling. */
     data class Content(
+        /** Distance to the next maneuver, or the GPS-lost / re-route status. */
         val title: String,
+        /** "Towards <street>", falling back to the destination. */
         val text: String,
+        /** Arrival time and time left, shown next to the app name. */
+        val subText: String,
         val iconRes: Int,
     ) {
-        val key: String get() = "$title|$text|$iconRes"
+        val key: String get() = "$title|$text|$subText|$iconRes"
     }
 
     fun ensureChannel(context: Context) {
@@ -56,41 +62,64 @@ object NavNotificationBuilder {
         metadata: LiveUpdatesCoordinator.SessionMetadata,
         eta: NavEta?,
         maneuver: NavManeuver?,
+        message: String = "none",
     ): Content {
         val res = localizedContext(context, metadata.language)
 
-        val title = if (maneuver != null) {
-            val distanceText =
-                if (maneuver.distanceMm > 0) formatDistance(res, maneuver.distanceMm) else null
-            listOfNotNull(distanceText, maneuver.roadName.takeIf { it.isNotBlank() })
-                .joinToString(" • ")
-                .ifBlank { res.getString(R.string.driving_notification_title) }
+        // While the engine is looking for the location or rebuilding the route the
+        // distance is meaningless — show the same status the in-app card shows.
+        val statusTitle = when (message) {
+            "gpsLost" -> res.getString(R.string.live_update_gps_lost)
+            "routeResearch" -> res.getString(R.string.live_update_reroute)
+            else -> null
+        }
+        val distanceTitle = maneuver
+            ?.takeIf { it.distanceMm > 0 }
+            ?.let { formatDistance(res, it.distanceMm) }
+        val title = statusTitle
+            ?: distanceTitle
+            ?: res.getString(R.string.driving_notification_title)
+
+        val street = maneuver?.roadName?.takeIf { it.isNotBlank() }
+        val text = when {
+            street != null -> res.getString(R.string.live_update_towards_format, street)
+            else -> metadata.destinationName?.takeIf { it.isNotBlank() }.orEmpty()
+        }
+
+        val subText = if (eta != null) {
+            listOf(
+                res.getString(R.string.live_update_eta_format, eta.arrivalTime),
+                formatRemaining(res, eta.durationSec),
+            ).joinToString(" • ")
         } else {
-            res.getString(R.string.driving_notification_title)
+            ""
         }
 
-        val textParts = mutableListOf<String>()
-        metadata.destinationName?.takeIf { it.isNotBlank() }?.let { textParts.add(it) }
-        if (eta != null) {
-            textParts.add(res.getString(R.string.live_update_eta_format, eta.arrivalTime))
-            textParts.add(formatRemaining(res, eta.durationSec))
-        }
-        val text = textParts.joinToString(" • ")
-
-        return Content(title = title, text = text, iconRes = maneuverIcon(maneuver))
+        return Content(
+            title = title,
+            text = text,
+            subText = subText,
+            iconRes = maneuverIcon(maneuver),
+        )
     }
 
+    /**
+     * Ongoing state: Balady mark, distance to the maneuver and the street it leads to.
+     * No actions — like on iOS, "End trip" only shows up on the arrival card.
+     */
     fun buildOngoing(
         context: Context,
         metadata: LiveUpdatesCoordinator.SessionMetadata,
         content: Content,
     ): Notification {
-        val res = localizedContext(context, metadata.language)
         return NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle(content.title)
             .setContentText(content.text)
+            .setSubText(content.subText)
             .setSmallIcon(IconCompat.createWithResource(context, content.iconRes))
-            .setColorized(true)
+            .setLargeIcon(appMark(context))
+            // Not colorized: the design keeps the system card and puts the brand
+            // colour on the icon only.
             .setColor(Color.parseColor(BRAND_COLOR))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -99,6 +128,24 @@ object NavNotificationBuilder {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setShowWhen(false)
             .setContentIntent(openAppPendingIntent(context))
+            .build()
+    }
+
+    /** Arrival card: destination plus the two actions from the design. */
+    fun buildArrival(
+        context: Context,
+        metadata: LiveUpdatesCoordinator.SessionMetadata,
+    ): Notification {
+        val res = localizedContext(context, metadata.language)
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle(res.getString(R.string.end_trip_alert_title))
+            .setContentText(
+                metadata.destinationName?.takeIf { it.isNotBlank() }
+                    ?: res.getString(R.string.live_update_arrived_message)
+            )
+            .setSmallIcon(IconCompat.createWithResource(context, R.drawable.finish))
+            .setLargeIcon(appMark(context))
+            .setColor(Color.parseColor(BRAND_COLOR))
             .addAction(
                 0,
                 res.getString(R.string.live_update_open_action),
@@ -109,21 +156,6 @@ object NavNotificationBuilder {
                 res.getString(R.string.live_update_end_trip_action),
                 endTripPendingIntent(context),
             )
-            .build()
-    }
-
-    fun buildArrival(
-        context: Context,
-        metadata: LiveUpdatesCoordinator.SessionMetadata,
-    ): Notification {
-        val res = localizedContext(context, metadata.language)
-        val title = metadata.destinationName?.takeIf { it.isNotBlank() }
-            ?: res.getString(R.string.app)
-        return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle(title)
-            .setContentText(res.getString(R.string.live_update_arrived_message))
-            .setSmallIcon(IconCompat.createWithResource(context, R.drawable.finish))
-            .setColor(Color.parseColor(BRAND_COLOR))
             .setOngoing(false)
             .setAutoCancel(true)
             .setOnlyAlertOnce(true)
@@ -134,6 +166,10 @@ object NavNotificationBuilder {
             .setContentIntent(openAppPendingIntent(context))
             .build()
     }
+
+    /** The Balady mark shown on the left of the notification, as in the design. */
+    private fun appMark(context: Context): Bitmap? =
+        BitmapFactory.decodeResource(context.resources, R.drawable.logo_notification)
 
     private fun openAppPendingIntent(context: Context): PendingIntent? {
         val launchIntent =

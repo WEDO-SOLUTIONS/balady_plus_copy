@@ -40,7 +40,11 @@ class NavigationForegroundService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val metadata = LiveUpdatesCoordinator.metadata
         val content = NavNotificationBuilder.renderContent(
-            this, metadata, NavLiveEventBus.eta.value, NavLiveEventBus.maneuver.value,
+            this,
+            metadata,
+            NavLiveEventBus.eta.value,
+            NavLiveEventBus.maneuver.value,
+            NavLiveEventBus.message.value,
         )
         val notification = NavNotificationBuilder.buildOngoing(this, metadata, content)
         try {
@@ -81,9 +85,11 @@ class NavigationForegroundService : Service() {
         val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
         scope = serviceScope
         serviceScope.launch {
-            combine(NavLiveEventBus.eta, NavLiveEventBus.maneuver) { eta, maneuver ->
-                eta to maneuver
-            }
+            combine(
+                NavLiveEventBus.eta,
+                NavLiveEventBus.maneuver,
+                NavLiveEventBus.message,
+            ) { eta, maneuver, message -> Triple(eta, maneuver, message) }
                 .conflate()
                 .collect {
                     throttle()
@@ -103,7 +109,11 @@ class NavigationForegroundService : Service() {
     private fun updateNotification() {
         val metadata = LiveUpdatesCoordinator.metadata
         val content = NavNotificationBuilder.renderContent(
-            this, metadata, NavLiveEventBus.eta.value, NavLiveEventBus.maneuver.value,
+            this,
+            metadata,
+            NavLiveEventBus.eta.value,
+            NavLiveEventBus.maneuver.value,
+            NavLiveEventBus.message.value,
         )
         if (content.key == lastContentKey) return
         lastContentKey = content.key
