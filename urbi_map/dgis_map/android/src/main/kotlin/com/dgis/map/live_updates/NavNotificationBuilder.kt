@@ -7,9 +7,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.Icon
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.dgis.map.R
@@ -33,6 +34,14 @@ object NavNotificationBuilder {
     private const val BRAND_COLOR = "#147674"
     private const val ARRIVAL_TIMEOUT_MS = 180_000L
 
+    /** Progress bar resolution; shares and progress are expressed in these units. */
+    private const val PROGRESS_STEPS = 1000
+    private const val TRAFFIC_FREE = "#2AB3A9"
+    private const val TRAFFIC_JAM = "#FFEF03"
+    private const val TRAFFIC_CONGESTION = "#F63319"
+    private const val TRAFFIC_DEEP_CONGESTION = "#A81F0F"
+    private const val TRAFFIC_UNKNOWN = "#8A8A8E"
+
     /** Rendered notification content; [key] is used for change detection / throttling. */
     data class Content(
         /** Distance to the next maneuver, or the GPS-lost / re-route status. */
@@ -42,8 +51,14 @@ object NavNotificationBuilder {
         /** Arrival time and time left, shown next to the app name. */
         val subText: String,
         val iconRes: Int,
+        /** Travelled share of the route, 0..1. */
+        val progress: Double,
+        /** Traffic colouring for the Android 16 Live Update progress bar. */
+        val trafficSegments: List<NavTrafficSegment>,
     ) {
-        val key: String get() = "$title|$text|$subText|$iconRes"
+        val key: String
+            get() = "$title|$text|$subText|$iconRes|${(progress * PROGRESS_STEPS).toInt()}|" +
+                trafficSegments.joinToString(",") { "${(it.share * PROGRESS_STEPS).toInt()}:${it.level}" }
     }
 
     fun ensureChannel(context: Context) {
@@ -100,6 +115,8 @@ object NavNotificationBuilder {
             text = text,
             subText = subText,
             iconRes = maneuverIcon(maneuver),
+            progress = eta?.progress ?: 0.0,
+            trafficSegments = eta?.trafficSegments.orEmpty(),
         )
     }
 
@@ -117,9 +134,8 @@ object NavNotificationBuilder {
             .setContentText(content.text)
             .setSubText(content.subText)
             .setSmallIcon(IconCompat.createWithResource(context, content.iconRes))
-            .setLargeIcon(appMark(context))
-            // Not colorized: the design keeps the system card and puts the brand
-            // colour on the icon only.
+            // No large icon: the system already shows the Balady app icon on the
+            // leading edge, which is what the design asks for.
             .setColor(Color.parseColor(BRAND_COLOR))
             .setOngoing(true)
             .setOnlyAlertOnce(true)
@@ -129,6 +145,80 @@ object NavNotificationBuilder {
             .setShowWhen(false)
             .setContentIntent(openAppPendingIntent(context))
             .build()
+            .let { if (Build.VERSION.SDK_INT >= 36) asLiveUpdate(context, it, content) else it }
+    }
+
+    /**
+     * Android 16+ only: adds the segmented traffic timeline and lets the system
+     * promote the notification to a Live Update (status bar chip + a prominent
+     * lock screen card). Promotion additionally requires an ongoing, colorized
+     * notification, hence the extra flag here.
+     */
+    @RequiresApi(36)
+    private fun asLiveUpdate(
+        context: Context,
+        notification: Notification,
+        content: Content,
+    ): Notification {
+        val segments = progressSegments(content)
+        if (segments.isEmpty()) return notification
+
+        val style = Notification.ProgressStyle()
+            .setProgressSegments(segments)
+            .setProgress((content.progress.coerceIn(0.0, 1.0) * PROGRESS_STEPS).toInt())
+            .setProgressTrackerIcon(Icon.createWithResource(context, R.drawable.nav_progress_marker))
+
+        val builder = Notification.Builder.recoverBuilder(context, notification)
+            .setStyle(style)
+            // Status bar chip while the shade is closed.
+            .setShortCriticalText(content.title)
+            .setColorized(true)
+        requestPromotion(builder)
+        return builder.build()
+    }
+
+    /**
+     * Notification.Builder#setRequestPromotedOngoing arrived in Android 16 QPR1, which
+     * is newer than the SDK this module compiles against — ask for the promotion
+     * reflectively and fall back to a plain ongoing notification when it is missing.
+     */
+    private fun requestPromotion(builder: Notification.Builder) {
+        try {
+            Notification.Builder::class.java
+                .getMethod("setRequestPromotedOngoing", Boolean::class.javaPrimitiveType)
+                .invoke(builder, true)
+        } catch (e: ReflectiveOperationException) {
+            // Older Android 16 build — the system decides on its own.
+        }
+    }
+
+    @RequiresApi(36)
+    private fun progressSegments(content: Content): List<Notification.ProgressStyle.Segment> {
+        if (content.trafficSegments.isEmpty()) {
+            // Pedestrian routes carry no traffic — a single plain bar.
+            return listOf(
+                Notification.ProgressStyle.Segment(PROGRESS_STEPS)
+                    .setColor(Color.parseColor(TRAFFIC_FREE))
+            )
+        }
+        return content.trafficSegments.mapNotNull { segment ->
+            val length = (segment.share * PROGRESS_STEPS).toInt()
+            if (length <= 0) {
+                null
+            } else {
+                Notification.ProgressStyle.Segment(length)
+                    .setColor(Color.parseColor(trafficColor(segment.level)))
+            }
+        }
+    }
+
+    /** Same palette as the iOS widget timeline. */
+    private fun trafficColor(level: Int): String = when (level) {
+        1 -> TRAFFIC_FREE
+        2 -> TRAFFIC_JAM
+        3 -> TRAFFIC_CONGESTION
+        4 -> TRAFFIC_DEEP_CONGESTION
+        else -> TRAFFIC_UNKNOWN
     }
 
     /** Arrival card: destination plus the two actions from the design. */
@@ -144,7 +234,6 @@ object NavNotificationBuilder {
                     ?: res.getString(R.string.live_update_arrived_message)
             )
             .setSmallIcon(IconCompat.createWithResource(context, R.drawable.finish))
-            .setLargeIcon(appMark(context))
             .setColor(Color.parseColor(BRAND_COLOR))
             .addAction(
                 0,
@@ -166,10 +255,6 @@ object NavNotificationBuilder {
             .setContentIntent(openAppPendingIntent(context))
             .build()
     }
-
-    /** The Balady mark shown on the left of the notification, as in the design. */
-    private fun appMark(context: Context): Bitmap? =
-        BitmapFactory.decodeResource(context.resources, R.drawable.logo_notification)
 
     private fun openAppPendingIntent(context: Context): PendingIntent? {
         val launchIntent =
