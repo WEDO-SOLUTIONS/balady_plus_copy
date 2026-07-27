@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_background.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_logo.dart';
@@ -63,6 +64,9 @@ class CityEventDisplay extends ConsumerWidget {
             onTap: () {
               if (activeEvent == CityEventType.cityscape) {
                 ref.read(cityscapeProvider.notifier).openThePlace();
+              }
+              if (activeEvent == CityEventType.leap) {
+                ref.read(leapProvider.notifier).openThePlace();
               }
               if (activeEvent == CityEventType.foundingDay) {
                 ref.read(foundingDayUrbiProvider.notifier).openThePlace();
