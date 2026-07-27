@@ -14,6 +14,7 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/wrc/wrc_debug.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -179,20 +180,24 @@ class WRC extends _$WRC {
   }
 
   void openThePlace(WRCEventPoint point) {
-    ref.read(appRouterProvider).replaceOrPush(
-      route: PoiCardWidgetRoute(
-        objectId: sdk.DgisObjectIdMessage(
-          objectId: point.objectId,
-          entranceId: 0,
-        ),
-        cameraConfig: const PoiCameraConfig(zoom: 17),
-      ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
-    );
+    ref
+        .read(appRouterProvider)
+        .replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: sdk.DgisObjectIdMessage(
+              objectId: point.objectId,
+              entranceId: 0,
+            ),
+            cameraConfig: const PoiCameraConfig(zoom: 17),
+          ),
+          toCompareRoutes: [PoiCardWidgetRoute.page],
+        );
   }
 
   Future<void> moveCameraToEventArea() async {
-    await ref.read(cameraPositionProvider.notifier).animateToGeoPoints(
+    await ref
+        .read(cameraPositionProvider.notifier)
+        .animateToGeoPoints(
           _initialViewPortPoints
               .map(
                 (e) => GeoPointMessage(
@@ -235,18 +240,18 @@ class WRC extends _$WRC {
       _getPointById(objectId)?.type.searchMarkerImagePath ?? Assets.icons.svg.icWrcSearchMarkerRallyStage.keyName;
 
   WRCEventPoint? _getPointById(int objectId) => wrcEventPoints.firstWhereOrNull(
-        (e) => e.objectId == objectId,
-      );
+    (e) => e.objectId == objectId,
+  );
 
   WRCEventPoint? _getPointByMarker(sdk.Marker marker) => wrcEventPoints.firstWhereOrNull(
-        (e) => e.center.isNearPoint(marker.options.position.toGeoPointMessage()),
-      );
+    (e) => e.center.isNearPoint(marker.options.position.toGeoPointMessage()),
+  );
 
   sdk.GeoPointWithElevationMessage _getMarkerPosition(WRCEventPoint point) => sdk.GeoPointWithElevationMessage(
-        latitude: point.center.latitude,
-        longitude: point.center.longitude,
-        elevation: 0,
-      );
+    latitude: point.center.latitude,
+    longitude: point.center.longitude,
+    elevation: 0,
+  );
 
   sdk.MarkerIconMessage _getIcon(WRCEventPoint point) =>
       sdk.MarkerIconMessage(svgPath: point.type.mapMarkerPath, width: 20);
@@ -255,7 +260,7 @@ class WRC extends _$WRC {
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
-    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
+    final fontName = isArabic ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn;
 
     return sdk.MarkerTextStyleMessage(
       fontSize: 10,

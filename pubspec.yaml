@@ -392,3 +392,9 @@ dependency_overrides:
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
 
+  # BALADY-3755 / BALADY-3768: vendored copy of sheetify 1.1.3, patched so that
+  # a keyboard belonging to an iOS share extension no longer collapses our
+  # layout. See third_party/sheetify/VENDORING.md.
+  # Drop this override once the fix is released upstream (urbi-ae/sheetify).
+  sheetify:
+    path: third_party/sheetify
