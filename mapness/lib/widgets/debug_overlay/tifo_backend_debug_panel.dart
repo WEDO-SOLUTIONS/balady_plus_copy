@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
@@ -14,14 +16,14 @@ import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 /// read endpoints plus a free-form method/path/body row, with the raw response
 /// (status, latency, body) rendered inline. Auth follows the backend
 /// prototype's convention — the user id itself is the bearer token.
-class TifoBackendDebugPanel extends StatefulWidget {
+class TifoBackendDebugPanel extends ConsumerStatefulWidget {
   const TifoBackendDebugPanel({super.key});
 
   @override
-  State<TifoBackendDebugPanel> createState() => _TifoBackendDebugPanelState();
+  ConsumerState<TifoBackendDebugPanel> createState() => _TifoBackendDebugPanelState();
 }
 
-class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
+class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
   static const String _defaultBaseUrl = 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/tifo';
 
   // Central Riyadh; matches the demo web app's viewport query shape
@@ -29,7 +31,6 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
   static const String _defaultBbox = '46.65,24.66,46.72,24.73';
 
   final TextEditingController _baseUrlController = TextEditingController(text: _defaultBaseUrl);
-  final TextEditingController _userIdController = TextEditingController(text: 'debug-tester');
   final TextEditingController _pathController = TextEditingController(text: '/districts/summary');
   final TextEditingController _bodyController = TextEditingController();
   // Admin (x-api-key) auth for /api/v1/admin/tifo/* endpoints. Entered at
@@ -57,7 +58,6 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
   @override
   void dispose() {
     _baseUrlController.dispose();
-    _userIdController.dispose();
     _pathController.dispose();
     _bodyController.dispose();
     _adminKeyController.dispose();
@@ -86,7 +86,7 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
         Consumer(
           builder: (context, ref, _) => DebugToggleRow(
             title: 'Override system config',
-            subtitle: 'Off = system SSO auth + env URL. On = use the Base URL / User ID below.',
+            subtitle: 'Off = env base URL. On = use the Base URL below (identity is separate).',
             value: ref.watch(tifoDebugModeProvider),
             gradient: DebugTheme.gradientTeal,
             onChanged: (value) => ref.read(tifoDebugModeProvider.notifier).set(value),
@@ -99,13 +99,8 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
         ),
         const SizedBox(height: 4),
         DebugTextField(controller: _baseUrlController, hint: _defaultBaseUrl),
-        const SizedBox(height: 8),
-        Text(
-          'User ID (sent as Bearer token)',
-          style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
-        ),
-        const SizedBox(height: 4),
-        DebugTextField(controller: _userIdController, hint: 'debug-tester'),
+        const SizedBox(height: 12),
+        const _IdentitySwitcher(),
         const SizedBox(height: 8),
         DebugToggleRow(
           title: 'Admin mode (x-api-key)',
@@ -152,13 +147,11 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
               value: enabled,
               gradient: DebugTheme.gradientTeal,
               onChanged: (value) {
-                // Only when the master debug switch is on do the panel fields
-                // override the system config; otherwise the layer uses system
-                // SSO auth + env base URL.
+                // Only when the master debug switch is on does the Base URL
+                // field override the env; the identity override is applied
+                // separately (and persistently) by the switcher above.
                 if (ref.read(tifoDebugModeProvider)) {
-                  ref.read(tifoDebugConfigProvider.notifier)
-                    ..setBaseUrl(_baseUrlController.text)
-                    ..setUserToken(_userIdController.text);
+                  ref.read(tifoDebugConfigProvider.notifier).setBaseUrl(_baseUrlController.text);
                 }
                 final layer = ref.read(tifoBuildingsMapLayerProvider.notifier);
                 unawaited(value ? layer.enable() : layer.disable());
@@ -279,11 +272,13 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
     String body = '',
   }) async {
     final baseUrl = _baseUrlController.text.trim();
-    final userId = _userIdController.text.trim();
     final adminKey = _adminKeyController.text.trim();
     if (baseUrl.isEmpty || path.isEmpty) {
       return;
     }
+    // Send exactly what the app would send — including the debug identity
+    // override — so a console reply matches what the game sees.
+    final userId = (await ref.read(tifoApiProvider).resolveNow()).token;
     setState(() {
       _isBusy = true;
       _lastRequestLabel = label;
@@ -352,4 +347,161 @@ class _TifoBackendDebugPanelState extends State<TifoBackendDebugPanel> {
     }
     return '${body.substring(0, cap)}\n… truncated, ${body.length} chars total — use Copy for the full body';
   }
+}
+
+/// "Act as another user" — swaps the bearer for a manually entered TIFO user
+/// id so one device can test several players, and keeps the ids that were used
+/// before so switching back is one tap.
+///
+/// Staging identifies a player by the bearer string itself, which is exactly
+/// what makes this possible; on a backend that validates tokens this panel
+/// stops working and should be removed with the rest of the workaround.
+class _IdentitySwitcher extends ConsumerStatefulWidget {
+  const _IdentitySwitcher();
+
+  @override
+  ConsumerState<_IdentitySwitcher> createState() => _IdentitySwitcherState();
+}
+
+class _IdentitySwitcherState extends ConsumerState<_IdentitySwitcher> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Applies the change and reloads the session, so /me, the club crest and
+  /// the token balance are the new player's before the panel is even closed.
+  Future<void> _apply(Future<void> Function() change) async {
+    await change();
+    await ref.read(tifoSessionProvider.notifier).load();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final identity = ref.watch(tifoDebugIdentityProvider);
+    final controller = ref.read(tifoDebugIdentityProvider.notifier);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DebugToggleRow(
+          title: 'Act as another user',
+          subtitle: identity.isActive
+              ? 'Bearer = "${identity.userId}" (persisted across restarts)'
+              : 'Off = host SSO account. On = the user id below is sent as the bearer.',
+          value: identity.enabled,
+          gradient: DebugTheme.gradientTeal,
+          onChanged: (value) => unawaited(_apply(() => controller.setEnabled(enabled: value))),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: DebugTextField(
+                controller: _controller,
+                hint: 'user id, e.g. tester-01',
+                onSubmitted: (value) => unawaited(_useTyped(controller, value)),
+              ),
+            ),
+            const SizedBox(width: 8),
+            DebugButton(
+              label: 'Use',
+              icon: Icons.person_pin_circle_rounded,
+              gradient: DebugTheme.gradientTeal,
+              isCompact: true,
+              onPressed: () => unawaited(_useTyped(controller, _controller.text)),
+            ),
+          ],
+        ),
+        if (identity.savedIds.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Text(
+            'Saved ids — tap to switch',
+            style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+          ),
+          const SizedBox(height: 6),
+          for (final id in identity.savedIds)
+            _SavedIdRow(
+              id: id,
+              isActive: identity.isActive && identity.userId == id,
+              onUse: () => unawaited(_apply(() => controller.use(id))),
+              onDelete: () => unawaited(_apply(() => controller.forget(id))),
+            ),
+        ],
+      ],
+    );
+  }
+
+  Future<void> _useTyped(TifoDebugIdentityController controller, String value) async {
+    if (value.trim().isEmpty) {
+      return;
+    }
+    await _apply(() => controller.use(value));
+    _controller.clear();
+  }
+}
+
+class _SavedIdRow extends StatelessWidget {
+  const _SavedIdRow({
+    required this.id,
+    required this.isActive,
+    required this.onUse,
+    required this.onDelete,
+  });
+
+  final String id;
+  final bool isActive;
+  final VoidCallback onUse;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onUse,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: DebugTheme.surfaceLight,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: isActive ? DebugTheme.success : DebugTheme.border),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    isActive ? Icons.radio_button_checked_rounded : Icons.radio_button_unchecked_rounded,
+                    size: 16,
+                    color: isActive ? DebugTheme.success : DebugTheme.textMuted,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      id,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textStyles.bodySmallRegular.copyWith(
+                        color: isActive ? DebugTheme.textPrimary : DebugTheme.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        IconButton(
+          onPressed: onDelete,
+          icon: const Icon(Icons.delete_outline_rounded, size: 18, color: DebugTheme.error),
+          tooltip: 'Forget this id',
+          visualDensity: VisualDensity.compact,
+        ),
+      ],
+    ),
+  );
 }

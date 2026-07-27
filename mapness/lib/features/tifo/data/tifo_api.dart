@@ -7,23 +7,24 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Debug-only overrides for the TIFO backend. Empty fields fall back to the
 /// system config. Applied ONLY when [tifoDebugModeProvider] is on — in normal
 /// operation the feature ignores these and uses system auth + env base URL.
+///
+/// The user id override lives separately in [tifoDebugIdentityProvider]: it is
+/// persisted and has its own saved-ids picker, so it must not be duplicated
+/// here.
 @immutable
 class TifoConfig {
-  const TifoConfig({this.baseUrl = '', this.userToken = ''});
+  const TifoConfig({this.baseUrl = ''});
 
   final String baseUrl;
-  final String userToken;
 
-  TifoConfig copyWith({String? baseUrl, String? userToken}) => TifoConfig(
-    baseUrl: baseUrl ?? this.baseUrl,
-    userToken: userToken ?? this.userToken,
-  );
+  TifoConfig copyWith({String? baseUrl}) => TifoConfig(baseUrl: baseUrl ?? this.baseUrl);
 }
 
 class TifoDebugConfigController extends Notifier<TifoConfig> {
@@ -31,8 +32,6 @@ class TifoDebugConfigController extends Notifier<TifoConfig> {
   TifoConfig build() => const TifoConfig();
 
   void setBaseUrl(String value) => state = state.copyWith(baseUrl: value.trim());
-
-  void setUserToken(String value) => state = state.copyWith(userToken: value.trim());
 }
 
 final tifoDebugConfigProvider = NotifierProvider<TifoDebugConfigController, TifoConfig>(
@@ -73,21 +72,26 @@ Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
 
   final baseUrl = override.baseUrl.isEmpty ? kTifoBaseUrl : override.baseUrl;
 
-  var token = override.userToken;
-  if (token.isEmpty) {
-    try {
-      // Triggers the provider's expiry check/refresh side effect; its cached
-      // value is NOT trusted below.
-      await ref.read(tokenProvider.future);
-    } catch (_) {
-      // No session — fall through to the guest bearer.
-    }
-    // Read the LIVE cubit value, not the provider cache: the cache is fed by
-    // a stream subscription that can outlive a logout, and staging accepts
-    // any bearer as an opaque user id — a stale token silently keeps
-    // impersonating the previous user.
-    token = CommonProperties.token;
+  // Debug panel "act as another user": the id IS the bearer on staging, so
+  // this is the whole mechanism. Treated as signed in — the tester wants the
+  // full player flow, not the guest one.
+  final identity = ref.read(tifoDebugIdentityProvider);
+  if (identity.isActive) {
+    return (baseUrl: baseUrl, token: identity.userId, isGuest: false);
   }
+
+  try {
+    // Triggers the provider's expiry check/refresh side effect; its cached
+    // value is NOT trusted below.
+    await ref.read(tokenProvider.future);
+  } catch (_) {
+    // No session — fall through to the guest bearer.
+  }
+  // Read the LIVE cubit value, not the provider cache: the cache is fed by
+  // a stream subscription that can outlive a logout, and staging accepts
+  // any bearer as an opaque user id — a stale token silently keeps
+  // impersonating the previous user.
+  var token = CommonProperties.token;
   if (token.isNotEmpty) {
     return (baseUrl: baseUrl, token: _stableBearer(token), isGuest: false);
   }
@@ -227,6 +231,10 @@ class TifoApi {
   }
 
   Future<TifoProfile> getMe() async => TifoProfile.fromJson(await _get('/me'));
+
+  /// The base URL + bearer this client would send right now. Exposed so the
+  /// debug console can issue requests as the app rather than guessing.
+  Future<TifoResolvedConfig> resolveNow() => _resolve();
 
   /// Whether requests are currently running on the guest device bearer (no
   /// host SSO session). See [resolveTifoConfig] for why the profile alone
