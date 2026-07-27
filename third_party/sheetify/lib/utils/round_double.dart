@@ -1,3 +1,4 @@
+// dart format off
 import 'dart:math';
 
 /// The basic round factor.

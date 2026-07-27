@@ -1,3 +1,4 @@
+// dart format off
 part of 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
 
 /// Defines the snapping behavior for a sheet during scrolling and dragging.

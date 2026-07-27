@@ -1,3 +1,4 @@
+// dart format off
 import 'package:sheetify/sheetify.dart';
 
 /// Model used to calculate the fixed offset of the [ToggleSheet]

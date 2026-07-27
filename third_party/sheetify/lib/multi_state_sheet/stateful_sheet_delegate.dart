@@ -1,3 +1,4 @@
+// dart format off
 import 'package:sheetify/sheetify.dart';
 
 typedef StatefulFunctionDelegate<T, S> = T? Function(

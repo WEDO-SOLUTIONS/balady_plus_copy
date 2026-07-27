@@ -47,6 +47,33 @@ layout into non-normalized constraints.
 
 Every patch is marked with `BALADY-3755` in a comment at the site.
 
+## Keeping the toolchain off this code
+
+This repo analyses at 120 columns and formats with `dart format -l 120`; upstream
+`sheetify` is formatted at 80. Reflowing it would bury the four patches above under
+a few hundred lines of noise and break the byte-for-byte comparison against a future
+pub.dev release. So instead:
+
+| Change | Why |
+| --- | --- |
+| `// dart format off` on line 1 of every file under `lib/` | The formatter leaves the file alone, so it stays as published |
+| `environment.sdk` raised from `>=3.5.0` to `>=3.7.0` in `pubspec.yaml` | The `dart format off` marker only exists in the 3.7 formatter. Below that language version the marker is ignored and the files get reflowed |
+| Two removed lints dropped from `analysis_options.yaml` | `unsafe_html` and `package_api_docs` were removed in Dart 3.7 and now report `removed_lint` warnings |
+
+The SDK bump is safe here: this copy is only ever consumed by this app, which
+already requires Dart >= 3.8. Analysis is clean under both 3.7 and 3.10 semantics,
+so nothing in the package depends on pre-3.7 behaviour.
+
+## CI has to be told about the override
+
+`.github/workflows/feature.yaml` generates a `pubspec_overrides.yaml` in the lint
+job so that unpub-hosted packages resolve without a VPN route. **That file replaces
+the whole `dependency_overrides` block of `pubspec.yaml` rather than merging with
+it**, so the `sheetify` override has to be repeated there — it is, in both the root
+and the `mapness` copy. Drop it and the lint job resolves `package:sheetify` to the
+pub.dev release while these files sit on disk, which detaches every
+`part of 'package:sheetify/...'` from its library and produces ~700 analyzer errors.
+
 ## Known upstream issues we did **not** patch
 
 - `performResize` calls `updateSize(isClosed ? maxHeight : 0.0)`. Offset `0`
@@ -64,4 +91,20 @@ directory and drop the `sheetify` entry from `dependency_overrides` in the root
 
 To re-vendor a newer version, copy the same subset from the pub cache, commit
 that verbatim first, then re-apply the patches as a separate commit so the diff
-stays readable.
+stays readable. Re-apply the toolchain changes as well:
+
+```bash
+# from third_party/sheetify
+for f in $(find lib -name '*.dart'); do
+  head -1 "$f" | grep -q 'dart format off' || sed -i '' '1i\
+// dart format off
+' "$f"
+done
+```
+
+then raise `environment.sdk` to `>=3.7.0` and re-check `analysis_options.yaml` for
+lints the current SDK has removed. Verify with:
+
+```bash
+dart analyze third_party/sheetify && dart format --output=none --set-exit-if-changed -l 120 third_party/sheetify
+```

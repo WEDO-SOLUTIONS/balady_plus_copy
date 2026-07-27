@@ -273,6 +273,12 @@ jobs:
         # via its `path: ..` dependency, and dependency_overrides don't propagate
         # across that boundary — each pubspec_overrides.yaml only covers its own
         # entrypoint's resolution.
+        #
+        # CAREFUL: pubspec_overrides.yaml *replaces* the dependency_overrides block
+        # of pubspec.yaml, it does not merge with it. Anything the committed
+        # pubspec.yaml overrides has to be repeated here or it silently vanishes in
+        # this job. `path_provider_foundation` is the one deliberate omission — it
+        # only matters for iOS Simulator builds, which this job doesn't do.
         run: |
           cat > pubspec_overrides.yaml <<'EOF'
           dependency_overrides:
@@ -300,6 +306,12 @@ jobs:
             map_styles:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
+            # BALADY-3755: mirrors the override in pubspec.yaml. Without it this
+            # job analyses the pub.dev sheetify while the app ships the vendored,
+            # patched one — and every `part of 'package:sheetify/...'` in
+            # third_party/sheetify detaches from its library.
+            sheetify:
+              path: third_party/sheetify
           EOF
 
           cat > mapness/pubspec_overrides.yaml <<'EOF'
@@ -328,6 +340,9 @@ jobs:
             map_styles:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
+            # BALADY-3755: see the note on the root override above.
+            sheetify:
+              path: ../third_party/sheetify
           EOF
 
       - name: Setup Flutter

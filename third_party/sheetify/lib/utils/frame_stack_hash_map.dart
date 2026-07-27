@@ -1,3 +1,4 @@
+// dart format off
 import 'dart:collection';
 
 /// A hashmap that is cleared every time [frame] is updated.

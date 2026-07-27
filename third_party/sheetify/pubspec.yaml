@@ -6,7 +6,11 @@ repository: https://github.com/urbi-ae/sheetify
 homepage: https://github.com/urbi-ae/sheetify
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  # BALADY-3755: upstream declares ">=3.5.0". Raised to 3.7 so `dart format` honours
+  # the `// dart format off` marker at the top of every file here — the marker only
+  # exists in the 3.7 formatter, and below that language version the files would be
+  # reflowed to this repo's 120-column style. See VENDORING.md.
+  sdk: ">=3.7.0 <4.0.0"
   flutter: ">=2.17.0"
 
 dependencies:

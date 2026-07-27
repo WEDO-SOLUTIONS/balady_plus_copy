@@ -1,3 +1,4 @@
+// dart format off
 part of 'package:sheetify/toggle_sheet/toggle_sheet.dart';
 
 enum _ToggleSheetSlot {

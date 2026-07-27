@@ -1,3 +1,4 @@
+// dart format off
 // ignore_for_file: avoid_setters_without_getters
 
 part of 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';

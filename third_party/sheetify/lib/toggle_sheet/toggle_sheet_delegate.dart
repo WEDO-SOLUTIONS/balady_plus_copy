@@ -1,3 +1,4 @@
+// dart format off
 import 'package:sheetify/sheetify.dart';
 
 /// A sealed class that represents a delegate for the sheet.

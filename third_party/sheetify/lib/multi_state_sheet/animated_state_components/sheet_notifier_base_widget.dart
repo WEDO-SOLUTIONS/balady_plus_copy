@@ -1,3 +1,4 @@
+// dart format off
 import 'package:flutter/widgets.dart';
 import 'package:sheetify/multi_state_sheet/animated_state_components/multi_state_sheet_notifier.dart';
 

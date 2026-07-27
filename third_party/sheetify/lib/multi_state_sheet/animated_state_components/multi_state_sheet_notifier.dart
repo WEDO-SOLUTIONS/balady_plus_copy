@@ -1,3 +1,4 @@
+// dart format off
 import 'package:flutter/material.dart';
 
 /// An [InheritedWidget] that notifies its descendants about changes in the
