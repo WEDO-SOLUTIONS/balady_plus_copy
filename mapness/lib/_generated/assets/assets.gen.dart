@@ -179,6 +179,9 @@ class $AssetsImagesGen {
   /// Directory path: assets/images/layers
   $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
 
+  /// File path: assets/images/leap_logo.png
+  AssetGenImage get leapLogo => const AssetGenImage('assets/images/leap_logo.png');
+
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
 
@@ -289,6 +292,7 @@ class $AssetsImagesGen {
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,
     ishanSeefromtheskyUnsplash,
+    leapLogo,
     lightMapPreview,
     markerEtaMask,
     onboardingStory1,
@@ -724,6 +728,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/layers
   $AssetsIconsSvgLayersGen get layers => const $AssetsIconsSvgLayersGen();
 
+  /// File path: assets/icons/svg/leap_unique_marker.svg
+  SvgGenImage get leapUniqueMarker => const SvgGenImage('assets/icons/svg/leap_unique_marker.svg');
+
   /// File path: assets/icons/svg/parking_control.svg
   SvgGenImage get parkingControl => const SvgGenImage('assets/icons/svg/parking_control.svg');
 
@@ -887,6 +894,7 @@ class $AssetsIconsSvgGen {
     icWrcSearchMarkerServicePark,
     icWrcSearchMarkerShakedownStage,
     icWrcSearchMarkerSpecialSuperStage,
+    leapUniqueMarker,
     parkingControl,
     percent,
     photoGallery,

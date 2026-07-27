@@ -17,6 +17,9 @@ class CityEventDateRange extends Equatable {
   factory CityEventDateRange.foundingDayDefault() =>
       CityEventDateRange(DateTime(DateTime.now().year, 2, 22), DateTime(DateTime.now().year, 2, 22));
 
+  factory CityEventDateRange.leapDefault() =>
+      CityEventDateRange(DateTime(DateTime.now().year, 8, 31), DateTime(DateTime.now().year, 9, 3, 23, 59, 59));
+
   factory CityEventDateRange.fromJson(Map<String, dynamic>? json, CityEventDateRange defaults) {
     try {
       final fromValue = json?['from'] as String?;
