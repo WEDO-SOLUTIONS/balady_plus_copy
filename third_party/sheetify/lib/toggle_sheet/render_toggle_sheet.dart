@@ -226,7 +226,30 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
   }
 
   double? _viewBottomPadding;
-  double get viewBottomPadding => _viewBottomPadding ?? 0.0;
+
+  /// Bottom inset taken by the keyboard, as reported by the `keyboard_insets`
+  /// plugin — bounded by the inset Flutter itself reports for this view.
+  ///
+  /// BALADY-3755: `KeyboardInsets` reports the *system* keyboard geometry, so
+  /// it also fires for keyboards that belong to something else drawn on top of
+  /// us — notably iOS share extensions (share a link to Telegram or Reminders,
+  /// tap their text field). The app stays `resumed` and Flutter keeps reporting
+  /// `viewInsets.bottom == 0`, yet the plugin reported up to ~540pt, which
+  /// collapsed the sheet's available height to nothing and left it snapped to
+  /// full screen with no content. A keyboard that is not ours must not resize
+  /// our layout, and Flutter's own inset is the authority on that.
+  double get viewBottomPadding {
+    final reported = _viewBottomPadding ?? 0.0;
+    if (reported <= 0.0) {
+      return 0.0;
+    }
+    final view = PlatformDispatcher.instance.implicitView;
+    if (view == null) {
+      return reported;
+    }
+    final ownInset = view.viewInsets.bottom / view.devicePixelRatio;
+    return math.min(reported, ownInset);
+  }
   set viewBottomPadding(double? value) {
     if (_viewBottomPadding != value) {
       _viewBottomPadding = value;
@@ -405,7 +428,22 @@ class _RenderToggleSheet extends RenderBox with SlottedContainerRenderObjectMixi
     draggedSheetOffset = scrollController._extent.offset;
 
     // Calculate available space for the sheet.
-    final avaliableHeight = constraints.maxHeight - math.max(0.0, viewBottomPadding - safeAreaBottomPadding);
+    //
+    // BALADY-3755: the subtraction must not go negative. `viewBottomPadding`
+    // can exceed `constraints.maxHeight` — see the getter above, where a share
+    // extension's keyboard reported ~540pt against a viewport that stays put.
+    // The negative result propagated into `correctedConstraints.maxHeight` and
+    // reached `_layoutChild` for the header/footer/topHeader, producing
+    // `BoxConstraints(0.0<=h<=-43.9; NOT NORMALIZED)` and killing the layout of
+    // the whole sheet subtree — the sheet then painted its background only.
+    // The getter is the actual fix; this is defence in depth for any other way
+    // the inset could outgrow the viewport. Note `contentLayoutExtend` below
+    // already clamps with `math.max(0.0, …)`; this makes the other three
+    // children consistent with it.
+    final avaliableHeight = math.max(
+      0.0,
+      constraints.maxHeight - math.max(0.0, viewBottomPadding - safeAreaBottomPadding),
+    );
     assert(
       avaliableHeight != double.infinity,
       'ToggleSheet: `constraints.maxHeight` is infinite. '

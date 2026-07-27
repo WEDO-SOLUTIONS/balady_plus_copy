@@ -236,7 +236,19 @@ class ToggleSheetController extends ScrollController {
   double get viewportHeight => _extent.availablePixels;
 
   /// Aspect ratio of the sheet's visible height to its posible maximum height.
-  double get fraction => math.max(0, sheetHeight / (_extent.maxHeight));
+  ///
+  /// BALADY-3755: `maxHeight` is `availablePixels - header`, and
+  /// `availablePixels` starts at `kStartOfTheViewport` (0) and can return to 0
+  /// when the host view is resized. Dividing by it yielded NaN (0/0) or
+  /// Infinity, which callers then fed to `toInt()` — an `UnsupportedError`.
+  /// Guarded the same way [interpolation] already guards itself.
+  double get fraction {
+    final maxHeight = _extent.maxHeight;
+    if (maxHeight <= 0) {
+      return 0;
+    }
+    return clampDouble(sheetHeight / maxHeight, 0, 1);
+  }
 
   /// Returns the current interpolation value, typically representing
   /// the progress between two states (e.g., expanded and collapsed)

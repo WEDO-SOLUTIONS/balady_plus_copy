@@ -352,7 +352,18 @@ class MultiStateSheetController<StateType> extends ScrollController {
   double get viewportHeight => _extent.availablePixels;
 
   /// Fraction of the height of sheet to the size of the viewport.
-  double get fraction => sheetHeight / viewportHeight;
+  ///
+  /// BALADY-3755: `viewportHeight` is `availablePixels`, which is 0 before the
+  /// first layout and whenever the host view is resized to nothing. Dividing by
+  /// it produced NaN/Infinity that escaped into callers' colour and offset
+  /// maths.
+  double get fraction {
+    final viewport = viewportHeight;
+    if (viewport <= 0) {
+      return 0;
+    }
+    return clampDouble(sheetHeight / viewport, 0, 1);
+  }
 
   /// Interpolation value between states.
   ///
