@@ -47,6 +47,47 @@ layout into non-normalized constraints.
 
 Every patch is marked with `BALADY-3755` in a comment at the site.
 
+## Keeping the toolchain off this code
+
+This repo analyses at 120 columns and formats with `dart format -l 120`; upstream
+`sheetify` is formatted at 80. Reflowing it would bury the four patches above under
+a few hundred lines of noise and break the byte-for-byte comparison against a future
+pub.dev release. So instead:
+
+| Change | Why |
+| --- | --- |
+| `// dart format off` on line 1 of every file under `lib/` | The formatter leaves the file alone, so it stays as published |
+| `environment.sdk` raised from `>=3.5.0` to `>=3.7.0` in `pubspec.yaml` | The `dart format off` marker only exists in the 3.7 formatter. Below that language version the marker is ignored and the files get reflowed |
+| Two removed lints dropped from `analysis_options.yaml` | `unsafe_html` and `package_api_docs` were removed in Dart 3.7 and now report `removed_lint` warnings |
+
+The SDK bump is safe here: this copy is only ever consumed by this app, which
+already requires Dart >= 3.8. Analysis is clean under both 3.7 and 3.10 semantics,
+so nothing in the package depends on pre-3.7 behaviour.
+
+## Any CI job that generates `pubspec_overrides.yaml` has to repeat the override
+
+The lint job on this branch reaches the private registry through `/etc/hosts` and
+then runs a plain `flutter pub get` at the repo root, so the `dependency_overrides`
+in `pubspec.yaml` apply and `package:sheetify` resolves here. Nothing to do.
+
+Other branches solve the registry problem differently: `development`'s lint job runs
+on `ubuntu-latest` with no route to unpub, so it writes a `pubspec_overrides.yaml`
+with git dependencies instead. **`pubspec_overrides.yaml` replaces the whole
+`dependency_overrides` block of `pubspec.yaml` rather than merging with it**, which
+silently drops the `sheetify` entry. The job then resolves `package:sheetify` to the
+pub.dev release while these files sit on disk, every
+`part of 'package:sheetify/...'` detaches from its library, and the analyzer reports
+~700 errors that have nothing to do with the code.
+
+So if this directory is ever merged into a branch whose CI generates that file, add
+
+```yaml
+sheetify:
+  path: third_party/sheetify        # ../third_party/sheetify in mapness/
+```
+
+to every generated `pubspec_overrides.yaml`.
+
 ## Known upstream issues we did **not** patch
 
 - `performResize` calls `updateSize(isClosed ? maxHeight : 0.0)`. Offset `0`
@@ -64,4 +105,20 @@ directory and drop the `sheetify` entry from `dependency_overrides` in the root
 
 To re-vendor a newer version, copy the same subset from the pub cache, commit
 that verbatim first, then re-apply the patches as a separate commit so the diff
-stays readable.
+stays readable. Re-apply the toolchain changes as well:
+
+```bash
+# from third_party/sheetify
+for f in $(find lib -name '*.dart'); do
+  head -1 "$f" | grep -q 'dart format off' || sed -i '' '1i\
+// dart format off
+' "$f"
+done
+```
+
+then raise `environment.sdk` to `>=3.7.0` and re-check `analysis_options.yaml` for
+lints the current SDK has removed. Verify with:
+
+```bash
+dart analyze third_party/sheetify && dart format --output=none --set-exit-if-changed -l 120 third_party/sheetify
+```

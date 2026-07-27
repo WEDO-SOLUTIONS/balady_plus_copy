@@ -1,3 +1,4 @@
+// dart format off
 import 'dart:ui';
 
 /// Lerp value [t] between [minValue] and [maxValue]

@@ -1,3 +1,4 @@
+// dart format off
 part of 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
 
 enum _MultiStateSheetSlot {

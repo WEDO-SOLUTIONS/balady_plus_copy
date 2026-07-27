@@ -53,7 +53,7 @@ linter:
     - throw_in_finally # https://dart-lang.github.io/linter/lints/throw_in_finally.html
     - unnecessary_statements # https://dart-lang.github.io/linter/lints/unnecessary_statements.html
     - unrelated_type_equality_checks # https://dart-lang.github.io/linter/lints/unrelated_type_equality_checks.html
-    - unsafe_html # https://dart-lang.github.io/linter/lints/unsafe_html.html
+    # BALADY-3755: unsafe_html was removed in Dart 3.7 and now reports removed_lint.
     #     - use_build_context_synchronously # https://dart-lang.github.io/linter/lints/use_build_context_synchronously.html
     - use_key_in_widget_constructors # https://dart-lang.github.io/linter/lints/use_key_in_widget_constructors.html
     - valid_regexps # https://dart-lang.github.io/linter/lints/valid_regexps.html
@@ -125,7 +125,7 @@ linter:
     #    - one_member_abstracts # https://dart-lang.github.io/linter/lints/one_member_abstracts.html
     - only_throw_errors # https://dart-lang.github.io/linter/lints/only_throw_errors.html
     - overridden_fields # https://dart-lang.github.io/linter/lints/overridden_fields.html
-    - package_api_docs # https://dart-lang.github.io/linter/lints/overridden_fields.html
+    # BALADY-3755: package_api_docs was removed in Dart 3.7 and now reports removed_lint.
     #    - package_prefixed_library_names # https://dart-lang.github.io/linter/lints/package_prefixed_library_names.html
     - parameter_assignments # https://dart-lang.github.io/linter/lints/parameter_assignments.html
     #    - prefer_adjacent_string_concatenation # https://dart-lang.github.io/linter/lints/prefer_adjacent_string_concatenation.html
