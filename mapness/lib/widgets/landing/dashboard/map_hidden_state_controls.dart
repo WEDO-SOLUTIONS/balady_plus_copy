@@ -85,6 +85,8 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
         specialThemeMode == SpecialThemeMode.nationalDay ||
         specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
+    final bool showCityEventBanner =
+        specialThemeMode == SpecialThemeMode.foundationDay || (activeEvent?.isLeap ?? false);
     final isCityscapeDay = ref.watch(cityscapeProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
@@ -116,7 +118,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 duration: const Duration(milliseconds: 300),
               ),
             ),
-            if (specialThemeMode == SpecialThemeMode.foundationDay)
+            if (showCityEventBanner)
               CityEventDisplay(
                 activeEvent: activeEvent,
                 controller: widget.controller,
