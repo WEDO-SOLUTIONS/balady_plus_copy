@@ -21,7 +21,13 @@ import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class PenaltyApp extends StatelessWidget {
-  const PenaltyApp({super.key, this.onComplete, this.missesAllowed = 3, this.scoreToBeat = 0});
+  const PenaltyApp({
+    super.key,
+    this.onComplete,
+    this.onReady,
+    this.missesAllowed = 3,
+    this.scoreToBeat = 0,
+  });
 
   /// Fires once the session ends. Carries goals, misses and the per-kick event
   /// log — the log must be forwarded to `/buildings/{id}/play`, since the
@@ -35,13 +41,23 @@ class PenaltyApp extends StatelessWidget {
   /// ("Score to beat", FD-50). 0 for an unclaimed building.
   final int scoreToBeat;
 
+  /// Fired when the pitch is loaded and ready for the first kick, handing back
+  /// the callback that unlocks input. The caller opens the server session in
+  /// between, so its short expiry window doesn't cover asset loading.
+  final void Function(VoidCallback arm)? onReady;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Penalty 3D',
       theme: ThemeData.dark(useMaterial3: true),
-      home: PenaltyGamePage(onComplete: onComplete, missesAllowed: missesAllowed, scoreToBeat: scoreToBeat),
+      home: PenaltyGamePage(
+        onComplete: onComplete,
+        onReady: onReady,
+        missesAllowed: missesAllowed,
+        scoreToBeat: scoreToBeat,
+      ),
     );
   }
 }
@@ -49,9 +65,16 @@ class PenaltyApp extends StatelessWidget {
 enum _PenaltyView { perspective, topDown, miniGame, styles }
 
 class PenaltyGamePage extends StatefulWidget {
-  const PenaltyGamePage({super.key, this.onComplete, this.missesAllowed = 3, this.scoreToBeat = 0});
+  const PenaltyGamePage({
+    super.key,
+    this.onComplete,
+    this.onReady,
+    this.missesAllowed = 3,
+    this.scoreToBeat = 0,
+  });
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
+  final void Function(VoidCallback arm)? onReady;
   final int missesAllowed;
   final int scoreToBeat;
 
@@ -64,10 +87,20 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
 
   /// Created once so the HUD panel can listen to the same instance the
   /// GameWidget renders.
-  late final PenaltyGame _perspectiveGame = PenaltyGame(
-    onComplete: widget.onComplete,
-    missesAllowed: widget.missesAllowed,
-  );
+  late final PenaltyGame _perspectiveGame =
+      PenaltyGame(
+          onComplete: widget.onComplete,
+          missesAllowed: widget.missesAllowed,
+        )
+        ..onReady = () {
+          final onReady = widget.onReady;
+          // Nobody waiting on the session (debug/standalone run) → play right away.
+          if (onReady == null) {
+            _perspectiveGame.arm();
+          } else {
+            onReady(_perspectiveGame.arm);
+          }
+        };
 
   // Crowd-ambience tracks — one is picked at random each time this page
   // opens, so repeat playthroughs don't always hear the same loop. Add more
@@ -228,9 +261,12 @@ class _PenaltyHudPanel extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Penalty challenge',
-                style: TextStyle(color: _title, fontSize: 16, fontWeight: FontWeight.w700),
+              ValueListenableBuilder<bool>(
+                valueListenable: game.armedNotifier,
+                builder: (_, armed, _) => Text(
+                  armed ? 'Penalty challenge' : 'Preparing the pitch…',
+                  style: const TextStyle(color: _title, fontSize: 16, fontWeight: FontWeight.w700),
+                ),
               ),
               const SizedBox(height: 10),
               Row(
@@ -1193,9 +1229,19 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   final ValueNotifier<int> goalsNotifier = ValueNotifier(0);
   final ValueNotifier<int> missesNotifier = ValueNotifier(0);
 
-  /// Hard upper bound on shots; the session usually ends earlier on the
-  /// [missesAllowed]-th miss.
-  static const int _maxAttempts = 5;
+  /// Fired once assets are loaded and the pitch can take a kick. The caller
+  /// opens the server session at THAT moment: its expiry clock is short
+  /// (liveLockTimeoutSeconds = 30 on staging), so every second spent loading
+  /// sprites before the session exists is a second the player doesn't lose.
+  VoidCallback? onReady;
+
+  /// Input stays locked until the session is open — otherwise a fast player
+  /// could kick before the backend knows a session exists.
+  final ValueNotifier<bool> armedNotifier = ValueNotifier(false);
+
+  bool get _armed => armedNotifier.value;
+
+  void arm() => armedNotifier.value = true;
 
   /// Per-kick log + a monotonic clock, submitted to the backend which
   /// recomputes the score from these events.
@@ -1318,11 +1364,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _backgroundImage = await _loadOptionalUiImage(
       'packages/mapness/assets/tifo/backgrounds/stadium_goal_background.jpg',
     );
+    onReady?.call();
   }
 
   @override
   void onTapUp(TapUpEvent event) {
-    if (_completed) return;
+    if (_completed || !_armed) return;
     if (_state == _ShotState.aiming && _isTouchingBall(event.canvasPosition)) {
       _shootAt(event.canvasPosition, 0.74);
     }
@@ -1331,7 +1378,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onDragStart(DragStartEvent event) {
     super.onDragStart(event);
-    if (_completed) return;
+    if (_completed || !_armed) return;
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1349,7 +1396,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    if (_completed) return;
+    if (_completed || !_armed) return;
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1360,7 +1407,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   @override
   void onDragEnd(DragEndEvent event) {
     super.onDragEnd(event);
-    if (_completed) return;
+    if (_completed || !_armed) return;
     if (_state != _ShotState.aiming) {
       return;
     }
@@ -1629,12 +1676,14 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       'misses=$misses/$missesAllowed',
     );
 
-    // End on the Nth miss (BRD) or when the attempt cap is hit, whichever
-    // comes first.
-    if (!_completed && (misses >= missesAllowed || _shotHistory.length >= _maxAttempts)) {
+    // Ends ONLY on the Nth miss (BRD FR-11: "no kick limit"). An extra
+    // client-side attempt cap used to cut good runs short at 5 shots, and the
+    // backend rejects a log that doesn't end on the allowed miss — every such
+    // session came back `voided` with the token spent (reproduced on staging:
+    // 3 goals / 2 misses → voided, same run with the 3rd miss → claimed).
+    if (!_completed && misses >= missesAllowed) {
       _completed = true;
-      final reason = misses >= missesAllowed ? 'miss limit' : 'attempt cap ($_maxAttempts)';
-      logger.log('[tifo-game] session ended by $reason: scored=$_goals misses=$misses shots=${_shotHistory.length}');
+      logger.log('[tifo-game] session ended: scored=$_goals misses=$misses shots=${_shotHistory.length}');
       onComplete?.call(TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events)));
     }
   }

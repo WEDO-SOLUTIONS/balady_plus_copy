@@ -185,18 +185,30 @@ class TifoGameConfig {
     required this.claimCost,
     required this.challengeCost,
     required this.missesAllowed,
+    required this.liveLockTimeoutSeconds,
   });
 
-  static const TifoGameConfig fallback = TifoGameConfig(claimCost: 2, challengeCost: 1, missesAllowed: 3);
+  static const TifoGameConfig fallback = TifoGameConfig(
+    claimCost: 2,
+    challengeCost: 1,
+    missesAllowed: 3,
+    liveLockTimeoutSeconds: 30,
+  );
 
   final int claimCost;
   final int challengeCost;
   final int missesAllowed;
 
+  /// How long a play session may live before the backend voids it and keeps
+  /// the token (API v2.4 §5.1). Documented default is 120, but staging runs
+  /// 30 — short enough that the client must not waste it on asset loading.
+  final int liveLockTimeoutSeconds;
+
   factory TifoGameConfig.fromJson(Map<String, dynamic> json) => TifoGameConfig(
     claimCost: (json['claimCost'] as num?)?.toInt() ?? fallback.claimCost,
     challengeCost: (json['challengeCost'] as num?)?.toInt() ?? fallback.challengeCost,
     missesAllowed: (json['missesAllowed'] as num?)?.toInt() ?? fallback.missesAllowed,
+    liveLockTimeoutSeconds: (json['liveLockTimeoutSeconds'] as num?)?.toInt() ?? fallback.liveLockTimeoutSeconds,
   );
 }
 
