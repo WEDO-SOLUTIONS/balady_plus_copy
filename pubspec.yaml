@@ -214,7 +214,7 @@ dependencies:
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
      hosted: https://unpub.balady.gov.sa/
-     version: 0.0.2-dev
+     version: 0.0.5-dev
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
