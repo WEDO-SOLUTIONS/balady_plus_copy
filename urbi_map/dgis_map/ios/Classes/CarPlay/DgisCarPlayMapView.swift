@@ -24,6 +24,9 @@ class DgisCarPlayMapView: UIViewController {
     
     private var cancellables = Set<Cancellable>()
     
+    private var mapAppearance: CarPlayMapAppearance?
+    private var prefersDarkMapContent = false
+
     init(
         map: Map,
         mapView: (UIView & IMapView),
@@ -136,6 +139,8 @@ class DgisCarPlayMapView: UIViewController {
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
+
+        observeMapAppearance()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -147,6 +152,7 @@ class DgisCarPlayMapView: UIViewController {
         }
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
+        mapAppearance = nil
     }
     
     private func createGpsLostSpinner() -> MaterialProgressIndicator {
@@ -309,6 +315,23 @@ class DgisCarPlayMapView: UIViewController {
             )
         )
         myLocationControlModel.onClicked()
+    }
+
+    // MARK: - Day/night appearance
+
+    /// On the car screen the map follows the style CarPlay asks for, not the phone's own
+    /// day/night setting, which is what the driver sees in every other CarPlay map.
+    private func observeMapAppearance() {
+        mapAppearance = CarPlayMapAppearance { [weak self] prefersDark in
+            guard let self else { return }
+
+            self.prefersDarkMapContent = prefersDark
+            self.applyMapAppearance()
+        }
+    }
+
+    private func applyMapAppearance() {
+        mapView.appearance = prefersDarkMapContent ? .universal("night") : .universal("day")
     }
 }
 
