@@ -7,6 +7,7 @@ import 'package:mapness/pages/navigator_settings/pages/cursors_page/cursors_page
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -80,7 +81,28 @@ class CursorsSheet extends HookWidget {
           ],
         ),
       ),
-      content: const [CursorsPageContent(scrollable: false, showHeader: false)],
+      content: const [
+        // Bottom gutter. The sheet is flush with the screen edge
+        // (`useSafeArea: false`), and sheetify only *paints* its safeAreaColor
+        // strip — `RenderToggleSheet.performLayout` reserves no height for it,
+        // so the last row would otherwise end exactly at the physical bottom
+        // with just the Figma 16 under it: glued to the Android nav bar, and
+        // under the iOS home indicator.
+        //
+        // `max(padding.bottom, $3x)` rather than the raw inset, because "has a
+        // bottom inset" is not a platform property: Android in 3-button mode
+        // (and any pre-15 build that is not edge-to-edge) reports 0 exactly
+        // like an iPhone SE, while gesture nav and the iPhone 17 Pro Max home
+        // indicator report 24–48. $3x is the same stable inset the navi panels
+        // use (see NaviSheetPanel.paddingDelegate).
+        SafeAreaPadding(
+          left: false,
+          top: false,
+          right: false,
+          minimum: EdgeInsets.only(bottom: Spacing.$3x),
+          child: CursorsPageContent(scrollable: false, showHeader: false),
+        ),
+      ],
     );
 
     // System back must not pop the route instantly (see showCursorsSheet):

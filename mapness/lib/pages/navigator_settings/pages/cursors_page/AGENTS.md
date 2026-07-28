@@ -41,6 +41,23 @@ hosts have different scroll and header ownership:
 - Subtitle string: Figma 2287-3140 says "Select icon for navigation",
   but only `selectNavigatorType` exists in Localazy — the sheet reuses
   it until design supplies a dedicated key.
+- **Bottom gutter.** The sheet content is wrapped in `SafeAreaPadding`
+  (`shared/ui/safe_area_padding.dart`) with
+  `minimum: EdgeInsets.only(bottom: Spacing.$3x)`, bottom side only.
+  `ToggleSheet(useSafeArea: false)` sits flush with the physical screen
+  edge, and sheetify's `safeAreaColor` is a *paint*-only strip —
+  `RenderToggleSheet.performLayout` computes
+  `avaliableHeight = constraints.maxHeight` and reserves no height for
+  it. Without the wrapper the last row ends at the screen bottom with
+  only the Figma 16 beneath it.
+  Use `max(inset, minimum)`, never the bare inset and never a bare
+  constant: a bottom inset is not a platform property. Android in
+  3-button mode (and any non-edge-to-edge build) reports 0 just like an
+  iPhone SE, while gesture nav and the iPhone 17 Pro Max home indicator
+  report 24–48. `Spacing.$3x` is the same stable inset the navi panels
+  fall back to (`NaviSheetPanel.paddingDelegate`, `road_panel.dart`).
+  The full page needs none of this — it is already inside a `SafeArea`,
+  which zeroes `MediaQuery.padding` for the shared content widget.
 
 ## Layout constraints (BALADY-3762)
 
