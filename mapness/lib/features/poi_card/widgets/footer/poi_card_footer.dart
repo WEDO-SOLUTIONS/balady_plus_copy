@@ -301,7 +301,11 @@ class PoiCardFooter extends HookConsumerWidget {
         title: context.l10n.youSureWantDelete,
         onAcceptTab: () {
           ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).clearStore();
-          ToastOverlay.of(context).show(title: context.l10n.parkingSpotDeleted, icon: const ToastIconAsset(iconAsset));
+          ToastOverlay.of(context).show(
+            title: context.l10n.parkingSpotDeleted,
+            icon: const ToastIconAsset(iconAsset),
+            displayDuration: const Duration(seconds: 2),
+          );
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },
         onCancelTab: context.router.pop,
