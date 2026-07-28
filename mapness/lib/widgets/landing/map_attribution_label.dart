@@ -30,6 +30,7 @@ class StrokeText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final base = context.textStyles.bodyLargeRegular;
+    const fontFamily = 'packages/balady_uikit/Golos';
 
     return Padding(
       padding: const EdgeInsets.all(2),
@@ -44,11 +45,12 @@ class StrokeText extends StatelessWidget {
                 ..strokeJoin = StrokeJoin.round
                 ..strokeCap = StrokeCap.round
                 ..color = context.colors.onMapSurfaceOnMap,
+              fontFamily: fontFamily,
             ),
           ),
           Text(
             text,
-            style: base.copyWith(color: context.colors.foregroundDefault),
+            style: base.copyWith(color: context.colors.foregroundDefault, fontFamily: fontFamily),
           ),
         ],
       ),
