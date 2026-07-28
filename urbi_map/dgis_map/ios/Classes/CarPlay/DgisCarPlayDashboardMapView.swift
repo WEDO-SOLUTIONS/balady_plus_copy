@@ -12,6 +12,9 @@ class DgisCarPlayDashboardMapView: UIViewController {
     
     private var cancellables = Set<Cancellable>()
     
+    private var mapAppearance: CarPlayMapAppearance?
+    private var prefersDarkMapContent = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let sdk = DgisMapInitializer.shared.getSdkContainer()
@@ -81,6 +84,8 @@ class DgisCarPlayDashboardMapView: UIViewController {
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
+
+        observeMapAppearance()
     }
     
     func myLocation() {
@@ -117,5 +122,22 @@ class DgisCarPlayDashboardMapView: UIViewController {
         mapView = nil
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
+        mapAppearance = nil
+    }
+
+    // MARK: - Day/night appearance
+
+    /// The dashboard map follows the same CarPlay content style as the main car map.
+    private func observeMapAppearance() {
+        mapAppearance = CarPlayMapAppearance { [weak self] prefersDark in
+            guard let self else { return }
+
+            self.prefersDarkMapContent = prefersDark
+            self.applyMapAppearance()
+        }
+    }
+
+    private func applyMapAppearance() {
+        mapView?.appearance = prefersDarkMapContent ? .universal("night") : .universal("day")
     }
 }
