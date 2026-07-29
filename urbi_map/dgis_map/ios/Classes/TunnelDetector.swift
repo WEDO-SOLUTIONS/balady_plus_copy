@@ -4,6 +4,9 @@ import Foundation
 /// Watches the active navigation route and reports whether the vehicle's current
 /// position is inside a tunnel (`RoadSubtype.tunnel`).
 ///
+/// Shared by the phone map (`DgisMapView`) and the two CarPlay maps — each darkens its
+/// own map surface while the reported state is `true`.
+///
 /// POC-quality hysteresis: entering a tunnel is reported immediately, but exiting is
 /// only reported after `exitDelay` seconds spent continuously outside a tunnel. This
 /// avoids flicker when `roadSubtypes` reports short gaps between adjoining tunnel

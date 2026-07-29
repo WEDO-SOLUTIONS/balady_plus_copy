@@ -1,4 +1,4 @@
-package com.dgis.map.android_auto
+package com.dgis.map
 
 import android.os.Handler
 import android.os.Looper
@@ -11,6 +11,9 @@ import ru.dgis.sdk.routing.RoutePoint
 /**
  * Detects whether the current position along the active navigation route lies inside a tunnel
  * (RoadSubtype.TUNNEL), so the caller can force a dark map theme while driving through one.
+ *
+ * Shared by the phone map ([DgisMapView]) and the Android Auto session
+ * ([com.dgis.map.android_auto.NavigationCarAppSession]) — both darken their own map surface.
  *
  * Entering a tunnel is reported immediately. Leaving is debounced by [EXIT_DEBOUNCE_MS] so a
  * short daylight gap between two consecutive tunnel segments doesn't flicker the theme.

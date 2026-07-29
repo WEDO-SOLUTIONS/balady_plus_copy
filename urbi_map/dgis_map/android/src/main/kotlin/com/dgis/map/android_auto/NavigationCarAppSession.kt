@@ -17,6 +17,7 @@ import androidx.car.app.SessionInfo
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.DgisMapInitializer
+import com.dgis.map.TunnelDetector
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.settings.VoiceInstructionsScreen
 import io.flutter.FlutterInjector
