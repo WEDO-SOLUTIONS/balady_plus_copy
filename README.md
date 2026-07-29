@@ -1,33 +1,43 @@
-# BE-90 — lock screen live activity, скриншоты
+# BE-90 — navigation live updates, screenshots
 
-Ветка `feat/BE-90/lock-screen-widgets`, iPhone 17 Pro / iOS 26 (симулятор), сборка `dev`.
-Данные фейковые — из демо-драйвера (`-BaladyLADemo`, TEMP-код, помечен `TEMP-DEBUG-BE90`).
-Скриншот всего экрана; виджет — внизу, над кнопками локскрина.
+Branch `feat/BE-90/lock-screen-widgets`. All data comes from throwaway debug drivers that are
+removed before merge, so distances and traffic are canned, not from a real route.
 
-| # | Файл | Сценарий | Как воспроизвести | Что смотреть |
-|---|------|----------|-------------------|--------------|
-| 1 | `01-car-navigating.png` | Авто, обычная навигация | `-BaladyLADemo` | Иконка манёвра в плашке, «1 km» + улица, спидометр 100 с лимитом 110, иконка Balady. Таймлайн: пройденное `#F1F1F1`, дальше accent `#2AB3A9` → jam `#FFEF03` → пробка `#F63319`. Маркер 24px — `assets/icons/makkah/directions.svg`, повёрнут на 90° по часовой, fill accent-950 `#0C3330`, border 1px accent/on-container `#249A91`. Внизу три равные колонки: осталось / прибытие / расстояние |
-| 2 | `02-car-gps-lost.png` | Авто, потеря GPS | `-BaladyLADemo -BaladyLADemoGpsLost` | Первый ряд заменён красной пилюлей «GPS signal lost» (error/default), остальное без изменений |
-| 3 | `03-car-reroute.png` | Авто, перестроение маршрута | `-BaladyLADemo -BaladyLADemoReroute` | Зелёная пилюля «Re-route» (success/default) |
-| 4 | `04-pedestrian-navigating.png` | Пешком | `-BaladyLADemo -BaladyLADemoPedestrian` | Вместо пробок — штрихи 3×12, gap 2, радиус только сверху; пройденные 40% opacity; маркер — кружок accent 24px (2× высоты штриха) с фигуркой. Спидометра нет |
-| 5 | `05-car-arabic-rtl.png` | Авто, арабский (RTL) | `-BaladyLADemo -BaladyLADemoArabic` | Зеркалится вся раскладка и таймлайн (стрелка смотрит влево), иконка манёвра НЕ зеркалится, единицы «كم / د» |
-| 6 | `06-arrival.png` | Прибытие | `-BaladyLADemo -BaladyLADemoArrived` | «You arrived» + адрес, две кнопки: `Open Balady+` (soft) и `End trip` (error/default). Спидометр и таймлайн скрыты; во время движения кнопок нет |
+## iOS
 
-## Не попало в скриншоты
+iPhone 17 Pro / iOS 26 (simulator), `dev` build. Full-screen shots — the widget sits at the
+bottom of the lock screen, above the flashlight/camera buttons.
 
-- **Dynamic Island** — expanded-вид собран по той же схеме (манёвр + скорость + таймлайн + три колонки), но этот симулятор Live Activity в островке не показывает вообще (пустая «таблетка»). Проверю на устройстве / реальном маршруте.
-- **Превышение скорости** (лимит заливается красным) — в демо не эмулируется, приходит из `exceedingMaxSpeedLimitChannel`.
-- **Реальные пробки** — здесь фиксированные 45/20/35%; на боевом маршруте сегменты берутся из `traffic.speedColors`.
+| # | File | Scenario | How to reproduce | What to look at |
+|---|------|----------|------------------|-----------------|
+| 1 | `01-car-navigating.png` | Car, normal guidance | `-BaladyLADemo` | Maneuver glyph on its tile, "1 km" + street, speedometer 100 with the 110 limit badge, Balady mark. Timeline: travelled part `#F1F1F1`, then accent `#2AB3A9` → `#FFEF03` → `#F63319`. The 24px marker is `assets/icons/makkah/directions.svg` turned 90° clockwise, `#0C3330` fill with a 1px `#249A91` border. Bottom row: three equal columns — time left, arrival time, distance left |
+| 2 | `02-car-gps-lost.png` | Car, GPS lost | `-BaladyLADemo -BaladyLADemoGpsLost` | The first row is replaced by the red error/default pill; everything else is unchanged |
+| 3 | `03-car-reroute.png` | Car, route rebuild | `-BaladyLADemo -BaladyLADemoReroute` | Green success/default pill |
+| 4 | `04-pedestrian-navigating.png` | Walking | `-BaladyLADemo -BaladyLADemoPedestrian` | Dashes instead of traffic: 3×12, 2px gap, radius on top only; travelled ones at 40% opacity; the marker is a 24px accent circle (twice the dash height). No speedometer |
+| 5 | `05-car-arabic-rtl.png` | Car, Arabic (RTL) | `-BaladyLADemo -BaladyLADemoArabic` | The whole layout and the timeline mirror (the marker points left), the maneuver glyph does **not** mirror, units read "كم / د" |
+| 6 | `06-arrival.png` | Arrival | `-BaladyLADemo -BaladyLADemoArrived` | "You've arrived" + address, two buttons: `Open Balady+` (soft) and `End trip` (error/default). Speedometer and timeline are hidden; there are no buttons while driving |
+
+Not covered by the shots:
+
+- **Dynamic Island** — the expanded view follows the same layout (maneuver + speed + timeline +
+  three columns), but this simulator does not render Live Activities in the island at all
+  (the pill stays empty). Needs a look on a device.
+- **Speeding** (the limit badge fills red) — not emulated by the debug driver; it comes from
+  `exceedingMaxSpeedLimitChannel`.
+- **Real traffic** — the shots use fixed 45/20/35% shares; on a real route the segments come
+  from `traffic.speedColors`.
 
 ## Android
 
-Pixel 8a (API 37, тёмная тема), уведомление с фейковыми данными из временного debug-ресивера (удалён перед пушем).
+Pixel 8a (API 37, dark theme), notification driven by a temporary debug receiver.
 
-| # | Файл | Сценарий | Что смотреть |
-|---|------|----------|--------------|
-| 1 | `android-01-shade-navigating.png` | Шторка, обычная навигация | Иконка Balady слева (её рисует система), «50 m», «Towards King Fahd Branch Rd», в шапке ETA и остаток. Ниже — Live Update-таймлайн Android 16 (`Notification.ProgressStyle`) с теми же цветами, что на iOS, и маркером-стрелкой |
-| 2 | `android-02-lockscreen.png` | Локскрин | Та же нотификация в свёрнутом виде — отдельной поверхности у Android нет |
-| 3 | `android-03-shade-gps-lost.png` | Потеря GPS | Вместо дистанции — «GPS signal lost» (аналог красной пилюли на iOS) |
-| 4 | `android-04-shade-arrival.png` | Прибытие | «You arrived» + «Zira kafe» и две кнопки: `Open in Balady+` / `End trip` |
+| # | File | Scenario | What to look at |
+|---|------|----------|-----------------|
+| 1 | `android-01-shade-navigating.png` | Shade, normal guidance | Balady icon on the leading edge (drawn by the system), "50 m", "Towards King Fahd Branch Rd", arrival time and time left in the header. Below — the Android 16 Live Update timeline (`Notification.ProgressStyle`) with the same colours as iOS and the same progress marker |
+| 2 | `android-02-lockscreen.png` | Lock screen | The same notification, collapsed — Android has no separate lock screen surface |
+| 3 | `android-03-shade-gps-lost.png` | GPS lost | "GPS signal lost" replaces the distance (the counterpart of the red pill on iOS) |
+| 4 | `android-04-shade-arrival.png` | Arrival | "You've arrived" + "Zira kafe" and two actions: `Open in Balady+` / `End trip` |
 
-Не проверено: чип в статус-баре (promoted ongoing). Система выдаёт его только уведомлению от foreground-сервиса, а демо-ресивер постил напрямую; `setRequestPromotedOngoing` вызывается рефлексией на Android 16 QPR1+.
+Not verified: the status bar chip (promoted ongoing). The platform grants it to foreground
+service notifications, and the debug receiver posts the notification directly;
+`setRequestPromotedOngoing` is called reflectively on Android 16 QPR1+.
