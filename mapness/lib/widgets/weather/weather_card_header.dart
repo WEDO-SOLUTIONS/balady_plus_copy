@@ -12,6 +12,7 @@ import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -100,11 +101,11 @@ class Data extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dateTime = DateFormat('d MMMM, EEEE', locale.languageCode).format(DateTime.now());
-    final windMph = allWeatherInfo?.current?.windMph?.toStringAsPrecision(2);
-    final humidity = allWeatherInfo?.current?.humidity?.toStringAsPrecision(2);
-    final pressureMb = allWeatherInfo?.current?.pressureMb?.toStringAsFixed(0);
-    final tempC = allWeatherInfo?.current?.tempC?.toStringAsPrecision(2) ?? '-';
+    final dateTime = context.digits(DateFormat('d MMMM, EEEE', locale.languageCode).format(DateTime.now()));
+    final windMph = context.digitsOrNull(allWeatherInfo?.current?.windMph?.toStringAsPrecision(2));
+    final humidity = context.digitsOrNull(allWeatherInfo?.current?.humidity?.toStringAsPrecision(2));
+    final pressureMb = context.digitsOrNull(allWeatherInfo?.current?.pressureMb?.toStringAsFixed(0));
+    final tempC = context.digits(allWeatherInfo?.current?.tempC?.toStringAsPrecision(2) ?? '-');
     final isDay = allWeatherInfo?.current?.defineIsDay();
     final condition = allWeatherInfo?.current?.condition?.text ?? '';
     final placeName = allWeatherInfo?.location?.name ?? '';
@@ -239,7 +240,10 @@ class Data extends ConsumerWidget {
                                             Align(
                                               alignment: AlignmentDirectional.topEnd,
                                               child: Container(
-                                                padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$1x),
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: Spacing.$3x,
+                                                  vertical: Spacing.$1x,
+                                                ),
                                                 decoration: BoxDecoration(
                                                   color: context.colors.accentSecondaryDefault,
                                                   borderRadius: BorderRadius.circular(RadiusBorder.full),
@@ -247,7 +251,9 @@ class Data extends ConsumerWidget {
                                                 child: AutoSizeText(
                                                   condition,
                                                   maxLines: 1,
-                                                  style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.staticWhite),
+                                                  style: context.textStyles.bodySmallSemiBold.copyWith(
+                                                    color: context.colors.staticWhite,
+                                                  ),
                                                 ),
                                               ),
                                             ),

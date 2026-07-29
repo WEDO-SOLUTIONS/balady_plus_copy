@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/feedback/images/add_image_button.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_preview.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
         ),
         Spacing.$3x.heightBox,
         Text(
-          context.l10n.feedbackImageLimitsError(maxImages, maxSizeInBytes.formatAsFileSize()),
+          context.digits(context.l10n.feedbackImageLimitsError(maxImages, maxSizeInBytes.formatAsFileSize())),
           style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
         ),
       ],

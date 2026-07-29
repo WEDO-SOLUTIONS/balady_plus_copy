@@ -11,6 +11,7 @@ import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_route_line.dart';
 import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class EtaArrivalCard extends HookConsumerWidget {
   const EtaArrivalCard({super.key});
@@ -32,17 +33,19 @@ class EtaArrivalCard extends HookConsumerWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         image: DecorationImage(
-            matchTextDirection: true,
-            image: AssetImage(
-              Assets.images.etaSheetBackground.keyName,
-            ),
-            fit: BoxFit.fill),
+          matchTextDirection: true,
+          image: AssetImage(
+            Assets.images.etaSheetBackground.keyName,
+          ),
+          fit: BoxFit.fill,
+        ),
       ),
-      margin: const EdgeInsets.symmetric(
-        horizontal: Spacing.$4x,
-      ).copyWith(
-        bottom: Spacing.$8x,
-      ),
+      margin:
+          const EdgeInsets.symmetric(
+            horizontal: Spacing.$4x,
+          ).copyWith(
+            bottom: Spacing.$8x,
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -166,7 +169,7 @@ class EtaArrivalCard extends HookConsumerWidget {
     final remainingTime = arrivalTime.difference(currentTime);
 
     if (remainingTime.isNegative) {
-      return _formatArrivalTime(context, context.l10n.timerMin('0'));
+      return _formatArrivalTime(context, context.l10n.timerMin(context.l10n.number(0)));
     }
 
     if (remainingTime.inSeconds < 60) {
@@ -181,8 +184,11 @@ class EtaArrivalCard extends HookConsumerWidget {
     }
 
     return remainingHours > 0
-        ? _formatArrivalTime(context, context.l10n.timerHrMin(remainingHours.toString(), remainingMinutes.toString()))
-        : _formatArrivalTime(context, context.l10n.timerMin(remainingMinutes.toString()));
+        ? _formatArrivalTime(
+            context,
+            context.l10n.timerHrMin(context.l10n.number(remainingHours), context.l10n.number(remainingMinutes)),
+          )
+        : _formatArrivalTime(context, context.l10n.timerMin(context.l10n.number(remainingMinutes)));
   }
 
   String _getUpdatedAt(BuildContext context, EtaInfoModel<dynamic>? streamData) {
@@ -200,7 +206,7 @@ class EtaArrivalCard extends HookConsumerWidget {
     }
     final dateFormatter = intl.DateFormat('HH:mm');
 
-    return dateFormatter.format(updatedAtTime);
+    return context.digits(dateFormatter.format(updatedAtTime));
   }
 
   String _getDistance(BuildContext context, EtaInfoModel<dynamic>? streamData) {
@@ -216,6 +222,6 @@ class EtaArrivalCard extends HookConsumerWidget {
 
     final distanceInKm = distance / 1000.0;
 
-    return distanceInKm.toStringAsFixed(1);
+    return context.digits(distanceInKm.toStringAsFixed(1));
   }
 }

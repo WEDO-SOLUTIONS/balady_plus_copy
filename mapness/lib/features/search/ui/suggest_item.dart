@@ -17,6 +17,7 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:provider/provider.dart';
 
@@ -159,7 +160,7 @@ String? _ifSubtitleWithOneWord(List<String> subtitleSplit, BuildContext context)
   if (subtitleSplit.length == 1 && int.tryParse(subtitleSplit[0]) != null) {
     final amountOfBrunches = int.parse(subtitleSplit[0]);
     final brunchLocalized = brunch(amountOfBrunches, context.l10n);
-    return '$amountOfBrunches $brunchLocalized';
+    return '${context.l10n.number(amountOfBrunches)} $brunchLocalized';
   }
   return null;
 }
@@ -171,7 +172,7 @@ String? _ifSubtitleWithSameFirstAndSecondWords(List<String> subtitleSplit, Build
     final amountOfBrunches = int.tryParse(subtitleSplit[0]);
     if (amountOfBrunches != null) {
       final brunchLocalized = brunch(amountOfBrunches, context.l10n);
-      return '$amountOfBrunches $brunchLocalized';
+      return '${context.l10n.number(amountOfBrunches)} $brunchLocalized';
     }
 
     subtitleSplit.removeAt(0);

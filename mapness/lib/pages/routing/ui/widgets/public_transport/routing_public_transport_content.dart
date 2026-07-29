@@ -15,6 +15,7 @@ import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 part 'routing_public_tail_sector.dart';
 part 'routing_public_pedestrian.dart';

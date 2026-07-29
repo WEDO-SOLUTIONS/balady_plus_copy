@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 import 'package:mapness/features/stories/ui/frame/story_frame_widget.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class PoiPhotosStories extends StatefulWidget {
   final Widget Function(ScrollController, ScrollPhysics?) builder;
@@ -232,7 +233,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          widget.itemCount.toString(),
+                          context.digits(widget.itemCount.toString()),
                           style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.staticWhite),
                         ),
                         const SizedBox(width: Spacing.$1x),

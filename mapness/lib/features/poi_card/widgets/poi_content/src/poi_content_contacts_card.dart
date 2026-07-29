@@ -9,6 +9,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content/tmp/content_row_ex
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/copy_to_clipboard.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class PoiContentContactsCard extends StatelessWidget {
   final PoiContentContactsModel? data;
@@ -60,14 +61,14 @@ class PoiContentContactsCard extends StatelessWidget {
   }
 
   static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => GeneralIcons.web,
-        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-      };
+    PoiContentSocialMediaTypes.website => GeneralIcons.web,
+    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+  };
 }
 
 class _PhoneItemWidget extends StatelessWidget {
@@ -132,7 +133,7 @@ class _PhoneItemWidget extends StatelessWidget {
         titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
       ),
       trailing: Text(
-        '${phones.length}',
+        context.digits('${phones.length}'),
         style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
       ),
       content: Column(
@@ -216,7 +217,7 @@ class _EmailItemWidget extends StatelessWidget {
         titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
       ),
       trailing: Text(
-        '${emails.length}',
+        context.digits('${emails.length}'),
         style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
       ),
       content: Column(

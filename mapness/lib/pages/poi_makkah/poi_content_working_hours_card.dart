@@ -90,10 +90,10 @@ class MakkahPoiWorkingHoursCard extends StatelessWidget {
     final saudiWeekday = saudiTimeNow().weekday;
 
     String formatOpenClose(Iterable<Hours> hours) =>
-        hours.map((h) => '${h.from.formatHHmm}-${h.till.formatHHmm}').join(',');
+        l10n.digits(hours.map((h) => '${h.from.formatHHmm}-${h.till.formatHHmm}').join(','));
 
     String formatBreaks(Iterable<Hours> breakHours) =>
-        breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(',');
+        l10n.digits(breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(','));
 
     String todayWorkingHours() {
       final hours = workingHours.isOpen24x7

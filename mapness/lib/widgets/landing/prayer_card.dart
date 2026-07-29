@@ -17,6 +17,7 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:provider/provider.dart' as provider;
 
 class PrayerCard extends ConsumerWidget {
@@ -39,119 +40,122 @@ class PrayerCard extends ConsumerWidget {
     });
 
     return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-        bloc: bloc,
-        builder: (context, state) {
-          final nextPrayer = state.nextPrayer;
+      bloc: bloc,
+      builder: (context, state) {
+        final nextPrayer = state.nextPrayer;
 
-          if (state.status == BlocRequestStatus.submissionGetFailure) {
-            return const SizedBox();
-          }
+        if (state.status == BlocRequestStatus.submissionGetFailure) {
+          return const SizedBox();
+        }
 
-          final isLoading = nextPrayer == null || state.status == BlocRequestStatus.submissionGetCanceled;
+        final isLoading = nextPrayer == null || state.status == BlocRequestStatus.submissionGetCanceled;
 
-          return Padding(
-            padding: const EdgeInsets.only(
-              left: Spacing.$4x,
-              right: Spacing.$4x,
-              bottom: Spacing.$8x,
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              child: SizedBox(
-                height: 347,
-                child: isLoading
-                    ? const Padding(
-                        padding: EdgeInsets.only(bottom: Spacing.$8x),
-                        child: CustomShimmerWidget(),
-                      )
-                    : Material(
-                        child: Ink.image(
-                          alignment: Alignment.topCenter,
-                          fit: BoxFit.cover,
-                          image: AssetImage(
-                            Assets.images.ishanSeefromtheskyUnsplash.keyName,
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              Metrics.logEventAdvanced(
-                                MetricsConstants.exploreKeys.prayerTimesBannerButton,
-                                action: MetricAction.tap.name,
-                                group: MetricsConstants.exploreTag,
-                              );
-                              NavigationService.navigatorKey.currentState!.pushNamed(
-                                RouteName.prayerTimes,
-                                arguments: bloc,
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Spacing.$5x,
-                                horizontal: Spacing.$6x,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
-                                    style: context.textStyles.bodyLargeRegular.copyWith(
-                                      color: context.color.textAndIconsBaseInversePrimary,
-                                    ),
+        return Padding(
+          padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+            bottom: Spacing.$8x,
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+            child: SizedBox(
+              height: 347,
+              child: isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.only(bottom: Spacing.$8x),
+                      child: CustomShimmerWidget(),
+                    )
+                  : Material(
+                      child: Ink.image(
+                        alignment: Alignment.topCenter,
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                          Assets.images.ishanSeefromtheskyUnsplash.keyName,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Metrics.logEventAdvanced(
+                              MetricsConstants.exploreKeys.prayerTimesBannerButton,
+                              action: MetricAction.tap.name,
+                              group: MetricsConstants.exploreTag,
+                            );
+                            NavigationService.navigatorKey.currentState!.pushNamed(
+                              RouteName.prayerTimes,
+                              arguments: bloc,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Spacing.$5x,
+                              horizontal: Spacing.$6x,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
+                                  style: context.textStyles.bodyLargeRegular.copyWith(
+                                    color: context.color.textAndIconsBaseInversePrimary,
                                   ),
-                                  _NextPrayerTimer(
-                                    key: Key(nextPrayer.prayer.name),
-                                    onTimerEnd: () => bloc.updateNextPrayer(),
-                                    prayer: nextPrayer.prayer,
-                                    time: nextPrayer.dateTime,
-                                  ),
-                                  const Spacer(),
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
-                                            style: context.textStyles.bodySmallRegular.copyWith(
-                                              color: context.color.textAndIconsBaseInversePrimary,
-                                            ),
+                                ),
+                                _NextPrayerTimer(
+                                  key: Key(nextPrayer.prayer.name),
+                                  onTimerEnd: () => bloc.updateNextPrayer(),
+                                  prayer: nextPrayer.prayer,
+                                  time: nextPrayer.dateTime,
+                                ),
+                                const Spacer(),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
+                                          style: context.textStyles.bodySmallRegular.copyWith(
+                                            color: context.color.textAndIconsBaseInversePrimary,
                                           ),
-                                          RichText(
-                                            textDirection: TextDirection.ltr,
-                                            text: TextSpan(
-                                              style: context.textStyles.h2Medium.copyWith(
-                                                color: context.colors.staticWhite,
+                                        ),
+                                        RichText(
+                                          textDirection: TextDirection.ltr,
+                                          text: TextSpan(
+                                            style: context.textStyles.h2Medium.copyWith(
+                                              color: context.colors.staticWhite,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: context.digits(
+                                                  DateFormat('hh:mm').format(state.nextPrayer!.dateTime),
+                                                ),
                                               ),
-                                              children: [
-                                                TextSpan(
-                                                  text: DateFormat('hh:mm').format(state.nextPrayer!.dateTime),
-                                                ),
-                                                TextSpan(
-                                                  text: state.nextPrayer!.dateTime.hour > 12 ? ' pm' : ' am',
-                                                ),
-                                              ],
-                                            ),
+                                              TextSpan(
+                                                text: state.nextPrayer!.dateTime.hour > 12 ? ' pm' : ' am',
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: _NotificationIconSwitch(),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      width: 40,
+                                      height: 40,
+                                      child: _NotificationIconSwitch(),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
-              ),
+                    ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -167,46 +171,46 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-          );
-          provider.Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
-        },
-        onTapDown: (_) {
-          setState(() {
-            isPressed = true;
-          });
-        },
-        onTapUp: (_) {
-          setState(() {
-            isPressed = false;
-          });
-        },
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(RadiusBorder.m),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-            child: ColoredBox(
-              color: Colors.white.withOpacity(0.25),
-              child: Center(
-                child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-                  builder: (context, state) {
-                    final isNotificationDisabled = state.isNotificationDisable;
-                    return Icon(
-                      isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
-                      color: isPressed ? context.colors.foregroundMuted : Colors.white,
-                    );
-                  },
-                ),
-              ),
+    behavior: HitTestBehavior.opaque,
+    onTap: () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.prayerTimesBannerBellIcon,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag,
+      );
+      provider.Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
+    },
+    onTapDown: (_) {
+      setState(() {
+        isPressed = true;
+      });
+    },
+    onTapUp: (_) {
+      setState(() {
+        isPressed = false;
+      });
+    },
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(RadiusBorder.m),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+        child: ColoredBox(
+          color: Colors.white.withOpacity(0.25),
+          child: Center(
+            child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+              builder: (context, state) {
+                final isNotificationDisabled = state.isNotificationDisable;
+                return Icon(
+                  isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
+                  color: isPressed ? context.colors.foregroundMuted : Colors.white,
+                );
+              },
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _NextPrayerTimer extends StatefulWidget {
@@ -280,7 +284,7 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
         final seconds = (time.inSeconds % 60).toString().padLeft(2, '0');
 
         return Text(
-          '$hours:$minutes:$seconds',
+          context.digits('$hours:$minutes:$seconds'),
           style: context.textStyles.h1Medium.copyWith(color: context.colors.staticWhite),
           textDirection: TextDirection.ltr,
         );

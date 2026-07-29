@@ -39,7 +39,7 @@ class RoutingPublicPedestrian extends StatelessWidget {
               ),
               Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),
               Text(
-                '${data.duration} ${context.l10n.min}',
+                '${context.l10n.number(data.duration)} ${context.l10n.min}',
                 style: textStyle.copyWith(color: context.colors.foregroundSoft),
               ),
             ],

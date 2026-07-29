@@ -1,4 +1,5 @@
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 enum Plurals {
   zero,
@@ -76,11 +77,11 @@ class ArPlurals {
       case Plurals.two:
         return l10n.stationsTwo;
       case Plurals.few:
-        return '$number ${l10n.stationsFew}';
+        return '${l10n.number(number)} ${l10n.stationsFew}';
       case Plurals.many:
-        return '$number ${l10n.stationsMany}';
+        return '${l10n.number(number)} ${l10n.stationsMany}';
       case Plurals.others:
-        return '$number ${l10n.stationsOther}';
+        return '${l10n.number(number)} ${l10n.stationsOther}';
     }
   }
 
@@ -96,11 +97,11 @@ class ArPlurals {
       case Plurals.two:
         return l10n.transfersTwo;
       case Plurals.few:
-        return '$number ${l10n.transfersFew}';
+        return '${l10n.number(number)} ${l10n.transfersFew}';
       case Plurals.many:
-        return '$number ${l10n.transfersMany}';
+        return '${l10n.number(number)} ${l10n.transfersMany}';
       case Plurals.others:
-        return '$number ${l10n.transfersOther}';
+        return '${l10n.number(number)} ${l10n.transfersOther}';
     }
   }
 }

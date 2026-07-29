@@ -11,6 +11,7 @@ import 'package:mapness/features/stream_audio/ui/widgets/radio_contextual_button
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -72,7 +73,7 @@ class PathNavMapControls extends StatelessWidget {
               ),
               maneuver: maneuver != null
                   ? uikit.BaladyManeuverModel(
-                      distance: maneuver.distance,
+                      distance: context.digits(maneuver.distance),
                       instruction: maneuver.instruction?.toUIKit(),
                       roadName: maneuver.roadName,
                       unit: maneuver.unit,

@@ -16,6 +16,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/utils/language_detector.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Previously called RoadClosurePage.
@@ -169,8 +170,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   /// BALADY-21: SDK reports inclusive seconds (HH:59:59) for bounds the data
   /// actually stores as exclusive (HH+1):00:00. Round up so the displayed
   /// minute matches the source data (5:00 PM, not 4:59 PM).
-  DateTime _normalizeBoundary(DateTime dt) =>
-      dt.second >= 59 ? dt.add(const Duration(seconds: 1)) : dt;
+  DateTime _normalizeBoundary(DateTime dt) => dt.second >= 59 ? dt.add(const Duration(seconds: 1)) : dt;
 
   /// Date formats:
   /// 00:00 1 April 2025 — 23:59 10 June 2026 (if different years)
@@ -178,23 +178,28 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
   /// 00:00 1 April – 23:59 10 April (if the same month and year)
   /// 00:00–23:59 10 June (if one day)
   String? _formatSchedule(DateTime? from, DateTime? to, String currentLang, AppLocalizations l10n) {
+    final schedule = _formatScheduleRaw(from, to, currentLang, l10n);
+    return schedule == null ? null : l10n.digits(schedule);
+  }
+
+  String? _formatScheduleRaw(DateTime? from, DateTime? to, String currentLang, AppLocalizations l10n) {
     final tf = DateFormat('HH:mm', currentLang);
     final dmf = DateFormat('d MMMM', currentLang);
     final yf = DateFormat('yyyy', currentLang);
-    if (from != null) from = _normalizeBoundary(from);
-    if (to != null) to = _normalizeBoundary(to);
-    if (from != null && to != null) {
-      final showYear = from.year != to.year;
-      final showMonth = from.month != to.month;
-      final sameDay = DateUtils.isSameDay(from, to);
+    final start = from == null ? null : _normalizeBoundary(from);
+    final end = to == null ? null : _normalizeBoundary(to);
+    if (start != null && end != null) {
+      final showYear = start.year != end.year;
+      final showMonth = start.month != end.month;
+      final sameDay = DateUtils.isSameDay(start, end);
 
-      final fromTime = tf.format(from);
-      final fromMonth = dmf.format(from);
-      final fromYear = yf.format(from);
+      final fromTime = tf.format(start);
+      final fromMonth = dmf.format(start);
+      final fromYear = yf.format(start);
 
-      final toTime = tf.format(to);
-      final toMonth = dmf.format(to);
-      final toYear = yf.format(to);
+      final toTime = tf.format(end);
+      final toMonth = dmf.format(end);
+      final toYear = yf.format(end);
 
       if (showYear) {
         return '$fromTime $fromMonth $fromYear – $toTime $toMonth $toYear';
@@ -207,10 +212,10 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
           return '$fromTime–$toTime $fromMonth';
         }
       }
-    } else if (from == null && to != null) {
-      return '${l10n.unknown} – ${tf.format(to)} ${dmf.format(to)} ${yf.format(to)}';
-    } else if (from != null && to == null) {
-      return '${tf.format(from)} ${dmf.format(from)} ${yf.format(from)} – ${l10n.unknown}';
+    } else if (start == null && end != null) {
+      return '${l10n.unknown} – ${tf.format(end)} ${dmf.format(end)} ${yf.format(end)}';
+    } else if (start != null && end == null) {
+      return '${tf.format(start)} ${dmf.format(start)} ${yf.format(start)} – ${l10n.unknown}';
     } else {
       return l10n.unknown;
     }

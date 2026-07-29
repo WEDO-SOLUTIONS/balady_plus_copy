@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 class RoutingPedestrian extends StatelessWidget {
@@ -53,7 +54,7 @@ class RoutingPedestrian extends StatelessWidget {
                 ),
               Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),
               Text(
-                '${data.duration} ${context.l10n.min}',
+                '${context.l10n.number(data.duration)} ${context.l10n.min}',
                 style: textStyle.copyWith(color: context.colors.foregroundSoft),
               ),
             ],
@@ -103,7 +104,7 @@ class RoutingPedestrianV2 extends StatelessWidget {
               ),
               Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),
               Text(
-                '${data.duration} ${context.l10n.min}',
+                '${context.l10n.number(data.duration)} ${context.l10n.min}',
                 style: textStyle.copyWith(color: context.colors.foregroundSoft),
               ),
             ],

@@ -10,6 +10,7 @@ import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/helpers/weather_date.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/weather/custom_svg_icon_widget.dart';
 import 'package:mapness/widgets/weather/expansion_tile.dart';
 
@@ -38,9 +39,9 @@ class WeatherDayCard extends ConsumerWidget {
     final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
     final conditionText = forecastDay?.day?.condition?.text ?? '';
 
-    final maxTemp = '${forecastDay?.day?.maxTempC}º';
+    final maxTemp = context.digits('${forecastDay?.day?.maxTempC}º');
 
-    final minTemp = '${forecastDay?.day?.minTempC}º';
+    final minTemp = context.digits('${forecastDay?.day?.minTempC}º');
 
     return CustomExpansionTile(
       collapsedBackgroundColor: context.colors.backgroundSurface1,
@@ -120,12 +121,12 @@ class WeatherDayCard extends ConsumerWidget {
                   })
                   .map<Widget>((hour) {
                     final dateTime = DateTime.parse(hour.time ?? '');
-                    final time = DateFormat('hh:mm').format(dateTime);
+                    final time = context.digits(DateFormat('hh:mm').format(dateTime));
 
                     final formatter = NumberFormat()
                       ..minimumFractionDigits = 0
                       ..maximumFractionDigits = 1;
-                    final temperature = '${formatter.format(hour.tempC?.toInt())}ºC';
+                    final temperature = context.digits('${formatter.format(hour.tempC?.toInt())}ºC');
 
                     return Padding(
                       padding: const EdgeInsets.only(left: Spacing.$3x),

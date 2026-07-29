@@ -1,4 +1,5 @@
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 /// @nodoc
 extension FormattedDistance on num {
@@ -6,9 +7,9 @@ extension FormattedDistance on num {
   String formatDistance(AppLocalizations l10n) {
     if (this >= 1000) {
       final kilometers = this / 1000.0;
-      return '${kilometers.toStringAsFixed(1)} ${l10n.km}';
+      return '${l10n.digits(kilometers.toStringAsFixed(1))} ${l10n.km}';
     } else {
-      return '${toStringAsFixed(0)} ${l10n.meter}';
+      return '${l10n.digits(toStringAsFixed(0))} ${l10n.meter}';
     }
   }
 
@@ -16,9 +17,9 @@ extension FormattedDistance on num {
   String formatDistanceShort(AppLocalizations l10n) {
     if (this >= 1000) {
       final kilometers = this / 1000.0;
-      return '${kilometers.toStringAsFixed(1)} ${l10n.kilometerShort}';
+      return '${l10n.digits(kilometers.toStringAsFixed(1))} ${l10n.kilometerShort}';
     } else {
-      return '${toStringAsFixed(0)} ${l10n.meterShort}';
+      return '${l10n.digits(toStringAsFixed(0))} ${l10n.meterShort}';
     }
   }
 }
@@ -32,16 +33,16 @@ extension FormattedDuration on int {
     final remainingMinutes = minutes % 60;
 
     if (hours > 0) {
-      var time = '$hours ${l10n.hrs}';
+      var time = '${l10n.number(hours)} ${l10n.hrs}';
       if (remainingMinutes > 0) {
-        time += ' $remainingMinutes ${l10n.min}';
+        time += ' ${l10n.number(remainingMinutes)} ${l10n.min}';
       }
 
       return time;
     } else if (minutes <= 1) {
-      return '1 ${l10n.min}';
+      return '${l10n.number(1)} ${l10n.min}';
     } else {
-      return '$remainingMinutes ${l10n.min}';
+      return '${l10n.number(remainingMinutes)} ${l10n.min}';
     }
   }
 
@@ -52,16 +53,16 @@ extension FormattedDuration on int {
     final remainingMinutes = minutes % 60;
 
     if (hours > 0) {
-      var time = '$hours ${l10n.hoursShort}';
+      var time = '${l10n.number(hours)} ${l10n.hoursShort}';
       if (remainingMinutes > 0) {
-        time += ' $remainingMinutes ${l10n.minutesShort}';
+        time += ' ${l10n.number(remainingMinutes)} ${l10n.minutesShort}';
       }
 
       return time;
     } else if (minutes <= 1) {
-      return '1 ${l10n.minutesShort}';
+      return '${l10n.number(1)} ${l10n.minutesShort}';
     } else {
-      return '$remainingMinutes ${l10n.minutesShort}';
+      return '${l10n.number(remainingMinutes)} ${l10n.minutesShort}';
     }
   }
 }

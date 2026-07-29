@@ -10,6 +10,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class PoiLinesMakkahBus extends ConsumerStatefulWidget {
   final BusRoute routeInfo;
@@ -144,7 +145,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                     children: [
                       const SizedBox(width: Spacing.$10x),
                       Text(
-                        trip.departureTime,
+                        context.digits(trip.departureTime),
                         style: context.textStyleV3.bodyLargeRegular.copyWith(
                           color: context.colors.foregroundDefault,
                           decoration: isDelayed ? TextDecoration.lineThrough : null,
@@ -160,7 +161,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                               Icon(Icons.arrow_forward, size: 14, color: colorLine),
                               const SizedBox(width: Spacing.$1x),
                               Text(
-                                trip.departureTimeUpdate!,
+                                context.digits(trip.departureTimeUpdate!),
                                 style: context.textStyleV3.bodyLargeRegular.copyWith(
                                   color: context.colors.successDefault,
                                   fontSize: 14,
@@ -172,7 +173,7 @@ class _PoiLinesMakkahBusState extends ConsumerState<PoiLinesMakkahBus> {
                       const Spacer(),
                       if (!inMinutes.isNegative && inMinutes >= 0 && inMinutes < 60)
                         Text(
-                          inMinutes == 0 ? l10n.ready : l10n.minLeft(inMinutes),
+                          inMinutes == 0 ? l10n.ready : l10n.digits(l10n.minLeft(inMinutes)),
                           style: context.textStyleV3.bodyLargeRegular.copyWith(
                             color: isDelayed && !trip.delaySeconds.isNegative && inMinutes != 0
                                 ? context.colors.errorDefault

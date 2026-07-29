@@ -12,6 +12,7 @@ import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/profile/profile_account_service.dart';
 
 /// Pill radius for fields / buttons (matches existing layout; not all tokens expose radius).
@@ -167,8 +168,7 @@ class _PersonalDataState extends ConsumerState<PersonalData> {
 
   bool get _canEditProfile => widget.showImpl && _isOtpUser && _hasCompleteOtpProfile;
 
-  bool get _canEditEmail =>
-      widget.showImpl && _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
+  bool get _canEditEmail => widget.showImpl && _isOtpUser && _hasCompleteOtpProfile && widget.userInfo.isEmailEditable;
 
   /// True when first name, last name, or email differs from the last saved values.
   bool _hasUnsavedChanges() {
@@ -1064,7 +1064,10 @@ class _OtpBottomSheetWidgetState extends State<OtpBottomSheetWidget> {
             children: [
               if (_showResendHint && widget.resendAttemptsLeft > 0)
                 Text(
-                  'account_resend_attempts'.tr().replaceFirst('%s', '${widget.resendAttemptsLeft}'),
+                  'account_resend_attempts'.tr().replaceFirst(
+                    '%s',
+                    context.digits('${widget.resendAttemptsLeft}'),
+                  ),
                   style: textStyles.captionLargeRegular.copyWith(color: colors.errorDefault),
                 )
               else

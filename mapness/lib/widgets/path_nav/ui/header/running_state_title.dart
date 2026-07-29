@@ -13,17 +13,17 @@ class _RunningStateTitle extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: _NaviTime(
-            title: eta != null ? eta.timeEta : '--',
+            title: eta != null ? context.digits(eta.timeEta) : '--',
             subTitle: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
           ),
         ),
         Expanded(
           flex: 2,
-          child: _NaviTime(title: eta != null ? eta.arrivalTime : '--', subTitle: context.l10n.arrival),
+          child: _NaviTime(title: eta != null ? context.digits(eta.arrivalTime) : '--', subTitle: context.l10n.arrival),
         ),
         Expanded(
           child: _NaviTime(
-            title: eta != null ? formatDistance(eta.distanceEta) : '--',
+            title: eta != null ? context.digits(formatDistance(eta.distanceEta)) : '--',
             subTitle: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
           ),
         ),

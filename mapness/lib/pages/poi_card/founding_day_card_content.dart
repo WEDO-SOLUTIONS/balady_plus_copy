@@ -393,7 +393,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
     if (total == null) {
       return freeText;
     }
-    return '$total ${l10n.lots} • $freeText';
+    return '${l10n.digits(total)} ${l10n.lots} • $freeText';
   }
 
   // BSS

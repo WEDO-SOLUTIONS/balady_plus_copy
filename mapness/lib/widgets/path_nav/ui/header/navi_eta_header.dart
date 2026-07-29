@@ -16,6 +16,7 @@ import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/path_nav/ui/end_trip_modal.dart';
 import 'package:sheetify/sheetify.dart';

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 
@@ -173,10 +174,10 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
     final saudiWeekday = saudiTimeNow().weekday;
 
     String formatOpenClose(Iterable<Hours> hours) =>
-        hours.map((h) => '${h.from.formatHHmm}-${h.till.formatHHmm}').join(',');
+        l10n.digits(hours.map((h) => '${h.from.formatHHmm}-${h.till.formatHHmm}').join(','));
 
     String formatBreaks(Iterable<Hours> breakHours) =>
-        breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(',');
+        l10n.digits(breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(','));
 
     String todayWorkingHours() {
       final hours = workingHours.isOpen24x7

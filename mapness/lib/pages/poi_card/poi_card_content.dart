@@ -502,7 +502,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     if (total == null) {
       return freeText;
     }
-    return '$total ${l10n.lots} • $freeText';
+    return '${l10n.digits(total)} ${l10n.lots} • $freeText';
   }
 
   // BSS

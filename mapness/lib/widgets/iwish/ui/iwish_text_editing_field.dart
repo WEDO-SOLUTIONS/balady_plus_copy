@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class IwishTextEditingField extends StatefulWidget {
   const IwishTextEditingField({
@@ -35,11 +36,11 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   }
 
   OutlineInputBorder _getBorder(Color color) => OutlineInputBorder(
-        borderRadius: BorderRadius.circular(Spacing.$2x),
-        borderSide: BorderSide(
-          color: color,
-        ),
-      );
+    borderRadius: BorderRadius.circular(Spacing.$2x),
+    borderSide: BorderSide(
+      color: color,
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
           ValueListenableBuilder(
             valueListenable: _controller,
             builder: (_, value, __) => Text(
-              '${value.text.length}/${widget.maxLength}',
+              context.digits('${value.text.length}/${widget.maxLength}'),
               style: context.textStyle.caption.copyWith(
                 color: value.text.length > widget.maxLength ? errorColor : context.textStyle.caption.color,
               ),

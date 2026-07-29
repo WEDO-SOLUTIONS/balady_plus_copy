@@ -7,6 +7,7 @@ import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/features/poi_card/extensions/opening_hours_message_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 
 extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
@@ -50,7 +51,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       }
 
       return PoiContentWorkTimeModel(
-        workHours: title.toString(),
+        workHours: l10n.digits(title.toString()),
         days: !isOpenSameTime ? days : null,
       );
     } else {
@@ -80,7 +81,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       }
 
       return PoiContentWorkTimeModel(
-        workHours: title.toString(),
+        workHours: l10n.digits(title.toString()),
         days: days,
         additionalInfo: additionalInfo,
       );
@@ -110,6 +111,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       return _buildWorkTimeModel(
         title: context.l10n.temporarilyClosed,
         workTimeType: WorkTimeType.closed,
+        l10n: context.l10n,
       );
     }
 
@@ -156,6 +158,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       return _buildWorkTimeModel(
         title: '${context.l10n.closedUntil} ${openHours.openHour}',
         workTimeType: WorkTimeType.closed,
+        l10n: context.l10n,
         days: days,
       );
     }
@@ -176,12 +179,14 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
         return _buildWorkTimeModel(
           title: title,
           workTimeType: WorkTimeType.almostClosed,
+          l10n: context.l10n,
           days: days,
         );
       } else {
         return _buildWorkTimeModel(
           title: '${context.l10n.openUntil} ${openHours.closeHour}',
           workTimeType: WorkTimeType.open,
+          l10n: context.l10n,
           days: days,
         );
       }
@@ -213,6 +218,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
       return _buildWorkTimeModel(
         title: '${context.l10n.closedUntil} ${nextWeekday.toCapitalized()} $nextOpenTime',
         workTimeType: WorkTimeType.closed,
+        l10n: context.l10n,
         days: days,
       );
     }
@@ -221,6 +227,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     return _buildWorkTimeModel(
       title: '${context.l10n.closedUntil} $nextOpenTime',
       workTimeType: WorkTimeType.closed,
+      l10n: context.l10n,
       days: days,
     );
   }
@@ -241,10 +248,11 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
   ContentWorkTimeModel _buildWorkTimeModel({
     required String title,
     required WorkTimeType workTimeType,
+    required AppLocalizations l10n,
     List<PoiContentWorkTimeDayModel>? days,
   }) => ContentWorkTimeModel(
     workTimeType: workTimeType,
-    poiContentWorkTime: PoiContentWorkTimeModel(workHours: title, days: days),
+    poiContentWorkTime: PoiContentWorkTimeModel(workHours: l10n.digits(title), days: days),
   );
 
   OpeningHoursModel _getOpeningHoursModel(AppLocalizations locale) {
@@ -262,7 +270,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
           final weekDay = e.weekDay;
           return PoiContentWorkTimeDayModel(
             dayTitle: weekDay,
-            workHours: e.isWeekend ? l10n.weekend : '${e.openHour!}–${e.closeHour!}',
+            workHours: e.isWeekend ? l10n.weekend : l10n.digits('${e.openHour!}–${e.closeHour!}'),
           );
         },
       ).toList();

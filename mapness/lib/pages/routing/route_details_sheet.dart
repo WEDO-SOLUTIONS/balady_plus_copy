@@ -14,6 +14,7 @@ import 'package:mapness/pages/routing/ui/models/two_state_ext.dart';
 import 'package:mapness/pages/routing/ui/widgets/public_transport/routing_public_transport_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
 import 'package:sheetify/sheetify.dart';
@@ -270,7 +271,7 @@ class _HeaderState extends ConsumerState<_Header> {
   @override
   Widget build(BuildContext context) {
     final duration = widget.route.duration.formatDuration(context.l10n);
-    final durationByFoot = '${widget.route.durationInMinutes()} ${context.l10n.min}';
+    final durationByFoot = '${context.l10n.number(widget.route.durationInMinutes())} ${context.l10n.min}';
     final transfers = ArPlurals.transfers(widget.route.transferCount, context.l10n);
     final p = publicTransportArrivedProvider(
       destination: (widget.destination?.value?.latitude, widget.destination?.value?.longitude),

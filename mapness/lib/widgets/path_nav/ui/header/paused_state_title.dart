@@ -9,8 +9,9 @@ class _PausedStateTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle =
-        context.textStyles.captionMediumRegular.copyWith(color: context.color.textAndIconsBaseInversePrimary);
+    final textStyle = context.textStyles.captionMediumRegular.copyWith(
+      color: context.color.textAndIconsBaseInversePrimary,
+    );
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -23,7 +24,7 @@ class _PausedStateTitle extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              eta?.distanceEta ?? '--',
+              eta == null ? '--' : context.digits(eta!.distanceEta),
               style: textStyle,
             ),
             const SizedBox(width: Spacing.$1x),
@@ -38,7 +39,7 @@ class _PausedStateTitle extends StatelessWidget {
             ),
             const SizedBox(width: Spacing.$1x),
             Text(
-              eta?.timeEta ?? '--',
+              eta == null ? '--' : context.digits(eta!.timeEta),
               style: textStyle,
             ),
             const SizedBox(width: Spacing.$1x),

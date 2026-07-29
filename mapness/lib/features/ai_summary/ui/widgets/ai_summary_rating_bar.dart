@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/ai_summary/ui/ai_summary_tokens.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 /// Star rating + numeric value + review count.
 ///
@@ -34,12 +35,12 @@ class AiSummaryRatingBar extends StatelessWidget {
       ),
       const SizedBox(width: AiSummaryTokens.ratingStarToValueSpacing),
       Text(
-        rating.toStringAsFixed(1),
+        context.digits(rating.toStringAsFixed(1)),
         style: palette.ratingValueStyle,
       ),
       const SizedBox(width: AiSummaryTokens.ratingValueToCountSpacing),
       Text(
-        '(${context.l10n.aiSummaryReviews(reviewCount)})',
+        context.digits('(${context.l10n.aiSummaryReviews(reviewCount)})'),
         style: palette.ratingCountStyle,
       ),
     ],

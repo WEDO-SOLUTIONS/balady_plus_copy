@@ -18,6 +18,7 @@ import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/feedback/images/add_image_button.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
@@ -106,12 +107,14 @@ class FeedbackImages extends StatelessWidget {
       ),
       Spacing.$2x.heightBox,
       Text(
-        context.l10n.feedbackImageVadidationDiscription(
-          field.maxImages,
-          _maxImageResolution,
-          _maxImageResolution,
-          field.maxSize.formatAsFileSize(),
-          field.acceptedFormats.formatAcceptedFormats(context.l10n),
+        context.digits(
+          context.l10n.feedbackImageVadidationDiscription(
+            field.maxImages,
+            _maxImageResolution,
+            _maxImageResolution,
+            field.maxSize.formatAsFileSize(),
+            field.acceptedFormats.formatAcceptedFormats(context.l10n),
+          ),
         ),
         style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
       ),
@@ -159,9 +162,11 @@ class FeedbackImages extends StatelessWidget {
             context,
             error: BaseErrorWidget(
               errorTitle: context.l10n.photoLimitExceeded,
-              errorLabel: context.l10n.feedbackImageLimitsError(
-                field.maxImages.toString(),
-                field.maxSize.formatAsFileSize(),
+              errorLabel: context.digits(
+                context.l10n.feedbackImageLimitsError(
+                  field.maxImages.toString(),
+                  field.maxSize.formatAsFileSize(),
+                ),
               ),
               buttonLabel: context.l10n.tryAgain,
               onRetry: () {

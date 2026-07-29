@@ -7,6 +7,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/time_range_extension.dart';
 import 'package:mapness/shared/lib/weekday_entity.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function()? onDelete;
@@ -41,7 +42,7 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
           children: [
             InputDropDownList(
               isEnable: !isDaysEmpty,
-              label: workingHours.workingTime.formatTimeRange(),
+              label: context.l10n.digits(workingHours.workingTime.formatTimeRange()),
               onTap: onWorkingHoursChange,
             ),
             const SizedBox(width: 6),
@@ -63,7 +64,7 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
     if (breaks == null) {
       return l10n.feedbackNoBreaks;
     }
-    return breaks.formatTimeRange();
+    return l10n.digits(breaks.formatTimeRange());
   }
 }
 

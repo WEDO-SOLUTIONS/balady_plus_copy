@@ -1,11 +1,20 @@
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
 
 DateTime saudiTimeNow() => DateTime.now();
 
 extension WorkingHoursStrings on WorkingHours {
   String closedStatus(
+    DateTime now,
+    AppLocalizations appLocalizations, {
+    Duration soonThreshold = kDefaultWorkingHoursSoonThreshold,
+  }) => appLocalizations.digits(
+    _closedStatus(now, appLocalizations, soonThreshold: soonThreshold),
+  );
+
+  String _closedStatus(
     DateTime now,
     AppLocalizations appLocalizations, {
     Duration soonThreshold = kDefaultWorkingHoursSoonThreshold,

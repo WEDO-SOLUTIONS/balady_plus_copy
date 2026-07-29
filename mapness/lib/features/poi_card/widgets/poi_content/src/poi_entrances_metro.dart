@@ -9,6 +9,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 /// A widget that displays an expandable list of metro station entrances.
 ///
@@ -75,7 +76,7 @@ class PoiEntrancesMetro extends StatelessWidget {
                       );
                     },
                     text: ContentRowTextOptions(
-                      title: '${context.l10n.exit} ${index + 2}',
+                      title: '${context.l10n.exit} ${context.l10n.number(index + 2)}',
                       subtitle: data.makeAddress(),
                     ),
                     leading: GeneralIcons.doorEntrance.icon(color: context.colors.accentDefault),

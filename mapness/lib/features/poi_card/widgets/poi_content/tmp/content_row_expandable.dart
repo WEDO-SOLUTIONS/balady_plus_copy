@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 /// [ContentRowExpandableTmp] is a temporary widget to replace [ContentRowExpandable]
 /// We must to move it to UIKit and replace it.
@@ -66,7 +67,7 @@ class _ContentRowExpandableTmpState extends State<ContentRowExpandableTmp> {
                       children: [
                         if (widget.count != null)
                           Text(
-                            widget.count.toString(),
+                            context.digits(widget.count.toString()),
                             style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
                           ),
                         if (widget.trailing != null) widget.trailing!,

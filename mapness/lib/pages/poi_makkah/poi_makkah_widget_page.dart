@@ -47,6 +47,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/widgets/landing/place_preview_makkah.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';

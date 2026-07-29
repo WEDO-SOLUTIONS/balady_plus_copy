@@ -16,6 +16,7 @@ import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 
 @RoutePage()
@@ -68,11 +69,17 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _handleCategories(WidgetRef ref, FeedbackImageSelectorType type,
-      FeedbackImageInputEntity firstImageField, BuildContext context) async {
+  Future<void> _handleCategories(
+    WidgetRef ref,
+    FeedbackImageSelectorType type,
+    FeedbackImageInputEntity firstImageField,
+    BuildContext context,
+  ) async {
     try {
       ref.read(feedbackImageTypeProvider.notifier).type = type;
-      await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
+      await ref
+          .read(feedbackImageSelectorProvider.notifier)
+          .pickImages(
             acceptedFormats: firstImageField.acceptedFormats,
             maxSize: firstImageField.maxSize,
             maxImages: firstImageField.maxImages,
@@ -95,7 +102,11 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
   }
 
   Future<void> _handleError(
-      Object e, BuildContext context, WidgetRef ref, FeedbackImageInputEntity firstImageField) async {
+    Object e,
+    BuildContext context,
+    WidgetRef ref,
+    FeedbackImageInputEntity firstImageField,
+  ) async {
     switch (e) {
       case FeedbackPerrmissionError():
         await showPermissionDeniedDialog(context, ref.read(feedbackImageTypeProvider));
@@ -105,9 +116,11 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
           context,
           error: BaseErrorWidget(
             errorTitle: context.l10n.photoLimitExceeded,
-            errorLabel: context.l10n.feedbackImageLimitsError(
-              firstImageField.maxImages.toString(),
-              firstImageField.maxSize.formatAsFileSize(),
+            errorLabel: context.digits(
+              context.l10n.feedbackImageLimitsError(
+                firstImageField.maxImages.toString(),
+                firstImageField.maxSize.formatAsFileSize(),
+              ),
             ),
             buttonLabel: context.l10n.done,
             onRetry: () {

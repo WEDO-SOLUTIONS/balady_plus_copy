@@ -96,6 +96,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';

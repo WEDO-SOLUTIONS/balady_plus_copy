@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 
 class IwishAboutPark extends StatelessWidget {
   const IwishAboutPark({
@@ -63,7 +64,7 @@ class IwishAboutPark extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            NumberFormat('#,###').format(metadata.areaSize),
+            locale.digits(NumberFormat('#,###').format(metadata.areaSize)),
             style: data,
           ),
           const SizedBox(height: 22),
@@ -77,7 +78,7 @@ class IwishAboutPark extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            DateFormat('dd.MM.yyyy').format(metadata.openingDate),
+            locale.digits(DateFormat('dd.MM.yyyy').format(metadata.openingDate)),
             style: data,
           ),
           const SizedBox(height: 22),

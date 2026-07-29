@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/weather/weather_type_ext.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
+import 'package:mapness/shared/utils/text_utils/arabic_numerals.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
@@ -86,7 +87,7 @@ class Legend extends ConsumerWidget {
               topRight: Radius.circular(RadiusBorder.m),
             ),
           ),
-          child: Text(measureUnit, style: style),
+          child: Text(context.digits(measureUnit), style: style),
         ),
         Container(
           width: 30,
@@ -118,7 +119,7 @@ class Legend extends ConsumerWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-            child: Column(children: measures.map((e) => Text(e, style: style)).toList()),
+            child: Column(children: measures.map((e) => Text(context.digits(e), style: style)).toList()),
           ),
         ),
       ],
