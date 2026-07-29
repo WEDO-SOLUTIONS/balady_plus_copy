@@ -69,10 +69,16 @@ first unmet step; Close(X) leaves the map untouched):
   profile alone can't tell — see `resolveTifoConfig`). The tutorial gate
   marks the start server-side and pushes the guided tour (FR-05: starting
   clears the gate forever).
-- `tutorial/tifo_guided_tutorial.dart` — 13-step tour built from the Figma
-  sequence (nodes 589:85440 → 721:126548). Transparent route: map steps show
-  the live map behind a `ModalBarrier`; the rest are static replicas from
-  `tutorial/tifo_tutorial_demos.dart` (canned data, no backend calls).
+- `tutorial/tifo_guided_tutorial.dart` — **four**-screen tour (Figma 848:9497
+  standings tooltip → 848:9982 penalty preview → 848:10725 intro sheet →
+  879:10224 support), cut down from the earlier 13-step sequence
+  (589:85440 → 721:126548) which walked every sheet. Transparent route: steps
+  with no background show the live map behind a `ModalBarrier`; the rest are
+  static replicas from `tutorial/tifo_tutorial_demos.dart` (canned data, no
+  backend calls). The replicas the four screens no longer use
+  (`TifoDemoDistrictSheet`, `TifoDemoBuildingSheet`, `TifoDemoPenaltyHud`,
+  `TifoDemoProfile`, `TifoDemoTeamSelect`) are kept on purpose — design has
+  re-cut this sequence twice already.
 - `TifoJoinPill` ("Dominate with your team →", node 589:85824) renders **only
   during the very first game launch on this device**: persisted `hasLaunched`
   flag in Hive box `'tifo'` (`TifoFlowController.markGameLaunched`). To see it

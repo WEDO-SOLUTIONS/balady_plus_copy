@@ -3,8 +3,8 @@ import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 
-/// The 13-step guided TIFO tutorial (Figma tutorial sequence). Two overlay
-/// styles over demo content:
+/// The four-screen guided TIFO tutorial (Figma 848:9497, 848:9982, 848:10725,
+/// 879:10224). Two overlay styles over demo content:
 ///  * bottom coach sheet — title + dots + paragraph + [back | Next];
 ///  * top tooltip card — paragraph + Previous / Next links.
 ///
@@ -18,8 +18,9 @@ class TifoGuidedTutorial extends StatefulWidget {
   State<TifoGuidedTutorial> createState() => _TifoGuidedTutorialState();
 }
 
-/// Pushes the tour as a transparent fullscreen route. Resolves to `true` when
-/// the player reaches the end ("Select team"), `false` on early exit.
+/// Pushes the tour as a transparent fullscreen route. Resolves to `true` only
+/// when the player reaches the last screen — BRD V2 US-03 BR-06 treats an
+/// abandoned tutorial as never started, and the journey gates on that.
 Future<bool> showTifoGuidedTutorial(BuildContext context) async {
   final done = await Navigator.of(context).push<bool>(
     PageRouteBuilder<bool>(
@@ -44,7 +45,6 @@ class _TourStep {
     this.overlay = _OverlayKind.tooltip,
     this.title,
     this.text,
-    this.nextLabel = 'Next',
   });
 
   /// Which of the 4 progress dots is lit while on this step.
@@ -59,88 +59,38 @@ class _TourStep {
   final _OverlayKind overlay;
   final String? title;
   final String? text;
-  final String nextLabel;
 }
 
 class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
+  /// Four screens, in the order design numbered them (Figma 848:9497,
+  /// 848:9982, 848:10725, 879:10224) — down from the 13-step sequence that
+  /// walked every sheet. The four progress dots finally match the step count.
   static final List<_TourStep> _steps = [
+    // 1 — 848:9497: standings behind a top tooltip.
     const _TourStep(
       dot: 0,
-      overlay: _OverlayKind.coachSheet,
-      title: 'Control the Districts',
-      text:
-          'The city is divided into districts. Each district is controlled by the team that owns '
-          'the most buildings inside it.',
-    ),
-    const _TourStep(
-      dot: 0,
-      bottomPanel: TifoDemoDistrictSheet(),
-      text:
-          'District overview: view the current owner, total buildings, and which teams control the '
-          'district. Claim more buildings to help your team take over.',
-    ),
-    const _TourStep(
-      dot: 1,
-      overlay: _OverlayKind.coachSheet,
-      title: 'Explore buildings',
-      text: 'Every building can be claimed. Zoom in and tap any building to see its status and start a match.',
-    ),
-    const _TourStep(
-      dot: 1,
-      bottomPanel: TifoDemoBuildingSheet(state: TifoDemoBuildingState.unclaimed),
-      text: "Buildings: unclaimed don't have an owner yet. Win the match to claim the building for your team.",
-    ),
-    const _TourStep(
-      dot: 1,
-      bottomPanel: TifoDemoBuildingSheet(state: TifoDemoBuildingState.owned),
-      text:
-          'Buildings: owned by another team have a score to beat. Score more goals than the current '
-          'owner to claim the building.',
-    ),
-    // Penalty preview drives itself — START advances (rendered by the
-    // overlay-none branch so it gets the tour callback).
-    const _TourStep(dot: 2, overlay: _OverlayKind.none),
-    const _TourStep(
-      dot: 2,
-      background: TifoDemoPenaltyHud(),
-      text: 'Score goals by taking penalties. You get three misses.',
-    ),
-    const _TourStep(
-      dot: 2,
-      bottomPanel: TifoDemoBuildingSheet(state: TifoDemoBuildingState.claimed),
-      text:
-          "Congratulations! You've claimed this building for your team. Every claimed building brings "
-          'your team closer to controlling the district.',
-    ),
-    const _TourStep(
-      dot: 3,
       bottomPanel: TifoDemoLeaderboard(),
-      text: 'See which teams control the city. Rankings are based on districts owned and total buildings claimed.',
+      text: 'Pick your team to compete against the other Riyadh teams',
     ),
+    // 2 — 848:9982: the penalty preview drives itself, START advances
+    // (rendered by the overlay-none branch so it gets the tour callback).
+    const _TourStep(dot: 1, overlay: _OverlayKind.none),
+    // 3 — 848:10725: intro sheet over the live map.
     const _TourStep(
-      dot: 3,
-      background: TifoDemoProfile(),
-      text: 'Track your team, tokens, completed trips, games played, and recent activity all in one place.',
+      dot: 2,
+      overlay: _OverlayKind.coachSheet,
+      title: 'TIFO TUTORIAL',
+      text:
+          'Turn your daily trips into a city-wide football competition. Claim the buildings, '
+          'conquer districts, and help your team dominate Riyadh.',
     ),
-    const _TourStep(
-      dot: 3,
-      background: TifoDemoProfile(),
-      text: 'Tokens are used to start matches. Earn them by:\n•  Daily allowance\n•  Completing trips',
-    ),
+    // 4 — 879:10224: support screen behind the closing coach sheet.
     const _TourStep(
       dot: 3,
       background: TifoDemoSupport(),
       overlay: _OverlayKind.coachSheet,
       title: 'Need help?',
       text: 'Visit support anytime to review the rules, penalty match mechanics, scoring.',
-    ),
-    const _TourStep(
-      dot: 3,
-      background: TifoDemoTeamSelect(),
-      overlay: _OverlayKind.coachSheet,
-      title: 'Choose your team',
-      text: "Pick the team you'll represent this season. Your choice will remain locked until next season begins.",
-      nextLabel: 'Select team',
     ),
   ];
 
@@ -190,7 +140,6 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
                 title: step.title ?? '',
                 text: step.text ?? '',
                 dot: step.dot,
-                nextLabel: step.nextLabel,
                 showBack: _index > 0,
                 onBack: _previous,
                 onNext: _next,
@@ -223,7 +172,6 @@ class _CoachSheet extends StatelessWidget {
     required this.title,
     required this.text,
     required this.dot,
-    required this.nextLabel,
     required this.showBack,
     required this.onBack,
     required this.onNext,
@@ -233,7 +181,6 @@ class _CoachSheet extends StatelessWidget {
   final String title;
   final String text;
   final int dot;
-  final String nextLabel;
   final bool showBack;
   final VoidCallback onBack;
   final VoidCallback onNext;
@@ -301,7 +248,7 @@ class _CoachSheet extends StatelessWidget {
                   const SizedBox(width: 12),
                 ],
                 Expanded(
-                  child: TifoPrimaryButton(label: nextLabel, trailingArrow: true, onPressed: onNext),
+                  child: TifoPrimaryButton(label: 'Next', trailingArrow: true, onPressed: onNext),
                 ),
               ],
             ),

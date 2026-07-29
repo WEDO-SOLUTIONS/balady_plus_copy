@@ -85,7 +85,12 @@ class MapDashboardControls extends ConsumerWidget {
                         const TifoLeaderboardControl(),
                       ],
                       const SizedBox(height: uikit.Spacing.$2x),
-                      if (kDebugMode) ...[
+                      // The debug zoom stack (2 buttons) is the one item this
+                      // column can't fit once the TIFO trophy joins it — hence
+                      // the "BOTTOM OVERFLOWED" banner on debug builds. Give
+                      // way to the game controls instead of overflowing; zoom
+                      // is still reachable by pinching.
+                      if (kDebugMode && !ref.watch(tifoBuildingsMapLayerProvider)) ...[
                         const Spacer(),
                         const ZoomControl(),
                       ],
@@ -103,36 +108,44 @@ class MapDashboardControls extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
             child: Column(
               children: [
-                // Floating "Join Tifo" CTA over the map (design node 589:85824)
-                // — only during the very first game launch on this device.
-                if (ref.watch(tifoBuildingsMapLayerProvider) && ref.watch(tifoFlowProvider).showJoinPill) ...[
-                  const TifoJoinPill(),
-                  const SizedBox(height: uikit.Spacing.$3x),
-                ],
                 const SizedBox(height: uikit.Spacing.$2x),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                // "Dominate with your team" belongs to this bottom control band,
+                // centred between the weather chip and the follow arrow (design
+                // 398:8792 / 848:10725) — on a line of its own above them it
+                // read as floating loose over the map. Overlaid rather than
+                // placed in the row: as a flex child it would be squeezed to a
+                // third of the width and the label would break.
+                Stack(
+                  alignment: Alignment.center,
                   children: [
-                    Expanded(
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const WeatherControl(),
-                            uikit.Spacing.$1_5x.heightBox,
-                            const ParkingControl(),
-                          ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const WeatherControl(),
+                                uikit.Spacing.$1_5x.heightBox,
+                                const ParkingControl(),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                        const EtaSharingControl(),
+                        const Expanded(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: FollowControl(),
+                          ),
+                        ),
+                      ],
                     ),
-                    const EtaSharingControl(),
-                    const Expanded(
-                      child: Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: FollowControl(),
-                      ),
-                    ),
+                    // First game launch on this device only.
+                    if (ref.watch(tifoBuildingsMapLayerProvider) && ref.watch(tifoFlowProvider).showJoinPill)
+                      const TifoJoinPill(),
                   ],
                 ),
                 if (!isNationalDay) uikit.Spacing.$4x.heightBox,
