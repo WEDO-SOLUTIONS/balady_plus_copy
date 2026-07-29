@@ -18,6 +18,25 @@ part 'location.g.dart';
 
 final locationProvider = _locationProvider;
 
+/// Location settings that keep the stream alive with the screen locked.
+///
+/// Without [AppleSettings.allowBackgroundLocationUpdates] iOS tears the stream
+/// down as soon as the app is backgrounded and reports `kCLErrorDomain error 1`,
+/// which killed navigation (and the lock screen widget) until the app was
+/// reopened. The app already declares the `location` background mode.
+LocationSettings _backgroundLocationSettings() {
+  if (Platform.isIOS) {
+    return AppleSettings(
+      accuracy: LocationAccuracy.bestForNavigation,
+      activityType: ActivityType.automotiveNavigation,
+      allowBackgroundLocationUpdates: true,
+      showBackgroundLocationIndicator: true,
+      pauseLocationUpdatesAutomatically: false,
+    );
+  }
+  return const LocationSettings();
+}
+
 bool _insiderGeofenceStarted = false;
 
 /// WARNING: the returned [Position] is always an object not equal to the previous one because it has [timestamp]
@@ -52,7 +71,7 @@ class _Location extends _$Location {
       // gms is not available on iOS so we use the standard library in the case
       if (isGmsAvailable || Platform.isIOS) {
         try {
-          const locationSettings = LocationSettings();
+          final locationSettings = _backgroundLocationSettings();
 
           final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
               .handleError((e) {

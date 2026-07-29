@@ -47,6 +47,9 @@ class DgisMapInitializer {
                 customSink: nil
             ),
             httpOptions: HttpOptions(useCache: true),
+            // Keeps guidance (and the lock screen Live Activity) alive with the
+            // screen off — see BackgroundLocationProvider.
+            locationProvider: BackgroundLocationProvider(),
             vendorConfig: sdkVendorConfig
         )
     }

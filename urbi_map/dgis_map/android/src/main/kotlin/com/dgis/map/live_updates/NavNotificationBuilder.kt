@@ -228,7 +228,7 @@ object NavNotificationBuilder {
     ): Notification {
         val res = localizedContext(context, metadata.language)
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle(res.getString(R.string.end_trip_alert_title))
+            .setContentTitle(res.getString(R.string.live_update_arrived_title))
             .setContentText(
                 metadata.destinationName?.takeIf { it.isNotBlank() }
                     ?: res.getString(R.string.live_update_arrived_message)
