@@ -36,7 +36,10 @@ class BaladyAnalytics {
   BaladyAnalyticsSink _sink = LoggingBaladyAnalyticsSink();
   final Map<BaladyAnalyticsChannel, BaladyAnalyticsSink> _channelSinks = {};
   final List<(BaladyAnalyticsEvent, Set<BaladyAnalyticsChannel>)> _pending = [];
-  final Map<String, dynamic> _sessionProperties = {};
+  // is_authenticated defaults to false: events fired before the auth provider
+  // restores a session carry an explicit "anonymous" flag rather than nothing.
+  // Person-level truth is PostHog's own $is_identified.
+  final Map<String, dynamic> _sessionProperties = {'is_authenticated': false};
 
   BaladyAnalyticsMode get mode => _mode;
 
@@ -92,6 +95,10 @@ class BaladyAnalytics {
   static const _screenCaptureEnabled = false;
 
   void screen(String path) {
+    // Screen context rides on every event even while the $screen stream is
+    // off: PostHog's reserved name fills the "URL / Screen" column in Activity
+    // and gives any event a screen breakdown, at zero extra event volume.
+    _sessionProperties[r'$screen_name'] = path;
     if (!_screenCaptureEnabled) {
       return;
     }
@@ -123,6 +130,7 @@ class BaladyAnalytics {
   /// Login/logout. [userId] null resets identity (logout) — same contract as
   /// the legacy BytePlus `setUserUniqueId`.
   void identify({String? userId, Map<String, dynamic>? traits}) {
+    _sessionProperties['is_authenticated'] = userId != null;
     if (!_configured || _mode.sendToOurs) {
       _sink.identify(userId, traits ?? const {});
     }
@@ -130,6 +138,7 @@ class BaladyAnalytics {
 
   /// Logout — resets user identity in the sink.
   void resetIdentity() {
+    _sessionProperties['is_authenticated'] = false;
     if (!_configured || _mode.sendToOurs) {
       _sink.identify(null, const {});
     }

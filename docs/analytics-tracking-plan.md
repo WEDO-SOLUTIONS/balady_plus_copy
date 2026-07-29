@@ -24,8 +24,22 @@ reference (check time/distance) without starting guidance — that is successful
   when there is a question it answers — never "just in case".
 - **Identity:** users are anonymous by default — PostHog keeps a stable per-install
   distinct_id, which is sufficient for DAU/MAU/retention/funnels/cohorts.
-  `identify(backendUserId)` only after a real SSO login, `reset()` on logout.
+  `identify(backendUserId)` only after a real SSO login, `reset()` on logout — and
+  **only** on explicit logout: `reset()` mints a fresh anonymous distinct_id, so calling
+  it on cold start (e.g. `identify(null)` when no session is restored) counts every app
+  launch as a new user. On login PostHog merges the current anonymous person into the
+  identified one, so pre-login events of that install follow the user; anonymous ids
+  minted by earlier resets stay behind as separate persons.
   Never `identify()` with a device ID: same numbers at 4x the price.
+- **Session properties on every event** (attached by the facade, not per call site):
+  - `$screen_name` — the current route, updated by the navigation observers even while
+    the `$screen` event stream is off (Phase 1.5). Deliberate use of PostHog's reserved
+    name: it fills the "URL / Screen" column in Activity and gives any event a
+    per-screen filter/breakdown at zero extra event volume.
+  - `is_authenticated` — `true` after `identify()` with a real user, `false` after
+    logout and by default at startup (may briefly read `false` for a logged-in user
+    until session restore runs; person-level `$is_identified` is the authoritative
+    logged-in signal for user counts).
 - **PII:** search text is sent as typed, only in canonical form — lowercase, trimmed,
   collapsed whitespace, capped at 100 chars. That is not distortion but a prerequisite
   for an honest tag cloud: otherwise "Mecca", "mecca " and "MECCA" count as three
