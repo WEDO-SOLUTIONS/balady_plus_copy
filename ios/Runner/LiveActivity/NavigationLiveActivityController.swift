@@ -445,7 +445,7 @@ final class NavigationLiveActivityController {
         "en": [
             "end_trip": "End trip",
             "open_app": "Open Balady+",
-            "arrived": "You arrived",
+            "arrived": "You've arrived",
             "gps_lost": "GPS signal lost",
             "reroute": "Re-route",
             "km": "km",

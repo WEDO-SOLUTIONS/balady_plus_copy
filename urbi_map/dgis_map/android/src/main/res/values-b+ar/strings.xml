@@ -17,6 +17,7 @@
   <string name="live_update_end_trip_action">إنهاء الرحلة</string>
   <string name="live_update_arrived_message">لقد وصلت إلى وجهتك</string>
   <string name="live_update_eta_format">الوصول %1$s</string>
+  <string name="live_update_arrived_title">لقد وصلت</string>
   <string name="live_update_towards_format">باتجاه %1$s</string>
   <string name="live_update_gps_lost">انقطعت إشارة GPS</string>
   <string name="live_update_reroute">إعادة التوجيه</string>
