@@ -31,6 +31,9 @@ final class NavigationLiveActivityController {
         let destinationName: String
         let routeType: String
         let language: String
+        /// Copy handed over by Dart (Localazy-managed); missing keys fall back
+        /// to the built-in table below.
+        let strings: [String: String]
         let enabled: Bool
     }
 
@@ -119,11 +122,18 @@ final class NavigationLiveActivityController {
 
     // MARK: - Channel API (called from NavigationLiveUpdatesChannel, main thread)
 
-    func setSessionMetadata(destinationName: String, routeType: String, language: String, enabled: Bool) {
+    func setSessionMetadata(
+        destinationName: String,
+        routeType: String,
+        language: String,
+        strings: [String: String],
+        enabled: Bool
+    ) {
         metadata = SessionMetadata(
             destinationName: destinationName,
             routeType: routeType,
             language: language,
+            strings: strings,
             enabled: enabled
         )
         if !enabled {
@@ -237,9 +247,9 @@ final class NavigationLiveActivityController {
             routeType: metadata.routeType,
             destinationName: metadata.destinationName,
             language: language,
-            endTripTitle: Self.localized("end_trip", language),
-            openAppTitle: Self.localized("open_app", language),
-            arrivedMessage: Self.localized("arrived", language)
+            endTripTitle: localized("end_trip"),
+            openAppTitle: localized("open_app"),
+            arrivedMessage: localized("arrived")
         )
         let contentState = buildContentState(isArrived: false)
 
@@ -319,12 +329,10 @@ final class NavigationLiveActivityController {
     // MARK: - Content state building
 
     private func buildContentState(isArrived: Bool) -> NavigationActivityAttributes.ContentState {
-        let language = metadata?.language ?? "en"
-
         let instruction = maneuver?.instruction ?? ""
         let distanceToManeuverText: String
         if let maneuver = maneuver {
-            distanceToManeuverText = Self.formatManeuverDistance(millimeters: maneuver.distanceMm, language: language)
+            distanceToManeuverText = formatManeuverDistance(millimeters: maneuver.distanceMm)
         } else {
             distanceToManeuverText = ""
         }
@@ -332,21 +340,22 @@ final class NavigationLiveActivityController {
         let remainingDistanceText: String
         let remainingTimeText: String
         if let dashboard = dashboard {
-            remainingDistanceText = Self.formatRemainingDistance(kilometers: dashboard.distanceKm, language: language)
-            remainingTimeText = Self.formatRemainingTime(seconds: dashboard.durationSeconds, language: language)
+            remainingDistanceText = formatRemainingDistance(kilometers: dashboard.distanceKm)
+            remainingTimeText = formatRemainingTime(seconds: dashboard.durationSeconds)
         } else {
             remainingDistanceText = ""
             remainingTimeText = ""
         }
 
         let status = isArrived ? NavigationActivityStatus.arrived : Self.status(forMessage: message)
+        let statusText = statusText(for: status)
         // Speed only makes sense while driving; pedestrian routes and the arrival
         // card hide the cluster.
         let isCar = (metadata?.routeType ?? "car") == "car" && !isArrived
 
         return NavigationActivityAttributes.ContentState(
             status: status,
-            statusText: Self.statusText(for: status, language: language),
+            statusText: statusText,
             instruction: instruction,
             roadName: maneuver?.roadName ?? "",
             distanceToManeuverText: distanceToManeuverText,
@@ -373,14 +382,14 @@ final class NavigationLiveActivityController {
         }
     }
 
-    private static func statusText(for status: NavigationActivityStatus, language: String) -> String {
+    private func statusText(for status: NavigationActivityStatus) -> String {
         switch status {
         case .gpsLost:
-            return localized("gps_lost", language)
+            return localized("gps_lost")
         case .rerouting:
-            return localized("reroute", language)
+            return localized("reroute")
         case .arrived:
-            return localized("arrived", language)
+            return localized("arrived")
         case .navigating:
             return ""
         }
@@ -391,12 +400,12 @@ final class NavigationLiveActivityController {
     // Buckets mirror the CarPlay formatter
     // (urbi_map/dgis_map/ios/Classes/CarPlay/NavigationSessionManeuvers.swift, formatDistance):
     // < 100 m — 10 m steps, < 1000 m — 50 m steps, >= 1000 m — km with one decimal.
-    static func formatManeuverDistance(millimeters: Double, language: String) -> String {
+    func formatManeuverDistance(millimeters: Double) -> String {
         let meters = max(0, millimeters / 1000.0)
 
         if meters >= 1000 {
             let km = (meters / 100).rounded(.down) / 10
-            return "\(Self.trimTrailingZero(km)) \(Self.localized("km", language))"
+            return "\(Self.trimTrailingZero(km)) \(localized("km"))"
         }
 
         let rounded: Int
@@ -405,30 +414,30 @@ final class NavigationLiveActivityController {
         } else {
             rounded = Int((meters / 50).rounded(.down)) * 50
         }
-        return "\(rounded) \(Self.localized("m", language))"
+        return "\(rounded) \(localized("m"))"
     }
 
-    static func formatRemainingDistance(kilometers: Double, language: String) -> String {
+    func formatRemainingDistance(kilometers: Double) -> String {
         if kilometers >= 1 {
             let km = (kilometers * 10).rounded(.down) / 10
-            return "\(Self.trimTrailingZero(km)) \(Self.localized("km", language))"
+            return "\(Self.trimTrailingZero(km)) \(localized("km"))"
         }
         let meters = Int((kilometers * 1000 / 10).rounded(.down)) * 10
-        return "\(meters) \(Self.localized("m", language))"
+        return "\(meters) \(localized("m"))"
     }
 
-    static func formatRemainingTime(seconds: Int, language: String) -> String {
+    func formatRemainingTime(seconds: Int) -> String {
         let totalMinutes = max(0, seconds) / 60
         let hours = totalMinutes / 60
         let minutes = totalMinutes % 60
 
         if hours > 0 {
             if minutes > 0 {
-                return "\(hours) \(Self.localized("h", language)) \(minutes) \(Self.localized("min", language))"
+                return "\(hours) \(localized("h")) \(minutes) \(localized("min"))"
             }
-            return "\(hours) \(Self.localized("h", language))"
+            return "\(hours) \(localized("h"))"
         }
-        return "\(max(1, minutes)) \(Self.localized("min", language))"
+        return "\(max(1, minutes)) \(localized("min"))"
     }
 
     private static func trimTrailingZero(_ value: Double) -> String {
@@ -468,6 +477,14 @@ final class NavigationLiveActivityController {
 
     private static func localized(_ key: String, _ language: String) -> String {
         strings[language]?[key] ?? strings["en"]?[key] ?? key
+    }
+
+    /// Prefers the copy Dart sent for this session over the built-in table.
+    private func localized(_ key: String) -> String {
+        if let value = metadata?.strings[key], !value.isEmpty {
+            return value
+        }
+        return Self.localized(key, metadata?.language ?? "en")
     }
 
     // MARK: - Maneuver icon mapping
