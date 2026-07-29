@@ -368,11 +368,26 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _syncLiveUpdatesMetadata() async {
+    if (!mounted) {
+      return;
+    }
     final destination = ref.read(etaRouteInfoProvider).endPoint;
+    final l10n = context.l10n;
     await NavigationLiveUpdates.instance.setSessionMetadata(
       destinationName: destination?.label,
       routeType: widget.navType.name,
       language: ref.read(appLanguageProvider).baladyCompat,
+      // Keys the native widgets look up; anything absent keeps its native default.
+      strings: <String, String>{
+        'end_trip': l10n.endTrip,
+        'arrived': l10n.youArrived,
+        'gps_lost': l10n.gpsLost,
+        'reroute': l10n.routeResearch,
+        'km': l10n.km,
+        'm': l10n.meter,
+        'h': l10n.hoursShort,
+        'min': l10n.minutesShort,
+      },
     );
   }
 

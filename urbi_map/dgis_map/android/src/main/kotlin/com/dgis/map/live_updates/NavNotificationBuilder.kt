@@ -84,13 +84,13 @@ object NavNotificationBuilder {
         // While the engine is looking for the location or rebuilding the route the
         // distance is meaningless — show the same status the in-app card shows.
         val statusTitle = when (message) {
-            "gpsLost" -> res.getString(R.string.live_update_gps_lost)
-            "routeResearch" -> res.getString(R.string.live_update_reroute)
+            "gpsLost" -> metadata.string("gps_lost") { res.getString(R.string.live_update_gps_lost) }
+            "routeResearch" -> metadata.string("reroute") { res.getString(R.string.live_update_reroute) }
             else -> null
         }
         val distanceTitle = maneuver
             ?.takeIf { it.distanceMm > 0 }
-            ?.let { formatDistance(res, it.distanceMm) }
+            ?.let { formatDistance(res, metadata, it.distanceMm) }
         val title = statusTitle
             ?: distanceTitle
             ?: res.getString(R.string.driving_notification_title)
@@ -104,7 +104,7 @@ object NavNotificationBuilder {
         val subText = if (eta != null) {
             listOf(
                 res.getString(R.string.live_update_eta_format, eta.arrivalTime),
-                formatRemaining(res, eta.durationSec),
+                formatRemaining(res, metadata, eta.durationSec),
             ).joinToString(" • ")
         } else {
             ""
@@ -228,7 +228,7 @@ object NavNotificationBuilder {
     ): Notification {
         val res = localizedContext(context, metadata.language)
         return NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle(res.getString(R.string.live_update_arrived_title))
+            .setContentTitle(metadata.string("arrived") { res.getString(R.string.live_update_arrived_title) })
             .setContentText(
                 metadata.destinationName?.takeIf { it.isNotBlank() }
                     ?: res.getString(R.string.live_update_arrived_message)
@@ -242,7 +242,7 @@ object NavNotificationBuilder {
             )
             .addAction(
                 0,
-                res.getString(R.string.live_update_end_trip_action),
+                metadata.string("end_trip") { res.getString(R.string.live_update_end_trip_action) },
                 endTripPendingIntent(context),
             )
             .setOngoing(false)
@@ -288,33 +288,48 @@ object NavNotificationBuilder {
         return instruction?.iconId() ?: R.drawable.logo_notification
     }
 
+    /** App copy for [key], falling back to the plugin's own resources. */
+    private inline fun LiveUpdatesCoordinator.SessionMetadata.string(
+        key: String,
+        fallback: () -> String,
+    ): String = strings[key]?.takeIf { it.isNotBlank() } ?: fallback()
+
     /** mm -> "340 m" / "1.2 km" with bucketed rounding: <100m step 10, <1km step 50, else 0.1 km. */
-    private fun formatDistance(res: Context, distanceMm: Long): String {
+    private fun formatDistance(
+        res: Context,
+        metadata: LiveUpdatesCoordinator.SessionMetadata,
+        distanceMm: Long,
+    ): String {
         val meters = distanceMm / 1000.0
+        val meterUnit = metadata.string("m") { res.getString(R.string.meter) }
         return when {
             meters < 100 -> {
                 val bucketed = max(10L, (meters / 10.0).roundToLong() * 10)
-                "$bucketed ${res.getString(R.string.meter)}"
+                "$bucketed $meterUnit"
             }
             meters < 1000 -> {
                 val bucketed = (meters / 50.0).roundToLong() * 50
-                "$bucketed ${res.getString(R.string.meter)}"
+                "$bucketed $meterUnit"
             }
             else -> {
                 val km = String.format(Locale.ENGLISH, "%.1f", meters / 1000.0)
-                "$km ${res.getString(R.string.kilometer)}"
+                "$km ${metadata.string("km") { res.getString(R.string.kilometer) }}"
             }
         }
     }
 
     /** Seconds -> "5 min" / "1 h 20 min". */
-    private fun formatRemaining(res: Context, durationSec: Int): String {
+    private fun formatRemaining(
+        res: Context,
+        metadata: LiveUpdatesCoordinator.SessionMetadata,
+        durationSec: Int,
+    ): String {
         val totalMinutes = max(1L, ((durationSec + 30) / 60).toLong())
         val hours = totalMinutes / 60
         val minutes = totalMinutes % 60
-        val minutesUnit = res.getString(R.string.minutesShort)
+        val minutesUnit = metadata.string("min") { res.getString(R.string.minutesShort) }
         return if (hours > 0) {
-            val hoursUnit = res.getString(R.string.hoursShort)
+            val hoursUnit = metadata.string("h") { res.getString(R.string.hoursShort) }
             if (minutes > 0) "$hours $hoursUnit $minutes $minutesUnit" else "$hours $hoursUnit"
         } else {
             "$minutes $minutesUnit"

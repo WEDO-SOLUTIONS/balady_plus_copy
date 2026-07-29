@@ -35,6 +35,7 @@ final class NavigationLiveUpdatesChannel {
                         destinationName: args["destinationName"] as? String ?? "",
                         routeType: args["routeType"] as? String ?? "car",
                         language: args["language"] as? String ?? "en",
+                        strings: args["strings"] as? [String: String] ?? [:],
                         enabled: args["enabled"] as? Bool ?? true
                     )
                 }

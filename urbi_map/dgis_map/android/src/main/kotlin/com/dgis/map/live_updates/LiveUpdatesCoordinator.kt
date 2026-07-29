@@ -27,6 +27,8 @@ object LiveUpdatesCoordinator {
         val destinationName: String?,
         val routeType: String,
         val language: String,
+        /** Localized copy pushed from Dart; missing keys fall back to plugin resources. */
+        val strings: Map<String, String>,
         val enabled: Boolean,
     )
 
@@ -38,6 +40,7 @@ object LiveUpdatesCoordinator {
         destinationName = null,
         routeType = "car",
         language = "en",
+        strings = emptyMap(),
         enabled = true,
     )
         private set
@@ -81,9 +84,10 @@ object LiveUpdatesCoordinator {
         destinationName: String?,
         routeType: String,
         language: String,
+        strings: Map<String, String>,
         enabled: Boolean,
     ) {
-        metadata = SessionMetadata(destinationName, routeType, language, enabled)
+        metadata = SessionMetadata(destinationName, routeType, language, strings, enabled)
         if (!isSessionActive) return
         runOnMain {
             if (!enabled) {

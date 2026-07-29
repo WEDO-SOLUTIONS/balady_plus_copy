@@ -45,10 +45,13 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             when (call.method) {
                 "setSessionMetadata" -> {
                     val args = call.arguments as? Map<*, *>
+                    @Suppress("UNCHECKED_CAST")
+                    val strings = (args?.get("strings") as? Map<String, String>).orEmpty()
                     LiveUpdatesCoordinator.setSessionMetadata(
                         destinationName = args?.get("destinationName") as? String,
                         routeType = args?.get("routeType") as? String ?: "car",
                         language = args?.get("language") as? String ?: "en",
+                        strings = strings,
                         enabled = args?.get("enabled") as? Boolean ?: true,
                     )
                     result.success(null)

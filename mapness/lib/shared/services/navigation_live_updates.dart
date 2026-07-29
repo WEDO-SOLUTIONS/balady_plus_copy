@@ -24,10 +24,16 @@ class NavigationLiveUpdates {
   void Function()? onEndTripRequested;
 
   /// Sends the current navigation session metadata to the native side.
+  ///
+  /// [strings] carries the app's localized copy for the widget: the iOS
+  /// extension has no access to the Flutter localizations and the Android
+  /// notification would otherwise use the plugin's own resources. Keys that are
+  /// missing fall back to the native defaults.
   Future<void> setSessionMetadata({
     required String? destinationName,
     required String routeType,
     required String language,
+    Map<String, String> strings = const <String, String>{},
     bool enabled = true,
   }) async {
     try {
@@ -35,6 +41,7 @@ class NavigationLiveUpdates {
         'destinationName': destinationName,
         'routeType': routeType,
         'language': language,
+        'strings': strings,
         'enabled': enabled,
       });
     } catch (e) {
