@@ -9,7 +9,6 @@ environment:
   flutter: ">=3.0.0"
 
 dependencies:
-  cupertino_icons: 1.0.8
   flutter:
     sdk: flutter
   riverpod: 3.1.0
@@ -91,6 +90,8 @@ dependencies:
   image_picker: ^1.2.1
   geobase: ^1.5.0
   crypto: ^3.0.7
+  archive: ^4.0.7
+  file_picker: 10.3.8
   mixpanel_flutter: ^2.4.4
   webview_flutter: ^4.13.1
   auto_size_text: 3.0.0
@@ -187,7 +188,6 @@ flutter:
     - assets/config.json
     - assets/quick_actions_config.json
     - assets/icons/svg/
-    - assets/icons/svg/profile/
     - assets/icons/lottie/
     - assets/icons/svg/audio/
     - assets/icons/svg/quick_filters/

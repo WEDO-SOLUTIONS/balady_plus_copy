@@ -154,6 +154,11 @@ class DgisMapController {
   /// Load map styles from asset.
   Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
 
+  /// Load map styles from an absolute filesystem path.
+  /// Use it when the `.2gis` archive lives outside the app bundle — e.g. a
+  /// repacked copy in the support directory with overridden GLB models.
+  Future<void> loadStylesFromPath(String absolutePath) async => _instance.loadStylesFromPath(absolutePath);
+
   /// Override locale for map. Uses string format "en-US", "ar-SA".
   Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
 
@@ -229,6 +234,10 @@ class DgisMapController {
 
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
+
+  /// Current map frame as encoded PNG bytes; null when no frame is available.
+  /// Best-effort — used to mask MapView recreates (BALADY-3772).
+  Future<Uint8List?> takeMapSnapshot() => _instance.takeMapSnapshot();
 
   /// Returns nearest objects to camera position.
   Future<List<RenderedObjectMessage>> getNearestObjects() => _instance.getNearestObjects();
@@ -665,7 +674,7 @@ class DgisMapController {
       _instance.setMapAttributeBool(name, value: value);
 
   ///Set map attribute String
-  Future<void> setMapAttributeString(String name,  {required String value} ) =>
+  Future<void> setMapAttributeString(String name, {required String value}) =>
       _instance.setMapAttributeString(name, value);
 
   /// Getting Android Auto/CarPlay connection state

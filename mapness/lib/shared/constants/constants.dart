@@ -19,6 +19,7 @@ class MapnessConstants {
   static const analyticsTripStopped = 'tripStopped';
   static const analyticsSearchInThisAreaPressed = 'analyticsSearchInThisAreaPressed';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+  static const activeNavigationCursorPrefsKey = 'activeNavigationCursor';
 
   ///config region
   static const envConfigBoxKey = 'envConfigKey_4.7.3';
@@ -28,9 +29,9 @@ class MapnessConstants {
 
   ///styles region
   //uncomment for tests
- // static const mapStylesPath = 'assets/maps/styles/styles.2gis';
   // static const mapStylesPath = 'assets/maps/configs/styles.2gis';
-   static const mapStylesPath = 'packages/map_styles/src/styles.2gis';
+  // static const mapStylesPath = 'assets/maps/styles/styles.2gis';
+  static const mapStylesPath = 'packages/map_styles/src/styles.2gis';
   static const mapStylesSaudiPath = 'packages/map_styles/src/styles_saudi_day.2gis';
   static const mapStylesFoundingDayPath = 'assets/maps/configs/founding-day-styles2.2gis';
 }

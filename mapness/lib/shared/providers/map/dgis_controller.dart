@@ -6,11 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/dynamic_style/map_style_store.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/map_recreation.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -81,13 +83,48 @@ class DgisController extends _$DgisController {
   Future<void> _initialize(DgisMapController controller) async {
     await _setupControllerItself(controller);
     await _setupLocation(controller);
+    await _restorePendingCamera(controller);
     await _setupVisibleRectUpdates(controller);
+  }
+
+  /// Applies a camera position stashed by [PendingCameraSnapshot] before a
+  /// MapView recreate (e.g. car-model swap). Called after the style loads and
+  /// the default-location intro finishes, so the user lands back where they
+  /// were rather than at the Kingdom Tower fallback. No-op when nothing is
+  /// pending.
+  Future<void> _restorePendingCamera(DgisMapController controller) async {
+    final pending = ref.read(pendingCameraSnapshotProvider);
+    if (pending == null) {
+      return;
+    }
+    ref.read(pendingCameraSnapshotProvider.notifier).clear();
+    try {
+      await controller.setCameraPosition(pending);
+      logger.log('[dgis_controller] restored pending camera after MapView recreate');
+    } on PlatformException catch (e) {
+      logger.log(
+        '[dgis_controller] failed to restore pending camera: $e',
+        logLevel: MapnessLogLevel.warning,
+      );
+    }
   }
 
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    await controller.loadStyles(MapnessConstants.mapStylesPath);
+    await _loadActiveStyle(controller);
+
+    // React to store revision bumps at runtime — repack / network / picker
+    // mutations all overwrite the same canonical file in place, so all we
+    // need to do here is re-run loadStylesFromPath on the (unchanged) path.
+    ref.listen<AsyncValue<StyleFile>>(mapStyleStoreProvider, (previous, next) {
+      final prevRev = previous?.value?.revision;
+      final nextFile = next.value;
+      if (nextFile == null || prevRev == nextFile.revision) {
+        return;
+      }
+      unawaited(_loadStyle(controller, nextFile.path));
+    });
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);
@@ -115,15 +152,51 @@ class DgisController extends _$DgisController {
     }
   }
 
+  Future<void> _loadActiveStyle(DgisMapController controller) async {
+    final styleFile = await ref.read(mapStyleStoreProvider.future);
+    await _loadStyle(controller, styleFile.path);
+  }
+
+  Future<void> _loadStyle(DgisMapController controller, String absolutePath) async {
+    final sw = Stopwatch()..start();
+    try {
+      logger.log('[dynamic_style] loadStyle: loadStylesFromPath($absolutePath)');
+      await controller.loadStylesFromPath(absolutePath);
+      logger.log('[dynamic_style] loadStyle: applied in ${sw.elapsedMilliseconds}ms');
+    } on PlatformException catch (e) {
+      // If the canonical file is corrupt or missing, fall back to the
+      // bundled asset via the legacy loadStyles() path. This keeps the map
+      // functional; a subsequent app restart will let the store re-copy.
+      logger
+        ..log(
+          '[dynamic_style] loadStyle: FAILED $absolutePath after ${sw.elapsedMilliseconds}ms: $e',
+          logLevel: MapnessLogLevel.error,
+        )
+        ..log('[dynamic_style] loadStyle: falling back to bundled asset ${MapnessConstants.mapStylesPath}');
+      await controller.loadStyles(MapnessConstants.mapStylesPath);
+    }
+  }
+
   Future<void> _setupLocation(DgisMapController controller) async {
-    await _setDefaultLocation(controller);
+    // When a MapView recreate is in flight (e.g. car-model swap), the user
+    // already had a camera position we're about to restore in
+    // [_restorePendingCamera]. Skip the Kingdom Tower intro and the
+    // first-fix snap so we don't overwrite the restored position.
+    final hasPendingCamera = ref.read(pendingCameraSnapshotProvider) != null;
+    if (!hasPendingCamera) {
+      await _setDefaultLocation(controller);
+    }
 
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
-
-    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+      await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
+    }
     await controller.toggleFollowState();
-    _moveToUserLocationOnFirstFix(controller);
+    if (!hasPendingCamera) {
+      _moveToUserLocationOnFirstFix(controller);
+    }
   }
 
   /// After the Kingdom Tower intro animation, waits for the first real GPS fix

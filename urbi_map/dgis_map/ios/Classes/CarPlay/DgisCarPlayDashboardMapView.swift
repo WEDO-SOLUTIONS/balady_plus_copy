@@ -1,24 +1,23 @@
 import Foundation
 import MapKit
-import CarPlay
 import DGis
 
-class DgisCarPlayDashboardMapView: UIViewController, CPSessionConfigurationDelegate {
+class DgisCarPlayDashboardMapView: UIViewController {
     var delegate: DgisCarPlayMapViewDelegate?
-
+    
     private var map: Map?
     private var mapView: (UIView & IMapView)?
     private var myLocationControlModel: MyLocationControlModel?
     private var myLocationSource: MyLocationMapObjectSource?
-
+    
     private var cancellables = Set<Cancellable>()
+    
+    private var mapAppearance: CarPlayMapAppearance?
+    private var prefersDarkMapContent = false
 
-    // Same day/night handling as the main CarPlay map (DgisCarPlayMapView) — the dashboard
-    // scene gets its own CPSessionConfiguration and tunnel detector.
-    private var sessionConfiguration: CPSessionConfiguration?
     private var tunnelDetector: TunnelDetector?
     private var isInTunnel = false
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let sdk = DgisMapInitializer.shared.getSdkContainer()
@@ -84,42 +83,14 @@ class DgisCarPlayDashboardMapView: UIViewController, CPSessionConfigurationDeleg
         addSpeedControl()
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         self.delegate?.viewDidLoad(with: map)
-
+        
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
 
-        setupAppearance()
+        observeMapAppearance()
     }
-
-    // MARK: - Day/night appearance
-
-    private func setupAppearance() {
-        let sessionConfiguration = CPSessionConfiguration(delegate: self)
-        self.sessionConfiguration = sessionConfiguration
-
-        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
-        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
-            guard let self else { return }
-            self.isInTunnel = isInTunnel
-            self.applyAppearance(contentStyle: self.sessionConfiguration?.contentStyle ?? [])
-        }
-
-        applyAppearance(contentStyle: sessionConfiguration.contentStyle)
-    }
-
-    private func applyAppearance(contentStyle: CPContentStyle) {
-        let isNight = contentStyle.contains(.dark) || isInTunnel
-        mapView?.appearance = isNight ? .universal("night") : .universal("day")
-    }
-
-    func sessionConfiguration(
-        _ sessionConfiguration: CPSessionConfiguration,
-        contentStyleChanged contentStyle: CPContentStyle
-    ) {
-        applyAppearance(contentStyle: contentStyle)
-    }
-
+    
     func myLocation() {
         guard let myLocationControlModel else { return }
         myLocationControlModel.onClicked()
@@ -154,9 +125,34 @@ class DgisCarPlayDashboardMapView: UIViewController, CPSessionConfigurationDeleg
         mapView = nil
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
-
+        mapAppearance = nil
         tunnelDetector?.cancel()
         tunnelDetector = nil
-        sessionConfiguration = nil
+    }
+
+    // MARK: - Day/night appearance
+
+    /// The dashboard map follows the same CarPlay content style as the main car map, and
+    /// darkens inside tunnels for the same reason.
+    private func observeMapAppearance() {
+        mapAppearance = CarPlayMapAppearance { [weak self] prefersDark in
+            guard let self else { return }
+
+            self.prefersDarkMapContent = prefersDark
+            self.applyMapAppearance()
+        }
+
+        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
+            guard let self else { return }
+
+            self.isInTunnel = isInTunnel
+            self.applyMapAppearance()
+        }
+    }
+
+    private func applyMapAppearance() {
+        let isNight = prefersDarkMapContent || isInTunnel
+        mapView?.appearance = isNight ? .universal("night") : .universal("day")
     }
 }
