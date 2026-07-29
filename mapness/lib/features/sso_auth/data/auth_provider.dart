@@ -108,9 +108,15 @@ class Auth extends _$Auth {
     ref.onDispose(authSubscription.cancel);
 
     final userId = CommonProperties.userInfo?.idNo;
-    await mixpanel?.identify('$userId');
-
-    BaladyAnalytics.instance.identify(userId: userId);
+    // Identify only a real session. Passing null here meant logout to the
+    // analytics facade — every cold start of a logged-out app called reset(),
+    // minting a fresh anonymous distinct_id (a "new user" per launch). Reset
+    // belongs to the explicit logOut() path only. Mixpanel had the twin bug:
+    // '$userId' stringified null into the literal user "null".
+    if (userId != null) {
+      await mixpanel?.identify(userId);
+      BaladyAnalytics.instance.identify(userId: userId);
+    }
     return CommonProperties.userInfo;
   }
 
