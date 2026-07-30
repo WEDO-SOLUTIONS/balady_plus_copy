@@ -88,6 +88,19 @@ class DgisMapView(
     private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
 
+    /**
+     * Day/night as last requested by Flutter, kept so the tunnel override can be undone.
+     * `null` until Flutter picks a theme — until then the SDK default is left alone.
+     */
+    private var requestedAppearance: MapAppearanceMessage? = null
+    private var isInTunnel = false
+
+    /**
+     * Created only once the map is ready: the detector reports the current state straight from
+     * its constructor, and that callback re-themes the map view.
+     */
+    private var tunnelDetector: TunnelDetector? = null
+
     /** Event stream to Flutter */
     private lateinit var eventChannel: EventChannel
     private val eventSink = QueuingEventSink()
@@ -131,6 +144,9 @@ class DgisMapView(
         if (navigationHandlerLazy.isInitialized()) {
             navigationHandler.close()
         }
+        // Same ordering constraint as the navigation handler above: the detector is driven by
+        // the shared NavigationManager and its callback re-themes the map view.
+        tunnelDetector?.close()
         map?.close()
         routeHandler?.close()
         zoomControlHandler?.close()
@@ -1146,13 +1162,35 @@ class DgisMapView(
     }
 
     override fun setAppearance(appearance: MapAppearanceMessage, callback: (Result<Unit>) -> Unit) {
-        when (appearance) {
+        requestedAppearance = appearance
+        applyAppearance()
+
+        callback(Result.success(Unit))
+    }
+
+    /**
+     * Resolves the map theme from Flutter's choice and the tunnel override. A tunnel is dark
+     * whatever the time of day is, so it wins over the requested theme until the car is out.
+     */
+    private fun applyAppearance() {
+        if (isInTunnel) {
+            mapView.setTheme(MapTheme.defaultDarkTheme)
+            return
+        }
+
+        when (requestedAppearance) {
             MapAppearanceMessage.DAY -> mapView.setTheme(MapTheme.defaultTheme)
             MapAppearanceMessage.NIGHT -> mapView.setTheme(MapTheme.defaultDarkTheme)
             MapAppearanceMessage.SYSTEM -> print("todo") // mapView.setTheme("day", "night")
+            // Flutter has not chosen a theme yet — nothing to restore to.
+            null -> Unit
         }
+    }
 
-        callback(Result.success(Unit))
+    private fun onTunnelStateChanged(inTunnel: Boolean) {
+        if (isInTunnel == inTunnel) return
+        isInTunnel = inTunnel
+        applyAppearance()
     }
 
     override fun setZoomRestrictions(min: Double?, max: Double?, callback: (Result<Unit>) -> Unit) {
@@ -1257,6 +1295,7 @@ class DgisMapView(
                 TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext, map)
+        tunnelDetector = TunnelDetector(navigationManager, ::onTunnelStateChanged)
 
         callback(Result.success(InitializeMessage(wasInitialized = true, errorDescription = "")))
     }

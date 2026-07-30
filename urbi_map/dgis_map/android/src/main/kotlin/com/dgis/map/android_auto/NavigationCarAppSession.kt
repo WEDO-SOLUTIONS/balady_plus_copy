@@ -16,6 +16,8 @@ import androidx.car.app.ScreenManager
 import androidx.car.app.SessionInfo
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.dgis.map.DgisMapInitializer
+import com.dgis.map.TunnelDetector
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.settings.VoiceInstructionsScreen
 import io.flutter.FlutterInjector
@@ -40,6 +42,12 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     )
     private var navigationScreen: NavigationScreen? = null
 
+    // Forces the dark theme while driving through a tunnel, regardless of host day/night mode.
+    private var isInTunnel = false
+    private val tunnelDetector = TunnelDetector(
+        DgisMapInitializer.getNavigationManager(), ::onTunnelStateChanged
+    )
+
     init {
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
@@ -50,6 +58,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
             override fun onDestroy(owner: LifecycleOwner) {
                 sharedPrefs.resetSharedPrefsChangeListener()
                 MainAppScreenStateNotifier.removeListener(::mainAppStateListener)
+                tunnelDetector.close()
                 carMapController.close()
                 customRenderer.close()
             }
@@ -164,8 +173,16 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     }
 
     private fun setMapTheme() {
-        val theme = if (carContext.isDarkMode) MapTheme.defaultDarkTheme else MapTheme.defaultTheme
+        val theme = if (carContext.isDarkMode || isInTunnel) MapTheme.defaultDarkTheme else MapTheme.defaultTheme
         setTheme(theme)
+    }
+
+    // TunnelDetector callback: fires on the main thread (SDK channel callbacks are delivered
+    // there, matching the rest of this class), so it's safe to touch car UI state directly.
+    private fun onTunnelStateChanged(inTunnel: Boolean) {
+        if (isInTunnel == inTunnel) return
+        isInTunnel = inTunnel
+        setMapTheme()
     }
 
     private fun setupLocale() {

@@ -49,6 +49,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
     private var mapFactory: IMapFactory?
 
+    /// Day/night as last requested by Flutter, kept so the tunnel override can be undone.
+    /// `nil` until Flutter picks a theme — until then the SDK default is left alone.
+    private var requestedAppearance: MapAppearanceMessage?
+    private var tunnelDetector: TunnelDetector?
+    private var isInTunnel = false
+
 
     init(
         dgisSdk sdk: Container,
@@ -87,6 +93,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.trafficAndParkingControlHandler?.cancel()
         self.packagesHandler?.cancel()
         self.objectTapHandler?.cancel()
+        self.tunnelDetector?.cancel()
     }
     
     // MARK: - Controls initialize
@@ -161,6 +168,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
 
         setupTapHandler()
+        observeTunnelState()
     }
     
     func view() -> UIView {
@@ -1160,7 +1168,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func setAppearance(appearance: MapAppearanceMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
-        guard let mapView = self.mapView else {
+        guard self.mapView != nil else {
             completion(
                 Result.failure(
                 FlutterError(
@@ -1170,17 +1178,46 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 )))
             return
         }
-        
-        switch appearance {
+
+        self.requestedAppearance = appearance
+        applyAppearance()
+
+         completion(Result.success(()))
+    }
+
+    // MARK: - Tunnel-aware appearance
+
+    /// Resolves the map style from Flutter's choice and the tunnel override. A tunnel is dark
+    /// whatever the time of day is, so it wins over the requested style until the car is out.
+    private func applyAppearance() {
+        guard let mapView = self.mapView else { return }
+
+        if isInTunnel {
+            mapView.appearance = .universal("night")
+            return
+        }
+
+        switch requestedAppearance {
         case .day:
             mapView.appearance = .universal("day")
         case .night:
             mapView.appearance = .universal("night")
         case .system:
             mapView.appearance = .automatic(light: "day", dark: "night")
+        case nil:
+            // Flutter has not chosen a theme yet — nothing to restore to.
+            break
         }
-        
-         completion(Result.success(()))
+    }
+
+    private func observeTunnelState() {
+        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
+            guard let self else { return }
+
+            self.isInTunnel = isInTunnel
+            self.applyAppearance()
+        }
     }
     
     func setZoomRestrictions(min: Double?, max: Double?, completion: @escaping (Result<Void, any Error>) -> Void) {
