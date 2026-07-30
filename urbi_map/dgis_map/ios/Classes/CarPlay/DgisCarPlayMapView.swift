@@ -18,6 +18,7 @@ class DgisCarPlayMapView: UIViewController {
     private lazy var speedControl = createSpeedControlView()
     private lazy var gpsLostBanner = createGpsLostBanner()
     private lazy var gpsLostSpinner = createGpsLostSpinner()
+    private lazy var attributionLabel = createAttributionLabel()
     
     private var myLocationControlModel: MyLocationControlModel?
     private var myLocationSource: MyLocationMapObjectSource?
@@ -133,6 +134,11 @@ class DgisCarPlayMapView: UIViewController {
             gpsLostBanner.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
             gpsLostBanner.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
         ])
+        view.addSubview(attributionLabel)
+        NSLayoutConstraint.activate([
+            attributionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 12),
+            attributionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
+        ])
         subscribeToLocationAvailability()
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         
@@ -142,7 +148,24 @@ class DgisCarPlayMapView: UIViewController {
 
         observeMapAppearance()
     }
-    
+
+    override func traitCollectionDidChange(
+        _ previousTraitCollection: UITraitCollection?
+    ) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard traitCollection.userInterfaceStyle
+                  != previousTraitCollection?.userInterfaceStyle
+        else {
+            return
+        }
+
+        updateAttributionLabel()
+    }
+    private func updateAttributionLabel() {
+        attributionLabel.attributedText = makeAttributionText()
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         DgisMapInitializer.shared.getNavigationManager().mapManager.removeMap(map: map)
         mapView.subviews.forEach { $0.removeFromSuperview() }
@@ -154,7 +177,36 @@ class DgisCarPlayMapView: UIViewController {
         cancellables.forEach { $0.cancel() }
         mapAppearance = nil
     }
-    
+
+    private func createAttributionLabel() -> UILabel {
+        let label = UILabel()
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isUserInteractionEnabled = false
+        label.numberOfLines = 1
+
+        label.attributedText = makeAttributionText()
+
+        return label
+    }
+
+    private func makeAttributionText() -> NSAttributedString {
+        let isDarkMode = traitCollection.userInterfaceStyle == .dark
+
+        return NSAttributedString(
+            string: "baladyMaps".localized,
+            attributes: [
+                .strokeColor: isDarkMode ? UIColor.black : UIColor.white,
+                .foregroundColor: isDarkMode ? UIColor.white : UIColor.black,
+                .strokeWidth: -1,
+                .font: UIFont.systemFont(
+                    ofSize: 16,
+                    weight: .regular
+                ),
+            ]
+        )
+    }
+
     private func createGpsLostSpinner() -> MaterialProgressIndicator {
         let indicator = MaterialProgressIndicator()
         indicator.strokeColor = .white
