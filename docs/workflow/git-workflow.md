@@ -107,14 +107,18 @@ Each pull request **MUST** meet the following criteria:
 
 ## 🧩 Conflicts with `core`
 
-`core` must **never** be merged into a `feat/` or `fix/` branch. When such a branch conflicts with `core`, cut a `resolve/<TASK>/<slug>` branch from `core`, re-apply the work there, and open the PR from it instead.
+`core` must **never** be merged into a `feat/` or `fix/` branch. When such a branch conflicts with `core`, branch off it into `resolve/<TASK>/<same-slug>`, merge `core` in **there**, and open the PR from that branch instead. Everything after the first `/` stays identical — only the prefix changes:
 
-```bash
-just resolve-start BE-307 car-play-fixes   # cut the branch + list the conflicting PRs
-just resolve-check                         # verify before opening the PR
+```
+feat/BE-307/smart-switch-under-tunnel  →  resolve/BE-307/smart-switch-under-tunnel
 ```
 
-Full procedure, including the failure mode where a resolve branch merges cleanly while deleting someone else's code: [Resolve Branch Workflow](resolve-branch-workflow.md).
+```bash
+just resolve-start    # from the conflicting branch: creates resolve/… and merges core in
+just resolve-check    # verify before opening the PR
+```
+
+Then close the original PR — it is still based on `development` and would reintroduce the conflict. Full procedure: [Resolve Branch Workflow](resolve-branch-workflow.md).
 
 ---
 

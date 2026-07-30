@@ -13,143 +13,111 @@
 
 The rule is:
 
-> **`core` must never be merged into a `feat/` or `fix/` branch.** If such a branch conflicts with `core`, create a `resolve/` branch and merge *that* into `core`.
+> **`core` must never be merged into a `feat/` or `fix/` branch.** If such a branch conflicts with `core`, branch off it into a `resolve/` branch, bring `core` in *there*, and open the PR from the `resolve/` branch instead.
 
-This document explains how to do that correctly, and — just as importantly — the failure mode that makes a resolve branch look green while silently deleting somebody else's work.
-
----
-
-## 🧠 The one thing to understand first
-
-A merge is **not** a function of branch contents. It is a function of three points:
-
-```
-merge(base, ours, theirs)     where base = merge-base(ours, theirs)
-```
-
-Git never stores "this conflict was resolved". Every merge recomputes the result from the base. So:
-
-- **Hand-fixing files on a branch that does not contain `core` does nothing.** The base stays back on `development`, git recomputes, the same conflict reappears.
-- **Branching from `core` moves the base forward.** Your change then looks one-sided, and git applies it without asking.
-
-That second point is the trap: git stops asking *precisely* when you take responsibility for merging others' work by hand.
-
-### Proof
-
-Two branches with byte-identical file contents, differing only in where they were cut from:
-
-```bash
-# development: line is "SHARED"; core changed it to "SHARED-core";
-# feat (from development) changed it to "SHARED-feat".
-# Both resolve branches below contain the identical resolved line.
-
-git merge-tree --write-tree core resolve-from-development   # exit 1  → CONFLICT
-git merge-tree --write-tree core resolve-from-core          # exit 0  → clean
-```
+The `resolve/` branch is the one place where `core` is allowed to land. The original `feat/`/`fix/` branch is never touched again.
 
 ---
 
-## ⚠️ The silent-overwrite trap
+## 🏷️ Naming
 
-Because a `core`-based branch makes your change one-sided, this merges **cleanly**:
+Keep everything after the first `/` identical to the source branch — only the prefix changes:
 
-```bash
-git checkout -b resolve/BE-307/foo origin/core
-git checkout my-feat-branch -- path/to/File.swift   # ← copying whole files
+```
+feat/BE-307/smart-switch-under-tunnel   →   resolve/BE-307/smart-switch-under-tunnel
+fix/BALADY-3776/car-play-dark-theme     →   resolve/BALADY-3776/car-play-dark-theme
 ```
 
-…and it **deletes every change `core` made to that file**. No conflict, no warning, PR shows a green *Mergeable*.
-
-> 🚫 **Never copy whole files from the feature branch into a `core`-based resolve branch.**
-> ✅ **Re-apply your edits on top of the `core` version of each file.**
-
-Copying a whole file is only safe for files `core` has not touched since your last iteration — verify per file, do not assume:
-
-```bash
-git diff --quiet <core-sha-you-last-worked-on> origin/core -- <file> && echo SAFE || echo "RE-APPLY BY HAND"
 ```
+resolve/<TASK-ID>/<same-slug-as-source>
+```
+
+This makes the pairing obvious in the branch list and in review.
 
 ---
 
 ## 🔁 Algorithm
 
-### 0. Prerequisites
+### 1. Branch off the conflicting branch
 
-Your `feat/`/`fix/` branch is pushed and its PR conflicts with `core`. Do not touch that branch from here on.
+```bash
+git checkout feat/<TASK>/<slug>
+git checkout -b resolve/<TASK>/<slug>
+```
 
-### 1. Cut the resolve branch from the newest `core`
+Off the feature branch — **not** off `core`. The work is already here; only the base needs to move.
+
+### 2. Bring `core` in
 
 ```bash
 git fetch origin
-git checkout -b resolve/<TASK>/<slug> origin/core
+git merge origin/core          # or: git rebase origin/core
 ```
 
-`core` can move within a day — always re-fetch.
+This is the step that actually resolves the conflict. Hand-editing files without it does nothing: git recomputes every merge from `merge-base(ours, theirs)` and never stores "this was resolved", so while the base sits back on `development` the same conflict reappears on every merge attempt.
 
-### 2. Find out what in `core` caused the conflict
+**`merge` vs `rebase`**
 
-For every conflicting file:
+| | `merge origin/core` | `rebase origin/core` |
+| --- | --- | --- |
+| History | Merge commit, original commits intact | Linear, commits rewritten |
+| Conflicts | Resolved once | Possibly once per commit |
+| Pushing | Normal push | Needs `--force-with-lease` |
+| Use when | Default; branch already pushed | You want a clean linear PR and the branch is yours alone |
 
-```bash
-git log --oneline origin/development..origin/core -- <file>
-```
+Either satisfies the rule — both put `core` in the `resolve/` branch and leave the source branch alone.
 
-Note the PRs. They go in the resolve PR description so the reviewer sees what you re-applied on top of.
+### 3. Resolve the conflicts
 
-### 3. Classify each file
+Git shows both sides here, which is the point of doing it this way.
 
-```bash
-git diff --quiet <old-core-sha> origin/core -- <file>
-```
+The goal is **a working version of your feature on top of current `core`** — not "make the conflict go away". If `core` reworked the code your change depended on, adapt your logic to the new shape. That can mean editing files that were never in conflict: a rename in `a.dart` breaks a caller in `b.dart` with no textual conflict at all.
 
-- **unchanged in `core`** → the version from your previous iteration can be reused as-is;
-- **changed in `core`** → re-apply your edits by hand onto the `core` version.
+The `resolve/` branch is therefore allowed to differ from the source branch. Compare intent, not lines.
 
-### 4. Re-apply the work
+### 4. Rebuild generated code
 
-New files can be taken directly. Modified files get your edits applied on top of `core`'s content — never the other way round.
-
-### 5. Verify (all four must pass)
-
-```bash
-git diff origin/core --stat     # same shape as the feature branch's own diff
-git diff origin/core --check    # empty — no whitespace churn
-git diff origin/core | grep '^-' | grep -v '^---'   # no foreign lines deleted
-git merge-tree --write-tree origin/core HEAD ; echo $?   # 0
-```
-
-The third command is the one that catches the silent-overwrite trap. Every deleted line must belong to code *you* are extending. A quick sanity check on landmark symbols from the conflicting PRs also helps:
-
-```bash
-git grep -c <symbol> origin/core -- <dir>
-git grep -c <symbol> HEAD -- <dir>      # counts must match
-```
-
-### 6. Rebuild generated code
-
-Generated artefacts are gitignored and are tied to the branch's base. Switching between a `development` base and a `core` base **will** desync them:
+Generated artefacts are gitignored and tied to the branch's base, so they desync when `core` lands:
 
 ```bash
 cd urbi_map/dgis_map_platform_interface && dart run pigeon --input pigeons/messages.dart
-cd ios && LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pod install    # only if a native file was added/moved
+cd ios && LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pod install   # if a native file was added or moved
 ```
 
-Symptom of a stale pigeon: Kotlin fails with `'<method>' overrides nothing`.
+Stale pigeon shows up as Kotlin failing with `'<method>' overrides nothing`.
 
-### 7. Compile before opening the PR
+### 5. Verify
 
 ```bash
-cd android && ./gradlew :dgis_map:compileDebugKotlin
-xcodebuild -workspace ios/Runner.xcworkspace -scheme dgis_map -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' build
+just resolve-check
 ```
 
-### 8. Swap the PRs
+Three separate things have to hold, and the diff checks only cover two of them:
+
+| Check | Catches |
+| --- | --- |
+| **Builds** — `:dgis_map:compileDebugKotlin`, `xcodebuild -scheme dgis_map` | contracts that drifted apart across files |
+| No foreign lines deleted vs `core` | someone else's work dropped during resolution |
+| Your added lines still present vs the source branch | your own work dropped during resolution |
+
+A clean merge is not evidence of a correct one — only the build is.
+
+### 6. Swap the PRs
 
 ```bash
 gh pr close <old-pr> --comment "Superseded by #<new> from resolve/<TASK>/<slug>."
 gh pr create --base core --head resolve/<TASK>/<slug> --title "..." --body-file <file>
 ```
+
+Close the original PR; do not merge the source branch anywhere. It is still based on `development` and would reintroduce the conflict.
+
+---
+
+## ⚠️ Two things that bite
+
+**Resolving in favour of one side wholesale.** `git checkout --ours/--theirs` on a conflicted file, or `-X ours`, resolves instantly and discards the other side entirely. Same for copying whole files across branches. Merge hunk by hunk instead.
+
+**`core` moving again.** If `core` advances and touches the same files after you branched, the conflict returns and step 2 has to be repeated against the newer `core`. On BE-307 `core` moved twice within a day.
 
 ---
 
@@ -157,25 +125,22 @@ gh pr create --base core --head resolve/<TASK>/<slug> --title "..." --body-file 
 
 | Check | Why |
 | ----- | --- |
-| Resolve branch cut from `origin/core` | Otherwise the resolution is recomputed away |
-| `core` **not** merged into the `feat/`/`fix/` branch | Team rule |
-| Diff vs `core` contains no foreign deletions | Green *Mergeable* does not prove correctness |
-| Diff shape matches the feature branch | Catches work lost while re-applying |
-| Conflicting PRs listed in the description | Reviewer sees what it was re-applied over |
-| Generated code regenerated for the new base | Pigeon / Pods desync silently |
+| Branch named `resolve/<TASK>/<same-slug>` | Pairing with the source branch is obvious |
+| Branched off the `feat/`/`fix/` branch, `core` merged in | The rule |
+| `core` **not** merged into the source branch | The rule |
+| Both native modules build | Only real evidence the resolution is correct |
+| No foreign deletions in `git diff core...HEAD` | Nobody else's work was dropped |
+| Your own added lines all present | Your work was not dropped |
+| Generated code regenerated | Pigeon / Pods desync silently |
+| Original PR closed | It would reintroduce the conflict |
 
 ---
 
 ## ❓ Why there is no `feat → resolve → core` PR chain
 
-A stacked chain sounds appealing — the reviewer reads the work in the `feat/` PR, and the resolve PR only carries the adaptation. It cannot be built under this rule:
+A stacked chain sounds appealing — the feature PR carries the work, the resolve PR only the adaptation. It does not exist here: `resolve/` is branched **off** the feature branch, so the feature branch is its ancestor and GitHub reports *no commits between* for a `feat → resolve` PR.
 
-- For `resolve/` to merge into `core`, it must contain the **whole** feature.
-- If `resolve/` contains the whole feature and was branched off `feat/`, then `feat/` is an ancestor of `resolve/` — GitHub reports *no commits between* and refuses the PR.
-- If instead `resolve/` is cut from `core` (as required), then `feat/` and `resolve/` share only an old `development` ancestor. A `feat → resolve` PR is then two divergent copies of the same work: it conflicts, and its diff shows unrelated `core` code as if it were new.
-- Making `feat/` a descendant of `resolve/` would pull `core` into `feat/` — exactly what the rule forbids.
-
-**Conclusion:** the `resolve/ → core` PR is the only reviewable one. Reference the original PR from its description and close the original.
+The `resolve/ → core` PR is the only reviewable one. Link the original PR from its description and close it.
 
 ---
 

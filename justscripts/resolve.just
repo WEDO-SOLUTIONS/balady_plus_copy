@@ -2,10 +2,10 @@
 # Full procedure: docs/workflow/resolve-branch-workflow.md
 #
 # `core` must never be merged into a feat/ or fix/ branch. When one conflicts with
-# core, a resolve/ branch is cut from core, the work is re-applied there, and the PR
-# is opened from it. Re-applying the work is a judgement call and stays manual —
-# these recipes cover the mechanical parts around it: cutting the branch, finding
-# what conflicts and why, and verifying the result before the PR goes up.
+# core, branch off it into resolve/<TASK>/<same-slug>, merge core in there, and open
+# the PR from that branch. Resolving the conflicts is a judgement call and stays
+# manual — these recipes cover the mechanical parts: cutting the branch with the
+# right name, merging core in, and verifying the result before the PR goes up.
 
 # List the files on the current branch that conflict with core, and the commits behind them
 resolve-conflicts base="origin/core":
@@ -24,10 +24,9 @@ resolve-conflicts base="origin/core":
         git log --oneline origin/development..{{base}} -- "$f" | sed 's/^/      /'
         echo
     done <<< "$files"
-    echo "Re-apply your edits on top of the {{base}} version of these files — never copy whole files over."
 
-# Cut resolve/<task>/<slug> from the newest core, after reporting what conflicts
-resolve-start task slug base="origin/core":
+# Branch off the current feat//fix/ branch into resolve/<task>/<same-slug> and merge core in
+resolve-start base="origin/core":
     #!/usr/bin/env bash
     set -euo pipefail
     if [ -n "$(git status --porcelain)" ]; then
@@ -35,16 +34,32 @@ resolve-start task slug base="origin/core":
         exit 1
     fi
     source_branch=$(git rev-parse --abbrev-ref HEAD)
-    echo "Source branch: $source_branch"
-    just resolve-conflicts {{base}} || true
-    echo "----"
+    case "$source_branch" in
+        feat/*|fix/*|bugfix/*|hotfix/*) ;;
+        *)
+            echo "Run this from the conflicting feat//fix/ branch (currently on '$source_branch')." >&2
+            exit 1
+            ;;
+    esac
+    # Everything after the first slash is kept verbatim, only the prefix changes.
+    target="resolve/${source_branch#*/}"
+    if git show-ref --verify --quiet "refs/heads/$target"; then
+        echo "Branch '$target' already exists." >&2
+        exit 1
+    fi
     git fetch origin --quiet
-    git checkout -b "resolve/{{task}}/{{slug}}" {{base}}
-    echo
-    echo "On resolve/{{task}}/{{slug}} (cut from {{base}})."
-    echo "Re-apply the work from $source_branch, then run: just resolve-check"
+    git checkout -b "$target"
+    echo "Created $target from $source_branch — merging {{base}} in..."
+    if git merge {{base}}; then
+        echo
+        echo "Merged cleanly. Next: just resolve-check"
+    else
+        echo
+        echo "Conflicts to resolve by hand, then 'git commit' and 'just resolve-check'."
+        echo "Resolve hunk by hunk — do not take one side wholesale (--ours/--theirs)."
+    fi
 
-# Verify a resolve branch before opening the PR. Fails on anything that would land broken.
+# Verify a resolve branch before opening the PR
 resolve-check base="origin/core":
     #!/usr/bin/env bash
     set -euo pipefail
@@ -59,8 +74,7 @@ resolve-check base="origin/core":
     if git merge-base --is-ancestor {{base}} HEAD; then
         echo "ok    branch contains {{base}}"
     else
-        echo "FAIL  branch does not contain {{base}} — the resolution will be recomputed away on merge"
-        echo "      cut the branch from {{base}} instead"
+        echo "FAIL  branch does not contain {{base}} — merge or rebase it in (step 2)"
         status=1
     fi
 
@@ -79,19 +93,45 @@ resolve-check base="origin/core":
         status=1
     fi
 
-    # The important one: a core-based branch merges cleanly even when it deletes
-    # someone else's code, so removals have to be eyeballed rather than trusted.
+    # Did the resolution drop somebody else's work? Removals can't be classified
+    # automatically, so they are printed for review rather than judged here.
     removed=$(git diff {{base}} | grep '^-' | grep -v '^---' || true)
     if [ -z "$removed" ]; then
         echo "ok    no lines removed from {{base}}"
     else
         echo "CHECK $(printf '%s\n' "$removed" | wc -l | tr -d ' ') line(s) removed from {{base}} —"
-        echo "      every one must belong to code you are extending, not to someone else's PR:"
+        echo "      each must belong to code you are extending, not to someone else's PR:"
         printf '%s\n' "$removed" | sed 's/^/      /'
     fi
 
+    # Did the resolution drop your own work? Compare against the source branch,
+    # ignoring anything that is already in core.
+    source_branch="${branch/#resolve\//feat/}"
+    git show-ref --verify --quiet "refs/remotes/origin/$source_branch" \
+        || source_branch="${branch/#resolve\//fix/}"
+    if git show-ref --verify --quiet "refs/remotes/origin/$source_branch"; then
+        tmp=$(mktemp -d)
+        git diff origin/development...origin/"$source_branch" | grep '^+' | grep -v '^+++' \
+            | sed 's/^+//;s/[[:space:]]*$//' | sort -u > "$tmp/src"
+        git diff {{base}}...HEAD | grep '^+' | grep -v '^+++' \
+            | sed 's/^+//;s/[[:space:]]*$//' | sort -u > "$tmp/res"
+        git grep -h '' {{base}} | sed 's/[[:space:]]*$//' | sort -u > "$tmp/core"
+        lost=$(comm -23 "$tmp/src" "$tmp/res" | grep -v '^$' | comm -23 - "$tmp/core" || true)
+        rm -rf "$tmp"
+        if [ -z "$lost" ]; then
+            echo "ok    every line added by origin/$source_branch is present or already in {{base}}"
+        else
+            echo "CHECK present in origin/$source_branch but missing here and absent from {{base}} —"
+            echo "      reworded lines are fine, dropped logic is not:"
+            printf '%s\n' "$lost" | sed 's/^/      /'
+        fi
+    else
+        echo "note  no matching feat//fix/ branch on origin — skipped the lost-work check"
+    fi
+
     echo
-    echo "Diff vs {{base}} (should match the shape of the original branch's diff):"
+    echo "A clean merge is not evidence of a correct one — build both modules before opening the PR."
+    echo
     git diff {{base}} --stat | tail -n 20
     exit $status
 
