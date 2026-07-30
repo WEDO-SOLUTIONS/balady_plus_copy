@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/entities/leap/leap_poi.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -20,6 +22,7 @@ class Leap extends _$Leap {
 
   static const double _minVisibleZoom = 12;
 
+  static const double _poiCardZoom = 17;
   static const double _iconWidth = 56;
 
   MapObjectManager? mapManager;
@@ -99,9 +102,25 @@ class Leap extends _$Leap {
 
   bool isLeapObject(int objectId) => _config.objectId == objectId && state;
 
+  LeapPoi? getLeapPoi(int objectId) {
+    if (!isLeapObject(objectId)) {
+      return null;
+    }
+
+    final eventDateRange = ref.read(dgisEnvironmentProvider).value?.leapDateRange ?? CityEventDateRange.leapDefault();
+
+    return LeapPoi(
+      objectId: _config.objectId,
+      center: sdk.GeoPointMessage(latitude: _config.center.latitude, longitude: _config.center.longitude),
+      eventFrom: eventDateRange.from,
+      eventTo: eventDateRange.to,
+    );
+  }
+
   Future<void> openThePlace() async {
-    const cameraConfig = PoiCameraConfig(zoom: 17);
+    const cameraConfig = PoiCameraConfig(zoom: _poiCardZoom);
     final closestPoint = sdk.LatLng(latitude: _config.center.latitude, longitude: _config.center.longitude);
+    await moveCameraToEventArea();
 
     await ref
         .read(appRouterProvider)
@@ -112,6 +131,19 @@ class Leap extends _$Leap {
             cameraConfig: cameraConfig,
           ),
           toCompareRoutes: [PoiCardWidgetRoute.page],
+        );
+  }
+
+  Future<void> moveCameraToEventArea() async {
+    await ref
+        .read(cameraPositionProvider.notifier)
+        .animateTo(
+          sdk.CameraPositionMessage(
+            point: sdk.GeoPointMessage(latitude: _config.center.latitude, longitude: _config.center.longitude),
+            zoom: _poiCardZoom,
+            tilt: 0,
+            bearing: 0,
+          ),
         );
   }
 
