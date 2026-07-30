@@ -26,8 +26,7 @@ class RoutingHistory extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value))
-      ..where((e) => e.id?.objectId != null);
+    final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value));
 
     if (history.isEmpty) {
       return const RoutingHistoryEmpty();
@@ -61,31 +60,20 @@ class RoutingHistory extends ConsumerWidget {
           action: MetricAction.tap.toString(),
           props: {'item': item.id?.objectId},
         );
-        final dgisController = await ref.read(dgisControllerProvider.future);
-        try {
-          final object = await dgisController.searchByObjectId(
-            DgisObjectIdMessage(
-              objectId: item.id?.objectId ?? 0,
-              entranceId: item.id?.entranceId ?? 0,
-            ),
-          );
-
-          final point = RoutePointDirectoryObject(object);
-          updatePoint(point);
-        } catch (e) {
-          final result = await context.router.push(
-            ErrorSheetDialogRoute(
-              buttonLabel: context.l10n.tryAgain,
-              onRetry: () => context.router.pop(true),
-              onClose: (_) => context.router.pop(true),
-              onBarrierTap: () => context.router.pop(true),
-            ),
-          );
-          await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
-          if (result != null && result as bool) {
-            searchByQuery(item.title);
-          }
+        // BALADY-3618: the routes history holds two kinds of entries — directory
+        // objects (`SearchHistoryItem.fromDirectoryObject`, `id` set) and plain
+        // text queries (`SearchHistoryItem.fromQuery`, `id` null), written by the
+        // routing search bar and by "perform search" suggests. A text entry has
+        // no object to resolve, so it goes straight to a text search: routing it
+        // through `searchByObjectId` requested objectId 0 and always failed,
+        // showing the error sheet instead of the results.
+        final objectId = item.id?.objectId;
+        if (objectId == null) {
+          searchByQuery(item.title);
+        } else {
+          await _openDirectoryObject(context, ref, item, index, objectId);
         }
+
         final bssHistoryHandlingType = item.id?.objectId != null
             ? BssHistoryHandlingType.openRecord
             : BssHistoryHandlingType.searchSuggestedText;
@@ -107,5 +95,46 @@ class RoutingHistory extends ConsumerWidget {
         );
       },
     );
+  }
+
+  /// Resolve a history entry that points at a concrete directory object and
+  /// hand it back as the route point. When the id no longer resolves the entry
+  /// is dropped from the history and the user is offered a text search for the
+  /// same title instead.
+  Future<void> _openDirectoryObject(
+    BuildContext context,
+    WidgetRef ref,
+    SearchHistoryDirectoryObjectMessage item,
+    int index,
+    int objectId,
+  ) async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    try {
+      final object = await dgisController.searchByObjectId(
+        DgisObjectIdMessage(
+          objectId: objectId,
+          entranceId: item.id?.entranceId ?? 0,
+        ),
+      );
+
+      final point = RoutePointDirectoryObject(object);
+      updatePoint(point);
+    } catch (e) {
+      if (!context.mounted) {
+        return;
+      }
+      final result = await context.router.push(
+        ErrorSheetDialogRoute(
+          buttonLabel: context.l10n.tryAgain,
+          onRetry: () => context.router.pop(true),
+          onClose: (_) => context.router.pop(true),
+          onBarrierTap: () => context.router.pop(true),
+        ),
+      );
+      await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(index);
+      if (result != null && result as bool) {
+        searchByQuery(item.title);
+      }
+    }
   }
 }
