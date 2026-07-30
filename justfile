@@ -18,6 +18,9 @@ import? 'justscripts/local.just'
 # style helpers
 import 'justscripts/styles.just'
 
+# resolve-branch workflow (core conflicts) — docs/workflow/resolve-branch-workflow.md
+import 'justscripts/resolve.just'
+
 # prebuild: pubget locale_gen build_pigeon download-sdk codegen
 prebuild: locale_gen pubget build_pigeon codegen
 

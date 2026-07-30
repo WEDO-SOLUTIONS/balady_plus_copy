@@ -105,10 +105,24 @@ Each pull request **MUST** meet the following criteria:
 
 ---
 
+## 🧩 Conflicts with `core`
+
+`core` must **never** be merged into a `feat/` or `fix/` branch. When such a branch conflicts with `core`, cut a `resolve/<TASK>/<slug>` branch from `core`, re-apply the work there, and open the PR from it instead.
+
+```bash
+just resolve-start BE-307 car-play-fixes   # cut the branch + list the conflicting PRs
+just resolve-check                         # verify before opening the PR
+```
+
+Full procedure, including the failure mode where a resolve branch merges cleanly while deleting someone else's code: [Resolve Branch Workflow](resolve-branch-workflow.md).
+
+---
+
 ## 📖 Related Documents
 
 | Document | Purpose |
 | -------- | ------- |
 | [Traceability](traceability.md) | Full task-to-code linking rules |
 | [Engineering Workflow](engineering-workflow.md) | End-to-end development process |
+| [Resolve Branch Workflow](resolve-branch-workflow.md) | Resolving `core` conflicts without merging `core` into a feature branch |
 | [Ownership KPIs](../kpi/ownership-kpis.md) | Workflow adherence scoring |
