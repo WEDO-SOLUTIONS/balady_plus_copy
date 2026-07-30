@@ -28,6 +28,9 @@ class DgisCarPlayMapView: UIViewController {
     private var mapAppearance: CarPlayMapAppearance?
     private var prefersDarkMapContent = false
 
+    private var tunnelDetector: TunnelDetector?
+    private var isInTunnel = false
+
     init(
         map: Map,
         mapView: (UIView & IMapView),
@@ -176,6 +179,8 @@ class DgisCarPlayMapView: UIViewController {
         myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
         mapAppearance = nil
+        tunnelDetector?.cancel()
+        tunnelDetector = nil
     }
 
     private func createAttributionLabel() -> UILabel {
@@ -380,10 +385,21 @@ class DgisCarPlayMapView: UIViewController {
             self.prefersDarkMapContent = prefersDark
             self.applyMapAppearance()
         }
+
+        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
+            guard let self else { return }
+
+            self.isInTunnel = isInTunnel
+            self.applyMapAppearance()
+        }
     }
 
+    /// Night wins if either CarPlay asks for a dark map or the car is inside a tunnel — a
+    /// tunnel is dark no matter what the head unit thinks the time of day is.
     private func applyMapAppearance() {
-        mapView.appearance = prefersDarkMapContent ? .universal("night") : .universal("day")
+        let isNight = prefersDarkMapContent || isInTunnel
+        mapView.appearance = isNight ? .universal("night") : .universal("day")
     }
 }
 
