@@ -248,28 +248,58 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
-        
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
-        
-        let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
+
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else {
+            completion(
+                Result.failure(FlutterError(
+                    code: "FileNotFoundException",
+                    message: "Failed to resolve asset <\(asset)>",
+                    details: nil
+                ))
+            )
+            return
+        }
+
+        loadStyleFile(at: assetPath, completion: completion)
+    }
+
+    func loadStylesFromPath(absolutePath: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard FileManager.default.fileExists(atPath: absolutePath) else {
+            completion(
+                Result.failure(FlutterError(
+                    code: "FileNotFoundException",
+                    message: "Style file does not exist at <\(absolutePath)>",
+                    details: nil
+                ))
+            )
+            return
+        }
+
+        loadStyleFile(at: absolutePath, completion: completion)
+    }
+
+    private func loadStyleFile(at path: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        let styleFuture = try! self.sdk.styleFactory.loadFile(path: path)
         cancelable.append(
-            styleFuture.sink (
+            styleFuture.sink(
                 receiveValue: { [map = self.map] style in
                     map?.style = style
-                     completion(Result.success(()))
+                    completion(Result.success(()))
                 },
                 failure: { error in
                     completion(
-                Result.failure(FlutterError(
-                        code: "FileNotFoundException",
-                        message: "Failed to load style from <\(assetPath)>. Error: \(error)",
-                        details: nil
-                    )))
-                })
+                        Result.failure(FlutterError(
+                            code: "FileNotFoundException",
+                            message: "Failed to load style from <\(path)>. Error: \(error)",
+                            details: nil
+                        ))
+                    )
+                }
+            )
         )
     }
-    
-        
+
+
     func overrideLocales(locales: [String], completion: @escaping (Result<Void, any Error>) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales.map {
@@ -496,6 +526,30 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func takeMapSnapshot(completion: @escaping (Result<FlutterStandardTypedData?, any Error>) -> Void) {
+        // Best-effort by contract: any failure resolves to nil and the Dart
+        // side falls back to a plain colored curtain (BALADY-3772).
+        guard let snapshotter = self.mapFactory?.snapshotter else {
+            completion(Result.success(nil))
+            return
+        }
+        cancelable.append(
+            snapshotter.makeImage().sink(
+                receiveValue: { image in
+                    let bytes = image.pngData().map { FlutterStandardTypedData(bytes: $0) }
+                    DispatchQueue.main.async {
+                        completion(Result.success(bytes))
+                    }
+                },
+                failure: { _ in
+                    DispatchQueue.main.async {
+                        completion(Result.success(nil))
+                    }
+                }
+            )
+        )
+    }
+
     func getCameraVisibleArea(completion: @escaping (Result<PolygonGeometryMessage, any Error>) -> Void) {
         guard let map = self.map else {
             completion(Result.failure( FlutterError(
@@ -505,7 +559,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
-        
+
         let area = map.camera.visibleArea
         if let polygon = area as? PolygonGeometry {
             let contours = polygon.contours.map { $0.map { $0.toMessage() } }

@@ -3,7 +3,6 @@ import 'package:balady_plus/app/features/accecipilities/life_sycle_event_handler
 import 'package:dgis_map/dgis_map_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AccessibilityController extends ChangeNotifier {
@@ -36,7 +35,7 @@ class AccessibilityController extends ChangeNotifier {
   // Platform integration
   bool followSystemSettings = true;
 
-  static const Map<FontWeight, String> fontWeightLabels = {
+  static final Map<FontWeight, String> fontWeightLabels = {
     FontWeight.w100: 'Thin',
     FontWeight.w300: 'Light',
     FontWeight.w400: 'Regular',
@@ -52,11 +51,7 @@ class AccessibilityController extends ChangeNotifier {
 
   Future<void> _setupPlatformListener() async {
     // Listen to system accessibility changes
-    WidgetsBinding.instance.addObserver(
-      LifecycleEventHandler(
-        resumeCallBack: () => _checkSystemSettings(),
-      ),
-    );
+    WidgetsBinding.instance.addObserver(LifecycleEventHandler(resumeCallBack: () => _checkSystemSettings()));
   }
 
   Future<void> _checkSystemSettings() async {
@@ -88,8 +83,7 @@ class AccessibilityController extends ChangeNotifier {
       screenReaderEnabled = prefs.getBool('screenReaderEnabled') ?? false;
 
       simplifyLayout = prefs.getBool('simplifyLayout') ?? false;
-      hideNonEssentialContent =
-          prefs.getBool('hideNonEssentialContent') ?? false;
+      hideNonEssentialContent = prefs.getBool('hideNonEssentialContent') ?? false;
       readingMode = prefs.getBool('readingMode') ?? false;
 
       monoAudio = prefs.getBool('monoAudio') ?? false;
@@ -144,32 +138,22 @@ class AccessibilityController extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void setTextScale(double value,DgisMapController? dgisController) async{
+  void setTextScale(double value, DgisMapController? dgisController) async {
     textScale = value;
     _saveSettings();
-    await _syncMapFontScale(value,dgisController);
+    await _syncMapFontScale(value, dgisController);
     notifyListeners();
   }
 
-  Future<void> _syncMapFontScale(double scale,DgisMapController? _dgisController) async {
-    if (_dgisController == null) return;
+  Future<void> _syncMapFontScale(double scale, DgisMapController? dgisController) async {
+    if (dgisController == null) return;
 
     try {
-
-      await _dgisController.setMapAttributeString(
-        'fontScaleMultiplier',
-        value: scale.toString(),
-      );
+      await dgisController.setMapAttributeString('fontScaleMultiplier', value: scale.toString());
     } catch (e) {
-      print('Error syncing map font scale: $e');
+      debugPrint('Error syncing map font scale: $e');
     }
   }
-
-
-
-
-
-
 
   void setLineHeight(double value) {
     lineHeight = value;
@@ -261,7 +245,6 @@ class AccessibilityController extends ChangeNotifier {
     // }
   }
 
-
   // Cognitive methods
   void toggleSimplifyLayout(bool value) {
     simplifyLayout = value;
@@ -333,8 +316,7 @@ class AccessibilityController extends ChangeNotifier {
   // Helper to get current text style with all modifications
   TextStyle getModifiedTextStyle(TextStyle baseStyle) {
     return baseStyle.copyWith(
-      fontSize:
-          baseStyle.fontSize != null ? baseStyle.fontSize! * textScale : null,
+      fontSize: baseStyle.fontSize != null ? baseStyle.fontSize! * textScale : null,
       height: lineHeight,
       letterSpacing: letterSpacing,
       fontWeight: fontWeight,

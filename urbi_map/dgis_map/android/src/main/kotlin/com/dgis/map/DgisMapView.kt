@@ -69,7 +69,7 @@ class DgisMapView(
                 java.util.EnumSet.noneOf(ru.dgis.sdk.navigation.SoundCategory::class.java)
         }
     }
-    private val navigationHandler by unsafeLazy {
+    private val navigationHandlerLazy = unsafeLazy {
         NavigationHandler(
                 sdkContext = sdkContext,
                 navigationManager = navigationManager,
@@ -78,6 +78,7 @@ class DgisMapView(
                 appContext = context,
         )
     }
+    private val navigationHandler by navigationHandlerLazy
     private val packagesHandler by unsafeLazy {
         PackagesHandler(
                 sdkContext = sdkContext,
@@ -137,8 +138,14 @@ class DgisMapView(
 
     override fun dispose() {
         soundUpdateJob?.cancel()
-        // Close before the map: the detector is driven by the shared NavigationManager and its
-        // callback re-themes the map view, so a late event would touch an already-closed map.
+        // The navigation handler subscribes to the shared NavigationManager's channels;
+        // it must be closed before the map, otherwise a late state event (e.g. FINISHED)
+        // touches the already-closed map and crashes with "Access to closed Java object".
+        if (navigationHandlerLazy.isInitialized()) {
+            navigationHandler.close()
+        }
+        // Same ordering constraint as the navigation handler above: the detector is driven by
+        // the shared NavigationManager and its callback re-themes the map view.
         tunnelDetector?.close()
         map?.close()
         routeHandler?.close()
@@ -231,10 +238,32 @@ class DgisMapView(
 
     override fun loadStyles(asset: String, callback: (Result<Unit>) -> Unit) {
         val styleAsset = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(asset)
+        loadStyleFile(File.fromAsset(sdkContext, styleAsset), callback)
+    }
 
+    override fun loadStylesFromPath(absolutePath: String, callback: (Result<Unit>) -> Unit) {
+        val javaFile = java.io.File(absolutePath)
+        if (!javaFile.isFile) {
+            callback(
+                    Result.failure(
+                            FileNotFoundException(
+                                    "Style file does not exist at <$absolutePath>"
+                            )
+                    )
+            )
+            return
+        }
+        // Use the File(path) constructor — NOT File.fromString(), which builds an
+        // in-memory file from the string's *contents* (the SDK would then try to
+        // parse the path text itself as a style and fail with "Can't load style
+        // from file"). The constructor's parameter is a filesystem path.
+        loadStyleFile(File(absolutePath), callback)
+    }
+
+    private fun loadStyleFile(file: File, callback: (Result<Unit>) -> Unit) {
         val builder = StyleBuilder(sdkContext)
         closables.add(
-                builder.loadStyle(File.fromAsset(sdkContext, styleAsset)).apply {
+                builder.loadStyle(file).apply {
                     onResult {
                         map?.style = it
                         callback(Result.success(Unit))
@@ -423,6 +452,51 @@ class DgisMapView(
                         )
                 )
         )
+    }
+
+    override fun takeMapSnapshot(callback: (Result<ByteArray?>) -> Unit) {
+        // Best-effort by contract: any failure resolves to null and the Dart
+        // side falls back to a plain colored curtain (BALADY-3772).
+        if (map == null) {
+            callback(Result.success(null))
+            return
+        }
+        val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
+        try {
+            mapView.takeSnapshot(Alignment.BOTTOM_LEFT).apply {
+                onResult { imageData ->
+                    val bytes: ByteArray? =
+                            when (imageData.format) {
+                                ImageFormat.PNG -> imageData.data
+                                ImageFormat.RGBA_8888 -> {
+                                    val bitmap =
+                                            android.graphics.Bitmap.createBitmap(
+                                                    imageData.size.width,
+                                                    imageData.size.height,
+                                                    android.graphics.Bitmap.Config.ARGB_8888
+                                            )
+                                    bitmap.copyPixelsFromBuffer(
+                                            java.nio.ByteBuffer.wrap(imageData.data)
+                                    )
+                                    val out = java.io.ByteArrayOutputStream()
+                                    bitmap.compress(
+                                            android.graphics.Bitmap.CompressFormat.PNG,
+                                            100,
+                                            out
+                                    )
+                                    bitmap.recycle()
+                                    out.toByteArray()
+                                }
+                                else -> null
+                            }
+                    mainHandler.post { callback(Result.success(bytes)) }
+                }
+                onError { mainHandler.post { callback(Result.success(null)) } }
+            }
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "takeMapSnapshot failed: $e")
+            callback(Result.success(null))
+        }
     }
 
     override fun getCameraVisibleArea(callback: (Result<PolygonGeometryMessage>) -> Unit) {

@@ -8,6 +8,7 @@ import android.graphics.Rect
 import android.net.Uri
 import android.util.Log
 import android.view.Surface
+import android.view.View
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
@@ -186,10 +187,15 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
 
     private fun setupLocale() {
         val locale = carMapController.getLocale()
-        val configuration = carContext.resources.configuration
+        // Operate on a copy of the configuration: mutating the live Resources configuration in place
+        // and passing the same instance back to updateConfiguration() can defeat its change detection,
+        // so the new locale / layout direction may not be applied reliably.
+        val configuration = Configuration(carContext.resources.configuration)
         configuration.setLocale(locale)
         configuration.setLayoutDirection(locale)
         carContext.resources.updateConfiguration(configuration, carContext.resources.displayMetrics)
+        customRenderer.isRtl = configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+        customRenderer.label = carContext.getString(com.dgis.map.R.string.balady_maps)
         carContext.getCarService(AppManager::class.java).invalidate()
     }
 

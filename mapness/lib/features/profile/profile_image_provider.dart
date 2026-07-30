@@ -28,6 +28,7 @@ class ProfileImage extends _$ProfileImage {
   String? get _imageBase64OnDevice => _prefs.getString(_imagePrefsKey);
 
   bool _isUpdated = false;
+  int _requestGeneration = 0;
 
   PermissionStatus status = PermissionStatus.denied;
 
@@ -44,7 +45,11 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<void> _updateImageFromBackend() async {
+    final generation = _requestGeneration;
     final backendImage = await _downloadProfileImageToBytes();
+    if (!ref.mounted || generation != _requestGeneration) {
+      return;
+    }
 
     await _updateImageState(backendImage);
     _isUpdated = true;
@@ -161,6 +166,7 @@ class ProfileImage extends _$ProfileImage {
   }
 
   Future<void> clear() async {
+    _requestGeneration++;
     await _prefs.remove(_imagePrefsKey);
     // Screen appears earlier than the image is removed from the cache
     // So we have to force update the state to show the default image

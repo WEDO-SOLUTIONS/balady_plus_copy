@@ -94,11 +94,12 @@ abstract class CityEventConfig {
 
   /// Factory method to create config from event type
   static CityEventConfig? fromEventType(CityEventType? eventType) => switch (eventType) {
-        CityEventType.saudiNationalDay => const SaudiNationalDayConfig(),
-        CityEventType.cityscape => const CityscapeConfig(),
-        CityEventType.foundingDay => const FoundingDayConfig(),
-        null => null,
-      };
+    CityEventType.saudiNationalDay => const SaudiNationalDayConfig(),
+    CityEventType.cityscape => const CityscapeConfig(),
+    CityEventType.foundingDay => const FoundingDayConfig(),
+    CityEventType.leap => const LeapConfig(),
+    null => null,
+  };
 }
 
 class SaudiNationalDayConfig extends CityEventConfig {
@@ -121,14 +122,14 @@ class SaudiNationalDayConfig extends CityEventConfig {
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
-        imagePath: Assets.images.saudiNationalFlag.keyName,
-        width: 97.8,
-        shimmerGradient: const LinearGradient(
-          colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
-          stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-        ),
-        supportsFireworks: true,
-      );
+    imagePath: Assets.images.saudiNationalFlag.keyName,
+    width: 97.8,
+    shimmerGradient: const LinearGradient(
+      colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
+      stops: [0.0, 0.4, 0.5, 0.6, 1.0],
+    ),
+    supportsFireworks: true,
+  );
 }
 
 class CityscapeConfig extends CityEventConfig {
@@ -173,14 +174,57 @@ class CityscapeConfig extends CityEventConfig {
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
-        imagePath: globalImagePath,
-        padding: const EdgeInsets.only(left: 24.0),
-        imageOffset: const Offset(0, 30),
-        shimmerGradient: const LinearGradient(
-          colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
-          stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-        ),
-      );
+    imagePath: globalImagePath,
+    padding: const EdgeInsets.only(left: 24.0),
+    imageOffset: const Offset(0, 30),
+    shimmerGradient: const LinearGradient(
+      colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
+      stops: [0.0, 0.4, 0.5, 0.6, 1.0],
+    ),
+  );
+}
+
+class LeapConfig extends CityEventConfig {
+  const LeapConfig();
+
+  @override
+  Color getBackgroundColor(BuildContext context) => const Color(0xFF12091C);
+
+  @override
+  String getText(AppLocalizations l10n) => l10n.leapDashboard;
+
+  @override
+  double get verticalOffset => 10.0;
+
+  @override
+  bool get hasLogo => true;
+
+  @override
+  String get globalImagePath => Assets.images.leapLogo.keyName;
+
+  @override
+  String get customMarkerPath => Assets.icons.svg.leapUniqueMarker.keyName;
+
+  @override
+  String get defaultMarkerPath => Assets.icons.svg.leapUniqueMarker.keyName;
+
+  @override
+  sdk.GeoPointWithElevationMessage get center =>
+      sdk.GeoPointWithElevationMessage(latitude: 25.2515625, longitude: 46.3869375, elevation: 0);
+
+  @override
+  int get objectId => 40722022671692732;
+
+  @override
+  String get globalMarkerId => 'leap_global';
+
+  @override
+  EventLogoConfig get logoConfig => EventLogoConfig(
+    imagePath: globalImagePath,
+    width: 144,
+    padding: EdgeInsets.zero,
+    imageOffset: const Offset(-10, 17),
+  );
 }
 
 class FoundingDayConfig extends CityEventConfig {
@@ -216,36 +260,36 @@ class FoundingDayConfig extends CityEventConfig {
 
   @override
   Set<int> get additionalObjectIds => const {
-        70030076676985563,
-        70030076209992979,
-        70030076209992995,
-        70030076209992609,
-        70030076209992704,
-        70030076209992635,
-        70030076527609092,
-        70030076676985002,
-        70030076676985436,
-        70030076209992983,
-        70030076676983761,
-        70030076676983790,
-        70030076209992629,
-        70030076209992634,
-        70030076567999453,
-        70000001101604698,
-        70030076209990811,
-        70000001094445934,
-        70000001097009979,
-      };
+    70030076676985563,
+    70030076209992979,
+    70030076209992995,
+    70030076209992609,
+    70030076209992704,
+    70030076209992635,
+    70030076527609092,
+    70030076676985002,
+    70030076676985436,
+    70030076209992983,
+    70030076676983761,
+    70030076676983790,
+    70030076209992629,
+    70030076209992634,
+    70030076567999453,
+    70000001101604698,
+    70030076209990811,
+    70000001094445934,
+    70000001097009979,
+  };
 
   @override
   String get globalMarkerId => 'founding_day_global';
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
-        imagePath: globalImagePath,
-        width: 130,
-        padding: EdgeInsets.zero,
-        supportsFireworks: true,
-        imageOffset: const Offset(0, -45),
-      );
+    imagePath: globalImagePath,
+    width: 130,
+    padding: EdgeInsets.zero,
+    supportsFireworks: true,
+    imageOffset: const Offset(0, -45),
+  );
 }

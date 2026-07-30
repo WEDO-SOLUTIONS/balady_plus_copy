@@ -18,7 +18,34 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
     private var surface: Surface? = null
     private var rendererData: CustomRendererData? = null
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val attributionPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 16f }
     private var paddingFlowJob: Job? = null
+
+    var label: String = ""
+        set(value) {
+            if (field == value) return
+            field = value
+            update()
+        }
+
+    /**
+     * Layout direction of the current locale. When true (e.g. Arabic) the speed and speed-limit
+     * widgets are anchored to the start (left) edge instead of the end (right) edge so they mirror
+     * correctly in RTL. Updated by the session whenever the locale changes.
+     */
+    var isRtl: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            update()
+        }
+
+    var isDarkMode: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            update()
+        }
 
     init {
         paddingFlowJob = CoroutineScope(Dispatchers.Default).launch {
@@ -30,7 +57,7 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
 
     fun setSurface(surface: Surface) {
         this.surface = surface
-        clearCanvas()
+        redraw()
     }
 
     fun resetSurface() {
@@ -39,24 +66,24 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
 
     fun render(customRendererData: CustomRendererData) {
         rendererData = customRendererData
-        withLockedCanvas {
-            clearCanvas(it)
-            draw(customRendererData, it)
-        }
+        redraw()
     }
 
     private fun update() {
-        val data = this.rendererData ?: return
-        render(data)
+        redraw()
     }
 
     fun clear() {
         rendererData = null
-        clearCanvas()
+        redraw()
     }
 
-    private fun clearCanvas() {
-        withLockedCanvas(::clearCanvas)
+    private fun redraw() {
+        withLockedCanvas { canvas ->
+            clearCanvas(canvas)
+            drawAttribution(canvas)
+            rendererData?.let { draw(it, canvas) }
+        }
     }
 
     private fun withLockedCanvas(block: (canvas: Canvas) -> Unit) {
@@ -89,7 +116,11 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
             style = Paint.Style.FILL
             setShadowLayer(2f, 0f, 0f, Color.parseColor("#12000000"))
         }
-        val centerX = canvas.width - paddingProvider.paddingFlow.value.right - 40f
+        val centerX = if (isRtl) {
+            paddingProvider.paddingFlow.value.left + 40f
+        } else {
+            canvas.width - paddingProvider.paddingFlow.value.right - 40f
+        }
         val centerY = canvas.height - paddingProvider.paddingFlow.value.bottom - 51f
         canvas.drawCircle(centerX, centerY, 36f, paint)
         paint.apply {
@@ -109,7 +140,11 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
     }
 
     private fun drawSpeedLimit(speedLimit: Int, exceeded: Boolean, canvas: Canvas) {
-        val centerX = canvas.width - paddingProvider.paddingFlow.value.right - 93f
+        val centerX = if (isRtl) {
+            paddingProvider.paddingFlow.value.left + 93f
+        } else {
+            canvas.width - paddingProvider.paddingFlow.value.right - 93f
+        }
         val centerY = canvas.height - paddingProvider.paddingFlow.value.bottom - 45f
         if (exceeded) {
             paint.apply {
@@ -121,7 +156,7 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
             paint.apply {
                 color = Color.RED
                 style = Paint.Style.STROKE
-                strokeWidth = 4f
+                strokeWidth = 1f
             }
             canvas.drawCircle(centerX, centerY, 24f, paint)
             paint.apply {
@@ -138,6 +173,38 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
             textAlign = Paint.Align.CENTER
         }
         canvas.drawText(speedLimit.toString(), centerX, centerY + paint.textSize / 3, paint)
+    }
+
+    private fun drawAttribution(canvas: Canvas) {
+        val text = label
+        if (text.isEmpty()) return
+
+        val padding = paddingProvider.paddingFlow.value
+        val margin = 16f
+        val y = canvas.height - padding.bottom - margin
+        val x: Float
+        if (isRtl) {
+            x = canvas.width - padding.right - margin
+            attributionPaint.textAlign = Paint.Align.RIGHT
+        } else {
+            x = padding.left + margin
+            attributionPaint.textAlign = Paint.Align.LEFT
+        }
+
+        attributionPaint.apply {
+            style = Paint.Style.STROKE
+            color = if (isDarkMode) Color.BLACK else Color.WHITE
+            strokeWidth = 1f
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+        }
+        canvas.drawText(text, x, y, attributionPaint)
+
+        attributionPaint.apply {
+            style = Paint.Style.FILL
+            color = if (isDarkMode) Color.WHITE else Color.BLACK
+        }
+        canvas.drawText(text, x, y, attributionPaint)
     }
 
     private fun clearCanvas(canvas: Canvas) {

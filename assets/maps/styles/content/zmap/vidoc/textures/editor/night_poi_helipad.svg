@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="60px" height="60px" version="1.1" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
- <g id="sight/poi_helipad_7" fill="none" fill-rule="evenodd">
-  <path id="Fill-1" d="m41 42h-5v-11h-12v11h-5v-25h5v10h12v-10h5v25zm-11-36c-13.254 0-24 10.746-24 24s10.746 24 24 24 24-10.746 24-24-10.746-24-24-24z" stroke="#202122" stroke-width="5"/>
-  <path id="Fill-1" d="m41 42h-5v-11h-12v11h-5v-25h5v10h12v-10h5v25zm-11-36c-13.254 0-24 10.746-24 24s10.746 24 24 24 24-10.746 24-24-10.746-24-24-24z" fill="#646464"/>
- </g>
-</svg>
