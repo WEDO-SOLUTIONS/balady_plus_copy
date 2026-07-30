@@ -1238,21 +1238,36 @@ class $AssetsTifoAudioGen {
 class $AssetsTifoBackgroundsGen {
   const $AssetsTifoBackgroundsGen();
 
+  /// File path: assets/tifo/backgrounds/entry_hero.jpg
+  AssetGenImage get entryHero => const AssetGenImage('assets/tifo/backgrounds/entry_hero.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_draw.jpg
+  AssetGenImage get resultDraw => const AssetGenImage('assets/tifo/backgrounds/result_draw.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_loss.jpg
+  AssetGenImage get resultLoss => const AssetGenImage('assets/tifo/backgrounds/result_loss.jpg');
+
+  /// File path: assets/tifo/backgrounds/result_win.jpg
+  AssetGenImage get resultWin => const AssetGenImage('assets/tifo/backgrounds/result_win.jpg');
+
   /// File path: assets/tifo/backgrounds/stadium_goal_background.jpg
   AssetGenImage get stadiumGoalBackground => const AssetGenImage('assets/tifo/backgrounds/stadium_goal_background.jpg');
 
   /// List of all assets
-  List<AssetGenImage> get values => [stadiumGoalBackground];
+  List<AssetGenImage> get values => [entryHero, resultDraw, resultLoss, resultWin, stadiumGoalBackground];
 }
 
 class $AssetsTifoImagesGen {
   const $AssetsTifoImagesGen();
 
+  /// File path: assets/tifo/images/ball.png
+  AssetGenImage get ball => const AssetGenImage('assets/tifo/images/ball.png');
+
   /// File path: assets/tifo/images/penalty_preview.png
   AssetGenImage get penaltyPreview => const AssetGenImage('assets/tifo/images/penalty_preview.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [penaltyPreview];
+  List<AssetGenImage> get values => [ball, penaltyPreview];
 }
 
 class $AssetsTifoModelsGen {
@@ -3844,9 +3859,7 @@ class $AssetsIconsSvgPlacesNewOldGen {
   ];
 }
 
-class Assets {
-  const Assets._();
-
+abstract final class Assets {
   static const String package = 'mapness';
 
   static const String config = 'packages/mapness/assets/config.json';

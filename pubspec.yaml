@@ -139,10 +139,8 @@ dependencies:
   #    git:
   #      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker_plus:
-    # unpub недоступен — временно с GitHub (main = 1.5.4)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/flutter_picker_plus.git
-      ref: main
+    hosted: https://unpub.balady.gov.sa/
+    version: ^1.5.4
   percent_indicator: ^4.2.5
   # flutter_cached_pdfview: ^0.4.2
   pdfx: ^2.9.2
@@ -171,10 +169,8 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    # unpub недоступен — временно с GitHub (tag v5.1.4)
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/balady_uikit.git
-      ref: v5.1.4
+    hosted: https://unpub.balady.gov.sa/
+    version: 5.1.7
 
 
   sheetify: ^1.1.3
@@ -204,9 +200,8 @@ dependencies:
   ############################################################
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
-    # unpub недоступен, на GitHub только 1.0.11 — берём 1.0.13 из локального
-    # pub-cache (НЕ чистить `dart pub cache clean`, пока unpub не поднимут!)
-    path: /Users/ve/.pub-cache/hosted/baladyapp-unpub.urbi.ae/balady_authorization-1.0.13
+    hosted: https://unpub.balady.gov.sa/
+    version: 1.0.17
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -217,10 +212,8 @@ dependencies:
   ############################################################
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
-     # unpub недоступен; GitHub main (0.0.6) не компилится на Flutter 3.38
-     # (CardTheme -> CardThemeData). Берём 0.0.3 из локального pub-cache
-     # (НЕ чистить `dart pub cache clean`, пока unpub не поднимут!)
-     path: /Users/ve/.pub-cache/hosted/baladyapp-unpub.urbi.ae/balady_design_system-0.0.3
+     hosted: https://unpub.balady.gov.sa/
+     version: 0.0.3-dev
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
@@ -399,10 +392,4 @@ dependency_overrides:
   # Pin to avoid objective_c FFI crash on iOS Simulator
   # (path_provider_foundation >=2.5.0 uses objective_c which fails on Simulator)
   path_provider_foundation: 2.4.0
-  # balady_uikit@v5.1.4 внутри себя тянет urbi_utils с unpub (hosted) —
-  # override на GitHub, пока unpub недоступен.
-  urbi_utils:
-    git:
-      url: git@github-render:WEDO-SOLUTIONS/urbi_utils.git
-      ref: main
 

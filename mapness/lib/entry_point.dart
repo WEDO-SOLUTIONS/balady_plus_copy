@@ -15,7 +15,6 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
-
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -1289,7 +1288,6 @@ Future<void> setupMapness(EnvType envType) async {
     logOptions: LogOptionsMessage(
       // systemLevel: LogLevelMessage.fatal,
       // customLevel: LogLevelMessage.fatal,
-
       systemLevel: LogLevelMessage.verbose,
       customLevel: LogLevelMessage.verbose,
     ),

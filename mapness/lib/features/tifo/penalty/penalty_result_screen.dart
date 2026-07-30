@@ -208,6 +208,20 @@ class TifoPenaltyResultScreen extends StatelessWidget {
   }
 }
 
+/// The full set of result-hero backgrounds (see [TifoPenaltyResultScreen._content]).
+/// Kept in one place so callers can warm the decode ahead of
+/// [showTifoPenaltyResult]'s 250ms fade-in, instead of racing it.
+const _resultBackgroundAssets = ['result_win.jpg', 'result_loss.jpg', 'result_draw.jpg'];
+
+/// Decodes all three result backgrounds up front. The outcome (and thus which
+/// one actually gets shown) is only known after the mini-game ends, so call
+/// this as soon as a shootout starts — by the time the fade-in runs, the
+/// image is already decoded instead of stalling the first frames on it.
+Future<void> precacheTifoResultImages(BuildContext context) => Future.wait([
+  for (final asset in _resultBackgroundAssets)
+    precacheImage(AssetImage('packages/mapness/assets/tifo/backgrounds/$asset'), context),
+]);
+
 /// Pushes the result screen on [context]'s navigator as a fade-in fullscreen.
 Future<void> showTifoPenaltyResult(
   BuildContext context,

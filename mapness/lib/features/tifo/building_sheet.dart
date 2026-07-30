@@ -8,6 +8,7 @@ import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/penalty/penalty_result_screen.dart';
+import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
@@ -309,6 +310,13 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     }
     // Token was just spent; refresh the balance shown elsewhere.
     unawaited(ref.read(tifoSessionProvider.notifier).refreshProfile());
+    // Outcome (and thus which hero background) is only known after the
+    // mini-game ends — warm the decode now so the result fade-in doesn't
+    // race it.
+    final resultCtx = rootNavigatorKey.currentContext;
+    if (resultCtx != null) {
+      unawaited(precacheTifoResultImages(resultCtx));
+    }
 
     if (!mounted) {
       return;
@@ -322,10 +330,12 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     if (navigator == null) {
       return;
     }
-    final missesAllowed = (_container ?? ProviderScope.containerOf(context, listen: false))
-        .read(tifoSessionProvider)
-        .config
-        .missesAllowed;
+    final container = _container ?? ProviderScope.containerOf(context, listen: false);
+    final missesAllowed = container.read(tifoSessionProvider).config.missesAllowed;
+    // The map layer stays enabled (and its 20s ownership poller with it) for
+    // the whole session — pause just the poller while the fullscreen game is
+    // up so its bridge calls don't compete with Flame's per-frame rendering.
+    container.read(tifoBuildingsPollerProvider.notifier).stop();
     var handled = false;
     unawaited(
       navigator.push<void>(
@@ -339,6 +349,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                 return;
               }
               handled = true;
+              container.read(tifoBuildingsPollerProvider.notifier).start();
               Future<void>.delayed(const Duration(milliseconds: 700), () {
                 rootNavigatorKey.currentState?.pop();
                 unawaited(_submit(playSession: playSession, outcome: outcome));
@@ -423,6 +434,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return;
     }
 
+    final resultCtx = rootNavigatorKey.currentContext;
+    if (resultCtx != null) {
+      unawaited(precacheTifoResultImages(resultCtx));
+    }
     final api = ref.read(tifoApiProvider);
     try {
       final playSession = await api.startPlay(_building.id);

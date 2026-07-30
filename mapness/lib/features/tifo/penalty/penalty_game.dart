@@ -11,7 +11,6 @@ import 'package:flame/game.dart';
 import 'package:flame/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
@@ -36,14 +35,12 @@ class PenaltyApp extends StatelessWidget {
   final int scoreToBeat;
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Penalty 3D',
-      theme: ThemeData.dark(useMaterial3: true),
-      home: PenaltyGamePage(onComplete: onComplete, missesAllowed: missesAllowed, scoreToBeat: scoreToBeat),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'Penalty 3D',
+    theme: ThemeData.dark(useMaterial3: true),
+    home: PenaltyGamePage(onComplete: onComplete, missesAllowed: missesAllowed, scoreToBeat: scoreToBeat),
+  );
 }
 
 enum _PenaltyView { perspective, topDown, miniGame, styles }
@@ -343,94 +340,90 @@ class _PenaltyModeToolbar extends StatelessWidget {
   final ValueChanged<_PenaltyView> onChanged;
 
   @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: compact ? const Color(0x6607111F) : const Color(0xB0000000),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
-        borderRadius: BorderRadius.circular(8),
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      color: compact ? const Color(0x6607111F) : const Color(0xB0000000),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 8 : 12,
+        vertical: compact ? 8 : 10,
       ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: compact ? 8 : 12,
-          vertical: compact ? 8 : 10,
-        ),
-        child: Wrap(
-          spacing: 12,
-          runSpacing: 8,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            if (!compact)
-              const Text(
-                'Penalty 3D',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
-                ),
+      child: Wrap(
+        spacing: 12,
+        runSpacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          if (!compact)
+            const Text(
+              'Penalty 3D',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0,
               ),
-            SegmentedButton<_PenaltyView>(
-              key: const ValueKey('penalty-view-toggle'),
-              showSelectedIcon: false,
-              style: ButtonStyle(
-                visualDensity: VisualDensity.compact,
-                backgroundColor: WidgetStateProperty.resolveWith((states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFFEAF2FF);
-                  }
-                  return Colors.white.withValues(alpha: 0.1);
-                }),
-                foregroundColor: WidgetStateProperty.resolveWith((states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF10243D);
-                  }
-                  return Colors.white;
-                }),
-                side: WidgetStateProperty.all(
-                  BorderSide(color: Colors.white.withValues(alpha: 0.22)),
-                ),
-                padding: WidgetStateProperty.all(
-                  const EdgeInsets.symmetric(horizontal: 12),
-                ),
-              ),
-              segments: const [
-                ButtonSegment(
-                  value: _PenaltyView.perspective,
-                  label: Text('3D'),
-                ),
-                ButtonSegment(
-                  value: _PenaltyView.topDown,
-                  label: Text('Top'),
-                ),
-                ButtonSegment(
-                  value: _PenaltyView.miniGame,
-                  label: Text('Mini'),
-                ),
-                ButtonSegment(value: _PenaltyView.styles, label: Text('Styles')),
-              ],
-              selected: {selected},
-              onSelectionChanged: (selection) => onChanged(selection.first),
             ),
-          ],
-        ),
+          SegmentedButton<_PenaltyView>(
+            key: const ValueKey('penalty-view-toggle'),
+            showSelectedIcon: false,
+            style: ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return const Color(0xFFEAF2FF);
+                }
+                return Colors.white.withValues(alpha: 0.1);
+              }),
+              foregroundColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.selected)) {
+                  return const Color(0xFF10243D);
+                }
+                return Colors.white;
+              }),
+              side: WidgetStateProperty.all(
+                BorderSide(color: Colors.white.withValues(alpha: 0.22)),
+              ),
+              padding: WidgetStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 12),
+              ),
+            ),
+            segments: const [
+              ButtonSegment(
+                value: _PenaltyView.perspective,
+                label: Text('3D'),
+              ),
+              ButtonSegment(
+                value: _PenaltyView.topDown,
+                label: Text('Top'),
+              ),
+              ButtonSegment(
+                value: _PenaltyView.miniGame,
+                label: Text('Mini'),
+              ),
+              ButtonSegment(value: _PenaltyView.styles, label: Text('Styles')),
+            ],
+            selected: {selected},
+            onSelectionChanged: (selection) => onChanged(selection.first),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
 
 class TopDownPenaltyGameWidget extends StatelessWidget {
   const TopDownPenaltyGameWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const ClipRect(
-      child: GameWidget<TopDownPenaltyGame>.controlled(
-        key: ValueKey('top-down-penalty-game'),
-        gameFactory: TopDownPenaltyGame.new,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const ClipRect(
+    child: GameWidget<TopDownPenaltyGame>.controlled(
+      key: ValueKey('top-down-penalty-game'),
+      gameFactory: TopDownPenaltyGame.new,
+    ),
+  );
 }
 
 enum _TopDownShotState { aiming, flying, goal, saved, missed }
@@ -667,14 +660,12 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       ..style = PaintingStyle.stroke
       ..strokeWidth = math.max(0.8, _screenScale * 0.012);
 
-    Path panel(List<Offset> points) {
-      return Path()
-        ..moveTo(points[0].dx, points[0].dy)
-        ..lineTo(points[1].dx, points[1].dy)
-        ..lineTo(points[2].dx, points[2].dy)
-        ..lineTo(points[3].dx, points[3].dy)
-        ..close();
-    }
+    Path panel(List<Offset> points) => Path()
+      ..moveTo(points[0].dx, points[0].dy)
+      ..lineTo(points[1].dx, points[1].dy)
+      ..lineTo(points[2].dx, points[2].dy)
+      ..lineTo(points[3].dx, points[3].dy)
+      ..close();
 
     final backPanel = panel([
       _toGoalScreen(-_goalHalfWidth, -depth, 0),
@@ -873,7 +864,6 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
         diveSprite,
         foot + Offset(direction * unit * 4.0, -unit * 0.9),
         height: unit * 18.0,
-        anchorX: 0.5,
         flipX: direction > 0,
         rotation: direction * 0.05,
       );
@@ -945,7 +935,6 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
         sprite,
         center + Offset(0, radius),
         height: radius * 2.2,
-        anchorX: 0.5,
       );
       return;
     }
@@ -966,9 +955,7 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _drawPixelRect(canvas, origin, unit, 5, 5, 2, 1, dark);
   }
 
-  Offset _toGoalScreen(double x, double y, double z) {
-    return _toScreen(Vector2(x, y)) - Offset(0, z * _screenScale * 0.82);
-  }
+  Offset _toGoalScreen(double x, double y, double z) => _toScreen(Vector2(x, y)) - Offset(0, z * _screenScale * 0.82);
 
   void _drawGoal3DLine(
     Canvas canvas,
@@ -1220,8 +1207,31 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   static const double _goalHeight = 2.923;
   static const double _ballRadius = 0.32;
   static const double _ballStartZ = -0.95;
-  static const double _strikerBaseZ = -0.25;
-  static const double _photoKeeperVisualScale = 1.45;
+  // Hand-tuned against the actual render (was 0/-1.3, which under-shot how
+  // close/offset the striker needed to be) — the striker's world position
+  // is static for the whole aiming/windup/kick/settle sequence (only the
+  // sprite pose changes), so it must already sit right at the ball, not
+  // several meters back for a run-up that never visually happens.
+  static const double _strikerBaseX = -1.25;
+  static const double _strikerBaseZ = -2;
+  // Ball-launch delay, separate from `_StrikerModel.windupSeconds` (which
+  // still paces the windup SPRITE at the source footage's real speed) —
+  // gating ball movement on the full windup duration (0.667s) read as a
+  // dead pause: the kick's fast swing-through is over well before that, so
+  // the ball sat still noticeably after the foot had already passed
+  // through it. Contact in a fast kick isn't a single frame anyway (the
+  // real footage's leg crosses most of its arc in ~2 captured frames), so
+  // this is tuned by feel, not re-derived from the atlas split.
+  //
+  // Floor here: `_ballLaunchDelay + flightTime` must clear the striker's
+  // full windup+kick+settle length (`_StrikerModel.kickEndSeconds` + 0.3s
+  // settle ≈ 1.2s) for EVERY shot, or `_shotTime` freezes mid-animation
+  // again (the original bug). `flightTime` bottoms out at 0.84s on a
+  // max-power shot (`1.18 - power*0.34`, power capped at 1.0) — 0.4 only
+  // clears that by 0.04s, too tight. 0.5 gives ~0.14s of margin even on the
+  // fastest shot.
+  static const double _ballLaunchDelay = 0.5;
+  static const double _photoKeeperVisualScale = 2;
   static const double _gravity = -9.8;
   static const double _cameraY = 3.85;
   static const double _cameraZ = -10.5;
@@ -1278,6 +1288,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   double _elapsed = 0;
   double _shotTime = 0;
   double _resultTime = 0;
+
+  /// Time since the ball actually left the foot — zero until `_shotTime`
+  /// reaches [_ballLaunchDelay], then tracks it 1:1. Ball physics and the
+  /// keeper's reaction/dive are keyed off THIS, not raw `_shotTime`, so
+  /// they don't fire while the striker is still mid windup.
+  double get _ballFlightElapsed => math.max(0.0, _shotTime - _ballLaunchDelay);
   double _keeperX = 0;
   double _keeperTargetX = 0;
   _KeeperDive _keeperDive = _KeeperDive.mid;
@@ -1303,6 +1319,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// as a fading comet-tail behind it. Cleared at the start of each attempt.
   final List<_Vec3> _trail = [];
   static const int _trailMaxPoints = 90;
+
+  /// Reused every segment of every frame in [_drawTrail] instead of
+  /// allocating a new [Paint] per point (up to [_trailMaxPoints] per frame).
+  final Paint _trailPaint = Paint()..strokeCap = StrokeCap.round;
 
   @override
   Color backgroundColor() => Colors.black;
@@ -1393,13 +1413,20 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     if (_state == _ShotState.flying) {
       _shotTime += dt;
       _keeperX += (_keeperTargetX - _keeperX) * (1 - math.exp(-dt * 4.8));
-      _updateBall(dt);
-      _recordTrailPoint();
-      if (_ball.z >= _goalZ) {
-        _resolveShot();
-      }
-      if (_ball.y < -1 || _ball.z > _goalZ + 8) {
-        _finish(_ShotState.missed, 'MISS!');
+      // Ball stays put at the striker's foot until `_shotTime` reaches the
+      // kick animation's contact instant (`_StrikerModel.windupSeconds`) —
+      // previously it started flying from `_shotTime == 0`, i.e. the exact
+      // moment of the tap/swipe, well before the windup animation had even
+      // brought the foot to the ball.
+      if (_ballFlightElapsed > 0) {
+        _updateBall(dt);
+        _recordTrailPoint();
+        if (_ball.z >= _goalZ) {
+          _resolveShot();
+        }
+        if (_ball.y < -1 || _ball.z > _goalZ + 8) {
+          _finish(_ShotState.missed, 'MISS!');
+        }
       }
       return;
     }
@@ -1555,11 +1582,11 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     // Dynamic hitbox — reach grows from "just standing there" to the dive
     // style's full extension as the *actual* on-screen dive completes,
     // mirroring the delayed reaction clock in `_drawKeeper` (actionTime =
-    // _shotTime - _reactionDelay, same easeOutCubic ramp). Without this, a
-    // fast shot arriving before the delayed dive finishes would still get
-    // saved by the old fixed-size box even though the keeper visibly hasn't
-    // gotten there yet.
-    final actionTime = math.max(0.0, _shotTime - _reactionDelay);
+    // _ballFlightElapsed - _reactionDelay, same easeOutCubic ramp). Without
+    // this, a fast shot arriving before the delayed dive finishes would
+    // still get saved by the old fixed-size box even though the keeper
+    // visibly hasn't gotten there yet.
+    final actionTime = math.max(0.0, _ballFlightElapsed - _reactionDelay);
     final diveProgress = _keeperSide == _KeeperSide.center
         ? 0.0 // never dives — stays at his standing reach the whole shot.
         : _easeOutCubic((actionTime / 0.58).clamp(0.0, 1.0));
@@ -1652,7 +1679,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   _Vec3 _targetFromCanvas(Vector2 point) {
-    final depth = _goalZ - _cameraZ;
+    const depth = _goalZ - _cameraZ;
     final scale = _focalLength / depth;
     final x = ((point.x - _centerX) / scale).clamp(-_goalHalfWidth - 0.8, _goalHalfWidth + 0.8).toDouble();
     final y = (_cameraY - (point.y - _horizonY) / scale).clamp(0.45, _goalHeight + 0.75).toDouble();
@@ -1697,14 +1724,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       final current = _project(_trail[i]);
       if (previous != null && current != null) {
         final age = i / last;
-        final paint = Paint()
+        _trailPaint
           ..color = Colors.white.withValues(alpha: age * age * 0.5)
           ..strokeWidth = math.max(
             1.5,
             _ballRadius * 0.5 * (previous.scale + current.scale) * 0.5,
-          )
-          ..strokeCap = StrokeCap.round;
-        canvas.drawLine(previous.offset, current.offset, paint);
+          );
+        canvas.drawLine(previous.offset, current.offset, _trailPaint);
       }
       previous = current;
     }
@@ -2062,7 +2088,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   void _drawGoal(Canvas canvas) {
     final netColor = Colors.white.withValues(alpha: 0.42);
-    final netBackZ = _goalZ + 1.25;
+    const netBackZ = _goalZ + 1.25;
 
     for (var i = 0; i <= 10; i++) {
       final x = -_goalHalfWidth + i * (_goalHalfWidth * 2 / 10);
@@ -2170,16 +2196,17 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   }
 
   void _drawKeeper(Canvas canvas) {
-    final z = _goalZ - 0.68;
+    const z = _goalZ - 0.68;
     final isReacting = _state != _ShotState.aiming;
     // Hold the idle stance until the ball has covered _reactionDelay of its
-    // flight — `_shotTime` itself stays undelayed (the striker's kick
-    // animation, driven separately by `_shotTime` in `_drawPlayer`, must
-    // still play immediately). Once the result phase starts (state flips to
-    // saved/missed/goal), `_shotTime` has long since passed the delay, so
-    // this has no effect there — the result-phase branch in `_renderSprite`
-    // doesn't gate on `actionTime` anyway.
-    final actionTime = math.max(0.0, _shotTime - _reactionDelay);
+    // OWN flight (`_ballFlightElapsed`, zeroed until the kick's contact
+    // instant) — the striker's kick animation, driven separately by raw
+    // `_shotTime` in `_drawPlayer`, still plays immediately on tap. Once
+    // the result phase starts (state flips to saved/missed/goal),
+    // `_ballFlightElapsed` has long since passed the delay, so this has no
+    // effect there — the result-phase branch in `_renderSprite` doesn't
+    // gate on `actionTime` anyway.
+    final actionTime = math.max(0.0, _ballFlightElapsed - _reactionDelay);
     final direction = isReacting ? (_keeperTargetX - _keeperX).signOrZero : 0.0;
     final progress = isReacting ? _easeOutCubic((actionTime / 0.58).clamp(0, 1)) : 0.0;
     final lift =
@@ -2213,10 +2240,11 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _strikerModel.render(
       this,
       canvas,
-      base: _Vec3(-1.25, 0, _strikerBaseZ),
+      base: _Vec3(_strikerBaseX, 0, _strikerBaseZ),
       state: _state,
       shotTime: _shotTime,
       elapsed: _elapsed,
+      resultTime: _resultTime,
     );
   }
 
@@ -2232,16 +2260,21 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     }
     final stage = _stageRect;
     final alpha = (1 - (_resultTime / 1.65)).clamp(0.0, 1.0).toDouble();
-    canvas.saveLayer(
-      Rect.fromLTWH(0, 0, canvasSize.x, canvasSize.y),
-      Paint()..color = Colors.white.withValues(alpha: alpha),
-    );
-    _resultText.render(
-      canvas,
-      _message,
-      Vector2(stage.center.dx, stage.top + stage.height * 0.22),
-      anchor: Anchor.center,
-    );
+    final position = Vector2(stage.center.dx, stage.top + stage.height * 0.22);
+    // Bound the offscreen compositing layer to the text's own footprint
+    // (`_message` is constant for the whole flash, so this hits `TextPaint`'s
+    // internal cache — no relayout) instead of the full canvas. A
+    // screen-sized `saveLayer` every frame for ~1.65s was allocating/
+    // compositing a full-screen GPU layer just to fade one line of text;
+    // padding covers the text's drop shadow so it isn't clipped.
+    final textSize = _resultText.toTextPainter(_message).size;
+    final bounds = Rect.fromCenter(
+      center: Offset(position.x, position.y),
+      width: textSize.width,
+      height: textSize.height,
+    ).inflate(32);
+    canvas.saveLayer(bounds, Paint()..color = Colors.white.withValues(alpha: alpha));
+    _resultText.render(canvas, _message, position, anchor: Anchor.center);
     canvas.restore();
   }
 
@@ -2462,14 +2495,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   double _fieldHalfWidth(double z) => 5.4 + z.clamp(0, _goalZ + 5).toDouble() * 0.12;
 
-  Rect get _stageRect {
-    return Rect.fromLTWH(
-      0,
-      0,
-      math.max(1.0, canvasSize.x),
-      math.max(1.0, canvasSize.y),
-    );
-  }
+  Rect get _stageRect => Rect.fromLTWH(
+    0,
+    0,
+    math.max(1.0, canvasSize.x),
+    math.max(1.0, canvasSize.y),
+  );
 
   RRect get _stageRRect => RRect.fromRectAndRadius(_stageRect, Radius.circular(_stageRadius));
 
@@ -2585,15 +2616,42 @@ class _StrikerModel {
   // silhouette detail (hanging arm, fingers) still visibly softened under
   // FilterQuality.high bicubic upscaling on high-DPI devices, which read
   // as "the sprite is transparent" rather than "it's blurry".
-  static const Map<_StrikerMotion, (String, int, int)> _atlasSpecs = {
-    _StrikerMotion.idle: ('striker_idle.png', 5, 4),
-    _StrikerMotion.windup: ('striker_windup.png', 4, 2),
-    _StrikerMotion.kick: ('striker_kick.png', 4, 2),
-    // 4x4 (not 7x2) — 7 cols at 640px would be 4480px wide, over the safe
-    // 4096px GPU texture limit. 16 cells for 13 real frames wastes 3, but
-    // stays comfortably inside the limit.
-    _StrikerMotion.settle: ('striker_settle.png', 4, 4),
+  // 4th element is the REAL frame count, which can be less than cols*rows
+  // when the grid pads out to a GPU-safe shape — using the raw cell count
+  // instead lets `_drawAtlasFrame`'s progress mapping land on a blank
+  // padding cell, making the sprite flicker/vanish.
+  //
+  // Re-baked from the "5th iteration 30fps" mocap render (`Kicker ILDE` +
+  // `Kicker shoot`, absolute frames 42-65 and 186-221 of the same
+  // `Transition_003` take) — one continuous, fixed-camera capture, so all
+  // four atlases share scale/anchor without per-motion alignment. Ball
+  // contact identified by eye at frame 206; kick window is 205-212 padded
+  // to 8 cells. idle (24 real) loops cleanly frame-to-frame (0042 ~= 0065).
+  static const Map<_StrikerMotion, (String, int, int, int)> _atlasSpecs = {
+    _StrikerMotion.idle: ('striker_idle.png', 6, 4, 24),
+    _StrikerMotion.windup: ('striker_windup.png', 5, 4, 20),
+    _StrikerMotion.kick: ('striker_kick.png', 4, 2, 7),
+    // 22 real frames: recovery (213-221) + THE SAME take's own embedded
+    // idle-sway cycle (241-253) — not just "return to standing", the shot
+    // was filmed with a sway cycle already baked on after it, in the same
+    // continuous performance as the recovery. The 222-240 gap was never
+    // exported (nothing new there), so 221->241 is a cut between two
+    // near-identical standing poses, not a splice across clips. Frame 253
+    // (this atlas's last real cell) lands close enough to idle's own frame
+    // 0 that handing off to the separately-baked idle loop needs no
+    // cross-fade — see the settle->idle handoff in render() below.
+    _StrikerMotion.settle: ('striker_settle.png', 6, 4, 22),
   };
+
+  // Phase durations for this model's own windup/kick/settle playback, paced
+  // at the source footage's real 30fps speed. `PenaltyGame` launches the
+  // ball on its OWN separate, shorter timer (`_ballLaunchDelay`) rather
+  // than waiting for `windupSeconds` — gating on the full windup read as a
+  // dead pause after the kick's fast swing-through was already done.
+  static const double windupSeconds = 20 / 30;
+  static const double kickSeconds = 7 / 30;
+  static const double kickEndSeconds = windupSeconds + kickSeconds;
+  static const double settleSeconds = 22 / 30;
 
   ui.Image? _ready;
   ui.Image? _windup;
@@ -2602,7 +2660,7 @@ class _StrikerModel {
   Future<void> load() async {
     await Future.wait(
       _atlasSpecs.entries.map((entry) async {
-        final (file, cols, rows) = entry.value;
+        final (file, cols, rows, _) = entry.value;
         final image = await _loadOptionalUiImage(
           'packages/mapness/assets/tifo/sprites/striker_v2/$file',
         );
@@ -2642,47 +2700,115 @@ class _StrikerModel {
     required _ShotState state,
     required double shotTime,
     required double elapsed,
+    required double resultTime,
   }) {
     if (_atlases.isEmpty) {
       _renderLegacy(game, canvas, base: base, state: state, shotTime: shotTime, elapsed: elapsed);
       return;
     }
 
-    final isAiming = state == _ShotState.aiming;
-    final idleShift = math.sin(elapsed * math.pi * 0.9);
+    // Settle (22 real frames: recovery + the take's own embedded idle-sway
+    // cycle, see `_atlasSpecs`) is a plain camera-facing recovery, not a
+    // turnaround — orientation never changes. `shotTime` freezes the
+    // instant the ball resolves; `resultTime` (0 at that same instant)
+    // picks up the clock from there with no jump, so this always plays the
+    // full recovery once instead of freezing mid-motion.
+    const settleForwardSeconds = settleSeconds;
+    final settleElapsed = (shotTime - kickEndSeconds) + resultTime;
+
+    // Every atlas is a separately-shot clip, so in principle a cut between
+    // motions risks a pose mismatch. Tried alpha cross-fading the two seams
+    // that land while the figure is otherwise at rest (idle->windup at the
+    // moment of the tap, settle->idle once settle's done) — made it WORSE:
+    // idle and windup are close but not pixel-identical poses, and alpha
+    // blending two different, non-fully-overlapping silhouettes doesn't
+    // produce a smooth in-between pose, it produces a literal double
+    // exposure — wherever only one of the two images has coverage, that
+    // region renders at whatever opacity that layer is at, i.e. genuinely
+    // see-through, not blurred. That read as a translucency glitch/flicker,
+    // worse than the pop it was meant to hide. Both seams are straight cuts
+    // now — settle->idle because its baked-in tail already ends on an
+    // idle-matching pose (see `_atlasSpecs`), idle->windup because the two
+    // starting poses are already close enough that a direct cut doesn't
+    // pop either.
+
+    // Once settle's done, hand off to idle's own animated sway
+    // instead of holding on settle's last frame — a static freeze while
+    // waiting for `_resetRound` to flip `state` back to aiming read as the
+    // striker just standing there doing nothing after the kick.
+    // Also requires the ball to have actually resolved (state past `flying`,
+    // not just past the 0.3s settle clock) — `settleElapsed` keeps counting
+    // the whole time the ball is airborne, and a shot can fly for up to
+    // ~1.5s (`_ballLaunchDelay` + flightTime) versus the striker's own
+    // ~1.2s windup+kick+settle. Without this, he'd hand off to idle's
+    // relaxed aiming-sway well before the ball actually lands — reading as
+    // "he's already done, why is the ball still going" (the animation
+    // looking like it quit early), instead of holding his post-kick stance
+    // and watching until the result is known.
+    final justSettled =
+        state != _ShotState.aiming && state != _ShotState.flying && settleElapsed >= settleForwardSeconds;
+    final showIdle = state == _ShotState.aiming || justSettled;
+
+    // Whether the idle-only sway offset/shadow size are active — both
+    // seams are now straight texture cuts (see above), so this can be a
+    // plain bool instead of a faded ramp.
+    final idleWeight = showIdle ? 1.0 : 0.0;
+
+    final idleShift = math.sin(elapsed * math.pi * 0.9) * idleWeight;
     final plantedBase = _Vec3(
-      base.x + (isAiming ? idleShift * 0.035 : 0),
+      base.x + idleShift * 0.035,
       base.y,
       base.z,
     );
     game._drawShadow(
       canvas,
-      _Vec3(plantedBase.x - 0.05, 0, plantedBase.z + 0.1),
-      isAiming ? 0.86 : 0.96,
-      isAiming ? 0.22 : 0.27,
+      _Vec3(plantedBase.x - 0.05, 0, plantedBase.z + 1.25),
+      0.96 - 0.1 * idleWeight,
+      0.27 - 0.05 * idleWeight,
     );
 
-    // Real walk-in-place loop while aiming, instead of one static pose
-    // with a fake breathing skew.
-    const idleCycleSeconds = 1.1;
-    if (isAiming) {
-      final cycle = (elapsed % idleCycleSeconds) / idleCycleSeconds;
-      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.idle, progress: cycle, base: plantedBase);
+    // Real subtle standing-sway loop while idling, instead of one static
+    // pose with a fake breathing skew. Straight restart at frame 0 (not
+    // ping-ponged) — this footage's first and last frames land on almost
+    // the same pose (0042 ~= 0065), so a hard restart doesn't pop.
+    const idleCycleSeconds = 24 / 30;
+    double idlePhaseAt(double t) => (t % idleCycleSeconds) / idleCycleSeconds;
+
+    if (showIdle) {
+      // Straight cut, no cross-fade — whether from `aiming` (idle was
+      // already playing) or from `justSettled` (settle's last baked frame
+      // already matches idle's own first frame), there's no pose jump to
+      // hide here.
+      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.idle, progress: idlePhaseAt(elapsed), base: plantedBase);
       return;
     }
 
-    if (shotTime < 0.1) {
-      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.windup, progress: shotTime / 0.1, base: plantedBase);
+    if (shotTime < windupSeconds) {
+      final progress = shotTime / windupSeconds;
+      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.windup, progress: progress, base: plantedBase);
       return;
     }
 
-    if (shotTime < 0.24) {
-      _drawAtlasFrame(game, canvas, motion: _StrikerMotion.kick, progress: (shotTime - 0.1) / 0.14, base: plantedBase);
+    if (shotTime < kickEndSeconds) {
+      _drawAtlasFrame(
+        game,
+        canvas,
+        motion: _StrikerMotion.kick,
+        progress: (shotTime - windupSeconds) / kickSeconds,
+        base: plantedBase,
+      );
       return;
     }
 
-    final settle = _easeOutCubic(((shotTime - 0.24) / 0.7).clamp(0, 1));
-    _drawAtlasFrame(game, canvas, motion: _StrikerMotion.settle, progress: settle, base: plantedBase);
+    // Linear, NOT eased — settle is real 30fps mocap footage (9 frames),
+    // so the frame timing IS the real motion already. `_easeOutCubic` here
+    // front-loaded progress so hard that the discrete frame index (rounded)
+    // hit the last real frame around 60% into the window and then just
+    // held there — the leg visibly stops moving, then a beat later the
+    // idle crossfade kicks in, reading as "freeze, then a jump-cut" instead
+    // of one continuous motion.
+    final progress = (settleElapsed / settleForwardSeconds).clamp(0.0, 1.0);
+    _drawAtlasFrame(game, canvas, motion: _StrikerMotion.settle, progress: progress, base: plantedBase);
   }
 
   /// Foot-anchored draw of one atlas cell — `progress` (0..1) picks the
@@ -2694,7 +2820,11 @@ class _StrikerModel {
     required _StrikerMotion motion,
     required double progress,
     required _Vec3 base,
+    double opacity = 1,
   }) {
+    if (opacity <= 0) {
+      return;
+    }
     final atlas = _atlases[motion];
     if (atlas == null) {
       return;
@@ -2703,7 +2833,10 @@ class _StrikerModel {
     if (projected == null) {
       return;
     }
-    final total = atlas.cols * atlas.rows;
+    // Real frame count, NOT atlas.cols * atlas.rows — some grids (settle)
+    // pad out with blank cells to stay inside the GPU texture limit; see
+    // _atlasSpecs.
+    final total = _atlasSpecs[motion]!.$4;
     final frame = (progress.clamp(0.0, 1.0) * (total - 1)).round();
     final sourceRect = atlas.cellRect(frame);
     // Cells are baked square with generous padding around the figure — see
@@ -2718,7 +2851,7 @@ class _StrikerModel {
       height,
       height,
     );
-    canvas.drawImageRect(atlas.image, sourceRect, dst, _spritePaint());
+    canvas.drawImageRect(atlas.image, sourceRect, dst, _spritePaint(opacity));
   }
 
   /// Legacy single-pose-plus-procedural-skew rig — only reached if none of
@@ -2888,6 +3021,13 @@ class _StrikerModel {
 }
 
 class _GoalkeeperModel {
+  // Measured directly off the re-baked `keeper_idle.png`: the character's
+  // feet sit this fraction of a cell's height short of the cell's bottom
+  // edge (the shared idle/ready/dive crop box is sized for the widest
+  // pose — a flat-out dive — so standing poses don't fill it edge-to-edge
+  // the way the dive atlases do). See `_drawIdleSprite`'s `groundGap`.
+  static const double _standingGroundGap = 0.15625;
+
   ui.Image? _idleSprite;
   ui.Image? _diveMidLeftSprite;
   ui.Image? _diveLowLeftSprite;
@@ -2910,20 +3050,47 @@ class _GoalkeeperModel {
   final Map<_KeeperMotion, _KeeperAtlas> _atlases = {};
 
   // (file name in goalkeeper_v2/, grid cols, grid rows). Grid shape just
-  // packs that motion's native frame count (see bake notes) into a compact
-  // roughly-square grid — frame order is row-major through the grid,
-  // independent of shape.
-  static const Map<_KeeperMotion, (String, int, int)> _atlasSpecs = {
-    _KeeperMotion.idle: ('keeper_idle.png', 6, 4),
-    _KeeperMotion.ready: ('keeper_ready.png', 4, 2),
-    _KeeperMotion.diveLowLeft: ('keeper_diveLowLeft.png', 6, 3),
-    _KeeperMotion.diveLowRight: ('keeper_diveLowRight.png', 6, 4),
-    _KeeperMotion.diveLowCenter: ('keeper_diveLowCenter.png', 6, 4),
-    _KeeperMotion.diveUpCenter: ('keeper_diveUpCenter.png', 6, 4),
-    _KeeperMotion.diveUpRight: ('keeper_diveUpRight.png', 6, 4),
-    _KeeperMotion.groundLeft: ('keeper_groundLeft.png', 6, 4),
-    _KeeperMotion.groundRight: ('keeper_groundRight.png', 6, 4),
-    _KeeperMotion.celebrate: ('keeper_celebrate.png', 6, 4),
+  // packs that motion's native frame count into a compact grid — frame
+  // order is row-major through the grid, independent of shape.
+  // 4th element is the REAL frame count — normally cols*rows, but grids are
+  // sized to fit exactly wherever possible (see below) so this is usually
+  // equal to cols*rows now.
+  //
+  // Re-baked from the "5th iteration 30fps" mocap render (GSP_8638tris
+  // clips, real 30fps, same set the striker used): `GSP_crouch_moving_right`
+  // (idle, whole 61-frame loop — frame 0 ~= frame 60), `GSP_save_lower_right`
+  // frames 0-59 (diveLowRight: plant+launch+land) and 60-120 (groundRight:
+  // flat-on-ground -> recover -> stand), `GSP_save_lower_center` (whole
+  // 73-frame clip — self-contained reach+recover, same trick as the
+  // striker's settle), `GSP_save_upper_center` (whole 71-frame clip, same
+  // reasoning), `GSP_save_upper_right` frames 0-49 (diveUpRight: launch+land
+  // only — shares `groundRight` for recovery instead of baking a second
+  // near-identical one). `diveLowLeft`/`groundLeft` are horizontally
+  // mirrored bakes of the `...Right` atlases (no dedicated left-side render
+  // existed in this batch); `diveUpLeft` still mirrors `diveUpRight` at
+  // DRAW time (see `_diveMotionFor`/`needsFlip`), unchanged.
+  //
+  // All seven re-baked atlases share ONE crop box (computed as the union
+  // bounding box across every source frame used, +5% padding) instead of
+  // each being cropped to its own tightest fit — the pose range here spans
+  // standing idle to a fully horizontal flat-out dive, and fitting each
+  // atlas to its own bounds would make the character visibly change size
+  // between motions. `celebrate` is untouched (no new source for it in
+  // this batch — still the old AI-generated art) and `ready` has no
+  // dedicated capture either, so it reuses a sparse sample of the same
+  // crouch clip as idle (visually near-identical, which is fine for a
+  // sub-quarter-second transition).
+  static const Map<_KeeperMotion, (String, int, int, int)> _atlasSpecs = {
+    _KeeperMotion.idle: ('keeper_idle.png', 8, 8, 61),
+    _KeeperMotion.ready: ('keeper_ready.png', 4, 2, 8),
+    _KeeperMotion.diveLowLeft: ('keeper_diveLowLeft.png', 6, 10, 60),
+    _KeeperMotion.diveLowRight: ('keeper_diveLowRight.png', 6, 10, 60),
+    _KeeperMotion.diveLowCenter: ('keeper_diveLowCenter.png', 8, 10, 73),
+    _KeeperMotion.diveUpCenter: ('keeper_diveUpCenter.png', 8, 9, 71),
+    _KeeperMotion.diveUpRight: ('keeper_diveUpRight.png', 5, 10, 50),
+    _KeeperMotion.groundLeft: ('keeper_groundLeft.png', 8, 8, 61),
+    _KeeperMotion.groundRight: ('keeper_groundRight.png', 8, 8, 61),
+    _KeeperMotion.celebrate: ('keeper_celebrate.png', 6, 4, 24),
   };
 
   /// Dive motion for a given height/side combo. Upper-left has no native
@@ -2969,17 +3136,25 @@ class _GoalkeeperModel {
       // Preferred source — one small atlas per motion (see _atlasSpecs).
       await Future.wait(
         _atlasSpecs.entries.map((entry) async {
-          final (file, cols, rows) = entry.value;
+          final (file, cols, rows, _) = entry.value;
+
           final image = await _loadOptionalUiImage(
             'packages/mapness/assets/tifo/sprites/goalkeeper_v2/$file',
           );
+
           if (image != null) {
+            final reverseColumns = switch (entry.key) {
+              _KeeperMotion.diveLowLeft || _KeeperMotion.groundLeft => true,
+              _ => false,
+            };
+
             _atlases[entry.key] = _KeeperAtlas(
               image: image,
               cellWidth: 256,
               cellHeight: 256,
               cols: cols,
               rows: rows,
+              reverseColumns: reverseColumns,
             );
           }
         }),
@@ -3162,7 +3337,31 @@ class _GoalkeeperModel {
     // is purely a mirror-the-image flag — it must NOT affect positioning
     // (world-space left/right still comes from the real `direction`).
     final needsFlip = diveStyle == _KeeperDive.high && diveSide == _KeeperSide.left;
-    final diveProgress = (actionTime / 0.54).clamp(0.0, 1.0).toDouble();
+    // Was a flat 0.54s (ready+launch). At that speed a shot that resolved
+    // quickly (most of them — see below) squeezed the whole ~2s of real
+    // dive footage into ~0.39s of screen time, a ~5x speedup: the rotation
+    // through the air (a real physical body turning) flickered through so
+    // many distinct poses per real second that it read as the keeper's
+    // depth "pulsing" nearer/farther, on top of just looking like a jump-
+    // cut rather than a dive. 1.0s roughly halves that compression.
+    //
+    // `actionTime` (passed in) freezes the instant the ball resolves —
+    // it's derived from `_ballFlightElapsed`, which stops advancing once
+    // `_state` leaves `flying`, same mechanism as the striker's
+    // `_shotTime`. A fast shot resolves at `actionTime` ~= 0.5-0.6s
+    // regardless of power (`flightTime * 0.6`, see `_shootAtTarget`) —
+    // well short of the new 1.0s window — so without `resultTime` folded
+    // in here too, raising the window would freeze the launch HALF
+    // THROUGH and cut straight to celebrate/ground (branch 1 below),
+    // making the keeper look like he teleported through the rest of his
+    // dive. Adding `resultTime` (0 at that same freeze instant) picks the
+    // clock back up with no jump, exactly like the striker's
+    // `settleElapsed` — the launch always finishes playing before we hand
+    // off to the result motion (see `diveFullyPlayed`/`resultOverhang`).
+    const diveWindowSeconds = 1.0;
+    final diveElapsed = actionTime + resultTime;
+    final diveProgress = (diveElapsed / diveWindowSeconds).clamp(0.0, 1.0).toDouble();
+    final diveFullyPlayed = diveProgress >= 1.0;
 
     // A shot placed dead-center never sends the keeper anywhere — he plants
     // and stays put. No prep lean, no dive, no fall to recover from.
@@ -3170,7 +3369,10 @@ class _GoalkeeperModel {
 
     // 1. Result phase — once `_finish` has flipped `shotState` to a terminal
     //    outcome, play the outcome motion: celebration for a save, the
-    //    slide-and-rise ground sequence otherwise.
+    //    slide-and-rise ground sequence otherwise. Gated on `diveFullyPlayed`
+    //    (always true for center, which never launches a dive) so a fast
+    //    shot can't cut the launch short — see the comment on
+    //    `diveWindowSeconds` above.
     final groundMotion = diveSide == _KeeperSide.right ? _KeeperMotion.groundRight : _KeeperMotion.groundLeft;
     final resultMotion = switch (shotState) {
       _ShotState.saved => _KeeperMotion.celebrate,
@@ -3181,10 +3383,15 @@ class _GoalkeeperModel {
       _ShotState.missed || _ShotState.goal => isCenter ? null : groundMotion,
       _ => null,
     };
-    if (resultMotion != null && reacting) {
+    if (resultMotion != null && reacting && (isCenter || diveFullyPlayed)) {
+      // How much of `resultTime` went into finishing the launch (0 if it
+      // had already fully played by the time the ball resolved) — the
+      // result motion's OWN 0.75s reaction clock starts only after that,
+      // so it doesn't visually fast-forward to catch up.
+      final resultOverhang = isCenter ? 0.0 : math.max(0.0, diveWindowSeconds - actionTime);
       // 0.75s for the reaction; the result HUD lives ~1.65s so the keeper
       // holds the final frame for the remainder.
-      final resultProgress = (resultTime / 0.75).clamp(0.0, 1.0).toDouble();
+      final resultProgress = ((resultTime - resultOverhang) / 0.75).clamp(0.0, 1.0).toDouble();
       // `celebrate` (GSP_punting_the_ball) is entirely standing poses — it
       // has no lying/kneeling frames. A low/mid save ends its dive lying on
       // the ground (peak cell of diveLowLeft/Right/Center), so cutting
@@ -3210,6 +3417,12 @@ class _GoalkeeperModel {
       // _drawDivingSprite's center-anchor here (as before) put the world
       // anchor at the character's hip instead of their feet, sinking the
       // sprite visibly below the pitch.
+      //
+      // groundLeft/Right share idle's re-baked crop (see `_standingGroundGap`)
+      // so they need the same compensation, or standing back up reads as
+      // levitating just above the shadow. `celebrate` is untouched old art,
+      // baked with feet already at the cell's bottom edge — no gap there.
+      final isGroundMotion = motion == _KeeperMotion.groundLeft || motion == _KeeperMotion.groundRight;
       _drawIdleSprite(
         game,
         canvas,
@@ -3218,6 +3431,7 @@ class _GoalkeeperModel {
         image: pose.$1,
         sourceRect: pose.$2,
         visualScale: visualScale,
+        groundGap: isGroundMotion ? _standingGroundGap : 0,
       );
       return;
     }
@@ -3237,6 +3451,7 @@ class _GoalkeeperModel {
         visualScale: visualScale,
         lean: direction * prep,
         crouch: prep,
+        groundGap: _standingGroundGap,
       );
       return;
     }
@@ -3251,8 +3466,18 @@ class _GoalkeeperModel {
         _KeeperDive.mid => diveMidLeftSprite,
         _KeeperDive.high => diveHighLeftSprite ?? diveMidLeftSprite,
       };
-      final launch = _easeOutCubic((diveProgress - 0.28) / 0.72);
-      final pose = _motionPose(motion, launch, fallback: fallbackSprite);
+      // `launch` (eased) drives the physical lunge — legitimately fast-out/
+      // slow-in, like a real dive. But using that SAME eased value to pick
+      // which of the up to 24 real photographed frames to show front-loads
+      // the pose changes: most of the rotation from standing to horizontal
+      // blows through in the first sliver of the window (reading as "shrinks
+      // and spins"), then the last frame holds for the rest of it. Frame
+      // selection instead advances at a constant rate across the window —
+      // same total dive duration/hit-detection timing, just an even flip
+      // through the photographed poses instead of a front-loaded one.
+      final diveT = ((diveProgress - 0.28) / 0.72).clamp(0.0, 1.0);
+      final launch = _easeOutCubic(diveT);
+      final pose = _motionPose(motion, diveT, fallback: fallbackSprite);
       _drawDivingSprite(
         game,
         canvas,
@@ -3269,10 +3494,16 @@ class _GoalkeeperModel {
       return;
     }
 
-    // 4. Idle cycle — crouch-sway loop while waiting for the shot.
+    // 4. Idle cycle — crouch-sway loop while waiting for the shot, paced at
+    // the source footage's real 30fps speed (61 real frames / ~2.03s per
+    // full loop) instead of the previous arbitrary "7 steps/sec", which
+    // didn't correspond to any real timing and (via `cols*rows`, 64) could
+    // also land on a padded/duplicate cell instead of a real frame.
     final idleAtlas = _atlases[_KeeperMotion.idle];
-    final cycleLen = idleAtlas != null ? idleAtlas.cols * idleAtlas.rows : (_readySheet?.frames ?? 0);
-    final idleCycle = cycleLen > 1 ? ((game._elapsed * 7).floor() % cycleLen) / (cycleLen - 1) : null;
+    final idleRealFrames = idleAtlas != null ? _atlasSpecs[_KeeperMotion.idle]!.$4 : (_readySheet?.frames ?? 0);
+    const idleFps = 30.0;
+    final idleCycleSeconds = idleRealFrames / idleFps;
+    final idleCycle = idleCycleSeconds > 0 ? (game._elapsed % idleCycleSeconds) / idleCycleSeconds : null;
     if (idleCycle != null) {
       final pose = _motionPose(_KeeperMotion.idle, idleCycle, fallback: idleSprite);
       _drawIdleSprite(
@@ -3283,6 +3514,7 @@ class _GoalkeeperModel {
         image: pose.$1,
         sourceRect: pose.$2,
         visualScale: visualScale,
+        groundGap: _standingGroundGap,
       );
     } else {
       _drawIdleSprite(
@@ -3306,8 +3538,15 @@ class _GoalkeeperModel {
   }) {
     final atlas = _atlases[motion];
     if (atlas != null) {
-      final total = atlas.cols * atlas.rows;
-      final idx = (progress.clamp(0.0, 1.0) * (total - 1)).round();
+      // Real frame count, NOT atlas.cols * atlas.rows — see _atlasSpecs.
+      final total = _atlasSpecs[motion]!.$4;
+      final idx = (progress.clamp(0.0, 1.0) * (total - 1)).floor();
+      // if (motion == _KeeperMotion.diveLowLeft) {
+      //   debugPrint(
+      //     'progress=${progress.toStringAsFixed(3)} '
+      //     'idx=$idx total=$total',
+      //   );
+      // }
       return (atlas.image, atlas.cellRect(idx));
     }
     final sheet = switch (motion) {
@@ -3343,6 +3582,17 @@ class _GoalkeeperModel {
     double visualScale = 1,
     double lean = 0,
     double crouch = 0,
+    // Fraction of the drawn height that is transparent padding BELOW the
+    // character's feet within the source cell — 0 assumes feet sit exactly
+    // on the cell's bottom edge (true for the old hand-cropped sheets).
+    // The re-baked idle/ready atlas shares one crop box with the dive
+    // atlases (needed so scale stays consistent between standing and a
+    // flat-out horizontal dive — see `_atlasSpecs`), and idle's own feet
+    // land well short of that shared crop's bottom edge (~15.6% of the
+    // cell). Anchoring the cell's bottom edge to the ground point like
+    // before then floats the actual feet that same fraction above the
+    // ground/shadow. This shifts the draw down to compensate.
+    double groundGap = 0,
   }) {
     final foot = game._project(_Vec3(base.x + lean * 0.04, 0, base.z));
     if (foot == null) {
@@ -3363,7 +3613,8 @@ class _GoalkeeperModel {
     );
     final source = sourceRect ?? Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
     final width = height * source.width / source.height * (1 - breath * 0.006 + crouch * 0.05);
-    final bottom = foot.offset + Offset(weightShift * 1.8 + lean * foot.scale * 0.035, height * 0.015);
+    final bottom =
+        foot.offset + Offset(weightShift * 1.8 + lean * foot.scale * 0.035, height * 0.015 + height * groundGap);
     final dst = Rect.fromLTWH(
       bottom.dx - width / 2,
       bottom.dy - height,
@@ -3386,31 +3637,35 @@ class _GoalkeeperModel {
     required double lift,
     required double progress,
     required ui.Image image,
+    required _KeeperDive diveStyle,
     Rect? sourceRect,
     double visualScale = 1,
-    required _KeeperDive diveStyle,
     bool flip = false,
   }) {
     final launch = progress.clamp(0.0, 1.0).toDouble();
     final baseHeight = switch (diveStyle) {
-      _KeeperDive.low => 0.58,
+      _KeeperDive.low => 1.36,
       _KeeperDive.mid => 0.92,
       _KeeperDive.high => 1.36,
     };
     final liftBoost = switch (diveStyle) {
-      _KeeperDive.low => 0.08,
+      _KeeperDive.low => 0.18,
       _KeeperDive.mid => 0.18,
       _KeeperDive.high => 0.34,
     };
-    // widthBase re-tuned for the 8x3 atlas (cells 256x256): the artist's
-    // dive figures fill their square cells edge-to-edge (no whitespace
-    // padding like the old atlas had), so the same rendered width now
-    // draws a ~1.5x larger keeper. Compensate by shrinking widthBase and
-    // the per-launch growth accordingly.
+    // Calibrated against `_drawIdleSprite`'s standing-height factor (2.75,
+    // knocked down ~5.5% by the crouch term at prep's end — net ~2.6) so
+    // the keeper doesn't visibly shrink at the exact moment ready hands off
+    // to the dive launch. The previous values (2.15/1.85/1.95) assumed the
+    // dive atlas's figures filled their cells edge-to-edge with no
+    // whitespace — true for the old AI-generated 8x3 atlas, but the
+    // re-baked one shares idle's crop box (padded for the widest pose, a
+    // flat-out dive) and has similar headroom, so that assumption no
+    // longer holds.
     final widthBase = switch (diveStyle) {
-      _KeeperDive.low => 2.15,
-      _KeeperDive.mid => 1.85,
-      _KeeperDive.high => 1.95,
+      _KeeperDive.low => 2.25,
+      _KeeperDive.mid => 2.25,
+      _KeeperDive.high => 2.35,
     };
     final projected = game._project(
       _Vec3(
@@ -4198,6 +4453,7 @@ class _KeeperAtlas {
     required this.cellHeight,
     required this.cols,
     required this.rows,
+    this.reverseColumns = false,
   });
 
   final ui.Image image;
@@ -4205,11 +4461,15 @@ class _KeeperAtlas {
   final int cellHeight;
   final int cols;
   final int rows;
+  final bool reverseColumns;
 
   Rect cellRect(int index) {
     final clamped = index.clamp(0, cols * rows - 1);
-    final col = clamped % cols;
+
     final row = clamped ~/ cols;
+
+    final col = reverseColumns ? cols - 1 - (clamped % cols) : clamped % cols;
+
     return Rect.fromLTWH(
       (col * cellWidth).toDouble(),
       (row * cellHeight).toDouble(),
@@ -4439,49 +4699,40 @@ class _MiniGameHud extends StatelessWidget {
   final _MiniChrome chrome;
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _MiniGameBadge(
-          icon: Icons.emoji_events,
-          label: 'Score',
-          iconColor: chrome.scoreIconColor,
-          background: chrome.scoreBadgeBg,
+  Widget build(BuildContext context) => Row(
+    children: [
+      _MiniGameBadge(
+        icon: Icons.emoji_events,
+        label: 'Score',
+        iconColor: chrome.scoreIconColor,
+        background: chrome.scoreBadgeBg,
+        textColor: chrome.badgeTextColor,
+      ),
+      const Spacer(),
+      ValueListenableBuilder<int>(
+        valueListenable: game.scoreNotifier,
+        builder: (_, score, _) => ValueListenableBuilder<int>(
+          valueListenable: game.savesNotifier,
+          builder: (_, saves, _) => _MiniGameScoreBoard(
+            left: score,
+            right: saves,
+            chrome: chrome,
+          ),
+        ),
+      ),
+      const Spacer(),
+      ValueListenableBuilder<int>(
+        valueListenable: game.attemptsNotifier,
+        builder: (_, attempts, _) => _MiniGameBadge(
+          icon: Icons.monetization_on,
+          label: 'Attempt $attempts',
+          iconColor: chrome.attemptIconColor,
+          background: chrome.attemptBadgeBg,
           textColor: chrome.badgeTextColor,
         ),
-        const Spacer(),
-        ValueListenableBuilder<int>(
-          valueListenable: game.scoreNotifier,
-          builder: (_, score, _) {
-            return ValueListenableBuilder<int>(
-              valueListenable: game.savesNotifier,
-              builder: (_, saves, _) {
-                return _MiniGameScoreBoard(
-                  left: score,
-                  right: saves,
-                  chrome: chrome,
-                );
-              },
-            );
-          },
-        ),
-        const Spacer(),
-        ValueListenableBuilder<int>(
-          valueListenable: game.attemptsNotifier,
-          builder: (_, attempts, _) {
-            return _MiniGameBadge(
-              icon: Icons.monetization_on,
-              label: 'Attempt $attempts',
-              iconColor: chrome.attemptIconColor,
-              background: chrome.attemptBadgeBg,
-              textColor: chrome.badgeTextColor,
-            );
-          },
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 class _MiniGameBadge extends StatelessWidget {
@@ -4500,31 +4751,29 @@ class _MiniGameBadge extends StatelessWidget {
   final Color textColor;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: textColor.withValues(alpha: 0.18)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: iconColor, size: 16),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(14),
+      border: Border.all(color: textColor.withValues(alpha: 0.18)),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: iconColor, size: 16),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: TextStyle(
+            color: textColor,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 class _MiniGameScoreBoard extends StatelessWidget {
@@ -4539,64 +4788,62 @@ class _MiniGameScoreBoard extends StatelessWidget {
   final _MiniChrome chrome;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        color: chrome.scoreboardBg,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: chrome.scoreboardText.withValues(alpha: 0.18),
-        ),
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+    decoration: BoxDecoration(
+      color: chrome.scoreboardBg,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+        color: chrome.scoreboardText.withValues(alpha: 0.18),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '$left',
-                style: TextStyle(
-                  color: chrome.scoreboardText,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '$left',
+              style: TextStyle(
+                color: chrome.scoreboardText,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
               ),
-              const SizedBox(width: 10),
-              Text(
-                chrome.scoreLabel,
-                style: TextStyle(
-                  color: chrome.scoreSeparator,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.2,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Text(
-                '$right',
-                style: TextStyle(
-                  color: chrome.scoreboardText,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 3),
-            height: 2,
-            width: 56,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: chrome.scoreboardAccent),
-              borderRadius: BorderRadius.circular(2),
             ),
+            const SizedBox(width: 10),
+            Text(
+              chrome.scoreLabel,
+              style: TextStyle(
+                color: chrome.scoreSeparator,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              '$right',
+              style: TextStyle(
+                color: chrome.scoreboardText,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 3),
+          height: 2,
+          width: 56,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: chrome.scoreboardAccent),
+            borderRadius: BorderRadius.circular(2),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -4885,39 +5132,37 @@ class _PlayableStyleScreen extends StatelessWidget {
   final MiniGameStyle style;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(child: MiniFootballGameWidget(style: style)),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Material(
-                  color: Colors.black.withValues(alpha: 0.32),
-                  shape: const CircleBorder(),
-                  child: InkWell(
-                    customBorder: const CircleBorder(),
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 22,
-                      ),
+  Widget build(BuildContext context) => Scaffold(
+    body: Stack(
+      children: [
+        Positioned.fill(child: MiniFootballGameWidget(style: style)),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                color: Colors.black.withValues(alpha: 0.32),
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => Navigator.of(context).pop(),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 22,
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }
 
 enum _MiniShotState { aiming, flying, goal, saved, missed }
@@ -5720,12 +5965,10 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     // Насколько задняя стенка «уходит вглубь» к точке схода.
     const depth = 0.42;
 
-    Offset toBack(Offset front) {
-      return Offset(
-        front.dx + (vpX - front.dx) * depth,
-        front.dy + (vpY - front.dy) * depth,
-      );
-    }
+    Offset toBack(Offset front) => Offset(
+      front.dx + (vpX - front.dx) * depth,
+      front.dy + (vpY - front.dy) * depth,
+    );
 
     // Углы передней рамки.
     final ftl = Offset(goalLeft, goalTop);
@@ -5951,8 +6194,8 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
 
     // Тонкая ненавязчивая сетка из точек.
     final dot = Paint()..color = const Color(0xFF59489E).withValues(alpha: 0.15);
-    final cols = 9;
-    final rows = 6;
+    const cols = 9;
+    const rows = 6;
     for (var i = 1; i < cols; i++) {
       for (var j = 1; j < rows; j++) {
         final x = goalLeft + (goalRight - goalLeft) * i / cols;
@@ -6070,8 +6313,8 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
 
     // «Газон» — пиксельная сетка из чередующихся зелёных оттенков.
     final groundY = h * 0.6;
-    final groundDark = const Color(0xFF1F6B36);
-    final groundLight = const Color(0xFF2E8F4A);
+    const groundDark = Color(0xFF1F6B36);
+    const groundLight = Color(0xFF2E8F4A);
     canvas.drawRect(
       Rect.fromLTWH(0, groundY, w, h - groundY),
       Paint()..color = groundDark,
@@ -6186,8 +6429,8 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     );
 
     // Дальние горы — низкополигональный силуэт.
-    final mountainFar = const Color(0xFF4E6A8E);
-    final mountainNear = const Color(0xFF3D567A);
+    const mountainFar = Color(0xFF4E6A8E);
+    const mountainNear = Color(0xFF3D567A);
     final mountainPath = Path()..moveTo(0, h * 0.50);
     final peaks = [
       Offset(w * 0.10, h * 0.42),
@@ -6230,9 +6473,9 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     final groundY = h * 0.62;
     final tileW = w / 6;
     final tileH = (h - groundY) / 4;
-    final greenA = const Color(0xFF5BAE5C);
-    final greenB = const Color(0xFF4A9C4B);
-    final greenC = const Color(0xFF6BBE6C);
+    const greenA = Color(0xFF5BAE5C);
+    const greenB = Color(0xFF4A9C4B);
+    const greenC = Color(0xFF6BBE6C);
     for (var iy = 0; iy < 4; iy++) {
       for (var ix = 0; ix < 6; ix++) {
         final x0 = ix * tileW;
@@ -6322,8 +6565,8 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
     );
 
     // Треугольные «грани» рамки — фасет даёт low-poly look.
-    final frameColor = const Color(0xFFFFD56B);
-    final frameShade = const Color(0xFFCD9B30);
+    const frameColor = Color(0xFFFFD56B);
+    const frameShade = Color(0xFFCD9B30);
     final frameThickness = (math.min(w, h) * 0.018).clamp(4.0, 12.0).toDouble();
     void drawFaceted(Offset a, Offset b) {
       final dir = b - a;
@@ -6605,10 +6848,10 @@ class MiniFootballGame extends FlameGame with DragCallbacks {
       height: keeperHeight,
     );
     final paint = Paint()
-      ..shader = LinearGradient(
+      ..shader = const LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [const Color(0xFFFF6BD6), const Color(0xFF6B5BFF)],
+        colors: [Color(0xFFFF6BD6), Color(0xFF6B5BFF)],
       ).createShader(body);
     final glow = Paint()
       ..color = const Color(0xFFFF6BD6).withValues(alpha: 0.5)
