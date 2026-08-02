@@ -90,7 +90,8 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     });
     startControlsDisapearTimer();
     _listenNavigationEvents();
-    unawaited(_startLiveUpdates());
+    // Localizations are only readable once the first frame is scheduled.
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_startLiveUpdates()));
 
     WakelockPlus.enable();
   }

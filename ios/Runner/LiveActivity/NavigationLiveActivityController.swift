@@ -161,7 +161,7 @@ final class NavigationLiveActivityController {
     private func handleStateChanged(_ state: String) {
         navigationState = state
         switch state {
-        case "navigation":
+        case "navigation", "routeSearch":
             startActivityIfPossible()
         case "finished":
             finishWithArrival()
@@ -172,7 +172,6 @@ final class NavigationLiveActivityController {
             message = "none"
             endActivity(dismissalPolicy: .immediate)
         default:
-            // "routeSearch" (e.g. rebuilding after going off route) keeps the activity as is.
             break
         }
     }
@@ -219,6 +218,8 @@ final class NavigationLiveActivityController {
             speedLimit: userInfo?["speedLimit"] as? Int,
             isSpeeding: userInfo?["exceeding"] as? Bool ?? false
         )
+        // Free roam has no dashboard/maneuver ticks — speed is what starts it.
+        startActivityIfPossible()
         updateActivityIfNeeded()
     }
 
@@ -242,7 +243,7 @@ final class NavigationLiveActivityController {
         guard activity == nil,
               let metadata = metadata,
               metadata.enabled,
-              navigationState == "navigation",
+              isLiveState(for: metadata),
               ActivityAuthorizationInfo().areActivitiesEnabled
         else { return }
 
@@ -272,6 +273,15 @@ final class NavigationLiveActivityController {
         } catch {
             NSLog("NavigationLiveActivityController: failed to start Live Activity: \(error)")
         }
+    }
+
+    /// Guidance only runs in "navigation"; free roam has no route, so the engine
+    /// sits in "routeSearch" for the whole session.
+    private func isLiveState(for metadata: SessionMetadata) -> Bool {
+        if metadata.mode == "freeRoam" {
+            return navigationState == "navigation" || navigationState == "routeSearch"
+        }
+        return navigationState == "navigation"
     }
 
     private func updateActivityIfNeeded() {
