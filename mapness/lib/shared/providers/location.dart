@@ -18,21 +18,15 @@ part 'location.g.dart';
 
 final locationProvider = _locationProvider;
 
-/// Location settings that keep the stream alive with the screen locked.
+/// Location settings for the app's own position stream.
 ///
-/// Without [AppleSettings.allowBackgroundLocationUpdates] iOS tears the stream
-/// down as soon as the app is backgrounded and reports `kCLErrorDomain error 1`,
-/// which killed navigation (and the lock screen widget) until the app was
-/// reopened. The app already declares the `location` background mode.
+/// geolocator already enables background updates by default on iOS; what it
+/// does not do is show the status bar indicator, and without it a session that
+/// keeps running with the screen locked is invisible to the user. The engine's
+/// own source is fixed natively — see BackgroundLocationProvider in dgis_map.
 LocationSettings _backgroundLocationSettings() {
   if (Platform.isIOS) {
-    return AppleSettings(
-      accuracy: LocationAccuracy.bestForNavigation,
-      activityType: ActivityType.automotiveNavigation,
-      allowBackgroundLocationUpdates: true,
-      showBackgroundLocationIndicator: true,
-      pauseLocationUpdatesAutomatically: false,
-    );
+    return AppleSettings(showBackgroundLocationIndicator: true);
   }
   return const LocationSettings();
 }

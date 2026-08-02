@@ -32,10 +32,10 @@ class NavigationLiveUpdates {
   Future<void> setSessionMetadata({
     required String? destinationName,
     required String routeType,
+    required String language,
 
     /// "navigation" for guidance along a route, "freeRoam" for the free roam session.
     String mode = 'navigation',
-    required String language,
     Map<String, String> strings = const <String, String>{},
     bool enabled = true,
   }) async {
