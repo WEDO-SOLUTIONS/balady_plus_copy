@@ -34,7 +34,7 @@ class TifoControl extends ConsumerWidget {
     }
     return MapButton(
       onTap: () => _guardedTap(context, ref, enabled: false),
-      child: const TifoBallIcon(size: 24),
+      child: const TifoBallIcon(),
     );
   }
 
@@ -107,7 +107,7 @@ class _ActiveTifoButton extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: onTap,
-        child: const TifoBallIcon(size: 24),
+        child: const TifoBallIcon(),
       ),
     ),
   );

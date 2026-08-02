@@ -293,45 +293,30 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     await _startAndPlay();
   }
 
+  /// Opens the game first and the server session only once the pitch is ready.
+  ///
+  /// The session's expiry window is short (`liveLockTimeoutSeconds` = 30 on
+  /// staging) and a session that outlives it resolves as `voided` with the
+  /// token spent — so every second of asset loading used to eat into the
+  /// player's shooting time. Starting the session on the game's `onReady`
+  /// keeps loading out of that window; input stays locked until it's open.
   Future<void> _startAndPlay() async {
-    final api = ref.read(tifoApiProvider);
-    final TifoPlaySession playSession;
-    try {
-      playSession = await api.startPlay(_building.id);
-    } catch (e) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _isBusy = false;
-        _error = e is TifoApiException ? '${e.statusCode}: ${e.message}' : e.toString();
-      });
-      return;
-    }
-    // Token was just spent; refresh the balance shown elsewhere.
-    unawaited(ref.read(tifoSessionProvider.notifier).refreshProfile());
-    // Outcome (and thus which hero background) is only known after the
-    // mini-game ends — warm the decode now so the result fade-in doesn't
-    // race it.
-    final resultCtx = rootNavigatorKey.currentContext;
-    if (resultCtx != null) {
-      unawaited(precacheTifoResultImages(resultCtx));
-    }
-
+    _container ??= ProviderScope.containerOf(context, listen: false);
     if (!mounted) {
       return;
     }
     Navigator.of(context).pop(); // close the sheet
-    _runShootout(playSession);
+    _runShootout();
   }
 
-  void _runShootout(TifoPlaySession playSession) {
+  void _runShootout() {
     final navigator = rootNavigatorKey.currentState;
     if (navigator == null) {
       return;
     }
-    final container = _container ?? ProviderScope.containerOf(context, listen: false);
+    final container = _container!;
     final missesAllowed = container.read(tifoSessionProvider).config.missesAllowed;
+    TifoPlaySession? playSession;
     // The map layer stays enabled (and its 20s ownership poller with it) for
     // the whole session — pause just the poller while the fullscreen game is
     // up so its bridge calls don't compete with Flame's per-frame rendering.
@@ -344,21 +329,49 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
           builder: (_) => PenaltyApp(
             missesAllowed: missesAllowed,
             scoreToBeat: _building.scoreToBeat,
+            onReady: (arm) => unawaited(
+              _openSession(container).then((session) {
+                if (session == null) {
+                  return; // start failed — the game route is already gone
+                }
+                playSession = session;
+                arm();
+              }),
+            ),
             onComplete: (outcome) {
-              if (handled) {
+              final session = playSession;
+              if (handled || session == null) {
                 return;
               }
               handled = true;
               container.read(tifoBuildingsPollerProvider.notifier).start();
-              Future<void>.delayed(const Duration(milliseconds: 700), () {
+              // Short beat so the last GOAL!/MISS! flash is readable, then
+              // submit — kept tight because the clock is still running.
+              Future<void>.delayed(const Duration(milliseconds: 250), () {
                 rootNavigatorKey.currentState?.pop();
-                unawaited(_submit(playSession: playSession, outcome: outcome));
+                unawaited(_submit(playSession: session, outcome: outcome));
               });
             },
           ),
         ),
       ),
     );
+  }
+
+  /// Deducts the token and opens the session. On failure the game route is
+  /// closed and the reason is shown — the player never gets a pitch they
+  /// can't legally kick on.
+  Future<TifoPlaySession?> _openSession(ProviderContainer container) async {
+    try {
+      final session = await container.read(tifoApiProvider).startPlay(_building.id);
+      // Token was just spent; refresh the balance shown elsewhere.
+      unawaited(container.read(tifoSessionProvider.notifier).refreshProfile());
+      return session;
+    } catch (e) {
+      rootNavigatorKey.currentState?.pop();
+      _showResult(e is TifoApiException ? '${e.statusCode}: ${e.message}' : e.toString(), win: false);
+      return null;
+    }
   }
 
   Future<void> _submit({required TifoPlaySession playSession, required TifoShootoutOutcome outcome}) async {
@@ -368,9 +381,13 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     final api = container.read(tifoApiProvider);
     // TifoApi owns a private Dio, so these calls don't show up in the app's
     // http logger — log the submit here or the capture loop is invisible.
+    // The kick log is spelled out (g = goal, m = miss): the backend rejects a
+    // session that doesn't end on the allowed miss, and without seeing the
+    // sequence a "voided again" report is unreadable.
+    final kicks = outcome.events.map((e) => e.scored ? 'g' : 'm').join();
     logger.log(
       '[tifo] submit ${_building.id}: score=${outcome.goals} misses=${outcome.misses} '
-      'events=${outcome.events.length} scoreToBeat=${_building.scoreToBeat}',
+      'kicks=$kicks scoreToBeat=${_building.scoreToBeat}',
     );
     try {
       final result = await api.submitPlay(
@@ -401,7 +418,20 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
         unawaited(showTifoPenaltyResult(ctx, result, scoreToBeat: _building.scoreToBeat));
       }
     } catch (e) {
-      _showResult('Submit failed: ${e is TifoApiException ? e.message : e}', win: false);
+      final message = e is TifoApiException ? e.message : e.toString();
+      // The backend voids a session that outlived `expiresAt` and keeps the
+      // token (FR-16). Say so plainly — "Submit failed" reads like a bug and
+      // sends testers hunting for one.
+      final expired = message.toLowerCase().contains('expired');
+      logger.log('[tifo] submit failed${expired ? ' (session expired)' : ''}: $message');
+      _showResult(
+        expired
+            ? 'Session expired — a run must finish within '
+                  '${container.read(tifoSessionProvider).config.liveLockTimeoutSeconds}s of starting. '
+                  'The token was spent; try again.'
+            : 'Submit failed: $message',
+        win: false,
+      );
     }
   }
 
