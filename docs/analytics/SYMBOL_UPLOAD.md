@@ -39,6 +39,12 @@ because CI does not pass `--obfuscate`, and that is most of what we capture.
 Both paths are **fail-open**: without credentials the upload is skipped and the build
 is unchanged. A failed upload logs a warning and never fails a release.
 
+Fail-open is not the default on Android and had to be arranged. The plugin's upload task
+extends Gradle's `Exec` (fails on non-zero exit) and throws outright when `posthog-cli`
+is missing — and it sits inside the `assemble<Flavor>Release` task graph, so a bad key
+or a runner without the CLI would turn a release red. `android/app/build.gradle`
+therefore sets `ignoreExitValue` and an `onlyIf` probe on those tasks.
+
 ## One-time setup — what you need to do
 
 **1. Create a personal API key** (PostHog UI → Personal settings → Personal API keys).
