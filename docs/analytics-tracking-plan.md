@@ -72,7 +72,34 @@ reference (check time/distance) without starting guidance — that is successful
 | Event | Source | Purpose |
 |---|---|---|
 | `Application Opened` / `Application Backgrounded` | posthog_flutter lifecycle | Base activity signal: DAU/MAU, stickiness, retention |
-| `$exception` | `BaladyAnalytics.error()` | Handled-exception counters (crashes live in Sentry) |
+| `$exception` | SDK autocapture + `BaladyAnalytics.error()` | Crash reporting — see below |
+
+### Crash reporting
+
+Requested by stakeholders because the team has no working access to Elastic or Sentry.
+Duplicating existing tooling was accepted deliberately: this channel is one we own.
+It is not theoretical duplication today — `SentryFlutter.init` is commented out in
+`lib/main_prod.dart`, `main_stg.dart` and `main_pre.dart`, so `Sentry.captureException`
+in `LogsViewModel` is a no-op on those flavors, and UXCam's crash handler reports into
+an account nobody can open. Before this, prod crashes reached no one.
+
+Captured automatically by the SDK (`errorTrackingConfig` in `PosthogBaladyAnalyticsSink`):
+Flutter framework errors, `PlatformDispatcher` errors, isolate errors, and native
+crashes (persisted to disk, delivered on next launch). Autocapture **chains** the
+existing `FlutterError.onError` instead of replacing it, so the legacy log pipeline is
+untouched. Zone errors are reported explicitly from `unhandledExceptionBaladyLogs` —
+`runZonedGuarded` cannot be hooked by the SDK.
+
+Not covered: Android native C/C++ (NDK) crashes — a crash inside the map SDK's native
+layer will not appear. Apple native capture is upstream-experimental. Release stack
+traces stay unreadable until CI uploads dSYMs (iOS) and R8 mappings (Android).
+
+Alerting (configured in the PostHog UI, no code): occurrences group into an **issue**,
+and an issue carries its own user/session counts — that is the aggregation asked for
+("send once, but say it affects 100 devices"). Alerts fire on issue created/reopened,
+or on a spike above an issue's historical baseline; destinations are Slack, Discord,
+Teams and HTTP webhooks. Volume-based thresholds are also available as trend alerts on
+an insight over `$exception` (delivered by email).
 
 ## Phase 1 — core
 

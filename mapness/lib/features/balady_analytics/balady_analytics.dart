@@ -111,18 +111,30 @@ class BaladyAnalytics {
     );
   }
 
-  /// Caught exception worth counting. Crash reporting stays in Sentry; this
-  /// only keeps the ex-UXCam "handled exception" counters alive.
-  void error(Object? exception, [StackTrace? stack]) {
+  /// An exception worth reporting — handled or fatal.
+  ///
+  /// Feeds PostHog Error Tracking: the sink turns this into a structured
+  /// `$exception` with a real frame list, which is what groups occurrences
+  /// into one issue and makes alerting possible. Unhandled Flutter/native
+  /// crashes are captured by the SDK itself (see [PosthogBaladyAnalyticsSink]);
+  /// call this for zone errors the SDK cannot hook, and for caught exceptions
+  /// worth counting.
+  ///
+  /// [properties] adds context to this one occurrence (screen and auth state
+  /// ride along automatically as session properties).
+  void error(Object? exception, [StackTrace? stack, Map<String, dynamic>? properties]) {
     _dispatch(
       BaladyAnalyticsEvent(
         name: r'$exception',
         kind: BaladyAnalyticsEventKind.error,
         properties: {
           ..._sessionProperties,
+          ...?properties,
           'exception': exception.toString(),
           if (stack != null) 'stack': stack.toString(),
         },
+        error: exception,
+        stackTrace: stack,
       ),
     );
   }
