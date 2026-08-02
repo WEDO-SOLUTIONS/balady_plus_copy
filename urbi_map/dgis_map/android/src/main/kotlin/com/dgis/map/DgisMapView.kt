@@ -36,6 +36,9 @@ import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 
+/** Name of the event that carries the tunnel state to Flutter. Mirrors `TunnelStateEvent.name`. */
+private const val TUNNEL_STATE_CHANGED_EVENT = "tunnelStateChanged"
+
 class DgisMapView(
         private val sdkContext: ru.dgis.sdk.Context,
         private val binaryMessenger: BinaryMessenger,
@@ -1191,6 +1194,13 @@ class DgisMapView(
         if (isInTunnel == inTunnel) return
         isInTunnel = inTunnel
         applyAppearance()
+        // Flutter darkens the rest of the app off the same signal.
+        eventSink.success(
+                mapOf(
+                        "event" to TUNNEL_STATE_CHANGED_EVENT,
+                        "inTunnel" to inTunnel,
+                )
+        )
     }
 
     override fun setZoomRestrictions(min: Double?, max: Double?, callback: (Result<Unit>) -> Unit) {

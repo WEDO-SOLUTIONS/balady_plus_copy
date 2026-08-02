@@ -19,18 +19,36 @@ class BaladyThemeNotifier extends ChangeNotifier {
   // The default theme of the user's device.
   ThemeMode _themeMode = ThemeMode.system;
 
-  ThemeMode get themeMode => _themeMode;
+  /// Set while something transient forces a theme — driving through a tunnel, for
+  /// instance. Wins over [_themeMode] but is never persisted, so the user's own
+  /// choice is still there once the override is lifted (or the app is restarted).
+  ThemeMode? _transientThemeMode;
+
+  ThemeMode get themeMode => _transientThemeMode ?? _themeMode;
+
+  /// The user's persisted preference, ignoring any transient override.
+  ThemeMode get preferredThemeMode => _themeMode;
 
   // For backward compatibility or internal checks if needed
   // ... inside BaladyThemeNotifier class
 
   // Updated getter to correctly reflect the current active state
   bool get isDarkMode {
-    if (_themeMode == ThemeMode.system) {
+    final mode = themeMode;
+    if (mode == ThemeMode.system) {
       // Check the device's actual brightness
       return WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
     }
-    return _themeMode == ThemeMode.dark;
+    return mode == ThemeMode.dark;
+  }
+
+  /// Forces [mode] without touching the persisted preference. Pass `null` to drop the
+  /// override and fall back to whatever the user picked.
+  void setTransientThemeMode(ThemeMode? mode) {
+    if (_transientThemeMode == mode) return;
+
+    _transientThemeMode = mode;
+    notifyListeners();
   }
 
   /// Constructor
