@@ -1,7 +1,5 @@
 package com.dgis.map
 
-import android.os.Handler
-import android.os.Looper
 import ru.dgis.sdk.navigation.NavigationManager
 import ru.dgis.sdk.navigation.RouteInfo
 import ru.dgis.sdk.routing.RoadSubtype
@@ -15,24 +13,28 @@ import ru.dgis.sdk.routing.RoutePoint
  * Shared by the phone map ([DgisMapView]) and the Android Auto session
  * ([com.dgis.map.android_auto.NavigationCarAppSession]) — both darken their own map surface.
  *
- * Entering a tunnel is reported immediately. Leaving is debounced by [EXIT_DEBOUNCE_MS] so a
- * short daylight gap between two consecutive tunnel segments doesn't flicker the theme.
+ * Hysteresis is geometric, not time-based: when a route arrives, its tunnel segments are folded
+ * into dark zones, merging any two that are less than [GAP_MERGE_METERS] apart. That swallows the
+ * short daylight gaps that make the theme flicker (route-graph segmentation, ventilation openings,
+ * tunnel-to-tunnel interchanges) without deferring the real thing. Everything after that is a plain
+ * range check against the current route position, so both entering and leaving a tunnel are
+ * reported on the next position tick — no exit delay.
  */
 class TunnelDetector(
     navigationManager: NavigationManager,
     private val onTunnelStateChanged: (Boolean) -> Unit,
 ) : AutoCloseable {
 
-    private val model = navigationManager.uiModel
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val exitRunnable = Runnable {
-        exitPending = false
-        applyTunnelState(false)
-    }
+    /**
+     * Stretch of the route, in route-distance millimetres, that must be rendered dark.
+     * Half-open: `start until end`.
+     */
+    private data class DarkZone(val start: Long, val end: Long)
 
-    private var roadSubtypes: RoadSubtypeRouteLongAttribute = model.route.route.roadSubtypes
+    private val model = navigationManager.uiModel
+
+    private var darkZones: List<DarkZone> = buildDarkZones(model.route.route.roadSubtypes)
     private var isInTunnel = false
-    private var exitPending = false
 
     private val closeables =
         mutableListOf<AutoCloseable>(
@@ -43,49 +45,66 @@ class TunnelDetector(
     init {
         // Evaluate the state immediately in case a route/position already exist (e.g. the
         // detector is (re)created while navigation is already in progress).
-        model.routePosition?.let(::evaluatePosition)
+        evaluate(model.routePosition)
     }
 
     private fun onRouteChanged(routeInfo: RouteInfo) {
-        roadSubtypes = routeInfo.route.roadSubtypes
-        model.routePosition?.let(::evaluatePosition)
+        darkZones = buildDarkZones(routeInfo.route.roadSubtypes)
+        // A reroute can move us in or out of a tunnel without the position moving at all.
+        evaluate(model.routePosition)
     }
 
-    private fun onRoutePositionChanged(position: RoutePoint?) {
-        position?.let(::evaluatePosition)
-    }
+    private fun onRoutePositionChanged(position: RoutePoint?) = evaluate(position)
 
-    private fun evaluatePosition(position: RoutePoint) {
-        val inTunnel = roadSubtypes.entry(position)?.value == RoadSubtype.TUNNEL
-        if (inTunnel) {
-            cancelPendingExit()
-            applyTunnelState(true)
-        } else if (isInTunnel && !exitPending) {
-            // Debounce the exit: a short gap between two tunnel segments shouldn't flip the
-            // theme back and forth. Position updates arrive more often than the debounce
-            // window, so the timer must not be rescheduled on every tick.
-            exitPending = true
-            mainHandler.postDelayed(exitRunnable, EXIT_DEBOUNCE_MS)
+    /** Folds the route's tunnel segments into the dark zones described on [GAP_MERGE_METERS]. */
+    private fun buildDarkZones(roadSubtypes: RoadSubtypeRouteLongAttribute): List<DarkZone> {
+        val zones = mutableListOf<DarkZone>()
+
+        for (entry in roadSubtypes.entries) {
+            if (entry.value != RoadSubtype.TUNNEL) continue
+
+            val start = entry.point.distance.millimeters
+            val end = start + entry.length.millimeters
+
+            // `entries` runs along the route, so a segment can only extend the zone built so far
+            // or start a new one.
+            val last = zones.lastOrNull()
+            if (last != null && start - last.end <= GAP_MERGE_MILLIMETERS) {
+                zones[zones.lastIndex] = last.copy(end = maxOf(last.end, end))
+            } else {
+                zones.add(DarkZone(start, end))
+            }
         }
+
+        return zones
     }
 
-    private fun cancelPendingExit() {
-        mainHandler.removeCallbacks(exitRunnable)
-        exitPending = false
-    }
+    /**
+     * A null [position] means guidance is over (or never started) — whatever the last route said,
+     * we are not in a tunnel any more. Reporting that matters: the caller darkens the app on the
+     * way in and would otherwise stay dark after a trip that was finished or cancelled underground.
+     */
+    private fun evaluate(position: RoutePoint?) {
+        val distance = position?.distance?.millimeters
+        val inTunnel = distance != null && darkZones.any { distance >= it.start && distance < it.end }
 
-    private fun applyTunnelState(value: Boolean) {
-        if (isInTunnel == value) return
-        isInTunnel = value
-        onTunnelStateChanged(value)
+        if (isInTunnel == inTunnel) return
+
+        isInTunnel = inTunnel
+        onTunnelStateChanged(inTunnel)
     }
 
     override fun close() {
-        cancelPendingExit()
         closeables.forEach(AutoCloseable::close)
     }
 
     private companion object {
-        const val EXIT_DEBOUNCE_MS = 2000L
+        /**
+         * Daylight gap between two tunnel segments that still counts as tunnel. Long enough to
+         * cover how the road graph chops a single tunnel up and the gaps at interchanges, short
+         * enough that a genuine stretch of daylight brings the light theme straight back.
+         */
+        const val GAP_MERGE_METERS = 100L
+        const val GAP_MERGE_MILLIMETERS = GAP_MERGE_METERS * 1000
     }
 }
