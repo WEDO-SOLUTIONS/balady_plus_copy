@@ -32,6 +32,9 @@ class NavigationLiveUpdates {
   Future<void> setSessionMetadata({
     required String? destinationName,
     required String routeType,
+
+    /// "navigation" for guidance along a route, "freeRoam" for the free roam session.
+    String mode = 'navigation',
     required String language,
     Map<String, String> strings = const <String, String>{},
     bool enabled = true,
@@ -39,6 +42,7 @@ class NavigationLiveUpdates {
     try {
       await _channel.invokeMethod<void>('setSessionMetadata', <String, dynamic>{
         'destinationName': destinationName,
+        'mode': mode,
         'routeType': routeType,
         'language': language,
         'strings': strings,

@@ -29,6 +29,8 @@ final class NavigationLiveActivityController {
 
     private struct SessionMetadata {
         let destinationName: String
+        /// "navigation" | "freeRoam"
+        let mode: String
         let routeType: String
         let language: String
         /// Copy handed over by Dart (Localazy-managed); missing keys fall back
@@ -124,6 +126,7 @@ final class NavigationLiveActivityController {
 
     func setSessionMetadata(
         destinationName: String,
+        mode: String,
         routeType: String,
         language: String,
         strings: [String: String],
@@ -131,6 +134,7 @@ final class NavigationLiveActivityController {
     ) {
         metadata = SessionMetadata(
             destinationName: destinationName,
+            mode: mode,
             routeType: routeType,
             language: language,
             strings: strings,
@@ -244,12 +248,14 @@ final class NavigationLiveActivityController {
 
         let language = metadata.language
         let attributes = NavigationActivityAttributes(
+            mode: metadata.mode,
             routeType: metadata.routeType,
             destinationName: metadata.destinationName,
             language: language,
             endTripTitle: localized("end_trip"),
             openAppTitle: localized("open_app"),
-            arrivedMessage: localized("arrived")
+            arrivedMessage: localized("arrived"),
+            freeRoamTitle: localized("free_roam")
         )
         let contentState = buildContentState(isArrived: false)
 
@@ -455,6 +461,7 @@ final class NavigationLiveActivityController {
             "end_trip": "End trip",
             "open_app": "Open Balady+",
             "arrived": "You've arrived",
+            "free_roam": "Free roam",
             "gps_lost": "GPS signal lost",
             "reroute": "Re-route",
             "km": "km",
@@ -466,6 +473,7 @@ final class NavigationLiveActivityController {
             "end_trip": "إنهاء الرحلة",
             "open_app": "فتح بلدي+",
             "arrived": "لقد وصلت إلى وجهتك",
+            "free_roam": "التجول الحر",
             "gps_lost": "انقطعت إشارة GPS",
             "reroute": "إعادة التوجيه",
             "km": "كم",

@@ -59,6 +59,8 @@ struct NavigationActivityAttributes: ActivityAttributes {
         var isSpeeding: Bool
     }
 
+    /// "navigation" — guidance along a route, "freeRoam" — the free roam session.
+    var mode: String
     /// "car", "pedestrian", ...
     var routeType: String
     var destinationName: String
@@ -68,6 +70,8 @@ struct NavigationActivityAttributes: ActivityAttributes {
     var endTripTitle: String
     var openAppTitle: String
     var arrivedMessage: String
+    /// Headline for the free roam session, e.g. "Free roam".
+    var freeRoamTitle: String
 }
 
 #endif

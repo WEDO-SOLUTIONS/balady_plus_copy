@@ -91,8 +91,9 @@ object NavNotificationBuilder {
         val distanceTitle = maneuver
             ?.takeIf { it.distanceMm > 0 }
             ?.let { formatDistance(res, metadata, it.distanceMm) }
+        val freeRoam = metadata.mode == "freeRoam"
         val title = statusTitle
-            ?: distanceTitle
+            ?: (if (freeRoam) metadata.string("free_roam") { res.getString(R.string.free_roam) } else distanceTitle)
             ?: res.getString(R.string.driving_notification_title)
 
         val street = maneuver?.roadName?.takeIf { it.isNotBlank() }
@@ -113,10 +114,11 @@ object NavNotificationBuilder {
         return Content(
             title = title,
             text = text,
-            subText = subText,
-            iconRes = maneuverIcon(maneuver),
-            progress = eta?.progress ?: 0.0,
-            trafficSegments = eta?.trafficSegments.orEmpty(),
+            subText = if (freeRoam) "" else subText,
+            iconRes = if (freeRoam) R.drawable.logo_notification else maneuverIcon(maneuver),
+            // No route in free roam, so no timeline either.
+            progress = if (freeRoam) 0.0 else eta?.progress ?: 0.0,
+            trafficSegments = if (freeRoam) emptyList() else eta?.trafficSegments.orEmpty(),
         )
     }
 
@@ -145,7 +147,13 @@ object NavNotificationBuilder {
             .setShowWhen(false)
             .setContentIntent(openAppPendingIntent(context))
             .build()
-            .let { if (Build.VERSION.SDK_INT >= 36) asLiveUpdate(context, it, content) else it }
+            .let {
+                if (Build.VERSION.SDK_INT >= 36 && content.trafficSegments.isNotEmpty()) {
+                    asLiveUpdate(context, it, content)
+                } else {
+                    it
+                }
+            }
     }
 
     /**

@@ -25,6 +25,8 @@ object LiveUpdatesCoordinator {
 
     data class SessionMetadata(
         val destinationName: String?,
+        /** "navigation" | "freeRoam" */
+        val mode: String,
         val routeType: String,
         val language: String,
         /** Localized copy pushed from Dart; missing keys fall back to plugin resources. */
@@ -38,6 +40,7 @@ object LiveUpdatesCoordinator {
     @Volatile
     var metadata: SessionMetadata = SessionMetadata(
         destinationName = null,
+        mode = "navigation",
         routeType = "car",
         language = "en",
         strings = emptyMap(),
@@ -82,12 +85,13 @@ object LiveUpdatesCoordinator {
 
     fun setSessionMetadata(
         destinationName: String?,
+        mode: String,
         routeType: String,
         language: String,
         strings: Map<String, String>,
         enabled: Boolean,
     ) {
-        metadata = SessionMetadata(destinationName, routeType, language, strings, enabled)
+        metadata = SessionMetadata(destinationName, mode, routeType, language, strings, enabled)
         if (!isSessionActive) return
         runOnMain {
             if (!enabled) {

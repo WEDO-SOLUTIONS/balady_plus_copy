@@ -49,6 +49,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
                     val strings = (args?.get("strings") as? Map<String, String>).orEmpty()
                     LiveUpdatesCoordinator.setSessionMetadata(
                         destinationName = args?.get("destinationName") as? String,
+                        mode = args?.get("mode") as? String ?: "navigation",
                         routeType = args?.get("routeType") as? String ?: "car",
                         language = args?.get("language") as? String ?: "en",
                         strings = strings,

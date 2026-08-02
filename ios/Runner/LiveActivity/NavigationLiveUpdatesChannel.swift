@@ -33,6 +33,7 @@ final class NavigationLiveUpdatesChannel {
                 if #available(iOS 16.2, *) {
                     NavigationLiveActivityController.shared.setSessionMetadata(
                         destinationName: args["destinationName"] as? String ?? "",
+                        mode: args["mode"] as? String ?? "navigation",
                         routeType: args["routeType"] as? String ?? "car",
                         language: args["language"] as? String ?? "en",
                         strings: args["strings"] as? [String: String] ?? [:],

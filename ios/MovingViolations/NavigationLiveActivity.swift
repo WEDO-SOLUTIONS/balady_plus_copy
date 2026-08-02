@@ -106,6 +106,11 @@ private extension NavigationActivityAttributes {
     var isPedestrian: Bool {
         routeType == "pedestrian"
     }
+
+    /// Free roam has no route: no maneuver, no timeline, no ETA.
+    var isFreeRoam: Bool {
+        mode == "freeRoam"
+    }
 }
 
 // MARK: - Lock screen
@@ -117,7 +122,11 @@ private struct NavigationLockScreenView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center, spacing: 12) {
-                NavigationHeaderView(context: context, compact: false)
+                if context.attributes.isFreeRoam {
+                    FreeRoamHeaderView(context: context)
+                } else {
+                    NavigationHeaderView(context: context, compact: false)
+                }
                 Spacer(minLength: 8)
                 if let speed = context.state.speed {
                     SpeedClusterView(
@@ -132,7 +141,9 @@ private struct NavigationLockScreenView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
 
-            if context.state.status == .arrived {
+            if context.attributes.isFreeRoam {
+                EmptyView()
+            } else if context.state.status == .arrived {
                 ArrivalActionsView(context: context)
             } else {
                 RouteTimelineView(
@@ -145,6 +156,32 @@ private struct NavigationLockScreenView: View {
         }
         .padding(16)
         .environment(\.layoutDirection, context.attributes.layoutDirection)
+    }
+}
+
+/// Free roam: the road the driver is on, plus the status pill when the fix is lost.
+@available(iOS 16.2, *)
+private struct FreeRoamHeaderView: View {
+    let context: ActivityViewContext<NavigationActivityAttributes>
+
+    var body: some View {
+        if context.state.status == .gpsLost {
+            StatusPillView(text: context.state.statusText, color: NavPalette.error)
+        } else {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(context.attributes.freeRoamTitle)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+                if !context.state.roadName.isEmpty {
+                    Text(context.state.roadName)
+                        .font(.system(size: 14))
+                        .foregroundColor(.white.opacity(0.7))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                }
+            }
+        }
     }
 }
 

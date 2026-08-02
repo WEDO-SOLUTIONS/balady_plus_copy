@@ -383,11 +383,14 @@ class NavigationHandler(
         fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
                 setupCamera(speedRangeZoom = speedRangeZoom)
                 navigationManager.start()
+                // Free roam gets the same ongoing notification as guidance, minus the route.
+                LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopFreeRoam)
         }
 
         fun stopFreeRoam() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         private fun stateChannelListener(state: State) {

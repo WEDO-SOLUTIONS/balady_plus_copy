@@ -428,6 +428,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         'end_trip': l10n.endTrip,
         'arrived': l10n.youArrived,
         'gps_lost': l10n.gpsLost,
+        'free_roam': l10n.freeRoam,
         'reroute': l10n.routeResearch,
         'km': l10n.km,
         'm': l10n.meter,
