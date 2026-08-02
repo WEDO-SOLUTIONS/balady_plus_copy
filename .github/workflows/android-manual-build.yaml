@@ -205,21 +205,26 @@ jobs:
           ENVIRONMENT="${{ steps.ctx.outputs.environment }}"
           echo "Selected environment: ${ENVIRONMENT}"
 
+          # Each flavor reports into its own PostHog project, so R8 mappings
+          # must be uploaded to the matching one; stg and pre share a project.
           if [ "$ENVIRONMENT" = "stg" ]; then
             echo "flavor=stg" >> "$GITHUB_OUTPUT"
             echo "target=lib/main_stg.dart" >> "$GITHUB_OUTPUT"
             echo "vendor_config=momrah-stage" >> "$GITHUB_OUTPUT"
             echo "build_name_prefix=momrah-stage" >> "$GITHUB_OUTPUT"
+            echo "posthog_project_id=${{ vars.POSTHOG_PROJECT_ID_STG }}" >> "$GITHUB_OUTPUT"
           elif [ "$ENVIRONMENT" = "prod" ]; then
             echo "flavor=prod" >> "$GITHUB_OUTPUT"
             echo "target=lib/main_prod.dart" >> "$GITHUB_OUTPUT"
             echo "vendor_config=momrah-prod" >> "$GITHUB_OUTPUT"
             echo "build_name_prefix=momrah-prod" >> "$GITHUB_OUTPUT"
+            echo "posthog_project_id=${{ vars.POSTHOG_PROJECT_ID_PROD }}" >> "$GITHUB_OUTPUT"
           elif [ "$ENVIRONMENT" = "pre" ]; then
             echo "flavor=pre" >> "$GITHUB_OUTPUT"
             echo "target=lib/main_urbi_pre.dart" >> "$GITHUB_OUTPUT"
             echo "vendor_config=urbi-pre-prod" >> "$GITHUB_OUTPUT"
             echo "build_name_prefix=urbi-pre" >> "$GITHUB_OUTPUT"
+            echo "posthog_project_id=${{ vars.POSTHOG_PROJECT_ID_STG }}" >> "$GITHUB_OUTPUT"
           else
             echo "Unknown environment: ${ENVIRONMENT}"
             exit 1
@@ -237,12 +242,22 @@ jobs:
           fvm flutter pub cache repair
           fvm flutter pub get
 
+      - name: Install PostHog CLI
+        continue-on-error: true
+        run: npm install -g @posthog/cli@latest
+
       - name: 🤖🔨 Build Android app
         env:
           FLAVOR: ${{ steps.select.outputs.flavor }}
           TARGET: ${{ steps.select.outputs.target }}
           VENDOR_CONFIG: ${{ steps.select.outputs.vendor_config }}
           BUILD_NAME_PREFIX: ${{ steps.select.outputs.build_name_prefix }}
+          # R8 mapping upload for crash reporting. The Gradle plugin applies
+          # itself only when POSTHOG_CLI_API_KEY is set (android/app/build.gradle),
+          # so with no secret configured the build is byte-for-byte what it was.
+          POSTHOG_CLI_API_KEY: ${{ secrets.POSTHOG_CLI_API_KEY }}
+          POSTHOG_CLI_HOST: https://eu.posthog.com
+          POSTHOG_CLI_PROJECT_ID: ${{ steps.select.outputs.posthog_project_id }}
         run: |
           echo "Building flavor: ${FLAVOR}"
           echo "Target: ${TARGET}"

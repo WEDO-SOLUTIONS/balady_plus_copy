@@ -5,6 +5,17 @@ plugins {
     id "org.jetbrains.kotlin.plugin.compose"
 }
 
+// R8 renames Java/Kotlin symbols in release builds (`minifyEnabled true` below),
+// so native crash frames reach PostHog as `a.b()`. The plugin uploads the R8
+// mapping file after each release build, which is what turns them back into real
+// names. It shells out to `posthog-cli`, so it is applied only when upload
+// credentials are present: a developer building release locally has neither the
+// CLI nor the key, and their build must not fail over reporting. See
+// docs/analytics/SYMBOL_UPLOAD.md for the CI wiring.
+if (System.getenv("POSTHOG_CLI_API_KEY")) {
+    apply plugin: "com.posthog.android"
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {

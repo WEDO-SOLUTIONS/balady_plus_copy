@@ -78,8 +78,13 @@ class PosthogBaladyAnalyticsSink implements BaladyAnalyticsSink {
       //   - Android captures Java/Kotlin only — no native C/C++. A crash
       //     inside the map SDK's NDK layer will not appear here.
       //   - Apple native capture is experimental upstream.
-      //   - Release stack traces stay unreadable until dSYMs (iOS) and R8
-      //     mappings (Android) are uploaded from CI.
+      //   - Readability of release stack traces differs by layer. Dart frames
+      //     are readable as-is because CI does not pass `--obfuscate`, and
+      //     that covers most of what is captured here (Flutter framework,
+      //     zone, isolate errors). Native frames do need symbols uploaded per
+      //     build: Android Java/Kotlin is minified (`minifyEnabled true`), and
+      //     iOS release binaries ship stripped, leaving bare addresses. Both
+      //     are uploaded from CI — see docs/analytics/SYMBOL_UPLOAD.md.
       config.errorTrackingConfig
         ..captureNativeExceptions = true
         ..captureFlutterErrors = true

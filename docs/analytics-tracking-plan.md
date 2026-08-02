@@ -91,8 +91,15 @@ untouched. Zone errors are reported explicitly from `unhandledExceptionBaladyLog
 `runZonedGuarded` cannot be hooked by the SDK.
 
 Not covered: Android native C/C++ (NDK) crashes — a crash inside the map SDK's native
-layer will not appear. Apple native capture is upstream-experimental. Release stack
-traces stay unreadable until CI uploads dSYMs (iOS) and R8 mappings (Android).
+layer will not appear. Apple native capture is upstream-experimental.
+
+Release stack traces are readable per layer, not all-or-nothing. **Dart frames are
+readable as-is** — CI does not pass `--obfuscate`, and Flutter only obfuscates Dart on
+that flag — which covers most of what we capture (framework, zone and isolate errors,
+including the Android Auto render case). **Native frames need symbols**: Android
+Java/Kotlin is minified (`minifyEnabled true` in `android/app/build.gradle`) so frames
+arrive as `a.b()`, and iOS release binaries ship stripped so a crash is bare addresses.
+CI uploads both per build — see [SYMBOL_UPLOAD.md](analytics/SYMBOL_UPLOAD.md).
 
 Alerting (configured in the PostHog UI, no code): occurrences group into an **issue**,
 and an issue carries its own user/session counts — that is the aggregation asked for
