@@ -32,9 +32,9 @@ because CI does not pass `--obfuscate`, and that is most of what we capture.
 |---|---|
 | `android/settings.gradle` | declares the `com.posthog.android` Gradle plugin (1.4.0) |
 | `android/app/build.gradle` | applies it **only** when `POSTHOG_CLI_API_KEY` is set |
-| `.github/workflows/android-manual-build.yaml` | installs `posthog-cli`, passes host/project/key; project id is picked per flavor |
+| `.github/workflows/android-manual-build.yaml` | installs `posthog-cli` via npm, passes host/project/key; project id is picked per flavor |
 | `.github/scripts/upload_ios_symbols.sh` | uploads the dSYMs of the build that just finished |
-| `.github/workflows/ios.yaml` | installs `posthog-cli`, calls the script after each of the three `flutter build ipa` runs |
+| `.github/workflows/ios.yaml` | installs `posthog-cli` via the standalone installer, calls the script after each of the three `flutter build ipa` runs |
 
 Both paths are **fail-open**: without credentials the upload is skipped and the build
 is unchanged. A failed upload logs a warning and never fails a release.
@@ -69,14 +69,39 @@ In GitHub → repository Settings:
 
 Notes for whoever sets this up:
 
-- The runner needs **Node.js** available so `npm install -g @posthog/cli` works. The
-  install step is `continue-on-error`, so a runner without npm degrades to "no symbol
-  upload" rather than a red build — worth checking the step actually succeeds the first
-  time rather than assuming it did.
 - The upload host is `https://eu.posthog.com` (the app host), **not**
   `eu.i.posthog.com` (the ingest host used by the SDK). It is hardcoded per platform in
   the workflow/script; only change it if the region changes.
 - Nothing here needs the private pub registry or a VPN.
+
+## What the runners need
+
+Nothing to install by hand — each job installs the CLI itself, by the route that suits
+its runner. What the runners do need is **outbound HTTPS**.
+
+**Android — `ubuntu-latest` (GitHub-hosted).** Node ships with the image, so
+`npm install -g @posthog/cli` works as-is and puts the binary on `PATH`, where the
+Gradle plugin looks for it. Needs to reach `registry.npmjs.org` (for the CLI),
+`repo1.maven.org` (for the Gradle plugin) and `eu.posthog.com` (the upload). Standard
+GitHub runners have open egress, so in practice: nothing to do.
+
+**iOS — `[self-hosted, macOS, ARM64]`.** Node is *not* assumed here: the job uses
+PostHog's standalone installer instead, so the runner needs no Node, no Homebrew and no
+preinstalled tooling. Needs to reach `download.posthog.com` and
+`github.com/PostHog/posthog/releases` (the installer fetches the binary from there) plus
+`eu.posthog.com`. **If this Mac sits behind a restrictive egress policy, these three
+hosts are the one thing to allow-list** — it is the only runner-side action that may be
+required.
+
+The binary lands in `~/.posthog/posthog-cli`, which is the first location the PostHog
+pod's uploader checks, so no `PATH` changes are needed. If the runner keeps `$HOME`
+between jobs the install is skipped on later runs; a fully ephemeral runner just
+re-downloads a single small binary each time. Preinstalling it on the machine is
+optional and only saves that download.
+
+Both install steps are `continue-on-error`, so a blocked download degrades to "no symbol
+upload" rather than a red build. That is deliberate — and it is also why the first run
+should be checked in the logs rather than assumed to have worked.
 
 ## Verifying it works
 

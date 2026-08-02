@@ -109,7 +109,18 @@ jobs:
 
       - name: Install PostHog CLI
         continue-on-error: true
-        run: npm install -g @posthog/cli@latest
+        run: |
+          # This job runs on a self-hosted Mac, where Node is not guaranteed —
+          # so the vendor's standalone installer is used rather than npm. It
+          # drops the binary in ~/.posthog, which is the first place the pod's
+          # upload-symbols.sh looks, so no PATH wiring is needed.
+          # Reused across runs when the runner keeps $HOME between jobs.
+          if [ -x "$HOME/.posthog/posthog-cli" ]; then
+            echo "posthog-cli already installed: $("$HOME/.posthog/posthog-cli" --version)"
+            exit 0
+          fi
+          curl --proto '=https' --tlsv1.2 -LsSf https://download.posthog.com/cli | sh
+          "$HOME/.posthog/posthog-cli" --version
 
       - name: Build app
         env:
