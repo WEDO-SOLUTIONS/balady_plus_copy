@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.3+586
-version: 3.13.2+456
+#version: 3.30.4+596
+version: 3.13.3+460
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -214,12 +214,11 @@ dependencies:
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
      hosted: https://unpub.balady.gov.sa/
-     version: 0.0.18
+     version: 0.0.2-dev
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
   #    path: /Users/abdelrahmanismail/StudioProjects/balady_design_system
-
 
   ############################################################
 
@@ -238,7 +237,7 @@ dependencies:
   collection: ^1.19.1
   image: ^4.7.2
   http: ^1.6.0
-  flutter_insider: ^4.0.6+nh
+
   sentry_dio: ^9.9.2
   shelf: ^1.4.2
   timezone: ^0.10.0
