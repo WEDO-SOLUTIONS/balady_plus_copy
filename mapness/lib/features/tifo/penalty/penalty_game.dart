@@ -1156,9 +1156,6 @@ enum _KeeperMotion {
 
   /// Post-dive slide/recover after a rightward dive.
   groundRight,
-
-  /// Save celebration (punt-the-ball clip ending in a frontal stance).
-  celebrate,
 }
 
 /// Striker motion — each has its own atlas in `striker_v2/` (see
@@ -3037,7 +3034,6 @@ class _GoalkeeperModel {
   _SpriteSheet? _diveLowLeftSheet;
   _SpriteSheet? _diveHighLeftSheet;
   // Result-phase sheets — kick in after the dive peak.
-  _SpriteSheet? _saveRecoverSheet;
   _SpriteSheet? _missedReactionSheet;
   _SpriteSheet? _concededSheet;
   // Preferred path: one small atlas PER MOTION (native frame density, up to
@@ -3075,11 +3071,9 @@ class _GoalkeeperModel {
   // each being cropped to its own tightest fit — the pose range here spans
   // standing idle to a fully horizontal flat-out dive, and fitting each
   // atlas to its own bounds would make the character visibly change size
-  // between motions. `celebrate` is untouched (no new source for it in
-  // this batch — still the old AI-generated art) and `ready` has no
-  // dedicated capture either, so it reuses a sparse sample of the same
-  // crouch clip as idle (visually near-identical, which is fine for a
-  // sub-quarter-second transition).
+  // between motions. `ready` has no dedicated capture, so it reuses a
+  // sparse sample of the same crouch clip as idle (visually
+  // near-identical, which is fine for a sub-quarter-second transition).
   static const Map<_KeeperMotion, (String, int, int, int)> _atlasSpecs = {
     _KeeperMotion.idle: ('keeper_idle.png', 8, 8, 61),
     _KeeperMotion.ready: ('keeper_ready.png', 4, 2, 8),
@@ -3090,7 +3084,6 @@ class _GoalkeeperModel {
     _KeeperMotion.diveUpRight: ('keeper_diveUpRight.png', 5, 10, 50),
     _KeeperMotion.groundLeft: ('keeper_groundLeft.png', 8, 8, 61),
     _KeeperMotion.groundRight: ('keeper_groundRight.png', 8, 8, 61),
-    _KeeperMotion.celebrate: ('keeper_celebrate.png', 6, 4, 24),
   };
 
   /// Dive motion for a given height/side combo. Upper-left has no native
@@ -3183,12 +3176,6 @@ class _GoalkeeperModel {
         frameWidth: 384,
         frameHeight: 384,
         frames: 10,
-      );
-      _saveRecoverSheet = await _loadOptionalSheet(
-        'packages/mapness/assets/tifo/sprites/goalkeeper_v2/save_recover_sheet.png',
-        frameWidth: 384,
-        frameHeight: 384,
-        frames: 8,
       );
       _missedReactionSheet = await _loadOptionalSheet(
         'packages/mapness/assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png',
@@ -3368,19 +3355,18 @@ class _GoalkeeperModel {
     final isCenter = diveSide == _KeeperSide.center;
 
     // 1. Result phase — once `_finish` has flipped `shotState` to a terminal
-    //    outcome, play the outcome motion: celebration for a save, the
-    //    slide-and-rise ground sequence otherwise. Gated on `diveFullyPlayed`
-    //    (always true for center, which never launches a dive) so a fast
-    //    shot can't cut the launch short — see the comment on
-    //    `diveWindowSeconds` above.
+    //    outcome (save, miss, or goal — no separate celebration anymore,
+    //    all three just play the same slide-and-rise recovery), play the
+    //    recovery motion. Gated on `diveFullyPlayed` (always true for
+    //    center, which never launches a dive) so a fast shot can't cut the
+    //    launch short — see the comment on `diveWindowSeconds` above.
     final groundMotion = diveSide == _KeeperSide.right ? _KeeperMotion.groundRight : _KeeperMotion.groundLeft;
     final resultMotion = switch (shotState) {
-      _ShotState.saved => _KeeperMotion.celebrate,
       // A center shot leaves the keeper standing — there's no lying/
-      // kneeling pose to recover from, so a miss/goal on center just holds
-      // his ground (falls through to the idle branch below) instead of
-      // playing the dive-recovery clip.
-      _ShotState.missed || _ShotState.goal => isCenter ? null : groundMotion,
+      // kneeling pose to recover from, so it just holds his ground (falls
+      // through to the idle branch below) instead of playing the
+      // dive-recovery clip.
+      _ShotState.saved || _ShotState.missed || _ShotState.goal => isCenter ? null : groundMotion,
       _ => null,
     };
     if (resultMotion != null && reacting && (isCenter || diveFullyPlayed)) {
@@ -3392,37 +3378,21 @@ class _GoalkeeperModel {
       // 0.75s for the reaction; the result HUD lives ~1.65s so the keeper
       // holds the final frame for the remainder.
       final resultProgress = ((resultTime - resultOverhang) / 0.75).clamp(0.0, 1.0).toDouble();
-      // `celebrate` (GSP_punting_the_ball) is entirely standing poses — it
-      // has no lying/kneeling frames. A low/mid save ends its dive lying on
-      // the ground (peak cell of diveLowLeft/Right/Center), so cutting
-      // straight to `celebrate` made the keeper appear to teleport upright.
-      // Splice in the same stand-up arc used for miss/goal (groundLeft/
-      // Right) for the first half of the reaction, THEN celebrate — high
-      // dives and center saves skip this since the keeper is already
-      // upright/airborne (high) or never left his feet (center).
-      final needsStandUp = shotState == _ShotState.saved && diveStyle != _KeeperDive.high && !isCenter;
-      final (motion, motionProgress) = !needsStandUp
-          ? (resultMotion, resultProgress)
-          : resultProgress < 0.5
-          ? (groundMotion, resultProgress * 2)
-          : (_KeeperMotion.celebrate, (resultProgress - 0.5) * 2);
       final pose = _motionPose(
-        motion,
-        motionProgress,
+        resultMotion,
+        resultProgress,
         fallback: diveMidLeftSprite,
       );
-      // Foot-anchored, not center-anchored: celebrate/groundLeft/groundRight
-      // are baked bottom-aligned (feet at the cell's bottom edge) because by
+      // Foot-anchored, not center-anchored: groundLeft/groundRight are
+      // baked bottom-aligned (feet at the cell's bottom edge) because by
       // this point the keeper is grounded, not mid-flight. Using
       // _drawDivingSprite's center-anchor here (as before) put the world
       // anchor at the character's hip instead of their feet, sinking the
       // sprite visibly below the pitch.
       //
-      // groundLeft/Right share idle's re-baked crop (see `_standingGroundGap`)
-      // so they need the same compensation, or standing back up reads as
-      // levitating just above the shadow. `celebrate` is untouched old art,
-      // baked with feet already at the cell's bottom edge — no gap there.
-      final isGroundMotion = motion == _KeeperMotion.groundLeft || motion == _KeeperMotion.groundRight;
+      // groundLeft/Right share idle's re-baked crop (see
+      // `_standingGroundGap`), or standing back up reads as levitating
+      // just above the shadow.
       _drawIdleSprite(
         game,
         canvas,
@@ -3431,7 +3401,7 @@ class _GoalkeeperModel {
         image: pose.$1,
         sourceRect: pose.$2,
         visualScale: visualScale,
-        groundGap: isGroundMotion ? _standingGroundGap : 0,
+        groundGap: _standingGroundGap,
       );
       return;
     }
@@ -3555,7 +3525,6 @@ class _GoalkeeperModel {
       _KeeperMotion.diveLowRight ||
       _KeeperMotion.diveLowCenter => _diveLowLeftSheet ?? _diveMidLeftSheet,
       _KeeperMotion.diveUpCenter || _KeeperMotion.diveUpRight => _diveHighLeftSheet ?? _diveMidLeftSheet,
-      _KeeperMotion.celebrate => _saveRecoverSheet,
       _KeeperMotion.groundLeft || _KeeperMotion.groundRight => _missedReactionSheet ?? _concededSheet,
     };
     if (sheet != null) {
