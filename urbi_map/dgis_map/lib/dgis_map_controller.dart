@@ -639,6 +639,9 @@ class DgisMapController {
   ///toggle heatmap
   Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
 
+  ///toggle satellite raster tile overlay
+  Future<bool> toggleSatellite({required SatelliteMapMessage message}) => _instance.toggleSatellite(message);
+
   ///list packages
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
 

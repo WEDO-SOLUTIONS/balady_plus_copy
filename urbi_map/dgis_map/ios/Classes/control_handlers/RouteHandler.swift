@@ -82,6 +82,7 @@ class RouteHandler {
     }
 
     func cancel() {
+        publicTransportHandler?.stopDurationUpdates()
         cancelable.forEach { $0.cancel() }
         moveCameraCancellable?.cancel()
         cancelable.removeAll()
@@ -270,6 +271,11 @@ class RouteHandler {
     
     
     
+    func getLastLocation() -> (latitude: Double, longitude: Double)? {
+        guard let coords = locationService.lastLocation?.coordinates else { return nil }
+        return (latitude: coords.value.latitude.value, longitude: coords.value.longitude.value)
+    }
+
     func getActivePublicTransportRoute() -> TrafficRoute? {
         guard let routeIndex = routeEditor.activeRouteIndex else {
             return nil

@@ -4,11 +4,8 @@ import 'dart:math';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mapness/entities/city_event/city_event.dart';
-import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/dynamic_style/map_style_store.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -44,9 +41,19 @@ DgisMapController? activeDgisController;
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
   late LocationSetupHelper _locationHelper;
+
   // Non-final so build() can replace it with a fresh open subject on each rebuild.
   BehaviorSubject<VisibleRectEvent?> _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
   bool? _indoorFloorPlansEnabled;
+  StreamSubscription<Position>? _firstFixSubscription;
+  bool _startupRecenterSuppressed = false;
+
+  /// True once [cancelFirstFixCameraMove] has run, i.e. something moved the
+  /// camera explicitly (e.g. a cold-start POI deep link). Startup-time
+  /// recentering logic (first-GPS-fix snap, MapDimensionsControl's initial 3D
+  /// tilt) must check this and stand down instead of yanking the camera away
+  /// from the explicit target.
+  bool get startupRecenterSuppressed => _startupRecenterSuppressed;
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
 
@@ -54,6 +61,9 @@ class DgisController extends _$DgisController {
   Future<DgisMapController> build() {
     _completer = Completer();
     _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
+    // onDispose below calls cancelFirstFixCameraMove, which raises the flag;
+    // a rebuilt map starts a fresh startup sequence.
+    _startupRecenterSuppressed = false;
 
     // clear the top-level cache when this provider is disposed
     // so stale references can't be observed across re-creation.
@@ -61,7 +71,8 @@ class DgisController extends _$DgisController {
       ..onDispose(_visibleRectSubject.close)
       ..onDispose(() {
         activeDgisController = null;
-      });
+      })
+      ..onDispose(cancelFirstFixCameraMove);
 
     return _completer.future;
   }
@@ -201,21 +212,38 @@ class DgisController extends _$DgisController {
 
   /// After the Kingdom Tower intro animation, waits for the first real GPS fix
   /// and snaps the camera there so the user sees their actual position.
+  ///
+  /// Cancelled by [cancelFirstFixCameraMove] when something moves the camera
+  /// deliberately in the meantime (e.g. a cold-start POI deep link): on Android
+  /// the first fix can arrive seconds after launch and would otherwise yank the
+  /// camera away from the deep-linked POI.
   void _moveToUserLocationOnFirstFix(DgisMapController controller) {
-    Geolocator.getPositionStream(locationSettings: const LocationSettings())
+    _firstFixSubscription = Geolocator.getPositionStream(locationSettings: const LocationSettings())
         .take(1)
         .listen(
-          (position) => controller.setCameraPosition(
-            CameraPositionMessage(
-              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-              zoom: 17,
-              tilt: 0,
-              bearing: 0,
-            ),
-          ),
+          (position) {
+            controller.setCameraPosition(
+              CameraPositionMessage(
+                point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+                zoom: 17,
+                tilt: 0,
+                bearing: 0,
+              ),
+            );
+          },
           onError: (Object e) => logger.log('First GPS fix error: $e'),
           cancelOnError: true,
         );
+  }
+
+  /// Prevents the pending first-GPS-fix snap (and, via
+  /// [startupRecenterSuppressed], any other startup recentering) from
+  /// overriding an explicit camera move. Safe to call at any time, including
+  /// before the map is ready.
+  void cancelFirstFixCameraMove() {
+    _startupRecenterSuppressed = true;
+    _firstFixSubscription?.cancel();
+    _firstFixSubscription = null;
   }
 
   /// Moves camera on Riyadh Tower

@@ -17,6 +17,7 @@ import? 'justscripts/local.just'
 
 # style helpers
 import 'justscripts/styles.just'
+import 'justscripts/styles_prepare.just'
 
 # prebuild: pubget locale_gen build_pigeon download-sdk codegen
 prebuild: locale_gen pubget build_pigeon codegen
