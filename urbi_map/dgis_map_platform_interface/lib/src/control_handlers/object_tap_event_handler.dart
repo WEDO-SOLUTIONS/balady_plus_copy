@@ -52,9 +52,7 @@ class ObjectTapEventHandler {
     final position = cluster["position"];
 
     final List<SimpleMapObjectModel> objects = ((cluster['objects'] as List?) ?? const [])
-        .map((e) => SimpleMapObjectModel.fromJson(
-              (e as Map).cast<String, dynamic>(),
-            ))
+        .map((e) => SimpleMapObjectModel.fromJson((e as Map).cast<String, dynamic>()))
         .toList();
 
     final clusterObject = SimpleClusterObject(
@@ -67,19 +65,14 @@ class ObjectTapEventHandler {
       ),
       cluster["objectCount"],
       objects,
-      MarkerAnchorMessage(
-        x: cluster["anchor"]["x"],
-        y: cluster["anchor"]["y"],
-      ),
+      MarkerAnchorMessage(x: cluster["anchor"]["x"], y: cluster["anchor"]["y"]),
       cluster["iconOpacity"],
       MarkerTextStyleMessage(
         fontSize: textStyle["fontSize"],
         color: textStyle["color"],
         strokeWidth: textStyle["strokeWidth"],
         strokeColor: textStyle["strokeColor"],
-        textPlacement: MarkerTextPlacementMessage(
-          placement: TextPlacementMessage.values[textStyle["textPlacement"]],
-        ),
+        textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.values[textStyle["textPlacement"]]),
         textOffset: textStyle["textOffset"],
         fontName: textStyle["fontName"],
       ),
@@ -163,28 +156,21 @@ class ObjectTapEventHandler {
     final dgisObjectMap = map["dgisObjectId"];
     final latLngMap = map["latlng"];
 
-    _objectTapController.sink.add(ObjectTapEvent(
-      DgisObjectId(
-        objectId: dgisObjectMap["objectId"],
-        entranceId: dgisObjectMap["entranceId"],
+    _objectTapController.sink.add(
+      ObjectTapEvent(
+        DgisObjectId(objectId: dgisObjectMap["objectId"], entranceId: dgisObjectMap["entranceId"]),
+        LatLng(latitude: latLngMap["latitude"], longitude: latLngMap["longitude"]),
+        map["levelId"],
       ),
-      LatLng(
-        latitude: latLngMap["latitude"],
-        longitude: latLngMap["longitude"],
-      ),
-      map["levelId"],
-    ));
+    );
   }
 
   void myLocationTapEvent(Map<dynamic, dynamic> map) {
     final latLngMap = map["latlng"];
 
-    _objectTapController.sink.add(MyLocationTapEvent(
-      LatLng(
-        latitude: latLngMap["latitude"],
-        longitude: latLngMap["longitude"],
-      ),
-    ));
+    _objectTapController.sink.add(
+      MyLocationTapEvent(LatLng(latitude: latLngMap["latitude"], longitude: latLngMap["longitude"])),
+    );
   }
 
   // Asia/Riyadh has no DST; Hajj closure schedules are authored in KSA wall time
@@ -196,25 +182,32 @@ class ObjectTapEventHandler {
     return DateTime.fromMillisecondsSinceEpoch(millis, isUtc: true).add(_ksaOffset);
   }
 
+  // RoadEvent.timestamp is a system-generated instant (when the record was
+  // created/updated), unlike the human-authored KSA-wall-time schedule
+  // boundaries above — so no KSA offset is applied here.
+  DateTime? _dateTimeFromEpoch(Object? millis) {
+    if (millis is! int) return null;
+    return DateTime.fromMillisecondsSinceEpoch(millis);
+  }
+
   void roadEventTapEvent(Map<dynamic, dynamic> map) {
     final startTime = _ksaWallTimeFromEpoch(map["startTime"]);
     final finishTime = _ksaWallTimeFromEpoch(map["finishTime"]);
+    final updatedAt = _dateTimeFromEpoch(map["timestamp"]);
     final dgisObjectMap = map["dgisObjectId"];
 
     _objectTapController.sink.add(
       RoadEventTapEvent(
-        DgisObjectId(
-          objectId: dgisObjectMap["objectId"],
-          entranceId: dgisObjectMap["entranceId"],
-        ),
+        DgisObjectId(objectId: dgisObjectMap["objectId"], entranceId: dgisObjectMap["entranceId"]),
         map["title"],
         map["description"],
         startTime,
         finishTime,
-        LatLng(
-          latitude: map["latitude"],
-          longitude: map["longitude"],
-        ),
+        LatLng(latitude: map["latitude"], longitude: map["longitude"]),
+        RoadEventType.fromValue(map["type"] as int?),
+        RoadEventLane.fromBitmask(map["lanes"] as int?),
+        RoadEventActionType.fromBitmask(map["availableActionTypes"] as int?),
+        updatedAt,
       ),
     );
   }
@@ -232,10 +225,7 @@ class ObjectTapEventHandler {
       price: map["price"],
       startDate: map["startDate"],
       endDate: map["endDate"],
-      latLng: LatLng(
-        latitude: map["latitude"],
-        longitude: map["longitude"],
-      ),
+      latLng: LatLng(latitude: map["latitude"], longitude: map["longitude"]),
     );
 
     _objectTapController.sink.add(event);
@@ -254,10 +244,7 @@ class ObjectTapEventHandler {
       status: map["status"],
       streetName: map["streetName"],
       planNo: map["planNo"],
-      latLng: LatLng(
-        latitude: map["latitude"],
-        longitude: map["longitude"],
-      ),
+      latLng: LatLng(latitude: map["latitude"], longitude: map["longitude"]),
     );
 
     _objectTapController.sink.add(event);

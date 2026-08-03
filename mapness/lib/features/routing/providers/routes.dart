@@ -10,6 +10,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
+import 'package:mapness/shared/providers/map/road_event_excluded_areas.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -41,6 +42,7 @@ class Routes extends _$Routes {
 
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+    final excludedAreas = ref.watch(roadEventExcludedAreasProvider);
 
     final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
@@ -54,6 +56,7 @@ class Routes extends _$Routes {
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
+        excludedAreas: excludedAreas,
       ),
     );
 
@@ -135,6 +138,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
 
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+    final excludedAreas = ref.watch(roadEventExcludedAreasProvider);
 
     final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
@@ -147,6 +151,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
+        excludedAreas: excludedAreas,
       ),
     );
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -49,7 +50,7 @@ class RoadEvents extends _$RoadEvents {
     final nextState = RoadEventSheetState.fromEvent(event);
     final router = ref.read(appRouterProvider);
 
-    if (router.topRoute.name == RoadClosedRoute.name) {
+    if (router.topRoute.name == RoadEventDetailsRoute.name) {
       if (state == nextState) {
         return;
       }
@@ -63,11 +64,15 @@ class RoadEvents extends _$RoadEvents {
     // If we will need it, we can add it in the future
     unawaited(
       router.push(
-        RoadClosedRoute(
+        RoadEventDetailsRoute(
           id: nextState.id,
           title: nextState.title,
           startTime: nextState.startTime,
           finishTime: nextState.finishTime,
+          type: nextState.type,
+          lanes: nextState.lanes,
+          availableActionTypes: nextState.availableActionTypes,
+          updatedAt: nextState.updatedAt,
         ),
       ),
     );
@@ -84,8 +89,8 @@ class RoadEvents extends _$RoadEvents {
 
   RoadEventSheetState? _routeState(AppRouter router, {required RoadEventSheetState? currentState}) =>
       switch (router.topRoute.name) {
-        RoadClosedRoute.name =>
-          currentState ?? RoadEventSheetState.fromRouteArgs(router.topRoute.argsAs<RoadClosedRouteArgs>()),
+        RoadEventDetailsRoute.name =>
+          currentState ?? RoadEventSheetState.fromRouteArgs(router.topRoute.argsAs<RoadEventDetailsRouteArgs>()),
         _ => null,
       };
 }
@@ -250,6 +255,10 @@ class RoadEventSheetState {
     required this.objectId,
     required this.startTime,
     required this.finishTime,
+    required this.type,
+    required this.lanes,
+    required this.availableActionTypes,
+    required this.updatedAt,
   });
 
   factory RoadEventSheetState.fromEvent(RoadEventTapEvent event) => RoadEventSheetState(
@@ -258,14 +267,22 @@ class RoadEventSheetState {
     objectId: event.id.objectId,
     startTime: event.startTime,
     finishTime: event.finishTime,
+    type: event.type,
+    lanes: event.lanes,
+    availableActionTypes: event.availableActionTypes,
+    updatedAt: event.updatedAt,
   );
 
-  factory RoadEventSheetState.fromRouteArgs(RoadClosedRouteArgs args) => RoadEventSheetState(
+  factory RoadEventSheetState.fromRouteArgs(RoadEventDetailsRouteArgs args) => RoadEventSheetState(
     id: args.id,
     title: args.title,
     objectId: args.id.objectId,
     startTime: args.startTime,
     finishTime: args.finishTime,
+    type: args.type,
+    lanes: args.lanes,
+    availableActionTypes: args.availableActionTypes,
+    updatedAt: args.updatedAt,
   );
 
   final DgisObjectId id;
@@ -273,6 +290,10 @@ class RoadEventSheetState {
   final int objectId;
   final DateTime? startTime;
   final DateTime? finishTime;
+  final RoadEventType? type;
+  final Set<RoadEventLane> lanes;
+  final Set<RoadEventActionType> availableActionTypes;
+  final DateTime? updatedAt;
 
   @override
   bool operator ==(Object other) =>
@@ -282,8 +303,21 @@ class RoadEventSheetState {
           id == other.id &&
           title == other.title &&
           startTime == other.startTime &&
-          finishTime == other.finishTime;
+          finishTime == other.finishTime &&
+          type == other.type &&
+          updatedAt == other.updatedAt &&
+          const SetEquality<RoadEventLane>().equals(lanes, other.lanes) &&
+          const SetEquality<RoadEventActionType>().equals(availableActionTypes, other.availableActionTypes);
 
   @override
-  int get hashCode => Object.hash(id, title, startTime, finishTime);
+  int get hashCode => Object.hash(
+    id,
+    title,
+    startTime,
+    finishTime,
+    type,
+    updatedAt,
+    Object.hashAllUnordered(lanes),
+    Object.hashAllUnordered(availableActionTypes),
+  );
 }

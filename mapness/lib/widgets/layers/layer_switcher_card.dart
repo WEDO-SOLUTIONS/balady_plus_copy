@@ -11,6 +11,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' a
 import 'package:mapness/features/map_dimensions/map_dimensions_control_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/road_event_source.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 
 class LayerSwitcherCard extends ConsumerWidget {
@@ -47,6 +48,10 @@ class LayerSwitcherCard extends ConsumerWidget {
     if (value == layers_state.LayerType.traffic) {
       final trafficState = ref.watch(traffic.trafficStateProvider);
       isSelected = trafficState.status == TrafficControlStatus.enabled;
+    }
+
+    if (value == layers_state.LayerType.roadEvents) {
+      isSelected = ref.watch(roadEventSourceControlProvider);
     }
 
     if (value == layers_state.LayerType.busSubMenu) {

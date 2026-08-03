@@ -154,6 +154,29 @@ class DgisMapController {
   /// Load map styles from asset.
   Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
 
+  /// Explicitly adds the native road-events source (2GIS road-restriction icons) to the map.
+  Future<void> addRoadEventSource() => _instance.addRoadEventSource();
+
+  /// Explicitly removes the native road-events source from the map.
+  Future<void> removeRoadEventSource() => _instance.removeRoadEventSource();
+
+  /// Performs a native road-event action (e.g. "Still there" / "Not anymore" feedback) on the
+  /// most recently tapped road event. Returns true if the SDK confirmed the action
+  /// (`RoadEventActionResultMessage.ok`), false on a network error.
+  Future<bool> setRoadEventAction(RoadEventActionType type) async {
+    final result = await _instance.setRoadEventAction(type);
+    return result == RoadEventActionResultMessage.ok;
+  }
+
+  /// Creates a new road event via the native RoadEventManager. [lanes] is ignored by the SDK for
+  /// event types that don't support lane data — see [RoadEventTypeCreateExt.supportsLanes].
+  Future<AddRoadEventResultMessage> createRoadEvent({
+    required RoadEventType type,
+    required GeoPointMessage location,
+    Set<RoadEventLane> lanes = const {},
+    required String description,
+  }) => _instance.createRoadEvent(type: type, location: location, lanes: lanes, description: description);
+
   /// Override locale for map. Uses string format "en-US", "ar-SA".
   Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
 

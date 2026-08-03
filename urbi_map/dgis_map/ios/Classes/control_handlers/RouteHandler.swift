@@ -183,7 +183,12 @@ class RouteHandler {
     private func getRouteSearchOptions(opts: RouteSearchOptionsMessage, searchParams: CarRouteSearchOptionParamsMessage?) -> RouteSearchOptions {
         let avoidTollRoads = searchParams?.avoidTollRoads ?? false
         let avoidUnpavedRoads = searchParams?.avoidUnpavedRoads ?? false
-        let carOptions = CarRouteSearchOptions(avoidTollRoads: avoidTollRoads, avoidUnpavedRoads: avoidUnpavedRoads)
+        let excludedAreas = (searchParams?.excludedAreas ?? []).map { $0.toExcludedArea() }
+        let carOptions = CarRouteSearchOptions(
+            avoidTollRoads: avoidTollRoads,
+            avoidUnpavedRoads: avoidUnpavedRoads,
+            excludedAreas: excludedAreas
+        )
 
         switch opts {
         case .car:

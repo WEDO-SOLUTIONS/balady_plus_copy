@@ -56,7 +56,14 @@ class _LandscapeLayout extends StatelessWidget {
                       duration: const Duration(milliseconds: 250),
                       child: IgnorePointer(
                         ignoring: !isVisible,
-                        child: const RadioContextualButton(),
+                        child: const Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            RadioContextualButton(),
+                            SizedBox(height: uikit.Spacing.$2x),
+                            ReportRoadEventMapSelectControl(),
+                          ],
+                        ),
                       ),
                     ),
                   ),

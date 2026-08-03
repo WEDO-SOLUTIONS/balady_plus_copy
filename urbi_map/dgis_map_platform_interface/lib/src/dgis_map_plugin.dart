@@ -944,6 +944,38 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.onTrafficClicked();
   }
 
+  /// Explicitly adds the native road-events source (2GIS road-restriction icons) to the map.
+  Future<void> addRoadEventSource() {
+    return _api.addRoadEventSource();
+  }
+
+  /// Explicitly removes the native road-events source from the map.
+  Future<void> removeRoadEventSource() {
+    return _api.removeRoadEventSource();
+  }
+
+  /// Performs a native road-event action (LIKE/DISLIKE/CONFIRMATION/DISPROOF) on the most
+  /// recently tapped road event (see [RoadEventTapEvent]).
+  Future<RoadEventActionResultMessage> setRoadEventAction(RoadEventActionType type) {
+    return _api.setRoadEventAction(type.toMessage());
+  }
+
+  /// Creates a new road event via the native RoadEventManager. [lanes] is ignored natively for
+  /// event types that don't support lane data — see [RoadEventTypeCreateExt.supportsLanes].
+  Future<AddRoadEventResultMessage> createRoadEvent({
+    required RoadEventType type,
+    required GeoPointMessage location,
+    required Set<RoadEventLane> lanes,
+    required String description,
+  }) {
+    return _api.createRoadEvent(
+      type.toRoadEventTypeMessage(),
+      location,
+      lanes.map((lane) => lane.toRoadEventLaneMessage()).toList(),
+      description,
+    );
+  }
+
   /// Set appearance.
   Future<void> setAppearance(MapAppearanceMessage appearance) {
     return _api.setAppearance(appearance);
@@ -1069,4 +1101,32 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Clear search history items
   Future<void> clearSearchHistoryItems() => _api.clearSearchHistoryItems();
+}
+
+extension on RoadEventActionType {
+  RoadEventActionTypeMessage toMessage() => switch (this) {
+    RoadEventActionType.like => RoadEventActionTypeMessage.like,
+    RoadEventActionType.dislike => RoadEventActionTypeMessage.dislike,
+    RoadEventActionType.confirmation => RoadEventActionTypeMessage.confirmation,
+    RoadEventActionType.disproof => RoadEventActionTypeMessage.disproof,
+  };
+}
+
+extension on RoadEventType {
+  RoadEventTypeMessage toRoadEventTypeMessage() => switch (this) {
+    RoadEventType.accident => RoadEventTypeMessage.accident,
+    RoadEventType.roadWorks => RoadEventTypeMessage.roadWorks,
+    RoadEventType.camera => RoadEventTypeMessage.camera,
+    RoadEventType.comment => RoadEventTypeMessage.comment,
+    RoadEventType.roadRestriction => RoadEventTypeMessage.roadRestriction,
+    RoadEventType.other => RoadEventTypeMessage.other,
+  };
+}
+
+extension on RoadEventLane {
+  RoadEventLaneMessage toRoadEventLaneMessage() => switch (this) {
+    RoadEventLane.left => RoadEventLaneMessage.left,
+    RoadEventLane.center => RoadEventLaneMessage.center,
+    RoadEventLane.right => RoadEventLaneMessage.right,
+  };
 }

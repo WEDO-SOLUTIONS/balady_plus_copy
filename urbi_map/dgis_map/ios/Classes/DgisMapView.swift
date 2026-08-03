@@ -37,6 +37,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var carPlayHandler: CarPlayHandler?
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
+    private var roadEventReportHandler: RoadEventReportHandler?
     private var weatherHandler: WeatherHandler?
 
     private var objectTapHandler: ObjectTapHandler?
@@ -154,7 +155,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             sdk: try! sdk.context,
             eventChannel: eventChannel
         )
-        
+
+        self.roadEventReportHandler = RoadEventReportHandler(sdk: try! sdk.context)
+
         self.weatherHandler = WeatherHandler(
             sdkContext: self.sdk,
             map: map
@@ -1104,7 +1107,53 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.trafficAndParkingControlHandler?.onTrafficClicked()
          completion(Result.success(()))
     }
-    
+
+    func addRoadEventSource(completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.trafficAndParkingControlHandler?.addRoadEventSource()
+         completion(Result.success(()))
+    }
+
+    func removeRoadEventSource(completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.trafficAndParkingControlHandler?.removeRoadEventSource()
+         completion(Result.success(()))
+    }
+
+    func setRoadEventAction(type: RoadEventActionTypeMessage, completion: @escaping (Result<RoadEventActionResultMessage, any Error>) -> Void) {
+        guard let handler = self.objectTapHandler else {
+            completion(.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "ObjectTapHandler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        handler.setRoadEventAction(type.toRoadEventActionType(), completion: completion)
+    }
+
+    func createRoadEvent(
+        type: RoadEventTypeMessage,
+        location: GeoPointMessage,
+        lanes: [RoadEventLaneMessage],
+        description: String,
+        completion: @escaping (Result<AddRoadEventResultMessage, any Error>) -> Void
+    ) {
+        guard let handler = self.roadEventReportHandler else {
+            completion(.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "RoadEventReportHandler was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        handler.createRoadEvent(
+            type: type,
+            location: location,
+            lanes: lanes,
+            description: description,
+            completion: completion
+        )
+    }
+
     func setAppearance(appearance: MapAppearanceMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let mapView = self.mapView else {
             completion(
