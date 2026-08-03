@@ -134,6 +134,7 @@ class DgisMapView(
     private val eventStreamHandler = DgisStreamHandler(eventSink)
 
     private val androidAutoHandler = AndroidAutoHandler(context, eventSink)
+    private val roadEventReportHandler = RoadEventReportHandler(sdkContext)
 
     private val closables = mutableListOf<AutoCloseable>()
 
@@ -1087,6 +1088,42 @@ class DgisMapView(
     override fun onTrafficClicked(callback: (Result<Unit>) -> Unit) {
         trafficAndParkingControlHandler?.onTrafficClicked()
         callback(Result.success(Unit))
+    }
+
+    override fun addRoadEventSource(callback: (Result<Unit>) -> Unit) {
+        trafficAndParkingControlHandler?.addRoadEventSource()
+        callback(Result.success(Unit))
+    }
+
+    override fun removeRoadEventSource(callback: (Result<Unit>) -> Unit) {
+        trafficAndParkingControlHandler?.removeRoadEventSource()
+        callback(Result.success(Unit))
+    }
+
+    override fun setRoadEventAction(
+            type: RoadEventActionTypeMessage,
+            callback: (Result<RoadEventActionResultMessage>) -> Unit
+    ) {
+        val handler = objectTapHandler ?: return callback(
+                Result.failure(
+                        FlutterError(
+                                code = "IllegalArgumentException",
+                                message = "ObjectTapHandler was not initialized properly",
+                                details = null,
+                        )
+                )
+        )
+        handler.setRoadEventAction(type.toRoadEventActionType(), callback)
+    }
+
+    override fun createRoadEvent(
+            type: RoadEventTypeMessage,
+            location: GeoPointMessage,
+            lanes: List<RoadEventLaneMessage>,
+            description: String,
+            callback: (Result<AddRoadEventResultMessage>) -> Unit
+    ) {
+        roadEventReportHandler.createRoadEvent(type, location, lanes, description, callback)
     }
 
     override fun setPanoramasPaddings(

@@ -25,12 +25,15 @@ class TrafficAndParkingControlHandler(
         TrafficControlModel(map = map)
     }
 
+    // A single shared source: the SDK only supports one active RoadEventSource per map, so
+    // Traffic and the explicit "Road Events" button both contribute categories into the same
+    // instance instead of each owning their own.
     private val roadEventsSource by unsafeLazy {
-        val source = RoadEventSource(sdk)
-        source.visibleEvents = EnumSet.of(RoadEventDisplayCategory.ROAD_RESTRICTION);
-
-        source
+        RoadEventSource(sdk)
     }
+
+    private var trafficWantsRoadEvents = false
+    private var buttonWantsRoadEvents = false
 
     private var Map.isParkingOn: Boolean
         get() {
@@ -54,8 +57,14 @@ class TrafficAndParkingControlHandler(
         }
         closeables += trafficControlModel.stateChannel.connect {
             when (it.status) {
-                TrafficControlStatus.ENABLED -> enableRoadEvents()
-                TrafficControlStatus.DISABLED -> disableRoadEvents()
+                TrafficControlStatus.ENABLED -> {
+                    trafficWantsRoadEvents = true
+                    updateRoadEventsSource()
+                }
+                TrafficControlStatus.DISABLED -> {
+                    trafficWantsRoadEvents = false
+                    updateRoadEventsSource()
+                }
                 else -> {}
             }
             eventSink.success(
@@ -68,14 +77,36 @@ class TrafficAndParkingControlHandler(
         }
     }
 
-    private fun enableRoadEvents() {
+    private fun updateRoadEventsSource() {
+        val categories = EnumSet.noneOf(RoadEventDisplayCategory::class.java)
+        if (trafficWantsRoadEvents) {
+            categories.add(RoadEventDisplayCategory.ROAD_RESTRICTION)
+        }
+        if (buttonWantsRoadEvents) {
+            categories.addAll(EnumSet.allOf(RoadEventDisplayCategory::class.java))
+        }
+
+        if (categories.isEmpty()) {
+            if (map.sources.contains(roadEventsSource)) {
+                map.removeSource(roadEventsSource)
+            }
+            return
+        }
+
+        roadEventsSource.visibleEvents = categories
         if (!map.sources.contains(roadEventsSource)) {
             map.addSource(roadEventsSource)
         }
     }
 
-    private fun disableRoadEvents() {
-        map.removeSource(roadEventsSource)
+    fun addRoadEventSource() {
+        buttonWantsRoadEvents = true
+        updateRoadEventsSource()
+    }
+
+    fun removeRoadEventSource() {
+        buttonWantsRoadEvents = false
+        updateRoadEventsSource()
     }
 
     fun onDetachFromMap() {

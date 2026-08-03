@@ -74,6 +74,10 @@ class RoadEventTapEvent extends TapEvent {
     this.startTime,
     this.finishTime,
     this.latLng,
+    this.type,
+    this.lanes,
+    this.availableActionTypes,
+    this.updatedAt,
   );
 
   static const name = "onRoadEventTap";
@@ -84,19 +88,103 @@ class RoadEventTapEvent extends TapEvent {
   final DateTime? startTime;
   final DateTime? finishTime;
   final LatLng latLng;
+  final RoadEventType? type;
+  final Set<RoadEventLane> lanes;
+  final Set<RoadEventActionType> availableActionTypes;
+
+  /// Mirrors the native `RoadEvent.timestamp` — when the event record itself was
+  /// created/last updated. Distinct from [startTime]/[finishTime], which are the
+  /// road-restriction/road-works *schedule* (when the closure is in effect).
+  final DateTime? updatedAt;
+}
+
+/// Mirrors the native `ru.dgis.sdk.road_events.RoadEventType` / `DGis.RoadEventType` enum.
+/// Wire value matches both platforms' raw/value ordinal (0-5).
+/// We map these types to BRD as follows:
+/// comment => police
+/// roadRestriction => warning
+/// other => congestion
+enum RoadEventType {
+  accident,
+  roadWorks,
+  camera,
+  comment,
+  roadRestriction,
+  other;
+
+  static RoadEventType? fromValue(int? value) => switch (value) {
+    0 => RoadEventType.accident,
+    1 => RoadEventType.roadWorks,
+    2 => RoadEventType.camera,
+    3 => RoadEventType.comment,
+    4 => RoadEventType.roadRestriction,
+    5 => RoadEventType.other,
+    _ => null,
+  };
+}
+
+extension RoadEventTypeCreateExt on RoadEventType {
+  /// Mirrors which native `RoadEventManager.createX` overload accepts a lanes
+  /// parameter (accident/roadWorks/other) vs not (camera/roadRestriction/comment).
+  bool get supportsLanes => switch (this) {
+    RoadEventType.accident || RoadEventType.roadWorks || RoadEventType.other => true,
+    RoadEventType.camera || RoadEventType.roadRestriction || RoadEventType.comment => false,
+  };
+}
+
+/// Mirrors the native `ru.dgis.sdk.road_events.Lane` / `DGis.Lane` bitmask
+/// (`LaneOptionSet` on iOS, `EnumSet<Lane>` on Android — both use the same bit values).
+enum RoadEventLane {
+  left(1),
+  center(2),
+  right(4);
+
+  const RoadEventLane(this.bitmask);
+
+  final int bitmask;
+
+  static Set<RoadEventLane> fromBitmask(int? mask) {
+    if (mask == null) {
+      return const {};
+    }
+    return {
+      for (final lane in RoadEventLane.values)
+        if (mask & lane.bitmask != 0) lane,
+    };
+  }
+}
+
+/// Mirrors the native `ru.dgis.sdk.road_events.RoadEventActionType` / `DGis.RoadEventActionType`
+/// enum — one of the actions available on a tapped road event (`RoadEvent.availableActions` in
+/// the native SDK), invoked via `DgisMapController.setRoadEventAction`. Bit position in the wire
+/// bitmask matches the enum's declaration index, which mirrors both platforms' raw/value ordinal
+/// (0-3).
+enum RoadEventActionType {
+  like,
+  dislike,
+  confirmation,
+  disproof;
+
+  static Set<RoadEventActionType> fromBitmask(int? mask) {
+    if (mask == null) {
+      return const {};
+    }
+    return {
+      for (final type in RoadEventActionType.values)
+        if (mask & (1 << type.index) != 0) type,
+    };
+  }
 }
 
 /// DgisObjectId model
 @immutable
 class DgisObjectId {
   /// Constructor
-  const DgisObjectId({
-    required this.objectId,
-    required this.entranceId,
-  });
+  const DgisObjectId({required this.objectId, required this.entranceId});
 
   /// Dgis object id
   final int objectId;
+
   /// Entrance id
   final int entranceId;
 

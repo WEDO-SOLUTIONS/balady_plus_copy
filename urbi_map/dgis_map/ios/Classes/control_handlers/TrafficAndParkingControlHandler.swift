@@ -23,16 +23,21 @@ class TrafficAndParkingControlHandler {
     private let map: Map
     private let eventChannel: DgisStreamHandler
     private let trafficControlModel: TrafficControlModel
+    // A single shared source: the SDK only supports one active RoadEventSource per map, so
+    // Traffic and the explicit "Road Events" button both contribute categories into the same
+    // instance instead of each owning their own.
     private let roadEventsSource: RoadEventSource
 
+    private var trafficWantsRoadEvents = false
+    private var buttonWantsRoadEvents = false
+
     private var cancelable: Array<Cancellable> = []
-    
+
     init(sdk: Context, map: Map, eventChannel: DgisStreamHandler) {
         self.map = map
         self.trafficControlModel = TrafficControlModel(map: map)
         self.eventChannel = eventChannel
         self.roadEventsSource = RoadEventSource(context: sdk)
-        self.roadEventsSource.visibleEvents = .roadRestriction
     }
     
     func onAttachToMap() {
@@ -53,9 +58,11 @@ class TrafficAndParkingControlHandler {
         self.cancelable.append(self.trafficControlModel.stateChannel.sink { trafficState in
             switch trafficState.status {
             case .enabled:
-                self.enableRoadEvents()
+                self.trafficWantsRoadEvents = true
+                self.updateRoadEventsSource()
             case .disabled:
-                self.disableRoadEvents()
+                self.trafficWantsRoadEvents = false
+                self.updateRoadEventsSource()
             default:
                 break
             }
@@ -68,14 +75,36 @@ class TrafficAndParkingControlHandler {
         })
     }
     
-    func enableRoadEvents() {
+    private func updateRoadEventsSource() {
+        var categories: RoadEventDisplayCategoryOptionSet = []
+        if self.trafficWantsRoadEvents {
+            categories.insert(.roadRestriction)
+        }
+        if self.buttonWantsRoadEvents {
+            categories = [.camera, .comment, .accident, .roadRestriction, .roadWorks, .other, .user]
+        }
+
+        if categories.isEmpty {
+            if self.map.sources.contains(roadEventsSource) {
+                self.map.removeSource(source: roadEventsSource)
+            }
+            return
+        }
+
+        self.roadEventsSource.visibleEvents = categories
         if !self.map.sources.contains(roadEventsSource) {
             self.map.addSource(source: roadEventsSource)
         }
     }
-    
-    func disableRoadEvents() {
-        self.map.removeSource(source: roadEventsSource)
+
+    func addRoadEventSource() {
+        self.buttonWantsRoadEvents = true
+        self.updateRoadEventsSource()
+    }
+
+    func removeRoadEventSource() {
+        self.buttonWantsRoadEvents = false
+        self.updateRoadEventsSource()
     }
     
     func onDetachFromMap() {

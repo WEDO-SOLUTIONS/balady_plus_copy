@@ -2,6 +2,7 @@ package com.dgis.map.control_handlers
 
 import com.dgis.map.FusedLocationSource
 import com.dgis.map.control_handlers.public_transport.PublicTransportHandler
+import com.dgis.map.extensions.toExcludedArea
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
@@ -181,7 +182,12 @@ class RouteHandler(
     ): RouteSearchOptions {
         val avoidTollRoads = searchParams?.avoidTollRoads ?: false
         val avoidUnpavedRoads = searchParams?.avoidUnpavedRoads ?: false
-        val carOptions = CarRouteSearchOptions(avoidTollRoads = avoidTollRoads, avoidUnpavedRoads = avoidUnpavedRoads)
+        val excludedAreas = (searchParams?.excludedAreas ?: emptyList()).map { it.toExcludedArea() }
+        val carOptions = CarRouteSearchOptions(
+            avoidTollRoads = avoidTollRoads,
+            avoidUnpavedRoads = avoidUnpavedRoads,
+            excludedAreas = excludedAreas,
+        )
 
         return when (opts) {
             RouteSearchOptionsMessage.CAR -> 

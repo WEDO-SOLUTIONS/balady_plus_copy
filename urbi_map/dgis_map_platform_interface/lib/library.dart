@@ -22,7 +22,11 @@ export 'src/events/object_tap_events.dart'
         IoTapEvent,
         DgisObjectId,
         DgisObjectIdMessageExt,
-        RoadEventTapEvent;
+        RoadEventTapEvent,
+        RoadEventType,
+        RoadEventTypeCreateExt,
+        RoadEventLane,
+        RoadEventActionType;
 export 'src/events/package_events.dart';
 export 'src/events/parking_state_event.dart' show ParkingStateEvent, ParkingFilter;
 export 'src/events/public_transport_events.dart';

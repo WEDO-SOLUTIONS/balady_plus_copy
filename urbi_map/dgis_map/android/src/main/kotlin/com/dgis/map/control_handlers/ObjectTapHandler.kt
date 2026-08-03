@@ -22,6 +22,7 @@ import java.util.*
 import java.util.concurrent.Executors
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.Future
 import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.Meter
 import ru.dgis.sdk.ScreenSize
@@ -29,9 +30,11 @@ import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
-import ru.dgis.sdk.road_events.RoadEventType
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
+import ru.dgis.sdk.road_events.ActionResult
+import ru.dgis.sdk.road_events.RoadEvent
+import ru.dgis.sdk.road_events.RoadEventActionType
 
 class ObjectTapHandler(
         private val map: ru.dgis.sdk.map.Map,
@@ -56,6 +59,8 @@ class ObjectTapHandler(
     private var iconWidth: LogicalPixel? = null
 
     private var lastTappedSearchMarker: Marker? = null
+    private var currentRoadEvent: RoadEvent? = null
+    private var pendingRoadEventActionFuture: Future<ActionResult>? = null
     private val panoramasMarkers = mutableListOf<Marker>()
     private var selectedPanorama: Marker? = null
     private val mapObjectsExecutorService by unsafeLazy { Executors.newSingleThreadExecutor() }
@@ -1019,36 +1024,63 @@ class ObjectTapHandler(
     }
 
     private fun onRoadEventTap(event: RoadEventMapObject) {
-        when (event.event.type) {
-            RoadEventType.ROAD_RESTRICTION -> {
-                eventSink.success(
-                        mapOf(
-                                "event" to Events.onRoadEventTap.name,
-                                "dgisObjectId" to
-                                        mapOf(
-                                                "objectId" to event.id.objectId,
-                                                "entranceId" to event.id.entranceId,
-                                        ),
-                                "title" to event.event.name,
-                                "description" to event.event.description,
-                                "startTime" to
-                                        event.event
-                                                .schedule
-                                                ?.startTime
-                                                ?.timeFromEpoch
-                                                ?.inMilliseconds,
-                                "finishTime" to
-                                        event.event
-                                                .schedule
-                                                ?.finishTime
-                                                ?.timeFromEpoch
-                                                ?.inMilliseconds,
-                                "latitude" to event.event.location.latitude.value,
-                                "longitude" to event.event.location.longitude.value,
-                        )
+        // Handles taps for all RoadEventType categories (not just ROAD_RESTRICTION) now that the
+        // Road Events layer button shows every category — they all route to the same Dart-side card.
+        currentRoadEvent = event.event
+        eventSink.success(
+                mapOf(
+                        "event" to Events.onRoadEventTap.name,
+                        "dgisObjectId" to
+                                mapOf(
+                                        "objectId" to event.id.objectId,
+                                        "entranceId" to event.id.entranceId,
+                                ),
+                        "title" to event.event.name,
+                        "description" to event.event.description,
+                        "startTime" to
+                                event.event
+                                        .schedule
+                                        ?.startTime
+                                        ?.timeFromEpoch
+                                        ?.inMilliseconds,
+                        "finishTime" to
+                                event.event
+                                        .schedule
+                                        ?.finishTime
+                                        ?.timeFromEpoch
+                                        ?.inMilliseconds,
+                        "latitude" to event.event.location.latitude.value,
+                        "longitude" to event.event.location.longitude.value,
+                        "type" to event.event.type.value,
+                        "lanes" to event.event.lanes.fold(0) { acc, lane -> acc or lane.value },
+                        "availableActionTypes" to
+                                event.event.availableActions.fold(0) { acc, action -> acc or (1 shl action.type.value) },
+                        "timestamp" to event.event.timestamp?.timeFromEpoch?.inMilliseconds,
                 )
-            }
-            else -> {}
+        )
+    }
+
+    // Looks up the matching RoadEventAction on the most recently tapped road event
+    // (cached in currentRoadEvent) and invokes its .set() — used by the
+    // "Still there" (CONFIRMATION) / "Not anymore" (DISPROOF) feedback buttons.
+    fun setRoadEventAction(type: RoadEventActionType, callback: (Result<RoadEventActionResultMessage>) -> Unit) {
+        val action = currentRoadEvent?.availableActions?.firstOrNull { it.type == type }
+        if (action == null) {
+            callback(
+                    Result.failure(
+                            FlutterError(
+                                    code = "ROAD_EVENT_ACTION_UNAVAILABLE",
+                                    message = "No available RoadEventAction of type $type for the current road event",
+                                    details = null,
+                            )
+                    )
+            )
+            return
+        }
+
+        pendingRoadEventActionFuture = action.set().apply {
+            onResult { result -> callback(Result.success(result.toMessage())) }
+            onError { error -> callback(Result.failure(error)) }
         }
     }
 
