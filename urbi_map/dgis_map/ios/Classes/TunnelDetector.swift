@@ -7,76 +7,95 @@ import Foundation
 /// Shared by the phone map (`DgisMapView`) and the two CarPlay maps — each darkens its
 /// own map surface while the reported state is `true`.
 ///
-/// POC-quality hysteresis: entering a tunnel is reported immediately, but exiting is
-/// only reported after `exitDelay` seconds spent continuously outside a tunnel. This
-/// avoids flicker when `roadSubtypes` reports short gaps between adjoining tunnel
-/// segments (e.g. at interchanges) or when GPS position briefly jitters near the portal.
+/// Hysteresis is geometric, not time-based: when a route arrives, its tunnel segments are
+/// folded into dark zones, merging any two that are less than `gapMergeMeters` apart. That
+/// swallows the short daylight gaps that make the theme flicker (route-graph segmentation,
+/// ventilation openings, tunnel-to-tunnel interchanges) without deferring the real thing.
+/// Everything after that is a plain range check against the current route position, so both
+/// entering and leaving a tunnel are reported on the next position tick — no exit delay.
 final class TunnelDetector {
-    private let model: Model
+    /// Stretch of the route, in route-distance millimetres, that must be rendered dark.
+    /// Half-open: `start ..< end`.
+    private struct DarkZone {
+        let start: Int64
+        let end: Int64
+    }
 
-    private let exitDelay: TimeInterval
+    /// Daylight gap between two tunnel segments that still counts as tunnel. Long enough to
+    /// cover how the road graph chops a single tunnel up and the gaps at interchanges, short
+    /// enough that a genuine stretch of daylight brings the light theme straight back.
+    private static let gapMergeMeters: Int64 = 100
+
+    private let model: Model
     private let onTunnelStateChanged: (Bool) -> Void
 
     private var routeChannelCancellable: DGis.Cancellable?
     private var routePositionCancellable: DGis.Cancellable?
 
-    private var roadSubtypes: RoadSubtypeRouteLongAttribute?
-    private var exitWorkItem: DispatchWorkItem?
+    private var darkZones: [DarkZone] = []
 
     private(set) var isInTunnel: Bool = false
 
-    init(model: Model, exitDelay: TimeInterval = 2.0, onTunnelStateChanged: @escaping (Bool) -> Void) {
+    init(model: Model, onTunnelStateChanged: @escaping (Bool) -> Void) {
         self.model = model
-        self.exitDelay = exitDelay
         self.onTunnelStateChanged = onTunnelStateChanged
 
         // Pick up whatever route is already active by the time the detector is created.
-        self.roadSubtypes = model.route.route.roadSubtypes
+        self.darkZones = Self.darkZones(in: model.route.route.roadSubtypes)
 
         self.routeChannelCancellable = model.routeChannel.sinkOnMainThread { [weak self] routeInfo in
-            self?.roadSubtypes = routeInfo.route.roadSubtypes
+            guard let self else { return }
+
+            self.darkZones = Self.darkZones(in: routeInfo.route.roadSubtypes)
+            // A reroute can move us in or out of a tunnel without the position moving at all.
+            self.evaluate(routePosition: self.model.routePosition)
         }
 
         self.routePositionCancellable = model.routePositionChannel.sinkOnMainThread { [weak self] routePosition in
-            self?.handle(routePosition: routePosition)
+            self?.evaluate(routePosition: routePosition)
         }
     }
 
-    private func handle(routePosition: RoutePoint?) {
-        guard let routePosition else { return }
+    /// Folds the route's tunnel segments into the dark zones described on `gapMergeMeters`.
+    private static func darkZones(in roadSubtypes: RoadSubtypeRouteLongAttribute) -> [DarkZone] {
+        let gapMergeMillimeters = gapMergeMeters * 1000
+        var zones: [DarkZone] = []
 
-        // `entry(point:)` returns the piecewise segment covering this route point, same
-        // pattern as `speedLimits?.entry(point:)` in SpeedControlModel.
-        let inTunnelNow = roadSubtypes?.entry(point: routePosition)?.value == .tunnel
+        for entry in roadSubtypes.entries where entry.value == .tunnel {
+            let start = entry.point.distance.millimeters
+            let end = start + entry.length.millimeters
 
-        if inTunnelNow {
-            exitWorkItem?.cancel()
-            exitWorkItem = nil
-            guard !isInTunnel else { return }
-            isInTunnel = true
-            onTunnelStateChanged(true)
-            return
+            // `entries` runs along the route, so a segment can only extend the zone built so
+            // far or start a new one.
+            if let last = zones.last, start - last.end <= gapMergeMillimeters {
+                zones[zones.count - 1] = DarkZone(start: last.start, end: max(last.end, end))
+            } else {
+                zones.append(DarkZone(start: start, end: end))
+            }
         }
 
-        // Outside a tunnel: if we're already confirmed-out (or a confirmation is already
-        // pending), there's nothing new to schedule.
-        guard isInTunnel, exitWorkItem == nil else { return }
+        return zones
+    }
 
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self else { return }
-            self.exitWorkItem = nil
-            self.isInTunnel = false
-            self.onTunnelStateChanged(false)
-        }
-        exitWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + exitDelay, execute: workItem)
+    private func evaluate(routePosition: RoutePoint?) {
+        // No position at all means guidance is over (or never started) — whatever the last
+        // route said, we are not in a tunnel any more. Reporting that matters: the caller
+        // darkens the app on the way in and would otherwise stay dark after a trip that
+        // was finished or cancelled underground.
+        let inTunnelNow = routePosition.map { position in
+            let distance = position.distance.millimeters
+            return darkZones.contains { distance >= $0.start && distance < $0.end }
+        } ?? false
+
+        guard isInTunnel != inTunnelNow else { return }
+
+        isInTunnel = inTunnelNow
+        onTunnelStateChanged(inTunnelNow)
     }
 
     func cancel() {
         routeChannelCancellable?.cancel()
         routePositionCancellable?.cancel()
-        exitWorkItem?.cancel()
-        exitWorkItem = nil
     }
 
     deinit {

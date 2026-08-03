@@ -13,6 +13,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         static let myLocationFollowState = "myLocationFollowState"
         static let activeLevelIndex = "activeLevelIndex"
         static let levelNames = "levelNames"
+        static let tunnelStateChanged = "tunnelStateChanged"
     }
     
     private var _view: UIView
@@ -1223,6 +1224,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
             self.isInTunnel = isInTunnel
             self.applyAppearance()
+            // Flutter darkens the rest of the app off the same signal.
+            self.eventChannel?.success([
+                "event": Events.tunnelStateChanged,
+                "inTunnel": isInTunnel,
+            ])
         }
     }
     

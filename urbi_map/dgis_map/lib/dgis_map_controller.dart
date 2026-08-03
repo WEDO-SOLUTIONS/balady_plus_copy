@@ -63,6 +63,13 @@ class DgisMapController {
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
 
+  /// Emitted when the vehicle enters or leaves a tunnel on the active route. The map
+  /// surface is re-themed natively; this lets the app follow with the rest of the UI.
+  Stream<TunnelStateEvent> get tunnelStateEvents => _instance.tunnelStateEvents;
+
+  /// Whether the last reported tunnel state was "inside".
+  bool get isInTunnel => _instance.isInTunnel;
+
   /// Sound on events
   Stream<SoundOnEvent> get soundOnEvents => _instance.soundOnEvents;
 
