@@ -42,6 +42,8 @@ class CityEventDisplay extends ConsumerWidget {
           onTap: () {
             if (activeEvent == CityEventType.cityscape) {
               ref.read(cityscapeProvider.notifier).openThePlace();
+            } else if (activeEvent == CityEventType.leap) {
+              ref.read(leapProvider.notifier).openThePlace();
             } else if (activeEvent == CityEventType.foundingDay) {
               fireworksController!
                 ..value = 0
