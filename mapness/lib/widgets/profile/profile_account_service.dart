@@ -139,28 +139,6 @@ class ProfileAccountService {
     return data['data'] == true;
   }
 
-  Future<bool> resendEmailOtp(String sessionId) async {
-    const path = '/api/ReSendOtp';
-    const fullUrl = '$_ssoBaseUrl$path';
-    final body = {
-      'sessionId': sessionId,
-      'deviceId': _deviceId,
-      'reSendOtpType': 'MobileLoginEmailVerify',
-    };
-
-    final response = await _webService.dio.post(
-      fullUrl,
-      data: body,
-      options: _getOptions(
-        url: fullUrl,
-        method: 'POST',
-        body: body,
-      ),
-    );
-    final data = response.data as Map<String, dynamic>;
-    return data['data'] == true;
-  }
-
   Future<bool> updateUserProfile({
     required Map<String, dynamic> changes,
   }) async {
