@@ -42,7 +42,7 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
               padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
               child: widget.maneuverAndLimitWidget,
             ),
-             const SizedBox(height: uikit.Spacing.$6x),
+            const SizedBox(height: uikit.Spacing.$6x),
             Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -111,6 +111,8 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const RadioContextualButton(),
+                                    const SizedBox(height: 10),
+                                    const ReportRoadEventMapSelectControl(),
                                     const SizedBox(height: 10),
                                     ValueListenableBuilder(
                                       valueListenable: widget.navigationState,

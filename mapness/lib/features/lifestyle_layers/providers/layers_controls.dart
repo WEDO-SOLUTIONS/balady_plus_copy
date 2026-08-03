@@ -48,6 +48,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
+import 'package:mapness/shared/providers/map/road_event_source.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -230,9 +231,9 @@ class LayersControls extends _$LayersControls {
       case LayerType.three3D:
         await toggle3D();
         break;
-      // case LayerType.roadEvents:
-      //   await toggleRoadEvents();
-      //   break;
+      case LayerType.roadEvents:
+        await toggleRoadEvents();
+        break;
       case LayerType.traffic:
         await toggleTraffic();
         break;
@@ -808,11 +809,13 @@ class LayersControls extends _$LayersControls {
         }
         break;
       case LayerType.three3D:
+        break;
+      case LayerType.roadEvents:
+        await ref.read(roadEventSourceControlProvider.notifier).hide();
+        break;
       case LayerType.defaultMap:
       case LayerType.satellite:
         break;
-      // case LayerType.roadEvents:
-      //   break;
     }
   }
 
@@ -1022,14 +1025,16 @@ class LayersControls extends _$LayersControls {
     await ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions();
   }
 
-  // Future<void> toggleRoadEvents() async {
-  //   if (state.selectedType != (LayerType.roadEvents)) {
-  //     ///TODO: implements road events here
-  //     setSelection(selectedType: LayerType.roadEvents);
-  //   } else {
-  //     setSelection();
-  //   }
-  // }
+  Future<void> toggleRoadEvents() async {
+    final notifier = ref.read(roadEventSourceControlProvider.notifier);
+    if (state.selectedType != (LayerType.roadEvents)) {
+      await notifier.show();
+      setSelection(selectedType: LayerType.roadEvents);
+    } else {
+      await notifier.hide();
+      setSelection();
+    }
+  }
 
   Future<void> toggleTraffic() async {
     final trafficNotifier = ref.read(trafficStateProvider.notifier);

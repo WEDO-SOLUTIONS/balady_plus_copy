@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/src/core.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/common/image_asset_type.dart';
 import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
@@ -25,7 +24,7 @@ extension LayerTypeExt on LayerType {
     LayerType.three3D ||
     LayerType.defaultMap ||
     LayerType
-        .satellite // || LayerType.roadEvents
+        .satellite || LayerType.roadEvents
         => null,
   };
 
@@ -44,7 +43,7 @@ extension LayerTypeExt on LayerType {
     LayerType.three3D ||
     LayerType.defaultMap ||
     LayerType
-        .satellite // || LayerType.roadEvents
+        .satellite || LayerType.roadEvents
         => GeneralIcons.placeholder,
   };
 
@@ -61,6 +60,7 @@ extension LayerTypeExt on LayerType {
     LayerType.parkingLots => (ImageAssetType.svg, Assets.imagesSvg.layers.parking.keyName),
     LayerType.traffic => (ImageAssetType.svg, Assets.imagesSvg.layers.traffic.keyName),
     LayerType.three3D => (ImageAssetType.svg, Assets.imagesSvg.layers.a3D.keyName),
+    LayerType.roadEvents => (ImageAssetType.image, Assets.images.layers.imgLayerRoadEvents.keyName),
     // Raster thumbnails — LayerSwitcherCard switches to Image.asset based on
     // file extension. Use .keyName (not .path) so the package prefix is
     // applied — mapness is consumed as a package by balady_plus, so bare
@@ -85,6 +85,6 @@ extension LayerTypeExt on LayerType {
     // TODO(satellite): switch to l10n keys once added to Localazy.
     LayerType.defaultMap => l10n.defaultLayerTitle,
     LayerType.satellite => l10n.satelliteLayerTitle,
-    //LayerType.roadEvents => l10n.roadEvents.toLowerCase().toCapitalized(),
+    LayerType.roadEvents => l10n.roadEvents.toLowerCase().toCapitalized(),
   };
 }

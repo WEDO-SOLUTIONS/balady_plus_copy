@@ -152,8 +152,16 @@ class AppRouter extends RootStackRouter {
           fullscreenDialog: true,
         ),
         AppRoute(
-          path: 'road_closed',
-          page: RoadClosedRoute.page,
+          path: 'road_event_details',
+          page: RoadEventDetailsRoute.page,
+        ),
+        AppRoute(
+          path: 'report_road_event_map_select',
+          page: ReportRoadEventMapSelectRoute.page,
+        ),
+        AppRoute(
+          path: 'road_event_action_result',
+          page: RoadEventActionResultRoute.page,
         ),
         AppRoute(
           path: 'auto_start_settings',

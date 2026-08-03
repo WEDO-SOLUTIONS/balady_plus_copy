@@ -645,11 +645,29 @@ class RouteEditorRouteParamsMessage {
   final List<RouteEditorRoutePointMessage>? intermediatePoints;
 }
 
+enum ExcludedAreaTypeMessage { point, polyline, polygon }
+
+enum ExcludedAreaSeverityMessage { soft, hard }
+
+class ExcludedAreaMessage {
+  ExcludedAreaMessage({required this.type, required this.severity, required this.extentMeters, required this.points});
+
+  final ExcludedAreaTypeMessage type;
+  final ExcludedAreaSeverityMessage severity;
+  final double extentMeters;
+  final List<GeoPointMessage> points;
+}
+
 class CarRouteSearchOptionParamsMessage {
-  CarRouteSearchOptionParamsMessage({required this.avoidTollRoads, required this.avoidUnpavedRoads});
+  CarRouteSearchOptionParamsMessage({
+    required this.avoidTollRoads,
+    required this.avoidUnpavedRoads,
+    this.excludedAreas = const [],
+  });
 
   final bool avoidTollRoads;
   final bool avoidUnpavedRoads;
+  final List<ExcludedAreaMessage> excludedAreas;
 }
 
 enum DesiredAccuracyMessage { low, medium, high }
@@ -1327,6 +1345,26 @@ enum FollowStateMessage { off, followPosition, followDirection }
 
 enum BetterRouteResponseMessage { accept, reject, timeout }
 
+enum RoadEventActionTypeMessage { like, dislike, confirmation, disproof }
+
+enum RoadEventActionResultMessage { ok, networkError }
+
+enum RoadEventTypeMessage { accident, roadWorks, camera, comment, roadRestriction, other }
+
+enum RoadEventLaneMessage { left, center, right }
+
+enum AddRoadEventResultMessage {
+  ok,
+  networkError,
+  territoryNotSupported,
+  unknownUserLocation,
+  userLocationTooFarFromEvent,
+  notAuthorized,
+  noPersonalDataCollectionConsent,
+  userBlocked,
+  tooManyRequests,
+}
+
 class SpeedRangeZoom {
   SpeedRangeZoom({
     required this.minSpeedRange,
@@ -1790,6 +1828,23 @@ abstract class MapApi {
 
   @async
   void onTrafficClicked();
+
+  @async
+  void addRoadEventSource();
+
+  @async
+  void removeRoadEventSource();
+
+  @async
+  RoadEventActionResultMessage setRoadEventAction(RoadEventActionTypeMessage type);
+
+  @async
+  AddRoadEventResultMessage createRoadEvent(
+    RoadEventTypeMessage type,
+    GeoPointMessage location,
+    List<RoadEventLaneMessage> lanes,
+    String description,
+  );
 
   @async
   void setAppearance(MapAppearanceMessage appearance);

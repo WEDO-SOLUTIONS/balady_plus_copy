@@ -67,6 +67,7 @@ class ObjectTapHandler {
     private let objectsQueue: DispatchQueue
     
     private var lastTappedSearchMarker: Marker?
+    private var currentRoadEvent: RoadEvent?
     private var markerImage: Image?
     private lazy var panoramaMarkerImage: Image = self.imageFactory.make(image: UIImage(named: "ic_marker_point")!)
     private lazy var panoramaMarkerSelected: Image = self.imageFactory.make(image: UIImage(named: "ic_street_view_marker")!)
@@ -1116,31 +1117,59 @@ class ObjectTapHandler {
         }
     }
     
+    // Handles taps for all RoadEventType categories (not just .roadRestriction) now that the
+    // Road Events layer button shows every category — they all route to the same Dart-side card.
     private func onRoadEventTap(_ event: RoadEventMapObject) {
-        switch event.event.type {
-        case .roadRestriction:
-            eventChannel.success([
-                "event": Events.onRoadEventTap,
-                "dgisObjectId": [
-                    "objectId": event.id.objectId,
-                    "entranceId": event.id.entranceId,
-                ],
-                "title": event.event.name,
-                "description": event.event.description,
-                "startTime": (event.event.schedule?.startTime?.timeIntervalSince1970).map {
-                    Int($0 * 1000)
-                },
-                "finishTime": (event.event.schedule?.finishTime?.timeIntervalSince1970).map {
-                    Int($0 * 1000)
-                },
-                "latitude": event.event.location.latitude.value,
-                "longitude": event.event.location.longitude.value,
-            ] as [String : Any?])
-        default:
+        self.currentRoadEvent = event.event
+        eventChannel.success([
+            "event": Events.onRoadEventTap,
+            "dgisObjectId": [
+                "objectId": event.id.objectId,
+                "entranceId": event.id.entranceId,
+            ],
+            "title": event.event.name,
+            "description": event.event.description,
+            "startTime": (event.event.schedule?.startTime?.timeIntervalSince1970).map {
+                Int($0 * 1000)
+            },
+            "finishTime": (event.event.schedule?.finishTime?.timeIntervalSince1970).map {
+                Int($0 * 1000)
+            },
+            "latitude": event.event.location.latitude.value,
+            "longitude": event.event.location.longitude.value,
+            "type": Int(event.event.type.rawValue),
+            "lanes": Int(event.event.lanes.rawValue),
+            "availableActionTypes": event.event.availableActions.reduce(0) { $0 | (1 << Int($1.type.rawValue)) },
+            "timestamp": event.event.timestamp.map { Int($0.timeIntervalSince1970 * 1000) },
+        ] as [String : Any?])
+    }
+
+    // Looks up the matching RoadEventAction on the most recently tapped road event
+    // (cached in currentRoadEvent) and invokes its .set() — used by the
+    // "Still there" (.confirmation) / "Not anymore" (.disproof) feedback buttons.
+    func setRoadEventAction(_ type: RoadEventActionType, completion: @escaping (Result<RoadEventActionResultMessage, any Error>) -> Void) {
+        guard let action = self.currentRoadEvent?.availableActions.first(where: { $0.type == type }) else {
+            completion(.failure(FlutterError(
+                code: "ROAD_EVENT_ACTION_UNAVAILABLE",
+                message: "No available RoadEventAction of type \(type) for the current road event",
+                details: nil
+            )))
             return
         }
+
+        self.cancelable.append(
+            action.set().sink(receiveValue: { result in
+                completion(.success(result.toMessage()))
+            }, failure: { error in
+                completion(.failure(FlutterError(
+                    code: "ROAD_EVENT_ACTION_ERROR",
+                    message: error.description,
+                    details: nil
+                )))
+            })
+        )
     }
-    
+
     private func onSearchMarkerTap(_ marker: Marker, _ id: DgisObjectId) {
         self.lastTappedSearchMarker?.iconOpacity = Opacity(value: 1.0)
         marker.iconOpacity = Opacity(value: 0.0)
