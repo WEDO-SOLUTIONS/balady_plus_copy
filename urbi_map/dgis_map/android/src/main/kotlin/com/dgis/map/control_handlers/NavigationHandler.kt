@@ -7,6 +7,7 @@ import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toRouteSearchOptionsMessage
+import com.dgis.map.live_updates.LiveUpdatesCoordinator
 import com.dgis.map.map_api.*
 import com.dgis.map.map_api.BetterRouteResponseMessage
 import com.dgis.map.map_api.BetterRouteSettingsMessage
@@ -326,6 +327,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopNavigation)
                 }
 
                 callback(Result.success(Unit))
@@ -366,6 +368,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopNavigation)
                 }
 
                 callback(Result.success(Unit))
@@ -374,16 +377,20 @@ class NavigationHandler(
         fun stopNavigation() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
                 setupCamera(speedRangeZoom = speedRangeZoom)
                 navigationManager.start()
+                // Free roam gets the same ongoing notification as guidance, minus the route.
+                LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopFreeRoam)
         }
 
         fun stopFreeRoam() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         private fun stateChannelListener(state: State) {
@@ -395,6 +402,7 @@ class NavigationHandler(
                                                 "state" to Event.stateDisabled
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateDisabled)
                                 isNavigating = false
                         }
                         State.FINISHED -> {
@@ -404,6 +412,7 @@ class NavigationHandler(
                                                 "state" to Event.stateFinished
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateFinished)
                                 stopNavigation()
                                 isNavigating = false
                         }
@@ -414,6 +423,7 @@ class NavigationHandler(
                                                 "state" to Event.stateNavigation
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateNavigation)
                                 isNavigating = true
                         }
                         State.ROUTE_SEARCH -> {
@@ -423,6 +433,7 @@ class NavigationHandler(
                                                 "state" to Event.stateRouteSearch
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateRouteSearch)
                                 isNavigating = true
                         }
                 }

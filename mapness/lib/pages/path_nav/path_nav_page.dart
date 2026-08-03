@@ -51,6 +51,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/common_functions.dart' as cf;
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -62,6 +63,7 @@ import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/services/navigation_live_updates.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -145,6 +147,29 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       // Re-sync sound settings from persistence in case CarPlay/Android Auto
       // changed the setting while the phone app was backgrounded.
       ref.read(soundSettingsProvider.notifier).syncFromPersistence();
+      // The user may have ended the trip from the lock-screen live updates
+      // widget while the app was backgrounded — reconcile UI with the engine.
+      unawaited(_reconcileNavigationOnResume());
+    }
+  }
+
+  /// If the navigation engine was stopped externally (e.g. "End Trip" tapped on
+  /// the lock-screen widget while the Dart isolate was paused), close the page.
+  Future<void> _reconcileNavigationOnResume() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    if (!mounted || _isEndingTrip || _isSwitchingToPedestrian) {
+      return;
+    }
+
+    final navState = await dgisController.getCurrentNavigationState();
+    if (!mounted || _isEndingTrip || _isSwitchingToPedestrian) {
+      return;
+    }
+
+    final engineStopped = navState.state == NavigationState.disabled;
+    final pageStillNavigating = _navigationState.value != PathNavState.finished;
+    if (engineStopped && pageStillNavigating) {
+      unawaited(_endTripAndShowHome());
     }
   }
 
@@ -219,6 +244,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+    // Only clear the callback if it is still ours: on the car -> pedestrian
+    // switch the replacing page may have already registered its own callback.
+    final liveUpdates = NavigationLiveUpdates.instance;
+    if (liveUpdates.onEndTripRequested == _onNativeEndTripRequested) {
+      liveUpdates.onEndTripRequested = null;
+    }
+    // Belt-and-braces: the native side also ends the session on engine state,
+    // but make sure the widget is removed on any in-app trip end path. Skipped
+    // during the car -> pedestrian switch — the session continues on foot.
+    if (!_isSwitchingToPedestrian) {
+      unawaited(liveUpdates.endSession());
+    }
 
     WidgetsBinding.instance.removeObserver(this);
     _naviEventsListener?.cancel();
@@ -341,6 +379,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
+    NavigationLiveUpdates.instance.onEndTripRequested = _onNativeEndTripRequested;
 
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
@@ -367,8 +406,47 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await _applyInitialPadding();
     }
 
+    unawaited(_syncLiveUpdatesMetadata());
+
     if (widget.navType == RouteSearchOptionsMessage.car) {
       unawaited(_prefetchIndoorInfo());
+    }
+  }
+
+  Future<void> _syncLiveUpdatesMetadata() async {
+    if (!mounted) {
+      return;
+    }
+    final destination = ref.read(etaRouteInfoProvider).endPoint;
+    final l10n = context.l10n;
+    await NavigationLiveUpdates.instance.setSessionMetadata(
+      destinationName: destination?.label,
+      routeType: widget.navType.name,
+      language: ref.read(appLanguageProvider).baladyCompat,
+      // Keys the native widgets look up; anything absent keeps its native default.
+      strings: <String, String>{
+        'end_trip': l10n.endTrip,
+        'arrived': l10n.youArrived,
+        'gps_lost': l10n.gpsLost,
+        'free_roam': l10n.freeRoam,
+        'reroute': l10n.routeResearch,
+        'km': l10n.km,
+        'm': l10n.meter,
+        'h': l10n.hoursShort,
+        'min': l10n.minutesShort,
+      },
+    );
+  }
+
+  /// The user tapped "End Trip" on the lock-screen widget. The native side has
+  /// already stopped the navigation engine and removed the widget — here we
+  /// only tear down the Dart session and close the page.
+  void _onNativeEndTripRequested() {
+    if (!mounted || _isEndingTrip || _isSwitchingToPedestrian) {
+      return;
+    }
+    if (_navigationState.value != PathNavState.finished) {
+      unawaited(_endTripAndShowHome());
     }
   }
 

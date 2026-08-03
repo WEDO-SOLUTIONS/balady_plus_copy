@@ -18,6 +18,19 @@ part 'location.g.dart';
 
 final locationProvider = _locationProvider;
 
+/// Location settings for the app's own position stream.
+///
+/// geolocator already enables background updates by default on iOS; what it
+/// does not do is show the status bar indicator, and without it a session that
+/// keeps running with the screen locked is invisible to the user. The engine's
+/// own source is fixed natively — see BackgroundLocationProvider in dgis_map.
+LocationSettings _backgroundLocationSettings() {
+  if (Platform.isIOS) {
+    return AppleSettings(showBackgroundLocationIndicator: true);
+  }
+  return const LocationSettings();
+}
+
 bool _insiderGeofenceStarted = false;
 
 /// WARNING: the returned [Position] is always an object not equal to the previous one because it has [timestamp]
@@ -52,7 +65,7 @@ class _Location extends _$Location {
       // gms is not available on iOS so we use the standard library in the case
       if (isGmsAvailable || Platform.isIOS) {
         try {
-          const locationSettings = LocationSettings();
+          final locationSettings = _backgroundLocationSettings();
 
           final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings)
               .handleError((e) {
