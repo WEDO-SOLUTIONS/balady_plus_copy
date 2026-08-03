@@ -7,30 +7,41 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 
-class MapAttributionLabel extends StatelessWidget {
+import '../../shared/providers/app_language.dart';
+
+class MapAttributionLabel extends ConsumerWidget {
   const MapAttributionLabel({super.key});
 
   @override
-  Widget build(BuildContext context) => IgnorePointer(
-    child: StrokeText(
-      context.l10n.baladyMaps,
-    ),
-  );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isArabic = ref.watch(appLanguageProvider) == Language.arabic;
+    final splits = context.l10n.baladyMaps.split(' ');
+    return IgnorePointer(
+      child: Row(
+        textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+        children: [
+          StrokeText(splits.first, isBold: true),
+          StrokeText(splits.last),
+        ],
+      ),
+    );
+  }
 }
 
-class StrokeText extends StatelessWidget {
+class StrokeText extends ConsumerWidget {
   final String text;
+  final bool isBold;
 
-  const StrokeText(
-    this.text, {
-    super.key,
-  });
+  const StrokeText(this.text, {super.key, this.isBold = false});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final base = context.textStyles.bodyLargeRegular;
     const fontFamily = 'packages/balady_uikit/Golos';
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    final isArabic = ref.watch(appLanguageProvider) == Language.arabic;
 
     return Padding(
       padding: const EdgeInsets.all(2),
@@ -38,7 +49,9 @@ class StrokeText extends StatelessWidget {
         children: [
           Text(
             text,
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
             style: base.copyWith(
+              fontWeight: isBold && !isArabic ? FontWeight.w600 : FontWeight.w400,
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = 3
@@ -50,7 +63,12 @@ class StrokeText extends StatelessWidget {
           ),
           Text(
             text,
-            style: base.copyWith(color: context.colors.foregroundDefault, fontFamily: fontFamily),
+            textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+            style: base.copyWith(
+              color: isDark ? context.colors.accentOnAccent : context.colors.screenOverlayDimming60,
+              fontWeight: isBold && !isArabic ? FontWeight.w600 : FontWeight.w400,
+              fontFamily: fontFamily,
+            ),
           ),
         ],
       ),
