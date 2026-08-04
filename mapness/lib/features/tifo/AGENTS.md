@@ -67,8 +67,14 @@ first unmet step; Close(X) leaves the map untouched):
   host flow (`tifo_login.dart`) and stops the walk while `isGuest` stays
   true (staging lazily registers a profile for the guest bearer, so the
   profile alone can't tell — see `resolveTifoConfig`). The tutorial gate
-  marks the start server-side and pushes the guided tour (FR-05: starting
-  clears the gate forever).
+  pushes the guided tour, then marks the device (Hive) and server flags
+  **right after the tour is shown — regardless of whether the user finished
+  it or closed/skipped it** (BR-02: starting the tutorial clears the gate
+  forever, complete or skip; only a genuine session loss — crash,
+  disconnect, force-quit, BR-06 — leaves it unmet, and that path never
+  reaches the persistence call at all since the process dies mid-await).
+  Previously this only persisted after a full completion, so skipping
+  re-triggered the tour on every later play attempt — fixed 2026-08-04.
 - `tutorial/tifo_guided_tutorial.dart` — **four**-screen tour (Figma 848:9497
   standings tooltip → 848:9982 penalty preview → 848:10725 intro sheet →
   879:10224 support), cut down from the earlier 13-step sequence

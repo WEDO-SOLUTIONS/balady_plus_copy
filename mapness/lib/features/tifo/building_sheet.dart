@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/penalty/penalty_result_screen.dart';
@@ -315,7 +316,21 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return;
     }
     final container = _container!;
-    final missesAllowed = container.read(tifoSessionProvider).config.missesAllowed;
+    final session = container.read(tifoSessionProvider);
+    final missesAllowed = session.config.missesAllowed;
+    // Goalkeeper wears the building's owning club's color (default/Green for
+    // a neutral or unresolvable building); striker wears the player's own
+    // club color (default/White if the player has none or it doesn't match
+    // a known bucket) — see tifoNearestKeeperColor/tifoNearestStrikerColor.
+    // Debug panel can pin either side to a fixed bucket for testing; off (the
+    // default, and always off in production) leaves this untouched.
+    final colorOverride = container.read(tifoDebugColorOverrideProvider);
+    final keeperColor = colorOverride.enabled && colorOverride.keeperColor != null
+        ? colorOverride.keeperColor
+        : (_building.isNeutral ? null : tifoNearestKeeperColor(session.clubById(_building.ownerClubSlug)?.colorArgb));
+    final strikerColor = colorOverride.enabled && colorOverride.strikerColor != null
+        ? colorOverride.strikerColor
+        : tifoNearestStrikerColor(session.myClub?.colorArgb);
     TifoPlaySession? playSession;
     // The map layer stays enabled (and its 20s ownership poller with it) for
     // the whole session — pause just the poller while the fullscreen game is
@@ -329,6 +344,8 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
           builder: (_) => PenaltyApp(
             missesAllowed: missesAllowed,
             scoreToBeat: _building.scoreToBeat,
+            strikerColor: strikerColor,
+            keeperColor: keeperColor,
             onReady: (arm) => unawaited(
               _openSession(container).then((session) {
                 if (session == null) {

@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
@@ -177,7 +178,7 @@ class Debug3DModelPanel extends ConsumerWidget {
             icon: Icons.sports_soccer_rounded,
             gradient: DebugTheme.gradientTeal,
             isCompact: true,
-            onPressed: () => _launchPenaltyGame(),
+            onPressed: () => _launchPenaltyGame(ref),
           ),
           if (state.error != null) ...[
             const DebugDivider(),
@@ -194,16 +195,24 @@ class Debug3DModelPanel extends ConsumerWidget {
   }
 
   /// Debug-only shortcut: pushes [PenaltyApp] directly on the root navigator,
-  /// bypassing every gate (team-select / tutorial / entry / polygon-tap).
-  /// `onComplete` just pops back — no capture, no cool-downs, no side effects.
-  void _launchPenaltyGame() {
+  /// bypassing every gate (team-select / tutorial / entry / polygon-tap) —
+  /// including the building/club lookup in `building_sheet.dart` that
+  /// normally resolves kit colors, so the "Kit colors" override in the TIFO
+  /// Backend panel must be read here too or it silently does nothing on this
+  /// shortcut.
+  void _launchPenaltyGame(WidgetRef ref) {
     final navigator = rootNavigatorKey.currentState;
     if (navigator == null) return;
+    final colorOverride = ref.read(tifoDebugColorOverrideProvider);
+    final strikerColor = colorOverride.enabled ? colorOverride.strikerColor : null;
+    final keeperColor = colorOverride.enabled ? colorOverride.keeperColor : null;
     unawaited(
       navigator.push<void>(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
           builder: (_) => PenaltyApp(
+            strikerColor: strikerColor,
+            keeperColor: keeperColor,
             onComplete: (_) {
               Future<void>.delayed(const Duration(milliseconds: 850), () {
                 rootNavigatorKey.currentState?.pop();

@@ -51,23 +51,29 @@ class TifoJourney {
           }
 
         case TifoJourneyStep.tutorial:
-          // BRD V2 US-03 BR-06: an interrupted/abandoned tutorial counts as
-          // NOT started — only a completed run clears the gate, so report it
-          // to the backend after the tour finishes, not before. A run
-          // already completed on this device (e.g. as a guest, before the
-          // profile switched identity on login) skips straight to the report.
+          // BRD V2 US-03 BR-02: STARTING the tutorial clears the gate
+          // permanently, whether the user finishes it or closes/skips it —
+          // both are deliberate in-app outcomes of `showTifoGuidedTutorial`
+          // returning. BR-06's exception (session loss: connectivity drop,
+          // app close, crash) never reaches this line at all, since the
+          // process dies mid-await before either persistence call below can
+          // run — so gating on "did they finish" was wrong; the tour having
+          // been SHOWN is what must be persisted. A run already recorded on
+          // this device (e.g. as a guest, before the profile switched
+          // identity on login) skips straight to the server report.
           final flow = ref.read(tifoFlowProvider.notifier);
-          var completed = await flow.hasCompletedTutorialOnDevice();
-          if (!completed) {
+          final alreadyStarted = await flow.hasCompletedTutorialOnDevice();
+          if (!alreadyStarted) {
             if (!context.mounted) {
               return false;
             }
-            completed = await showTifoGuidedTutorial(context);
+            await showTifoGuidedTutorial(context);
+            await flow.markTutorialCompletedOnDevice();
           }
-          if (!completed) {
-            return false;
-          }
-          await flow.markTutorialCompletedOnDevice();
+          // Always report to the backend, even when the device flag was
+          // already set — the server flag is per-PROFILE, and a guest run
+          // that set the device flag may not yet be reported against a
+          // freshly logged-in profile (identity switches bearer on staging).
           await session.markTutorialStarted();
           // If the server didn't record it (offline), stop instead of
           // re-pushing the tour on the next loop iteration.

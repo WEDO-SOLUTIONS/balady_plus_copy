@@ -26,6 +26,8 @@ class PenaltyApp extends StatelessWidget {
     this.onReady,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
+    this.strikerColor,
+    this.keeperColor,
   });
 
   /// Fires once the session ends. Carries goals, misses and the per-kick event
@@ -45,6 +47,16 @@ class PenaltyApp extends StatelessWidget {
   /// between, so its short expiry window doesn't cover asset loading.
   final void Function(VoidCallback arm)? onReady;
 
+  /// Striker jersey color bucket (see [tifoStrikerColors]) — resolve with
+  /// [tifoNearestStrikerColor] from the player's club color. Null plays the
+  /// default (White) sprites.
+  final String? strikerColor;
+
+  /// Goalkeeper jersey color bucket (see [tifoKeeperColors]) — resolve with
+  /// [tifoNearestKeeperColor] from the building's owning club color. Null
+  /// plays the default (Green) sprites.
+  final String? keeperColor;
+
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -55,6 +67,8 @@ class PenaltyApp extends StatelessWidget {
       onReady: onReady,
       missesAllowed: missesAllowed,
       scoreToBeat: scoreToBeat,
+      strikerColor: strikerColor,
+      keeperColor: keeperColor,
     ),
   );
 }
@@ -68,12 +82,16 @@ class PenaltyGamePage extends StatefulWidget {
     this.onReady,
     this.missesAllowed = 3,
     this.scoreToBeat = 0,
+    this.strikerColor,
+    this.keeperColor,
   });
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
   final void Function(VoidCallback arm)? onReady;
   final int missesAllowed;
   final int scoreToBeat;
+  final String? strikerColor;
+  final String? keeperColor;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -88,6 +106,8 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
       PenaltyGame(
           onComplete: widget.onComplete,
           missesAllowed: widget.missesAllowed,
+          strikerColor: widget.strikerColor,
+          keeperColor: widget.keeperColor,
         )
         ..onReady = () {
           final onReady = widget.onReady;
@@ -1199,7 +1219,7 @@ enum _KeeperMotion {
 enum _StrikerMotion { idle, windup, kick, settle }
 
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
-  PenaltyGame({this.onComplete, this.missesAllowed = 3});
+  PenaltyGame({this.onComplete, this.missesAllowed = 3, this.strikerColor, this.keeperColor});
 
   /// Fired exactly once, when the session ends. Carries goals, misses and the
   /// per-kick event log (for anti-cheat submit).
@@ -1207,6 +1227,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
   /// Session ends after this many misses (BRD rule; from `/config`).
   final int missesAllowed;
+
+  /// See [PenaltyApp.strikerColor] / [PenaltyApp.keeperColor].
+  final String? strikerColor;
+  final String? keeperColor;
 
   /// Live counters for the Flutter HUD panel overlaying the game
   /// (Figma 696:112029): goals scored and misses spent so far.
@@ -1374,9 +1398,9 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   Future<void> onLoad() async {
     await super.onLoad();
     await Future.wait([
-      _goalkeeperModel.load(),
+      _goalkeeperModel.load(color: keeperColor),
       _soccerBallModel.load(),
-      _strikerModel.load(),
+      _strikerModel.load(color: strikerColor),
     ]);
     _backgroundImage = await _loadOptionalUiImage(
       'packages/mapness/assets/tifo/backgrounds/stadium_goal_background.jpg',
@@ -2778,11 +2802,20 @@ class _StrikerModel {
   ui.Image? _windup;
   ui.Image? _kick;
 
-  Future<void> load() async {
+  /// [color] is a team-color bucket name (see [tifoStrikerColors], resolved
+  /// via [tifoNearestStrikerColor]) — null plays the original default-color
+  /// files. Each motion falls back to its default file independently if the
+  /// colored variant is missing, so a partial asset drop never blanks a pose.
+  Future<void> load({String? color}) async {
     await Future.wait(
       _atlasSpecs.entries.map((entry) async {
         final (file, cols, rows, _) = entry.value;
-        final image = await _loadOptionalUiImage(
+        var image = color == null
+            ? null
+            : await _loadOptionalUiImage(
+                'packages/mapness/assets/tifo/sprites/striker_v2/${_withColorSuffix(file, color)}',
+              );
+        image ??= await _loadOptionalUiImage(
           'packages/mapness/assets/tifo/sprites/striker_v2/$file',
         );
         if (image != null) {
@@ -3238,7 +3271,11 @@ class _GoalkeeperModel {
   int _sourceModelBytes = 0;
   _GlbModel? _sourceModel;
 
-  Future<void> load() async {
+  /// [color] is a team-color bucket name (see [tifoKeeperColors], resolved
+  /// via [tifoNearestKeeperColor]) — null plays the original default-color
+  /// files. Each motion falls back to its default file independently if the
+  /// colored variant is missing, so a partial asset drop never blanks a pose.
+  Future<void> load({String? color}) async {
     try {
       final sprites = await Future.wait([
         _loadUiImage('packages/mapness/assets/tifo/sprites/goalkeeper_idle.png'),
@@ -3255,7 +3292,12 @@ class _GoalkeeperModel {
         _atlasSpecs.entries.map((entry) async {
           final (file, cols, rows, _) = entry.value;
 
-          final image = await _loadOptionalUiImage(
+          var image = color == null
+              ? null
+              : await _loadOptionalUiImage(
+                  'packages/mapness/assets/tifo/sprites/goalkeeper_v2/${_withColorSuffix(file, color)}',
+                );
+          image ??= await _loadOptionalUiImage(
             'packages/mapness/assets/tifo/sprites/goalkeeper_v2/$file',
           );
 
@@ -4666,6 +4708,73 @@ Future<void> _playRandomSfx(List<String> tracks) async {
     JustAudioPlatform.instance = backgroundPlatform;
   }
 }
+
+/// Team-color bucket names baked into `striker_v2/` (e.g. `striker_idle_Blue.png`).
+/// `White` is the striker's default/fallback color, so it has no distinct
+/// club — a player without a resolvable club color plays the unsuffixed file.
+const List<String> tifoStrikerColors = ['White', 'Blue', 'Red', 'Yellow', 'Black', 'Sand'];
+
+/// Team-color bucket names baked into `goalkeeper_v2/` (e.g. `keeper_idle_Blue.png`).
+/// `Green` is the keeper's default/fallback color (matches the unsuffixed files).
+const List<String> tifoKeeperColors = ['Green', 'Blue', 'Red', 'Yellow', 'Black', 'Sand'];
+
+// Reference RGB sampled directly off the baked jersey pixels of each bucket's
+// atlas (striker_idle_*.png / keeper_idle_*.png) — NOT a hardcoded club→color
+// guess. `tifoNearest*Color` below just finds the closest of these to
+// whatever `colorArgb` the backend actually returns for a club, so it adapts
+// to real club colors instead of encoding an assumption about which club is
+// "blue" vs "yellow".
+const Map<String, int> _strikerColorRgb = {
+  'White': 0xF6F6F6,
+  'Blue': 0x0000F0,
+  'Red': 0xE52E1C,
+  'Yellow': 0xF6D400,
+  'Black': 0x2A2A2A,
+  'Sand': 0xC2A380,
+};
+
+const Map<String, int> _keeperColorRgb = {
+  'Green': 0x3A483B,
+  'Blue': 0x2D2CAE,
+  'Red': 0xC03C37,
+  'Yellow': 0xC8A63C,
+  'Black': 0x413E3E,
+  'Sand': 0x9B7D64,
+};
+
+/// Nearest striker jersey-color bucket for a club's `colorArgb`, or null if
+/// [colorArgb] is null (caller should then omit `color` and get the default).
+String? tifoNearestStrikerColor(int? colorArgb) => _nearestColorBucket(colorArgb, _strikerColorRgb);
+
+/// Nearest goalkeeper jersey-color bucket for a club's `colorArgb`, or null if
+/// [colorArgb] is null (caller should then omit `color` and get the default).
+String? tifoNearestKeeperColor(int? colorArgb) => _nearestColorBucket(colorArgb, _keeperColorRgb);
+
+String? _nearestColorBucket(int? colorArgb, Map<String, int> refs) {
+  if (colorArgb == null) {
+    return null;
+  }
+  final r = (colorArgb >> 16) & 0xFF;
+  final g = (colorArgb >> 8) & 0xFF;
+  final b = colorArgb & 0xFF;
+  String? best;
+  var bestDist = double.infinity;
+  for (final entry in refs.entries) {
+    final rr = (entry.value >> 16) & 0xFF;
+    final rg = (entry.value >> 8) & 0xFF;
+    final rb = entry.value & 0xFF;
+    final dist = ((r - rr) * (r - rr) + (g - rg) * (g - rg) + (b - rb) * (b - rb)).toDouble();
+    if (dist < bestDist) {
+      bestDist = dist;
+      best = entry.key;
+    }
+  }
+  return best;
+}
+
+/// Inserts a `_$color` suffix before the extension: `striker_idle.png` +
+/// `Blue` -> `striker_idle_Blue.png`.
+String _withColorSuffix(String file, String color) => file.replaceFirst('.png', '_$color.png');
 
 Future<ui.Image> _loadUiImage(String assetPath) async {
   final data = await rootBundle.load(assetPath);

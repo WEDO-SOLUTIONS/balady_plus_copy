@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
+import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
@@ -159,6 +161,13 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
             );
           },
         ),
+        const DebugDivider(),
+        Text(
+          'Kit colors',
+          style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+        ),
+        const SizedBox(height: 8),
+        const _ColorOverrideSwitcher(),
         const DebugDivider(),
         Text(
           'Custom request',
@@ -442,6 +451,100 @@ class _IdentitySwitcherState extends ConsumerState<_IdentitySwitcher> {
     await _apply(() => controller.use(value));
     _controller.clear();
   }
+}
+
+/// Pins the striker/keeper kit color for testing instead of the game's own
+/// club-based resolution. Off (default) leaves the game's choice untouched;
+/// each side has its own "Auto" chip so one role can stay on real data while
+/// the other is forced to a specific color.
+class _ColorOverrideSwitcher extends ConsumerWidget {
+  const _ColorOverrideSwitcher();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final override = ref.watch(tifoDebugColorOverrideProvider);
+    final controller = ref.read(tifoDebugColorOverrideProvider.notifier);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DebugToggleRow(
+          title: 'Override kit colors',
+          subtitle: override.enabled
+              ? 'On — chosen colors below replace the game\'s own club resolution'
+              : 'Off — the game picks colors from club data, as normal',
+          value: override.enabled,
+          gradient: DebugTheme.gradientTeal,
+          onChanged: (value) => controller.setEnabled(value),
+        ),
+        if (override.enabled) ...[
+          const SizedBox(height: 10),
+          Text(
+            'Striker',
+            style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+          ),
+          const SizedBox(height: 6),
+          _colorChips(
+            options: tifoStrikerColors,
+            selected: override.strikerColor,
+            onSelect: controller.setStrikerColor,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'Goalkeeper',
+            style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+          ),
+          const SizedBox(height: 6),
+          _colorChips(
+            options: tifoKeeperColors,
+            selected: override.keeperColor,
+            onSelect: controller.setKeeperColor,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _colorChips({
+    required List<String> options,
+    required String? selected,
+    required ValueChanged<String?> onSelect,
+  }) => Wrap(
+    spacing: 8,
+    runSpacing: 8,
+    children: [
+      selected == null
+          ? DebugButton(
+              label: 'Auto',
+              icon: Icons.check_rounded,
+              gradient: DebugTheme.gradientTeal,
+              isCompact: true,
+              onPressed: () {},
+            )
+          : DebugOutlinedButton(
+              label: 'Auto',
+              icon: Icons.circle_outlined,
+              color: DebugTheme.info,
+              isCompact: true,
+              onPressed: () => onSelect(null),
+            ),
+      for (final color in options)
+        color == selected
+            ? DebugButton(
+                label: color,
+                icon: Icons.check_rounded,
+                gradient: DebugTheme.gradientTeal,
+                isCompact: true,
+                onPressed: () {},
+              )
+            : DebugOutlinedButton(
+                label: color,
+                icon: Icons.circle_outlined,
+                color: DebugTheme.info,
+                isCompact: true,
+                onPressed: () => onSelect(color),
+              ),
+    ],
+  );
 }
 
 class _SavedIdRow extends StatelessWidget {
