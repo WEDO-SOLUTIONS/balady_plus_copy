@@ -69,8 +69,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   margin: const EdgeInsets.all(16),
                                   padding: const EdgeInsets.all(16),
                                   height: 64,
-                                  decoration:  BoxDecoration(
-
+                                  decoration: BoxDecoration(
                                     color: Theme.of(context).cardColor,
 
                                     borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -78,19 +77,18 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                       DrawIconBasedTypeWidget(
+                                      DrawIconBasedTypeWidget(
                                         icon: IconPath.aboutBalady,
                                         iconColor: Theme.of(context).primaryColor,
                                       ),
-                                      SizedBox(width: 8,),
+                                      SizedBox(width: 8),
                                       Expanded(
                                         child: CustomTextWidget(
-                                            "the_following_data".tr(),
-                                            maxLines: 10,
-                                            textStyle: Theme.of(context).textTheme.labelMedium,
-                                          ),
-
-                                      )
+                                          "the_following_data".tr(),
+                                          maxLines: 10,
+                                          textStyle: Theme.of(context).textTheme.labelMedium,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -101,8 +99,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   itemBuilder: (context, index) {
                                     if (index == 0) return const VolunteerDashboardCard();
                                     return DashboardCard(
-                                        card: state
-                                            .cards[index - 1]); //add index - 1 when uncommenting VolunteerDashboardCard
+                                      card: state.cards[index - 1],
+                                    ); //add index - 1 when uncommenting VolunteerDashboardCard
                                   },
                                 ),
                               ],
@@ -121,9 +119,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
 }
 
 class NoDataComponent extends StatelessWidget {
-  const NoDataComponent({
-    super.key,
-  });
+  const NoDataComponent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +127,7 @@ class NoDataComponent extends StatelessWidget {
       height: 257,
       margin: const EdgeInsets.only(top: 24),
       width: MediaQuery.sizeOf(context).width,
-      decoration:  BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        boxShadow: Constants.boxShadow,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16)), boxShadow: Constants.boxShadow),
       child: const NoDataWidget(),
     );
   }

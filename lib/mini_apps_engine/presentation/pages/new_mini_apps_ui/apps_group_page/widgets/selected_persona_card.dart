@@ -79,7 +79,9 @@ class SelectedPersonaCard extends StatelessWidget {
                     // Handle account selection with cross-group navigation
                     await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
                   } else {
-                    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
+                    CommonFunctions.sendAnalyticsEvent(
+                      AnalyticsEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event,
+                    );
                     await BottomSheetDialog.showDraggableSheet(
                       context,
                       dialogKeyName: DialogName.delegatorsDialog,
