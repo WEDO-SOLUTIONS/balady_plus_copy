@@ -29,11 +29,15 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
   bool _isClosing = false;
 
   void _handleCloseTap() {
-    if (_isClosing) return;
+    if (_isClosing) {
+      return;
+    }
     _isClosing = true;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       final router = context.router;
       try {
         // Use removeWhere to cleanly remove the Makkah POI route.
@@ -91,7 +95,9 @@ class _ContentState extends State<_PoiCardContent> with SingleTickerProviderStat
     super.initState();
 
     _bottomSheetListener = () {
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
       final isInitial = _bottomSheetPreviousState == null;
       final state = _bottomSheetController.state;
       if (state == _bottomSheetPreviousState) {

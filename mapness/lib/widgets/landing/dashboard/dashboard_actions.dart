@@ -54,14 +54,14 @@ class DashboardActions {
   void openQuran() {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
-    CommonFunctions.openMiniApp(serviceKey: "Quran");
+    CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   /// Opens the Athkar mini-app.
   void openAthkar() {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
-    CommonFunctions.openMiniApp(serviceKey: "Athkar");
+    CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
   /// Opens the Free Roam navigation screen.
@@ -103,7 +103,7 @@ class DashboardActions {
   void openSnapAndSend() {
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
     ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
-    CommonFunctions.openMiniApp(serviceKey: "snapandsend");
+    CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
   }
 
   /// Opens the road event reporting feature.

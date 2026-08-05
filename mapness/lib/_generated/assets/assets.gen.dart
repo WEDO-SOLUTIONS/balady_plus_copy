@@ -3295,9 +3295,7 @@ class $AssetsIconsSvgPlacesNewOldGen {
   ];
 }
 
-class Assets {
-  const Assets._();
-
+abstract final class Assets {
   static const String package = 'mapness';
 
   static const String config = 'packages/mapness/assets/config.json';

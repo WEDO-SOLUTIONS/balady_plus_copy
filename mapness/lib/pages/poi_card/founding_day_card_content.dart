@@ -252,9 +252,7 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           closestPoint: widget.closestPoint,
           bottomSheetController: _bottomSheetController,
           data: widget.data,
-          share: () {
-            return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
-          },
+          share: () => poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint),
           callPhone: () {
             final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,

@@ -44,9 +44,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
         ),
       ],
       footer: PoiCardFooter(
-        share: () {
-          return poiActions.share(objectId: objectId, markerCoords: closestPoint);
-        },
+        share: () => poiActions.share(objectId: objectId, markerCoords: closestPoint),
         onTapCar: () {
           final closestPoint = this.closestPoint;
           if (closestPoint == null) {
