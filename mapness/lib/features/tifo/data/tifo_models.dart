@@ -1,48 +1,14 @@
 import 'package:flutter/foundation.dart';
 
-/// The four playable TIFO clubs. Slugs and colors mirror the backend/demo
-/// (`CLUB_COLORS` in the staging web app); ARGB values are what we paint the
-/// captured building polygons with on the map.
-enum TifoClub {
-  alHilal(slug: 'al-hilal', label: 'Al Hilal', fillArgb: 0xB31E5FA8, strokeArgb: 0xFF1E5FA8),
-  alNassr(slug: 'al-nassr', label: 'Al Nassr', fillArgb: 0xB3D9A400, strokeArgb: 0xFFD9A400),
-  alRiyadh(slug: 'al-riyadh', label: 'Al Riyadh', fillArgb: 0xB30E8F6E, strokeArgb: 0xFF0E8F6E),
-  alShabab(slug: 'al-shabab', label: 'Al Shabab', fillArgb: 0xB34A5568, strokeArgb: 0xFF4A5568);
-
-  const TifoClub({
-    required this.slug,
-    required this.label,
-    required this.fillArgb,
-    required this.strokeArgb,
-  });
-
-  final String slug;
-  final String label;
-  final int fillArgb;
-  final int strokeArgb;
-
-  static TifoClub? fromSlug(String? slug) {
-    if (slug == null) {
-      return null;
-    }
-    for (final club in values) {
-      if (club.slug == slug) {
-        return club;
-      }
-    }
-    return null;
-  }
-}
-
 /// Neutral (unclaimed) building — sandy, NOT a club color (BRD FR-08) and
 /// distinct from the host map's green base buildings. Ideally sourced from the
 /// server `palette.neutral` (GET /config) — hardcoded until we parse it.
 const int kTifoNeutralFillArgb = 0x59D9A441;
 const int kTifoNeutralStrokeArgb = 0xE6D9A441;
 
-/// One entry of the data-driven season roster (`GET /clubs`). The BRD makes
-/// the roster per-season data, so screens must render from this list rather
-/// than a hardcoded enum; [TifoClub] stays only as a color fallback.
+/// One entry of the data-driven season roster (`GET /clubs`). The roster is
+/// per-season data (BRD), so screens render from this list — never a
+/// hardcoded enum.
 @immutable
 class TifoClubInfo {
   const TifoClubInfo({
@@ -52,13 +18,17 @@ class TifoClubInfo {
     required this.colorArgb,
   });
 
-  /// Slug used across the API (`al-hilal`, …).
+  /// Slug used across the API (`blue-team`, …).
   final String id;
   final String name;
   final String short;
   final int colorArgb;
 
+  /// Semi-transparent fill for building/district polygons.
   int get fillArgb => (colorArgb & 0x00FFFFFF) | 0xB3000000;
+
+  /// Opaque stroke for building/district polygon borders.
+  int get strokeArgb => (colorArgb & 0x00FFFFFF) | 0xFF000000;
 
   static TifoClubInfo? fromJson(Map<String, dynamic> json) {
     final id = json['id']?.toString();
@@ -496,9 +466,7 @@ class TifoBuilding {
 
   bool get isAvailable => status == 'available';
 
-  TifoClub? get ownerClub => TifoClub.fromSlug(ownerClubSlug);
-
-  bool get isNeutral => ownerClub == null;
+  bool get isNeutral => ownerClubSlug == null;
 
   String get displayName {
     final n = name;

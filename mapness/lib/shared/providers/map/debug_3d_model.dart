@@ -7,8 +7,6 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/launch_screen.dart';
 import 'package:mapness/features/tifo/onboarding_screen.dart';
 import 'package:mapness/features/tifo/penalty/penalty_entry_screen.dart';
-import 'package:mapness/features/tifo/tifo_flow_provider.dart';
-import 'package:mapness/features/tifo/tifo_team.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -336,8 +334,7 @@ class Debug3DModelState {
   final Set<String> capturedPolygonIds;
   final String? error;
 
-  bool get hasDistrictLayerObjects =>
-      arePolygonsVisible || areCentroidModelsVisible || capturedPolygonIds.isNotEmpty;
+  bool get hasDistrictLayerObjects => arePolygonsVisible || areCentroidModelsVisible || capturedPolygonIds.isNotEmpty;
 
   Debug3DModelState copyWith({
     bool? isAdded,
@@ -419,10 +416,12 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
       _setState(state.copyWith(isBusy: false));
       return;
     }
-    _setState(state.copyWith(
-      polygonColorMode: mode,
-      polygonColorModeOverrides: const {},
-    ));
+    _setState(
+      state.copyWith(
+        polygonColorMode: mode,
+        polygonColorModeOverrides: const {},
+      ),
+    );
     await _renderDistrictPolygons(controller);
     _setState(state.copyWith(isBusy: false));
   });
@@ -570,27 +569,9 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
     Set<String>? onlyIds,
   }) => [
     for (var index = 0; index < debugDistrictPolygons.length; index++)
-      if (onlyIds == null ||
-          onlyIds.contains(debugDistrictPolygons[index].id))
+      if (onlyIds == null || onlyIds.contains(debugDistrictPolygons[index].id))
         _buildDistrictPolygon(index, colorMode, colorModeOverrides),
   ];
-
-  /// Maps a [TifoTeam] to its closest polygon color mode. Used to paint
-  /// captured polygons in the player's team color.
-  DebugDistrictPolygonColorMode _teamColorMode(TifoTeam? team) {
-    switch (team) {
-      case TifoTeam.alHilal:
-        return DebugDistrictPolygonColorMode.blue;
-      case TifoTeam.alNassr:
-        return DebugDistrictPolygonColorMode.amber;
-      case TifoTeam.riyadhFc:
-        return DebugDistrictPolygonColorMode.red;
-      case TifoTeam.alShabab:
-        return DebugDistrictPolygonColorMode.gray;
-      case null:
-        return state.polygonColorMode;
-    }
-  }
 
   /// Single source of truth for what polygons to render. Three cases:
   ///   * [arePolygonsVisible] = true  → all polygons (manual debug view);
@@ -606,11 +587,10 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
       return;
     }
 
-    final teamMode = _teamColorMode(ref.read(tifoFlowProvider).selectedTeam);
     final overrides = <String, DebugDistrictPolygonColorMode>{
       ...state.polygonColorModeOverrides,
       // Captures win over manual color overrides for that polygon.
-      for (final id in captured) id: teamMode,
+      for (final id in captured) id: state.polygonColorMode,
     };
 
     final polygons = _buildDistrictPolygons(
@@ -718,24 +698,24 @@ class Debug3DModelController extends Notifier<Debug3DModelState> {
                 ),
               )
               .then((_) {
-            // Chain onboarding only if game mode is still active —
-            // otherwise the user already turned it off via debug.
-            if (!state.isGameModeActive) {
-              return;
-            }
-            final nav = rootNavigatorKey.currentState;
-            if (nav == null) {
-              return;
-            }
-            unawaited(
-              nav.push<void>(
-                MaterialPageRoute<void>(
-                  fullscreenDialog: true,
-                  builder: (_) => const TifoOnboardingScreen(),
-                ),
-              ),
-            );
-          }),
+                // Chain onboarding only if game mode is still active —
+                // otherwise the user already turned it off via debug.
+                if (!state.isGameModeActive) {
+                  return;
+                }
+                final nav = rootNavigatorKey.currentState;
+                if (nav == null) {
+                  return;
+                }
+                unawaited(
+                  nav.push<void>(
+                    MaterialPageRoute<void>(
+                      fullscreenDialog: true,
+                      builder: (_) => const TifoOnboardingScreen(),
+                    ),
+                  ),
+                );
+              }),
         );
       }
       await setCentroidModelsVisible(value: true);

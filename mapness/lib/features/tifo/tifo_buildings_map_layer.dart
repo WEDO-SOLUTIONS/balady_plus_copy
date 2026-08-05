@@ -10,6 +10,7 @@ import 'package:mapness/features/tifo/district_sheet.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_districts_provider.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -336,8 +337,9 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       var evicted = 0;
       final toAdd = <Polygon>[];
       final toRemove = <String>[];
+      final session = ref.read(tifoSessionProvider);
       for (final building in ordered) {
-        final club = building.ownerClub;
+        final club = session.clubById(building.ownerClubSlug);
         final fill = club?.fillArgb ?? kTifoNeutralFillArgb;
         final stroke = club?.strokeArgb ?? kTifoNeutralStrokeArgb;
         final prev = _drawnFill[building.id];

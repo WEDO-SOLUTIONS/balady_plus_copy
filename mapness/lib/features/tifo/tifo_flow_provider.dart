@@ -1,23 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/tifo/tifo_team.dart';
 import 'package:mapness/shared/providers/hive.dart';
 
 /// Tracks one-off state for the TIFO journey:
-///  * [selectedTeam]   — the team the user picked on team-select.
 ///  * [hasSelectedTeam] — true once the user has tapped "Activate Tifo" and
 ///    reached the team dashboard.
 ///  * [hasSeenTutorial] — true once the user has dismissed the in-game
 ///    4-step tutorial (either by completing it or skipping).
 class TifoFlowState {
   const TifoFlowState({
-    required this.selectedTeam,
     required this.hasSelectedTeam,
     required this.hasSeenTutorial,
     required this.hasSeenEntry,
     this.showJoinPill = false,
   });
 
-  final TifoTeam? selectedTeam;
   final bool hasSelectedTeam;
   final bool hasSeenTutorial;
 
@@ -34,13 +30,11 @@ class TifoFlowState {
   bool get shouldPlayTutorial => hasSelectedTeam && !hasSeenTutorial;
 
   TifoFlowState copyWith({
-    TifoTeam? selectedTeam,
     bool? hasSelectedTeam,
     bool? hasSeenTutorial,
     bool? hasSeenEntry,
     bool? showJoinPill,
   }) => TifoFlowState(
-    selectedTeam: selectedTeam ?? this.selectedTeam,
     hasSelectedTeam: hasSelectedTeam ?? this.hasSelectedTeam,
     hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
     hasSeenEntry: hasSeenEntry ?? this.hasSeenEntry,
@@ -51,15 +45,10 @@ class TifoFlowState {
 class TifoFlowController extends Notifier<TifoFlowState> {
   @override
   TifoFlowState build() => const TifoFlowState(
-    selectedTeam: null,
     hasSelectedTeam: false,
     hasSeenTutorial: false,
     hasSeenEntry: false,
   );
-
-  void setSelectedTeam(TifoTeam team) {
-    state = state.copyWith(selectedTeam: team);
-  }
 
   void markTeamSelected() {
     if (state.hasSelectedTeam) {
