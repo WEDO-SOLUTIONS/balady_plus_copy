@@ -26,6 +26,9 @@ class AppAnalyticsBaladyMirrorImpl implements AppAnalyticsRepository, DataFinder
     String? deviceOs,
     String? appVersion,
     String? userId,
+    String? phone,
+    String? firstName,
+    String? lastName,
   }) {
     // Identity is handled by BaladyAnalytics.identify at the auth call sites.
   }
