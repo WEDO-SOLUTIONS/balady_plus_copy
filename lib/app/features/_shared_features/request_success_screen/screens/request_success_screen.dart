@@ -19,22 +19,22 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
     required this.onPressedScendButton,
   });
 
-//   @override
-//   State<SubmitApplicationSuccessfullyCancel> createState() =>
-//       _SubmitApplicationSuccessfullyCancelState();
-// }
-//
-// class _SubmitApplicationSuccessfullyCancelState
-//     extends State<SubmitApplicationSuccessfullyCancel> {
-//   @override
-//   void initState() {
-//     // TODO: implement initState
-//     super.initState();
-//     CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
-//     CommonFunctions.sendAnalyticsEvent(
-//       AnalyticsEvents.finishServiceCancelLicenseService,
-//     );
-//   }
+  //   @override
+  //   State<SubmitApplicationSuccessfullyCancel> createState() =>
+  //       _SubmitApplicationSuccessfullyCancelState();
+  // }
+  //
+  // class _SubmitApplicationSuccessfullyCancelState
+  //     extends State<SubmitApplicationSuccessfullyCancel> {
+  //   @override
+  //   void initState() {
+  //     // TODO: implement initState
+  //     super.initState();
+  //     CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
+  //     CommonFunctions.sendAnalyticsEvent(
+  //       AnalyticsEvents.finishServiceCancelLicenseService,
+  //     );
+  //   }
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +54,9 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      IconPath.submitApplicationSuccessfullyCancel,
-                    ),
+                    SvgPicture.asset(IconPath.submitApplicationSuccessfullyCancel),
                     const SizedBox(height: 16),
-                    CustomAutoSizeTextWidget(
-                      'vd_request_submit'.tr(),
-                      textStyle: AppStyle.sectionTitleStyle,
-                    ),
+                    CustomAutoSizeTextWidget('vd_request_submit'.tr(), textStyle: AppStyle.sectionTitleStyle),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
                       '${'application_no_has_been_submitted'.tr()} ${arguments['requestId']} ${(arguments['payUrl']?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments['']} ${'sar'.tr()}' : 'application_no_has_been_submitted_two'.tr()}',
@@ -70,11 +65,7 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    CustomTextButtonWidget(
-                      text: 'service_evaluation'.tr(),
-                      onPressed: () {},
-                      haveUnderline: true,
-                    ),
+                    CustomTextButtonWidget(text: 'service_evaluation'.tr(), onPressed: () {}, haveUnderline: true),
                   ],
                 ),
               ),
@@ -86,10 +77,7 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                     )
                   : const SizedBox(),
               const SizedBox(height: 16),
-              ElevatedButtonWidget.primaryCustom(
-                text: textScendButton,
-                onPressed: onPressedScendButton,
-              ),
+              ElevatedButtonWidget.primaryCustom(text: textScendButton, onPressed: onPressedScendButton),
               const SizedBox(height: 16),
             ],
           ),

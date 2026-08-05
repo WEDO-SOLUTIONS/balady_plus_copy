@@ -34,23 +34,21 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Color(0x00000000),
-      systemNavigationBarDividerColor: Color(0x00000000),
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0x00000000),
+        systemNavigationBarDividerColor: Color(0x00000000),
+      ),
+    );
 
     // Idempotent: mapness `entry_point` calls configure too, first one wins.
-    BaladyAnalytics.instance.configure(
-      mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
-    );
+    BaladyAnalytics.instance.configure(mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode));
 
     return MultiProvider(
       providers: [
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        BlocProvider<NewMiniAppLogicCubit>.value(
-          value: sl<NewMiniAppLogicCubit>(),
-        ),
+        BlocProvider<NewMiniAppLogicCubit>.value(value: sl<NewMiniAppLogicCubit>()),
         // Add AccessibilityController to providers
         ChangeNotifierProvider(create: (_) => AccessibilityController()),
         BlocProvider<DelegatorsCubit>.value(value: sl<DelegatorsCubit>()),

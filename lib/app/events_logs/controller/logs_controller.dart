@@ -37,19 +37,10 @@ class LogsViewModel {
   }
 
   void sendEventFromModel({required EventModel event}) async {
-    try{
-      BaladyAnalytics.instance.track(
-        event.nameEvent,
-        properties: event.toJson(),
-      );
-      Sentry.captureException(
-        SentryException(
-          type: event.nameEvent,
-          value: event.message,
-          unknown: event.toJson(),
-        ),
-      );
-    }catch(e){
+    try {
+      BaladyAnalytics.instance.track(event.nameEvent, properties: event.toJson());
+      Sentry.captureException(SentryException(type: event.nameEvent, value: event.message, unknown: event.toJson()));
+    } catch (e) {
       print("Error From INSIDE FRAME_WORK");
       print("--------------------------------");
       print("Error :  $e");

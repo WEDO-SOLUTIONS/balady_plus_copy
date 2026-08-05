@@ -916,16 +916,9 @@ class CommonFunctions {
     List<String>? callbackUrls,
   }) async {
     if (needLogin == false) {
-      return await Navigator.of(
-        NavigationService.navigatorKey.currentContext!,
-      ).pushNamed(
+      return await Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
-        arguments: (
-          requestNum: ''.tr(),
-          url: url,
-          isObjections: isObjections,
-          callbackUrls: callbackUrls,
-        ),
+        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections, callbackUrls: callbackUrls),
       );
     } else {
       if (CommonProperties.isLoggedIn) {
@@ -939,16 +932,9 @@ class CommonFunctions {
             return null;
           },
           (r) async {
-            return await Navigator.of(
-              NavigationService.navigatorKey.currentContext!,
-            ).pushNamed(
+            return await Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
               RouteName.inappWebview,
-              arguments: (
-                requestNum: ''.tr(),
-                url: url,
-                isObjections: isObjections,
-                callbackUrls: callbackUrls,
-              ),
+              arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections, callbackUrls: callbackUrls),
             );
           },
         );
@@ -1326,14 +1312,17 @@ class CommonFunctions {
         String? URL = (dioError?.requestOptions.path ?? response?.realUri.path);
 
         if (URL != null) {
-          BaladyAnalytics.instance.track("APIError", properties: {
-            "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-            "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
-            "Headers": headers.length <= 1024 ? headers : headers.substring(0, 1023),
-            "Message": message.length <= 1024 ? message : message.substring(0, 1023),
-            "Environment": sl<EnvType>().name,
-          });
+          BaladyAnalytics.instance.track(
+            "APIError",
+            properties: {
+              "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
+              "Data": data.length <= 1024 ? data : data.substring(0, 1023),
+              "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
+              "Headers": headers.length <= 1024 ? headers : headers.substring(0, 1023),
+              "Message": message.length <= 1024 ? message : message.substring(0, 1023),
+              "Environment": sl<EnvType>().name,
+            },
+          );
         }
       }
     } catch (error, stackTrace) {

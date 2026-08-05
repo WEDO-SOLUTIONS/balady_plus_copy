@@ -824,9 +824,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         };
         if (data['type'] == "marketing") {
           BaladyAnalytics.instance.track(data['event_name'], properties: miniAppData);
-          Sentry.addBreadcrumb(
-            Breadcrumb(message: data['event_name'], data: miniAppData),
-          );
+          Sentry.addBreadcrumb(Breadcrumb(message: data['event_name'], data: miniAppData));
         } else if (data['type'] == "exception") {
           data.addAll(miniAppData);
           BaladyAnalytics.instance.track(data['event_name'], properties: data);
