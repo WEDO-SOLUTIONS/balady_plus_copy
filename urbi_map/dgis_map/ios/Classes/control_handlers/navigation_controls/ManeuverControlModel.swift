@@ -183,7 +183,17 @@ class ManeuverControlModel {
         }
 
         let instructionType = getInstructionManeuver(extraInstructionInfo: instruction.extraInstructionInfo)
-        
+
+        NotificationCenter.default.post(
+            name: .dgisNavigationManeuverTick,
+            object: nil,
+            userInfo: [
+                "distanceMm": Double(distance),
+                "roadName": instruction.roadName,
+                "instruction": instructionType.name()
+            ]
+        )
+
         return eventChannel.success([
             "event": ManeuverEvents.maneuverEvent,
             "type": ManeuverEvents.nextManeuver,

@@ -33,6 +33,7 @@ class EnvironmentConfig {
   final CityEventDateRange cityscapeDateTimeRange;
   final CityEventDateRange saudiNationalDayDateRange;
   final CityEventDateRange foundingDayDateRange;
+  final CityEventDateRange leapDateRange;
   final CityEventDateRange wrcEventDateRange;
 
   EnvironmentConfig({
@@ -55,6 +56,7 @@ class EnvironmentConfig {
     required this.cityscapeDateTimeRange,
     required this.saudiNationalDayDateRange,
     required this.foundingDayDateRange,
+    required this.leapDateRange,
     required this.wrcEventDateRange,
   });
 
@@ -94,6 +96,10 @@ class EnvironmentConfig {
     saudiNationalDayDateRange: CityEventDateRange.fromJson(
       json['saudiNationalDayDateRange'] as Map<String, dynamic>?,
       CityEventDateRange.saudiNationalDayDefault(),
+    ),
+    leapDateRange: CityEventDateRange.fromJson(
+      json['leapDateRange'] as Map<String, dynamic>?,
+      CityEventDateRange.leapDefault(),
     ),
     wrcEventDateRange: CityEventDateRange.fromJson(
       json['wrcEventDateRange'] as Map<String, dynamic>?,
@@ -140,6 +146,7 @@ class EnvironmentConfig {
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
   );
 
@@ -163,6 +170,7 @@ class EnvironmentConfig {
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
   );
 
@@ -186,6 +194,7 @@ class EnvironmentConfig {
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
   );
 
@@ -211,6 +220,7 @@ class EnvironmentConfig {
     cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
+    leapDateRange: CityEventDateRange.leapDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
   );
 }

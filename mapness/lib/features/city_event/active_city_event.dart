@@ -49,6 +49,9 @@ class ActiveCityEvent extends _$ActiveCityEvent {
     if (env.foundingDayDateRange.isNow) {
       activeEvents.add(CityEventType.foundingDay);
     }
+    if (env.leapDateRange.isNow) {
+      activeEvents.add(CityEventType.leap);
+    }
 
     // Return event with highest priority (lowest number)
     if (activeEvents.isEmpty) {

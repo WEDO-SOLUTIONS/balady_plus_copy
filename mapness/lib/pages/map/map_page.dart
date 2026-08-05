@@ -12,6 +12,8 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/first_start.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/map_recreation.dart';
+import 'package:mapness/shared/providers/map/map_swap_curtain.dart';
 import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -27,7 +29,6 @@ class MapPage extends ConsumerStatefulWidget {
 
 class _MapPageState extends ConsumerState<MapPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver, AutoRouteAwareStateMixin<MapPage> {
-  final int _keyIndex = 0;
   bool _needRefresh = false;
 
   @override
@@ -84,6 +85,10 @@ class _MapPageState extends ConsumerState<MapPage>
     super.build(context);
 
     final dgisController = ref.watch(dgisControllerProvider.notifier);
+    // Recreation counter drives the DgisMap ValueKey; bumping it tears down
+    // the native MapView so the 2GIS SDK drops its process-scoped GLB cache.
+    // See [MapRecreationCounter].
+    final recreationKey = ref.watch(mapRecreationCounterProvider);
 
     ref.watch(selectedMarkerProvider);
     final settings = MapObjectManagerSettings.selectedMarker();
@@ -106,7 +111,7 @@ class _MapPageState extends ConsumerState<MapPage>
             },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
-              key: ValueKey(_keyIndex),
+              key: ValueKey(recreationKey),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
                 _trace('onMapCreated android start controller=${identityHashCode(controller)}');
@@ -122,6 +127,7 @@ class _MapPageState extends ConsumerState<MapPage>
               },
             ),
           ),
+          const _MapSwapCurtain(),
           Positioned.fill(
             top: null,
             child: Container(
@@ -148,7 +154,7 @@ class _MapPageState extends ConsumerState<MapPage>
             },
             onPointerSignal: (_) => ref.read(navigationControlsVisibilityProvider.notifier).registerInteraction(),
             child: DgisMap(
-              key: ValueKey(_keyIndex),
+              key: ValueKey(recreationKey),
               androidUseExpensive: true,
               onMapCreated: (controller) async {
                 _trace('onMapCreated ios start controller=${identityHashCode(controller)}');
@@ -164,6 +170,7 @@ class _MapPageState extends ConsumerState<MapPage>
               },
             ),
           ),
+          const _MapSwapCurtain(),
           const AutoRouter(),
         ],
       );
@@ -173,8 +180,7 @@ class _MapPageState extends ConsumerState<MapPage>
   @override
   bool get wantKeepAlive => true;
 
-  void _trace(String event) {
-  }
+  void _trace(String event) {}
 
   Future<void> _initToastMessage() async {
     final isFirstStart = ref.read(firstStartProvider);
@@ -198,6 +204,33 @@ class _MapPageState extends ConsumerState<MapPage>
         ),
       ],
       icon: ToastIconData(GeneralIcons.darkMode, color: context.themeRead.colors.foregroundSoft),
+    );
+  }
+}
+
+/// BALADY-3772: cover over the map while a style swap recreates the native
+/// MapView (see [MapSwapCurtain]). Shows the map frame captured just before
+/// the teardown (fallback: plain surface color), appears instantly so no
+/// white teardown frame leaks through, and fades out once the fresh map has
+/// restored the camera. Sits under [AutoRouter] so sheets and panels stay
+/// visible.
+class _MapSwapCurtain extends ConsumerWidget {
+  const _MapSwapCurtain();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final curtain = ref.watch(mapSwapCurtainProvider);
+    final image = curtain.image;
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: AnimatedOpacity(
+          opacity: curtain.visible ? 1 : 0,
+          duration: curtain.visible ? Duration.zero : const Duration(milliseconds: 300),
+          child: image != null
+              ? Image.memory(image, fit: BoxFit.cover, gaplessPlayback: true)
+              : ColoredBox(color: context.colors.backgroundSurface2),
+        ),
+      ),
     );
   }
 }

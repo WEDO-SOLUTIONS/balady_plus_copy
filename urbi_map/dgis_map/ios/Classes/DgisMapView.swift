@@ -13,6 +13,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         static let myLocationFollowState = "myLocationFollowState"
         static let activeLevelIndex = "activeLevelIndex"
         static let levelNames = "levelNames"
+        static let tunnelStateChanged = "tunnelStateChanged"
     }
     
     private var _view: UIView
@@ -49,6 +50,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var moveCameraCancellable: DGis.Cancellable?
 
     private var mapFactory: IMapFactory?
+
+    /// Day/night as last requested by Flutter, kept so the tunnel override can be undone.
+    /// `nil` until Flutter picks a theme — until then the SDK default is left alone.
+    private var requestedAppearance: MapAppearanceMessage?
+    private var tunnelDetector: TunnelDetector?
+    private var isInTunnel = false
 
 
     init(
@@ -88,6 +95,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.trafficAndParkingControlHandler?.cancel()
         self.packagesHandler?.cancel()
         self.objectTapHandler?.cancel()
+        self.tunnelDetector?.cancel()
     }
     
     // MARK: - Controls initialize
@@ -167,6 +175,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
 
         setupTapHandler()
+        observeTunnelState()
     }
     
     func view() -> UIView {
@@ -246,28 +255,58 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
-        
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
-        
-        let styleFuture = try! self.sdk.styleFactory.loadFile(path: assetPath)
+
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else {
+            completion(
+                Result.failure(FlutterError(
+                    code: "FileNotFoundException",
+                    message: "Failed to resolve asset <\(asset)>",
+                    details: nil
+                ))
+            )
+            return
+        }
+
+        loadStyleFile(at: assetPath, completion: completion)
+    }
+
+    func loadStylesFromPath(absolutePath: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard FileManager.default.fileExists(atPath: absolutePath) else {
+            completion(
+                Result.failure(FlutterError(
+                    code: "FileNotFoundException",
+                    message: "Style file does not exist at <\(absolutePath)>",
+                    details: nil
+                ))
+            )
+            return
+        }
+
+        loadStyleFile(at: absolutePath, completion: completion)
+    }
+
+    private func loadStyleFile(at path: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        let styleFuture = try! self.sdk.styleFactory.loadFile(path: path)
         cancelable.append(
-            styleFuture.sink (
+            styleFuture.sink(
                 receiveValue: { [map = self.map] style in
                     map?.style = style
-                     completion(Result.success(()))
+                    completion(Result.success(()))
                 },
                 failure: { error in
                     completion(
-                Result.failure(FlutterError(
-                        code: "FileNotFoundException",
-                        message: "Failed to load style from <\(assetPath)>. Error: \(error)",
-                        details: nil
-                    )))
-                })
+                        Result.failure(FlutterError(
+                            code: "FileNotFoundException",
+                            message: "Failed to load style from <\(path)>. Error: \(error)",
+                            details: nil
+                        ))
+                    )
+                }
+            )
         )
     }
-    
-        
+
+
     func overrideLocales(locales: [String], completion: @escaping (Result<Void, any Error>) -> Void) {
         let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales.map {
@@ -494,6 +533,30 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func takeMapSnapshot(completion: @escaping (Result<FlutterStandardTypedData?, any Error>) -> Void) {
+        // Best-effort by contract: any failure resolves to nil and the Dart
+        // side falls back to a plain colored curtain (BALADY-3772).
+        guard let snapshotter = self.mapFactory?.snapshotter else {
+            completion(Result.success(nil))
+            return
+        }
+        cancelable.append(
+            snapshotter.makeImage().sink(
+                receiveValue: { image in
+                    let bytes = image.pngData().map { FlutterStandardTypedData(bytes: $0) }
+                    DispatchQueue.main.async {
+                        completion(Result.success(bytes))
+                    }
+                },
+                failure: { _ in
+                    DispatchQueue.main.async {
+                        completion(Result.success(nil))
+                    }
+                }
+            )
+        )
+    }
+
     func getCameraVisibleArea(completion: @escaping (Result<PolygonGeometryMessage, any Error>) -> Void) {
         guard let map = self.map else {
             completion(Result.failure( FlutterError(
@@ -503,7 +566,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
-        
+
         let area = map.camera.visibleArea
         if let polygon = area as? PolygonGeometry {
             let contours = polygon.contours.map { $0.map { $0.toMessage() } }
@@ -1112,7 +1175,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func setAppearance(appearance: MapAppearanceMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
-        guard let mapView = self.mapView else {
+        guard self.mapView != nil else {
             completion(
                 Result.failure(
                 FlutterError(
@@ -1122,17 +1185,51 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 )))
             return
         }
-        
-        switch appearance {
+
+        self.requestedAppearance = appearance
+        applyAppearance()
+
+         completion(Result.success(()))
+    }
+
+    // MARK: - Tunnel-aware appearance
+
+    /// Resolves the map style from Flutter's choice and the tunnel override. A tunnel is dark
+    /// whatever the time of day is, so it wins over the requested style until the car is out.
+    private func applyAppearance() {
+        guard let mapView = self.mapView else { return }
+
+        if isInTunnel {
+            mapView.appearance = .universal("night")
+            return
+        }
+
+        switch requestedAppearance {
         case .day:
             mapView.appearance = .universal("day")
         case .night:
             mapView.appearance = .universal("night")
         case .system:
             mapView.appearance = .automatic(light: "day", dark: "night")
+        case nil:
+            // Flutter has not chosen a theme yet — nothing to restore to.
+            break
         }
-        
-         completion(Result.success(()))
+    }
+
+    private func observeTunnelState() {
+        let navigationModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        tunnelDetector = TunnelDetector(model: navigationModel) { [weak self] isInTunnel in
+            guard let self else { return }
+
+            self.isInTunnel = isInTunnel
+            self.applyAppearance()
+            // Flutter darkens the rest of the app off the same signal.
+            self.eventChannel?.success([
+                "event": Events.tunnelStateChanged,
+                "inTunnel": isInTunnel,
+            ])
+        }
     }
     
     func setZoomRestrictions(min: Double?, max: Double?, completion: @escaping (Result<Void, any Error>) -> Void) {

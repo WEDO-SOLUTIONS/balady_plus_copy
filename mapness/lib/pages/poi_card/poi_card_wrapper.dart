@@ -157,18 +157,31 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
         }
       });
 
-    final poiCardState = state.value;
+    final gisPoiCardState = state.value;
     final storeParking = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier);
     final storeParkingData = ref
         .read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme))
         .value
         ?.convertToDirectoryObject(context);
     final isParkingPoi = widget.objectId.objectId == parkingObjectId;
-    final data = isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
+    final gisData = isParkingPoi ? storeParkingData : gisPoiCardState?.gisObjectIdMessage;
 
     if (isParkingPoi) {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
+
+    final leapPoi = ref.read(leapProvider.notifier).getLeapPoi(widget.objectId.objectId);
+    final leapData = leapPoi?.mergeDirectoryObjectMessage(context.l10n, gisData);
+    final data = leapData ?? gisData;
+    final poiCardState = leapData == null
+        ? gisPoiCardState
+        : gisPoiCardState?.copyWith(gisObjectIdMessage: leapData) ??
+              PoiCardState(
+                showEntrances: false,
+                isLoading: false,
+                gisObjectIdMessage: leapData,
+                organizations: null,
+              );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
@@ -216,6 +229,9 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     final objectId = data?.id?.objectId;
 
     final dataAndError = () {
+      if (leapData != null) {
+        return null;
+      }
       if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
         return const PoiLoading();
       }

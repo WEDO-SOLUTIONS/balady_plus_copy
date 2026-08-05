@@ -39,7 +39,11 @@ class HuaweiLocationProvider(private val context: Context) {
                 }
             }
         }
-        client?.requestLocationUpdates(request, callback, thread.looper)
+        try {
+            client?.requestLocationUpdates(request, callback, thread.looper)
+        } catch (e: SecurityException) {
+            Log.w("HuaweiLocationProvider", "requestLocationUpdates without location permission", e)
+        }
     }
 
     fun getLastKnownLocation(onResult: (Location?) -> Unit) {
@@ -48,10 +52,15 @@ class HuaweiLocationProvider(private val context: Context) {
             return
         }
 
-        client?.lastLocation?.addOnSuccessListener { location ->
-            lastLocation = location
-            onResult(location)
-        }?.addOnFailureListener {
+        try {
+            client?.lastLocation?.addOnSuccessListener { location ->
+                lastLocation = location
+                onResult(location)
+            }?.addOnFailureListener {
+                onResult(null)
+            }
+        } catch (e: SecurityException) {
+            Log.w("HuaweiLocationProvider", "lastLocation without location permission", e)
             onResult(null)
         }
     }

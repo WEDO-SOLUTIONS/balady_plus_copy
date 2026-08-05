@@ -97,7 +97,7 @@ class _MakkahSplashOverlay extends StatelessWidget {
               // Icon
               Center(
                 child: Image.asset(
-                  'assets/icons/makkah/splash.png',
+                  'assets/icons/makkah/splash.webp',
                   width: 121,
                   height: 121,
                 ),

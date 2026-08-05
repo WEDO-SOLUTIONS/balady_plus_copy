@@ -19,6 +19,7 @@ class MapnessConstants {
   static const analyticsTripStopped = 'tripStopped';
   static const analyticsSearchInThisAreaPressed = 'analyticsSearchInThisAreaPressed';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+  static const activeNavigationCursorPrefsKey = 'activeNavigationCursor';
 
   ///config region
   static const envConfigBoxKey = 'envConfigKey_4.7.3';

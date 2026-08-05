@@ -69,7 +69,7 @@ class SpecialThemeHeader extends ConsumerWidget {
             stops: [0.0, 0.53, 1.0],
           ),
           image: const DecorationImage(
-            image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.png'),
+            image: AssetImage('assets/images/themes/makkah/ribbon_pattern_dark.webp'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
             opacity: 0.2,
@@ -93,7 +93,7 @@ class SpecialThemeHeader extends ConsumerWidget {
             stops: [0.03, 0.19, 0.33, 0.46, 1.0],
           ),
           image: const DecorationImage(
-            image: AssetImage('assets/images/themes/makkah/qiblah_header.png'),
+            image: AssetImage('assets/images/themes/makkah/qiblah_header.webp'),
             fit: BoxFit.cover,
             alignment: Alignment.center,
             opacity: 0.5,
@@ -120,7 +120,7 @@ class SpecialThemeHeader extends ConsumerWidget {
           stops: [0.03, 0.21, 0.42, 0.54, 0.69, 0.91, 1.0],
         ),
         image: const DecorationImage(
-          image: AssetImage('assets/images/themes/ramadan/ramadan_header.png'),
+          image: AssetImage('assets/images/themes/ramadan/ramadan_header.webp'),
           fit: BoxFit.cover,
           alignment: Alignment.center,
           opacity: 0.5,
@@ -267,7 +267,7 @@ class _MekkahQiblahIconState extends ConsumerState<_MekkahQiblahIcon> with Singl
   @override
   Widget build(BuildContext context) {
     final qiblahIcon = Image.asset(
-      'assets/images/themes/makkah/qiblah_icon.png',
+      'assets/images/themes/makkah/qiblah_icon.webp',
       width: MediaQuery.sizeOf(context).width * 0.35,
     );
 
@@ -347,7 +347,7 @@ class _RamadanIconState extends ConsumerState<_RamadanIcon> with SingleTickerPro
   @override
   Widget build(BuildContext context) {
     final ramadanIcon = Image.asset(
-      'assets/images/themes/ramadan/ramadan_icon.png',
+      'assets/images/themes/ramadan/ramadan_icon.webp',
       width: MediaQuery.sizeOf(context).width * 0.35,
     );
 

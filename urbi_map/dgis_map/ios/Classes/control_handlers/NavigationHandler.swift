@@ -1,6 +1,17 @@
 import DGis
 import Foundation
 
+// Cross-module contract with the Runner Live Activity controller.
+// Raw values are part of the fixed contract — do not rename.
+extension Notification.Name {
+    static let dgisNavigationDashboardTick = Notification.Name("dgis.navigation.dashboardTick")
+    static let dgisNavigationManeuverTick = Notification.Name("dgis.navigation.maneuverTick")
+    static let dgisNavigationSpeedTick = Notification.Name("dgis.navigation.speedTick")
+    static let dgisNavigationMessageTick = Notification.Name("dgis.navigation.messageTick")
+    static let dgisNavigationStateChanged = Notification.Name("dgis.navigation.stateChanged")
+    static let baladyEndTripRequested = Notification.Name("balady.endTripRequested")
+}
+
 class NavigationHandler {
     private class Events {
         // event name
@@ -28,6 +39,7 @@ class NavigationHandler {
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
+    private var endTripObserver: NSObjectProtocol?
     
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
@@ -83,10 +95,16 @@ class NavigationHandler {
         )
         
         navigationManager.mapManager.addMap(map: map)
-        
-        
+
+        self.endTripObserver = NotificationCenter.default.addObserver(
+            forName: .baladyEndTripRequested,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.stopNavigation()
+        }
     }
-    
+
     private func stateChannelListener(_ state: State) {
         switch (state) {
         case State.disabled:
@@ -95,12 +113,14 @@ class NavigationHandler {
                 "state": Events.stateDisabled
             ])
             self.isNavigating = false
+            postStateChanged(Events.stateDisabled)
         case State.finished:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateFinished
             ])
             self.isNavigating = false
+            postStateChanged(Events.stateFinished)
             stopNavigation()
         case State.navigation:
             self.eventChannel.success([
@@ -108,13 +128,23 @@ class NavigationHandler {
                 "state": Events.stateNavigation
             ])
             self.isNavigating = true
+            postStateChanged(Events.stateNavigation)
         case State.routeSearch:
             self.eventChannel.success([
                 "event": Events.navigationEvent,
                 "state": Events.stateRouteSearch
             ])
             self.isNavigating = true
+            postStateChanged(Events.stateRouteSearch)
         }
+    }
+
+    private func postStateChanged(_ state: String) {
+        NotificationCenter.default.post(
+            name: .dgisNavigationStateChanged,
+            object: nil,
+            userInfo: ["state": state]
+        )
     }
     
     func onRouteTap(_ route: RouteMapObject) {
@@ -184,6 +214,10 @@ class NavigationHandler {
         cancelable.forEach { $0.cancel() }
         moveCameraCancellable?.cancel()
         cancelable.removeAll()
+        if let endTripObserver = endTripObserver {
+            NotificationCenter.default.removeObserver(endTripObserver)
+            self.endTripObserver = nil
+        }
         self.dashboardControlModel.cancel()
         self.speedControlModel.cancel()
         self.messageControlModel.cancel()

@@ -57,6 +57,7 @@ import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -94,6 +95,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/tunnel_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -265,10 +267,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       if (!mounted) {
         return;
       }
+      await ref.read(leapProvider.notifier).initializeGlobalMarker();
+      if (!mounted) {
+        return;
+      }
       final mapStyle = ref.read(activeCityEventProvider)?.stylePath;
 
       if (mapStyle != null) {
         _updateMapStyle(mapStyle);
+      }
+
+      await _updateGlobalMarkerLeap(ref);
+      if (!mounted) {
+        return;
       }
 
       // Sync BaladyThemeNotifier with the persisted darkModeProvider state
@@ -457,6 +468,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
   }
 
+  Future<void> _updateGlobalMarkerLeap(WidgetRef ref) async {
+    if (!mounted) {
+      return;
+    }
+    final isLeapNow = ref.read(leapProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(leapProvider.notifier);
+
+    if (isLeapNow && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
   Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
     final notifier = ref.read(wRCProvider.notifier);
     if (wrcEnabled) {
@@ -491,11 +517,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     final themeController = context.read<ThemeController>();
     final baladyTheme = context.read<BaladyThemeNotifier>();
     final specialThemeMode = ref.read(specialThemeModeProvider);
+    // Driving through a tunnel darkens the whole app, not just the map surface, and
+    // outranks both the day/night preference and the special themes while it lasts.
+    final inTunnel = ref.read(tunnelStateProvider);
+    final effectiveDark = isDark || inTunnel;
     if (kDebugMode) {
-      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark mode=$specialThemeMode');
+      debugPrint('[DarkThemeDebug] _themeChanged isDark=$isDark inTunnel=$inTunnel mode=$specialThemeMode');
     }
     baladyTheme.toggleTheme(isDark);
-    if (isDark) {
+    if (effectiveDark) {
       await themeController.setTheme(BaladyAppThemes.darkDGA);
     } else {
       final theme = switch (specialThemeMode) {
@@ -512,6 +542,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       final baladyTheme = p.Provider.of<BaladyThemeNotifier>(context, listen: false);
       final mapMode = ref.read(darkModeProvider).value?.currentMapMode;
 
+      // Transient on purpose: the tunnel must not overwrite the mode the user picked,
+      // so the branches below keep writing the preference underneath the override.
+      baladyTheme.setTransientThemeMode(inTunnel ? ThemeMode.dark : null);
+
       if (mapMode == DarkMapStateEnum.asInASystem) {
         baladyTheme.resetTheme();
       } else if (mapMode == DarkMapStateEnum.alwaysEnabled) {
@@ -526,11 +560,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(darkModeProvider, (prev, next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _themeChanged(isDark: next.value?.isDark == true);
+    ref
+      ..listen(darkModeProvider, (prev, next) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _themeChanged(isDark: next.value?.isDark == true);
+        });
+      })
+      // Entering or leaving a tunnel re-runs the same resolution, which picks the
+      // override up from `tunnelStateProvider` itself.
+      ..listen(tunnelStateProvider, (prev, next) {
+        if (prev == next) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _themeChanged(isDark: ref.read(darkModeProvider).value?.isDark ?? false);
+        });
       });
-    });
 
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
@@ -559,6 +604,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         }
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
+        _updateGlobalMarkerLeap(ref);
       })
       ..listen<CityEventType?>(activeCityEventProvider, (prev, next) {
         if (prev == next) {
@@ -577,12 +623,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       ..listen<bool>(foundingDayUrbiProvider, (prev, next) {
         _updateGlobalMarkerFoundingDay(ref);
       })
+      ..listen<bool>(leapProvider, (prev, next) {
+        _updateGlobalMarkerLeap(ref);
+      })
       ..listen<bool>(wRCProvider, (prev, next) {
         _updateAllMarkersWRC(ref, next);
       })
       ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
+        _updateGlobalMarkerLeap(ref);
         _updateSpecificMarkerWRC(ref, prev, next);
       })
       // listen for changes in car connection state. But do not rebuild widget

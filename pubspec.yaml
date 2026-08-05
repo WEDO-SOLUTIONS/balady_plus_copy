@@ -30,7 +30,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
 
@@ -153,7 +152,6 @@ dependencies:
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
   app_settings: ^7.0.0
-  linkable: ^3.0.0
   flutter_hms_gms_availability:
     git:
       url: https://github.com/vant3ch/flutter_hms_gms_availability
@@ -258,7 +256,6 @@ flutter:
   shaders:
     - shaders/radar.frag
   assets:
-    - assets/mock/mini_apps_response.json
     - assets/
     - assets/icons/svg/
     - assets/icons/makkah/
@@ -292,6 +289,7 @@ flutter:
     - assets/images/themes/ramadan/
     - assets/langs/
     - assets/maps/configs/
+    - assets/icons/cursors/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/
@@ -326,51 +324,18 @@ flutter_launcher_icons:
           weight: 400
         - asset: assets/fonts/Cairo-Bold.woff
           weight: 700
-    - family: ArabicUIText
-      fonts:
-        - asset: assets/fonts/Arabic-UI-Text.ttf
-        - asset: assets/fonts/Arabic-UI-Text-Bold.otf
-          weight: 700
-        - asset: assets/fonts/Arabic-UI-Text-Medium.otf
-          weight: 500
-    - family: HafsSmart
-      fonts:
-        - asset: assets/fonts/HafsSmart_08.ttf
-    - family: uthmanic
-      fonts:
-        - asset: assets/fonts/uthmanic_hafs_v20.ttf
-
-    - family: sura_juza_names
-      fonts:
-        - asset: assets/fonts/sura_juza_names.ttf
-
     - family: Frutiger
       fonts:
-        - asset: fonts/FrutigerLTArabic45Light.ttf
-          weight: 300
         - asset: fonts/FrutigerLTArabic55Roman.ttf
           weight: 400
         - asset: fonts/FrutigerLTArabic65Bold.ttf
           weight: 700
-        - asset: fonts/frutigerltarabic75black.ttf
-          weight: 900
 
     - family: Inter
       fonts:
         - asset: assets/fonts/inter/Inter-Regular.ttf
           weight: 400
         - asset: assets/fonts/inter/Inter-SemiBold.ttf
-          weight: 600
-
-    - family: SomarSans
-      fonts:
-        - asset: assets/fonts/SomarSans/SomarSans-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/SomarSans/SomarSans-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/SomarSans/SomarSans-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/SomarSans/SomarSans-SemiBold.ttf
           weight: 600
 
 

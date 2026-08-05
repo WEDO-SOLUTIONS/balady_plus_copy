@@ -7,6 +7,7 @@ import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toRouteSearchOptionsMessage
+import com.dgis.map.live_updates.LiveUpdatesCoordinator
 import com.dgis.map.map_api.*
 import com.dgis.map.map_api.BetterRouteResponseMessage
 import com.dgis.map.map_api.BetterRouteSettingsMessage
@@ -193,9 +194,7 @@ class NavigationHandler(
                 }
 
                 if (oldSource != null) {
-                        if (map.sources.isNotEmpty()) {
-                                map.removeSource(map.sources.first { it is MyLocationMapObjectSource })
-                        }
+                        map.sources.firstOrNull { it is MyLocationMapObjectSource }?.let { map.removeSource(it) }
                         map.addSource(oldSource!!)
                         oldSource = null
                 }
@@ -207,9 +206,11 @@ class NavigationHandler(
                 speedControlModel.close()
                 stateClosable.close()
                 routeInfoCloseable.close()
-                speedControlModel.close()
                 maneuverControlModel.close()
                 betterRouteCloseable.close()
+                // Detach the map from the shared NavigationManager so it stops
+                // rendering into a map that is about to be closed.
+                navigationManager.mapManager.removeMap(map)
         }
 
         fun toggleVoiceInstruction(toggleType: SoundToggleType) {
@@ -291,7 +292,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -300,9 +302,10 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                if (oldSource == null && map.sources.isNotEmpty()) {
-                        oldSource = map.sources.first { it is MyLocationMapObjectSource }
-                        map.removeSource(oldSource!!)
+                val currentLocationSource = map.sources.firstOrNull { it is MyLocationMapObjectSource }
+                if (oldSource == null && currentLocationSource != null) {
+                        oldSource = currentLocationSource
+                        map.removeSource(currentLocationSource)
                         map.addSource(
                                 MyLocationMapObjectSource(
                                         context = this.context,
@@ -324,6 +327,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopNavigation)
                 }
 
                 callback(Result.success(Unit))
@@ -345,7 +349,8 @@ class NavigationHandler(
                         callback(
                                 Result.failure(
                                         Exception(
-                                                "Not enough data to start navigation. Check RouteHandler documentation"
+                                                "Not enough data to start navigation. Check RouteHandler documentation. " +
+                                                        "finishPoint=$finishPoint, options=$options, route=$route"
                                         )
                                 )
                         )
@@ -363,6 +368,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
+                        LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopNavigation)
                 }
 
                 callback(Result.success(Unit))
@@ -371,16 +377,20 @@ class NavigationHandler(
         fun stopNavigation() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
                 setupCamera(speedRangeZoom = speedRangeZoom)
                 navigationManager.start()
+                // Free roam gets the same ongoing notification as guidance, minus the route.
+                LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopFreeRoam)
         }
 
         fun stopFreeRoam() {
                 navigationManager.stop()
                 resetCamera()
+                LiveUpdatesCoordinator.onSessionStopped()
         }
 
         private fun stateChannelListener(state: State) {
@@ -392,6 +402,7 @@ class NavigationHandler(
                                                 "state" to Event.stateDisabled
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateDisabled)
                                 isNavigating = false
                         }
                         State.FINISHED -> {
@@ -401,6 +412,7 @@ class NavigationHandler(
                                                 "state" to Event.stateFinished
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateFinished)
                                 stopNavigation()
                                 isNavigating = false
                         }
@@ -411,6 +423,7 @@ class NavigationHandler(
                                                 "state" to Event.stateNavigation
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateNavigation)
                                 isNavigating = true
                         }
                         State.ROUTE_SEARCH -> {
@@ -420,6 +433,7 @@ class NavigationHandler(
                                                 "state" to Event.stateRouteSearch
                                         )
                                 )
+                                LiveUpdatesCoordinator.onNavStateChanged(Event.stateRouteSearch)
                                 isNavigating = true
                         }
                 }

@@ -1498,6 +1498,12 @@ abstract class MapApi {
   @async
   void loadStyles(String asset);
 
+  /// Load a compiled `.2gis` style from an absolute filesystem path on the
+  /// device (e.g. a repacked copy written to the app's support directory).
+  /// Use this when the style file isn't bundled as a Flutter asset.
+  @async
+  void loadStylesFromPath(String absolutePath);
+
   @async
   void overrideLocales(List<String> locales);
 
@@ -1518,6 +1524,12 @@ abstract class MapApi {
 
   @async
   CameraPositionMessage getCameraPosition();
+
+  /// Capture the current map frame as encoded PNG bytes. Returns null when
+  /// no frame is available (renderer not ready / snapshot failed). Used to
+  /// mask the MapView recreate during dynamic style swaps (BALADY-3772).
+  @async
+  Uint8List? takeMapSnapshot();
 
   @async
   CameraPositionMessage calcPositionForRoute(CalcPositionOptionsMessage options);

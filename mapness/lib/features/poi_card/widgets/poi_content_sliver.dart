@@ -16,6 +16,7 @@ import 'package:mapness/features/favourites/mappers/directory_object_message_map
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
@@ -200,6 +201,19 @@ class PoiContentSliver extends ConsumerWidget {
     final about = data.getAbout(context.l10n, customAbout: forceShow ? localAboutText : null);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
+    final isLeapObject = ref.read(leapProvider.notifier).isLeapObject(data.id!.objectId);
+
+    final fullAddress = data.getFullAddress(
+      briefInfo,
+      context.l10n,
+      onEntrancesTap,
+      canUseCustomData ? activeCityEvent?.addressLogoAsset : null,
+    );
+    final hasAddressContent =
+        fullAddress.fullAddress.trim().isNotEmpty ||
+        fullAddress.floors != null ||
+        (fullAddress.entrances?.count ?? 0) > 0 ||
+        (fullAddress.types?.isNotEmpty ?? false);
 
     final jeddahBusData = ref.watch(jeddahBusLayerRepoProvider).value;
     final jeddahBusStation = jeddahBusData?.getStationByDirectoryObject(data);
@@ -241,17 +255,11 @@ class PoiContentSliver extends ConsumerWidget {
                   activeCityEvent: activeCityEvent,
                 ),
               ),
-            Padding(
-              padding: itemPadding,
-              child: PoiContentFullAddressCard(
-                data: data.getFullAddress(
-                  briefInfo,
-                  context.l10n,
-                  onEntrancesTap,
-                  canUseCustomData ? activeCityEvent?.addressLogoAsset : null,
-                ),
+            if (!isLeapObject || hasAddressContent)
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFullAddressCard(data: fullAddress),
               ),
-            ),
             AiSummarySection(
               poiId: data.id!.objectId.toString(),
               objectTypes: data.types.map((t) => t.type).toList(growable: false),
@@ -288,7 +296,7 @@ class PoiContentSliver extends ConsumerWidget {
               else if (about != null)
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentAboutCard(data: about),
+                  child: PoiContentAboutCard(data: about, isExpandable: !isLeapObject),
                 ),
             if (workingHours != null) //
               Padding(

@@ -22,6 +22,7 @@
 "settingsScreenSound" = "الصوت";
 "settingsScreenParking" = "الموقف";
 "navigationRerouting" = "إعادة التوجيه…";
+"gpsSignalLost" = "‏انقطعت إشارة GPS";
 "quickFilterEatOut" = "المطاعم";
 "quickFilterMosques" = "المساجد";
 "quickFilterMarkets" = "الآسواق";
@@ -37,3 +38,4 @@
 "favouritesScreenItemSubtitlePlaceholder" = "أضف عنوانًا في هاتفك";
 "favouritesScreenPlaceholderEmptyTitle" = "لا يوجد شيء هنا بعد";
 "favouritesScreenPlaceholderEmptySubtitle" = "أضف الأماكن المفضلة على تطبيق بلدي+ لاستعراضها هنا";
+"baladyMaps" = "خرائط بلدي+";
