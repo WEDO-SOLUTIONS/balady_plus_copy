@@ -173,8 +173,9 @@ class $AssetsImagesGen {
   AssetGenImage get illustrationFlipContinueLight =>
       const AssetGenImage('assets/images/illustration_flip_continue_light.png');
 
-  /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
-  AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
+  /// File path: assets/images/ishan-seefromthesky-unsplash.webp
+  AssetGenImage get ishanSeefromtheskyUnsplash =>
+      const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.webp');
 
   /// Directory path: assets/images/layers
   $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
@@ -946,8 +947,8 @@ class $AssetsImagesAudioPlaceholdersGen {
 class $AssetsImagesLayersGen {
   const $AssetsImagesLayersGen();
 
-  /// File path: assets/images/layers/img_layer_jeddah_bus.png
-  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
+  /// File path: assets/images/layers/img_layer_jeddah_bus.webp
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.webp');
 
   /// List of all assets
   List<AssetGenImage> get values => [imgLayerJeddahBus];

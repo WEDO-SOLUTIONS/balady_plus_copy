@@ -409,6 +409,7 @@ class _DebugTogglesCard extends ConsumerWidget {
     final ramadan = ref.watch(ramadanSeasonDebugProvider);
     final hajj = ref.watch(hajjSeasonDebugProvider);
     final pilgrimFeature = ref.watch(pilgrimFeatureDebugProvider);
+    final leap = ref.watch(leapDebugProvider);
 
     return _GlassCard(
       child: Column(
@@ -464,6 +465,14 @@ class _DebugTogglesCard extends ConsumerWidget {
               ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
             },
             gradient: _DebugColors.gradientGreen,
+          ),
+          _ToggleRow(
+            label: 'LEAP Event',
+            value: leap,
+            onChanged: (v) {
+              ref.read(leapDebugProvider.notifier).enabled = v;
+            },
+            gradient: _DebugColors.gradientTeal,
           ),
           const SizedBox(height: 14),
           _LocationRefreshRow(),
