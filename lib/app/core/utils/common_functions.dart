@@ -7,11 +7,11 @@ import 'dart:typed_data' show Uint8List;
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
@@ -64,10 +64,9 @@ import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../errors/exceptions.dart';
 import './utils_exports.dart' show AppColor, AppLanguage, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
-import 'constants/dialog_names.dart';
 import 'constants/analytics_events.dart';
+import 'constants/dialog_names.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -915,16 +914,9 @@ class CommonFunctions {
     List<String>? callbackUrls,
   }) async {
     if (needLogin == false) {
-      return await Navigator.of(
-        NavigationService.navigatorKey.currentContext!,
-      ).pushNamed(
+      return await Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
-        arguments: (
-          requestNum: ''.tr(),
-          url: url,
-          isObjections: isObjections,
-          callbackUrls: callbackUrls,
-        ),
+        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections, callbackUrls: callbackUrls),
       );
     } else {
       if (CommonProperties.isLoggedIn) {
@@ -938,16 +930,9 @@ class CommonFunctions {
             return null;
           },
           (r) async {
-            return await Navigator.of(
-              NavigationService.navigatorKey.currentContext!,
-            ).pushNamed(
+            return await Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
               RouteName.inappWebview,
-              arguments: (
-                requestNum: ''.tr(),
-                url: url,
-                isObjections: isObjections,
-                callbackUrls: callbackUrls,
-              ),
+              arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections, callbackUrls: callbackUrls),
             );
           },
         );
@@ -1419,7 +1404,7 @@ class CommonFunctions {
 
     Response r = await WebService(
       dio: dio,
-    ).dio.getUri(Uri.parse(url), options: Options(headers: {if (serviceId != null) "X-Service-Id": serviceId}));
+    ).dio.getUri(Uri.parse(url), options: Options(headers: {"X-Service-Id": ?serviceId}));
     String extension = r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
 
     String dir = (await getTemporaryDirectory()).path;

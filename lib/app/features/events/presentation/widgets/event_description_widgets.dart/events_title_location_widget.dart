@@ -14,80 +14,63 @@ import '../../bloc/events_bloc.dart';
 import '../../bloc/events_state.dart';
 
 class EventsTitleLocationWidget extends StatelessWidget {
-  const EventsTitleLocationWidget({
-    super.key,
-    required this.title,
-    required this.city,
-  });
+  const EventsTitleLocationWidget({super.key, required this.title, required this.city});
   final String title;
   final String city;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextWidget(
-                  title,
-                  textStyle: AppStyle.eventMainTitleStyle,
-                  maxLines: 10,
-                ),
-                CustomVerticalSpace(height: 4),
-                Row(
-                  children: [
-                    SvgPicture.asset(IconPath.locationBlack),
-                    SizedBox(
-                      width: 1,
-                    ),
-                    CustomTextWidget(
-                      city,
-                      textStyle: AppStyle.eventsMainSubtitleStyle,
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  Add2Calendar.addEvent2Cal(
-                    buildEvent(
-                      title: state.eventDetails.name ?? "",
-                      desc: state.eventDetails.description ?? "",
-                      url: state.eventDetails.ticketUrl ?? "",
-                      city: state.eventDetails.city ?? "",
-                      startDate: state.eventDetails.getStartDateFull()!,
-                      endDate: state.eventDetails.getEndDateFull()!,
-                    ),
-                  );
-
-                  CommonFunctions.sendAnalyticsEvent(
-                      AnalyticsEvents.Events_List_Click_Item_AddToCalender_Event);
-                },
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  padding: EdgeInsets.all(5),
-                  decoration: ShapeDecoration(
-                    color: AppColor.primary100Light,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+    return BlocBuilder<EventsBloc, EventsState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextWidget(title, textStyle: AppStyle.eventMainTitleStyle, maxLines: 10),
+                  CustomVerticalSpace(height: 4),
+                  Row(
+                    children: [
+                      SvgPicture.asset(IconPath.locationBlack),
+                      SizedBox(width: 1),
+                      CustomTextWidget(city, textStyle: AppStyle.eventsMainSubtitleStyle),
+                    ],
                   ),
-                  child: SvgPicture.asset(
-                    IconPath.calendar,
-                  ),
-                ),
+                ],
               ),
-              /*  SizedBox(
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    Add2Calendar.addEvent2Cal(
+                      buildEvent(
+                        title: state.eventDetails.name ?? "",
+                        desc: state.eventDetails.description ?? "",
+                        url: state.eventDetails.ticketUrl ?? "",
+                        city: state.eventDetails.city ?? "",
+                        startDate: state.eventDetails.getStartDateFull()!,
+                        endDate: state.eventDetails.getEndDateFull()!,
+                      ),
+                    );
+
+                    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.Events_List_Click_Item_AddToCalender_Event);
+                  },
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    padding: EdgeInsets.all(5),
+                    decoration: ShapeDecoration(
+                      color: AppColor.primary100Light,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: SvgPicture.asset(IconPath.calendar),
+                  ),
+                ),
+                /*  SizedBox(
                 width: 8,
               ),
              if (state.eventDetails.getEndDateFull() != null &&
@@ -120,11 +103,12 @@ class EventsTitleLocationWidget extends StatelessWidget {
                     ),
                   ),
                 ),*/
-            ],
-          )
-        ],
-      );
-    });
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Event buildEvent({
@@ -142,9 +126,7 @@ class EventsTitleLocationWidget extends StatelessWidget {
       startDate: startDate,
       endDate: endDate,
       allDay: false,
-      iosParams: IOSParams(
-        url: url,
-      ),
+      iosParams: IOSParams(url: url),
     );
   }
 }
