@@ -15,7 +15,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -76,12 +75,17 @@ class PenaltyApp extends StatelessWidget {
 
 enum _PenaltyView { perspective, topDown, miniGame, styles }
 
-/// Top-right "X" to bail out of a penalty session mid-game — discards the
-/// current attempt (no [PenaltyGamePage.onComplete] call, nothing persisted)
-/// and pops everything back to the dashboard, same target the normal
-/// end-of-session flow returns to (see `penalty_entry_screen.dart`).
+/// Top-right "X" to bail out of a penalty session mid-game. Forfeits the
+/// remaining attempts via [PenaltyGame.forfeit] — which pads the kick log to
+/// `missesAllowed` so the backend accepts it and the goals already scored
+/// still count — instead of leaving/discarding the session outright. The
+/// resulting `onComplete` call drives the same dashboard-return flow (and
+/// polygon capture, if the goal threshold was met) as a natural game end;
+/// see `penalty_entry_screen.dart`'s `_startPenalty`.
 class _PenaltyExitButton extends StatelessWidget {
-  const _PenaltyExitButton();
+  const _PenaltyExitButton({required this.game});
+
+  final PenaltyGame game;
 
   @override
   Widget build(BuildContext context) => Material(
@@ -92,7 +96,7 @@ class _PenaltyExitButton extends StatelessWidget {
     ),
     child: InkWell(
       customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onTap: () => rootNavigatorKey.currentState?.popUntil((route) => route.isFirst),
+      onTap: game.forfeit,
       child: const Padding(
         padding: EdgeInsets.all(8),
         child: Icon(Icons.close, color: Colors.white, size: 22),
@@ -239,7 +243,10 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Align(alignment: Alignment.topRight, child: _PenaltyExitButton()),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: _PenaltyExitButton(game: _perspectiveGame),
+                ),
                 // Info panel per Figma 696:112029 (BRD V2 HUD, FD-48…50): misses
                 // remaining / Scored / Score to beat over the live game.
                 if (_view == _PenaltyView.perspective) ...[
@@ -1788,6 +1795,27 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       logger.log('[tifo-game] session ended: scored=$_goals misses=$misses shots=${_shotHistory.length}');
       onComplete?.call(TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events)));
     }
+  }
+
+  /// Called when the player bails out mid-session (exit button). The backend
+  /// only accepts a kick log that ends on the `missesAllowed`-th miss — see
+  /// the "voided" note above — so an early submission would just get thrown
+  /// away server-side. Instead, pad the log with synthetic misses up to
+  /// `missesAllowed` (real goals are kept as scored) and complete normally,
+  /// so the goals already scored still count.
+  void forfeit() {
+    if (_completed) return;
+    _completed = true;
+    var misses = _shotHistory.where((s) => s != _ShotState.goal).length;
+    while (misses < missesAllowed) {
+      _shotHistory.add(_ShotState.missed);
+      _events.add(TifoKickEvent(index: _events.length, scored: false, atMs: _sessionClock.elapsedMilliseconds));
+      misses++;
+    }
+    goalsNotifier.value = _goals;
+    missesNotifier.value = misses;
+    logger.log('[tifo-game] session forfeited via exit: scored=$_goals misses=$misses (padded to $missesAllowed)');
+    onComplete?.call(TifoShootoutOutcome(goals: _goals, misses: misses, events: List.unmodifiable(_events)));
   }
 
   void _resetRound() {
