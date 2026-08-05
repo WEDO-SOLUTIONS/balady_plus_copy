@@ -6,6 +6,11 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ar</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>$(APP_DISPLAY_NAME)</string>
 	<key>CFBundleExecutable</key>
@@ -146,6 +151,57 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>favorites</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Favorites</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>Bookmark</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>directions</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Directions</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>Route</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>search_for_place</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Search for Place</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>Search</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>share_my_location</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Share My Location</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>MyLocation</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>share_live_location</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Share Live Location</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>FollowOn</string>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>contribute</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Contribute</string>
+			<key>UIApplicationShortcutItemIconFile</key>
+			<string>Home</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 	    <string>audio</string>

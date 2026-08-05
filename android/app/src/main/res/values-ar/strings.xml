@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qa_favorites">المفضلة</string>
+    <string name="qa_directions">التنقل</string>
+    <string name="qa_search">البحث عن مكان</string>
+    <string name="qa_share_my_location">شارك موقعي الحالي</string>
+    <string name="qa_share_live_location">شارك تتبع لموقعي</string>
+    <string name="qa_contribute">ساهم معنا</string>
+</resources>

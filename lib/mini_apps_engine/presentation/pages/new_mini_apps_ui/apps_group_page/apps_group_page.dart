@@ -1,10 +1,7 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
-// import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
@@ -26,9 +23,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {
@@ -43,14 +38,20 @@ class AppsGroupPage extends StatefulWidget {
 class _AppsGroupPageState extends State<AppsGroupPage> {
   late final TextEditingController controller;
 
+  final FocusNode _searchFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
     controller = TextEditingController();
+    _searchFocusNode.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    _searchFocusNode.dispose();
     controller.dispose();
     super.dispose();
   }
@@ -135,65 +136,71 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                   itemDuration: const Duration(milliseconds: 100),
                   itemDelay: const Duration(milliseconds: 90),
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ValueListenableBuilder<TextEditingValue>(
-                            valueListenable: controller,
-                            builder: (context, value, child) {
-                              return MiniAppsCustomTextField(
-                                width: double.infinity,
-                                suffixPadding: value.text.isNotEmpty
-                                    ? EdgeInsets.symmetric(horizontal: context.screenWidth * 0.02)
-                                    : EdgeInsets.symmetric(horizontal: context.screenWidth * 0.04),
-                                autofocus: false,
-                                controller: controller,
-                                onTap: null,
-                                keyboardType: TextInputType.text,
-                                isReadOnly: false,
-                                suffixString: value.text.isEmpty
-                                    ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
-                                    : null,
-                                suffixIcon: value.text.isEmpty
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () {
-                                          controller.clear();
-                                          context.read<NewMiniAppLogicCubit>().searchMiniApp(
-                                            '',
-                                            source: appGroup!.apps,
-                                          );
-                                        },
-                                        icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
-                                      ),
-                                onChanged: (query) {
-                                  context.read<NewMiniAppLogicCubit>().searchMiniApp(query, source: appGroup!.apps);
-                                },
-                              );
-                            },
+                    IntrinsicHeight(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: ValueListenableBuilder<TextEditingValue>(
+                              valueListenable: controller,
+                              builder: (context, value, child) {
+                                return MiniAppsCustomTextField(
+                                  width: double.infinity,
+                                  focusNode: _searchFocusNode,
+                                  suffixPadding: value.text.isNotEmpty
+                                      ? EdgeInsets.symmetric(horizontal: context.screenWidth * 0.02)
+                                      : EdgeInsets.symmetric(horizontal: context.screenWidth * 0.04),
+                                  autofocus: false,
+                                  controller: controller,
+                                  onTap: null,
+                                  keyboardType: TextInputType.text,
+                                  isReadOnly: false,
+                                  suffixString: value.text.isEmpty
+                                      ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
+                                      : null,
+                                  suffixIcon: value.text.isEmpty
+                                      ? null
+                                      : IconButton(
+                                          onPressed: () {
+                                            controller.clear();
+                                            context.read<NewMiniAppLogicCubit>().searchMiniApp(
+                                              '',
+                                              source: appGroup!.apps,
+                                            );
+                                          },
+                                          icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
+                                        ),
+                                  onChanged: (query) {
+                                    context.read<NewMiniAppLogicCubit>().searchMiniApp(query, source: appGroup!.apps);
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        SizedBox(width: context.w(4)),
-                        CustomMiniAppsIconButton(
-                          height: context.screenHeight * 0.060,
-                          width: context.screenWidth * 0.13,
-                          backgroundColor: Theme.of(context).colorScheme.surface,
-                          borderColor: Theme.of(context).dividerColor,
-                          icon: Icons.tune,
-                          onPressed: () async {
-                            final cubit = context.read<NewMiniAppLogicCubit>();
-                            final result = await FilterButtomSheet.show(
-                              context,
-                              initialSelectedType: cubit.state.selectedSortType,
-                            );
-                            if (result != null && mounted) {
-                              cubit.setSortType(result);
-                            }
-                          },
-                        ),
-                        /*
-                        */
-                      ],
+                          SizedBox(width: context.w(1)),
+                          Expanded(
+                            flex: 1,
+                            child: CustomMiniAppsIconButton(
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                              borderColor: Theme.of(context).dividerColor,
+                              icon: Icons.tune,
+                              onPressed: () async {
+                                final cubit = context.read<NewMiniAppLogicCubit>();
+                                final result = await FilterButtomSheet.show(
+                                  context,
+                                  initialSelectedType: cubit.state.selectedSortType,
+                                );
+                                if (result != null && mounted) {
+                                  cubit.setSortType(result);
+                                }
+                              },
+                            ),
+                          ),
+                          /*
+                          */
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -208,9 +215,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                         return CustomScrollView(
                           physics: const BouncingScrollPhysics(),
                           slivers: [
-                            SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
-                            _buildNafathLoginWidget(fetchedDashboard),
-                            SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                            // SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                            if (!_searchFocusNode.hasFocus) _buildNafathLoginWidget(fetchedDashboard),
+                            SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.01)),
                             const SliverFillRemaining(hasScrollBody: true, child: MiniAppsShimmerLoadingWidget()),
                           ],
                         );
@@ -230,7 +237,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           physics: const BouncingScrollPhysics(),
                           slivers: [
                             SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
-                            _buildNafathLoginWidget(fetchedDashboard),
+                            if (!_searchFocusNode.hasFocus) _buildNafathLoginWidget(fetchedDashboard),
                             SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                             SliverGrid(
                               delegate: SliverChildBuilderDelegate((context, index) {
@@ -275,10 +282,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                             width: context.w(100),
                                             height: context.h(100),
                                             child: Card(
-                                              elevation: 1,
+                                              elevation: 0,
                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                               color: Theme.of(context).brightness == Brightness.light
-                                                  ? Theme.of(context).colorScheme.onSurface.withAlpha(10)
+                                                  ? Theme.of(context).colorScheme.onSurface.withAlpha(13)
                                                   : Theme.of(context).primaryColorLight,
                                               child: Padding(
                                                 padding: const EdgeInsets.all(8.0),
@@ -331,7 +338,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               ),
                             ),
                             // Add bottom spacing so the gradient overlay doesn't hide last items
-                            SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
+                            // SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
                           ],
                         );
                       }
@@ -344,7 +351,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                         return CustomScrollView(
                           physics: const BouncingScrollPhysics(),
                           slivers: [
-                            _buildNafathLoginWidget(fetchedDashboard),
+                            if (!_searchFocusNode.hasFocus) _buildNafathLoginWidget(fetchedDashboard),
                             SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                             SliverFillRemaining(
                               hasScrollBody: false,
@@ -366,7 +373,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                       return CustomScrollView(
                         physics: const BouncingScrollPhysics(),
                         slivers: [
-                          _buildNafathLoginWidget(fetchedDashboard),
+                          if (!_searchFocusNode.hasFocus) _buildNafathLoginWidget(fetchedDashboard),
                           SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                           SliverGrid(
                             delegate: SliverChildBuilderDelegate((context, index) {

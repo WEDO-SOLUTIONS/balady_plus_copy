@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
+import 'package:balady_uikit/balady_uikit.dart' hide MapButton, TrafficControlStatus;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +9,14 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
 import 'package:mapness/shared/ui/map_controls/traffic_control.dart';
+import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
   final bool trafficVisible;
@@ -104,6 +106,7 @@ class _ParkingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MapButton(
+        semanticsLabel: context.l10n.layersParking,
         borderRadius: isNoTopBorderRadius
             ? const BorderRadius.only(
                 bottomLeft: Radius.circular(RadiusBorder.ml),

@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -36,22 +38,56 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
   late TextEditingController _controller;
   final ValueNotifier<bool> _focused = ValueNotifier(false);
 
+  /// DataFinder: tracks the first focus of the box for `is_first_click`.
+  bool _searchBoxClicked = false;
+
+  /// Guards `search_box_click` against firing twice for one activation (focus
+  /// listener + `onTap`). Reset on focus-loss so the next activation reports.
+  bool _boxClickFiredThisFocus = false;
+
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _focusNode = FocusNode()
-      ..addListener(() {
-        if (_focusNode.hasFocus) {
-          _focused.value = true;
-        }
-      });
+    _focusNode = FocusNode()..addListener(_onFocusChanged);
     _focusNode.requestFocus();
+  }
+
+  /// Fires the FIRST `search_box_click` on auto-focus; genuine re-taps go
+  /// through `onTap`. A mere focus RETURN after a pushed route/dialog closes is
+  /// not reported (BRD "Triggered when the search box gains focus").
+  void _onFocusChanged() {
+    if (!_focusNode.hasFocus) {
+      _boxClickFiredThisFocus = false;
+      return;
+    }
+    if (!mounted || _searchBoxClicked) {
+      return;
+    }
+    _focused.value = true;
+    _fireSearchBoxClick();
+  }
+
+  /// Emits `search_box_click`, at most once per focus session.
+  void _fireSearchBoxClick() {
+    if (_boxClickFiredThisFocus || !mounted) {
+      return;
+    }
+    _boxClickFiredThisFocus = true;
+    final scopeValue = context.read<SearchScope>().value;
+    final searcher = ref.read(searchProvider(scopeValue).notifier);
+    ref.read(appAnalyticsProvider).searchBoxClick(
+          eventSource: searcher.dataFinderEventSource,
+          isFirstClick: !_searchBoxClicked,
+        );
+    _searchBoxClicked = true;
   }
 
   @override
   void dispose() {
-    _focusNode.dispose();
+    _focusNode
+      ..removeListener(_onFocusChanged)
+      ..dispose();
     super.dispose();
   }
 
@@ -73,6 +109,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
           focusNode: _focusNode,
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
+            // DataFinder: report genuine re-taps (first focus is handled by the
+            // focus listener). A focus return after a dialog closes is skipped.
+            _fireSearchBoxClick();
           },
           onChanged: (query) {
             Metrics.logEventAdvanced(
@@ -81,6 +120,12 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               action: MetricAction.type.toString(),
               props: {'query': query},
             );
+
+            // DataFinder: report the manual text input.
+            ref.read(appAnalyticsProvider).searchBoxInput(
+                  operationType: DataFinderInputOperation.manual,
+                  inputText: query,
+                );
 
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
           },
@@ -91,6 +136,13 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               action: MetricAction.type.toString(),
               props: {'query': query},
             );
+            // DataFinder: report the search submit (keyboard action).
+            if (query.trim().isNotEmpty) {
+              ref.read(appAnalyticsProvider).searchButtonClick(
+                    eventSource: ref.read(searchProvider(scope.value).notifier).dataFinderEventSource,
+                    searchText: query,
+                  );
+            }
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,

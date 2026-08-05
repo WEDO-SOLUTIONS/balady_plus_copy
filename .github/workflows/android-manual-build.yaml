@@ -5,11 +5,9 @@ name: 🔨🤖 Android Build
 permissions: write-all
 
 concurrency:
-  # Prevent duplicate builds for the same branch + environment, but do NOT
-  # cancel a build already in progress — Android builds take 40-50 min and
-  # a mid-flight cancellation just wastes all that time.
+  # Ensure only one run per (branch + environment), cancel older ones
   group: android-${{ github.event_name }}-${{ github.head_ref || github.ref_name || inputs.branch }}-${{ inputs.environment || 'auto' }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 on:
   workflow_dispatch:
@@ -34,7 +32,7 @@ jobs:
   build:
     name: Build Android (manual or PR merged)
     runs-on: ubuntu-latest # [self-hosted, macOS, ARM64]
-    timeout-minutes: 90
+    timeout-minutes: 60
 
     if: ${{ github.event_name == 'workflow_dispatch' }}
 
@@ -142,15 +140,6 @@ jobs:
           dart pub global activate fvm
           echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
 
-      - name: Cache pub dependencies and FVM
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            ~/.fvm
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.yaml', '**/pubspec.lock') }}
-          restore-keys: ${{ runner.os }}-pub-
-
       - name: Setup Flutter
         run: |
           fvm install
@@ -177,18 +166,8 @@ jobs:
         with:
           distribution: "zulu"
           java-version: "17.x"
-          cache: "gradle"
+          #cache: "gradle"
         id: java
-
-      - name: Cache Android SDK components (NDK, platforms, CMake)
-        uses: actions/cache@v4
-        with:
-          path: |
-            /usr/local/lib/android/sdk/ndk
-            /usr/local/lib/android/sdk/platforms
-            /usr/local/lib/android/sdk/cmake
-          key: android-sdk-ndk27.0.12077973-platforms31-32-33-cmake3.22.1
-          restore-keys: android-sdk-ndk27.0.12077973-
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -254,7 +233,8 @@ jobs:
       - name: Ensure Flutter engine artifacts (Android) and packages are present
         shell: bash
         run: |
-          fvm flutter precache --android
+          fvm flutter precache --android --force
+          fvm flutter pub cache repair
           fvm flutter pub get
 
       - name: 🤖🔨 Build Android app

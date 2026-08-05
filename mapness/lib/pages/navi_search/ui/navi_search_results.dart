@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -41,11 +42,15 @@ class NaviSearchResults extends ConsumerWidget {
       final scope = context.read<SearchScope>();
       final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
       if (isFromSuggest) {
-        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+        ref
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
       } else {
-        ref.read(urbiAnalyticsProvider).track(
+        ref
+            .read(urbiAnalyticsProvider)
+            .track(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.fullSearchResultPressed}',
             );
       }
@@ -55,7 +60,8 @@ class NaviSearchResults extends ConsumerWidget {
       required SearchResultMessage results,
       required DirectoryObjectMessage item,
     }) async {
-      final index = results.firstPage?.items.indexWhere(
+      final index =
+          results.firstPage?.items.indexWhere(
             (e) => e.id?.objectId == item.id?.objectId,
           ) ??
           0;
@@ -98,10 +104,14 @@ class NaviSearchResults extends ConsumerWidget {
         contentColor: context.colors.backgroundSurface1,
         result: item,
         language: language,
-        myLocation:
-            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+        myLocation: myLocation == null
+            ? null
+            : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+        index: index,
         onTap: () {
           _bssAnalyticRequest(results: results, item: item);
+          final scope = context.read<SearchScope>();
+          ref.read(searchProvider(scope.value).notifier).reportSearchResultsClick(item: item, rank: index + 1);
           _onResultTap(context, item, _sendSuggestionPressed);
         },
       ),

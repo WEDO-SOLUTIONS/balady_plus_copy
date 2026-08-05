@@ -51,7 +51,8 @@ final class AudioCoordinationManager {
     private func startObserving() {
         let center = NotificationCenter.default
 
-        // Primary signal: system wants secondary audio silenced (navigation voice start/end).
+        // Hint: another audio (e.g., speech) wants to silence secondary audio.
+        // This is the closest system-level "voice started/finished" signal we can get.
         center.addObserver(
             self,
             selector: #selector(handleSilenceSecondaryHint(_:)),
@@ -59,7 +60,7 @@ final class AudioCoordinationManager {
             object: AVAudioSession.sharedInstance()
         )
 
-        // Fallback: standard interruption (phone call, Siri, same-process session fight).
+        // Fallback: interruptions (phone call, Siri, etc.)—keeps audio in a sane state.
         center.addObserver(
             self,
             selector: #selector(handleInterruption(_:)),
@@ -69,19 +70,24 @@ final class AudioCoordinationManager {
     }
 
     @objc private func handleSilenceSecondaryHint(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-              let rawType = userInfo[AVAudioSessionSilenceSecondaryAudioHintTypeKey] as? UInt,
-              let type = AVAudioSession.SilenceSecondaryAudioHintType(rawValue: rawType)
+        guard
+            let userInfo = notification.userInfo,
+            let rawType = userInfo[AVAudioSessionSilenceSecondaryAudioHintTypeKey] as? UInt,
+            let type = AVAudioSession.SilenceSecondaryAudioHintType(rawValue: rawType)
         else { return }
+
+        // If MBC isn't playing, don't spam Flutter with duck/restore.
+        guard isMbcActive else { return }
 
         switch type {
         case .begin:
             DispatchQueue.main.async {
-                self.channel.invokeMethod("navigationVoiceStarted", arguments: nil)
+                // Keep radio playing; just duck volume during spoken guidance.
+                self.channel.invokeMethod("duckAudio", arguments: ["volume": 0.2])
             }
         case .end:
             DispatchQueue.main.async {
-                self.channel.invokeMethod("navigationVoiceEnded", arguments: nil)
+                self.channel.invokeMethod("restoreAudio", arguments: ["volume": 1.0])
             }
         @unknown default:
             break
@@ -89,19 +95,20 @@ final class AudioCoordinationManager {
     }
 
     @objc private func handleInterruption(_ notification: Notification) {
-        guard let userInfo = notification.userInfo,
-              let rawType = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
-              let type = AVAudioSession.InterruptionType(rawValue: rawType)
+        guard
+            let userInfo = notification.userInfo,
+            let rawType = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+            let type = AVAudioSession.InterruptionType(rawValue: rawType)
         else { return }
 
         switch type {
         case .began:
             DispatchQueue.main.async {
-                self.channel.invokeMethod("navigationVoiceStarted", arguments: nil)
+                self.channel.invokeMethod("onAudioInterrupted", arguments: nil)
             }
         case .ended:
             DispatchQueue.main.async {
-                self.channel.invokeMethod("navigationVoiceEnded", arguments: nil)
+                self.channel.invokeMethod("onAudioInterruptionEnded", arguments: nil)
             }
         @unknown default:
             break

@@ -69,14 +69,18 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
             icon: SystemIcons.arrowCornerLeftLarge,
           ),
         ),
-        body: _isLoading
-            ? const Center(child: Loading())
-            : Column(
-                children: [
-                  const SizedBox(width: 28),
-                  Expanded(child: WebViewWidget(controller: _controller)),
-                ],
-              ),
+        body: SafeArea(
+          top: false,
+          bottom: true,
+          child: _isLoading
+              ? const Center(child: Loading())
+              : Column(
+                  children: [
+                    const SizedBox(width: 28),
+                    Expanded(child: WebViewWidget(controller: _controller)),
+                  ],
+                ),
+        ),
       ),
     ),
   );

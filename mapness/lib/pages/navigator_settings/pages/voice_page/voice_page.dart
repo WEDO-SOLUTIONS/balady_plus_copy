@@ -34,13 +34,28 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
         child: Padding(
           padding: const EdgeInsets.only(top: Spacing.$4x),
           child: Scaffold(
-            appBar: BaladyTopBar.iconAndText(
+            appBar: BaladyTopBar(
               systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
               title: l10n.voice,
               textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
-              leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
-            ),
-            body: const VoicePageContent(),
+              onLeadingPressed: () => context.router.pop(),
+                leading: Semantics(
+                  label: context.l10n.a11yBack,
+                  button: true,
+                  child: ExcludeSemantics(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: Spacing.$4x),
+                        Icon(SystemIcons.arrowCornerLeftLarge, color: colors.foregroundDefault),
+                        const SizedBox(width: Spacing.$4x),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              body: const VoicePageContent(),
+
           ),
         ),
       ),

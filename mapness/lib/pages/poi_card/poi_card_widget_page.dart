@@ -83,6 +83,8 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_mappers.dart';
+import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';

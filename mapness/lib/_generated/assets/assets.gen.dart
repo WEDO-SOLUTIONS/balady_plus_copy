@@ -994,11 +994,14 @@ class $AssetsImagesLayersGen {
   /// File path: assets/images/layers/default_map.png
   AssetGenImage get defaultMap => const AssetGenImage('assets/images/layers/default_map.png');
 
+  /// File path: assets/images/layers/img_layer_jeddah_bus.png
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
+
   /// File path: assets/images/layers/satellite.png
   AssetGenImage get satellite => const AssetGenImage('assets/images/layers/satellite.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [defaultMap, satellite];
+  List<AssetGenImage> get values => [defaultMap, imgLayerJeddahBus, satellite];
 }
 
 class $AssetsImagesMakkahQuickActionsGen {
@@ -1123,9 +1126,6 @@ class $AssetsImagesSvgLayersGen {
   /// File path: assets/images_svg/layers/favourites.svg
   SvgGenImage get favourites => const SvgGenImage('assets/images_svg/layers/favourites.svg');
 
-  /// File path: assets/images_svg/layers/jeddah_bus.svg
-  SvgGenImage get jeddahBus => const SvgGenImage('assets/images_svg/layers/jeddah_bus.svg');
-
   /// File path: assets/images_svg/layers/makkah_bus.svg
   SvgGenImage get makkahBus => const SvgGenImage('assets/images_svg/layers/makkah_bus.svg');
 
@@ -1149,7 +1149,6 @@ class $AssetsImagesSvgLayersGen {
     a3D,
     busSubMenu,
     favourites,
-    jeddahBus,
     makkahBus,
     metro,
     parking,
@@ -2676,34 +2675,239 @@ class $AssetsTifoSpritesGoalkeeperV2Gen {
   AssetGenImage get keeperDiveLowCenter =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Black.png
+  AssetGenImage get keeperDiveLowCenterBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Blue.png
+  AssetGenImage get keeperDiveLowCenterBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Green.png
+  AssetGenImage get keeperDiveLowCenterGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Red.png
+  AssetGenImage get keeperDiveLowCenterRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Sand.png
+  AssetGenImage get keeperDiveLowCenterSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Yellow.png
+  AssetGenImage get keeperDiveLowCenterYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowCenter_Yellow.png');
+
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft.png
   AssetGenImage get keeperDiveLowLeft =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Black.png
+  AssetGenImage get keeperDiveLowLeftBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Blue.png
+  AssetGenImage get keeperDiveLowLeftBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Green.png
+  AssetGenImage get keeperDiveLowLeftGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Red.png
+  AssetGenImage get keeperDiveLowLeftRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Sand.png
+  AssetGenImage get keeperDiveLowLeftSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Yellow.png
+  AssetGenImage get keeperDiveLowLeftYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowLeft_Yellow.png');
 
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight.png
   AssetGenImage get keeperDiveLowRight =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Black.png
+  AssetGenImage get keeperDiveLowRightBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Blue.png
+  AssetGenImage get keeperDiveLowRightBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Green.png
+  AssetGenImage get keeperDiveLowRightGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Red.png
+  AssetGenImage get keeperDiveLowRightRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Sand.png
+  AssetGenImage get keeperDiveLowRightSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Yellow.png
+  AssetGenImage get keeperDiveLowRightYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveLowRight_Yellow.png');
+
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter.png
   AssetGenImage get keeperDiveUpCenter =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Black.png
+  AssetGenImage get keeperDiveUpCenterBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Blue.png
+  AssetGenImage get keeperDiveUpCenterBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Green.png
+  AssetGenImage get keeperDiveUpCenterGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Red.png
+  AssetGenImage get keeperDiveUpCenterRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Sand.png
+  AssetGenImage get keeperDiveUpCenterSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Yellow.png
+  AssetGenImage get keeperDiveUpCenterYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpCenter_Yellow.png');
 
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight.png
   AssetGenImage get keeperDiveUpRight =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Black.png
+  AssetGenImage get keeperDiveUpRightBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Blue.png
+  AssetGenImage get keeperDiveUpRightBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Green.png
+  AssetGenImage get keeperDiveUpRightGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Red.png
+  AssetGenImage get keeperDiveUpRightRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Sand.png
+  AssetGenImage get keeperDiveUpRightSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Yellow.png
+  AssetGenImage get keeperDiveUpRightYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_diveUpRight_Yellow.png');
+
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft.png
   AssetGenImage get keeperGroundLeft => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Black.png
+  AssetGenImage get keeperGroundLeftBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Blue.png
+  AssetGenImage get keeperGroundLeftBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Green.png
+  AssetGenImage get keeperGroundLeftGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Red.png
+  AssetGenImage get keeperGroundLeftRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Sand.png
+  AssetGenImage get keeperGroundLeftSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Yellow.png
+  AssetGenImage get keeperGroundLeftYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundLeft_Yellow.png');
 
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight.png
   AssetGenImage get keeperGroundRight =>
       const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Black.png
+  AssetGenImage get keeperGroundRightBlack =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Blue.png
+  AssetGenImage get keeperGroundRightBlue =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Green.png
+  AssetGenImage get keeperGroundRightGreen =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Red.png
+  AssetGenImage get keeperGroundRightRed =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Sand.png
+  AssetGenImage get keeperGroundRightSand =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Yellow.png
+  AssetGenImage get keeperGroundRightYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_groundRight_Yellow.png');
+
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle.png
   AssetGenImage get keeperIdle => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle.png');
 
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Black.png
+  AssetGenImage get keeperIdleBlack => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Blue.png
+  AssetGenImage get keeperIdleBlue => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Green.png
+  AssetGenImage get keeperIdleGreen => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Red.png
+  AssetGenImage get keeperIdleRed => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Sand.png
+  AssetGenImage get keeperIdleSand => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_idle_Yellow.png
+  AssetGenImage get keeperIdleYellow => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_idle_Yellow.png');
+
   /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready.png
   AssetGenImage get keeperReady => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Black.png
+  AssetGenImage get keeperReadyBlack => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Black.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Blue.png
+  AssetGenImage get keeperReadyBlue => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Blue.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Green.png
+  AssetGenImage get keeperReadyGreen => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Green.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Red.png
+  AssetGenImage get keeperReadyRed => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Red.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Sand.png
+  AssetGenImage get keeperReadySand => const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Sand.png');
+
+  /// File path: assets/tifo/sprites/goalkeeper_v2/keeper_ready_Yellow.png
+  AssetGenImage get keeperReadyYellow =>
+      const AssetGenImage('assets/tifo/sprites/goalkeeper_v2/keeper_ready_Yellow.png');
 
   /// File path: assets/tifo/sprites/goalkeeper_v2/missed_reaction_sheet.png
   AssetGenImage get missedReactionSheet =>
@@ -2756,14 +2960,68 @@ class $AssetsTifoSpritesGoalkeeperV2Gen {
     keeperAtlas,
     keeperCelebrate,
     keeperDiveLowCenter,
+    keeperDiveLowCenterBlack,
+    keeperDiveLowCenterBlue,
+    keeperDiveLowCenterGreen,
+    keeperDiveLowCenterRed,
+    keeperDiveLowCenterSand,
+    keeperDiveLowCenterYellow,
     keeperDiveLowLeft,
+    keeperDiveLowLeftBlack,
+    keeperDiveLowLeftBlue,
+    keeperDiveLowLeftGreen,
+    keeperDiveLowLeftRed,
+    keeperDiveLowLeftSand,
+    keeperDiveLowLeftYellow,
     keeperDiveLowRight,
+    keeperDiveLowRightBlack,
+    keeperDiveLowRightBlue,
+    keeperDiveLowRightGreen,
+    keeperDiveLowRightRed,
+    keeperDiveLowRightSand,
+    keeperDiveLowRightYellow,
     keeperDiveUpCenter,
+    keeperDiveUpCenterBlack,
+    keeperDiveUpCenterBlue,
+    keeperDiveUpCenterGreen,
+    keeperDiveUpCenterRed,
+    keeperDiveUpCenterSand,
+    keeperDiveUpCenterYellow,
     keeperDiveUpRight,
+    keeperDiveUpRightBlack,
+    keeperDiveUpRightBlue,
+    keeperDiveUpRightGreen,
+    keeperDiveUpRightRed,
+    keeperDiveUpRightSand,
+    keeperDiveUpRightYellow,
     keeperGroundLeft,
+    keeperGroundLeftBlack,
+    keeperGroundLeftBlue,
+    keeperGroundLeftGreen,
+    keeperGroundLeftRed,
+    keeperGroundLeftSand,
+    keeperGroundLeftYellow,
     keeperGroundRight,
+    keeperGroundRightBlack,
+    keeperGroundRightBlue,
+    keeperGroundRightGreen,
+    keeperGroundRightRed,
+    keeperGroundRightSand,
+    keeperGroundRightYellow,
     keeperIdle,
+    keeperIdleBlack,
+    keeperIdleBlue,
+    keeperIdleGreen,
+    keeperIdleRed,
+    keeperIdleSand,
+    keeperIdleYellow,
     keeperReady,
+    keeperReadyBlack,
+    keeperReadyBlue,
+    keeperReadyGreen,
+    keeperReadyRed,
+    keeperReadySand,
+    keeperReadyYellow,
     missedReactionSheet,
     readySheet,
     saveRecoverSheet,
@@ -2776,17 +3034,124 @@ class $AssetsTifoSpritesStrikerV2Gen {
   /// File path: assets/tifo/sprites/striker_v2/striker_idle.png
   AssetGenImage get strikerIdle => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle.png');
 
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Black.png
+  AssetGenImage get strikerIdleBlack => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Blue.png
+  AssetGenImage get strikerIdleBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Red.png
+  AssetGenImage get strikerIdleRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Sand.png
+  AssetGenImage get strikerIdleSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_White.png
+  AssetGenImage get strikerIdleWhite => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_idle_Yellow.png
+  AssetGenImage get strikerIdleYellow => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_idle_Yellow.png');
+
   /// File path: assets/tifo/sprites/striker_v2/striker_kick.png
   AssetGenImage get strikerKick => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Black.png
+  AssetGenImage get strikerKickBlack => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Blue.png
+  AssetGenImage get strikerKickBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Red.png
+  AssetGenImage get strikerKickRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Sand.png
+  AssetGenImage get strikerKickSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_White.png
+  AssetGenImage get strikerKickWhite => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_kick_Yellow.png
+  AssetGenImage get strikerKickYellow => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_kick_Yellow.png');
 
   /// File path: assets/tifo/sprites/striker_v2/striker_settle.png
   AssetGenImage get strikerSettle => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle.png');
 
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Black.png
+  AssetGenImage get strikerSettleBlack =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Blue.png
+  AssetGenImage get strikerSettleBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Red.png
+  AssetGenImage get strikerSettleRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Sand.png
+  AssetGenImage get strikerSettleSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_White.png
+  AssetGenImage get strikerSettleWhite =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_settle_Yellow.png
+  AssetGenImage get strikerSettleYellow =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_settle_Yellow.png');
+
   /// File path: assets/tifo/sprites/striker_v2/striker_windup.png
   AssetGenImage get strikerWindup => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup.png');
 
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Black.png
+  AssetGenImage get strikerWindupBlack =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Black.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Blue.png
+  AssetGenImage get strikerWindupBlue => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Blue.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Red.png
+  AssetGenImage get strikerWindupRed => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Red.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Sand.png
+  AssetGenImage get strikerWindupSand => const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Sand.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_White.png
+  AssetGenImage get strikerWindupWhite =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_White.png');
+
+  /// File path: assets/tifo/sprites/striker_v2/striker_windup_Yellow.png
+  AssetGenImage get strikerWindupYellow =>
+      const AssetGenImage('assets/tifo/sprites/striker_v2/striker_windup_Yellow.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [strikerIdle, strikerKick, strikerSettle, strikerWindup];
+  List<AssetGenImage> get values => [
+    strikerIdle,
+    strikerIdleBlack,
+    strikerIdleBlue,
+    strikerIdleRed,
+    strikerIdleSand,
+    strikerIdleWhite,
+    strikerIdleYellow,
+    strikerKick,
+    strikerKickBlack,
+    strikerKickBlue,
+    strikerKickRed,
+    strikerKickSand,
+    strikerKickWhite,
+    strikerKickYellow,
+    strikerSettle,
+    strikerSettleBlack,
+    strikerSettleBlue,
+    strikerSettleRed,
+    strikerSettleSand,
+    strikerSettleWhite,
+    strikerSettleYellow,
+    strikerWindup,
+    strikerWindupBlack,
+    strikerWindupBlue,
+    strikerWindupRed,
+    strikerWindupSand,
+    strikerWindupWhite,
+    strikerWindupYellow,
+  ];
 }
 
 class $AssetsIconsSvgDynamicPoiGlyphsGen {
@@ -3868,10 +4233,11 @@ abstract final class Assets {
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
   static const $AssetsModelsGen models = $AssetsModelsGen();
+  static const String quickActionsConfig = 'packages/mapness/assets/quick_actions_config.json';
   static const $AssetsTifoGen tifo = $AssetsTifoGen();
 
   /// List of all assets
-  static List<String> get values => [config];
+  static List<String> get values => [config, quickActionsConfig];
 }
 
 class AssetGenImage {

@@ -8,4 +8,10 @@
         }
       }]
     </string>
+    <string name="qa_favorites">Favorites</string>
+    <string name="qa_directions">Directions</string>
+    <string name="qa_search">Search for Place</string>
+    <string name="qa_share_my_location">Share My Location</string>
+    <string name="qa_share_live_location">Share Live Location</string>
+    <string name="qa_contribute">Contribute</string>
 </resources>

@@ -71,7 +71,6 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
 
                 context.router.replaceOrPush(
                   route: PoiCardWidgetRoute(
-                    showHighlight: false,
                     objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0),
                     closestPoint: LatLng(latitude: point.latitude, longitude: point.longitude),
                     cameraConfig: const PoiCameraConfig(zoom: 20),

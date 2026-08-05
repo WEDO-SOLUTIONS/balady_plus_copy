@@ -18,8 +18,22 @@ class _ContributePageState extends State<ContributePage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: context.colors.backgroundSurface4,
-    appBar: BaladyTopBar.iconAndText(
-      leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: () => context.router.pop()),
+    appBar: BaladyTopBar(
+      onLeadingPressed: () => context.router.pop(),
+      leading: Semantics(
+        label: context.l10n.a11yBack,
+        button: true,
+        child: ExcludeSemantics(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(width: Spacing.$4x),
+              Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+              const SizedBox(width: Spacing.$4x),
+            ],
+          ),
+        ),
+      ),
       title: context.l10n.contributePageTitle,
     ),
     body: Padding(

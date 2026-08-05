@@ -46,10 +46,24 @@ class NaviFavoritesPage extends HookConsumerWidget {
         ];
 
         return Scaffold(
-          appBar: BaladyTopBar.iconAndText(
+          appBar: BaladyTopBar(
             systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
             title: context.l10n.favorites,
-            leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: () => context.router.pop()),
+            onLeadingPressed: () => context.router.pop(),
+            leading: Semantics(
+              label: context.l10n.a11yBack,
+              button: true,
+              child: ExcludeSemantics(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: Spacing.$4x),
+                    Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+                    const SizedBox(width: Spacing.$4x),
+                  ],
+                ),
+              ),
+            ),
           ),
           backgroundColor: context.colors.backgroundSurface4,
           body: Padding(

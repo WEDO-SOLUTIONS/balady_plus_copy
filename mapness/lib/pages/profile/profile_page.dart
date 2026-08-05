@@ -56,13 +56,15 @@ class ProfilePage extends HookConsumerWidget {
     final backgroundColor = isAuth
         ? context.colors.backgroundSurface1
         : isFoundingDay
-        ? const Color(0xFFDFC6A8)
+        ? context.colors.accentDefault
+        : isDGA
+        ? context.colors.accentDefault
         : context.colorsV3.staticDarkblue;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: context.read<ThemeController>().systemOverlayStyle,
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: context.colors.accentDefault,
         body: SafeArea(
           bottom: false,
           child: Directionality(
@@ -137,7 +139,7 @@ class ProfilePage extends HookConsumerWidget {
                               ),
                               const SizedBox(height: Spacing.$4x),
                               ContentWrapper(
-                                color: isDGA ? context.colors.accentSecondarySoft :  context.colors.backgroundSurface1,
+                                color: isDGA ? context.colors.accentSecondarySoft : context.colors.backgroundSurface1,
                                 children: [
                                   ContentRowV2(
                                     isDividerEnabled: true,
@@ -177,10 +179,14 @@ class ProfilePage extends HookConsumerWidget {
                                 data: (data) => data == null
                                     ? const SizedBox.shrink()
                                     : ContentWrapper(
-                                        color: isDGA ? context.colors.accentSecondarySoft :  context.colors.backgroundSurface1,
+                                        color: isDGA
+                                            ? context.colors.accentSecondarySoft
+                                            : context.colors.backgroundSurface1,
                                         children: [
                                           ContentRowV2(
-                                            backgroundColor: isDGA ? context.colors.accentSecondarySoft :  context.colors.backgroundSurface1,
+                                            backgroundColor: isDGA
+                                                ? context.colors.accentSecondarySoft
+                                                : context.colors.backgroundSurface1,
                                             onTap: () => _logOut(context, ref, isLoading),
                                             text: ContentRowTextOptions(
                                               title: context.l10n.signOut,

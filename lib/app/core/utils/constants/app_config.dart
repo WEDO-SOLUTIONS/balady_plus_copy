@@ -10,7 +10,7 @@ class AppConfig {
   static const String appLanguagesPath = 'assets/langs/';
   static const String appFontPath = 'assets/fonts/';
 
-  static const String arabicUIFontType = 'packages/balady_uikit/Frutiger';
+  static const String arabicUIFontType = 'packages/balady_design_system/IBMPlexSansArabic';
   static const String cairoFontType = 'Cairo';
   static const String appFontType = arabicUIFontType;
 

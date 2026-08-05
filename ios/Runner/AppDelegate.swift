@@ -37,6 +37,20 @@ extension AVAudioSession {
         if mode == .voicePrompt || mode == .spokenAudio {
             return
         }
+        // CRITICAL: do NOT inject `.mixWithOthers` for `.playback`.
+        //
+        // iOS deliberately hides MPNowPlayingInfoCenter and ignores
+        // MPRemoteCommandCenter targets whenever the active audio session is
+        // mixable — the app is treated as ambient/secondary audio. MBC radio
+        // (NativeRadioPlayer) requires the standard "media player" UI on the
+        // lock screen / Control Center / CarPlay, so its `.playback` session
+        // MUST stay exclusive. The mixing override is only needed to make
+        // 2GIS navigation voice (`.voicePrompt` / `.spokenAudio`, already
+        // exempted above) coexist with other ambient audio.
+        if category == .playback {
+            try _bs_setCategory(category, mode: mode, options: options)
+            return
+        }
         let safeOptions = options.union(.mixWithOthers).subtracting(.duckOthers)
         try _bs_setCategory(category, mode: mode, options: safeOptions)
     }
@@ -84,6 +98,8 @@ extension AVAudioSession {
         // Setup iOS audio coordination → Flutter events (duck/restore).
         audioCoordinationManager = AudioCoordinationManager(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
+        AppIconQuickActionChannel.register(messenger: sharedSingleFlutterEngine.binaryMessenger)
+
         // Native radio player — bypasses just_audio_background interruption handling.
         nativeRadioPlayer = NativeRadioPlayer(messenger: sharedSingleFlutterEngine.binaryMessenger)
 
@@ -92,6 +108,15 @@ extension AVAudioSession {
         }
 
         return true
+    }
+
+    override func application(
+        _ application: UIApplication,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        AppIconQuickActionChannel.store(shortcutItem.type)
+        completionHandler(true)
     }
 
     private func setupNativeOverlayChannel(with flutterEngine: FlutterEngine) {

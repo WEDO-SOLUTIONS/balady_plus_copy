@@ -60,6 +60,15 @@
   "November": "November",
   "December": "December",
   "back": "Previous",
+  "a11yBack": "Back",
+  "a11yImage": "Image",
+  "a11yMap3d": "3D map",
+  "a11yMap2d": "2D map",
+  "a11yShowOnMap": "Show on map",
+  "a11yWeather": "Weather map",
+  "a11yCompass": "Compass",
+  "a11yFollowNavigation": "Follow navigation",
+  "a11yClearSearch": "Clear search",
   "address": "Address",
   "_buttonsComment": "Anything about buttons",
   "signInButton": "Login",
@@ -84,6 +93,9 @@
   "verification_code_sent": "Verification code sent",
   "account_confirm_otp": "Confirm OTP",
   "account_resend_code": "Get the code again",
+  "account_verify_email_button": "Verify email",
+  "account_error_max_otp_attempts": "You have exceeded the maximum of 3 attempts. Please request a new code.",
+  "account_resend_code_in": "Resend the code in %s",
   "account_enter_code_from_email": "Enter the code from Email",
   "account_verify_email_instruction": "To confirm the email address",
   "account_email_not_verified": "Email not verified",
@@ -4883,6 +4895,9 @@
   "favorite_services_subtitle": "You can add your favorite services for easy access",
   "compliance_map":"compliance map",
   "building_compliance_question":"Is your building compliant?",
-  "add_to_fav":"Add to favorite"
-
+  "add_to_fav":"Add to favorite",
+  "facilities":"Facilities",
+  "agencies":"Agents",
+  "business_account":"Business Account",
+  "please_select_facility_or_agency":"Please select a facility or agency"
 }

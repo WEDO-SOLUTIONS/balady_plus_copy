@@ -7,6 +7,7 @@ import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class WeatherControl extends ConsumerWidget {
   const WeatherControl({super.key});
@@ -38,9 +39,15 @@ class WeatherControl extends ConsumerWidget {
     final tempC2 = data?.current?.tempC;
     final temp = tempC2 == null ? 30 : tempC2.toInt();
 
-    return uikit.WeatherControl(
-      value: temp,
-      onTap: onTap,
+    return Semantics(
+      label: context.l10n.a11yWeather,
+      button: true,
+      child: ExcludeSemantics(
+        child: uikit.WeatherControl(
+          value: temp,
+          onTap: onTap,
+        ),
+      ),
     );
   }
 }

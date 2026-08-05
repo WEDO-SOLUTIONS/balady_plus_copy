@@ -5,6 +5,7 @@ import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:flutter/material.dart';
 
+//!
 class CustomMiniAppsCard extends StatelessWidget {
   final double? width;
   final double? height;
@@ -98,7 +99,13 @@ class CustomMiniAppsCard extends StatelessWidget {
               SizedBox(
                 height: context.h(70),
                 width: context.w(70),
-                child: Card(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Theme.of(context).disabledColor.withAlpha(90)),
+                  ),
+                  // elevation: 0,
                   child: Padding(
                     padding: const EdgeInsets.all(10),
                     child: DecoratedBox(
@@ -133,13 +140,13 @@ class CustomMiniAppsCard extends StatelessWidget {
               SizedBox(height: gapHeight),
               SizedBox(
                 width: context.screenWidth * 0.23,
-                height: context.screenHeight * 0.05,
+                height: titlesHeight ?? (context.screenHeight * 0.05 * textScale),
                 child: AutoSizeText(
                   text ?? "example",
                   textAlign: TextAlign.center,
-                  maxLines: 2,
-                  maxFontSize: 15,
-                  minFontSize: 10,
+                  maxLines: maxLines ?? 2,
+                  maxFontSize: maxFontSize ?? 15,
+                  minFontSize: minFontSize ?? 10,
                   overflow: TextOverflow.ellipsis,
                   softWrap: true,
                   style: const TextStyle(

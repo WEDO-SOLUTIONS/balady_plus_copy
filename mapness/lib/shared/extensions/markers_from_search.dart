@@ -68,7 +68,7 @@ typedef AdvancedIconResolver =
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
   static const _propertyKey = 'objectId';
-  static const poiMapFontAr = 'FrutigerLTArabic65Bold';
+  static const poiMapFontAr = 'IBMPlexSansArabic-Bold';
   static const poiMapFontEn = 'GolosText_SemiBold';
 
   Future<List<Marker>> getMarkers({

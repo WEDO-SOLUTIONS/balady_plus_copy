@@ -1,5 +1,4 @@
 import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
@@ -22,7 +21,7 @@ part 'point_of_interest.g.dart';
 const poiPinId = 'poi_pin_id';
 const poiCarModelId = 'poi_car_model_id';
 const poiCarModelPath = 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
-const poiMapFontAr = 'FrutigerLTArabic65Bold';
+const poiMapFontAr = 'IBMPlexSansArabic-Bold';
 const poiMapFontEn = 'GolosText_SemiBold';
 
 @riverpod

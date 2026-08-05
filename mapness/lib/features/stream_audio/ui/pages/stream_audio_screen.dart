@@ -170,7 +170,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
           _previousOrientation = orientation;
 
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            if (!mounted) return;
+            if (!mounted) {
+              return;
+            }
 
             try {
               if (isLandscape && !wasLandscape) {
@@ -270,7 +272,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
       final double bottomRadius = (isLandscape || currentSize == _minChildSize) ? 0 : 32;
 
       return Container(
-        color: Colors.black,
+        color: const Color(0xff0D121C),
         child: Stack(
           children: [
             // 1. The Main App Content (widget.child)
@@ -321,7 +323,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
                     }
                   },
                   child: Container(
-                    decoration: const BoxDecoration(color: Colors.black),
+                    decoration: const BoxDecoration(color: Color(0xff0D121C)),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         border: sheetFromLeft
@@ -416,7 +418,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingOb
         maxChildSize: _maxChildSize,
         builder: (context, scrollController) => Container(
           decoration: BoxDecoration(
-            color: isVisible ? Colors.black : Colors.transparent,
+            color: isVisible ? const Color(0xff0D121C) : Colors.transparent,
           ),
           child: Opacity(
             opacity: isVisible ? 1.0 : 0.0,

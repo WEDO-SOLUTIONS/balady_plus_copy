@@ -35,7 +35,9 @@ class DirectoryObjectCarEstimate extends ConsumerWidget {
         style: DefaultTextStyle.of(context).style.copyWith(color: context.colors.neutralDefault),
         children: [
           WidgetSpan(
-            child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+            child: ExcludeSemantics(
+              child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+            ),
             baseline: TextBaseline.ideographic,
             alignment: PlaceholderAlignment.middle,
           ),

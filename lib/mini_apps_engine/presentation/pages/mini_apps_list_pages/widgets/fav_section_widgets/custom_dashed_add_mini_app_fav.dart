@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+//!
 class CustomDashedAddMiniAppFav extends StatelessWidget {
   final double? width;
   final double? height;
@@ -48,10 +49,10 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
             child: DottedBorder(
               // 1. CHANGE THIS CLASS TO RoundedRectDottedBorderOptions
               options: RoundedRectDottedBorderOptions(
-                radius: const Radius.circular(16), // Now you can add the radius!
+                radius: const Radius.circular(10), // Now you can add the radius!
                 borderPadding: EdgeInsets.zero,
                 padding: const EdgeInsets.all(2),
-                strokeWidth: 2.5,
+                strokeWidth: 2,
                 color: Theme.of(context).primaryColor,
                 gradient: null,
                 dashPattern: const <double>[4, 5],
@@ -66,7 +67,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onPrimaryFixed, // The light background
-                      borderRadius: BorderRadius.circular(16), // Match the radius above
+                      borderRadius: BorderRadius.circular(10), // Match the radius above
                     ),
                     child: Center(child: Icon(Icons.add, color: Theme.of(context).primaryColor, size: 30)),
                   ),
@@ -78,10 +79,10 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
         SizedBox(height: gapHeight),
         SizedBox(
           width: context.screenWidth * 0.15,
-          height: context.screenHeight * 0.04,
+          height: context.screenHeight * 0.045 * textScale,
           child: Center(
             child: Text(
-              text ?? "add_to_fav".tr(),
+              text ?? "add".tr(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

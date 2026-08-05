@@ -60,7 +60,16 @@ class StoryService extends _$StoryService {
 
     _viewedStories = await ref.watch(hiveProvider('storiesBox').future);
 
-    final stories = syncronizeWatcheness(networkStories)..sort((a, b) => a.isWatched ? 1 : -1);
+    // TEMP SOLUTION: keep the exact order returned by the API.
+    // We still run `syncronizeWatcheness` so the watched (seen) state is
+    // preserved, but we intentionally do NOT sort so unwatched stories are no
+    // longer floated to the front — the list mirrors the backend order 1:1.
+    final stories = syncronizeWatcheness(networkStories);
     return stories;
+
+    // OLD SOLUTION (kept intentionally, do not remove): floated watched
+    // stories to the end and unwatched to the front, overriding API order.
+    // final stories = syncronizeWatcheness(networkStories)..sort((a, b) => a.isWatched ? 1 : -1);
+    // return stories;
   }
 }

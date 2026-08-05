@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/gen
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -44,21 +45,27 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: 0,
       automaticallyImplyLeading: false,
       title: Container(
-        child: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(children: [
-            Icon(
-              Icons.arrow_back_ios,
-              color: AppColor.blackModern700Light,
-              size: 20,
+        child: Semantics(
+          label: 'a11yBack'.tr(),
+          button: true,
+          child: GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: ExcludeSemantics(
+              child: Row(children: [
+                Icon(
+                  Icons.arrow_back_ios,
+                  color: AppColor.blackModern700Light,
+                  size: 20,
+                ),
+                titleWidget ??
+                    CustomTextWidget(title ?? "",
+                        fontSize: 20,
+                        fontWeight: AppFontWeight.bold,
+                        fontColor: AppColor.blackModern700Light,
+                        fontFamily: Constants.appFontType)
+              ]),
             ),
-            titleWidget ??
-                CustomTextWidget(title ?? "",
-                    fontSize: 20,
-                    fontWeight: AppFontWeight.bold,
-                    fontColor: AppColor.blackModern700Light,
-                    fontFamily: Constants.appFontType)
-          ]),
+          ),
         ),
       ),
       systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(

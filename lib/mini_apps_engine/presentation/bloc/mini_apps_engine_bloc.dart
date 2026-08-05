@@ -16,7 +16,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
 
-// CustomInAppLocalhostServer? localhostServer;
+//! CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
 class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {

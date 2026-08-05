@@ -38,13 +38,26 @@ class AccessibilityInfo extends StatelessWidget {
                 ),
               ),
             ],
-            appBar: BaladyTopBar.iconAndText(
+            appBar: BaladyTopBar(
               systemUiOverlayStyle: SystemUiOverlayStyle.dark,
               title: 'voiceReader'.tr(),
-              colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(
-                onPressed: () => context.router.pop(),
-                icon: SystemIcons.arrowCornerLeftLarge,
+              onLeadingPressed: () => context.router.pop(),
+              leading: Semantics(
+                label: 'a11yBack'.tr(),
+                button: true,
+                child: ExcludeSemantics(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: Spacing.$4x),
+                      Icon(
+                        SystemIcons.arrowCornerLeftLarge,
+                        color: context.colors.accentDefault,
+                      ),
+                      const SizedBox(width: Spacing.$4x),
+                    ],
+                  ),
+                ),
               ),
             ),
             body: Padding(
@@ -58,9 +71,15 @@ class AccessibilityInfo extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Center(
-                      child: Image(
-                        image: AssetImage('assets/images/voice_reader.png'),
+                    Center(
+                      child: Semantics(
+                        label: 'a11yImage'.tr(),
+                        image: true,
+                        child: ExcludeSemantics(
+                          child: Image(
+                            image: const AssetImage('assets/images/voice_reader.png'),
+                          ),
+                        ),
                       ),
                     ),
                     Spacing.$5x.heightBox,

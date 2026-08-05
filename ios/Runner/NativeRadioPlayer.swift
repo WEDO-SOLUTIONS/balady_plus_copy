@@ -2,6 +2,7 @@ import AVFoundation
 import Flutter
 import Foundation
 import MediaPlayer
+import UIKit
 
 final class NativeRadioPlayer: NSObject {
 
@@ -31,10 +32,17 @@ final class NativeRadioPlayer: NSObject {
             binaryMessenger: messenger
         )
         super.init()
+        // IMPORTANT: do NOT use `.mixWithOthers` here.
+        // iOS hides Now Playing Info (lock screen / Control Center / CarPlay)
+        // and ignores MPRemoteCommandCenter targets whenever the audio session
+        // is mixable, because the app is treated as secondary/ambient audio.
+        // For MBC we want the standard "media player" UI, so the session must
+        // be exclusive `.playback`. Navigation-voice coexistence is handled
+        // via our explicit volume-fade duck (`duckForVoice` / `restoreAfterVoice`).
         try? AVAudioSession.sharedInstance().setCategory(
             .playback,
             mode: .default,
-            options: [.mixWithOthers, .allowBluetoothA2DP]
+            options: [.allowBluetoothA2DP, .allowAirPlay]
         )
         bindChannel()
         observeRouteChange()
@@ -89,6 +97,11 @@ final class NativeRadioPlayer: NSObject {
         stallSeconds = 0
         currentURL = url
         activateSession()
+        // Required for MPRemoteCommandCenter targets to be delivered to the
+        // app on some iOS versions / configurations. Safe to call repeatedly.
+        DispatchQueue.main.async {
+            UIApplication.shared.beginReceivingRemoteControlEvents()
+        }
         buildPlayer(url: url)
         player?.volume = 1.0
         player?.play()
@@ -130,7 +143,7 @@ final class NativeRadioPlayer: NSObject {
             try AVAudioSession.sharedInstance().setCategory(
                 .playback,
                 mode: .default,
-                options: [.mixWithOthers, .allowBluetoothA2DP]
+                options: [.allowBluetoothA2DP, .allowAirPlay]
             )
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
@@ -317,6 +330,8 @@ final class NativeRadioPlayer: NSObject {
 
     private func sendState(_ override: String? = nil) {
         let state = override ?? stateString
+        // Keep the lock-screen play/pause indicator in sync with the real state.
+        updateLockScreen()
         guard state != lastSentState || override != nil else { return }
         lastSentState = state
         NSLog("NativeRadioPlayer 📡 → Flutter state=\(state)")
@@ -329,16 +344,43 @@ final class NativeRadioPlayer: NSObject {
     // MARK: - Lock screen
 
     private func updateLockScreen() {
+        let isPlaying = (player?.timeControlStatus == .playing)
+        // NOTE: do NOT set MPNowPlayingInfoPropertyIsLiveStream = true.
+        // When that flag is true, iOS renders a STOP button on the lock screen
+        // / Control Center instead of the usual PLAY / PAUSE toggle (because
+        // pausing a live stream is meaningless to the system). For MBC we
+        // want the standard pause/resume controls, so the item is presented
+        // as a regular audio item.
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
             MPMediaItemPropertyTitle: currentTitle,
             MPMediaItemPropertyArtist: currentArtist,
-            MPNowPlayingInfoPropertyIsLiveStream: true,
-            MPNowPlayingInfoPropertyPlaybackRate: 1.0,
+            MPNowPlayingInfoPropertyPlaybackRate: isPlaying ? 1.0 : 0.0,
+            MPNowPlayingInfoPropertyMediaType: MPNowPlayingInfoMediaType.audio.rawValue,
         ]
     }
 
     private func setupRemoteCommands() {
         let cc = MPRemoteCommandCenter.shared()
+
+        // Disable transport commands we don't support so iOS doesn't render
+        // dead next/previous/seek buttons.
+        cc.nextTrackCommand.isEnabled = false
+        cc.previousTrackCommand.isEnabled = false
+        cc.skipForwardCommand.isEnabled = false
+        cc.skipBackwardCommand.isEnabled = false
+        cc.seekForwardCommand.isEnabled = false
+        cc.seekBackwardCommand.isEnabled = false
+        cc.changePlaybackPositionCommand.isEnabled = false
+
+        cc.playCommand.isEnabled = true
+        cc.pauseCommand.isEnabled = true
+        // Disable stopCommand: with IsLiveStream = false we now get the
+        // standard play/pause toggle, and exposing Stop alongside it just
+        // duplicates functionality and confuses the lock-screen layout. The
+        // user can fully terminate playback from inside the app.
+        cc.stopCommand.isEnabled = false
+        cc.togglePlayPauseCommand.isEnabled = true
+
         cc.playCommand.addTarget  { [weak self] _ in self?.resume(); return .success }
         cc.pauseCommand.addTarget { [weak self] _ in self?.pause();  return .success }
         cc.stopCommand.addTarget  { [weak self] _ in self?.stop();   return .success }

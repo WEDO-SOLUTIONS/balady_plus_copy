@@ -33,11 +33,23 @@ class FeedbackFailureWidget extends StatelessWidget {
         value: context.read<ThemeController>().systemOverlayStyle,
         child: Scaffold(
           backgroundColor: Colors.white,
-          appBar: BaladyTopBar.iconAndText(
+          appBar: BaladyTopBar(
             title: screenTitle,
-            leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: context.router.pop),
-            colorEnabled: context.colors.accentDefault,
-            colorDisabled: context.colors.foregroundDefault,
+            onLeadingPressed: context.router.pop,
+            leading: Semantics(
+              label: context.l10n.a11yBack,
+              button: true,
+              child: ExcludeSemantics(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: Spacing.$4x),
+                    Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.accentDefault),
+                    const SizedBox(width: Spacing.$4x),
+                  ],
+                ),
+              ),
+            ),
           ),
           body: Center(child: child),
         ),

@@ -20,6 +20,8 @@ allprojects {
         mavenCentral()
         maven { url 'https://developer.huawei.com/repo/' }
         maven {url "https://mobilesdk.useinsider.com/android"}
+        // BytePlus RangersAppLog (DataFinder) native Android SDK.
+        maven { url 'https://artifact.bytedance.com/repository/Volcengine/' }
     }
 
     subprojects {

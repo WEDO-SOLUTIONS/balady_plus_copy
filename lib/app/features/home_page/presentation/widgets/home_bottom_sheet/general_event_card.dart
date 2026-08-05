@@ -63,7 +63,7 @@ class GeneralEventHomeCard extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14,
-                            fontFamily: 'packages/balady_uikit/Frutiger',
+                            fontFamily: 'packages/balady_design_system/IBMPlexSansArabic',
                             fontWeight: FontWeight.w700,
                           )),
                       IconName(

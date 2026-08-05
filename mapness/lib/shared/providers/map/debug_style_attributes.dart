@@ -115,7 +115,7 @@ class DebugStyleAttributes extends Notifier<DebugStyleAttributesState> {
     state = state.copyWith(vehicleMarkerType: value);
 
     final controller = ref.read(dgisControllerProvider).value;
-    await controller?.setMapAttributeString(debugStyleAttributeVehicleMarkerType, value);
+    await controller?.setMapAttributeString(debugStyleAttributeVehicleMarkerType, value: value);
   }
 
   Future<void> resetAll() async {
@@ -140,6 +140,6 @@ class DebugStyleAttributes extends Notifier<DebugStyleAttributesState> {
       debugStyleAttributeCustomVehicleMarkersOn,
       value: state.customVehicleMarkersOn,
     );
-    await controller.setMapAttributeString(debugStyleAttributeVehicleMarkerType, state.vehicleMarkerType);
+    await controller.setMapAttributeString(debugStyleAttributeVehicleMarkerType, value: state.vehicleMarkerType);
   }
 }

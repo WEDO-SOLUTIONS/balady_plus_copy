@@ -104,6 +104,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 elevation: 0,
                 leading: IconButton(
+                  tooltip: 'a11yBack'.tr(),
                   icon: Icon(
                     Icons.arrow_back_ios,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -164,7 +165,10 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 // Back Button
-                                GestureDetector(
+                                Semantics(
+                                  label: 'a11yBack'.tr(),
+                                  button: true,
+                                  child: GestureDetector(
                                   onTap: () {
                                     // Navigate back if not on the first step
                                     if (state.currentStep > 0) {
@@ -181,6 +185,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                                     color: Colors.grey,
                                     size: 30,
                                   ),
+                                ),
                                 ),
                                 // Title
                                 Text(

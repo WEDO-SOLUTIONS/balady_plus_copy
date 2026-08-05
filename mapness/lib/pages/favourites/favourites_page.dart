@@ -14,6 +14,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+
 // import 'package:mapness/features/saudi_pass/widgets/favorite_delete_menu.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -206,8 +207,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 );
                               },
                               onTapShare: () => ShareUtil.sharePOI(
-                                objectId?.toString(),
                                 context: context,
+                                objectId: objectId?.toString(),
                                 markerCoords: home?.coordinates,
                               ),
                               onTapChange: () {
@@ -270,8 +271,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 );
                               },
                               onTapShare: () => ShareUtil.sharePOI(
-                                objectId?.toString(),
                                 context: context,
+                                objectId: objectId?.toString(),
                                 markerCoords: work?.coordinates,
                               ),
                               onTapChange: () {
@@ -362,8 +363,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           });
                         },
                         onShareTap: () => ShareUtil.sharePOI(
-                          parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
                           context: context,
+                          objectId: parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
                           markerCoords: item.coordinates,
                         ),
                         onDelete: () => _deleteItem(item, ctx),

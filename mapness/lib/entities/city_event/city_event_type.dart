@@ -110,11 +110,9 @@ extension StyleX on CityEventType? {
 }
 
 extension DriveBackX on CityEventType? {
-
   ImageProvider getDriveHomeBackground({bool isDark = false}) {
     if (isDark) {
       return Assets.images.driveHomeBackgroundDark.provider();
-
     }
     return switch (this) {
       CityEventType.saudiNationalDay => Assets.images.driveHomeBackgroundSaudiday.provider(),

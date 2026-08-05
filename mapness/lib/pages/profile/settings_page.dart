@@ -36,7 +36,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     final isDGA =
         context.read<ThemeController>().currentTheme == BaladyAppThemes.darkDGA ||
-        context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
+            context.read<ThemeController>().currentTheme == BaladyAppThemes.lightDGA;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,

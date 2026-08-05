@@ -1,9 +1,11 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layers_tab.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/satellite/providers/base_map_switcher_enabled.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -66,12 +68,16 @@ class LayersSheetContent extends ConsumerWidget {
           // occupy a row by themselves and overlays start on a fresh row —
           // matches the Figma macet for BE-243. Other tabs keep a single grid.
           if (activeTab == LayersTab.allLayers) ...[
-            LayerSliverList(
-              onIconTap: onIconTap,
-              layerType: layers_state.LayerType.baseMaps,
-              layersState: state,
-              layerTapItems: layerTapItems,
-            ),
+            // BALADY-3754: base-map switcher is gated by the
+            // `base_map_switcher_enabled` FRC flag (hidden by default) until
+            // the satellite tile source is production-ready.
+            if (ref.watch(baseMapSwitcherEnabledProvider).value ?? false)
+              LayerSliverList(
+                onIconTap: onIconTap,
+                layerType: layers_state.LayerType.baseMaps,
+                layersState: state,
+                layerTapItems: layerTapItems,
+              ),
             LayerSliverList(
               onIconTap: onIconTap,
               layerType: layers_state.LayerType.overlays,
@@ -155,17 +161,22 @@ class _LayersTabChip extends StatelessWidget {
       // flash. Selection is binary anyway, animation gave nothing here.
       child: Container(
         height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
         decoration: BoxDecoration(
           color: isSelected ? colors.backgroundSurface5 : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
           border: Border.all(color: colors.borderDefault),
         ),
         alignment: Alignment.center,
-        child: Text(
+        // BALADY-3736: Arabic labels (e.g. "المواصلات العامة") are wider than
+        // an equal-width chip and overflowed adjacent tabs. Shrink-to-fit
+        // with AutoSizeText keeps all three labels readable on one line.
+        child: AutoSizeText(
           label,
           maxLines: 1,
+          minFontSize: 9,
           overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
           style: context.textStyles.bodySmallMedium.copyWith(color: colors.foregroundDefault),
         ),
       ),

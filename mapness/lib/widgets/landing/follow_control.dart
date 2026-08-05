@@ -10,6 +10,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -29,6 +30,7 @@ class FollowControl extends ConsumerWidget {
         : context.colors.accentDefault;
 
     return MapButton(
+      semanticsLabel: context.l10n.myLocation,
       onTap: () async {
         Metrics.logEventAdvanced(
           MetricsConstants.exploreKeys.locateMeIcon,

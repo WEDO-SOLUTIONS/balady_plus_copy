@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/shared/providers/map/zoom_state.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class ZoomControl extends ConsumerWidget {
@@ -19,6 +20,7 @@ class ZoomControl extends ConsumerWidget {
     return Column(
       children: [
         MapButton(
+          semanticsLabel: context.l10n.a11yZoomIn,
           disabled: !zoomState.zoomInEnabled,
           onTapUp: (_) {
             ref.read(urbiAnalyticsProvider).track('mapInteraction');
@@ -38,6 +40,7 @@ class ZoomControl extends ConsumerWidget {
           child: AppIcons(iconData: SystemIcons.zoomPlus, color: context.colors.foregroundDefault),
         ),
         MapButton(
+          semanticsLabel: context.l10n.a11yZoomOut,
           onTapUp: (_) {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track('mapInteraction');

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Static shortcuts — visible on the home-screen icon as soon as the app is installed
+  (before first launch). Keys must match quick_actions / app config shortcut keys.
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="favorites"
+        android:enabled="true"
+        android:icon="@drawable/qa_bookmark"
+        android:shortcutShortLabel="@string/qa_favorites"
+        android:shortcutLongLabel="@string/qa_favorites">
+        <intent
+            android:action="android.intent.action.RUN"
+            android:targetClass="momra.balady.android.MainActivity"
+            android:targetPackage="momra.balady.android">
+            <extra
+                android:name="some unique action key"
+                android:value="favorites" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="directions"
+        android:enabled="true"
+        android:icon="@drawable/qa_route"
+        android:shortcutShortLabel="@string/qa_directions"
+        android:shortcutLongLabel="@string/qa_directions">
+        <intent
+            android:action="android.intent.action.RUN"
+            android:targetClass="momra.balady.android.MainActivity"
+            android:targetPackage="momra.balady.android">
+            <extra
+                android:name="some unique action key"
+                android:value="directions" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="search_for_place"
+        android:enabled="true"
+        android:icon="@drawable/qa_search"
+        android:shortcutShortLabel="@string/qa_search"
+        android:shortcutLongLabel="@string/qa_search">
+        <intent
+            android:action="android.intent.action.RUN"
+            android:targetClass="momra.balady.android.MainActivity"
+            android:targetPackage="momra.balady.android">
+            <extra
+                android:name="some unique action key"
+                android:value="search_for_place" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="share_my_location"
+        android:enabled="true"
+        android:icon="@drawable/qa_location"
+        android:shortcutShortLabel="@string/qa_share_my_location"
+        android:shortcutLongLabel="@string/qa_share_my_location">
+        <intent
+            android:action="android.intent.action.RUN"
+            android:targetClass="momra.balady.android.MainActivity"
+            android:targetPackage="momra.balady.android">
+            <extra
+                android:name="some unique action key"
+                android:value="share_my_location" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="share_live_location"
+        android:enabled="true"
+        android:icon="@drawable/qa_follow_on"
+        android:shortcutShortLabel="@string/qa_share_live_location"
+        android:shortcutLongLabel="@string/qa_share_live_location">
+        <intent
+            android:action="android.intent.action.RUN"
+            android:targetClass="momra.balady.android.MainActivity"
+            android:targetPackage="momra.balady.android">
+            <extra
+                android:name="some unique action key"
+                android:value="share_live_location" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="contribute"
+        android:enabled="true"
+        android:icon="@drawable/qa_contribute"
+        android:shortcutShortLabel="@string/qa_contribute"
+        android:shortcutLongLabel="@string/qa_contribute">
+        <intent
+            android:action="android.intent.action.RUN"
+            android:targetClass="momra.balady.android.MainActivity"
+            android:targetPackage="momra.balady.android">
+            <extra
+                android:name="some unique action key"
+                android:value="contribute" />
+        </intent>
+    </shortcut>
+</shortcuts>

@@ -8,6 +8,7 @@ import 'package:mapness/features/ai_summary/ui/ai_summary_preview_page.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/widgets/debug_overlay/app_icon_quick_actions_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
 import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_3d_model_panel.dart';
@@ -87,6 +88,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       draggableController: widget._draggableController,
                     ),
                     const DebugStyleAttributesPanel(),
+                    const AppIconQuickActionsDebugPanel(),
                     const DebugServerUrl(),
                     const SsoCredentialView(),
                     const CityscapeDebugSwitcher(),

@@ -8,6 +8,8 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/discover/discover.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -278,12 +280,27 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                 onMoreTap: () => widget.onMoreQuickFiltersChanged?.call(true),
                 onFilterSelected: (q) {
                   widget.onMoreQuickFiltersChanged?.call(false);
-                  ref.read(searchProvider(scope.value).notifier).searchByText(q);
+                  final searcher = ref.read(searchProvider(scope.value).notifier);
+                  // DataFinder: quick-filter chip tap from the search bottom
+                  // sheet. The top-level chips fire this inside quickSearch();
+                  // this path runs via searchByText(), so fire `quick_search_click`
+                  // here and flag the search so its exposure reports
+                  // `search_type: Quick search`.
+                  ref.read(appAnalyticsProvider).quickSearchClick(
+                        eventSource: searcher.dataFinderEventSource,
+                        searchText: q,
+                      );
+                  searcher
+                    ..markSearchFromQuickFilter()
+                    ..searchByText(q);
                   ref
                       .read(urbiAnalyticsProvider)
                       .track(
                         '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
                       );
+                  ref
+                      .read(searchHistoryProvider(scope.value).notifier)
+                      .put(SearchHistoryItem.fromQuery(query: q).toMessage());
                 },
               ),
               if (shouldShowHistoryAndFavorites && hasFavourites)

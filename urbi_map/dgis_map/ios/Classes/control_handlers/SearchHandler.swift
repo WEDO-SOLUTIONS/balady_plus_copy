@@ -18,6 +18,8 @@ class SearchHandler: NSObject {
     private var queries: [String:SearchQuery] = [:]
     
     private let jsonDecoder = JSONDecoder()
+    // ✅ CRITICAL: Track current request ID to prevent old responses from being processed
+    private var currentSuggestRequestId: UUID = UUID()
         
     static let saRestrictions = [
         GeoPoint(latitude: 32.568765, longitude: 56.694472),
@@ -341,7 +343,8 @@ class SearchHandler: NSObject {
 
         completion(Result.success(()))
     }
-    
+
+
     func fetchSuggests(
         queryText: String,
         allowedResultTypes: [SuggestedTypeMessage_]?,
@@ -356,7 +359,7 @@ class SearchHandler: NSObject {
             .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: Self.saRestrictions)
-        
+
         if let suggestorType {
             suggestQueryBuilder = suggestQueryBuilder.setSuggestorType(suggestorType: suggestorType.toSuggestorType())
         }
@@ -369,45 +372,93 @@ class SearchHandler: NSObject {
             if limit >= Int64(Int32.min) && limit <= Int64(Int32.max) {
                 suggestQueryBuilder = suggestQueryBuilder.setLimit(limit: Int32(limit))
             } else {
-                print("Value out of range for Int32")
+                NSLog("SearchHandler: Value out of range for Int32: %lld", limit)
             }
         }
-            
+
         let suggestQuery = suggestQueryBuilder.build()
 
+        // ✅ CRITICAL: Cancel previous subscription AND create new request ID
         suggestCancelable?.cancel()
+
+        // Generate unique ID for this request
+        let requestId = UUID()
+        self.currentSuggestRequestId = requestId
+
+
         suggestCancelable = searchManager.suggest(query: suggestQuery).sink(
-            receiveValue: {
-                [weak self] response in
-                guard let self = self else {
-                    completion(  Result.failure( FlutterError(code: "Self is nil", message: nil, details: nil)))
+            receiveValue: { [weak self] response in
+
+                DispatchQueue.main.async {
+
+                    // ✅ CRITICAL: Check if this response is still for the current request
+                    guard let self = self else {
+
+                        completion(Result.failure(FlutterError(code: "Self is nil", message: nil, details: nil)))
+                        return
+                    }
+
+                    // ✅ CRITICAL: Ignore responses from outdated requests
+                    if self.currentSuggestRequestId != requestId {
+                        requestId.uuidString.prefix(8);
+                        self.currentSuggestRequestId.uuidString.prefix(8);
+                        return
+                    }
+
+                    // ✅ Double-check that this is still the current request
+                    if self.currentSuggestRequestId != requestId {
+                        return
+                    }
+
+
+
+                    self.queries.removeAll()
+                    var suggests: [SuggestMessage] = []
+                    var successCount = 0
+                    var failureCount = 0
+
+                    for (index, suggest) in response.suggests.enumerated() {
+                        do {
+                            var queryId: String? = nil
+
+                            if case .performSearchHandler(let handler) = suggest.handler, let handler = handler {
+                                queryId = UUID().uuidString
+                                self.queries[queryId!] = handler.searchQuery
+                            }
+
+                            let suggestMessage = try suggest.toMessage(searchQueryId: queryId)
+                            suggests.append(suggestMessage)
+                            successCount += 1
+
+                        } catch {
+                            failureCount += 1
+
+                        }
+                    }
+
+
+
+                    completion(Result.success(SuggestResultMessage(suggests: suggests)))
+                }
+            },
+            failure: { [weak self] error in
+                guard let self = self else { return }
+
+                // ✅ CRITICAL: Ignore errors from outdated requests
+                if self.currentSuggestRequestId != requestId {
+
                     return
                 }
-                self.queries.removeAll()
-                let suggests = response.suggests.enumerated().map {
-                    (index, suggest) in
-                    var queryId: String? = nil
-                    
-                    if case .performSearchHandler(let handler) = suggest.handler, let handler = handler {
-                        queryId = UUID().uuidString
-                        self.queries[queryId!] = handler.searchQuery
-                    }
-                    
-                    return suggest.toMessage(searchQueryId: queryId)
-                }
 
-                completion(
-                    Result.success(
-                        SuggestResultMessage(
-                            suggests: suggests
-                        )
-                    )              )
-            },
-            failure: { error in
-                completion(  Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
+                DispatchQueue.main.async {
+
+                    completion(Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
+                }
             }
         )
+
     }
+
 
     func getDistanceTo(
         points: [DistanceRequestMessage],

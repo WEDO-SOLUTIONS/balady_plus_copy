@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.1+856
-# version: 3.13.2+451
+#version: 3.30.4+596
+version: 3.13.3+460
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -71,7 +71,7 @@ dependencies:
   # Native APP to open files with string result
   open_filex: ^4.7.0
   # for getting commonly used locations on host platform file
-  path_provider: ^2.1.5
+  path_provider: ^2.1.6
   # Launching a URL, Open contacts and others.
   url_launcher: ^6.3.2
   ##! UI
@@ -113,7 +113,7 @@ dependencies:
   flutter_timezone: ^5.0.1
   # launch_review: ^3.0.1  # Replaced with store_redirect due to Registrar compatibility issues
   mocktail: ^1.0.4
-  flutter_riverpod: ^3.1.0
+  flutter_riverpod: 3.1.0
   app_tracking_transparency: ^2.0.6+1
   adjust_sdk: ^5.5.0
   flutter_appauth: ^11.0.0
@@ -177,6 +177,7 @@ dependencies:
 
   mapness:
     path: mapness
+  quick_actions: ^1.1.0
 
   provider: ^6.1.5+1
 
@@ -201,7 +202,7 @@ dependencies:
   balady_authorization:
     # path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages//BaladyAuthorization
     hosted: https://unpub.balady.gov.sa/
-    version: 1.0.17
+    version: 1.0.16
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -213,12 +214,11 @@ dependencies:
   balady_design_system:
 #    path: /Users/hashemalkhateeb/Development/flutter_projects/nhc_projects/packages/balady_design_system
      hosted: https://unpub.balady.gov.sa/
-     version: 0.0.3-dev
+     version: 0.0.2-dev
   #      git:
   #        url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/balady_design_system
   #        ref: main
   #    path: /Users/abdelrahmanismail/StudioProjects/balady_design_system
-
 
   ############################################################
 
@@ -237,7 +237,7 @@ dependencies:
   collection: ^1.19.1
   image: ^4.7.2
   http: ^1.6.0
-  flutter_insider: ^4.0.6+nh
+
   sentry_dio: ^9.9.2
   shelf: ^1.4.2
   timezone: ^0.10.0
@@ -293,7 +293,6 @@ flutter:
     - assets/images/themes/ramadan/
     - assets/langs/
     - assets/maps/configs/
-    - assets/maps/styles/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/

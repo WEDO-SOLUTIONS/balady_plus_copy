@@ -182,7 +182,7 @@ class _LineStationListItem extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x).copyWith(start: Spacing.$2x),
-      height: 44,
+     // height: 44,
       child: Row(
         children: [
           Container(

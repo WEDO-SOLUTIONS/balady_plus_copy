@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/weather/weather_type_ext.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class WeatherStateIcon extends ConsumerWidget {
@@ -21,6 +22,7 @@ class WeatherStateIcon extends ConsumerWidget {
     };
 
     return MapButton(
+      semanticsLabel: context.l10n.a11yWeather,
       onTap: () {
         ref
             .read(weatherMapControllerProvider().notifier)
@@ -29,7 +31,12 @@ class WeatherStateIcon extends ConsumerWidget {
               type: type == WeatherMapType.temperature ? WeatherMapType.precipitation : WeatherMapType.temperature,
             );
       },
-      child: SvgPicture.asset(iconRes, semanticsLabel: 'weather page', color: context.colors.foregroundDefault),
+      child: ExcludeSemantics(
+        child: SvgPicture.asset(
+          iconRes,
+          color: context.colors.foregroundDefault,
+        ),
+      ),
     );
   }
 }

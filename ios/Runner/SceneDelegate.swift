@@ -15,6 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene, let flutterEngine = Self.flutterEngine else { return }
+
+        if let shortcutItem = connectionOptions.shortcutItem {
+            AppIconQuickActionChannel.store(shortcutItem.type)
+        }
         
         window = UIWindow(windowScene: windowScene)
         
@@ -41,5 +45,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let url = userActivity.webpageURL {
             AppLinks.shared.handleLink(url: url)
         }
+    }
+
+    func windowScene(
+        _ windowScene: UIWindowScene,
+        performActionFor shortcutItem: UIApplicationShortcutItem,
+        completionHandler: @escaping (Bool) -> Void
+    ) {
+        // Custom SceneDelegate receives warm-start shortcuts; the quick_actions plugin may not.
+        AppIconQuickActionChannel.store(shortcutItem.type)
+        completionHandler(true)
     }
 }

@@ -146,7 +146,11 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     if (favState?.home != null && favState?.work != null) {
       favNotifier.addItem(favItem);
     } else {
-      context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
+      // Build the rich POI here, where [data] (addr/type/marker) is available,
+      // so `favorite_add` reports poi_addr/poi_type/poi_distance.
+      final loc = ref.read(locationProvider);
+      final favoritePoi = data.toDataFinderPoi(myLat: loc?.latitude, myLon: loc?.longitude);
+      context.router.push(PoiFavoriteDialogRoute(favItem: favItem, favoritePoi: favoritePoi));
     }
   }
 
@@ -215,7 +219,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
       },
     );
 
-    ShareUtil.sharePOI(shareId, context: context, markerCoords: coordinates);
+    ShareUtil.sharePOI(context: context, objectId: shareId, markerCoords: coordinates);
   }
 
   @override

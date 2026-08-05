@@ -37,21 +37,35 @@ class LanguageRow extends ConsumerWidget {
     const radiusZero = Radius.circular(0);
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
-      child: InkWell(
+      child: Material(
+        color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.only(
           bottomLeft: border ? radius12 : radiusZero,
-          bottomRight: (border ? radius12 : radiusZero),
+          bottomRight: border ? radius12 : radiusZero,
         ),
-        onTap: () {
-          ref.read(appLanguageProvider.notifier).update(language);
-        },
-        child: ContentRowV2(
-          leading: leadingIcon,
-          isDividerEnabled: !border,
-          text: ContentRowTextOptions(title: language.title),
-          trailing: ContentRowTextTrailingOptions(
-            icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
-            iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
+        child: InkWell(
+          borderRadius: BorderRadius.only(
+            bottomLeft: border ? radius12 : radiusZero,
+            bottomRight: border ? radius12 : radiusZero,
+          ),
+          onTap: () {
+            ref.read(appLanguageProvider.notifier).update(language);
+          },
+          child: Semantics(
+            label: language == Language.arabic ? 'Arabic' : 'English',
+            button: true,
+            selected: currentLanguage == language,
+            child: ExcludeSemantics(
+              child: ContentRowV2(
+                leading: leadingIcon,
+                isDividerEnabled: !border,
+                text: ContentRowTextOptions(title: language.title),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+                  iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
+                ),
+              ),
+            ),
           ),
         ),
       ),

@@ -138,13 +138,19 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
               title: value,
 
               /// TODO(ui_kit): Fix leading in UIKIT
-              leading: Container(
-                padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-                alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-                child: const Icon(
-                  SystemIcons.arrowCornerLeftSmall,
-                  color: Colors.white,
-                  size: 24,
+              leading: Semantics(
+                label: context.l10n.a11yBack,
+                button: true,
+                child: ExcludeSemantics(
+                  child: Container(
+                    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                    alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+                    child: const Icon(
+                      SystemIcons.arrowCornerLeftSmall,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
                 ),
               ),
               onLeadingPressed: () => context.router.pop(),

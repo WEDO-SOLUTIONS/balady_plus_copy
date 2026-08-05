@@ -34,9 +34,23 @@ class FeedbackFormContainer extends ConsumerWidget {
       color: context.colors.backgroundSurface4,
       child: SafeArea(
         child: Scaffold(
-          appBar: BaladyTopBar.iconAndText(
+          appBar: BaladyTopBar(
             title: title,
-            leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: onBack ?? context.router.pop),
+            onLeadingPressed: onBack ?? context.router.pop,
+            leading: Semantics(
+              label: context.l10n.a11yBack,
+              button: true,
+              child: ExcludeSemantics(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(width: Spacing.$4x),
+                    Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+                    const SizedBox(width: Spacing.$4x),
+                  ],
+                ),
+              ),
+            ),
           ),
           body: Column(
             children: [

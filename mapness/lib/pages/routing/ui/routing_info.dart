@@ -501,31 +501,39 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   /// Sends analytics with city names resolved via geocoding.
   /// Runs as fire-and-forget to avoid blocking navigation start.
   Future<void> _sendNavigationStartedAnalytics(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
+    // Capture everything that depends on `ref` and `widget` BEFORE the async gap.
+    // The widget can be disposed while geocoding runs in the background (navigation
+    // pushes the map page and pops this screen). Reading `ref`/`widget` after the
+    // await throws "Bad state: Using ref when a widget is unmounted", which silently
+    // crashed this task and prevented the navigation_started event from reaching Insider.
+    final analytics = ref.read(appAnalyticsProvider);
+    final locationNotifier = ref.read(cityByLocationProvider.notifier);
+
+    final originLabel = widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '';
+    final destinationLabel = widget.pointsWithLabel.lastOrNull?.label ?? '';
+
+    final originLat = widget.pointsWithLabel.first.value?.latitude;
+    final originLng = widget.pointsWithLabel.first.value?.longitude;
+    final destinationLat = widget.pointsWithLabel.lastOrNull?.value?.latitude;
+    final destinationLng = widget.pointsWithLabel.lastOrNull?.value?.longitude;
+
     try {
-      final location = ref.read(cityByLocationProvider.notifier);
       final results = await Future.wait([
-        location.getCityByLatLng(
-          lat: widget.pointsWithLabel.first.value?.latitude,
-          lng: widget.pointsWithLabel.first.value?.longitude,
-        ),
-        location.getCityByLatLng(
-          lat: widget.pointsWithLabel.lastOrNull?.value?.latitude,
-          lng: widget.pointsWithLabel.lastOrNull?.value?.longitude,
-        ),
+        locationNotifier.getCityByLatLng(lat: originLat, lng: originLng),
+        locationNotifier.getCityByLatLng(lat: destinationLat, lng: destinationLng),
       ]);
+
       final originCity = results[0];
       final destinationCity = results[1];
 
-      ref
-          .read(appAnalyticsProvider)
-          .navigationStarted(
-            originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
-            destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
-            originCity: originCity.name,
-            destinationCity: destinationCity.name,
-            estimateTime: route.duration,
-            estimateDistance: route.distance,
-          );
+      analytics.navigationStarted(
+        originLocation: originLabel,
+        destinationLocation: destinationLabel,
+        originCity: originCity.name,
+        destinationCity: destinationCity.name,
+        estimateTime: route.duration,
+        estimateDistance: route.distance,
+      );
     } catch (_) {
       // Analytics failure should not affect navigation
     }

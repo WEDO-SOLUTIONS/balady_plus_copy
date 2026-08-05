@@ -34,6 +34,28 @@ android {
     namespace "momra.balady.android"
     ndkVersion = "28.2.13676358"
 
+    // Store native libraries uncompressed and page-aligned inside the APK/AAB.
+    // Required for 16 KB page-size support: compressed .so entries cannot be
+    // 16 KB zip-aligned, which makes Play flag the app as not supporting 16 KB
+    // devices even when every .so's ELF segments are already aligned.
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+
+            // The BytePlus/ByteDance `encryptor` AAR (transitive of
+            // RangersAppLog-Lite-cn) ships a libEncryptorP.so whose armeabi-v7a
+            // and x86_64 variants are only 4 KB ELF-aligned. arm64-v8a is 64 KB
+            // and fully compliant. 16 KB page-size devices are all 64-bit ARM,
+            // so these 32-bit/x86_64 copies can never run on one — but Play's
+            // static 16 KB check still flags them. Drop just those two variants;
+            // every other ABI/library is kept intact.
+            excludes += [
+                'lib/armeabi-v7a/libEncryptorP.so',
+                'lib/x86_64/libEncryptorP.so',
+            ]
+        }
+    }
+
     compileOptions {
         // Flag to enable support for the new language APIs
         coreLibraryDesugaringEnabled true
@@ -157,6 +179,11 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android:5.4.0'
     implementation 'com.adjust.sdk:adjust-android-oaid:5.4.0'
     implementation 'com.huawei.hms:ads-identifier:3.4.62.300'
+    // BytePlus RangersAppLog (DataFinder) native Android SDK. The Flutter plugin
+    // declares this only as `compileOnly`, so the app must provide the runtime
+    // dependency — otherwise classes like com.bytedance.applog.InitConfig /
+    // IDataObserver are missing at runtime (NoClassDefFoundError → crash).
+    implementation 'com.bytedance.applog:RangersAppLog-Lite-cn:6.14.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -167,10 +194,9 @@ configurations.all {
     resolutionStrategy {
         // هذا السطر يمنع التضارب بين مكتبات هواوي المختلٝة
         force 'com.huawei.hms:common:6.10.0.300'
-        // Pin glance to the stable version declared above — prevents transitive deps
-        // from pulling alpha versions that require compileSdk 37 / AGP 9.1.0.
-        force 'androidx.glance:glance:1.0.0'
-        force 'androidx.glance:glance-appwidget:1.0.0'
-        force 'androidx.glance:glance-appwidget-proto:1.0.0'
+        // home_widget uses "1.+" which resolves to 1.3.0-alpha01 requiring compileSdk 37 + AGP 9.1.0.
+        // Pin to latest stable 1.x to stay on compileSdk 36 / AGP 8.x.
+        force 'androidx.glance:glance-appwidget:1.1.0'
+        force 'androidx.glance:glance:1.1.0'
     }
 }

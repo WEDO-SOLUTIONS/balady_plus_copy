@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+//!
 class CustomMiniAppSwitch extends StatelessWidget {
   final bool isActive;
   final ValueChanged<bool>? onChanged;

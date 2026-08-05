@@ -121,13 +121,17 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
             padding: const EdgeInsetsDirectional.only(start: 24, top: 24),
             child: Align(
               alignment: AlignmentDirectional.topStart,
-              child: GestureDetector(
-                onTap: () => context.router.maybePop(),
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(32),
+              child: Semantics(
+                    label: context.l10n.a11yBack,
+                    button: true,
+                    child: GestureDetector(
+                      onTap: () => context.router.maybePop(),
+                      child: ExcludeSemantics(
+                        child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(32),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -141,20 +145,22 @@ class _GaussianSplattingPageWidgetState extends State<_GaussianSplattingPageWidg
                         // the brand name, mirroring `Balady+`).
                         textDirection: TextDirection.ltr,
                         style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                        ],
+                      ),
                         ),
                       ),
-                      const SizedBox(width: 4),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }

@@ -129,7 +129,7 @@ class _PoiTabItem extends StatelessWidget {
           boxShadow: isActive ? Shadows.s : null,
         ),
         child: SizedBox(
-          height: 36,
+         // height: 36,
           child: Material(
             color: Colors.transparent,
             type: MaterialType.transparency,

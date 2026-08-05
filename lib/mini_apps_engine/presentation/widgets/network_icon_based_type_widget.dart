@@ -93,6 +93,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
 
     return _buildFallbackIcon();
   }
+  //!
 
   String _buildImageUrl() {
     // If icon is already a full URL, return as is

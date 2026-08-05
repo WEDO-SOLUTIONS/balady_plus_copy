@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "shortcuts": [
+    {
+      "key": "favorites",
+      "labelEn": "Favorites",
+      "labelAr": "المفضلة",
+      "destination": "https://plus.balady.sa/#/favourites",
+      "status": "active",
+      "order": 1,
+      "platforms": ["android", "ios", "huawei"],
+      "requireLogin": true,
+      "requirePermissions": [],
+      "iconReference": "Bookmark"
+    },
+    {
+      "key": "directions",
+      "labelEn": "Directions",
+      "labelAr": "التنقل",
+      "destination": "https://plus.balady.sa/#/directions",
+      "status": "active",
+      "order": 2,
+      "platforms": ["android", "ios", "huawei"],
+      "requireLogin": true,
+      "requirePermissions": ["location"],
+      "iconReference": "Route"
+    },
+    {
+      "key": "search_for_place",
+      "labelEn": "Search for Place",
+      "labelAr": "البحث عن مكان",
+      "destination": "https://plus.balady.sa/#/search",
+      "status": "active",
+      "order": 3,
+      "platforms": ["android", "ios", "huawei"],
+      "requireLogin": false,
+      "requirePermissions": [],
+      "iconReference": "Search"
+    },
+    {
+      "key": "share_my_location",
+      "labelEn": "Share My Location",
+      "labelAr": "شارك موقعي الحالي",
+      "destination": "https://plus.balady.sa/#/shareMyLocation",
+      "status": "active",
+      "order": 4,
+      "platforms": ["android", "ios", "huawei"],
+      "requireLogin": true,
+      "requirePermissions": ["location"],
+      "iconReference": "MyLocation"
+    },
+    {
+      "key": "share_live_location",
+      "labelEn": "Share Live Location",
+      "labelAr": "شارك تتبع لموقعي",
+      "destination": "https://plus.balady.sa/#/shareLiveLocation",
+      "status": "active",
+      "order": 5,
+      "platforms": ["android", "ios", "huawei"],
+      "requireLogin": true,
+      "requirePermissions": ["location"],
+      "iconReference": "FollowOn"
+    },
+    {
+      "key": "contribute",
+      "labelEn": "Contribute",
+      "labelAr": "ساهم معنا",
+      "destination": "https://plus.balady.sa/#/contribute",
+      "status": "active",
+      "order": 6,
+      "platforms": ["android", "ios", "huawei"],
+      "requireLogin": false,
+      "requirePermissions": [],
+      "iconReference": "Home"
+    }
+  ]
+}

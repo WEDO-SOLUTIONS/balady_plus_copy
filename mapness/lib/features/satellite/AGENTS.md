@@ -1,6 +1,6 @@
 # Satellite Layer Notes
 
-This subtree owns the satellite raster-tile overlay. Implements [BE-243](https://wedosolutions-sa.atlassian.net/browse/BE-243) (parent: [BE-175](https://wedosolutions-sa.atlassian.net/browse/BE-175)).
+This subtree owns the satellite raster-tile overlay. Implements [BE-243](https://wedosolutions-sa.atlassian.net/browse/BE-243) (parent: [BE-175](https://wedosolutions-sa.atlassian.net/browse/BE-175)). Active QA follow-ups land in this subtree too — see [CONTEXT.md](CONTEXT.md) for the full ticket list.
 
 ## Architecture
 
@@ -12,7 +12,8 @@ Flow on tap:
 2. `LayersControls._tapHandler` short-circuits when `value == satellite || value == defaultMap` — does NOT route through the overlay `_hidePreviousLayers`/`toggleLayers` logic. This keeps satellite independent of overlay state.
 3. `LayersControls.toggleLayers` calls `SatelliteMapController.enable()` / `.disable()`.
 4. Controller reads `satellite_config` from Firebase Remote Config via `AppConfigLoader.getSatelliteConfig()`, substitutes `{TOKEN}` into the URL template, and hands the result to `dgisController.toggleSatellite` (native bridge).
-5. Native `SatelliteHandler` (Kotlin + Swift) creates a 2GIS `RasterTileSource` and adds it to `map.sources`. Cached URL/layerName lets it recreate the source on rotation instead of reusing a stale one.
+5. Before any raster-source change, the controller flips the global style attribute `dissappear3D` via `setMapAttributeBool` (BALADY-3742) so the 2GIS style hides immersive 3D buildings before the satellite tiles land. On disable the same flag goes back to `false` and 3D returns.
+6. Native `SatelliteHandler` (Kotlin + Swift) creates a 2GIS `RasterTileSource` and adds it to `map.sources`. Cached URL/layerName lets it recreate the source on rotation instead of reusing a stale one.
 
 ## Rules For This Subtree
 
@@ -22,6 +23,9 @@ Flow on tap:
 - **Do not couple satellite state with `LayersControls.selectedType`**. Selected-type tracks the overlay layer (traffic / parking / metro / etc.). Satellite has its own bool because users can mix `Satellite` base with any overlay.
 - **Native handler recreates the raster source when URL or layer name changes**. This is intentional: when FRC rotates the token, the cached `RasterTileSource` would otherwise keep pointing at the old URL. If you add caching/optimization, preserve the recreate-on-change behavior.
 - **Do not log the token**. The `isExpired` warning includes `expiresAt` only — never the token string.
+- **Do not rename or fix the spelling of `dissappear3D`** (BALADY-3742). The literal is a contract with the 2GIS web style editor — every immersive-3D sublayer filter references `["global", "dissappear3D"]`. Renaming requires a coordinated style update; the typo is intentional until that happens.
+- **Always flip `dissappear3D` BEFORE the raster-source change** (true on enable, false on disable). Order matters — if the raster source is added/removed first, you get a single-frame flicker of 3D buildings sticking out above (or briefly missing under) the satellite tiles. The pattern in `_setEnabled` enforces this; don't refactor it into parallel `Future.wait`.
+- **Use `dgisControllerProvider.future`, not `.value`**, for any call into the bridge from this controller. `.value` returns `null` until the native map has fully loaded, so an early tap on Satellite silently drops both the attribute write and the tile-source change. Same pattern `ParkingState` uses for `parkingOn`.
 
 ## Firebase Remote Config
 
@@ -46,10 +50,22 @@ Bundled default lives in `mapness/lib/shared/utils/app_config_loader.dart` as `_
 
 ESRI Saudi Geoportal caps token expiry at ~30 days regardless of the requested duration. Rotation = single JSON edit in Firebase Console, no app release.
 
+## Style-global attributes (BALADY-3742)
+
+The 2GIS web style editor exposes `["global", "<name>"]` references inside filter expressions, and the app pushes runtime values via the pigeon bridge `setMapAttributeBool(name, value)` → native `map.setAttribute(name, AttributeValue(value))` (Android) / `map.attributes.setAttributeValue(name:value:)` (iOS).
+
+| Attribute | Owner | Style filter pattern | Set by |
+|---|---|---|---|
+| `dissappear3D` | satellite | `["match", ["global", "dissappear3D"], [true], false, true]` AND-combined with the sublayer's existing visibility filter for every immersive-3D sublayer (`Immersive_model_medina`, generic `immersive_*` group). Evaluates to `false` (= hide) when the flag is `true`. | `SatelliteMapController._setEnabled` |
+| `navigatorOn` | free-roam | (existing) | `FreeRoamManager` |
+| `parkingOn` / `parking_filter_paid_on` / `parking_filter_free_on` | parking | (existing) | `ParkingState` |
+
+If you add a new style-global attribute, give it a unique const, use the same `setMapAttributeBool` call, and document the style-side filter contract here so the next agent knows what the literal name buys them.
+
 ## Important Files
 
 - `models/satellite_config.dart`: JSON parser, `{TOKEN}` substitution, `isUsable`, `isExpired`, `requiresToken`.
-- `providers/satellite_map_controller.dart`: `@Riverpod(keepAlive: true)` notifier exposing `enable()` / `disable()` / `toggle()`. Reads FRC, substitutes token, calls native bridge.
+- `providers/satellite_map_controller.dart`: `@Riverpod(keepAlive: true)` notifier exposing `enable()` / `disable()` / `toggle()`. Reads FRC, substitutes token, flips `dissappear3D`, calls native bridge.
 - `../../shared/utils/app_config_loader.dart`: `_kSatelliteConfigDefault`, `getSatelliteConfig()`, FRC `setDefaults` registration.
 - `../../shared/constants/remote_config_constants.dart`: `satelliteConfig` key.
 - `../lifestyle_layers/providers/layers_state.dart`: `LayerType.defaultMap` and `LayerType.satellite` enum entries + position in the `v1` grid.

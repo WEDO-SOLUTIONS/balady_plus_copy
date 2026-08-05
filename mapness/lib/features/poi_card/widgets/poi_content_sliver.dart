@@ -209,9 +209,8 @@ class PoiContentSliver extends ConsumerWidget {
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
 
-    final busStationObjectId = data.group.firstWhereOrNull((g) => g.type == ObjectTypeMessage.station)?.id.objectId;
     final jeddahBusData = ref.watch(jeddahBusLayerRepoProvider).value;
-    final jeddahBusStation = jeddahBusData?.stations[busStationObjectId];
+    final jeddahBusStation = jeddahBusData?.getStationByDirectoryObject(data);
     final jeddahBusStationLines = jeddahBusStation?.lineIds.map((e) => jeddahBusData?.lines[e]).nonNulls.toList();
 
     return SliverPadding(

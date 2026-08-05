@@ -11,6 +11,10 @@ import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
+import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
+import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
@@ -103,6 +107,31 @@ class SearchItem extends ConsumerWidget {
     final now = saudiTimeNow();
     final closedStatus = workingHours?.closedStatus(now, context.l10n, soonThreshold: soonThreshold) ?? '';
     final closedStatusColors = workingHours?.colors(now, context.colors, soonThreshold: soonThreshold);
+    final address = result.makeAddress();
+
+    String? durationEstimate;
+    final markerPosition = result.markerPosition;
+    if (markerPosition != null) {
+      final finishPoint = RouteSearchPoint(
+        coordinates: markerPosition.toGeoPointMessage(),
+        dgisObjectId: result.id!,
+      );
+      final briefRouteInfo = ref.watch(
+        briefRouteInfoProvider(
+          finishPoint: finishPoint,
+          navType: RouteSearchOptionsMessage.car,
+        ),
+      );
+      durationEstimate = briefRouteInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
+    }
+
+    final semanticsLabel = [
+      result.title,
+      if (subtitle.isNotEmpty) subtitle,
+      if (closedStatus.isNotEmpty) closedStatus,
+      if (address.isNotEmpty) address,
+      if (durationEstimate != null && durationEstimate.isNotEmpty) durationEstimate,
+    ].join(', ');
 
     return VisibilityDetector(
       key: Key('searchResult: ${result.id?.objectId}'),
@@ -125,80 +154,97 @@ class SearchItem extends ConsumerWidget {
       child: Material(
         color: isDGA ? context.colors.accentSecondarySoft : contentColor ?? context.colors.backgroundSurface1,
         shape: smoothBorder(RadiusBorder.xl),
-        child: SearchTapHandler(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (photosUrls.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: Spacing.$3x),
-                  child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
-                ),
-              Padding(
-                padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
-                child: DefaultTextStyle(
-                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SearchTapHandler(
+              onTap: onTap,
+              child: Semantics(
+                button: true,
+                label: semanticsLabel,
+                child: ExcludeSemantics(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        result.title,
-                        style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-                      ),
-                      Spacing.$1x.heightBox,
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              subtitle,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.textStyles.bodySmallRegular.copyWith(
-                                color: context.colors.foregroundDefault,
-                              ),
-                            ),
-                          ),
-                          if (closedStatus.isNotEmpty)
-                            Text(
-                              ' • ',
-                              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                            ),
-                          if (closedStatus.isNotEmpty)
-                            Text(
-                              closedStatus,
-                              style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
-                            ),
-                        ],
-                      ),
-                      Spacing.$1x.heightBox,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  result.makeAddress(),
-                                  maxLines: 1,
-                                  style: context.textStyles.bodySmallRegular.copyWith(
-                                    color: context.colors.foregroundSoft,
-                                  ),
+                      if (photosUrls.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: Spacing.$3x),
+                          child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
+                        ),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+                        child: DefaultTextStyle(
+                          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                result.title,
+                                style: context.textStyles.bodyLargeSemiBold.copyWith(
+                                  color: context.colors.foregroundDefault,
                                 ),
-                              ],
-                            ),
+                              ),
+                              Spacing.$1x.heightBox,
+                              Row(
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      subtitle,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: context.textStyles.bodySmallRegular.copyWith(
+                                        color: context.colors.foregroundDefault,
+                                      ),
+                                    ),
+                                  ),
+                                  if (closedStatus.isNotEmpty)
+                                    Text(
+                                      ' • ',
+                                      style: context.textStyles.bodySmallRegular.copyWith(
+                                        color: context.colors.foregroundSoft,
+                                      ),
+                                    ),
+                                  if (closedStatus.isNotEmpty)
+                                    Text(
+                                      closedStatus,
+                                      style: context.textStyles.bodySmallRegular.copyWith(
+                                        color: context.colors.foregroundSoft,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              Spacing.$1x.heightBox,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          address,
+                                          maxLines: 1,
+                                          style: context.textStyles.bodySmallRegular.copyWith(
+                                            color: context.colors.foregroundSoft,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (markerPosition != null) DirectoryObjectCarEstimate(result),
+                                ],
+                              ),
+                            ],
                           ),
-                          DirectoryObjectCarEstimate(result),
-                        ],
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SearchItemQuickActions(directoryObject: result),
-            ],
-          ),
+            ),
+            SearchItemQuickActions(directoryObject: result),
+          ],
         ),
       ),
     );

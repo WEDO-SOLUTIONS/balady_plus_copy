@@ -31,11 +31,26 @@ class _NavigatorSettingsPage extends ConsumerState<NavigatorSettingsPage> {
       child: Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: Scaffold(
-          appBar: BaladyTopBar.iconAndText(
+          appBar: BaladyTopBar(
             systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
             title: context.l10n.navigatorSettings,
             textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-            leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+            onLeadingPressed: () => context.router.pop(),
+              leading: Semantics(
+                label: context.l10n.a11yBack,
+                button: true,
+                child: ExcludeSemantics(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(width: Spacing.$4x),
+                      Icon(SystemIcons.arrowCornerLeftLarge, color: context.colors.foregroundDefault),
+                      const SizedBox(width: Spacing.$4x),
+                    ],
+                  ),
+                ),
+              ),
+
           ),
           body: NavigatorSettingsPageContent(showDarkModeSection: widget.showDarkModeSection),
         ),
