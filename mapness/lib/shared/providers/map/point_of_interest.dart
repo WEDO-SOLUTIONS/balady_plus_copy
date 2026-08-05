@@ -19,8 +19,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
-const poiCarModelId = 'poi_car_model_id';
-const poiCarModelPath = 'packages/mapness/assets/models/LIGHT_THEME_CAR_MODEL.glb';
 const poiMapFontAr = 'IBMPlexSansArabic-Bold';
 const poiMapFontEn = 'GolosText_SemiBold';
 
@@ -105,24 +103,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       isDark: isDark,
     ),
     objectId: objectId.objectId,
-  );
-
-  await selectedMarker.mapObjectManager.addModel(
-    ModelMapObject(
-      id: poiCarModelId,
-      options: ModelMapObjectOptionsMessage(
-        position: GeoPointWithElevationMessage(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          elevation: 1,
-        ),
-        modelPath: poiCarModelPath,
-        size: LogicalPixelModelSize(140),
-        mapDirection: MapDirectionMessage(degree: 0),
-        opacity: 1,
-        zIndex: 100,
-      ),
-    ),
   );
 
   final highlightController = ref.watch(highlightProvider.notifier);
