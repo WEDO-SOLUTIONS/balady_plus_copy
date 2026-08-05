@@ -1230,8 +1230,17 @@ class $AssetsTifoAudioGen {
   /// File path: assets/tifo/audio/kick_1.mp3.orig-backup
   String get kick1Mp3 => 'packages/mapness/assets/tifo/audio/kick_1.mp3.orig-backup';
 
+  /// File path: assets/tifo/audio/kick_2.mp3
+  String get kick2 => 'packages/mapness/assets/tifo/audio/kick_2.mp3';
+
+  /// File path: assets/tifo/audio/kick_3.mp3
+  String get kick3 => 'packages/mapness/assets/tifo/audio/kick_3.mp3';
+
+  /// File path: assets/tifo/audio/kick_4.mp3
+  String get kick4 => 'packages/mapness/assets/tifo/audio/kick_4.mp3';
+
   /// List of all assets
-  List<String> get values => [crowdAmbience1, kick1, kick1Mp3];
+  List<String> get values => [crowdAmbience1, kick1, kick1Mp3, kick2, kick3, kick4];
 }
 
 class $AssetsTifoBackgroundsGen {

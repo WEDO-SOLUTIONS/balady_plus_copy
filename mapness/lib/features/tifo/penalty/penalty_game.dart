@@ -1328,13 +1328,24 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   // real footage's leg crosses most of its arc in ~2 captured frames), so
   // this is tuned by feel, not re-derived from the atlas split.
   //
-  // Floor here: `_ballLaunchDelay + flightTime` must clear the striker's
-  // full windup+kick+settle length (`_StrikerModel.kickEndSeconds` + 0.3s
-  // settle ≈ 1.2s) for EVERY shot, or `_shotTime` freezes mid-animation
-  // again (the original bug). `flightTime` bottoms out at 0.84s on a
-  // max-power shot (`1.18 - power*0.34`, power capped at 1.0) — 0.4 only
-  // clears that by 0.04s, too tight. 0.5 gives ~0.14s of margin even on the
-  // fastest shot.
+  // Kept at 0.5s (not raised) — this is tuned BY FEEL against the visible
+  // foot-contact instant in the kick sprite (see the note above), not just
+  // against the flight-time floor below. Raising it desyncs the kick from
+  // the ball visibly leaving the foot, even though the floor math alone
+  // would allow it.
+  //
+  // Floor here, traced directly from `_StrikerModel.render`: once `_state`
+  // leaves `flying`, `_shotTime` freezes (see `update()`), and the render's
+  // `if (shotTime < kickEndSeconds) { ...kick pose... return; }` branch is
+  // keyed on that frozen value with no `resultTime` fallback — unlike the
+  // settle phase right after it (which folds `resultTime` into
+  // `settleElapsed` and keeps advancing after the freeze), this branch has
+  // no such escape hatch. So `_ballLaunchDelay + flightTime` must reach
+  // `_StrikerModel.kickEndSeconds` (0.9s) by the time the ball resolves, or
+  // the striker visibly sticks on a kick-swing pose. `flightTime` bottoms
+  // out at 0.55s on a max-power shot (`_flightTimeFor`, power capped at
+  // 1.0) — with this 0.5s delay that's 1.05s total, ~0.15s of margin over
+  // the 0.9s floor.
   static const double _ballLaunchDelay = 0.5;
   static const double _photoKeeperVisualScale = 1.5;
   static const double _gravity = -9.8;
@@ -1600,6 +1611,14 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _shootAtTarget(_aimTarget, power);
   }
 
+  /// Shared by [_shootAtTarget] (actual shot) and [_predictTrajectory]
+  /// (aim-preview trail) so the preview always matches what the shot will
+  /// actually do. [_ballLaunchDelay] can't move (it's pinned to the visible
+  /// foot-contact instant), so this is tuned against the *actual* traced
+  /// floor — see the margin note there — rather than the more conservative
+  /// number the previous tuning pass assumed.
+  static double _flightTimeFor(double power) => 0.90 - power * 0.35;
+
   void _shootAtTarget(_Vec3 target, double power) {
     unawaited(_playRandomSfx(_kickSounds));
     _aimTarget = target;
@@ -1609,7 +1628,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _message = '';
     _shots++;
 
-    final flightTime = 1.18 - power * 0.34;
+    final flightTime = _flightTimeFor(power);
     _reactionDelay = flightTime * _reactionDelayFraction;
     final flightTarget = _aimTarget.copy();
     flightTarget.z = _goalZ + 0.2;
@@ -1893,7 +1912,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// points from the ball's current spot to wherever it crosses the goal
   /// plane or the ground.
   List<_Vec3> _predictTrajectory(_Vec3 target, double power) {
-    final flightTime = 1.18 - power * 0.34;
+    final flightTime = _flightTimeFor(power);
     final flightTarget = target.copy()..z = _goalZ + 0.2;
     final velocity = _Vec3(
       (flightTarget.x - _ball.x) / flightTime,
@@ -2934,7 +2953,7 @@ class _StrikerModel {
     // Also requires the ball to have actually resolved (state past `flying`,
     // not just past the 0.3s settle clock) — `settleElapsed` keeps counting
     // the whole time the ball is airborne, and a shot can fly for up to
-    // ~1.5s (`_ballLaunchDelay` + flightTime) versus the striker's own
+    // ~1.2s (`_ballLaunchDelay` + flightTime) versus the striker's own
     // ~1.2s windup+kick+settle. Without this, he'd hand off to idle's
     // relaxed aiming-sway well before the ball actually lands — reading as
     // "he's already done, why is the ball still going" (the animation
@@ -3542,7 +3561,7 @@ class _GoalkeeperModel {
     // `actionTime` (passed in) freezes the instant the ball resolves —
     // it's derived from `_ballFlightElapsed`, which stops advancing once
     // `_state` leaves `flying`, same mechanism as the striker's
-    // `_shotTime`. A fast shot resolves at `actionTime` ~= 0.5-0.6s
+    // `_shotTime`. A fast shot resolves at `actionTime` ~= 0.3-0.4s
     // regardless of power (`flightTime * 0.6`, see `_shootAtTarget`) —
     // well short of the new 1.0s window — so without `resultTime` folded
     // in here too, raising the window would freeze the launch HALF
@@ -4710,43 +4729,101 @@ class _KeeperAtlas {
 // here as additional clips become available, nothing else needs to change.
 const List<String> _kickSounds = [
   'packages/mapness/assets/tifo/audio/kick_1.mp3',
+  'packages/mapness/assets/tifo/audio/kick_2.mp3',
 ];
 
-/// Fire-and-forget one-shot SFX: picks a random clip from [tracks], plays
-/// it once, and disposes itself when done. A missing/corrupt asset is
-/// swallowed rather than thrown — sound effects are a nice-to-have and must
-/// never take the game down with them.
-Future<void> _playRandomSfx(List<String> tracks) async {
-  if (tracks.isEmpty) {
-    return;
+/// Lazily-created, reused for every kick — one native player, created once,
+/// instead of one create+dispose cycle per shot.
+///
+/// The earlier version created a fresh `AudioPlayer()` per kick, which needs
+/// `JustAudioPlatform.instance` swapped to a plain (non-background) platform
+/// for the swap-create-restore cycle (see the comment on [_ensureSfxPlayer]
+/// for why the swap itself is needed at all). Even with calls serialized
+/// through a queue so no two swaps were ever in flight at the same Dart
+/// instant, `(-11849) Operation Stopped` from `AudioPlayer._load` kept
+/// showing up — Dart-side `await player.dispose()` resolving doesn't
+/// guarantee the native (iOS AVAudioSession) side has actually finished
+/// tearing down before the next kick's `AudioPlayer()`/`setAsset()` starts,
+/// so repeated create/destroy churn was itself the race, not just
+/// overlapping Dart calls. Reusing one player removes that churn entirely —
+/// each kick is just `setAsset` + `play` on the same already-initialized
+/// native player, which `just_audio` supports mid-playback (it interrupts
+/// whatever was still playing and starts the new clip).
+AudioPlayer? _sfxPlayer;
+
+Future<AudioPlayer> _ensureSfxPlayer() async {
+  final existing = _sfxPlayer;
+  if (existing != null) {
+    return existing;
   }
-  final track = tracks[math.Random().nextInt(tracks.length)];
   // just_audio_background allows exactly one background-registered player
   // app-wide, and _startAmbience's looping player holds that slot for the
   // whole game — a second AudioPlayer() here throws "supports only a single
   // player instance". A one-shot kick doesn't need lock-screen/background
-  // integration, so borrow the plain (non-background) platform just for
-  // this player's lifetime, then hand the slot back to just_audio_background.
+  // integration, so borrow the plain (non-background) platform just long
+  // enough to construct this one player, then hand the slot straight back —
+  // this now happens ONCE per game session, not once per kick.
   final backgroundPlatform = JustAudioPlatform.instance;
   JustAudioPlatform.instance = MethodChannelJustAudio();
-  final player = AudioPlayer();
+  // `handleAudioSessionActivation: false` — by default every `AudioPlayer`
+  // calls `audioSession.setActive(true)` on play and `setActive(false)` once
+  // it stops (see just_audio's `play()`), which fights with the ambience
+  // player: that one is *always* playing and already owns/holds the shared
+  // `AVAudioSession` active (configured `.music()` in `_startAmbience`).
+  // Every kick's own activate/deactivate cycle raced the ambience player's,
+  // and iOS reported the loser as `(-11849) Operation Stopped` from
+  // `AudioPlayer._load` — intermittently, in bursts, which matched a
+  // session-arbitration race rather than anything Dart-side (this survived
+  // both the per-kick-player and the reused-player designs, since neither
+  // touched session activation). Skipping activation here entirely and
+  // just riding on the session the ambience player already keeps active
+  // removes the second competing activate/deactivate cycle.
+  final player = AudioPlayer(handleAudioSessionActivation: false);
+  JustAudioPlatform.instance = backgroundPlatform;
+  _sfxPlayer = player;
+  return player;
+}
+
+/// Serializes [_playRandomSfx] calls so two kicks can never call
+/// `setAsset`/`play` on the shared [_sfxPlayer] concurrently — the game only
+/// ever fires one shot at a time, but this is cheap insurance against that
+/// assumption changing.
+Future<void> _sfxQueue = Future<void>.value();
+
+/// Fire-and-forget one-shot SFX: picks a random clip from [tracks] and plays
+/// it on the shared [_sfxPlayer]. A missing/corrupt asset is swallowed
+/// rather than thrown — sound effects are a nice-to-have and must never
+/// take the game down with them.
+///
+/// Tried splitting this into a separate "load ahead" + "play at the exact
+/// contact instant" pair to fix perceived audio lag — that made it worse
+/// (audible double-hit, from `setAsset` auto-resuming a still-`playing`
+/// player at load time, then this player's own explicit `play()` firing
+/// again later) and wasn't worth the added complexity. Back to the simple
+/// single-call version.
+Future<void> _playRandomSfx(List<String> tracks) {
+  final result = _sfxQueue.then((_) => _playQueuedSfx(tracks));
+  _sfxQueue = result;
+  return result;
+}
+
+Future<void> _playQueuedSfx(List<String> tracks) async {
+  if (tracks.isEmpty) {
+    return;
+  }
+  final track = tracks[math.Random().nextInt(tracks.length)];
   try {
+    final player = await _ensureSfxPlayer();
     await player.setAsset(track);
-    await player.play();
-    // `play()` completes once the native play *request* is sent, not once
-    // the clip finishes — disposing right after would cut the sound off
-    // before it's audible. Wait for it to actually reach `completed` first.
-    await player.playerStateStream.firstWhere(
-      (state) => state.processingState == ProcessingState.completed,
-    );
+    // Not awaited further — the player keeps playing after this Future
+    // resolves regardless, and there's no dispose-right-after step that
+    // would need us to wait for it to finish first.
+    unawaited(player.play());
     debugPrint('[tifo-audio] sfx played: $track');
   } catch (e, st) {
     // Ignored at runtime — see doc comment above. Still log it: this is the
     // only signal we'd otherwise have for diagnosing "no sound" reports.
     debugPrint('[tifo-audio] sfx failed: $e\n$st');
-  } finally {
-    await player.dispose();
-    JustAudioPlatform.instance = backgroundPlatform;
   }
 }
 
