@@ -4,6 +4,13 @@ import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_mode.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_navigator_observer.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
+export 'package:mapness/features/balady_analytics/urbi_balady_analytics_sink.dart';
+
+/// Named destinations an event can be routed to. [ours] is our own pipeline
+/// (PostHog self-hosted) and obeys [BaladyAnalyticsMode]; the rest are legacy
+/// production streams that keep flowing regardless of mode until their
+/// migration phase ends (see ANALYTICS_MIGRATION_PLAN.md in the repo root).
+enum BaladyAnalyticsChannel { ours, urbi }
 
 /// Single entry point for Balady's own analytics pipeline (product + tech
 /// events into our self-hosted backend). See README.md next to this file.
@@ -26,7 +33,8 @@ class BaladyAnalytics {
   BaladyAnalyticsMode _mode = BaladyAnalyticsMode.legacy;
   bool _configured = false;
   BaladyAnalyticsSink _sink = LoggingBaladyAnalyticsSink();
-  final List<BaladyAnalyticsEvent> _pending = [];
+  final Map<BaladyAnalyticsChannel, BaladyAnalyticsSink> _channelSinks = {};
+  final List<(BaladyAnalyticsEvent, Set<BaladyAnalyticsChannel>)> _pending = [];
   final Map<String, dynamic> _sessionProperties = {};
 
   BaladyAnalyticsMode get mode => _mode;
@@ -41,21 +49,36 @@ class BaladyAnalytics {
       _sink = sink;
     }
 
-    final buffered = List<BaladyAnalyticsEvent>.of(_pending);
+    final buffered = List<(BaladyAnalyticsEvent, Set<BaladyAnalyticsChannel>)>.of(_pending);
     _pending.clear();
-    if (_mode.sendToOurs) {
-      buffered.forEach(_sink.track);
+    for (final (event, channels) in buffered) {
+      _send(event, channels);
     }
   }
 
-  /// Product/tech event. [properties] must be JSON-serializable.
-  void track(String name, {Map<String, dynamic>? properties}) {
+  /// Attach a legacy stream as a named channel, so call sites can fan an event
+  /// out to it through the facade ([ours] is fixed and configured via
+  /// [configure]). Events routed to a channel before registration are dropped.
+  void registerChannel(BaladyAnalyticsChannel channel, BaladyAnalyticsSink sink) {
+    assert(channel != BaladyAnalyticsChannel.ours, 'ours is the configure()d sink, not a registered channel');
+    _channelSinks[channel] = sink;
+  }
+
+  /// Product/tech event. [properties] must be JSON-serializable. [channels]
+  /// widens the fan-out to legacy streams during their migration under this
+  /// facade; [BaladyAnalyticsChannel.ours] alone is the steady state.
+  void track(
+    String name, {
+    Map<String, dynamic>? properties,
+    Set<BaladyAnalyticsChannel> channels = const {BaladyAnalyticsChannel.ours},
+  }) {
     _dispatch(
       BaladyAnalyticsEvent(
         name: name,
         kind: BaladyAnalyticsEventKind.track,
         properties: {..._sessionProperties, ...?properties},
       ),
+      channels: channels,
     );
   }
 
@@ -107,15 +130,28 @@ class BaladyAnalytics {
     _sessionProperties[key] = value;
   }
 
-  void _dispatch(BaladyAnalyticsEvent event) {
+  void _dispatch(
+    BaladyAnalyticsEvent event, {
+    Set<BaladyAnalyticsChannel> channels = const {BaladyAnalyticsChannel.ours},
+  }) {
     if (!_configured) {
       if (_pending.length < _pendingLimit) {
-        _pending.add(event);
+        _pending.add((event, channels));
       }
       return;
     }
-    if (_mode.sendToOurs) {
-      _sink.track(event);
+    _send(event, channels);
+  }
+
+  void _send(BaladyAnalyticsEvent event, Set<BaladyAnalyticsChannel> channels) {
+    for (final channel in channels) {
+      if (channel == BaladyAnalyticsChannel.ours) {
+        if (_mode.sendToOurs) {
+          _sink.track(event);
+        }
+      } else {
+        _channelSinks[channel]?.track(event);
+      }
     }
   }
 }
