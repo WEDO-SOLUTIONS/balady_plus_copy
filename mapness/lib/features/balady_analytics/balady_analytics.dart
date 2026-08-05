@@ -4,16 +4,17 @@ import 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_mode.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_navigator_observer.dart';
 export 'package:mapness/features/balady_analytics/balady_analytics_sink.dart';
+export 'package:mapness/features/balady_analytics/posthog_balady_analytics_sink.dart';
 export 'package:mapness/features/balady_analytics/urbi_balady_analytics_sink.dart';
 
 /// Named destinations an event can be routed to. [ours] is our own pipeline
-/// (PostHog self-hosted) and obeys [BaladyAnalyticsMode]; the rest are legacy
+/// (PostHog Cloud EU) and obeys [BaladyAnalyticsMode]; the rest are legacy
 /// production streams that keep flowing regardless of mode until their
-/// migration phase ends (see ANALYTICS_MIGRATION_PLAN.md in the repo root).
+/// migration phase ends.
 enum BaladyAnalyticsChannel { ours, urbi }
 
 /// Single entry point for Balady's own analytics pipeline (product + tech
-/// events into our self-hosted backend). See README.md next to this file.
+/// events into our PostHog Cloud EU project). See README.md next to this file.
 ///
 /// Static singleton on purpose: it is called from both the host shell
 /// (`lib/`, bloc-based) and the mapness module (Riverpod), including places
@@ -35,7 +36,10 @@ class BaladyAnalytics {
   BaladyAnalyticsSink _sink = LoggingBaladyAnalyticsSink();
   final Map<BaladyAnalyticsChannel, BaladyAnalyticsSink> _channelSinks = {};
   final List<(BaladyAnalyticsEvent, Set<BaladyAnalyticsChannel>)> _pending = [];
-  final Map<String, dynamic> _sessionProperties = {};
+  // is_authenticated defaults to false: events fired before the auth provider
+  // restores a session carry an explicit "anonymous" flag rather than nothing.
+  // Person-level truth is PostHog's own $is_identified.
+  final Map<String, dynamic> _sessionProperties = {'is_authenticated': false};
 
   BaladyAnalyticsMode get mode => _mode;
 
@@ -83,7 +87,21 @@ class BaladyAnalytics {
   }
 
   /// Screen view — replaces UXCam `tagScreenName`.
+  ///
+  /// Deferred to tracking-plan Phase 1.5: `$screen` dominates event quota (~80%
+  /// of projected volume) while the dependent screen-time metric is not a
+  /// priority. Call sites stay wired; flip [_screenCaptureEnabled] to re-enable
+  /// (docs/analytics-tracking-plan.md).
+  static const _screenCaptureEnabled = false;
+
   void screen(String path) {
+    // Screen context rides on every event even while the $screen stream is
+    // off: PostHog's reserved name fills the "URL / Screen" column in Activity
+    // and gives any event a screen breakdown, at zero extra event volume.
+    _sessionProperties[r'$screen_name'] = path;
+    if (!_screenCaptureEnabled) {
+      return;
+    }
     _dispatch(
       BaladyAnalyticsEvent(
         name: r'$screen',
@@ -93,18 +111,30 @@ class BaladyAnalytics {
     );
   }
 
-  /// Caught exception worth counting. Crash reporting stays in Sentry; this
-  /// only keeps the ex-UXCam "handled exception" counters alive.
-  void error(Object? exception, [StackTrace? stack]) {
+  /// An exception worth reporting — handled or fatal.
+  ///
+  /// Feeds PostHog Error Tracking: the sink turns this into a structured
+  /// `$exception` with a real frame list, which is what groups occurrences
+  /// into one issue and makes alerting possible. Unhandled Flutter/native
+  /// crashes are captured by the SDK itself (see [PosthogBaladyAnalyticsSink]);
+  /// call this for zone errors the SDK cannot hook, and for caught exceptions
+  /// worth counting.
+  ///
+  /// [properties] adds context to this one occurrence (screen and auth state
+  /// ride along automatically as session properties).
+  void error(Object? exception, [StackTrace? stack, Map<String, dynamic>? properties]) {
     _dispatch(
       BaladyAnalyticsEvent(
         name: r'$exception',
         kind: BaladyAnalyticsEventKind.error,
         properties: {
           ..._sessionProperties,
+          ...?properties,
           'exception': exception.toString(),
           if (stack != null) 'stack': stack.toString(),
         },
+        error: exception,
+        stackTrace: stack,
       ),
     );
   }
@@ -112,6 +142,7 @@ class BaladyAnalytics {
   /// Login/logout. [userId] null resets identity (logout) — same contract as
   /// the legacy BytePlus `setUserUniqueId`.
   void identify({String? userId, Map<String, dynamic>? traits}) {
+    _sessionProperties['is_authenticated'] = userId != null;
     if (!_configured || _mode.sendToOurs) {
       _sink.identify(userId, traits ?? const {});
     }
@@ -119,6 +150,7 @@ class BaladyAnalytics {
 
   /// Logout — resets user identity in the sink.
   void resetIdentity() {
+    _sessionProperties['is_authenticated'] = false;
     if (!_configured || _mode.sendToOurs) {
       _sink.identify(null, const {});
     }

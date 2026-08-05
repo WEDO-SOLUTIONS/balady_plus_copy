@@ -21,6 +21,7 @@ import 'package:mapness/entities/path_nav/models/pedestrian_transition_config.da
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
@@ -45,12 +46,10 @@ import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dar
 import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/common_functions.dart' as cf;
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -383,6 +382,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
+      unawaited(_trackNavigationStarted());
       await dgisController.startNavigation(NavigationConstants.navigationSpeedRangeZooms);
       if (!mounted) {
         return;
@@ -411,6 +411,25 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (widget.navType == RouteSearchOptionsMessage.car) {
       unawaited(_prefetchIndoorInfo());
     }
+  }
+
+  /// Phase-1 `navigation_started` (docs/analytics-tracking-plan.md). Planned
+  /// distance/ETA come from the route selected on the routing screen; the head
+  /// unit is derived from the CarPlay/Android Auto connection state.
+  Future<void> _trackNavigationStarted() async {
+    final plannedRoute = ref.read(currentRouteProvider)?.route;
+    var carConnected = false;
+    try {
+      carConnected = await ref.read(carConnectionProvider.future);
+    } catch (_) {
+      // Unknown connection state counts as no head unit.
+    }
+    BaladyNavigationEvents.trackNavigationStarted(
+      navType: widget.navType,
+      carConnected: carConnected,
+      plannedDistanceM: plannedRoute?.distance,
+      plannedDurationSec: plannedRoute?.duration,
+    );
   }
 
   Future<void> _syncLiveUpdatesMetadata() async {
@@ -734,6 +753,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final route = ref.read(etaRouteInfoProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
+    // Phase-1 navigation_completed / navigation_cancelled — read progress
+    // sources before the route/navigation state is torn down below.
+    final pathInfo = ref.read(pathNavEtaProvider);
+    final plannedRoute = ref.read(currentRouteProvider)?.route;
+    BaladyNavigationEvents.trackNavigationEnded(
+      navType: widget.navType,
+      arrivedDetected: _navigationState.value == PathNavState.finished || _finishedByEta,
+      plannedDistanceM: plannedRoute?.distance,
+      plannedDurationSec: plannedRoute?.duration,
+      remainingDistanceM: pathInfo?.rawDistance,
+      spentTime: pathInfo?.spentTime,
+    );
+
     unawaited(_sendNavigationCompletedAnalytics(route));
 
     await Future.wait([
@@ -816,12 +848,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the route page after the trip is finished
   Future<void> _endTripAndBuildAnotherRoute() async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndBuildAnother,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
-
     await _endTrip(
       action: () {
         if (context.mounted) {
@@ -833,11 +859,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndShowHome,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(
@@ -851,12 +872,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the feedback page after the trip is finished manually
   Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.endTripAndShowHome,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
-
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _parkingCheck();
@@ -948,11 +963,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the pause state
   Future<void> _onShowRoutePressed() async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.navigationKeys.showRoute,
-      group: MetricsConstants.navigationTag,
-      action: MetricAction.tap.toString(),
-    );
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     sheetController.close();
 
@@ -978,6 +988,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         _ignoreEndEventsUntilNavigation = false;
         break;
       case NavigationEvent.routeSearch:
+        // The engine recalculates the route mid-guidance (off-route/reroute) —
+        // counted into navigation_completed.reroutes_count.
+        BaladyNavigationEvents.trackReroute();
         break;
       case NavigationEvent.disabled:
         if (_isSwitchingToPedestrian || _ignoreEndEventsUntilNavigation) {

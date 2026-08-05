@@ -1,7 +1,7 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../utils_exports.dart' show EnvType;
-
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RemoteConfig {
   //////  Not Used
@@ -141,6 +141,12 @@ class RemoteConfig {
   // BaladyAnalytics (our own pipeline) — mode read per-flavor from the loaded
   // .env: legacy | dual | ours. Absent/unknown value falls back to `legacy`.
   static String get baladyAnalyticsMode => dotenv.env['BALADY_ANALYTICS_MODE'] ?? 'legacy';
+
+  // PostHog Cloud EU transport for BaladyAnalytics. Both empty in flavors that
+  // have no project configured — the facade then keeps its logging sink.
+  static String get baladyAnalyticsUrl => dotenv.env['BALADY_ANALYTICS_URL'] ?? '';
+
+  static String get baladyAnalyticsKey => dotenv.env['BALADY_ANALYTICS_KEY'] ?? '';
 
   static String get movingVeichleCategoryKey => _RemoteConfig.movingVeichleCategoryKey[env]!;
 

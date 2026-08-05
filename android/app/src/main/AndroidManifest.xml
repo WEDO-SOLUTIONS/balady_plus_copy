@@ -123,6 +123,11 @@
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
 
+        <!-- PostHog is set up programmatically (PosthogBaladyAnalyticsSink), host/key come from .env -->
+        <meta-data
+            android:name="com.posthog.posthog.AUTO_INIT"
+            android:value="false" />
+
         <meta-data
             android:name="androidx.car.app.minCarApiLevel"
             android:value="7" />

@@ -48,6 +48,7 @@ import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_ic
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
 import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/service_events.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
@@ -74,10 +75,8 @@ import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
@@ -596,23 +595,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           return;
         }
 
-        // Track theme deactivation
-        if (prev != null && prev != SpecialThemeMode.base) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.themesKeys.themeDeactivated,
-            group: MetricsConstants.themesTag,
-            props: {'theme': prev.name},
-          );
-        }
-
-        // Track theme activation
-        if (next != SpecialThemeMode.base) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.themesKeys.themeActivated,
-            group: MetricsConstants.themesTag,
-            props: {'theme': next.name},
-          );
-        }
         final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
         _themeChanged(isDark: isDark);
       })
@@ -769,6 +751,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     // Idempotent: the host shell may have configured the facade already.
     BaladyAnalytics.instance.configure(
       mode: BaladyAnalyticsMode.parse(RemoteConfig.baladyAnalyticsMode),
+      sink: PosthogBaladyAnalyticsSink.tryCreate(
+        host: RemoteConfig.baladyAnalyticsUrl,
+        apiKey: RemoteConfig.baladyAnalyticsKey,
+      ),
     );
     // First legacy stream under the facade umbrella: events tracked with
     // channels: {..., urbi} keep flowing to balady-metrics.urbi.ae.
@@ -1250,11 +1236,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQibla() async {
     final AppRouter router = await ref.watch(appRouterProvider);
     ref.read(appAnalyticsProvider).quickActionSelected('qibla');
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.qibla,
-      action: MetricAction.tap.name,
-      group: MetricsConstants.exploreTag,
-    );
     final location = ref.read(locationProvider.notifier);
 
     await location.checkLocationPermission().then((allowed) async {
@@ -1267,12 +1248,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
@@ -1281,6 +1264,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       CommonFunctions.sendAnalyticsEvent(
         AnalyticsEvents.SnapAndSend_Open_From_Home_Event,
       );
+    } else {
+      ServiceEvents.setPendingOpenSource(ServiceEvents.sourceQuickAction);
     }
     CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(
@@ -1340,13 +1325,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openStories(String id) async {
     final AppRouter router = await ref.watch(appRouterProvider);
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.storyBanner,
-      group: MetricsConstants.exploreTag,
-      action: MetricAction.tap.name,
-      props: {'id': id},
-    );
 
     ref.read(storiesOpenStateProvider.notifier).open();
 

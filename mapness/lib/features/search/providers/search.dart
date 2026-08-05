@@ -12,13 +12,13 @@ import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 import 'package:mapness/features/app_analytics/datafinder_source_tracker.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_mappers.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
+import 'package:mapness/features/balady_analytics/events/search_events.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -61,6 +61,12 @@ class Search extends _$Search {
   /// `SearchScopeEnum.routes.value`; kept here so the provider layer doesn't
   /// depend on the widget-coupled scope enum). Used to force a `routes` origin.
   static const _routingSearchScope = 'RoutingSearch';
+
+  /// The [scope] values of the surfaces covered by the Phase-1 Balady search
+  /// events (mirrors of `SearchScopeEnum.map.value` / `SearchScopeEnum.navi.value`,
+  /// kept here for the same reason as [_routingSearchScope]).
+  static const _mapSearchScope = 'MapSearch';
+  static const _naviSearchScope = 'NaviSearch';
   static const _minVisibleQuickFilterPlaces = 3;
   static const _quickFilterExtraHorizontalPadding = 32.0;
   static const _quickFilterExtraTopPadding = 24.0;
@@ -171,6 +177,36 @@ class Search extends _$Search {
   /// the same `event_source` the notifier computes.
   DataFinderSourcePage get dataFinderEventSource => _sourcePage;
 
+  /// Balady analytics (PostHog): the `source` of the Phase-1 search events for
+  /// this scope's surface, or null when the surface is outside the tracking
+  /// plan (routing/favourites/feedback searches). The navi search sheet is its
+  /// own surface; within the shared map search sheet, a `Map-*` DataFinder
+  /// source page means the journey started on the map (POI tap), anything else
+  /// is the landing/dashboard entry.
+  SearchEventSource? get _baladySearchSource {
+    if (scope == _naviSearchScope) {
+      return SearchEventSource.navi;
+    }
+    if (scope != _mapSearchScope) {
+      return null;
+    }
+    return switch (_sourcePage) {
+      DataFinderSourcePage.mapMainPage || DataFinderSourcePage.mapDirectionPathChanging => SearchEventSource.map,
+      _ => SearchEventSource.landing,
+    };
+  }
+
+  /// Fires `search_performed` once a full search executed and its results are
+  /// known (never for per-keystroke suggests). No-op for surfaces outside the
+  /// tracking plan.
+  void _trackBaladySearchPerformed(String query, SearchResultMessage results) {
+    final source = _baladySearchSource;
+    if (source == null) {
+      return;
+    }
+    trackSearchPerformed(query: query, source: source, resultsCount: results.firstPage?.items.length ?? 0);
+  }
+
   /// Marks the next search as originating from a tapped history record, so its
   /// `search_results_exposure` reports `search_type: History`.
   void markSearchFromHistory() => _searchFromHistory = true;
@@ -234,12 +270,6 @@ class Search extends _$Search {
   }
 
   Future<void> searchQueryChanged(String query) async {
-    Metrics.logEvent(
-      'SearchQuery',
-      object: runtimeType,
-      extras: {'value': query},
-    );
-
     if (query.isEmpty) {
       clear();
     }
@@ -318,10 +348,6 @@ class Search extends _$Search {
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
         searchQuery: query,
-      );
-      Metrics.logEvent(
-        'fetchSuggest',
-        object: runtimeType,
       );
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
@@ -417,11 +443,6 @@ class Search extends _$Search {
         queryType: _previousType!.name,
         searchQuery: searchQuery,
       );
-      Metrics.logEvent(
-        'quickSearch',
-        object: runtimeType,
-        extras: {'query': searchQuery},
-      );
       mixpanel?.timeEvent('Search: quickSearch');
       // -- Analytics
 
@@ -451,6 +472,7 @@ class Search extends _$Search {
           ? SearchStateEmpty(searchText: searchQuery)
           : await _handleResults(results, searchQuery, markerType: quickSearch.markerType);
       _result = results;
+      _trackBaladySearchPerformed(searchQuery, results);
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
@@ -481,11 +503,6 @@ class Search extends _$Search {
         queryType: _previousType!.name,
         searchQuery: query,
       );
-      Metrics.logEvent(
-        'searchByText',
-        object: runtimeType,
-        extras: {'query': query},
-      );
       mixpanel?.timeEvent('Search: searchByText');
       // -- Analytics
 
@@ -515,6 +532,7 @@ class Search extends _$Search {
           : await _handleResults(results, query);
 
       _result = results;
+      _trackBaladySearchPerformed(query, results);
       // -- Analytics
       if (state is SearchStateEmpty) {
         await ref
@@ -563,11 +581,6 @@ class Search extends _$Search {
         queryType: _previousType!.name,
         searchQuery: text,
       );
-      Metrics.logEvent(
-        'Search/searchByQuery',
-        object: runtimeType,
-        extras: {'query_id': query.id},
-      );
       mixpanel?.timeEvent('Search: searchByQuery');
       // -- Analytics
 
@@ -591,6 +604,7 @@ class Search extends _$Search {
           ? SearchStateEmpty(searchText: text)
           : await _handleResults(results, text);
       _result = results;
+      _trackBaladySearchPerformed(text, results);
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider.notifier).trackWithPrint);
       await mixpanel?.track('Search: searchByQuery');
@@ -838,6 +852,9 @@ class Search extends _$Search {
     required int rank,
     DataFinderClickAction clickAction = DataFinderClickAction.viewPoiDetails,
   }) {
+    if (_baladySearchSource != null) {
+      trackSearchResultSelected(query: _previousQuery ?? '', rank: rank, resultType: searchResultTypeOf(item));
+    }
     final loc = _myLocation;
     _analytics.searchResultsClick(
       eventSource: _sourcePage,
@@ -852,6 +869,10 @@ class Search extends _$Search {
   /// Fires `suggestion_click` when the user taps a suggestion. Called by the
   /// suggest UI, which knows the tapped [suggest] and its [rank].
   void reportSuggestionClick({required SuggestMessage suggest, required int rank}) {
+    final suggestResultType = suggestResultTypeOf(suggest);
+    if (_baladySearchSource != null && suggestResultType != null) {
+      trackSearchResultSelected(query: _previousQuery ?? '', rank: rank, resultType: suggestResultType);
+    }
     final loc = _myLocation;
     _analytics.suggestionClick(
       eventSource: _sourcePage,

@@ -1,12 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_plus/super_app_js_bridge/model/app_theme_config.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
-import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
@@ -16,28 +10,34 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_delegator_model.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_agent_model.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/app_theme_config.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:balady_plus/super_app_js_bridge/model/call_back_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_agent_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_delegator_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
+import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:mapness/features/balady_analytics/balady_analytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:path_provider/path_provider.dart';
@@ -823,11 +823,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           'MiniAppVersion': miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
         };
         if (data['type'] == "marketing") {
-          BaladyAnalytics.instance.track(data['event_name'], properties: miniAppData);
           Sentry.addBreadcrumb(Breadcrumb(message: data['event_name'], data: miniAppData));
         } else if (data['type'] == "exception") {
           data.addAll(miniAppData);
-          BaladyAnalytics.instance.track(data['event_name'], properties: data);
           Sentry.captureEvent(
             SentryEvent(
               message: SentryMessage(data['event_name']),

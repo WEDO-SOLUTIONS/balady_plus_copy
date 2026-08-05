@@ -8,7 +8,6 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:geolocator/geolocator.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show translator, Translation;
@@ -309,28 +308,6 @@ class Helpers {
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
       Sentry.captureEvent(event);
-
-      if (BaladyAnalytics.instance.mode.sendToOurs) {
-        String data = body != null ? body.toString() : "";
-
-        String queryString = qeuryParms ?? "";
-
-        String message = data.toString();
-        String? URL = url;
-
-        if (URL != null) {
-          BaladyAnalytics.instance.track(
-            url ?? "Error",
-            properties: {
-              "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
-              "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-              "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
-              "Message": message.length <= 1024 ? message : message.substring(0, 1023),
-              "Environment": sl<EnvType>().name,
-            },
-          );
-        }
-      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

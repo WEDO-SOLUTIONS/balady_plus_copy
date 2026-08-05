@@ -16,15 +16,17 @@ class UrbiAnalytics extends _$UrbiAnalytics {
   @override
   Analytics build() => analyticsClient;
 
-  /// Routed through the [BaladyAnalytics] facade: the event still reaches the
-  /// Urbi stream (via the `urbi` channel) AND our own pipeline. Signature is
-  /// [TrackEvent]-compatible so `AdvancedMetrics.stop*` helpers can take it.
+  /// Routed through the [BaladyAnalytics] facade to the Urbi legacy stream
+  /// only. These events keep their legacy names, so they do NOT go to our own
+  /// pipeline — PostHog gets its own events per docs/analytics-tracking-plan.md.
+  /// Signature is [TrackEvent]-compatible so `AdvancedMetrics.stop*` helpers
+  /// can take it.
   Future<void> trackWithPrint(String event, {Map<String, dynamic>? properties}) async {
     logger.log(event);
     BaladyAnalytics.instance.track(
       event,
       properties: properties,
-      channels: const {BaladyAnalyticsChannel.ours, BaladyAnalyticsChannel.urbi},
+      channels: const {BaladyAnalyticsChannel.urbi},
     );
   }
 }

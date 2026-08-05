@@ -15,6 +15,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/balady_analytics/events/navigation_events.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
@@ -26,7 +27,6 @@ import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -193,13 +193,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   Future<void> _onTap(int index, BuildContext context, WidgetRef ref) async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.changeLocation,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-      props: {'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation},
-    );
-
     ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
 
     await ref
@@ -226,11 +219,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   void _onReorder(int oldIndex, int newIndex) {
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.onReorder,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-    );
     var newIndex_ = newIndex;
     if (oldIndex < newIndex_) {
       newIndex_ -= 1;
@@ -240,13 +228,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   Future<void> _onFavouritesTap(FavouriteItem point) async {
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.startRouteFromFavorite,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-      props: {'id': point.entity?.id, 'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'},
-    );
-
     final index = points.indexWhere(
       (element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject,
     );
@@ -277,6 +258,12 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     if (points.every((element) => element.isNotEmpty)) {
       final start = points.first;
       final finish = points.last;
+
+      // Let route_built report the destination district from the directory
+      // object that is already loaded here (no extra lookups happen for it).
+      if (finish is RoutePointDirectoryObject) {
+        BaladyNavigationEvents.rememberRouteDestination(finish.object);
+      }
 
       context.router.push(
         RoutingRoutesRoute(

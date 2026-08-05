@@ -12,7 +12,6 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
@@ -76,7 +75,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
     _boxClickFiredThisFocus = true;
     final scopeValue = context.read<SearchScope>().value;
     final searcher = ref.read(searchProvider(scopeValue).notifier);
-    ref.read(appAnalyticsProvider).searchBoxClick(
+    ref
+        .read(appAnalyticsProvider)
+        .searchBoxClick(
           eventSource: searcher.dataFinderEventSource,
           isFirstClick: !_searchBoxClicked,
         );
@@ -114,15 +115,10 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             _fireSearchBoxClick();
           },
           onChanged: (query) {
-            Metrics.logEventAdvanced(
-              MetricsConstants.routesKeys.searchSubmit,
-              group: MetricsConstants.routesTag,
-              action: MetricAction.type.toString(),
-              props: {'query': query},
-            );
-
             // DataFinder: report the manual text input.
-            ref.read(appAnalyticsProvider).searchBoxInput(
+            ref
+                .read(appAnalyticsProvider)
+                .searchBoxInput(
                   operationType: DataFinderInputOperation.manual,
                   inputText: query,
                 );
@@ -130,15 +126,11 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
           },
           onSubmitted: (query) {
-            Metrics.logEventAdvanced(
-              MetricsConstants.routesKeys.searchSubmit,
-              group: MetricsConstants.routesTag,
-              action: MetricAction.type.toString(),
-              props: {'query': query},
-            );
             // DataFinder: report the search submit (keyboard action).
             if (query.trim().isNotEmpty) {
-              ref.read(appAnalyticsProvider).searchButtonClick(
+              ref
+                  .read(appAnalyticsProvider)
+                  .searchButtonClick(
                     eventSource: ref.read(searchProvider(scope.value).notifier).dataFinderEventSource,
                     searchText: query,
                   );
@@ -178,11 +170,6 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
       option: SearchTextBackOption(
         text: context.l10n.cancel,
         onPressed: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.routesKeys.searchBackButton,
-            group: MetricsConstants.routesTag,
-            action: MetricAction.tap.toString(),
-          );
           FocusScope.of(context).unfocus();
           context.router.pop();
         },

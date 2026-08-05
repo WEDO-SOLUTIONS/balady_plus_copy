@@ -16,11 +16,21 @@ class BaladyAnalyticsEvent {
     required this.name,
     required this.kind,
     this.properties = const {},
+    this.error,
+    this.stackTrace,
   });
 
   final String name;
   final BaladyAnalyticsEventKind kind;
   final Map<String, dynamic> properties;
+
+  /// Raw throwable behind a [BaladyAnalyticsEventKind.error] event, kept
+  /// alongside its stringified form in [properties]. A transport that groups
+  /// exceptions (PostHog Error Tracking) needs the object and the real
+  /// [StackTrace] to build a frame list; a flat string only ever yields one
+  /// unreadable, ungroupable issue.
+  final Object? error;
+  final StackTrace? stackTrace;
 
   @override
   String toString() => '[${kind.name}] $name ${properties.isEmpty ? '' : properties}';
