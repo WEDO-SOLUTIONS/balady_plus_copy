@@ -107,7 +107,36 @@ class LeapPoi extends Equatable {
       attributes: [],
       contextAttributes: [],
       openingHours: openingHours,
-      contactInfos: [],
+      contactInfos: [
+        ContactInfoMessage(type: 'phone', displayText: '+966 11 211 2222', value: '+966112112222'),
+        ContactInfoMessage(
+          type: 'website',
+          displayText: 'leap',
+          value: 'https://onegiantleap.com/?utm_source=t.co&utm_medium=referral&utm_campaign=Unspecified',
+        ),
+        ContactInfoMessage(type: 'facebook', displayText: 'leap', value: 'https://www.facebook.com/LEAPandInnovate/'),
+        ContactInfoMessage(
+          type: 'instagram',
+          displayText: 'leapandinnovate',
+          value: 'https://www.instagram.com/leapandinnovate?igsh=MTBkMGZkaXFsa3QyNw==',
+        ),
+        ContactInfoMessage(
+          type: 'youtube',
+          displayText: 'leapandinnovate',
+          value: 'https://youtube.com/@leapandinnovate?si=zuqx33umTepDVJxW',
+        ),
+        ContactInfoMessage(
+          type: 'tiktok',
+          displayText: 'leapandinnovate',
+          value: 'https://www.tiktok.com/@leapandinnovate?_r=1&_t=ZS-98cuJUFEevd',
+        ),
+        ContactInfoMessage(type: 'twitter', displayText: 'leapandinnovate', value: 'https://x.com/leapandinnovate?s=21'),
+        ContactInfoMessage(
+          type: 'linkedin',
+          displayText: 'leapandinnovate',
+          value: 'https://www.linkedin.com/company/leapandinnovate/',
+        ),
+      ],
       workStatus: workStatus(l10n),
       entrances: [],
       buildingInfo: BuildingInfoMessage(buildingName: name, purposeName: name, purposeCode: 501),
@@ -137,7 +166,9 @@ class LeapPoi extends Equatable {
       contextAttributes: other?.contextAttributes ?? leapDirectoryObject.contextAttributes,
       timeZoneOffset: other?.timeZoneOffset ?? leapDirectoryObject.timeZoneOffset,
       openingHours: leapDirectoryObject.openingHours,
-      contactInfos: other?.contactInfos ?? leapDirectoryObject.contactInfos,
+      contactInfos: (other?.contactInfos != null && other!.contactInfos.isNotEmpty)
+          ? other.contactInfos
+          : leapDirectoryObject.contactInfos,
       reviews: other?.reviews ?? leapDirectoryObject.reviews,
       parkingInfo: other?.parkingInfo ?? leapDirectoryObject.parkingInfo,
       workStatus: leapDirectoryObject.workStatus,
