@@ -4,8 +4,8 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/analytics_events.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -25,7 +25,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
-import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -42,6 +41,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
 import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
@@ -1065,9 +1065,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         _openParking();
       } else if (url.path == '/media') {
         _openMediaCatelog();
-      }
-
-      else {
+      } else {
         await router.pushPath(url.toString());
       }
     }
@@ -1096,11 +1094,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await CommonFunctions.onLogin();
   }
 
-
   Future<void> _openMediaCatelog() async {
     final AppRouter router = await ref.watch(appRouterProvider);
     await router.push(const MediaCatalogRoute());
   }
+
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
@@ -1241,50 +1239,47 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     );
     final NaviQuickFilterMore? naviFilter = quickFilter == null
         ? NaviQuickFilterMore.values.firstWhereOrNull(
-          (element) => element.name.toLowerCase() == filter.toLowerCase(),
-    ) : null;
+            (element) => element.name.toLowerCase() == filter.toLowerCase(),
+          )
+        : null;
 
     if (quickFilter == null && naviFilter == null) return;
 
     final String filterName = quickFilter?.name ?? naviFilter!.name;
+    unawaited(
+      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
+    );
+    ref.read(appAnalyticsProvider).categorySelected(filterName);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+    final language = ref.read(appLanguageProvider);
+
+    final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
+    if (query != null) {
       unawaited(
-        ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
-      );
-      ref.read(appAnalyticsProvider).categorySelected(filterName);
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
-
-      final language = ref.read(appLanguageProvider);
-
-       final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
-      if (query != null) {
-        unawaited(
-          BssService.instance.sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.deeplink,
-              uiElement: const BssUIElement(
-                name: BssUIElementNames.searchStart,
-                ownerName: BssUIElementNames.searchBar,
-              ),
-              payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+        BssService.instance.sendEvent(
+          BssRequest(
+            eventType: BSSEventType.action,
+            actionType: BSSActionType.deeplink,
+            uiElement: const BssUIElement(
+              name: BssUIElementNames.searchStart,
+              ownerName: BssUIElementNames.searchBar,
             ),
+            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
           ),
-        );
+        ),
+      );
+    }
+    unawaited(router.push(SearchRoute(requestFocus: false)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
+
+      if (quickFilter != null) {
+        searchNotifier.quickSearch(quickFilter);
+      } else if (naviFilter != null) {
+        searchNotifier.searchByText(naviFilter.name);
       }
-      unawaited(router.push(SearchRoute(requestFocus: false)));
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
-
-        if (quickFilter != null) {
-          searchNotifier.quickSearch(quickFilter);
-        } else if (naviFilter != null) {
-          searchNotifier.searchByText(naviFilter.name);
-        }
-
-      });
-
-
-
+    });
   }
 
   Future<void> _openStories(String id) async {
