@@ -1,4 +1,4 @@
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -37,20 +37,10 @@ class LogsViewModel {
   }
 
   void sendEventFromModel({required EventModel event}) async {
-// UX Cam Events
-    try{
-      FlutterUxcam.logEventWithProperties(
-        event.nameEvent,
-        event.toJson(),
-      );
-      Sentry.captureException(
-        SentryException(
-          type: event.nameEvent,
-          value: event.message,
-          unknown: event.toJson(),
-        ),
-      );
-    }catch(e){
+    try {
+      BaladyAnalytics.instance.track(event.nameEvent, properties: event.toJson());
+      Sentry.captureException(SentryException(type: event.nameEvent, value: event.message, unknown: event.toJson()));
+    } catch (e) {
       print("Error From INSIDE FRAME_WORK");
       print("--------------------------------");
       print("Error :  $e");

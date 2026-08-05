@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
@@ -38,7 +38,7 @@ class RubricTypeMapper {
 
         rubricMarkerInfo = decoded.map((e) => RubricMarkerInfo.fromJson(e)).toList();
       } on Exception catch (e, stackTrace) {
-        unawaited(FlutterUxcam.reportExceptionEvent(e, stackTrace));
+        BaladyAnalytics.instance.error(e, stackTrace);
         return null;
       } on Object catch (_) {
         rethrow;
