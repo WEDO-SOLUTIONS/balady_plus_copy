@@ -15,6 +15,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -74,6 +75,31 @@ class PenaltyApp extends StatelessWidget {
 }
 
 enum _PenaltyView { perspective, topDown, miniGame, styles }
+
+/// Top-right "X" to bail out of a penalty session mid-game — discards the
+/// current attempt (no [PenaltyGamePage.onComplete] call, nothing persisted)
+/// and pops everything back to the dashboard, same target the normal
+/// end-of-session flow returns to (see `penalty_entry_screen.dart`).
+class _PenaltyExitButton extends StatelessWidget {
+  const _PenaltyExitButton();
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: const Color(0xCC0A1424),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+      side: const BorderSide(color: Color(0x2934D399)),
+    ),
+    child: InkWell(
+      customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      onTap: () => rootNavigatorKey.currentState?.popUntil((route) => route.isFirst),
+      child: const Padding(
+        padding: EdgeInsets.all(8),
+        child: Icon(Icons.close, color: Colors.white, size: 22),
+      ),
+    ),
+  );
+}
 
 class PenaltyGamePage extends StatefulWidget {
   const PenaltyGamePage({
@@ -205,15 +231,27 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
     final content = Stack(
       children: [
         Positioned.fill(child: body),
-        // Info panel per Figma 696:112029 (BRD V2 HUD, FD-48…50): misses
-        // remaining / Scored / Score to beat over the live game.
-        if (_view == _PenaltyView.perspective)
-          SafeArea(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: _PenaltyHudPanel(game: _perspectiveGame, scoreToBeat: widget.scoreToBeat),
+        // Exit control sits above the HUD panel (its own row) so it never
+        // overlaps the score card underneath.
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const Align(alignment: Alignment.topRight, child: _PenaltyExitButton()),
+                // Info panel per Figma 696:112029 (BRD V2 HUD, FD-48…50): misses
+                // remaining / Scored / Score to beat over the live game.
+                if (_view == _PenaltyView.perspective) ...[
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: _PenaltyHudPanel(game: _perspectiveGame, scoreToBeat: widget.scoreToBeat),
+                  ),
+                ],
+              ],
             ),
           ),
+        ),
         if (showModeToolbar)
           SafeArea(
             child: Padding(
@@ -2405,7 +2443,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     }
     final stage = _stageRect;
     final alpha = (1 - (_resultTime / 1.65)).clamp(0.0, 1.0).toDouble();
-    final position = Vector2(stage.center.dx, stage.top + stage.height * 0.22);
+    // 0.30, not 0.22 — the HUD panel (plus the exit button now stacked above
+    // it) pushed the score card further down, so the flash needs to clear it
+    // rather than land underneath/behind it.
+    final position = Vector2(stage.center.dx, stage.top + stage.height * 0.30);
     // Bound the offscreen compositing layer to the text's own footprint
     // (`_message` is constant for the whole flash, so this hits `TextPaint`'s
     // internal cache — no relayout) instead of the full canvas. A
