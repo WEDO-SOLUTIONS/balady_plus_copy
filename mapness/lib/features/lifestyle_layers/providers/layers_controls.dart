@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -37,7 +38,6 @@ import 'package:mapness/features/shuttle_bus/repo.dart';
 import 'package:mapness/features/shuttle_bus/visible_provider.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
-import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -46,6 +46,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -1037,7 +1038,6 @@ class LayersControls extends _$LayersControls {
     if (!wasEnabled && currentState != null && currentState != LayerType.traffic) {
       await _hidePreviousLayers(currentState);
     }
-
 
     trafficNotifier.onTrafficTap();
 
