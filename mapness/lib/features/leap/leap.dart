@@ -30,6 +30,10 @@ class Leap extends _$Leap {
 
   bool _markerAdded = false;
 
+  /// Marker/pin asset used for the LEAP venue itself, both as the map marker
+  /// and as the selected-POI pin (see [RubricMarkerMapper.getMarkerPath]).
+  String get customMarker => _config.customMarkerPath;
+
   @override
   bool build() {
     mapManager = ref.watch(
