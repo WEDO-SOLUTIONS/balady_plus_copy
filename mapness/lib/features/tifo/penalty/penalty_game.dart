@@ -1229,6 +1229,22 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
 enum _ShotState { aiming, flying, goal, saved, missed }
 
+/// Axis-aligned save hitbox in world space (goal-plane x/y, at `_goalZ`),
+/// centered on the keeper's current dive reach. See [PenaltyGame._keeperReachBox].
+class _KeeperReachBox {
+  const _KeeperReachBox({
+    required this.centerX,
+    required this.centerY,
+    required this.halfWidth,
+    required this.halfHeight,
+  });
+
+  final double centerX;
+  final double centerY;
+  final double halfWidth;
+  final double halfHeight;
+}
+
 enum _KeeperDive { low, mid, high }
 
 /// Horizontal zone the keeper dives towards, fixed at shot-resolve time.
@@ -1300,6 +1316,12 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// recomputes the score from these events.
   final List<TifoKickEvent> _events = [];
   final Stopwatch _sessionClock = Stopwatch()..start();
+
+  /// QA aid — draws the ball's touch/collision circle and the keeper's
+  /// dynamic reach box live on top of the scene so testers can see exactly
+  /// what [_resolveShot] is checking at the moment the ball reaches the
+  /// goal line. Flip to `false` before shipping to production.
+  static const bool _showColliderDebug = true;
 
   static const double _goalZ = 23;
   // World goal dimensions are intentionally larger than a real goal so the
@@ -1702,19 +1724,18 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     }
   }
 
-  void _resolveShot() {
-    final insideFrame =
-        _ball.x.abs() < _goalHalfWidth - _ballRadius * 0.4 &&
-        _ball.y > _ballRadius * 0.8 &&
-        _ball.y < _goalHeight - _ballRadius * 0.15;
-
-    // Dynamic hitbox — reach grows from "just standing there" to the dive
-    // style's full extension as the *actual* on-screen dive completes,
-    // mirroring the delayed reaction clock in `_drawKeeper` (actionTime =
-    // _ballFlightElapsed - _reactionDelay, same easeOutCubic ramp). Without
-    // this, a fast shot arriving before the delayed dive finishes would
-    // still get saved by the old fixed-size box even though the keeper
-    // visibly hasn't gotten there yet.
+  /// Dynamic hitbox — reach grows from "just standing there" to the dive
+  /// style's full extension as the *actual* on-screen dive completes,
+  /// mirroring the delayed reaction clock in `_drawKeeper` (actionTime =
+  /// _ballFlightElapsed - _reactionDelay, same easeOutCubic ramp). Without
+  /// this, a fast shot arriving before the delayed dive finishes would
+  /// still get saved by the old fixed-size box even though the keeper
+  /// visibly hasn't gotten there yet.
+  ///
+  /// Shared by [_resolveShot] (actual save check) and
+  /// [_drawColliderDebugOverlay] (QA visualization), so the drawn box is
+  /// always exactly what gets checked.
+  _KeeperReachBox _keeperReachBox() {
     final actionTime = math.max(0.0, _ballFlightElapsed - _reactionDelay);
     final diveProgress = _keeperSide == _KeeperSide.center
         ? 0.0 // never dives — stays at his standing reach the whole shot.
@@ -1746,9 +1767,19 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
     final direction = (_keeperTargetX - _keeperX).signOrZero;
     final reachCenterX = _keeperX + direction * diveProgress * 0.32;
-    final keeperReachX = (_ball.x - reachCenterX).abs();
-    final keeperReachY = (_ball.y - reachCenterY).abs();
-    final saved = keeperReachX < reachX && keeperReachY < reachY && _ball.y < _goalHeight;
+    return _KeeperReachBox(centerX: reachCenterX, centerY: reachCenterY, halfWidth: reachX, halfHeight: reachY);
+  }
+
+  void _resolveShot() {
+    final insideFrame =
+        _ball.x.abs() < _goalHalfWidth - _ballRadius * 0.4 &&
+        _ball.y > _ballRadius * 0.8 &&
+        _ball.y < _goalHeight - _ballRadius * 0.15;
+
+    final box = _keeperReachBox();
+    final keeperReachX = (_ball.x - box.centerX).abs();
+    final keeperReachY = (_ball.y - box.centerY).abs();
+    final saved = keeperReachX < box.halfWidth && keeperReachY < box.halfHeight && _ball.y < _goalHeight;
 
     if (saved) {
       _saves++;
@@ -1859,9 +1890,49 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _drawTrail(canvas);
     _drawBall(canvas);
     _drawPlayer(canvas);
+    if (_showColliderDebug) {
+      _drawColliderDebugOverlay(canvas);
+    }
     _drawHud(canvas);
     canvas.restore();
     _drawStageBorder(canvas);
+  }
+
+  /// QA overlay for [_showColliderDebug] — draws the ball's touch/collision
+  /// circle (cyan, matches [_isTouchingBall]'s `visualRadius`) and the
+  /// keeper's current save reach box (yellow, from [_keeperReachBox], the
+  /// exact box [_resolveShot] checks against). Both update live every frame
+  /// so testers can see the dive's reach grow as it plays out and compare it
+  /// against where the ball actually is when a save/goal is called.
+  void _drawColliderDebugOverlay(Canvas canvas) {
+    final ballScreen = _project(_ball);
+    if (ballScreen != null) {
+      final visualRadius = (_ballRadius * ballScreen.scale).clamp(8.0, 58.0).toDouble();
+      final ballPaint = Paint()
+        ..color = const Color(0xFF00E5FF)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2;
+      canvas.drawCircle(ballScreen.offset, visualRadius, ballPaint);
+    }
+
+    final box = _keeperReachBox();
+    final corners = [
+      _project(_Vec3(box.centerX - box.halfWidth, box.centerY - box.halfHeight, _goalZ)),
+      _project(_Vec3(box.centerX + box.halfWidth, box.centerY - box.halfHeight, _goalZ)),
+      _project(_Vec3(box.centerX + box.halfWidth, box.centerY + box.halfHeight, _goalZ)),
+      _project(_Vec3(box.centerX - box.halfWidth, box.centerY + box.halfHeight, _goalZ)),
+    ];
+    if (corners.any((corner) => corner == null)) {
+      return;
+    }
+
+    final points = corners.map((corner) => corner!.offset).toList();
+    final keeperPaint = Paint()
+      ..color = const Color(0xFFFFD600)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
+    final path = Path()..addPolygon(points, true);
+    canvas.drawPath(path, keeperPaint);
   }
 
   /// Fading comet-tail behind the ball — a breadcrumb of [_trail] points,
