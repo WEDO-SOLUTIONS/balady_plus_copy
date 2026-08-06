@@ -28,6 +28,7 @@ class PenaltyApp extends StatelessWidget {
     this.scoreToBeat = 0,
     this.strikerColor,
     this.keeperColor,
+    this.showColliderDebug = false,
   });
 
   /// Fires once the session ends. Carries goals, misses and the per-kick event
@@ -57,6 +58,11 @@ class PenaltyApp extends StatelessWidget {
   /// plays the default (Green) sprites.
   final String? keeperColor;
 
+  /// QA aid — draws the ball's touch/collision circle and the keeper's live
+  /// save reach box on top of the pitch. Off by default; wired to
+  /// `tifoDebugColliderOverlayProvider` in the debug panel.
+  final bool showColliderDebug;
+
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -69,6 +75,7 @@ class PenaltyApp extends StatelessWidget {
       scoreToBeat: scoreToBeat,
       strikerColor: strikerColor,
       keeperColor: keeperColor,
+      showColliderDebug: showColliderDebug,
     ),
   );
 }
@@ -114,6 +121,7 @@ class PenaltyGamePage extends StatefulWidget {
     this.scoreToBeat = 0,
     this.strikerColor,
     this.keeperColor,
+    this.showColliderDebug = false,
   });
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
@@ -122,6 +130,7 @@ class PenaltyGamePage extends StatefulWidget {
   final int scoreToBeat;
   final String? strikerColor;
   final String? keeperColor;
+  final bool showColliderDebug;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -138,6 +147,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
           missesAllowed: widget.missesAllowed,
           strikerColor: widget.strikerColor,
           keeperColor: widget.keeperColor,
+          showColliderDebug: widget.showColliderDebug,
         )
         ..onReady = () {
           final onReady = widget.onReady;
@@ -1229,22 +1239,6 @@ class TopDownPenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
 enum _ShotState { aiming, flying, goal, saved, missed }
 
-/// Axis-aligned save hitbox in world space (goal-plane x/y, at `_goalZ`),
-/// centered on the keeper's current dive reach. See [PenaltyGame._keeperReachBox].
-class _KeeperReachBox {
-  const _KeeperReachBox({
-    required this.centerX,
-    required this.centerY,
-    required this.halfWidth,
-    required this.halfHeight,
-  });
-
-  final double centerX;
-  final double centerY;
-  final double halfWidth;
-  final double halfHeight;
-}
-
 enum _KeeperDive { low, mid, high }
 
 /// Horizontal zone the keeper dives towards, fixed at shot-resolve time.
@@ -1280,7 +1274,13 @@ enum _KeeperMotion {
 enum _StrikerMotion { idle, windup, kick, settle }
 
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
-  PenaltyGame({this.onComplete, this.missesAllowed = 3, this.strikerColor, this.keeperColor});
+  PenaltyGame({
+    this.onComplete,
+    this.missesAllowed = 3,
+    this.strikerColor,
+    this.keeperColor,
+    this.showColliderDebug = false,
+  });
 
   /// Fired exactly once, when the session ends. Carries goals, misses and the
   /// per-kick event log (for anti-cheat submit).
@@ -1292,6 +1292,21 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// See [PenaltyApp.strikerColor] / [PenaltyApp.keeperColor].
   final String? strikerColor;
   final String? keeperColor;
+
+  /// QA aid — draws a box tightly sized to the keeper (see
+  /// `_GoalkeeperModel._keeperColliderFor`) and the ball's touch/collision
+  /// circle. Off by default; toggled via `tifoDebugColliderOverlayProvider`
+  /// in the debug panel.
+  final bool showColliderDebug;
+
+  /// The keeper's collider box for the current frame — set from
+  /// [_drawIdleSprite]/[_drawDivingSprite] via
+  /// `_GoalkeeperModel._keeperColliderFor`, a plain proportional shrink of
+  /// the padded `dst` cell down to roughly the keeper's actual size,
+  /// anchored at his feet. [_ballTouchesKeeperSprite] checks the ball
+  /// against this same box to decide a save; [_drawColliderDebugOverlay]
+  /// outlines it.
+  Rect? _lastKeeperSpriteRect;
 
   /// Live counters for the Flutter HUD panel overlaying the game
   /// (Figma 696:112029): goals scored and misses spent so far.
@@ -1316,12 +1331,6 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// recomputes the score from these events.
   final List<TifoKickEvent> _events = [];
   final Stopwatch _sessionClock = Stopwatch()..start();
-
-  /// QA aid — draws the ball's touch/collision circle and the keeper's
-  /// dynamic reach box live on top of the scene so testers can see exactly
-  /// what [_resolveShot] is checking at the moment the ball reaches the
-  /// goal line. Flip to `false` before shipping to production.
-  static const bool _showColliderDebug = true;
 
   static const double _goalZ = 23;
   // World goal dimensions are intentionally larger than a real goal so the
@@ -1732,42 +1741,26 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// still get saved by the old fixed-size box even though the keeper
   /// visibly hasn't gotten there yet.
   ///
-  /// Shared by [_resolveShot] (actual save check) and
-  /// [_drawColliderDebugOverlay] (QA visualization), so the drawn box is
-  /// always exactly what gets checked.
-  _KeeperReachBox _keeperReachBox() {
-    final actionTime = math.max(0.0, _ballFlightElapsed - _reactionDelay);
-    final diveProgress = _keeperSide == _KeeperSide.center
-        ? 0.0 // never dives — stays at his standing reach the whole shot.
-        : _easeOutCubic((actionTime / 0.58).clamp(0.0, 1.0));
-
-    const standReachX = 0.42;
-    final maxReachX = switch (_keeperDive) {
-      _KeeperDive.low => 0.95,
-      _KeeperDive.mid => 0.78,
-      _KeeperDive.high => 0.62,
-    };
-    final reachX = standReachX + (maxReachX - standReachX) * diveProgress;
-
-    // Vertical reach band centers on the dive style's target height and
-    // widens as the dive completes — a low dive can't cover a crossbar
-    // shot, and a half-committed dive covers less than a finished one.
-    final reachCenterY = switch (_keeperDive) {
-      _KeeperDive.low => 0.55,
-      _KeeperDive.mid => 1.15,
-      _KeeperDive.high => 1.85,
-    };
-    const standReachY = 0.55;
-    final maxReachY = switch (_keeperDive) {
-      _KeeperDive.low => 0.95,
-      _KeeperDive.mid => 1.15,
-      _KeeperDive.high => 1.05,
-    };
-    final reachY = standReachY + (maxReachY - standReachY) * diveProgress;
-
-    final direction = (_keeperTargetX - _keeperX).signOrZero;
-    final reachCenterX = _keeperX + direction * diveProgress * 0.32;
-    return _KeeperReachBox(centerX: reachCenterX, centerY: reachCenterY, halfWidth: reachX, halfHeight: reachY);
+  /// A save now requires the ball to actually touch the keeper's collider
+  /// box — [_lastKeeperSpriteRect], sized to the keeper (not the padded
+  /// sprite cell) by `_GoalkeeperModel._keeperColliderFor`, same one
+  /// [_drawColliderDebugOverlay] outlines — not an abstract reach zone
+  /// floating around him. This is a circle-vs-rect test in SCREEN space
+  /// (both the ball and the keeper are projected there), because that's the
+  /// space the collider box lives in; there's no equivalent axis-aligned box
+  /// in world space once perspective is involved.
+  bool _ballTouchesKeeperSprite() {
+    final rect = _lastKeeperSpriteRect;
+    final ballScreen = _project(_ball);
+    if (rect == null || ballScreen == null) {
+      return false;
+    }
+    final visualRadius = (_ballRadius * ballScreen.scale).clamp(8.0, 58.0).toDouble();
+    final closestX = ballScreen.offset.dx.clamp(rect.left, rect.right);
+    final closestY = ballScreen.offset.dy.clamp(rect.top, rect.bottom);
+    final dx = ballScreen.offset.dx - closestX;
+    final dy = ballScreen.offset.dy - closestY;
+    return dx * dx + dy * dy <= visualRadius * visualRadius;
   }
 
   void _resolveShot() {
@@ -1776,10 +1769,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
         _ball.y > _ballRadius * 0.8 &&
         _ball.y < _goalHeight - _ballRadius * 0.15;
 
-    final box = _keeperReachBox();
-    final keeperReachX = (_ball.x - box.centerX).abs();
-    final keeperReachY = (_ball.y - box.centerY).abs();
-    final saved = keeperReachX < box.halfWidth && keeperReachY < box.halfHeight && _ball.y < _goalHeight;
+    final saved = _ball.y < _goalHeight && _ballTouchesKeeperSprite();
 
     if (saved) {
       _saves++;
@@ -1890,7 +1880,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _drawTrail(canvas);
     _drawBall(canvas);
     _drawPlayer(canvas);
-    if (_showColliderDebug) {
+    if (showColliderDebug) {
       _drawColliderDebugOverlay(canvas);
     }
     _drawHud(canvas);
@@ -1898,12 +1888,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _drawStageBorder(canvas);
   }
 
-  /// QA overlay for [_showColliderDebug] — draws the ball's touch/collision
+  /// QA overlay for [showColliderDebug] — draws the ball's touch/collision
   /// circle (cyan, matches [_isTouchingBall]'s `visualRadius`) and the
-  /// keeper's current save reach box (yellow, from [_keeperReachBox], the
-  /// exact box [_resolveShot] checks against). Both update live every frame
-  /// so testers can see the dive's reach grow as it plays out and compare it
-  /// against where the ball actually is when a save/goal is called.
+  /// keeper's collider box (green, from [_lastKeeperSpriteRect] —
+  /// `_GoalkeeperModel._keeperColliderFor`'s proportional shrink of the
+  /// padded sprite cell down to roughly the keeper's own size). This is the
+  /// SAME box [_ballTouchesKeeperSprite] checks the ball against to decide
+  /// a save — the drawn box is always exactly what gets checked.
   void _drawColliderDebugOverlay(Canvas canvas) {
     final ballScreen = _project(_ball);
     if (ballScreen != null) {
@@ -1915,24 +1906,14 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       canvas.drawCircle(ballScreen.offset, visualRadius, ballPaint);
     }
 
-    final box = _keeperReachBox();
-    final corners = [
-      _project(_Vec3(box.centerX - box.halfWidth, box.centerY - box.halfHeight, _goalZ)),
-      _project(_Vec3(box.centerX + box.halfWidth, box.centerY - box.halfHeight, _goalZ)),
-      _project(_Vec3(box.centerX + box.halfWidth, box.centerY + box.halfHeight, _goalZ)),
-      _project(_Vec3(box.centerX - box.halfWidth, box.centerY + box.halfHeight, _goalZ)),
-    ];
-    if (corners.any((corner) => corner == null)) {
-      return;
+    final keeperRect = _lastKeeperSpriteRect;
+    if (keeperRect != null) {
+      final keeperPaint = Paint()
+        ..color = const Color(0xFF2ECC71)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2;
+      canvas.drawRect(keeperRect, keeperPaint);
     }
-
-    final points = corners.map((corner) => corner!.offset).toList();
-    final keeperPaint = Paint()
-      ..color = const Color(0xFFFFD600)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 2;
-    final path = Path()..addPolygon(points, true);
-    canvas.drawPath(path, keeperPaint);
   }
 
   /// Fading comet-tail behind the ball — a breadcrumb of [_trail] points,
@@ -3430,6 +3411,44 @@ class _GoalkeeperModel {
   int _sourceModelBytes = 0;
   _GlbModel? _sourceModel;
 
+  /// The padded atlas cell (`dst` in [_drawIdleSprite]/[_drawDivingSprite])
+  /// is much bigger than the keeper actually is — every pose shares one crop
+  /// box sized for the widest pose, a flat-out dive (see the comment on
+  /// [_atlasSpecs]) — so the collider is kept to a fraction of `dst`'s
+  /// width/height instead of the full padded box (see [_keeperColliderFor]).
+  /// Standing/reaching poses (idle, a center or high/upward dive) are
+  /// portrait — taller than wide, like the keeper standing or stretching up.
+  static const double _uprightWidthFraction = 0.32;
+  static const double _uprightHeightFraction = 0.6;
+
+  /// A low sideways dive lays the keeper out flat along the ground —
+  /// landscape (wider than tall) fits that pose far better than the
+  /// standing box above. Only used for [_KeeperDive.low] with a nonzero
+  /// side (an actual lateral dive, not a center reach) — see
+  /// [_keeperColliderFor]'s `lying` parameter.
+  static const double _lyingWidthFraction = 0.85;
+  static const double _lyingHeightFraction = 0.3;
+
+  /// Shrinks the padded `dst` cell down to roughly the keeper's own size
+  /// (using `dst`'s width/height only as the size REFERENCE — it scales
+  /// correctly with distance/perspective), anchored at [groundY] rather
+  /// than `dst.bottom`. `dst.bottom` is NOT the keeper's actual foot level:
+  /// the shared crop box pads extra transparent room below the feet (so it
+  /// still fits a flat-out horizontal dive — see the comment on
+  /// [_atlasSpecs]), which `_drawIdleSprite`/`_drawDivingSprite` compensate
+  /// for when placing `dst`, but that same padding was leaking into the
+  /// collider as dead space below the visible figure. Callers pass the real
+  /// screen-space ground/foot point they already computed for shadow
+  /// placement. [lying] switches from the standing portrait box to a
+  /// landscape one for a low sideways dive, where the keeper's body is flat
+  /// along the ground rather than upright.
+  static Rect _keeperColliderFor(Rect dst, {required double groundY, bool lying = false}) {
+    final width = dst.width * (lying ? _lyingWidthFraction : _uprightWidthFraction);
+    final height = dst.height * (lying ? _lyingHeightFraction : _uprightHeightFraction);
+    final centerX = dst.center.dx;
+    return Rect.fromLTRB(centerX - width / 2, groundY - height, centerX + width / 2, groundY);
+  }
+
   /// [color] is a team-color bucket name (see [tifoKeeperColors], resolved
   /// via [tifoNearestKeeperColor]) — null plays the original default-color
   /// files. Each motion falls back to its default file independently if the
@@ -3958,6 +3977,7 @@ class _GoalkeeperModel {
       width,
       height,
     );
+    game._lastKeeperSpriteRect = _keeperColliderFor(dst, groundY: foot.offset.dy);
     canvas.save();
     canvas.translate(bottom.dx, bottom.dy);
     canvas.rotate(lean * 0.035 + weightShift * 0.006);
@@ -4022,9 +4042,10 @@ class _GoalkeeperModel {
     if (projected == null) {
       return;
     }
+    final shadowCenter = _Vec3(base.x + direction * (0.45 + launch * 0.32), 0, base.z);
     game._drawShadow(
       canvas,
-      _Vec3(base.x + direction * (0.45 + launch * 0.32), 0, base.z),
+      shadowCenter,
       (1.28 + launch * 0.32) * visualScale,
       0.3 - launch * 0.05,
     );
@@ -4040,6 +4061,16 @@ class _GoalkeeperModel {
       width: width,
       height: height,
     );
+    // A low sideways dive lays the keeper out flat along the ground (a
+    // landscape collider fits that); a center reach or anything upward
+    // keeps him upright (portrait) — see `_keeperColliderFor`.
+    final lying = diveStyle == _KeeperDive.low && direction != 0;
+    // `dst` is centered on the body, not foot-anchored like the idle pose —
+    // ground the collider on the same point used for the shadow (world
+    // y=0) instead, so it doesn't float mid-air the way anchoring to
+    // `dst.bottom` would for a mid-flight/reaching pose.
+    final groundY = game._project(shadowCenter)?.offset.dy ?? dst.bottom;
+    game._lastKeeperSpriteRect = _keeperColliderFor(dst, groundY: groundY, lying: lying);
 
     canvas.save();
     if (flip) {

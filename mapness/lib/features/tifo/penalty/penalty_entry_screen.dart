@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 
@@ -90,6 +91,7 @@ class PenaltyEntryScreen extends ConsumerWidget {
       MaterialPageRoute<void>(
         fullscreenDialog: true,
         builder: (_) => PenaltyApp(
+          showColliderDebug: ref.read(tifoDebugColliderOverlayProvider),
           onComplete: (outcome) {
             if (handled) return;
             handled = true;
@@ -99,13 +101,10 @@ class PenaltyEntryScreen extends ConsumerWidget {
             Future<void>.delayed(const Duration(milliseconds: 850), () {
               // Use the global root key — `context` could be unmounted
               // by the time this future fires.
-              rootNavigatorKey.currentState
-                  ?.popUntil((route) => route.isFirst);
+              rootNavigatorKey.currentState?.popUntil((route) => route.isFirst);
               if (goals >= _goalsToCapture) {
                 unawaited(
-                  ref
-                      .read(debug3dModelProvider.notifier)
-                      .capturePolygon(polygonId: polygonId),
+                  ref.read(debug3dModelProvider.notifier).capturePolygon(polygonId: polygonId),
                 );
               }
             });

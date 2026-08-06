@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
@@ -346,6 +347,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             scoreToBeat: _building.scoreToBeat,
             strikerColor: strikerColor,
             keeperColor: keeperColor,
+            showColliderDebug: container.read(tifoDebugColliderOverlayProvider),
             onReady: (arm) => unawaited(
               _openSession(container).then((session) {
                 if (session == null) {

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
@@ -168,6 +169,16 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
         ),
         const SizedBox(height: 8),
         const _ColorOverrideSwitcher(),
+        const SizedBox(height: 8),
+        Consumer(
+          builder: (context, ref, _) => DebugToggleRow(
+            title: 'Collider overlay',
+            subtitle: 'Draw the ball\'s touch circle and keeper\'s save reach box live in the penalty game',
+            value: ref.watch(tifoDebugColliderOverlayProvider),
+            gradient: DebugTheme.gradientTeal,
+            onChanged: (value) => ref.read(tifoDebugColliderOverlayProvider.notifier).set(value),
+          ),
+        ),
         const DebugDivider(),
         Text(
           'Custom request',

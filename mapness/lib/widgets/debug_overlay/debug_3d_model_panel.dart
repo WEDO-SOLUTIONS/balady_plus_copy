@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
@@ -206,6 +207,7 @@ class Debug3DModelPanel extends ConsumerWidget {
     final colorOverride = ref.read(tifoDebugColorOverrideProvider);
     final strikerColor = colorOverride.enabled ? colorOverride.strikerColor : null;
     final keeperColor = colorOverride.enabled ? colorOverride.keeperColor : null;
+    final showColliderDebug = ref.read(tifoDebugColliderOverlayProvider);
     unawaited(
       navigator.push<void>(
         MaterialPageRoute<void>(
@@ -213,6 +215,7 @@ class Debug3DModelPanel extends ConsumerWidget {
           builder: (_) => PenaltyApp(
             strikerColor: strikerColor,
             keeperColor: keeperColor,
+            showColliderDebug: showColliderDebug,
             onComplete: (_) {
               Future<void>.delayed(const Duration(milliseconds: 850), () {
                 rootNavigatorKey.currentState?.pop();
