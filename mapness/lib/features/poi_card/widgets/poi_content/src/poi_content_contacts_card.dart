@@ -70,8 +70,7 @@ class PoiContentContactsCard extends StatelessWidget {
     PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
     PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
     PoiContentSocialMediaTypes.twitter => SocialIcons.twitter,
-    PoiContentSocialMediaTypes.tiktok => SocialIcons.youtube,
-    // PoiContentSocialMediaTypes.tiktok => SocialIcons.tiktok,
+    PoiContentSocialMediaTypes.tiktok => SocialIcons.tiktok,
   };
 }
 
@@ -327,8 +326,7 @@ class _SocialMediaItemWidget extends StatelessWidget {
     PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
     PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
     PoiContentSocialMediaTypes.twitter => SocialIcons.twitter,
-    PoiContentSocialMediaTypes.tiktok => SocialIcons.twitter,
-    // PoiContentSocialMediaTypes.tiktok => SocialIcons.tiktok,
+    PoiContentSocialMediaTypes.tiktok => SocialIcons.tiktok,
   };
 
   String _getDisplayText(PoiContentSocialMediaModel socialMedia) {
