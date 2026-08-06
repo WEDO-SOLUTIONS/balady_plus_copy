@@ -130,7 +130,11 @@ class LeapPoi extends Equatable {
           displayText: 'leapandinnovate',
           value: 'https://www.tiktok.com/@leapandinnovate?_r=1&_t=ZS-98cuJUFEevd',
         ),
-        ContactInfoMessage(type: 'twitter', displayText: 'leapandinnovate', value: 'https://x.com/leapandinnovate?s=21'),
+        ContactInfoMessage(
+          type: 'twitter',
+          displayText: 'leapandinnovate',
+          value: 'https://x.com/leapandinnovate?s=21',
+        ),
         ContactInfoMessage(
           type: 'linkedin',
           displayText: 'leapandinnovate',
