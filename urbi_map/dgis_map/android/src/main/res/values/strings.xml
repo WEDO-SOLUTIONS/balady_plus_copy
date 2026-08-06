@@ -8,7 +8,7 @@
   <string name="better_route_alert_choose_action">Choose</string>
   <string name="stop_navigation_action">End trip</string>
   <string name="rerouting_message">Rerouting…</string>
-  <string name="location_signal_lost_message">GPS signal lost.\nTrying to reconnect</string>
+  <string name="location_signal_lost_message">GPS signal lost.\nTrying to reconnect...</string>
   <string name="end_trip_alert_title">You arrived</string>
   <string name="end_trip_alert_action">End trip</string>
 

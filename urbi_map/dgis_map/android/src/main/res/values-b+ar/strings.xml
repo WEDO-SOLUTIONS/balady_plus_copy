@@ -8,7 +8,7 @@
   <string name="better_route_alert_choose_action">اختيار</string>
   <string name="stop_navigation_action">إنهاء الرحلة</string>
   <string name="rerouting_message">إعادة التوجيه…</string>
-  <string name="location_signal_lost_message">فقدنا الاتصال بك</string>
+  <string name="location_signal_lost_message">فقدت إشارة GPS.\nجارٍ محاولة إعادة الاتصال...</string>
   <string name="end_trip_alert_title">لقد وصلت</string>
   <string name="end_trip_alert_action">إنهاء الرحلة</string>
 

@@ -92,6 +92,7 @@ class NavigationScreen(
             val newState = if (isLocationEnabled()) LocationState.AVAILABLE else LocationState.NOT_AVAILABLE
             if (newState != locationState) {
                 locationState = newState
+                renderCustomOverlay()
                 invalidate()
             }
         }
@@ -117,11 +118,13 @@ class NavigationScreen(
         } else if (!isLocationEnabled()) {
             if (locationState != LocationState.NOT_AVAILABLE) {
                 locationState = LocationState.NOT_AVAILABLE
+                renderCustomOverlay()
                 invalidate()
             }
         } else {
             if (locationState != LocationState.AVAILABLE) {
                 locationState = LocationState.AVAILABLE
+                renderCustomOverlay()
                 invalidate()
             }
         }
@@ -234,13 +237,7 @@ class NavigationScreen(
         navigationTemplate.setMapActionStrip(mapActionStrip)
         navigationTemplate.setPanModeListener(panModeListener)
 
-        if ((isNavigation || isFreeRoam) && locationState == LocationState.NOT_AVAILABLE) {
-            navigationTemplate.setNavigationInfo(
-                MessageInfo.Builder(getString(R.string.location_signal_lost_message))
-                    .build()
-            )
-            navigationTemplate.setBackgroundColor(CarColor.RED)
-        } else if (isNavigation) {
+        if (isNavigation && locationState != LocationState.NOT_AVAILABLE) {
             if (navigationState == NavigationState.REROUTING) {
                 navigationTemplate.setNavigationInfo(
                     MessageInfo.Builder(getString(R.string.rerouting_message)).build()
@@ -442,26 +439,31 @@ class NavigationScreen(
 
     override fun onSpeedChanged(speed: Int) {
         speedInfo = speedInfo.copy(currentSpeed = speed)
-        renderSpeedInfo()
+        renderCustomOverlay()
     }
 
     override fun onSpeedLimitChanged(speedLimit: Int?) {
         speedInfo = speedInfo.copy(speedLimit = speedLimit)
-        renderSpeedInfo()
+        renderCustomOverlay()
     }
 
     override fun onSpeedLimitExceeded(exceeded: Boolean) {
         speedInfo = speedInfo.copy(speedLimitExceeded = exceeded)
-        renderSpeedInfo()
+        renderCustomOverlay()
     }
 
     fun onMapReady() {
         tryToShowFavourites()
     }
 
-    private fun renderSpeedInfo() {
+    private fun renderCustomOverlay() {
         if (!isNavigation && !isFreeRoam) return
-        customRenderer.render(CustomRendererData(speedInfo))
+        val signalLostMessage = if (locationState == LocationState.NOT_AVAILABLE) {
+            getString(R.string.location_signal_lost_message)
+        } else {
+            null
+        }
+        customRenderer.render(CustomRendererData(speedInfo, signalLostMessage))
     }
 
     private fun stopNavigation(bySystem: Boolean = false) {
