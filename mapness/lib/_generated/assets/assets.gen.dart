@@ -171,6 +171,9 @@ class $AssetsImagesGen {
   AssetGenImage get illustrationFlipContinueLight =>
       const AssetGenImage('assets/images/illustration_flip_continue_light.png');
 
+  /// File path: assets/images/img_nearby_placeholder.jpg
+  AssetGenImage get imgNearbyPlaceholder => const AssetGenImage('assets/images/img_nearby_placeholder.jpg');
+
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
   AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
@@ -286,6 +289,7 @@ class $AssetsImagesGen {
         icArrowFeedback,
         illustrationFlipContinueDark,
         illustrationFlipContinueLight,
+        imgNearbyPlaceholder,
         ishanSeefromtheskyUnsplash,
         lightMapPreview,
         markerEtaMask,
@@ -948,14 +952,20 @@ class $AssetsImagesAudioPlaceholdersGen {
 class $AssetsImagesLayersGen {
   const $AssetsImagesLayersGen();
 
+  /// File path: assets/images/layers/default_map.png
+  AssetGenImage get defaultMap => const AssetGenImage('assets/images/layers/default_map.png');
+
   /// File path: assets/images/layers/img_layer_jeddah_bus.png
   AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
 
   /// File path: assets/images/layers/img_layer_road_events.png
   AssetGenImage get imgLayerRoadEvents => const AssetGenImage('assets/images/layers/img_layer_road_events.png');
 
+  /// File path: assets/images/layers/satellite.png
+  AssetGenImage get satellite => const AssetGenImage('assets/images/layers/satellite.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [imgLayerJeddahBus, imgLayerRoadEvents];
+  List<AssetGenImage> get values => [defaultMap, imgLayerJeddahBus, imgLayerRoadEvents, satellite];
 }
 
 class $AssetsImagesMakkahQuickActionsGen {
