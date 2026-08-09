@@ -88,15 +88,17 @@ class _LandscapeLayout extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    AnimatedOpacity(
-                      opacity: isVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: IgnorePointer(
-                        ignoring: !isVisible,
-                        child: const ReportRoadEventMapSelectControl(),
+                    if (navType == RouteSearchOptionsMessage.car) ...[
+                      const Spacer(),
+                      AnimatedOpacity(
+                        opacity: isVisible ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: IgnorePointer(
+                          ignoring: !isVisible,
+                          child: const ReportRoadEventMapSelectControl(),
+                        ),
                       ),
-                    ),
+                    ],
                     const Spacer(),
                     AnimatedOpacity(
                       opacity: isVisible ? 1 : 0,

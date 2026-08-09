@@ -112,7 +112,8 @@ class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
                                   children: [
                                     const RadioContextualButton(),
                                     const SizedBox(height: 10),
-                                    const ReportRoadEventMapSelectControl(),
+                                    if (widget.navType == RouteSearchOptionsMessage.car)
+                                      const ReportRoadEventMapSelectControl(),
                                     const SizedBox(height: 10),
                                     ValueListenableBuilder(
                                       valueListenable: widget.navigationState,

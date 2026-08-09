@@ -155,6 +155,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _initNavigation();
     startControlsDisapearTimer();
     ref.read(layersControlsProvider.notifier).hideLayer(LayerType.metro);
+    if (widget.navType != RouteSearchOptionsMessage.car) {
+      ref.read(layersControlsProvider.notifier).hideLayer(LayerType.roadEvents);
+    }
     WakelockPlus.enable();
   }
 
