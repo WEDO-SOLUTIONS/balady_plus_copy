@@ -23,9 +23,8 @@ extension LayerTypeExt on LayerType {
     LayerType.traffic ||
     LayerType.three3D ||
     LayerType.defaultMap ||
-    LayerType
-        .satellite || LayerType.roadEvents
-        => null,
+    LayerType.satellite ||
+    LayerType.roadEvents => null,
   };
 
   IconData iconData() => switch (this) {
@@ -42,9 +41,8 @@ extension LayerTypeExt on LayerType {
     LayerType.traffic ||
     LayerType.three3D ||
     LayerType.defaultMap ||
-    LayerType
-        .satellite || LayerType.roadEvents
-        => GeneralIcons.placeholder,
+    LayerType.satellite ||
+    LayerType.roadEvents => GeneralIcons.placeholder,
   };
 
   (ImageAssetType, String) imageAsset() => switch (this) {
