@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// Static demo replicas of the TIFO screens shown during the guided tutorial
 /// (Figma tutorial sequence, nodes 721:126769 / 601:108243 / 601:108497 /
@@ -63,13 +64,16 @@ class TifoDemoPanel extends StatelessWidget {
 class TifoDemoDistrictSheet extends StatelessWidget {
   const TifoDemoDistrictSheet({super.key});
 
-  static const _rows = [
-    ('Blue Team', _blue, 31),
-    ('Yellow Team', _yellow, 12),
-    ('Black Team', _black, 4),
-    ('Red Team', _red, 2),
-    ('Sand Team', _sand, 2),
-  ];
+  List<(String, Color, int)> _rows(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      (l10n.blueTeam, _blue, 31),
+      (l10n.yellowTeam, _yellow, 12),
+      (l10n.blackTeam, _black, 4),
+      (l10n.redTeam, _red, 2),
+      (l10n.sandTeam, _sand, 2),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) => TifoDemoPanel(
@@ -146,7 +150,7 @@ class TifoDemoDistrictSheet extends StatelessWidget {
             children: [
               const Text('Buildings claimed by each team', style: TifoText.captionMedium),
               const SizedBox(height: 4),
-              for (final (name, color, claimed) in _rows)
+              for (final (name, color, claimed) in _rows(context))
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
@@ -219,7 +223,7 @@ class TifoDemoBuildingSheet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Align(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
             child: Container(
               width: 34,
               height: 34,
@@ -231,7 +235,7 @@ class TifoDemoBuildingSheet extends StatelessWidget {
               child: const Icon(Icons.close_rounded, size: 16, color: TifoColors.accentSoft),
             ),
           ),
-          const Center(child: Text('Claim the building', style: TifoText.h3)),
+          Center(child: Text(AppLocalizations.of(context).claimTheBuilding, style: TifoText.h3)),
           const SizedBox(height: 14),
           if (owned)
             Container(
@@ -252,7 +256,10 @@ class TifoDemoBuildingSheet extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Sand Team', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent)),
+                          Text(
+                            AppLocalizations.of(context).sandTeam,
+                            style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
+                          ),
                           const Text('Since 3 days ago', style: TifoText.captionRegular),
                         ],
                       ),
@@ -379,7 +386,10 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                     decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
                     child: Column(
                       children: [
-                        Text('🪙 Tokens needed', style: TifoText.captionMedium.copyWith(color: _amber)),
+                        Text(
+                          '🪙 ${AppLocalizations.of(context).tokensNeeded}',
+                          style: TifoText.captionMedium.copyWith(color: _amber),
+                        ),
                         const SizedBox(height: 6),
                         Text('1', style: TifoText.h2.copyWith(color: _amber)),
                       ],
@@ -397,12 +407,15 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          '🏢 Claim the building',
+                          '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
                           style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
                         ),
                         const SizedBox(height: 6),
                         Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
-                        Text('beat the score', style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted)),
+                        Text(
+                          AppLocalizations.of(context).beatTheScore,
+                          style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
+                        ),
                       ],
                     ),
                   ),
@@ -415,13 +428,17 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: _card(bg: const Color(0xFF141A15), border: TifoColors.accentSoft.withValues(alpha: 0.4)),
               child: Text(
-                'You get 3 misses  ⚽ ⚽ ⚽',
+                '${AppLocalizations.of(context).youGet3Misses}  ⚽ ⚽ ⚽',
                 style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
                 textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 14),
-            TifoPrimaryButton(label: 'START', leadingEmoji: '⚽', onPressed: onStart),
+            TifoPrimaryButton(
+              label: AppLocalizations.of(context).startGame,
+              leadingEmoji: '⚽',
+              onPressed: onStart,
+            ),
           ],
         ),
       ),
@@ -499,13 +516,16 @@ class TifoDemoPenaltyHud extends StatelessWidget {
 class TifoDemoLeaderboard extends StatelessWidget {
   const TifoDemoLeaderboard({super.key});
 
-  static const _rows = [
-    (1, 'Black Team', _black, 18, 342, 48),
-    (2, 'Blue Team', _blue, 14, 268, 46),
-    (3, 'Red Team', _red, 11, 205, 36),
-    (4, 'Sand Team', _sand, 8, 142, 25),
-    (5, 'Yellow Team', _yellow, 6, 98, 17),
-  ];
+  List<(int, String, Color, int, int, int)> _rows(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      (1, l10n.blackTeam, _black, 18, 342, 48),
+      (2, l10n.blueTeam, _blue, 14, 268, 46),
+      (3, l10n.redTeam, _red, 11, 205, 36),
+      (4, l10n.sandTeam, _sand, 8, 142, 25),
+      (5, l10n.yellowTeam, _yellow, 6, 98, 17),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) => TifoDemoPanel(
@@ -515,16 +535,16 @@ class TifoDemoLeaderboard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _tab('Table', active: true)),
+            Expanded(child: _tab(AppLocalizations.of(context).table, active: true)),
             const SizedBox(width: 8),
-            Expanded(child: _tab('Profile', active: false)),
+            Expanded(child: _tab(AppLocalizations.of(context).profile, active: false)),
           ],
         ),
         const SizedBox(height: 12),
-        const TifoInfoBanner(
+        TifoInfoBanner(
           icon: Icons.emoji_events_rounded,
-          title: 'The battle for control continues!',
-          subtitle: 'Compete with other teams to claim the city.',
+          title: AppLocalizations.of(context).battleForControlContinues,
+          subtitle: AppLocalizations.of(context).competeWithOtherTeamsToClaimTheCity,
         ),
         const SizedBox(height: 10),
         Container(
@@ -532,29 +552,44 @@ class TifoDemoLeaderboard extends StatelessWidget {
           decoration: _card(border: TifoColors.accentMuted.withValues(alpha: 0.5)),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
                   children: [
-                    SizedBox(width: 18, child: Text('#', style: TifoText.captionMedium)),
-                    Expanded(flex: 4, child: Text('Team', style: TifoText.captionMedium)),
+                    const SizedBox(width: 18, child: Text('#', style: TifoText.captionMedium)),
                     Expanded(
-                      flex: 2,
-                      child: Text('Districts\nClaimed', style: TifoText.captionMedium, textAlign: TextAlign.center),
+                      flex: 4,
+                      child: Text(AppLocalizations.of(context).team, style: TifoText.captionMedium),
                     ),
                     Expanded(
                       flex: 2,
-                      child: Text('Buildings\nClaimed', style: TifoText.captionMedium, textAlign: TextAlign.center),
+                      child: Text(
+                        AppLocalizations.of(context).districtsClaimed,
+                        style: TifoText.captionMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        AppLocalizations.of(context).buildingsClaimed,
+                        style: TifoText.captionMedium,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Expanded(
                       flex: 3,
-                      child: Text('Map\nDominance', style: TifoText.captionMedium, textAlign: TextAlign.end),
+                      child: Text(
+                        AppLocalizations.of(context).mapDominance,
+                        style: TifoText.captionMedium,
+                        textAlign: TextAlign.end,
+                      ),
                     ),
-                    SizedBox(width: 14),
+                    const SizedBox(width: 14),
                   ],
                 ),
               ),
-              for (final (rank, name, color, districts, buildings, pct) in _rows)
+              for (final (rank, name, color, districts, buildings, pct) in _rows(context))
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 7),
                   child: Row(
@@ -621,7 +656,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Take over more buildings to dominate the table.',
+                  AppLocalizations.of(context).takeOverMoreBuildingsToDominateTheTable,
                   style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
                 ),
               ),
@@ -629,7 +664,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const TifoPrimaryButton(label: 'Dominate with your team', trailingArrow: true),
+        TifoPrimaryButton(label: AppLocalizations.of(context).dominateWithYourTeam, trailingArrow: true),
       ],
     ),
   );
@@ -678,7 +713,10 @@ class TifoDemoProfile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Black Team', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent)),
+                        Text(
+                          AppLocalizations.of(context).blackTeam,
+                          style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
+                        ),
                         const Text('Date Joined: 12 Aug 2026', style: TifoText.captionRegular),
                       ],
                     ),
@@ -747,7 +785,7 @@ class TifoDemoProfile extends StatelessWidget {
             _activity('❌', 'You lost a penalty challenge', '2h ago'),
             _activity('📍', 'Trip completed  +3 ⚡', '5h ago'),
             const Spacer(),
-            const TifoPrimaryButton(label: 'Dominate with your team', trailingArrow: true),
+            TifoPrimaryButton(label: AppLocalizations.of(context).dominateWithYourTeam, trailingArrow: true),
           ],
         ),
       ),
@@ -797,84 +835,91 @@ class TifoDemoProfile extends StatelessWidget {
 class TifoDemoSupport extends StatelessWidget {
   const TifoDemoSupport({super.key});
 
-  static const _steps = [
-    'Explore the map and select a building you want to claim.',
-    'Buildings that are claimed by other players have a score to beat.',
-    'Score goals by taking penalties. You get three misses.',
-    "Score more than the building's score to claim it.",
-  ];
+  List<String> _steps(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      l10n.tifoHowToPlayStep1,
+      l10n.tifoHowToPlayStep2,
+      l10n.tifoHowToPlayStep3,
+      l10n.tifoHowToPlayStep4,
+      l10n.tifoHowToPlayStep5,
+    ];
+  }
 
   @override
-  Widget build(BuildContext context) => ColoredBox(
-    color: TifoColors.surface,
-    child: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: TifoColors.textDefault),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Support', style: TifoText.h3),
-                    Text(
-                      'Learn the Rules and get answers to common questions',
-                      style: TifoText.captionRegular.copyWith(color: TifoColors.accentSoft),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const TifoPrimaryButton(label: 'Replay tutorial', trailingArrow: true),
-            const SizedBox(height: 20),
-            Center(
-              child: Text(
-                '✦✦  HOW TO PLAY  ✦✦',
-                style: TifoText.overline.copyWith(letterSpacing: 2),
+  Widget build(BuildContext context) {
+    final steps = _steps(context);
+    return ColoredBox(
+      color: TifoColors.surface,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: TifoColors.textDefault),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(AppLocalizations.of(context).support, style: TifoText.h3),
+                      Text(
+                        AppLocalizations.of(context).learnTheRulesAndGetAnswersToCommonQuestions,
+                        style: TifoText.captionRegular.copyWith(color: TifoColors.accentSoft),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Take over buildings by beating the score in a penalty match.',
-              style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault),
-            ),
-            const SizedBox(height: 14),
-            for (var i = 0; i < _steps.length; i++)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 34,
-                      height: 34,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: TifoColors.accent,
-                        borderRadius: BorderRadius.circular(TifoRadii.ml),
-                      ),
-                      child: Text('${i + 1}', style: TifoText.bodyLSemi.copyWith(color: Colors.white)),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 2),
-                        child: Text(_steps[i], style: TifoText.bodyL.copyWith(fontSize: 14)),
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 16),
+              TifoPrimaryButton(label: AppLocalizations.of(context).replayTutorial, trailingArrow: true),
+              const SizedBox(height: 20),
+              Center(
+                child: Text(
+                  '✦✦  ${AppLocalizations.of(context).howToPlay}  ✦✦',
+                  style: TifoText.overline.copyWith(letterSpacing: 2),
                 ),
               ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                AppLocalizations.of(context).takeOverBuildingsByBeatingTheScoreInAPenaltyMatch,
+                style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault),
+              ),
+              const SizedBox(height: 14),
+              for (var i = 0; i < steps.length; i++)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 34,
+                        height: 34,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: TifoColors.accent,
+                          borderRadius: BorderRadius.circular(TifoRadii.ml),
+                        ),
+                        child: Text('${i + 1}', style: TifoText.bodyLSemi.copyWith(color: Colors.white)),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(steps[i], style: TifoText.bodyL.copyWith(fontSize: 14)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 // ─── 13 · Team select ───────────────────────────────────────────────────────
@@ -882,13 +927,16 @@ class TifoDemoSupport extends StatelessWidget {
 class TifoDemoTeamSelect extends StatelessWidget {
   const TifoDemoTeamSelect({super.key});
 
-  static const _teams = [
-    ('Blue Team', _blue, false),
-    ('Yellow Team', _yellow, false),
-    ('Black Team', _black, false),
-    ('Red Team', _red, true),
-    ('Sand Team', _sand, false),
-  ];
+  List<(String, Color, bool)> _teams(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return [
+      (l10n.blueTeam, _blue, false),
+      (l10n.yellowTeam, _yellow, false),
+      (l10n.blackTeam, _black, false),
+      (l10n.redTeam, _red, true),
+      (l10n.sandTeam, _sand, false),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) => ColoredBox(
@@ -907,7 +955,7 @@ class TifoDemoTeamSelect extends StatelessWidget {
               subtitle: 'You can change teams when the next season begins.',
             ),
             const SizedBox(height: 12),
-            for (final (name, color, selected) in _teams)
+            for (final (name, color, selected) in _teams(context))
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Container(

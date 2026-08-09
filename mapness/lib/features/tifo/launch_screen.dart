@@ -178,8 +178,8 @@ class _TifoCard extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            right: -8,
+          PositionedDirectional(
+            end: -8,
             top: 0,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

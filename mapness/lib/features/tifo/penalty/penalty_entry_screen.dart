@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 
 /// Penalty Challenge entry screen — Figma node 2:2541.
@@ -34,47 +35,52 @@ class PenaltyEntryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      backgroundColor: _bgMid,
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment(-0.7, -1.0),
-            end: Alignment(0.7, 1.0),
-            stops: [0.08, 0.5, 0.92],
-            colors: [_bgTop, _bgMid, _bgTop],
+    // Stadium/game chrome mirrors the physical pitch, not reading order — kept
+    // LTR regardless of app locale so it never flips in Arabic.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: _bgMid,
+        body: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment(-0.7, -1.0),
+              end: Alignment(0.7, 1.0),
+              stops: [0.08, 0.5, 0.92],
+              colors: [_bgTop, _bgMid, _bgTop],
+            ),
           ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const _Header(),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        _Caption(),
-                        const SizedBox(height: 4),
-                        _HeroTitle(),
-                        const SizedBox(height: 16),
-                        const _StadiumImage(),
-                        const SizedBox(height: 24),
-                        const _StatsCard(),
-                      ],
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const _Header(),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _Caption(),
+                          const SizedBox(height: 4),
+                          _HeroTitle(),
+                          const SizedBox(height: 16),
+                          const _StadiumImage(),
+                          const SizedBox(height: 24),
+                          const _StatsCard(),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                _StartButton(
-                  onTap: () => _startPenalty(context, ref),
-                ),
-              ],
+                  const SizedBox(height: 12),
+                  _StartButton(
+                    onTap: () => _startPenalty(context, ref),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -437,12 +443,12 @@ class _StartButton extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text('⚽', style: TextStyle(fontSize: 20, height: 1.0)),
-            SizedBox(width: 8),
+          children: [
+            const Text('⚽', style: TextStyle(fontSize: 20, height: 1.0)),
+            const SizedBox(width: 8),
             Text(
-              'START',
-              style: TextStyle(
+              AppLocalizations.of(context).startGame,
+              style: const TextStyle(
                 fontFamily: 'Orbitron',
                 package: 'mapness',
                 fontWeight: FontWeight.w900,
@@ -451,8 +457,8 @@ class _StartButton extends StatelessWidget {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 12),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
+            const SizedBox(width: 12),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
           ],
         ),
       ),

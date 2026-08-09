@@ -90,119 +90,124 @@ class TifoPenaltyResultScreen extends StatelessWidget {
       content.board.right * imgW,
       content.board.bottom * imgH,
     );
-    return Scaffold(
-      backgroundColor: _bg,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Art + scoreline in image-pixel space, cover-scaled together.
-          // Vertical alignment adapts to the viewport: cover crops the image
-          // bottom, and on short/wide viewports (landscape, split-screen) a
-          // fixed topCenter would crop the scoreboard out — so the visible
-          // window slides down just enough to keep the board in frame.
-          SizedBox.expand(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final screenAspect = constraints.maxWidth / constraints.maxHeight;
-                final imageAspect = imgW / imgH;
-                // Fraction of the image height visible under cover fit (>=1 → no
-                // vertical crop at all, only the sides are trimmed).
-                final visible = (imageAspect / screenAspect).clamp(0.0, 1.0);
-                var alignY = -1.0; // topCenter
-                final boardBottom = content.board.bottom;
-                if (visible < 1 && visible < boardBottom + 0.05) {
-                  // Slide the window down so the board (plus a small margin)
-                  // fits: window top t ∈ [0, 1-visible] mapped to [-1, 1].
-                  final t = (boardBottom + 0.05 - visible).clamp(0.0, 1.0 - visible);
-                  alignY = 1.0 - visible == 0 ? -1.0 : (t / (1.0 - visible)) * 2 - 1;
-                }
-                return FittedBox(
-                  fit: BoxFit.cover,
-                  alignment: Alignment(0, alignY),
-                  clipBehavior: Clip.hardEdge,
-                  child: SizedBox(
-                    width: imgW,
-                    height: imgH,
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image(
-                            image: AssetImage('packages/mapness/assets/tifo/backgrounds/${content.asset}'),
-                            fit: BoxFit.fill,
-                            errorBuilder: (_, _, _) => const ColoredBox(color: _bg),
-                          ),
-                        ),
-                        Positioned.fromRect(
-                          rect: board,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: board.width * 0.12,
-                              vertical: board.height * 0.18,
+    // The scoreline is baked into fixed image-pixel coordinates on the
+    // scoreboard art — kept LTR regardless of app locale so it never mirrors.
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: _bg,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Art + scoreline in image-pixel space, cover-scaled together.
+            // Vertical alignment adapts to the viewport: cover crops the image
+            // bottom, and on short/wide viewports (landscape, split-screen) a
+            // fixed topCenter would crop the scoreboard out — so the visible
+            // window slides down just enough to keep the board in frame.
+            SizedBox.expand(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final screenAspect = constraints.maxWidth / constraints.maxHeight;
+                  final imageAspect = imgW / imgH;
+                  // Fraction of the image height visible under cover fit (>=1 → no
+                  // vertical crop at all, only the sides are trimmed).
+                  final visible = (imageAspect / screenAspect).clamp(0.0, 1.0);
+                  var alignY = -1.0; // topCenter
+                  final boardBottom = content.board.bottom;
+                  if (visible < 1 && visible < boardBottom + 0.05) {
+                    // Slide the window down so the board (plus a small margin)
+                    // fits: window top t ∈ [0, 1-visible] mapped to [-1, 1].
+                    final t = (boardBottom + 0.05 - visible).clamp(0.0, 1.0 - visible);
+                    alignY = 1.0 - visible == 0 ? -1.0 : (t / (1.0 - visible)) * 2 - 1;
+                  }
+                  return FittedBox(
+                    fit: BoxFit.cover,
+                    alignment: Alignment(0, alignY),
+                    clipBehavior: Clip.hardEdge,
+                    child: SizedBox(
+                      width: imgW,
+                      height: imgH,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image(
+                              image: AssetImage('packages/mapness/assets/tifo/backgrounds/${content.asset}'),
+                              fit: BoxFit.fill,
+                              errorBuilder: (_, _, _) => const ColoredBox(color: _bg),
                             ),
-                            child: FittedBox(
-                              child: Text(
-                                '${result.yourScore} - $scoreToBeat',
-                                style: TextStyle(
-                                  fontFamily: TifoText.family,
-                                  package: TifoText.package,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: 4,
-                                  color: content.scoreColor,
-                                  shadows: [Shadow(color: content.scoreColor.withValues(alpha: 0.6), blurRadius: 18)],
+                          ),
+                          Positioned.fromRect(
+                            rect: board,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: board.width * 0.12,
+                                vertical: board.height * 0.18,
+                              ),
+                              child: FittedBox(
+                                child: Text(
+                                  '${result.yourScore} - $scoreToBeat',
+                                  style: TextStyle(
+                                    fontFamily: TifoText.family,
+                                    package: TifoText.package,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 4,
+                                    color: content.scoreColor,
+                                    shadows: [Shadow(color: content.scoreColor.withValues(alpha: 0.6), blurRadius: 18)],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          // Bottom scrim for text/CTA legibility over the art.
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.center,
-                end: Alignment.bottomCenter,
-                colors: [Color(0x00000000), Color(0xCC000000)],
+                  );
+                },
               ),
             ),
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const Spacer(),
-                  Text(
-                    content.title,
-                    textAlign: TextAlign.center,
-                    style: TifoText.h2.copyWith(
-                      color: _isWin ? TifoColors.accentMuted : Colors.white,
-                      fontSize: 32,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    content.message,
-                    textAlign: TextAlign.center,
-                    style: TifoText.bodyL.copyWith(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 24),
-                  TifoPrimaryButton(
-                    label: 'Continue',
-                    trailingArrow: true,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ],
+            // Bottom scrim for text/CTA legibility over the art.
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.center,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x00000000), Color(0xCC000000)],
+                ),
               ),
             ),
-          ),
-        ],
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    Text(
+                      content.title,
+                      textAlign: TextAlign.center,
+                      style: TifoText.h2.copyWith(
+                        color: _isWin ? TifoColors.accentMuted : Colors.white,
+                        fontSize: 32,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      content.message,
+                      textAlign: TextAlign.center,
+                      style: TifoText.bodyL.copyWith(color: Colors.white70),
+                    ),
+                    const SizedBox(height: 24),
+                    TifoPrimaryButton(
+                      label: 'Continue',
+                      trailingArrow: true,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

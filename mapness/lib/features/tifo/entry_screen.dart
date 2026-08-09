@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// TIFO entry-popup — Figma `onboarding` (file H4DvESBi2qwgfXZ8daWWFG,
 /// node 286:20818). The first-touch, stories-style intro shown when a player
@@ -57,6 +58,7 @@ class TifoEntryScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: Text(
                   'Capture the city.\nLead your team.',
+                  textDirection: TextDirection.ltr,
                   style: TifoText.h2.copyWith(color: Colors.white, fontSize: 30, height: 1.2),
                 ),
               ),
@@ -123,7 +125,7 @@ class _EnterButton extends StatelessWidget {
         height: 48,
         child: Center(
           child: Text(
-            'Dominate with your team',
+            AppLocalizations.of(context).dominateWithYourTeam,
             style: TifoText.bodyLSemi.copyWith(color: TifoColors.textStrong, height: 1.5),
           ),
         ),

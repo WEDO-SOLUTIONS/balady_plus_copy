@@ -15,6 +15,7 @@ import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Opens the capture sheet for [building] on the root navigator, so it floats
@@ -77,9 +78,13 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             Row(
               children: [
                 const SizedBox(width: 32),
-                const Expanded(
+                Expanded(
                   child: Center(
-                    child: Text('Claim the building', style: TifoText.h2, textAlign: TextAlign.center),
+                    child: Text(
+                      AppLocalizations.of(context).claimTheBuilding,
+                      style: TifoText.h2,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 _CloseBtn(onTap: () => Navigator.of(context).pop()),

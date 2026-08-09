@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// The four-screen guided TIFO tutorial (Figma 848:9497, 848:9982, 848:10725,
 /// 879:10224). Two overlay styles over demo content:
@@ -65,40 +66,38 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
   /// Four screens, in the order design numbered them (Figma 848:9497,
   /// 848:9982, 848:10725, 879:10224) — down from the 13-step sequence that
   /// walked every sheet. The four progress dots finally match the step count.
-  static final List<_TourStep> _steps = [
+  static const int _stepCount = 4;
+
+  List<_TourStep> _steps(BuildContext context) => [
     // 1 — 848:9497: standings behind a top tooltip.
-    const _TourStep(
+    _TourStep(
       dot: 0,
-      bottomPanel: TifoDemoLeaderboard(),
-      text: 'Pick your team to compete against the other Riyadh teams',
+      bottomPanel: const TifoDemoLeaderboard(),
+      text: AppLocalizations.of(context).tifoTutorialPickTeam,
     ),
     // 2 — 848:9982: the penalty preview drives itself, START advances
     // (rendered by the overlay-none branch so it gets the tour callback).
     const _TourStep(dot: 1, overlay: _OverlayKind.none),
     // 3 — 848:10725: intro sheet over the live map.
-    const _TourStep(
+    _TourStep(
       dot: 2,
       overlay: _OverlayKind.coachSheet,
-      title: 'TIFO TUTORIAL',
-      text:
-          'Turn your daily trips into a city-wide football competition. Claim the buildings, '
-          'conquer districts, and help your team dominate Riyadh.',
+      title: AppLocalizations.of(context).tifoTutorialTitle,
+      text: AppLocalizations.of(context).tifoTutorialIntro,
     ),
     // 4 — 879:10224: support screen behind the closing coach sheet.
-    const _TourStep(
+    _TourStep(
       dot: 3,
-      background: TifoDemoSupport(),
+      background: const TifoDemoSupport(),
       overlay: _OverlayKind.coachSheet,
-      title: 'Need help?',
-      text: 'Visit support anytime to review the rules, penalty match mechanics, scoring.',
+      title: AppLocalizations.of(context).needHelp,
+      text: AppLocalizations.of(context).visitSupportAnytimeToReviewTheRulesPenaltyMatchMechanicsScoring,
     ),
   ];
 
   int _index = 0;
 
-  _TourStep get _step => _steps[_index];
-
-  bool get _isLast => _index == _steps.length - 1;
+  bool get _isLast => _index == _stepCount - 1;
 
   void _next() {
     if (_isLast) {
@@ -118,7 +117,7 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
 
   @override
   Widget build(BuildContext context) {
-    final step = _step;
+    final step = _steps(context)[_index];
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -248,7 +247,11 @@ class _CoachSheet extends StatelessWidget {
                   const SizedBox(width: 12),
                 ],
                 Expanded(
-                  child: TifoPrimaryButton(label: 'Next', trailingArrow: true, onPressed: onNext),
+                  child: TifoPrimaryButton(
+                    label: AppLocalizations.of(context).next,
+                    trailingArrow: true,
+                    onPressed: onNext,
+                  ),
                 ),
               ],
             ),
@@ -303,7 +306,10 @@ class _CoachTooltip extends StatelessWidget {
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: onNext,
-                child: Text('Next', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent)),
+                child: Text(
+                  AppLocalizations.of(context).next,
+                  style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
+                ),
               ),
             ],
           ),

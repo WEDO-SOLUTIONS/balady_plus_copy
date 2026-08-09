@@ -29,40 +29,32 @@ class TifoTutorial extends StatefulWidget {
       emoji: '🏘',
       topicEn: 'Districts',
       topicAr: 'الأحياء',
-      descAr:
-          'سيطر على أحياء مدينتك ووسّع نفوذ فريقك في جميع أرجاء المدينة.',
-      descEn:
-          "Control your city's neighborhoods and expand your team's influence across the entire city.",
+      descAr: 'سيطر على أحياء مدينتك ووسّع نفوذ فريقك في جميع أرجاء المدينة.',
+      descEn: "Control your city's neighborhoods and expand your team's influence across the entire city.",
     ),
     _StepData(
       icon: Icons.stadium_outlined,
       emoji: '🏟',
       topicEn: 'Stadiums',
       topicAr: 'الملاعب',
-      descAr:
-          'احتل الملاعب الكبرى لكسب نقاط استراتيجية وتعزيز مكانتك.',
-      descEn:
-          'Capture key stadiums to earn strategic points and strengthen your position.',
+      descAr: 'احتل الملاعب الكبرى لكسب نقاط استراتيجية وتعزيز مكانتك.',
+      descEn: 'Capture key stadiums to earn strategic points and strengthen your position.',
     ),
     _StepData(
       icon: Icons.gps_fixed,
       emoji: '🎯',
       topicEn: 'Capture Mechanics',
       topicAr: 'آليات الاستحواذ',
-      descAr:
-          'زر المواقع على الخريطة وأكمل التحديات للاستحواذ على الأحياء.',
-      descEn:
-          'Visit locations on the map and complete challenges to capture districts.',
+      descAr: 'زر المواقع على الخريطة وأكمل التحديات للاستحواذ على الأحياء.',
+      descEn: 'Visit locations on the map and complete challenges to capture districts.',
     ),
     _StepData(
       icon: Icons.diamond_outlined,
       emoji: '💎',
       topicEn: 'Rewards',
       topicAr: 'المكافآت',
-      descAr:
-          'اكسب رموزاً حصرية وتسلق التصنيفات كلما توسّعت في اللعبة.',
-      descEn:
-          'Earn exclusive tokens and climb the rankings as you grow in the game.',
+      descAr: 'اكسب رموزاً حصرية وتسلق التصنيفات كلما توسّعت في اللعبة.',
+      descEn: 'Earn exclusive tokens and climb the rankings as you grow in the game.',
     ),
   ];
 
@@ -193,7 +185,7 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 8, 8, 16),
+      padding: const EdgeInsetsDirectional.fromSTEB(20, 8, 8, 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -254,9 +246,7 @@ class _ProgressDots extends StatelessWidget {
               width: i == active ? 24 : 6,
               height: 6,
               decoration: BoxDecoration(
-                color: i == active
-                    ? TifoTutorial._accent
-                    : TifoTutorial._divider,
+                color: i == active ? TifoTutorial._accent : TifoTutorial._divider,
                 borderRadius: BorderRadius.circular(3),
               ),
             ),

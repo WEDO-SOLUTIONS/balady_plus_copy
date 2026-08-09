@@ -9,6 +9,7 @@ import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/tifo_login.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// Club standings, fetched fresh each time the sheet opens.
 final tifoLeaderboardProvider = FutureProvider.autoDispose<List<TifoLeaderRow>>(
@@ -65,7 +66,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
               ),
             ),
             Align(
-              alignment: Alignment.centerRight,
+              alignment: AlignmentDirectional.centerEnd,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () => Navigator.of(context).pop(),
@@ -86,7 +87,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             Flexible(child: _tab == 0 ? _buildTable() : _buildProfile()),
             const SizedBox(height: 12),
             TifoPrimaryButton(
-              label: 'Dominate with your team',
+              label: AppLocalizations.of(context).dominateWithYourTeam,
               trailingArrow: true,
               // Play-intent CTA (BRD FR-03/FR-04): walk the gates (login →
               // tutorial → team select) on top of the sheet — popping first
@@ -124,10 +125,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
       data: (list) => ListView(
         shrinkWrap: true,
         children: [
-          const TifoInfoBanner(
+          TifoInfoBanner(
             icon: Icons.emoji_events_rounded,
-            title: 'The battle for control continues!',
-            subtitle: 'Compete with other teams to claim the city.',
+            title: AppLocalizations.of(context).battleForControlContinues,
+            subtitle: AppLocalizations.of(context).competeWithOtherTeamsToClaimTheCity,
           ),
           const SizedBox(height: 12),
           Container(
@@ -139,25 +140,40 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             ),
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Row(
                     children: [
-                      SizedBox(width: 20, child: Text('#', style: TifoText.captionMedium)),
-                      Expanded(flex: 4, child: Text('Team', style: TifoText.captionMedium)),
+                      const SizedBox(width: 20, child: Text('#', style: TifoText.captionMedium)),
                       Expanded(
-                        flex: 2,
-                        child: Text('Districts\nClaimed', style: TifoText.captionMedium, textAlign: TextAlign.center),
+                        flex: 4,
+                        child: Text(AppLocalizations.of(context).team, style: TifoText.captionMedium),
                       ),
                       Expanded(
                         flex: 2,
-                        child: Text('Buildings\nClaimed', style: TifoText.captionMedium, textAlign: TextAlign.center),
+                        child: Text(
+                          AppLocalizations.of(context).districtsClaimed,
+                          style: TifoText.captionMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          AppLocalizations.of(context).buildingsClaimed,
+                          style: TifoText.captionMedium,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       Expanded(
                         flex: 3,
-                        child: Text('Map\nDominance', style: TifoText.captionMedium, textAlign: TextAlign.end),
+                        child: Text(
+                          AppLocalizations.of(context).mapDominance,
+                          style: TifoText.captionMedium,
+                          textAlign: TextAlign.end,
+                        ),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                     ],
                   ),
                 ),
@@ -183,7 +199,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Take over more buildings to dominate the table.',
+                    AppLocalizations.of(context).takeOverMoreBuildingsToDominateTheTable,
                     style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft, fontSize: 13),
                   ),
                 ),
@@ -391,9 +407,9 @@ class _Tabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Expanded(child: _tabButton('Table', 0)),
+      Expanded(child: _tabButton(AppLocalizations.of(context).table, 0)),
       const SizedBox(width: 8),
-      Expanded(child: _tabButton('Profile', 1)),
+      Expanded(child: _tabButton(AppLocalizations.of(context).profile, 1)),
     ],
   );
 

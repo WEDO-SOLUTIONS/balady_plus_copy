@@ -120,7 +120,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
               ),
               const SizedBox(height: 4),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerEnd,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => Navigator.of(context).pop(),

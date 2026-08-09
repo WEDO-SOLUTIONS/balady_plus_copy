@@ -10,6 +10,7 @@ import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
@@ -169,14 +170,14 @@ class TifoJoinPill extends ConsumerWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () => unawaited(TifoJourney(ref).ensurePlayReady(context)),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Dominate with your team',
-                style: TextStyle(
+                AppLocalizations.of(context).dominateWithYourTeam,
+                style: const TextStyle(
                   fontFamily: 'Golos',
                   package: 'balady_uikit',
                   fontSize: 16,
@@ -185,8 +186,8 @@ class TifoJoinPill extends ConsumerWidget {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(width: 8),
-              Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+              const SizedBox(width: 8),
+              const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
             ],
           ),
         ),
