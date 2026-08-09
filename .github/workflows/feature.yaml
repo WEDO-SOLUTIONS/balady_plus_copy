@@ -279,6 +279,7 @@ jobs:
             balady_uikit:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
+                ref: development
             balady_authorization:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
@@ -300,6 +301,7 @@ jobs:
             map_styles:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/map_styles.git
+                ref: development
           EOF
 
           cat > mapness/pubspec_overrides.yaml <<'EOF'
