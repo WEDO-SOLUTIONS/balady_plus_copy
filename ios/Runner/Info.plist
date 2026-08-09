@@ -104,6 +104,8 @@
 	<string>Balady+ uses your device's motion sensors to determine which way you are facing, so the map and compass stay correctly oriented while you navigate to a municipal service location.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library is used to choose photos for Reports</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Balady+ uses speech recognition so you can search for places and municipal services by voice instead of typing, for example saying a neighbourhood or facility name to find it on the map.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>UIApplicationSceneManifest</key>
