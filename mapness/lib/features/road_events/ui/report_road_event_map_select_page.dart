@@ -130,7 +130,7 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
       children: [
         Assets.icons.svg.icPinPlaceholderRed.svg(),
         Padding(
-          padding: const EdgeInsets.only(top: 8, left: 10),
+          padding: const EdgeInsetsDirectional.only(top: 8, start: 10.5),
           child: switch (selectedType.value.icon()) {
             ToastIconAsset(:final asset) => SvgPicture.asset(
               asset,
