@@ -173,12 +173,14 @@ class $AssetsImagesGen {
   AssetGenImage get illustrationFlipContinueLight =>
       const AssetGenImage('assets/images/illustration_flip_continue_light.png');
 
-  /// File path: assets/images/ishan-seefromthesky-unsplash.webp
-  AssetGenImage get ishanSeefromtheskyUnsplash =>
-      const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.webp');
+  /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
+  AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
   /// Directory path: assets/images/layers
   $AssetsImagesLayersGen get layers => const $AssetsImagesLayersGen();
+
+  /// File path: assets/images/leap_logo.png
+  AssetGenImage get leapLogo => const AssetGenImage('assets/images/leap_logo.png');
 
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
@@ -290,6 +292,7 @@ class $AssetsImagesGen {
     illustrationFlipContinueDark,
     illustrationFlipContinueLight,
     ishanSeefromtheskyUnsplash,
+    leapLogo,
     lightMapPreview,
     markerEtaMask,
     onboardingStory1,
@@ -725,6 +728,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/layers
   $AssetsIconsSvgLayersGen get layers => const $AssetsIconsSvgLayersGen();
 
+  /// File path: assets/icons/svg/leap_unique_marker.svg
+  SvgGenImage get leapUniqueMarker => const SvgGenImage('assets/icons/svg/leap_unique_marker.svg');
+
   /// File path: assets/icons/svg/parking_control.svg
   SvgGenImage get parkingControl => const SvgGenImage('assets/icons/svg/parking_control.svg');
 
@@ -888,6 +894,7 @@ class $AssetsIconsSvgGen {
     icWrcSearchMarkerServicePark,
     icWrcSearchMarkerShakedownStage,
     icWrcSearchMarkerSpecialSuperStage,
+    leapUniqueMarker,
     parkingControl,
     percent,
     photoGallery,
@@ -947,8 +954,8 @@ class $AssetsImagesAudioPlaceholdersGen {
 class $AssetsImagesLayersGen {
   const $AssetsImagesLayersGen();
 
-  /// File path: assets/images/layers/img_layer_jeddah_bus.webp
-  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.webp');
+  /// File path: assets/images/layers/img_layer_jeddah_bus.png
+  AssetGenImage get imgLayerJeddahBus => const AssetGenImage('assets/images/layers/img_layer_jeddah_bus.png');
 
   /// List of all assets
   List<AssetGenImage> get values => [imgLayerJeddahBus];
@@ -3355,9 +3362,7 @@ class $AssetsIconsSvgPlacesNewOldGen {
   ];
 }
 
-class Assets {
-  const Assets._();
-
+abstract final class Assets {
   static const String package = 'mapness';
 
   static const String config = 'packages/mapness/assets/config.json';
