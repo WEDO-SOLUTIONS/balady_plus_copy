@@ -280,6 +280,7 @@ jobs:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
                 ref: development
+                path: packages/balady_uikit
             balady_authorization:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
@@ -310,6 +311,7 @@ jobs:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_uikit.git
                 ref: development
+                path: packages/balady_uikit
             balady_authorization:
               git:
                 url: https://github.com/WEDO-SOLUTIONS/balady_authorization.git
