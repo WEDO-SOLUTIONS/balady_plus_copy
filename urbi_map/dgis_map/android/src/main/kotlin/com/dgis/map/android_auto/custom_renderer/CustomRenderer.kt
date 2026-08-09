@@ -4,6 +4,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
+import android.graphics.RectF
+import android.text.Layout
+import android.text.StaticLayout
+import android.text.TextDirectionHeuristics
+import android.text.TextPaint
 import android.view.Surface
 import com.dgis.map.android_auto.SpeedInfoModel
 import com.dgis.map.android_auto.StableAreaPaddingProvider
@@ -12,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.ceil
 
 class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : AutoCloseable {
 
@@ -108,6 +114,63 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
             drawSpeedLimit(speedLimit, speedInfo.speedLimitExceeded, canvas)
         }
         drawSpeed(speedInfo.currentSpeed, canvas)
+
+        val signalLostMessage = customRendererData.signalLostMessage
+        if (!signalLostMessage.isNullOrEmpty()) {
+            drawSignalLostBanner(signalLostMessage, canvas)
+        }
+    }
+
+    private fun drawSignalLostBanner(message: String, canvas: Canvas) {
+        val padding = paddingProvider.paddingFlow.value
+        val cardHorizontalPadding = 32f
+        val cardVerticalPadding = 24f
+        val edgeOffset = 12f
+        val cardLeft = edgeOffset
+        val cardTop = edgeOffset
+        val maxCardWidth = (canvas.width - padding.right - edgeOffset).coerceAtLeast(0f)
+        val maxTextWidth = (maxCardWidth - cardHorizontalPadding * 2).coerceAtLeast(0f).toInt()
+        if (maxTextWidth <= 0) return
+
+        val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.parseColor("#F8F9FA")
+            textSize = 28f
+        }
+        fun buildLayout(width: Int) = StaticLayout.Builder
+            .obtain(message, 0, message.length, textPaint, width)
+            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+            .setTextDirection(TextDirectionHeuristics.FIRSTSTRONG_RTL)
+            .build()
+
+        val measuringLayout = buildLayout(maxTextWidth)
+        val contentWidth = (0 until measuringLayout.lineCount)
+            .maxOf { ceil(measuringLayout.getLineWidth(it)).toInt() }
+            .coerceIn(1, maxTextWidth)
+        // Rebuild at the actual content width so ALIGN_NORMAL (which depends on paragraph
+        // direction) hugs the card edge correctly for RTL text too, instead of leaving slack
+        // from the wider measuring width.
+        val textLayout = buildLayout(contentWidth)
+
+        val cardWidth = contentWidth + cardHorizontalPadding * 2
+        val cardHeight = textLayout.height + cardVerticalPadding * 2
+        val cornerRadius = 16f
+
+        paint.reset()
+        paint.apply {
+            color = Color.parseColor("#C5221F")
+            style = Paint.Style.FILL
+        }
+        canvas.drawRoundRect(
+            RectF(cardLeft, cardTop, cardLeft + cardWidth, cardTop + cardHeight),
+            cornerRadius,
+            cornerRadius,
+            paint
+        )
+
+        canvas.save()
+        canvas.translate(cardLeft + cardHorizontalPadding, cardTop + cardVerticalPadding)
+        textLayout.draw(canvas)
+        canvas.restore()
     }
 
     private fun drawSpeed(speed: Int, canvas: Canvas) {
@@ -218,4 +281,5 @@ class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : A
 
 data class CustomRendererData(
     val speedInfo: SpeedInfoModel,
+    val signalLostMessage: String? = null,
 )
