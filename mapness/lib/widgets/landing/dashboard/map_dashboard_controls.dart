@@ -124,12 +124,25 @@ class MapDashboardControls extends ConsumerWidget {
                         Expanded(
                           child: Align(
                             alignment: AlignmentDirectional.centerStart,
-                            child: Row(
+                            child: Column(
                               mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const WeatherControl(),
-                                uikit.Spacing.$1_5x.heightBox,
-                                const ParkingControl(),
+                                // Rules/support entry point — only meaningful
+                                // once the player has actually turned the game
+                                // on (⚽ toggle).
+                                if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
+                                  const TifoHelpControl(),
+                                  uikit.Spacing.$1_5x.heightBox,
+                                ],
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const WeatherControl(),
+                                    uikit.Spacing.$1_5x.heightBox,
+                                    const ParkingControl(),
+                                  ],
+                                ),
                               ],
                             ),
                           ),

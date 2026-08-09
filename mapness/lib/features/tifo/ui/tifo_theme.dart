@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 /// TIFO design tokens, pulled from the Figma variables (`accent/*`,
@@ -268,7 +269,7 @@ class TifoStepHeader extends StatelessWidget {
                 children: [
                   Text('STEP $step OF $total', style: TifoText.overline),
                   const SizedBox(height: 2),
-                  Text(title, style: TifoText.h3),
+                  Text(title, style: TifoText.h3.copyWith(color: context.colors.foregroundDefault)),
                 ],
               ),
             ],
@@ -322,7 +323,7 @@ class TifoInfoBanner extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TifoText.bodyLSemi.copyWith(fontSize: 14)),
+              Text(title, style: TifoText.bodyLSemi.copyWith(fontSize: 14, color: context.colors.foregroundDefault)),
               if (subtitle != null) ...[
                 const SizedBox(height: 2),
                 Text(subtitle!, style: TifoText.captionRegular),
@@ -343,12 +344,12 @@ class _CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: TifoColors.surface,
-    shape: const CircleBorder(side: BorderSide(color: TifoColors.border)),
+    color: context.colors.foregroundMuted,
+    shape: CircleBorder(side: BorderSide(color: context.colors.foregroundMuted)),
     child: InkWell(
       customBorder: const CircleBorder(),
       onTap: onTap,
-      child: SizedBox(width: 36, height: 36, child: Icon(icon, size: 16, color: TifoColors.textDefault)),
+      child: SizedBox(width: 36, height: 36, child: Icon(icon, size: 16, color: context.colors.foregroundDefault)),
     ),
   );
 }

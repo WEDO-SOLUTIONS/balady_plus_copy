@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -51,7 +52,7 @@ class TifoMessageCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -60,7 +61,7 @@ class TifoMessageCard extends ConsumerWidget {
             child: Container(
               width: 40,
               height: 4,
-              decoration: BoxDecoration(color: TifoColors.border, borderRadius: BorderRadius.circular(2)),
+              decoration: BoxDecoration(color: context.colors.foregroundMuted, borderRadius: BorderRadius.circular(2)),
             ),
           ),
           const SizedBox(height: 12),
@@ -74,8 +75,11 @@ class TifoMessageCard extends ConsumerWidget {
                   child: Container(
                     width: 32,
                     height: 32,
-                    decoration: BoxDecoration(color: const Color(0xFFF3F4F6), borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.close_rounded, size: 16, color: TifoColors.textSoft),
+                    decoration: BoxDecoration(
+                      color: context.colors.foregroundMuted,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(Icons.close_rounded, size: 16, color: context.colors.foregroundDefault),
                   ),
                 ),
               ],
@@ -95,7 +99,7 @@ class TifoMessageCard extends ConsumerWidget {
                 child: Text(
                   title,
                   textAlign: showIllustration ? TextAlign.center : TextAlign.start,
-                  style: TifoText.h3,
+                  style: TifoText.h3.copyWith(color: context.colors.foregroundDefault),
                 ),
               ),
               if (!showIllustration && onClose != null) ...[
@@ -106,8 +110,15 @@ class TifoMessageCard extends ConsumerWidget {
                   child: Container(
                     width: 32,
                     height: 32,
-                    decoration: BoxDecoration(color: const Color(0xFFF3F4F6), borderRadius: BorderRadius.circular(10)),
-                    child: const Icon(Icons.close_rounded, size: 16, color: TifoColors.textSoft),
+                    decoration: BoxDecoration(
+                      color: context.colors.foregroundMuted,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      Icons.close_rounded,
+                      size: 16,
+                      color: context.colors.foregroundDefault,
+                    ),
                   ),
                 ),
               ],
@@ -117,7 +128,7 @@ class TifoMessageCard extends ConsumerWidget {
           Text(
             body,
             textAlign: TextAlign.start,
-            style: TifoText.bodyL.copyWith(color: TifoColors.textSoft),
+            style: TifoText.bodyL.copyWith(color: context.colors.foregroundSoft),
           ),
           if (primaryAction != null || secondaryAction != null) ...[
             const SizedBox(height: 24),
@@ -156,7 +167,7 @@ Future<T?> showTifoMessageDialog<T>(
 }) => showModalBottomSheet<T>(
   context: context,
   isDismissible: barrierDismissible,
-  backgroundColor: TifoColors.surface,
+  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-  builder: (_) => SafeArea(top: false, child: card),
+  builder: (_) => SafeArea(top: false, minimum: const EdgeInsets.only(bottom: 20), child: card),
 );

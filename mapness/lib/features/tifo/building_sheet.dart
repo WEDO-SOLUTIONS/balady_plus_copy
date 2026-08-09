@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
@@ -28,7 +30,7 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 Future<void> showTifoBuildingSheet(BuildContext context, TifoBuilding building) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
-  backgroundColor: TifoColors.surface,
+  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
   ),
@@ -74,7 +76,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                 width: 40,
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(color: TifoColors.border, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: context.colors.foregroundMuted,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
             Row(
@@ -84,7 +89,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                   child: Center(
                     child: Text(
                       AppLocalizations.of(context).claimTheBuilding,
-                      style: TifoText.h2,
+                      style: TifoText.h2.copyWith(color: context.colors.foregroundDefault),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -102,7 +107,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                       children: [
                         const Text('Unclaimed', style: TifoText.captionMedium),
                         const SizedBox(height: 8),
-                        Text(_building.displayName, style: TifoText.bodyLSemi),
+                        Text(
+                          _building.displayName,
+                          style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                        ),
                         const SizedBox(height: 2),
                         const Text("This building hasn't been claimed yet.", style: TifoText.captionRegular),
                       ],
@@ -160,7 +168,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             _card(
               child: Row(
                 children: [
-                  Text('${_building.contested7d}', style: TifoText.h3),
+                  Text(
+                    '${_building.contested7d}',
+                    style: TifoText.h3.copyWith(color: context.colors.foregroundDefault),
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -245,7 +256,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     width: double.infinity,
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: TifoColors.surface,
+      color: context.colors.foregroundSurfacePush,
       borderRadius: BorderRadius.circular(TifoRadii.ml),
       border: Border.all(color: TifoColors.border),
     ),
@@ -444,6 +455,24 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
         events: outcome.events.map((e) => e.toJson()).toList(),
       );
       logger.log('[tifo] submit result: outcome=${result.outcome.name} yourScore=${result.yourScore}');
+      // `voided`/`unknown` aren't a played-and-scored match (expired session,
+      // server rejection) — Matches Played (`/me` stats) doesn't count them
+      // either, so the local activity log shouldn't log them as a win/loss.
+      if (result.outcome == TifoOutcome.claimed ||
+          result.outcome == TifoOutcome.taken ||
+          result.outcome == TifoOutcome.failed) {
+        unawaited(
+          container
+              .read(tifoActivityLogProvider.notifier)
+              .add(
+                TifoActivityEntry(
+                  type: result.isWin ? TifoActivityType.win : TifoActivityType.loss,
+                  label: result.isWin ? 'You won a penalty challenge' : 'You lost a penalty challenge',
+                  timestamp: DateTime.now(),
+                ),
+              ),
+        );
+      }
       // Reflect capture immediately using the player's own club; the next
       // viewport refresh reconciles from the server regardless.
       if (result.isWin) {
@@ -572,15 +601,19 @@ class _CloseBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: TifoColors.surface,
-    shape: const CircleBorder(side: BorderSide(color: TifoColors.border)),
+    color: context.colors.foregroundMuted,
+    shape: CircleBorder(side: BorderSide(color: context.colors.foregroundMuted)),
     child: InkWell(
       customBorder: const CircleBorder(),
       onTap: onTap,
-      child: const SizedBox(
+      child: SizedBox(
         width: 32,
         height: 32,
-        child: Icon(Icons.close_rounded, size: 18, color: TifoColors.textSoft),
+        child: Icon(
+          Icons.close_rounded,
+          size: 18,
+          color: context.colors.foregroundDefault,
+        ),
       ),
     ),
   );

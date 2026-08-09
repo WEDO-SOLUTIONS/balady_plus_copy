@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -48,9 +49,9 @@ class TifoDemoPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     width: double.infinity,
-    decoration: const BoxDecoration(
-      color: TifoColors.surface,
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    decoration: BoxDecoration(
+      color: context.colors.foregroundSurfacePush,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
     ),
     child: SafeArea(
       top: false,
@@ -535,9 +536,9 @@ class TifoDemoLeaderboard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _tab(AppLocalizations.of(context).table, active: true)),
+            Expanded(child: _tab(AppLocalizations.of(context).table, active: true, context: context)),
             const SizedBox(width: 8),
-            Expanded(child: _tab(AppLocalizations.of(context).profile, active: false)),
+            Expanded(child: _tab(AppLocalizations.of(context).profile, active: false, context: context)),
           ],
         ),
         const SizedBox(height: 12),
@@ -549,7 +550,10 @@ class TifoDemoLeaderboard extends StatelessWidget {
         const SizedBox(height: 10),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-          decoration: _card(border: TifoColors.accentMuted.withValues(alpha: 0.5)),
+          decoration: _card(
+            border: TifoColors.accentMuted.withValues(alpha: 0.5),
+            bg: context.colors.foregroundSurfacePush,
+          ),
           child: Column(
             children: [
               Padding(
@@ -594,7 +598,13 @@ class TifoDemoLeaderboard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 7),
                   child: Row(
                     children: [
-                      SizedBox(width: 18, child: Text('$rank', style: TifoText.bodyLSemi)),
+                      SizedBox(
+                        width: 18,
+                        child: Text(
+                          '$rank',
+                          style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                        ),
+                      ),
                       Expanded(
                         flex: 4,
                         child: Row(
@@ -604,7 +614,10 @@ class TifoDemoLeaderboard extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 name,
-                                style: TifoText.bodyLSemi.copyWith(fontSize: 13),
+                                style: TifoText.bodyLSemi.copyWith(
+                                  fontSize: 13,
+                                  color: context.colors.foregroundDefault,
+                                ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -613,18 +626,33 @@ class TifoDemoLeaderboard extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 2,
-                        child: Text('$districts', style: TifoText.bodyL, textAlign: TextAlign.center),
+                        child: Text(
+                          '$districts',
+                          style: TifoText.bodyL.copyWith(
+                            color: context.colors.foregroundDefault,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       Expanded(
                         flex: 2,
-                        child: Text('$buildings', style: TifoText.bodyL, textAlign: TextAlign.center),
+                        child: Text(
+                          '$buildings',
+                          style: TifoText.bodyL.copyWith(
+                            color: context.colors.foregroundDefault,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                       Expanded(
                         flex: 3,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('$pct%', style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault)),
+                            Text(
+                              '$pct%',
+                              style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+                            ),
                             const SizedBox(height: 3),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(3),
@@ -669,17 +697,17 @@ class TifoDemoLeaderboard extends StatelessWidget {
     ),
   );
 
-  static Widget _tab(String label, {required bool active}) => Container(
+  Widget _tab(String label, {required bool active, required BuildContext context}) => Container(
     height: 42,
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: active ? TifoColors.accent : TifoColors.surface,
+      color: active ? TifoColors.accent : context.colors.foregroundSurfacePush,
       borderRadius: BorderRadius.circular(TifoRadii.ml),
       border: Border.all(color: active ? TifoColors.accent : TifoColors.border),
     ),
     child: Text(
       label,
-      style: TifoText.bodyLSemi.copyWith(color: active ? TifoColors.onAccent : TifoColors.textDefault),
+      style: TifoText.bodyLSemi.copyWith(color: active ? TifoColors.onAccent : context.colors.foregroundDefault),
     ),
   );
 }
@@ -850,7 +878,7 @@ class TifoDemoSupport extends StatelessWidget {
   Widget build(BuildContext context) {
     final steps = _steps(context);
     return ColoredBox(
-      color: TifoColors.surface,
+      color: context.colors.foregroundSurfacePush,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -859,12 +887,15 @@ class TifoDemoSupport extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: TifoColors.textDefault),
+                  Icon(Icons.arrow_back_ios_new_rounded, size: 18, color: context.colors.foregroundDefault),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(AppLocalizations.of(context).support, style: TifoText.h3),
+                      Text(
+                        AppLocalizations.of(context).support,
+                        style: TifoText.h3.copyWith(color: context.colors.foregroundDefault),
+                      ),
                       Text(
                         AppLocalizations.of(context).learnTheRulesAndGetAnswersToCommonQuestions,
                         style: TifoText.captionRegular.copyWith(color: TifoColors.accentSoft),
@@ -885,7 +916,7 @@ class TifoDemoSupport extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 AppLocalizations.of(context).takeOverBuildingsByBeatingTheScoreInAPenaltyMatch,
-                style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault),
+                style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
               ),
               const SizedBox(height: 14),
               for (var i = 0; i < steps.length; i++)
@@ -908,7 +939,10 @@ class TifoDemoSupport extends StatelessWidget {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 2),
-                          child: Text(steps[i], style: TifoText.bodyL.copyWith(fontSize: 14)),
+                          child: Text(
+                            steps[i],
+                            style: TifoText.bodyL.copyWith(fontSize: 14, color: context.colors.foregroundDefault),
+                          ),
                         ),
                       ),
                     ],

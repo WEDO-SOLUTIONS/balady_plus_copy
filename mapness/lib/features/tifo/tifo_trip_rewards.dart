@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -19,6 +20,7 @@ Future<void> reportTifoTripCompleted(WidgetRef ref) async {
   // right after the trip ends, and these must outlive its `ref`.
   final api = ref.read(tifoApiProvider);
   final session = ref.read(tifoSessionProvider.notifier);
+  final activityLog = ref.read(tifoActivityLogProvider.notifier);
   try {
     // US-16 prerequisite is "logged in". Checked against the live host session
     // rather than the TIFO profile, which isn't loaded until the player opens
@@ -38,6 +40,14 @@ Future<void> reportTifoTripCompleted(WidgetRef ref) async {
     logger.log(
       '[tifo] trip reward: +${reward.reward} '
       '(today ${reward.tripTokensToday}$cap, balance ${reward.balance})',
+    );
+    await activityLog.add(
+      TifoActivityEntry(
+        type: TifoActivityType.tripCompleted,
+        label: 'Trip completed',
+        timestamp: DateTime.now(),
+        tokenDelta: reward.reward,
+      ),
     );
     // Keep the profile tiles (balance, trips today) honest without waiting for
     // the player to reopen the game.

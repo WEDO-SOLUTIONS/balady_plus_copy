@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
@@ -66,7 +67,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
     final clubs = ref.watch(tifoSessionProvider.select((s) => s.clubs));
 
     return Scaffold(
-      backgroundColor: TifoColors.surface,
+      backgroundColor: context.colors.foregroundSurfacePush,
       body: Column(
         children: [
           TifoStepHeader(

@@ -9,6 +9,7 @@ import 'package:mapness/features/tifo/leaderboard_sheet.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
+import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -149,6 +150,20 @@ class _TifoLeaderboardControlState extends ConsumerState<TifoLeaderboardControl>
       );
     },
     child: Icon(Icons.emoji_events_rounded, size: 24, color: context.colors.accentDefault),
+  );
+}
+
+/// "?" help control (design 879:10224) — opens the guided tutorial directly,
+/// same tour the play-gate autoruns for a first-time player
+/// ([TifoJourney.ensurePlayReady]). Shown only while the TIFO layer is on: a
+/// disabled game has no rules screen to explain.
+class TifoHelpControl extends StatelessWidget {
+  const TifoHelpControl({super.key});
+
+  @override
+  Widget build(BuildContext context) => MapButton(
+    onTap: () => unawaited(showTifoGuidedTutorial(context)),
+    child: Icon(Icons.help, size: 24, color: context.colors.foregroundDefault),
   );
 }
 

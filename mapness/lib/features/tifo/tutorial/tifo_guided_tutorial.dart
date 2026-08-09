@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
@@ -211,9 +212,16 @@ class _CoachSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     width: double.infinity,
-    decoration: const BoxDecoration(
-      color: TifoColors.surface,
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface1,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      boxShadow: const [
+        BoxShadow(
+          color: Color(0x40000000),
+          offset: Offset(0, -12),
+          blurRadius: 60,
+        ),
+      ],
     ),
     child: SafeArea(
       top: false,
@@ -227,21 +235,26 @@ class _CoachSheet extends StatelessWidget {
               child: Container(
                 width: 40,
                 height: 4,
-                decoration: BoxDecoration(color: TifoColors.border, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: context.colors.foregroundMuted,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
             const SizedBox(height: 14),
             Row(
               children: [
-                Expanded(child: Text(title, style: TifoText.h3)),
+                Expanded(
+                  child: Text(title, style: TifoText.h3.copyWith(color: context.colors.foregroundDefault)),
+                ),
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: onClose,
                   child: Container(
                     width: 34,
                     height: 34,
-                    decoration: const BoxDecoration(color: Color(0xFFF2F4F7), shape: BoxShape.circle),
-                    child: const Icon(Icons.close_rounded, size: 18, color: TifoColors.textSoft),
+                    decoration: BoxDecoration(color: context.colors.foregroundMuted, shape: BoxShape.circle),
+                    child: Icon(Icons.close_rounded, size: 18, color: context.colors.foregroundDefault),
                   ),
                 ),
               ],
@@ -249,7 +262,7 @@ class _CoachSheet extends StatelessWidget {
             const SizedBox(height: 12),
             TifoCoachDots(active: dot),
             const SizedBox(height: 18),
-            Text(text, style: TifoText.bodyL.copyWith(height: 1.35)),
+            Text(text, style: TifoText.bodyL.copyWith(height: 1.35, color: context.colors.foregroundDefault)),
             const SizedBox(height: 22),
             Row(
               children: [
@@ -261,10 +274,10 @@ class _CoachSheet extends StatelessWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF2F4F7),
+                        color: context.colors.foregroundMuted,
                         borderRadius: BorderRadius.circular(TifoRadii.l),
                       ),
-                      child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: TifoColors.textDefault),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.foregroundDefault),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -306,7 +319,7 @@ class _CoachTooltip extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       decoration: BoxDecoration(
-        color: TifoColors.surface,
+        color: context.colors.foregroundSurfacePush,
         borderRadius: BorderRadius.circular(TifoRadii.l),
         boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 16, offset: Offset(0, 6))],
       ),
@@ -314,7 +327,10 @@ class _CoachTooltip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(text, style: TifoText.bodyL.copyWith(fontSize: 15, height: 1.35)),
+          Text(
+            text,
+            style: TifoText.bodyL.copyWith(fontSize: 15, height: 1.35, color: context.colors.foregroundDefault),
+          ),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -322,7 +338,7 @@ class _CoachTooltip extends StatelessWidget {
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: onPrevious,
-                  child: Text('Previous', style: TifoText.bodyLSemi.copyWith(color: TifoColors.textSoft)),
+                  child: Text('Previous', style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundSoft)),
                 ),
                 const SizedBox(width: 24),
               ],

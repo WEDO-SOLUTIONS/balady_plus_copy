@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
@@ -21,7 +23,7 @@ final tifoLeaderboardProvider = FutureProvider.autoDispose<List<TifoLeaderRow>>(
 Future<void> showTifoLeaderboardSheet(BuildContext context) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
-  backgroundColor: TifoColors.surface,
+  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
   builder: (_) => const _LeaderboardSheet(),
 );
@@ -62,7 +64,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 width: 40,
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(color: TifoColors.border, borderRadius: BorderRadius.circular(2)),
+                decoration: BoxDecoration(
+                  color: context.colors.foregroundMuted,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
             Align(
@@ -73,11 +78,16 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 child: Container(
                   width: 32,
                   height: 32,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.fromBorderSide(BorderSide(color: TifoColors.border)),
+                    color: context.colors.foregroundMuted,
+                    border: Border.fromBorderSide(
+                      BorderSide(
+                        color: context.colors.foregroundMuted,
+                      ),
+                    ),
                   ),
-                  child: const Icon(Icons.close_rounded, size: 18, color: TifoColors.textSoft),
+                  child: Icon(Icons.close_rounded, size: 18, color: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -134,7 +144,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: TifoColors.surface,
+              color: context.colors.foregroundSurfacePush,
               borderRadius: BorderRadius.circular(TifoRadii.l),
               border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
             ),
@@ -337,18 +347,18 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: TifoColors.surface,
+            color: context.colors.foregroundSurfacePush,
             borderRadius: BorderRadius.circular(TifoRadii.l),
             border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
-                  Icon(Icons.sports_esports_rounded, size: 18, color: TifoColors.textStrong),
-                  SizedBox(width: 8),
-                  Text('Matches Played', style: TifoText.bodyLSemi),
+                  Icon(Icons.sports_esports_rounded, size: 18, color: context.colors.foregroundDefault),
+                  const SizedBox(width: 8),
+                  Text('Matches Played', style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault)),
                 ],
               ),
               const SizedBox(height: 14),
@@ -390,11 +400,131 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
           ),
         ),
         const SizedBox(height: 14),
-        const Text('Recent Activity', style: TifoText.bodyLSemi),
-        const SizedBox(height: 4),
-        Text('No Data', style: TifoText.captionRegular.copyWith(fontSize: 13)),
+        _buildRecentActivity(),
       ],
     );
+  }
+
+  /// Local-only feed (BE-233 follow-up: no backend history endpoint exists
+  /// yet — see `TifoActivityLogController`), so this can only show events
+  /// logged on this device from now on, not a pre-existing server history.
+  Widget _buildRecentActivity() {
+    final activityAsync = ref.watch(tifoActivityLogProvider);
+    final activity = activityAsync.value ?? const <TifoActivityEntry>[];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'Recent Activity',
+                style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+              ),
+            ),
+            if (activity.length > 3)
+              InkWell(
+                onTap: () => _showAllActivity(activity),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('View all', style: TifoText.captionMedium.copyWith(color: TifoColors.accent, fontSize: 13)),
+                    const Icon(Icons.chevron_right_rounded, size: 16, color: TifoColors.accent),
+                  ],
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        if (activity.isEmpty)
+          Text('No Data', style: TifoText.captionRegular.copyWith(fontSize: 13))
+        else
+          for (final entry in activity.take(3)) _ActivityRow(entry: entry),
+      ],
+    );
+  }
+
+  void _showAllActivity(List<TifoActivityEntry> activity) => showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: TifoColors.surface,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    builder: (_) => SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Recent Activity', style: TifoText.bodyLSemi),
+            const SizedBox(height: 8),
+            Flexible(
+              child: ListView(
+                shrinkWrap: true,
+                children: [for (final entry in activity) _ActivityRow(entry: entry)],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class _ActivityRow extends StatelessWidget {
+  const _ActivityRow({required this.entry});
+
+  final TifoActivityEntry entry;
+
+  static const _iconByType = {
+    TifoActivityType.win: (Icons.emoji_events_rounded, Color(0xFFFFF4D6), Color(0xFFD9A400)),
+    TifoActivityType.loss: (Icons.cancel_rounded, Color(0xFFFEE4E2), Color(0xFFF04438)),
+    TifoActivityType.tripCompleted: (Icons.location_on_rounded, Color(0xFFEDE9FE), Color(0xFF7C3AED)),
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, chipBg, iconColor) = _iconByType[entry.type]!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(color: chipBg, shape: BoxShape.circle),
+            child: Icon(icon, size: 15, color: iconColor),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(entry.label, style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault)),
+          ),
+          if (entry.tokenDelta != null) ...[
+            Text(
+              '+${entry.tokenDelta}',
+              style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+            ),
+            const SizedBox(width: 2),
+            const Icon(Icons.bolt_rounded, size: 12, color: Color(0xFF7C3AED)),
+            const SizedBox(width: 6),
+          ],
+          Text(_relativeTime(entry.timestamp), style: TifoText.captionRegular),
+        ],
+      ),
+    );
+  }
+
+  static String _relativeTime(DateTime timestamp) {
+    final diff = DateTime.now().difference(timestamp);
+    if (diff.inMinutes < 1) {
+      return 'Just now';
+    }
+    if (diff.inHours < 1) {
+      return '${diff.inMinutes}m ago';
+    }
+    if (diff.inDays < 1) {
+      return '${diff.inHours}h ago';
+    }
+    return '${diff.inDays}d ago';
   }
 }
 
@@ -407,13 +537,13 @@ class _Tabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
     children: [
-      Expanded(child: _tabButton(AppLocalizations.of(context).table, 0)),
+      Expanded(child: _tabButton(AppLocalizations.of(context).table, 0, context)),
       const SizedBox(width: 8),
-      Expanded(child: _tabButton(AppLocalizations.of(context).profile, 1)),
+      Expanded(child: _tabButton(AppLocalizations.of(context).profile, 1, context)),
     ],
   );
 
-  Widget _tabButton(String label, int index) {
+  Widget _tabButton(String label, int index, BuildContext context) {
     final active = tab == index;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -422,13 +552,13 @@ class _Tabs extends StatelessWidget {
         height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: active ? TifoColors.accent : TifoColors.surface,
+          color: active ? TifoColors.accent : context.colors.foregroundSurfacePush,
           borderRadius: BorderRadius.circular(TifoRadii.ml),
           border: Border.all(color: active ? TifoColors.accent : TifoColors.border),
         ),
         child: Text(
           label,
-          style: TifoText.bodyLSemi.copyWith(color: active ? TifoColors.onAccent : TifoColors.textDefault),
+          style: TifoText.bodyLSemi.copyWith(color: active ? TifoColors.onAccent : context.colors.foregroundDefault),
         ),
       ),
     );
@@ -449,7 +579,10 @@ class _LeaderRowTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          SizedBox(width: 20, child: Text('${row.rank}', style: TifoText.bodyLSemi)),
+          SizedBox(
+            width: 20,
+            child: Text('${row.rank}', style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault)),
+          ),
           Expanded(
             flex: 4,
             child: Row(
@@ -461,25 +594,40 @@ class _LeaderRowTile extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(club?.name ?? row.clubId, style: TifoText.bodyLSemi, overflow: TextOverflow.ellipsis),
+                  child: Text(
+                    club?.name ?? row.clubId,
+                    style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ],
             ),
           ),
           Expanded(
             flex: 2,
-            child: Text('${row.districts}', style: TifoText.bodyL, textAlign: TextAlign.center),
+            child: Text(
+              '${row.districts}',
+              style: TifoText.bodyL.copyWith(color: context.colors.foregroundDefault),
+              textAlign: TextAlign.center,
+            ),
           ),
           Expanded(
             flex: 2,
-            child: Text('${row.buildings}', style: TifoText.bodyL, textAlign: TextAlign.center),
+            child: Text(
+              '${row.buildings}',
+              style: TifoText.bodyL.copyWith(color: context.colors.foregroundDefault),
+              textAlign: TextAlign.center,
+            ),
           ),
           Expanded(
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text('${row.ownershipPct}%', style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault)),
+                Text(
+                  '${row.ownershipPct}%',
+                  style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+                ),
                 const SizedBox(height: 3),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(3),
@@ -596,7 +744,7 @@ class _StatTile extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
-      color: TifoColors.surface,
+      color: context.colors.foregroundSurfacePush,
       borderRadius: BorderRadius.circular(TifoRadii.l),
       border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
     ),
@@ -618,7 +766,7 @@ class _StatTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(value, style: TifoText.h3),
+                  Text(value, style: TifoText.h3.copyWith(color: context.colors.foregroundDefault)),
                   if (caption != null) Text(caption!, style: TifoText.captionRegular),
                 ],
               ),
@@ -657,7 +805,7 @@ class _MatchStat extends StatelessWidget {
           child: Icon(icon, size: 20, color: iconColor),
         ),
         const SizedBox(height: 6),
-        Text(value, style: TifoText.h3),
+        Text(value, style: TifoText.h3.copyWith(color: context.colors.foregroundDefault)),
         Text(label, style: TifoText.captionRegular),
       ],
     ),
