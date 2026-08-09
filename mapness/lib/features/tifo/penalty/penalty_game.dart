@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:audio_session/audio_session.dart';
-import 'package:flame/components.dart';
+import 'package:flame/components.dart' hide Timer;
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/text.dart';
@@ -16,7 +16,9 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 class PenaltyApp extends StatelessWidget {
@@ -29,7 +31,15 @@ class PenaltyApp extends StatelessWidget {
     this.strikerColor,
     this.keeperColor,
     this.showColliderDebug = false,
+    this.sessionTimeoutSeconds = 30,
+    this.locale,
   });
+
+  /// The host app's in-app language, so the message-card dialogs (Still
+  /// playing? / Leave challenge?) read in the right language — this page runs
+  /// its own [MaterialApp] (fullscreen Flame game, isolated theme), which
+  /// otherwise falls back to the device locale. Null uses the device locale.
+  final Locale? locale;
 
   /// Fires once the session ends. Carries goals, misses and the per-kick event
   /// log — the log must be forwarded to `/buildings/{id}/play`, since the
@@ -38,6 +48,11 @@ class PenaltyApp extends StatelessWidget {
 
   /// Session ends after this many misses (from `/config`, default 3).
   final int missesAllowed;
+
+  /// How long (from `/config`'s `liveLockTimeoutSeconds`) the backend lets a
+  /// session sit idle before voiding it and keeping the token — drives the
+  /// "Still playing?" warning shown shortly before that happens.
+  final int sessionTimeoutSeconds;
 
   /// Saved score of the challenged building, shown in the HUD panel
   /// ("Score to beat", FD-50). 0 for an unclaimed building.
@@ -68,6 +83,9 @@ class PenaltyApp extends StatelessWidget {
     debugShowCheckedModeBanner: false,
     title: 'Penalty 3D',
     theme: ThemeData.dark(useMaterial3: true),
+    locale: locale,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     home: PenaltyGamePage(
       onComplete: onComplete,
       onReady: onReady,
@@ -76,6 +94,7 @@ class PenaltyApp extends StatelessWidget {
       strikerColor: strikerColor,
       keeperColor: keeperColor,
       showColliderDebug: showColliderDebug,
+      sessionTimeoutSeconds: sessionTimeoutSeconds,
     ),
   );
 }
@@ -94,6 +113,23 @@ class _PenaltyExitButton extends StatelessWidget {
 
   final PenaltyGame game;
 
+  Future<void> _confirmLeave(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
+    final leave = await showTifoMessageDialog<bool>(
+      context,
+      card: TifoMessageCard(
+        title: l10n.tifoLeaveChallengeTitle,
+        body: l10n.tifoLeaveChallengeBody,
+        secondaryAction: TifoMessageAction(label: l10n.tifoLeave, onPressed: () => Navigator.of(context).pop(true)),
+        onClose: () => Navigator.of(context).pop(false),
+        primaryAction: TifoMessageAction(label: l10n.tifoStay, onPressed: () => Navigator.of(context).pop(false)),
+      ),
+    );
+    if (leave ?? false) {
+      game.forfeit();
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Material(
     color: const Color(0xCC0A1424),
@@ -103,7 +139,7 @@ class _PenaltyExitButton extends StatelessWidget {
     ),
     child: InkWell(
       customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      onTap: game.forfeit,
+      onTap: () => _confirmLeave(context),
       child: const Padding(
         padding: EdgeInsets.all(8),
         child: Icon(Icons.close, color: Colors.white, size: 22),
@@ -122,6 +158,7 @@ class PenaltyGamePage extends StatefulWidget {
     this.strikerColor,
     this.keeperColor,
     this.showColliderDebug = false,
+    this.sessionTimeoutSeconds = 30,
   });
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
@@ -131,6 +168,7 @@ class PenaltyGamePage extends StatefulWidget {
   final String? strikerColor;
   final String? keeperColor;
   final bool showColliderDebug;
+  final int sessionTimeoutSeconds;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -159,6 +197,62 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
           }
         };
 
+  /// How long before [PenaltyGamePage.sessionTimeoutSeconds] the "Still
+  /// playing?" warning fires — matches the server's `liveLockTimeoutSeconds`
+  /// void window (FR-16), just early enough for the player to react.
+  static const int _idleWarningBufferSeconds = 8;
+
+  Timer? _idleCheckTimer;
+  DateTime? _lastActivityAt;
+  bool _idlePromptOpen = false;
+
+  void _onActivity() => _lastActivityAt = DateTime.now();
+
+  void _armIdleWatch() {
+    _lastActivityAt = DateTime.now();
+    _idleCheckTimer?.cancel();
+    _idleCheckTimer = Timer.periodic(const Duration(seconds: 1), (_) => _checkIdle());
+  }
+
+  void _checkIdle() {
+    final lastActivityAt = _lastActivityAt;
+    if (_perspectiveGame.isCompleted || _idlePromptOpen || lastActivityAt == null || !mounted) {
+      return;
+    }
+    final idleSeconds = DateTime.now().difference(lastActivityAt).inSeconds;
+    if (widget.sessionTimeoutSeconds - idleSeconds <= _idleWarningBufferSeconds) {
+      unawaited(_showStillPlayingPrompt());
+    }
+  }
+
+  Future<void> _showStillPlayingPrompt() async {
+    _idlePromptOpen = true;
+    final l10n = AppLocalizations.of(context);
+    final exit = await showTifoMessageDialog<bool>(
+      context,
+      barrierDismissible: false,
+      card: TifoMessageCard(
+        title: l10n.tifoStillPlayingTitle,
+        body: l10n.tifoStillPlayingBody,
+        secondaryAction: TifoMessageAction(label: l10n.tifoExit, onPressed: () => Navigator.of(context).pop(true)),
+        onClose: () => Navigator.of(context).pop(false),
+        primaryAction: TifoMessageAction(
+          label: l10n.tifoContinue,
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+      ),
+    );
+    _idlePromptOpen = false;
+    if (!mounted) {
+      return;
+    }
+    if (exit ?? false) {
+      _perspectiveGame.forfeit();
+    } else {
+      _onActivity();
+    }
+  }
+
   // Crowd-ambience tracks — one is picked at random each time this page
   // opens, so repeat playthroughs don't always hear the same loop. Add more
   // file paths here as additional tracks become available; nothing else
@@ -173,6 +267,15 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   void initState() {
     super.initState();
     unawaited(_startAmbience());
+    _perspectiveGame.armedNotifier.addListener(_onArmedChanged);
+    _perspectiveGame.goalsNotifier.addListener(_onActivity);
+    _perspectiveGame.missesNotifier.addListener(_onActivity);
+  }
+
+  void _onArmedChanged() {
+    if (_perspectiveGame.armedNotifier.value) {
+      _armIdleWatch();
+    }
   }
 
   Future<void> _startAmbience() async {
@@ -216,6 +319,10 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
   @override
   void dispose() {
     unawaited(_ambiencePlayer?.dispose());
+    _idleCheckTimer?.cancel();
+    _perspectiveGame.armedNotifier.removeListener(_onArmedChanged);
+    _perspectiveGame.goalsNotifier.removeListener(_onActivity);
+    _perspectiveGame.missesNotifier.removeListener(_onActivity);
     super.dispose();
   }
 
@@ -1467,6 +1574,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   int _saves = 0;
   final List<_ShotState> _shotHistory = [];
   bool _completed = false;
+
+  /// True once the session has ended (goal/miss threshold or forfeit) — lets
+  /// the idle-timeout watcher in [PenaltyGamePage] stop polling.
+  bool get isCompleted => _completed;
 
   /// Recent world-space ball positions, oldest first — recorded every frame
   /// while the ball is moving (flight + post-resolve bounce/roll), rendered

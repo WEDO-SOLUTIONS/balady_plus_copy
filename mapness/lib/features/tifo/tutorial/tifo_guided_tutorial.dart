@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
+import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -113,7 +114,29 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
     }
   }
 
-  void _exit() => Navigator.of(context).pop(false);
+  /// The coach sheet's close `X` is the tour's only exit — confirm first
+  /// (Figma "Skip the tutorial" message state) since it reads as skipping
+  /// the whole thing, not just closing an overlay.
+  Future<void> _exit() async {
+    final l10n = AppLocalizations.of(context);
+    final skip = await showTifoMessageDialog<bool>(
+      context,
+      card: TifoMessageCard(
+        title: l10n.tifoSkipTutorialTitle,
+        body: l10n.tifoSkipTutorialBody,
+        secondaryAction: TifoMessageAction(
+          label: l10n.tifoContinue,
+          onPressed: () => Navigator.of(context).pop(false),
+        ),
+        onClose: () => Navigator.of(context).pop(false),
+        primaryAction: TifoMessageAction(label: l10n.tifoSkip, onPressed: () => Navigator.of(context).pop(true)),
+      ),
+    );
+    if (!mounted) return;
+    if (skip ?? false) {
+      Navigator.of(context).pop(false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

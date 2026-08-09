@@ -195,6 +195,31 @@ class TifoPrimaryButton extends StatelessWidget {
   }
 }
 
+/// Neutral filled pill button ("Exit" / "Leave" / "Continue") — the
+/// non-primary half of a two-button message-card action row.
+class TifoSecondaryButton extends StatelessWidget {
+  const TifoSecondaryButton({required this.label, super.key, this.onPressed});
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) => Material(
+    color: const Color(0xFFF3F4F6),
+    borderRadius: BorderRadius.circular(TifoRadii.l),
+    child: InkWell(
+      borderRadius: BorderRadius.circular(TifoRadii.l),
+      onTap: onPressed,
+      child: SizedBox(
+        height: 48,
+        child: Center(
+          child: Text(label, style: TifoText.bodyLSemi.copyWith(color: TifoColors.textStrong)),
+        ),
+      ),
+    ),
+  );
+}
+
 /// "Maybe Later" style ghost button.
 class TifoGhostButton extends StatelessWidget {
   const TifoGhostButton({required this.label, super.key, this.onPressed});

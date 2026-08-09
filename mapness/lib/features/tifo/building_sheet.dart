@@ -14,8 +14,10 @@ import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
+import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Opens the capture sheet for [building] on the root navigator, so it floats
@@ -297,6 +299,25 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       });
       return;
     }
+
+    final session = ref.read(tifoSessionProvider);
+    if ((session.profile?.balance ?? 0) < session.config.challengeCost) {
+      setState(() => _isBusy = false);
+      final l10n = AppLocalizations.of(context);
+      unawaited(
+        showTifoMessageDialog<void>(
+          context,
+          card: TifoMessageCard(
+            showIllustration: true,
+            title: l10n.tifoNotEnoughTokensTitle,
+            body: l10n.tifoNotEnoughTokensBody,
+            onClose: () => Navigator.of(context).pop(),
+          ),
+        ),
+      );
+      return;
+    }
+
     await _startAndPlay();
   }
 
@@ -353,6 +374,8 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             strikerColor: strikerColor,
             keeperColor: keeperColor,
             showColliderDebug: container.read(tifoDebugColliderOverlayProvider),
+            sessionTimeoutSeconds: session.config.liveLockTimeoutSeconds,
+            locale: container.read(appLanguageProvider).locale,
             onReady: (arm) => unawaited(
               _openSession(container).then((session) {
                 if (session == null) {
@@ -393,7 +416,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return session;
     } catch (e) {
       rootNavigatorKey.currentState?.pop();
-      _showResult(e is TifoApiException ? '${e.statusCode}: ${e.message}' : e.toString(), win: false);
+      _showResult(e is TifoApiException ? '${e.statusCode}: ${e.message}' : e.toString(), onRetry: _onPlayPressed);
       return null;
     }
   }
@@ -448,14 +471,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       // sends testers hunting for one.
       final expired = message.toLowerCase().contains('expired');
       logger.log('[tifo] submit failed${expired ? ' (session expired)' : ''}: $message');
-      _showResult(
-        expired
-            ? 'Session expired — a run must finish within '
-                  '${container.read(tifoSessionProvider).config.liveLockTimeoutSeconds}s of starting. '
-                  'The token was spent; try again.'
-            : 'Submit failed: $message',
-        win: false,
-      );
+      _showResult('Submit failed: $message', connectionLost: expired, onRetry: _onPlayPressed);
     }
   }
 
@@ -517,33 +533,32 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     }
   }
 
-  /// Win/Loss feedback via a dialog on the root navigator — the map/landing
-  /// route has no Scaffold, so a ScaffoldMessenger snackbar asserts. Interim
-  /// until the dedicated Win/Loss result screen (US-14) is built.
-  void _showResult(String message, {required bool win}) {
+  /// Error feedback via a dialog on the root navigator — the map/landing
+  /// route has no Scaffold, so a ScaffoldMessenger snackbar asserts. Win/Loss
+  /// has its own fullscreen hero (US-14, [showTifoPenaltyResult]); this is
+  /// only ever the failure path — see the "Connection lost" (session voided,
+  /// FR-16) and generic "Something went wrong" Figma message states.
+  void _showResult(String message, {bool connectionLost = false, VoidCallback? onRetry}) {
     final ctx = rootNavigatorKey.currentContext;
     if (ctx == null) {
       return;
     }
+    final l10n = AppLocalizations.of(ctx);
     unawaited(
-      showDialog<void>(
-        context: ctx,
-        builder: (dctx) => AlertDialog(
-          backgroundColor: TifoColors.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(TifoRadii.l)),
-          content: Row(
-            children: [
-              Text(win ? '🏆' : '⚽', style: const TextStyle(fontSize: 28)),
-              const SizedBox(width: 12),
-              Expanded(child: Text(message, style: TifoText.bodyL)),
-            ],
+      showTifoMessageDialog<void>(
+        ctx,
+        card: TifoMessageCard(
+          showIllustration: true,
+          title: connectionLost ? l10n.tifoConnectionLostTitle : l10n.tifoSomethingWentWrongTitle,
+          body: connectionLost ? l10n.tifoConnectionLostBody : message,
+          primaryAction: TifoMessageAction(
+            label: l10n.tifoRetry,
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              onRetry?.call();
+            },
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dctx).pop(),
-              child: Text('Continue', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent)),
-            ),
-          ],
+          onClose: () => Navigator.of(ctx).pop(),
         ),
       ),
     );
