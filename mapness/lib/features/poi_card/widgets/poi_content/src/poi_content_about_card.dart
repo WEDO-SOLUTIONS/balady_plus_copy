@@ -31,6 +31,9 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
   bool truncateText = false;
   double _maxWidth = 100;
 
+  String? _measuredText;
+  int? _measuredCollapsedLines;
+
   // ignore: prefer_const_constructors
   _AboutTextModel _textHeight = _AboutTextModel(height: 0, heightTruncated: 0, linesCount: 0);
 
@@ -69,60 +72,58 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
   @override
   Widget build(BuildContext context) => ContentWrapper.single(
     color: context.colors.backgroundSurface1,
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        if (_maxWidth != constraints.maxWidth) {
-          _maxWidth = constraints.maxWidth;
-          _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
-        }
-        return ContentRow(
-          backgroundColor: context.colors.backgroundSurface1,
-          text: ContentRowTextOptions(
-            title: widget.data.aboutTitle,
-            titleOptions: const ContentRowTextOption(isBold: true),
-            subtitleExtraOptions: _showExpandButton
-                ? ContentRowTextOption(
-                    isBold: true,
-                    builder: (context) => GestureDetector(
-                      onTap: () {
-                        if (!isFullVisible) {
-                          _animationController.forward();
-                        } else {
-                          _animationController.reverse();
-                        }
-                      },
-                      child: AnimatedBuilder(
-                        animation: _animation,
-                        builder: (context, child) => Stack(
-                          children: [
-                            Text(
-                              maxLines: 1,
-                              widget.data.showLessTitle,
-                              style: context.textStyle.footNoteBold.copyWith(
-                                color: context.colors.accentDefault.withOpacity(_animation.value),
-                              ),
-                            ),
-                            Text(
-                              maxLines: 1,
-                              widget.data.showMoreTitle,
-                              style: context.textStyle.footNoteBold.copyWith(
-                                color: context.colors.accentDefault.withOpacity(1 - _animation.value),
-                              ),
-                            ),
-                          ],
+    child: ContentRow(
+      backgroundColor: context.colors.backgroundSurface1,
+      text: ContentRowTextOptions(
+        title: widget.data.aboutTitle,
+        titleOptions: const ContentRowTextOption(isBold: true),
+        subtitleExtraOptions: _showExpandButton
+            ? ContentRowTextOption(
+                isBold: true,
+                builder: (context) => GestureDetector(
+                  onTap: () {
+                    if (!isFullVisible) {
+                      _animationController.forward();
+                    } else {
+                      _animationController.reverse();
+                    }
+                  },
+                  child: AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, child) => Stack(
+                      children: [
+                        Text(
+                          maxLines: 1,
+                          widget.data.showLessTitle,
+                          style: context.textStyle.footNoteBold.copyWith(
+                            color: context.colors.accentDefault.withOpacity(_animation.value),
+                          ),
                         ),
-                      ),
+                        Text(
+                          maxLines: 1,
+                          widget.data.showMoreTitle,
+                          style: context.textStyle.footNoteBold.copyWith(
+                            color: context.colors.accentDefault.withOpacity(1 - _animation.value),
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                : null,
-            subtitleOptions: ContentRowTextOption(
-              builder: (context) => AnimatedBuilder(
+                  ),
+                ),
+              )
+            : null,
+        subtitleOptions: ContentRowTextOption(
+          builder: (context) => LayoutBuilder(
+            builder: (context, constraints) {
+              _measureText(context, constraints.maxWidth);
+
+              return AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) => Stack(
                   alignment: AlignmentDirectional.bottomStart,
                   children: [
                     SizedBox(
-                      height: widget.isExpandable && _animation.value!=1
+                      height: widget.isExpandable && _animation.value != 1
                           ? _textHeight.heightTruncated +
                                 (_textHeight.height - _textHeight.heightTruncated) * _animation.value
                           : null,
@@ -155,13 +156,39 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                       ),
                   ],
                 ),
-              ),
-            ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ),
     ),
   );
+
+  void _measureText(BuildContext context, double maxWidth) {
+    if (_maxWidth == maxWidth &&
+        _measuredText == widget.data.text &&
+        _measuredCollapsedLines == widget.collapsedLinesCount) {
+      return;
+    }
+
+    _maxWidth = maxWidth;
+    _measuredText = widget.data.text;
+    _measuredCollapsedLines = widget.collapsedLinesCount;
+
+    final wasExpandable = _showExpandButton;
+    _textHeight = _calculateTextHeight(context, widget.data.text, maxWidth);
+
+    // The "Show more" button lives in ContentRow's subtitleExtra slot, which is
+    // built before this one, so it can only pick up the new measurement on the
+    // next frame.
+    if (_showExpandButton != wasExpandable) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    }
+  }
 
   _AboutTextModel _calculateTextHeight(BuildContext context, String text, double maxWidth) {
     final textDirection = Directionality.of(context);
@@ -169,10 +196,17 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
       text: text,
       style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
     );
-    final painter = TextPainter(text: span, textDirection: textDirection)..layout(maxWidth: maxWidth);
-
-    final painterTruncated = TextPainter(text: span, textDirection: textDirection, maxLines: 3)
+    // Match the Text widget, which scales with the platform text-size setting.
+    final textScaler = MediaQuery.textScalerOf(context);
+    final painter = TextPainter(text: span, textDirection: textDirection, textScaler: textScaler)
       ..layout(maxWidth: maxWidth);
+
+    final painterTruncated = TextPainter(
+      text: span,
+      textDirection: textDirection,
+      maxLines: widget.collapsedLinesCount,
+      textScaler: textScaler,
+    )..layout(maxWidth: maxWidth);
 
     return _AboutTextModel(
       height: painter.height,

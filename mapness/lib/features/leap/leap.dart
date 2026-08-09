@@ -7,6 +7,7 @@ import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/leap/leap_poi.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -29,6 +30,8 @@ class Leap extends _$Leap {
 
   bool _markerAdded = false;
 
+  String get customMarker => _config.customMarkerPath;
+
   @override
   bool build() {
     mapManager = ref.watch(
@@ -37,6 +40,11 @@ class Leap extends _$Leap {
         layerId: MapObjectManagerSettings.cityEvent().layerId,
       ).notifier,
     );
+
+    final debugOverride = ref.watch(leapDebugProvider);
+    if (debugOverride) {
+      return true;
+    }
 
     final eventDateRange = ref.watch(dgisEnvironmentProvider.select((value) => value.value?.leapDateRange));
 

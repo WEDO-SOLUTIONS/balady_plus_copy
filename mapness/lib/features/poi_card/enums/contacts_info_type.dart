@@ -32,46 +32,51 @@ enum ContactsInfoType {
   /// in the jurisdiction of Russia they have to remove it from public SDK documentation
   instagram,
   facebook,
+  tiktok,
 }
 
 extension ContactsInfoTypeExt on ContactsInfoType {
   static ContactsInfoType fromString(String typeName) => switch (typeName) {
-        'email' => ContactsInfoType.email,
-        'website' => ContactsInfoType.website,
-        'phone' => ContactsInfoType.phone,
-        'fax' => ContactsInfoType.fax,
-        'pobox' => ContactsInfoType.pobox,
-        'icq' => ContactsInfoType.icq,
-        'jabber' => ContactsInfoType.jabber,
-        'skype' => ContactsInfoType.skype,
-        'vkontakte' => ContactsInfoType.vkontakte,
-        'twitter' => ContactsInfoType.twitter,
-        'odnoklassniki' => ContactsInfoType.odnoklassniki,
-        'youtube' => ContactsInfoType.youtube,
-        'linkedin' => ContactsInfoType.linkedin,
-        'googleplus' => ContactsInfoType.googleplus,
-        'pinterest' => ContactsInfoType.pinterest,
-        'whatsApp' => ContactsInfoType.whatsapp,
-        'viber' => ContactsInfoType.viber,
-        'telegram' => ContactsInfoType.telegram,
-        'mobile' => ContactsInfoType.mobile,
-        'instagram' => ContactsInfoType.instagram,
-        'facebook' => ContactsInfoType.facebook,
-        _ => ContactsInfoType.website
-      };
+    'email' => ContactsInfoType.email,
+    'website' => ContactsInfoType.website,
+    'phone' => ContactsInfoType.phone,
+    'fax' => ContactsInfoType.fax,
+    'pobox' => ContactsInfoType.pobox,
+    'icq' => ContactsInfoType.icq,
+    'jabber' => ContactsInfoType.jabber,
+    'skype' => ContactsInfoType.skype,
+    'vkontakte' => ContactsInfoType.vkontakte,
+    'twitter' => ContactsInfoType.twitter,
+    'x' => ContactsInfoType.twitter,
+    'tiktok' => ContactsInfoType.tiktok,
+    'odnoklassniki' => ContactsInfoType.odnoklassniki,
+    'youtube' => ContactsInfoType.youtube,
+    'linkedin' => ContactsInfoType.linkedin,
+    'googleplus' => ContactsInfoType.googleplus,
+    'pinterest' => ContactsInfoType.pinterest,
+    'whatsApp' => ContactsInfoType.whatsapp,
+    'viber' => ContactsInfoType.viber,
+    'telegram' => ContactsInfoType.telegram,
+    'mobile' => ContactsInfoType.mobile,
+    'instagram' => ContactsInfoType.instagram,
+    'facebook' => ContactsInfoType.facebook,
+    _ => ContactsInfoType.website,
+  };
 
   /// There are not present, for example, [ContactsInfoType.phone] because we want to show it in different place
   /// So if some of the types will not included in this list - return null
   PoiContentSocialMediaTypes? get poiContentSocialMediaType => switch (this) {
-        ContactsInfoType.website => PoiContentSocialMediaTypes.website,
-        ContactsInfoType.instagram => PoiContentSocialMediaTypes.instagram,
-        ContactsInfoType.facebook => PoiContentSocialMediaTypes.facebook,
-        ContactsInfoType.youtube => PoiContentSocialMediaTypes.youtube,
-        ContactsInfoType.linkedin => PoiContentSocialMediaTypes.linkedin,
-        ContactsInfoType.whatsapp => PoiContentSocialMediaTypes.whatsapp,
-        ContactsInfoType.telegram => PoiContentSocialMediaTypes.telegram,
-        _ => null
-      };
+    ContactsInfoType.website => PoiContentSocialMediaTypes.website,
+    ContactsInfoType.instagram => PoiContentSocialMediaTypes.instagram,
+    ContactsInfoType.facebook => PoiContentSocialMediaTypes.facebook,
+    ContactsInfoType.youtube => PoiContentSocialMediaTypes.youtube,
+    ContactsInfoType.linkedin => PoiContentSocialMediaTypes.linkedin,
+    ContactsInfoType.whatsapp => PoiContentSocialMediaTypes.whatsapp,
+    ContactsInfoType.telegram => PoiContentSocialMediaTypes.telegram,
+    ContactsInfoType.twitter => PoiContentSocialMediaTypes.twitter,
+    ContactsInfoType.tiktok => PoiContentSocialMediaTypes.tiktok,
+    _ => null,
+  };
 }
 
 enum PoiContentSocialMediaType {
