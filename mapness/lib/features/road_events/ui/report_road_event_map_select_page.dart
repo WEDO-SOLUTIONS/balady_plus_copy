@@ -21,6 +21,7 @@ import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Stub screen for picking a map location for a new road event. The map stays
@@ -93,6 +94,7 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
     final point = ref.watch(cameraPositionProvider)?.point;
     final mediaQuery = ref.read(mediaQueryInfoProvider);
     final mediaQueryTop = mediaQuery?.viewPadding.top ?? 0;
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
     final selectedType = useState(RoadEventType.accident);
     final selectedLanes = useState<Set<RoadEventLane>>(const {});
@@ -119,123 +121,147 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
 
     const items = RoadEventType.values;
 
-    return ToggleSheet(
-      scrollController: scrollController,
-      backgroundColor: context.colors.backgroundSurface1,
-      safeAreaColor: context.colors.backgroundSurface1,
-      dragger: const SheetDragger(),
-      outside: Center(
-        child: Stack(
-          children: [
-            Assets.icons.svg.icPinPlaceholderRed.svg(),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, left: 10),
-              child: switch (selectedType.value.icon()) {
-                ToastIconAsset(:final asset) => SvgPicture.asset(
-                  asset,
-                  width: 32,
-                  height: 32,
-                  colorMapper: _CongestionColorMapper(context.colors),
-                ),
-                ToastIconData(:final data) => Icon(data, size: 32),
-              },
-            ),
-          ],
-        ),
-      ),
-      topHeader: Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.$2x),
-        child: Container(
-          height: 40,
-          alignment: AlignmentGeometry.bottomCenter,
-          child: Chips(
-            type: ChipsType.map,
-            options: ChipsLabelOptions(
-              labelFirst: context.l10n.roadEventMoveTheMap,
-              leadingIcon: ChipIconData(GeneralIcons.geoposition),
-            ),
-          ),
-        ),
-      ),
-      header: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                selectedType.value.label(context.l10n),
-                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-              ),
-            ),
-            CustomCloseButton(onClose: () => context.router.pop(), padding: EdgeInsets.zero),
-          ],
-        ),
-      ),
-      content: [
-        Container(
-          height: 200,
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              const crossAxisCount = 3;
-              const hSpacing = Spacing.$4x;
-              const vSpacing = Spacing.$3x;
-              const childHeight = 94;
-              final childWidth = (constraints.maxWidth - (crossAxisCount - 1) * hSpacing) / crossAxisCount;
+    final mediaQueryPadding = MediaQuery.paddingOf(context);
+    final left = mediaQueryPadding.left;
+    final right = mediaQueryPadding.right;
+    final width = NaviSheetPanel.landscapeWidth + left + right;
 
-              final childAspectRatio = childWidth / childHeight;
-              return GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  mainAxisSpacing: vSpacing,
-                  crossAxisSpacing: hSpacing,
-                  childAspectRatio: childAspectRatio,
-                ),
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return GestureDetector(
-                    onTap: () {
-                      selectedType.value = item;
-                      selectedLanes.value = const {};
-                    },
-                    child: _ItemCard(
-                      icon: item.icon(),
-                      iconColor: item.color(context.colors),
-                      label: item.label(context.l10n),
-                      isSelected: selectedType.value == item,
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        if (selectedType.value.supportsLanes) ...[
-          const SizedBox(height: Spacing.$4x),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ReportRoadEventLanes(
-                key: ValueKey(selectedType.value),
-                onUpdate: (lanes) => selectedLanes.value = lanes,
-              ),
-            ],
-          ),
-        ],
-        const SizedBox(height: Spacing.$4x),
+    final pin = Stack(
+      children: [
+        Assets.icons.svg.icPinPlaceholderRed.svg(),
         Padding(
-          padding: const EdgeInsets.all(Spacing.$4x),
-          child: AppButton(
-            buttonColorScheme: ButtonColorScheme.accent,
-            primaryLabel: context.l10n.roadEventConfirm,
-            buttonState: point == null
-                ? ButtonState.disabled
-                : (_isSubmitting ? ButtonState.loading : ButtonState.defaultState),
-            onTap: (point == null || _isSubmitting)
-                ? null
-                : () => _onSubmit(point, selectedType.value, selectedLanes.value),
+          padding: const EdgeInsets.only(top: 8, left: 10),
+          child: switch (selectedType.value.icon()) {
+            ToastIconAsset(:final asset) => SvgPicture.asset(
+              asset,
+              width: 32,
+              height: 32,
+              colorMapper: _CongestionColorMapper(context.colors),
+            ),
+            ToastIconData(:final data) => Icon(data, size: 32),
+          },
+        ),
+      ],
+    );
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (isLandscape)
+          Positioned.fill(
+            left: width,
+            child: Center(child: pin),
+          ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(
+            width: isLandscape ? width : double.infinity,
+            padding: isLandscape ? const EdgeInsets.only(top: Spacing.$3x) : null,
+            child: ToggleSheet(
+              scrollController: scrollController,
+              backgroundColor: context.colors.backgroundSurface1,
+              safeAreaColor: context.colors.backgroundSurface1,
+              dragger: const SheetDragger(),
+              outside: isLandscape ? null : Center(child: pin),
+              topHeader: isLandscape
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsets.only(bottom: Spacing.$2x),
+                      child: Container(
+                        height: 40,
+                        alignment: AlignmentGeometry.bottomCenter,
+                        child: Chips(
+                          type: ChipsType.map,
+                          options: ChipsLabelOptions(
+                            labelFirst: context.l10n.roadEventMoveTheMap,
+                            leadingIcon: ChipIconData(GeneralIcons.geoposition),
+                          ),
+                        ),
+                      ),
+                    ),
+              header: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        selectedType.value.label(context.l10n),
+                        style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                      ),
+                    ),
+                    CustomCloseButton(onClose: () => context.router.pop(), padding: EdgeInsets.zero),
+                  ],
+                ),
+              ),
+              content: [
+                Container(
+                  height: 200,
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      const crossAxisCount = 3;
+                      const hSpacing = Spacing.$4x;
+                      const vSpacing = Spacing.$3x;
+                      const childHeight = 94;
+                      final childWidth = (constraints.maxWidth - (crossAxisCount - 1) * hSpacing) / crossAxisCount;
+
+                      final childAspectRatio = childWidth / childHeight;
+                      return GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          mainAxisSpacing: vSpacing,
+                          crossAxisSpacing: hSpacing,
+                          childAspectRatio: childAspectRatio,
+                        ),
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return GestureDetector(
+                            onTap: () {
+                              selectedType.value = item;
+                              selectedLanes.value = const {};
+                            },
+                            child: _ItemCard(
+                              icon: item.icon(),
+                              iconColor: item.color(context.colors),
+                              label: item.label(context.l10n),
+                              isSelected: selectedType.value == item,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                if (selectedType.value.supportsLanes) ...[
+                  const SizedBox(height: Spacing.$4x),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ReportRoadEventLanes(
+                        key: ValueKey(selectedType.value),
+                        onUpdate: (lanes) => selectedLanes.value = lanes,
+                      ),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: Spacing.$4x),
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.$4x),
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.accent,
+                    primaryLabel: context.l10n.roadEventConfirm,
+                    buttonState: point == null
+                        ? ButtonState.disabled
+                        : (_isSubmitting ? ButtonState.loading : ButtonState.defaultState),
+                    onTap: (point == null || _isSubmitting)
+                        ? null
+                        : () => _onSubmit(point, selectedType.value, selectedLanes.value),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -263,7 +289,7 @@ class _ItemCard extends StatelessWidget {
       Container(
         height: 70,
         decoration: BoxDecoration(
-          color: context.colors.neutralOnContainer,
+          color: context.colors.backgroundSurface4,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected ? context.colors.accentDefault : Colors.transparent,

@@ -49,20 +49,16 @@ class _LandscapeLayout extends StatelessWidget {
                     child: SoundControl(),
                   ),
                   const Spacer(),
-                  ValueListenableBuilder(
-                    valueListenable: showControls,
-                    builder: (context, isVisible, child) => AnimatedOpacity(
-                      opacity: isVisible ? 1 : 0,
-                      duration: const Duration(milliseconds: 250),
-                      child: IgnorePointer(
-                        ignoring: !isVisible,
-                        child: const Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            RadioContextualButton(),
-                            SizedBox(height: uikit.Spacing.$2x),
-                            ReportRoadEventMapSelectControl(),
-                          ],
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: uikit.Spacing.$3x, bottom: uikit.Spacing.$3x),
+                    child: ValueListenableBuilder(
+                      valueListenable: showControls,
+                      builder: (context, isVisible, child) => AnimatedOpacity(
+                        opacity: isVisible ? 1 : 0,
+                        duration: const Duration(milliseconds: 250),
+                        child: IgnorePointer(
+                          ignoring: !isVisible,
+                          child: const RadioContextualButton(),
                         ),
                       ),
                     ),
@@ -84,12 +80,21 @@ class _LandscapeLayout extends StatelessWidget {
                         ignoring: !isVisible,
                         child: const Column(
                           mainAxisSize: MainAxisSize.min,
+                          spacing: uikit.Spacing.$2x,
                           children: [
                             TrafficParkingControl(trafficVisible: false, parkingVisible: false),
-                            SizedBox(height: uikit.Spacing.$2x),
                             DimensionControl(),
                           ],
                         ),
+                      ),
+                    ),
+                    const Spacer(),
+                    AnimatedOpacity(
+                      opacity: isVisible ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: IgnorePointer(
+                        ignoring: !isVisible,
+                        child: const ReportRoadEventMapSelectControl(),
                       ),
                     ),
                     const Spacer(),
