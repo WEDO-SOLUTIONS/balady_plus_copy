@@ -13,12 +13,13 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/road_events/helpers/road_event_type_label.dart';
 import 'package:mapness/features/road_events/ui/widgets/report_road_event_lanes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/camera_position_message_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
-import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/map/visible_rect.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
@@ -36,6 +37,17 @@ class ReportRoadEventMapSelectPage extends StatefulHookConsumerWidget {
 }
 
 class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMapSelectPage> {
+  // Height of the "Move the map" chip Container (topHeader).
+  static const _kMoveMapChipHeight = 40.0;
+
+  // The pin SVG's dot (the visual "tip") sits at cy=55 of the asset's 63-tall viewBox — expressed
+  // as a fraction of the rendered pin's own height so it stays correct at any render size.
+  static const _kPinTipYFraction = 55 / 63;
+
+  // Measures the pin's actual rendered position instead of recomputing sheetify's internal
+  // layout — see updatePinFraction.
+  final GlobalKey _pinKey = GlobalKey();
+
   bool _isSubmitting = false;
 
   @override
@@ -91,9 +103,8 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
 
   @override
   Widget build(BuildContext context) {
-    final point = ref.watch(cameraPositionProvider)?.point;
-    final mediaQuery = ref.read(mediaQueryInfoProvider);
-    final mediaQueryTop = mediaQuery?.viewPadding.top ?? 0;
+    final cameraPosition = ref.watch(cameraPositionProvider);
+    final visibleRect = ref.watch(visibleRectProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
     final selectedType = useState(RoadEventType.accident);
@@ -101,47 +112,108 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
 
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
 
-    // Keeps the native camera's bottom padding matched to the sheet height so
-    // cameraPositionProvider's point tracks the center marker (the visible area
-    // above the sheet), not the raw full-screen center. Self-adjusts to
-    // whatever content height ends up in `content:` later.
-    useEffect(() {
-      void updateCameraPadding() {
-        final sheetHeight = scrollController.sheetHeight.isNegative ? 0 : scrollController.sheetHeight;
-        final padding =
-            (sheetHeight + mediaQueryTop + (mediaQuery?.padding.bottom ?? 0)) * (mediaQuery?.devicePixelRatio ?? 1);
-
-        ref.read(cameraPaddingProvider.notifier).setPadding(CameraSetPaddingMessage(bottomPadding: padding.toInt()));
-      }
-
-      scrollController.addListener(updateCameraPadding);
-      updateCameraPadding();
-      return () => scrollController.removeListener(updateCameraPadding);
-    }, [scrollController]);
-
-    const items = RoadEventType.values;
-
     final mediaQueryPadding = MediaQuery.paddingOf(context);
     final left = mediaQueryPadding.left;
     final right = mediaQueryPadding.right;
     final width = NaviSheetPanel.landscapeWidth + left + right;
 
-    final pin = Stack(
-      children: [
-        Assets.icons.svg.icPinPlaceholderRed.svg(),
-        Padding(
-          padding: const EdgeInsetsDirectional.only(top: 8, start: 10.5),
-          child: switch (selectedType.value.icon()) {
-            ToastIconAsset(:final asset) => SvgPicture.asset(
-              asset,
-              width: 32,
-              height: 32,
-              colorMapper: _CongestionColorMapper(context.colors),
-            ),
-            ToastIconData(:final data) => Icon(data, size: 32),
-          },
-        ),
-      ],
+    // Camera padding is not needed on this page — reset it on both mount and unmount so this
+    // page neither inherits stale padding from whatever screen came before it, nor leaves any
+    // behind for the next one (mirroring the resetPadding() convention every other camera-padding
+    // caller in the app already follows). This also keeps visibleRectProvider's reported bounds
+    // matching the full screen rather than some padding-inset sub-region, which the pin-to-geo
+    // interpolation below assumes.
+    useEffect(() {
+      ref.read(cameraPaddingProvider.notifier).resetPadding();
+      return () {
+        ref.read(cameraPaddingProvider.notifier).resetPadding();
+      };
+    }, const []);
+
+    // visibleRectProvider's NE/SW box is only valid for interpolation while the camera is flat
+    // and north-up — flatten it once on open (the app's intro can leave tilt on until the first
+    // GPS fix). Deliberately a ONE-SHOT: cameraPositionEvents fires on every native camera frame
+    // with no throttling, so reacting continuously here would race moveCamera against the user's
+    // own drag gesture on every frame and effectively block panning.
+    final hasFlattenedCamera = useRef(false);
+    useEffect(() {
+      if (hasFlattenedCamera.value) {
+        return null;
+      }
+      final current = cameraPosition;
+      if (current == null) {
+        return null;
+      }
+      hasFlattenedCamera.value = true;
+      if (current.tilt.abs() > 0.5 || current.bearing.abs() > 0.5) {
+        ref.read(cameraPositionProvider.notifier).animateTo(current.copyWith(tilt: 0, bearing: 0));
+      }
+      return null;
+    }, [cameraPosition]);
+
+    // Measures the pin's actual on-screen fraction so it can be interpolated against
+    // visibleRectProvider's geo bounds below, instead of recomputing sheetify's internal layout.
+    // Re-measures on scrollController changes (user drag) AND on selectedType changes: switching
+    // to/from a type that shows the lanes row changes the sheet's auto-sized content height,
+    // which shifts the pin without going through scrollController's own listener.
+    final pinFraction = useState<Offset?>(null);
+    useEffect(() {
+      void updatePinFraction() {
+        final renderBox = _pinKey.currentContext?.findRenderObject() as RenderBox?;
+        if (renderBox == null || !renderBox.hasSize) {
+          return;
+        }
+
+        final tipLocal = Offset(renderBox.size.width / 2, renderBox.size.height * _kPinTipYFraction);
+        final tipGlobal = renderBox.localToGlobal(tipLocal);
+        final windowSize = MediaQuery.sizeOf(context);
+        pinFraction.value = Offset(
+          (tipGlobal.dx / windowSize.width).clamp(0.0, 1.0),
+          (tipGlobal.dy / windowSize.height).clamp(0.0, 1.0),
+        );
+      }
+
+      void scheduleUpdate() => WidgetsBinding.instance.addPostFrameCallback((_) => updatePinFraction());
+
+      scrollController.addListener(scheduleUpdate);
+      scheduleUpdate();
+      return () => scrollController.removeListener(scheduleUpdate);
+    }, [scrollController, isLandscape, selectedType.value]);
+
+    // The geo-point under the pin: a plain bilinear interpolation of the pin's screen fraction
+    // against the visible rectangle's NE/SW corners — pure local math, no native round trip.
+    // Linear interpolation of raw lat/lon (not Mercator-corrected) is a deliberate simplification;
+    // at the street-level zoom this screen is used at the curvature error is far below GPS
+    // precision.
+    final fraction = pinFraction.value;
+    final point = (visibleRect != null && fraction != null)
+        ? GeoPointMessage(
+            latitude: visibleRect.northEastLat - fraction.dy * (visibleRect.northEastLat - visibleRect.southWestLat),
+            longitude: visibleRect.southWestLon + fraction.dx * (visibleRect.northEastLon - visibleRect.southWestLon),
+          )
+        : null;
+
+    const items = RoadEventType.values;
+
+    final pin = KeyedSubtree(
+      key: _pinKey,
+      child: Stack(
+        children: [
+          Assets.icons.svg.icPinPlaceholderRed.svg(),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(top: 8, start: 10.5),
+            child: switch (selectedType.value.icon()) {
+              ToastIconAsset(:final asset) => SvgPicture.asset(
+                asset,
+                width: 32,
+                height: 32,
+                colorMapper: _CongestionColorMapper(context.colors),
+              ),
+              ToastIconData(:final data) => Icon(data, size: 32),
+            },
+          ),
+        ],
+      ),
     );
 
     return Stack(
@@ -156,7 +228,7 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
           alignment: Alignment.bottomLeft,
           child: Container(
             width: isLandscape ? width : double.infinity,
-            padding: isLandscape ? const EdgeInsets.only(top: Spacing.$3x) : null,
+            padding: isLandscape ? const EdgeInsets.only(top: Spacing.$3x) : EdgeInsets.zero,
             child: ToggleSheet(
               scrollController: scrollController,
               backgroundColor: context.colors.backgroundSurface1,
@@ -168,7 +240,7 @@ class _ReportRoadEventMapSelectPageState extends ConsumerState<ReportRoadEventMa
                   : Padding(
                       padding: const EdgeInsets.only(bottom: Spacing.$2x),
                       child: Container(
-                        height: 40,
+                        height: _kMoveMapChipHeight,
                         alignment: AlignmentGeometry.bottomCenter,
                         child: Chips(
                           type: ChipsType.map,
