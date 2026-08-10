@@ -53,7 +53,7 @@ class ActiveCityEvent extends _$ActiveCityEvent {
     if (env.foundingDayDateRange.isNow) {
       activeEvents.add(CityEventType.foundingDay);
     }
-    if (env.leapDateRange.isNow) {
+    if (env.leapDateRange.isVisibleNow) {
       activeEvents.add(CityEventType.leap);
     }
 
