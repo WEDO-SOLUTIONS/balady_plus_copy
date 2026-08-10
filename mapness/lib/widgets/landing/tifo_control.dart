@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/entry_screen.dart';
 import 'package:mapness/features/tifo/leaderboard_sheet.dart';
@@ -162,8 +163,12 @@ class TifoHelpControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MapButton(
-    onTap: () => unawaited(showTifoGuidedTutorial(context)),
-    child: Icon(Icons.help, size: 24, color: context.colors.foregroundDefault),
+    onTap: () => unawaited(showTifoGuidedTutorial(context, initialStep: TifoGuidedTutorial.lastStep)),
+    child: Assets.imagesSvg.tifoHelp.svg(
+      width: 24,
+      height: 24,
+      colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
+    ),
   );
 }
 

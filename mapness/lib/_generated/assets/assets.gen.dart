@@ -405,6 +405,9 @@ class $AssetsImagesSvgGen {
   /// Directory path: assets/images_svg/saudi_pass
   $AssetsImagesSvgSaudiPassGen get saudiPass => const $AssetsImagesSvgSaudiPassGen();
 
+  /// File path: assets/images_svg/tifo_help.svg
+  SvgGenImage get tifoHelp => const SvgGenImage('assets/images_svg/tifo_help.svg');
+
   /// File path: assets/images_svg/union.svg
   SvgGenImage get union => const SvgGenImage('assets/images_svg/union.svg');
 
@@ -436,6 +439,7 @@ class $AssetsImagesSvgGen {
     lostLocation,
     lostLocationDark,
     sadFace,
+    tifoHelp,
     union,
   ];
 }
@@ -1233,14 +1237,8 @@ class $AssetsTifoAudioGen {
   /// File path: assets/tifo/audio/kick_2.mp3
   String get kick2 => 'packages/mapness/assets/tifo/audio/kick_2.mp3';
 
-  /// File path: assets/tifo/audio/kick_3.mp3
-  String get kick3 => 'packages/mapness/assets/tifo/audio/kick_3.mp3';
-
-  /// File path: assets/tifo/audio/kick_4.mp3
-  String get kick4 => 'packages/mapness/assets/tifo/audio/kick_4.mp3';
-
   /// List of all assets
-  List<String> get values => [crowdAmbience1, kick1, kick1Mp3, kick2, kick3, kick4];
+  List<String> get values => [crowdAmbience1, kick1, kick1Mp3, kick2];
 }
 
 class $AssetsTifoBackgroundsGen {

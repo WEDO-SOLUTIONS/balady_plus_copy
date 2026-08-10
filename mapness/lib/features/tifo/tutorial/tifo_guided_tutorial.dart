@@ -15,7 +15,13 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 /// live map (with the TIFO layer on) stays visible behind the coach. Every
 /// other step paints a canned demo replica — the tour never hits the backend.
 class TifoGuidedTutorial extends StatefulWidget {
-  const TifoGuidedTutorial({super.key});
+  const TifoGuidedTutorial({super.key, this.initialStep = 0});
+
+  /// Index of the tour's closing screen (879:10224, the support/"Need help" step).
+  static const int lastStep = _TifoGuidedTutorialState._stepCount - 1;
+
+  /// Which of the 4 tour screens to open on.
+  final int initialStep;
 
   @override
   State<TifoGuidedTutorial> createState() => _TifoGuidedTutorialState();
@@ -24,14 +30,18 @@ class TifoGuidedTutorial extends StatefulWidget {
 /// Pushes the tour as a transparent fullscreen route. Resolves to `true` only
 /// when the player reaches the last screen — BRD V2 US-03 BR-06 treats an
 /// abandoned tutorial as never started, and the journey gates on that.
-Future<bool> showTifoGuidedTutorial(BuildContext context) async {
+///
+/// [initialStep] opens the tour on a specific screen (e.g. the ⚽-⋮ "?"
+/// control jumps straight to the closing support screen instead of replaying
+/// the whole tour from screen 1).
+Future<bool> showTifoGuidedTutorial(BuildContext context, {int initialStep = 0}) async {
   final done = await Navigator.of(context).push<bool>(
     PageRouteBuilder<bool>(
       opaque: false,
       fullscreenDialog: true,
       transitionDuration: const Duration(milliseconds: 200),
       reverseTransitionDuration: const Duration(milliseconds: 150),
-      pageBuilder: (_, _, _) => const TifoGuidedTutorial(),
+      pageBuilder: (_, _, _) => TifoGuidedTutorial(initialStep: initialStep),
       transitionsBuilder: (_, animation, _, child) => FadeTransition(opacity: animation, child: child),
     ),
   );
@@ -97,7 +107,7 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
     ),
   ];
 
-  int _index = 0;
+  late int _index = widget.initialStep.clamp(0, _stepCount - 1);
 
   bool get _isLast => _index == _stepCount - 1;
 

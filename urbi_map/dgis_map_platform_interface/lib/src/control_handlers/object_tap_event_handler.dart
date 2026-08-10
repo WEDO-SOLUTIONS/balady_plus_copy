@@ -127,8 +127,8 @@ class ObjectTapEventHandler {
     polygonHandlers.remove(id);
   }
 
-  void removeAllPolygonHandlers() {
-    polygonHandlers.clear();
+  void removeAllPolygonHandlers(String? managerId) {
+    polygonHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void polygonTapEvent(Map<dynamic, dynamic> map) {
@@ -144,8 +144,8 @@ class ObjectTapEventHandler {
     polylineHandlers.remove(id);
   }
 
-  void removeAllPolylineHandlers() {
-    polylineHandlers.clear();
+  void removeAllPolylineHandlers(String? managerId) {
+    polylineHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void polylineTapEvent(Map<dynamic, dynamic> map) {
@@ -161,8 +161,8 @@ class ObjectTapEventHandler {
     circleHandlers.remove(id);
   }
 
-  void removeAllCircleHandlers() {
-    circleHandlers.clear();
+  void removeAllCircleHandlers(String? managerId) {
+    circleHandlers.removeWhere((key, value) => value.id == managerId);
   }
 
   void circleTapEvent(Map<dynamic, dynamic> map) {

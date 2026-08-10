@@ -657,7 +657,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Remove all polygons from the map related to the [manager].
   Future<void> removeAllPolygons(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllPolygonHandlers();
+    _objectTapEventHandler.removeAllPolygonHandlers(manager?.id);
     return _api.removeAllPolygons(manager);
   }
 
@@ -692,7 +692,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Remove all circles from the map related to the [manager].
   Future<void> removeAllCircles(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllCircleHandlers();
+    _objectTapEventHandler.removeAllCircleHandlers(manager?.id);
     return _api.removeAllCircles(manager);
   }
 
@@ -727,7 +727,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Remove all polylines from the map related to the [manager].
   Future<void> removeAllPolylines(MapObjectManagerMessage? manager) {
-    _objectTapEventHandler.removeAllPolylineHandlers();
+    _objectTapEventHandler.removeAllPolylineHandlers(manager?.id);
     return _api.removeAllPolylines(manager);
   }
 
