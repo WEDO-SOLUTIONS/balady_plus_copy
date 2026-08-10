@@ -58,10 +58,16 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final session = ref.watch(tifoSessionProvider);
     final ownerClub = session.clubById(_building.ownerClubSlug);
     final ownerColor = ownerClub == null ? TifoColors.neutralFill : Color(ownerClub.colorArgb);
     final isClaim = _building.isNeutral;
+    // BRD US-08: browsing is always allowed, but a player who hasn't cleared
+    // the play-gate yet (e.g. "Maybe Later" on team select) can't start a
+    // challenge — show that up front instead of letting them tap Challenge
+    // and hit a gate failure.
+    final canChallenge = session.isPlayReady;
 
     return SafeArea(
       top: false,
@@ -88,7 +94,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      AppLocalizations.of(context).claimTheBuilding,
+                      l10n.claimTheBuilding,
                       style: TifoText.h2.copyWith(color: context.colors.foregroundDefault),
                       textAlign: TextAlign.center,
                     ),
@@ -105,20 +111,20 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Unclaimed', style: TifoText.captionMedium),
+                        Text(l10n.tifoUnclaimed, style: TifoText.captionMedium),
                         const SizedBox(height: 8),
                         Text(
                           _building.displayName,
                           style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
                         ),
                         const SizedBox(height: 2),
-                        const Text("This building hasn't been claimed yet.", style: TifoText.captionRegular),
+                        Text(l10n.tifoNotClaimedYet, style: TifoText.captionRegular),
                       ],
                     )
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Current Owner', style: TifoText.captionMedium),
+                        Text(l10n.tifoCurrentOwner, style: TifoText.captionMedium),
                         const SizedBox(height: 8),
                         Row(
                           children: [
@@ -141,7 +147,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Current score to beat', style: TifoText.captionMedium),
+                  Text(l10n.tifoCurrentScoreToBeat, style: TifoText.captionMedium),
                   const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -151,9 +157,9 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                         style: TifoText.h2.copyWith(color: TifoColors.accentSoft),
                       ),
                       const SizedBox(width: 6),
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 3),
-                        child: Text('goals', style: TifoText.captionRegular),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: Text(l10n.tifoGoals, style: TifoText.captionRegular),
                       ),
                       const Spacer(),
                       const Text('⚽', style: TextStyle(fontSize: 30)),
@@ -175,8 +181,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'This building has been played ${_building.contested7d} '
-                      'time${_building.contested7d == 1 ? '' : 's'} in the last 7 days.',
+                      l10n.tifoContestedCount(_building.contested7d),
                       style: TifoText.captionRegular,
                     ),
                   ),
@@ -198,9 +203,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        isClaim
-                            ? 'Be the first to claim it for your team.'
-                            : 'Win the challenge and dominate with your team.',
+                        isClaim ? l10n.tifoClaimHint : l10n.tifoChallengeHint,
                         style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
                       ),
                     ),
@@ -216,19 +219,17 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             const SizedBox(height: 20),
 
             // CTA by status.
-            if (_building.isAvailable)
+            if (_building.isAvailable && canChallenge)
               TifoPrimaryButton(
-                label: isClaim ? 'Claim building' : 'Challenge',
+                label: isClaim ? l10n.tifoClaimBuilding : l10n.tifoChallenge,
                 leadingEmoji: '⚽',
                 busy: _isBusy,
                 onPressed: _isBusy ? null : _onPlayPressed,
               )
+            else if (_building.isAvailable)
+              _disabledBar(l10n.tifoNotPlayReady)
             else
-              _disabledBar(
-                _building.status == 'live'
-                    ? 'Hold on… this building is currently being played for.'
-                    : 'Cooling down — try again shortly.',
-              ),
+              _disabledBar(_building.status == 'live' ? l10n.tifoBuildingLiveHint : l10n.tifoBuildingCooldownHint),
 
             if (kDebugMode) ...[
               const SizedBox(height: 8),
@@ -302,11 +303,17 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     if (!ready) {
       // Surface WHY: the gate walk bails silently (cancelled login, skipped
       // tutorial, "Maybe Later"), and a button that just goes quiet reads as
-      // "Challenge / mock capture is broken".
-      final step = ref.read(tifoSessionProvider).nextStep;
+      // "Challenge / mock capture is broken". The unmet step is logged for
+      // debugging; the CTA is already hidden/disabled for this case (see
+      // `canChallenge` in build()), so a real user only hits this branch if
+      // their play-ready status changed mid-gate — a friendly message is enough.
+      logger.log('[tifo] play-gate bailed: unmet step=${ref.read(tifoSessionProvider).nextStep.name}');
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _isBusy = false;
-        _error = 'Not play-ready — unmet step: ${step.name}';
+        _error = AppLocalizations.of(context).tifoNotPlayReady;
       });
       return;
     }
@@ -524,11 +531,17 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     if (!ready) {
       // Surface WHY: the gate walk bails silently (cancelled login, skipped
       // tutorial, "Maybe Later"), and a button that just goes quiet reads as
-      // "Challenge / mock capture is broken".
-      final step = ref.read(tifoSessionProvider).nextStep;
+      // "Challenge / mock capture is broken". The unmet step is logged for
+      // debugging; the CTA is already hidden/disabled for this case (see
+      // `canChallenge` in build()), so a real user only hits this branch if
+      // their play-ready status changed mid-gate — a friendly message is enough.
+      logger.log('[tifo] play-gate bailed: unmet step=${ref.read(tifoSessionProvider).nextStep.name}');
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _isBusy = false;
-        _error = 'Not play-ready — unmet step: ${step.name}';
+        _error = AppLocalizations.of(context).tifoNotPlayReady;
       });
       return;
     }
