@@ -1978,12 +1978,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     if (_backgroundImage == null) {
       _drawField(canvas);
       _drawGoal(canvas);
-    } else {
+    } else if (showColliderDebug) {
       // QA overlay — red outline of the *programmatic* goal frame (world
       // `x = ±_goalHalfWidth`, `y = 0..._goalHeight` at `z = _goalZ`) so
       // any drift between the photo's painted goal and the calibration in
       // `_photoGoalOnStage`/`_centerX`/`_horizonY`/`_focalLength` is
-      // immediately visible. Remove once alignment is confirmed on device.
+      // immediately visible. Gated behind the collider-debug toggle — it's
+      // a calibration aid, not something players should ever see.
       _drawGoalCalibrationOverlay(canvas);
     }
     _drawKeeper(canvas);
@@ -4046,8 +4047,8 @@ class _GoalkeeperModel {
     game._drawShadow(
       canvas,
       _Vec3(base.x + lean * 0.08, 0, base.z),
-      (1.12 + crouch * 0.1) * visualScale,
-      0.34,
+      (0.7 + crouch * 0.06) * visualScale,
+      0.18,
     );
 
     final height = math.max(
@@ -4133,8 +4134,8 @@ class _GoalkeeperModel {
     game._drawShadow(
       canvas,
       shadowCenter,
-      (1.28 + launch * 0.32) * visualScale,
-      0.3 - launch * 0.05,
+      (0.8 + launch * 0.2) * visualScale,
+      0.18 - launch * 0.03,
     );
 
     final width = math.max(

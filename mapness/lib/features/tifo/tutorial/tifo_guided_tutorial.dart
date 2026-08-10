@@ -189,8 +189,9 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
               ),
             ),
             _OverlayKind.none => Positioned.fill(
-              // Preview step drives itself: START advances the tour.
-              child: TifoDemoPenaltyPreview(onStart: _next),
+              // Preview step drives itself: START advances the tour, back
+              // returns to the previous step (only when one exists).
+              child: TifoDemoPenaltyPreview(onStart: _next, onBack: _index > 0 ? _previous : null),
             ),
           },
         ],

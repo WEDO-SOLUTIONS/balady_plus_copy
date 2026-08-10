@@ -353,9 +353,10 @@ class TifoDemoBuildingSheet extends StatelessWidget {
 // ─── 06 · Penalty challenge preview (dark) ──────────────────────────────────
 
 class TifoDemoPenaltyPreview extends StatelessWidget {
-  const TifoDemoPenaltyPreview({super.key, this.onStart});
+  const TifoDemoPenaltyPreview({super.key, this.onStart, this.onBack});
 
   final VoidCallback? onStart;
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) => ColoredBox(
@@ -379,49 +380,52 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
-                    child: Column(
-                      children: [
-                        Text(
-                          '🪙 ${AppLocalizations.of(context).tokensNeeded}',
-                          style: TifoText.captionMedium.copyWith(color: _amber),
-                        ),
-                        const SizedBox(height: 6),
-                        Text('1', style: TifoText.h2.copyWith(color: _amber)),
-                      ],
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: _card(bg: const Color(0xFF141A15), border: _amber.withValues(alpha: 0.7)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '🪙 ${AppLocalizations.of(context).tokensNeeded}',
+                            style: TifoText.captionMedium.copyWith(color: _amber),
+                          ),
+                          Text('1', style: TifoText.h2.copyWith(color: _amber)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: _card(
-                      bg: const Color(0xFF141A15),
-                      border: TifoColors.accentSoft.withValues(alpha: 0.7),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
-                          style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
-                        ),
-                        const SizedBox(height: 6),
-                        Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
-                        Text(
-                          AppLocalizations.of(context).beatTheScore,
-                          style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
-                        ),
-                      ],
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: _card(
+                        bg: const Color(0xFF141A15),
+                        border: TifoColors.accentSoft.withValues(alpha: 0.7),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '🏢 ${AppLocalizations.of(context).claimTheBuilding}',
+                            style: TifoText.captionMedium.copyWith(color: TifoColors.accentMuted),
+                          ),
+                          Text('12', style: TifoText.h2.copyWith(color: TifoColors.accentMuted)),
+                          Text(
+                            AppLocalizations.of(context).beatTheScore,
+                            style: TifoText.captionRegular.copyWith(color: TifoColors.accentMuted),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             Container(
@@ -435,10 +439,32 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 14),
-            TifoPrimaryButton(
-              label: AppLocalizations.of(context).startGame,
-              leadingEmoji: '⚽',
-              onPressed: onStart,
+            Row(
+              children: [
+                if (onBack != null) ...[
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onBack,
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: context.colors.foregroundMuted,
+                        borderRadius: BorderRadius.circular(TifoRadii.l),
+                      ),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.foregroundDefault),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: TifoPrimaryButton(
+                    label: AppLocalizations.of(context).startGame,
+                    leadingEmoji: '⚽',
+                    onPressed: onStart,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

@@ -302,46 +302,52 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             ),
           ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: _StatTile(
-                label: 'Current tokens',
-                value: '${profile?.balance ?? 0}',
-                chipBg: const Color(0xFFEDE9FE),
-                icon: Icons.bolt_rounded,
-                iconColor: const Color(0xFF7C3AED),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _StatTile(
+                  label: 'Current tokens',
+                  value: '${profile?.balance ?? 0}',
+                  chipBg: const Color(0xFFEDE9FE),
+                  icon: Icons.bolt_rounded,
+                  iconColor: const Color(0xFF7C3AED),
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(child: _NextDailyTile(secondsToNextDaily: profile?.secondsToNextDaily)),
-          ],
+              const SizedBox(width: 10),
+              Expanded(child: _NextDailyTile(secondsToNextDaily: profile?.secondsToNextDaily)),
+            ],
+          ),
         ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            Expanded(
-              child: _StatTile(
-                label: 'Every trip you complete earns you tokens.',
-                value: '${profile?.tripTokensToday ?? 0}',
-                caption: 'Today',
-                chipBg: const Color(0xFFE3F5EB),
-                icon: Icons.location_on_rounded,
-                iconColor: TifoColors.accentSoft,
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _StatTile(
+                  label: 'Every trip you complete earns you tokens.',
+                  value: '${profile?.tripTokensToday ?? 0}',
+                  caption: 'Today',
+                  chipBg: const Color(0xFFE3F5EB),
+                  icon: Icons.location_on_rounded,
+                  iconColor: TifoColors.accentSoft,
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: _StatTile(
-                label: 'Tokens earned',
-                value: '${profile?.allTimeEarned ?? 0}',
-                caption: 'All time',
-                chipBg: const Color(0xFFE3F5EB),
-                icon: Icons.account_balance_rounded,
-                iconColor: TifoColors.accentSoft,
+              const SizedBox(width: 10),
+              Expanded(
+                child: _StatTile(
+                  label: 'Tokens earned',
+                  value: '${profile?.allTimeEarned ?? 0}',
+                  caption: 'All time',
+                  chipBg: const Color(0xFFE3F5EB),
+                  icon: Icons.account_balance_rounded,
+                  iconColor: TifoColors.accentSoft,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         const SizedBox(height: 10),
         Container(
@@ -750,6 +756,7 @@ class _StatTile extends StatelessWidget {
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: TifoText.captionRegular.copyWith(fontSize: 12)),
         const SizedBox(height: 8),
