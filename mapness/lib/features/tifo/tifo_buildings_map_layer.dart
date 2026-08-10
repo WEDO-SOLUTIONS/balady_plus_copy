@@ -99,6 +99,19 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           unawaited(_redrawDistricts(next));
         }
       })
+      // Building fill color is resolved from `session.clubById` at draw time
+      // (see `_syncBuildings`), but the clubs roster loads asynchronously and
+      // can still be empty on the very first draw — those buildings get
+      // stamped into `_drawnFill` as neutral and the diff redraw then skips
+      // them forever, since nothing else re-triggers a sync until buildings
+      // state itself changes (e.g. after finishing a game). Re-sync once the
+      // roster actually changes so already-claimed buildings pick up their
+      // owner's color as soon as it's known, without waiting on a game.
+      ..listen<TifoSessionState>(tifoSessionProvider, (prev, next) {
+        if (state && _buildingsMode && !identical(prev?.clubs, next.clubs)) {
+          unawaited(_syncBuildings(ref.read(tifoBuildingsProvider)));
+        }
+      })
       ..onDispose(_teardown);
     // Fire-and-forget: restore the persisted toggle once the Hive box opens
     // and the native map is ready — `enable()` awaits `dgisControllerProvider`
