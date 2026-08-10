@@ -3519,8 +3519,6 @@ class _GoalkeeperModel {
   Color _glove = const Color(0xFFF7F7F2);
   Color _boot = const Color(0xFF111318);
   Color _hair = const Color(0xFF3A2417);
-  int _sourceModelBytes = 0;
-  _GlbModel? _sourceModel;
 
   /// The padded atlas cell (`dst` in [_drawIdleSprite]/[_drawDivingSprite])
   /// is much bigger than the keeper actually is — every pose shares one crop
@@ -3653,12 +3651,6 @@ class _GoalkeeperModel {
       'packages/mapness/assets/tifo/models/goalkeeper.model.json',
     );
     final data = jsonDecode(raw) as Map<String, dynamic>;
-    final sourceAsset = data['sourceAsset'] as String? ?? '';
-    if (sourceAsset.isNotEmpty) {
-      final glbData = await rootBundle.load(sourceAsset);
-      _sourceModelBytes = glbData.lengthInBytes;
-      _sourceModel = _GlbModel.parse(glbData);
-    }
     final palette = data['palette'] as Map<String, dynamic>? ?? {};
     _jersey = _colorFromHex(palette['jersey'] as String? ?? '#FFA726');
     _shorts = _colorFromHex(palette['shorts'] as String? ?? '#223A5E');
@@ -3711,7 +3703,7 @@ class _GoalkeeperModel {
     final lean = dive * action;
     final x = base.x + lean * 0.28;
     final z = base.z;
-    final modelScale = _sourceModelBytes > 0 ? 1.0 : 0.94;
+    const modelScale = 0.94;
 
     game._drawShadow(
       canvas,
@@ -3719,22 +3711,6 @@ class _GoalkeeperModel {
       1.05 * modelScale,
       0.28,
     );
-
-    final sourceModel = _sourceModel;
-    if (sourceModel != null) {
-      sourceModel.render(
-        game,
-        canvas,
-        origin: _Vec3(x - 0.04, 0.02 + lift, z),
-        scale: 1.28 * modelScale,
-        yaw: lean * 0.18,
-        roll: -lean * 0.16,
-        tint: _jersey,
-      );
-      _drawArms(game, canvas, x, z, lift, lean);
-      _drawHead(game, canvas, x + lean * 0.16, z - 0.04, lift, lean);
-      return;
-    }
 
     _drawLegs(game, canvas, x, z, lift, lean);
     game._drawBox(
@@ -4329,8 +4305,6 @@ class _SoccerBallModel {
   final List<_BallPanel> _panels;
   ui.Image? _sprite;
   double _modelRadius = PenaltyGame._ballRadius;
-  int _sourceModelBytes = 0;
-  _GlbModel? _sourceModel;
 
   Future<void> load() async {
     try {
@@ -4346,12 +4320,6 @@ class _SoccerBallModel {
     );
     final data = jsonDecode(raw) as Map<String, dynamic>;
     _modelRadius = (data['baseRadius'] as num?)?.toDouble() ?? PenaltyGame._ballRadius;
-    final sourceAsset = data['sourceAsset'] as String? ?? '';
-    if (sourceAsset.isNotEmpty) {
-      final glbData = await rootBundle.load(sourceAsset);
-      _sourceModelBytes = glbData.lengthInBytes;
-      _sourceModel = _GlbModel.parse(glbData);
-    }
     final panels = data['panels'] as List<dynamic>? ?? [];
     if (panels.isEmpty) {
       return;
@@ -4394,39 +4362,26 @@ class _SoccerBallModel {
       return;
     }
 
-    final sourceScale = _sourceModelBytes > 0 ? 1.0 : 0.92;
+    const sourceScale = 0.92;
     final radius = (_modelRadius * sourceScale * projected.scale).clamp(5.0, 38.0).toDouble();
     final ballRect = Rect.fromCircle(center: projected.offset, radius: radius);
     final ballClip = Path()..addOval(ballRect);
 
-    final sourceModel = _sourceModel;
-    if (sourceModel != null) {
-      sourceModel.render(
-        game,
-        canvas,
-        origin: center,
-        scale: _modelRadius / 0.01,
-        yaw: spin * 0.48,
-        pitch: spin * 0.31,
-        tint: const Color(0xFFECEFF4),
-      );
-    } else {
-      canvas.drawCircle(
-        projected.offset,
-        radius,
-        Paint()
-          ..shader = const RadialGradient(
-            center: Alignment(-0.38, -0.42),
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xFFF4F6F8),
-              Color(0xFFC4CBD3),
-              Color(0xFF77808A),
-            ],
-            stops: [0.0, 0.46, 0.82, 1.0],
-          ).createShader(ballRect),
-      );
-    }
+    canvas.drawCircle(
+      projected.offset,
+      radius,
+      Paint()
+        ..shader = const RadialGradient(
+          center: Alignment(-0.38, -0.42),
+          colors: [
+            Color(0xFFFFFFFF),
+            Color(0xFFF4F6F8),
+            Color(0xFFC4CBD3),
+            Color(0xFF77808A),
+          ],
+          stops: [0.0, 0.46, 0.82, 1.0],
+        ).createShader(ballRect),
+    );
 
     canvas.save();
     canvas.clipPath(ballClip);
@@ -4578,313 +4533,6 @@ class _BallPanel {
 
   final _Vec3 normal;
   final double size;
-}
-
-class _GlbModel {
-  _GlbModel(this._triangles, this._center);
-
-  static const int _jsonChunk = 0x4E4F534A;
-  static const int _binChunk = 0x004E4942;
-
-  final List<_GlbTriangle> _triangles;
-  final _Vec3 _center;
-
-  static _GlbModel parse(ByteData data) {
-    final bytes = data.buffer.asUint8List(
-      data.offsetInBytes,
-      data.lengthInBytes,
-    );
-    if (bytes.length < 20 || _ascii(bytes, 0, 4) != 'glTF') {
-      return _GlbModel(const [], _Vec3.zero());
-    }
-
-    var offset = 12;
-    Map<String, dynamic>? document;
-    var binOffset = 0;
-
-    while (offset + 8 <= bytes.length) {
-      final chunkLength = _u32(bytes, offset);
-      final chunkType = _u32(bytes, offset + 4);
-      final chunkStart = offset + 8;
-      final chunkEnd = chunkStart + chunkLength;
-      if (chunkEnd > bytes.length) {
-        break;
-      }
-      if (chunkType == _jsonChunk) {
-        document = jsonDecode(utf8.decode(bytes.sublist(chunkStart, chunkEnd))) as Map<String, dynamic>;
-      } else if (chunkType == _binChunk) {
-        binOffset = chunkStart;
-      }
-      offset = chunkEnd;
-    }
-
-    if (document == null || binOffset == 0) {
-      return _GlbModel(const [], _Vec3.zero());
-    }
-
-    final accessors = document['accessors'] as List<dynamic>? ?? [];
-    final bufferViews = document['bufferViews'] as List<dynamic>? ?? [];
-    final meshes = document['meshes'] as List<dynamic>? ?? [];
-    final triangles = <_GlbTriangle>[];
-    var minX = double.infinity;
-    var minY = double.infinity;
-    var minZ = double.infinity;
-    var maxX = -double.infinity;
-    var maxY = -double.infinity;
-    var maxZ = -double.infinity;
-
-    for (final mesh in meshes.cast<Map<String, dynamic>>()) {
-      final primitives = mesh['primitives'] as List<dynamic>? ?? [];
-      for (final primitive in primitives.cast<Map<String, dynamic>>()) {
-        final attributes = primitive['attributes'] as Map<String, dynamic>? ?? {};
-        final positionAccessor = attributes['POSITION'] as int?;
-        if (positionAccessor == null) {
-          continue;
-        }
-        final positions = _readVec3Accessor(
-          bytes,
-          binOffset,
-          accessors[positionAccessor] as Map<String, dynamic>,
-          bufferViews,
-        );
-        if (positions.isEmpty) {
-          continue;
-        }
-        for (final vertex in positions) {
-          minX = math.min(minX, vertex.x);
-          minY = math.min(minY, vertex.y);
-          minZ = math.min(minZ, vertex.z);
-          maxX = math.max(maxX, vertex.x);
-          maxY = math.max(maxY, vertex.y);
-          maxZ = math.max(maxZ, vertex.z);
-        }
-
-        final indexAccessor = primitive['indices'] as int?;
-        final indices = indexAccessor == null
-            ? List<int>.generate(positions.length, (index) => index)
-            : _readIndexAccessor(
-                bytes,
-                binOffset,
-                accessors[indexAccessor] as Map<String, dynamic>,
-                bufferViews,
-              );
-        for (var i = 0; i + 2 < indices.length; i += 3) {
-          final a = indices[i];
-          final b = indices[i + 1];
-          final c = indices[i + 2];
-          if (a < positions.length && b < positions.length && c < positions.length) {
-            triangles.add(
-              _GlbTriangle(positions[a], positions[b], positions[c]),
-            );
-          }
-        }
-      }
-    }
-
-    final center = minX.isFinite ? _Vec3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2) : _Vec3.zero();
-    return _GlbModel(triangles, center);
-  }
-
-  void render(
-    PenaltyGame game,
-    Canvas canvas, {
-    required _Vec3 origin,
-    required double scale,
-    required Color tint,
-    double yaw = 0,
-    double pitch = 0,
-    double roll = 0,
-  }) {
-    if (_triangles.isEmpty) {
-      return;
-    }
-    final drawList = <_ProjectedTriangle>[];
-    for (final triangle in _triangles) {
-      final a = _transform(triangle.a, origin, scale, yaw, pitch, roll);
-      final b = _transform(triangle.b, origin, scale, yaw, pitch, roll);
-      final c = _transform(triangle.c, origin, scale, yaw, pitch, roll);
-      final pa = game._project(a);
-      final pb = game._project(b);
-      final pc = game._project(c);
-      if (pa == null || pb == null || pc == null) {
-        continue;
-      }
-      final area = _signedArea(pa.offset, pb.offset, pc.offset);
-      if (area.abs() < 0.2) {
-        continue;
-      }
-      final normal = _normal(a, b, c);
-      final light = _shade(normal);
-      drawList.add(
-        _ProjectedTriangle(
-          pa.offset,
-          pb.offset,
-          pc.offset,
-          (a.z + b.z + c.z) / 3,
-          _mixShade(tint, light),
-        ),
-      );
-    }
-
-    drawList.sort((a, b) => b.depth.compareTo(a.depth));
-    for (final triangle in drawList) {
-      final path = Path()
-        ..moveTo(triangle.a.dx, triangle.a.dy)
-        ..lineTo(triangle.b.dx, triangle.b.dy)
-        ..lineTo(triangle.c.dx, triangle.c.dy)
-        ..close();
-      canvas.drawPath(path, Paint()..color = triangle.color);
-    }
-  }
-
-  _Vec3 _transform(
-    _Vec3 source,
-    _Vec3 origin,
-    double scale,
-    double yaw,
-    double pitch,
-    double roll,
-  ) {
-    var x = source.x - _center.x;
-    var y = source.z;
-    var z = source.y - _center.y;
-
-    final cy = math.cos(yaw);
-    final sy = math.sin(yaw);
-    final x1 = x * cy - z * sy;
-    final z1 = x * sy + z * cy;
-    x = x1;
-    z = z1;
-
-    final cp = math.cos(pitch);
-    final sp = math.sin(pitch);
-    final y1 = y * cp - z * sp;
-    final z2 = y * sp + z * cp;
-    y = y1;
-    z = z2;
-
-    final cr = math.cos(roll);
-    final sr = math.sin(roll);
-    final x2 = x * cr - y * sr;
-    final y2 = x * sr + y * cr;
-
-    return _Vec3(
-      origin.x + x2 * scale,
-      origin.y + y2 * scale,
-      origin.z + z * scale,
-    );
-  }
-
-  static List<_Vec3> _readVec3Accessor(
-    Uint8List bytes,
-    int binOffset,
-    Map<String, dynamic> accessor,
-    List<dynamic> bufferViews,
-  ) {
-    if (accessor['componentType'] != 5126 || accessor['type'] != 'VEC3') {
-      return const [];
-    }
-    final view = bufferViews[accessor['bufferView'] as int] as Map<String, dynamic>;
-    final count = accessor['count'] as int;
-    final stride = view['byteStride'] as int? ?? 12;
-    final start = binOffset + (view['byteOffset'] as int? ?? 0) + (accessor['byteOffset'] as int? ?? 0);
-    final data = ByteData.sublistView(bytes);
-    return List<_Vec3>.generate(count, (index) {
-      final offset = start + index * stride;
-      return _Vec3(
-        data.getFloat32(offset, Endian.little),
-        data.getFloat32(offset + 4, Endian.little),
-        data.getFloat32(offset + 8, Endian.little),
-      );
-    });
-  }
-
-  static List<int> _readIndexAccessor(
-    Uint8List bytes,
-    int binOffset,
-    Map<String, dynamic> accessor,
-    List<dynamic> bufferViews,
-  ) {
-    final view = bufferViews[accessor['bufferView'] as int] as Map<String, dynamic>;
-    final count = accessor['count'] as int;
-    final componentType = accessor['componentType'] as int;
-    final componentSize = switch (componentType) {
-      5121 => 1,
-      5123 => 2,
-      5125 => 4,
-      _ => 0,
-    };
-    if (componentSize == 0) {
-      return const [];
-    }
-    final stride = view['byteStride'] as int? ?? componentSize;
-    final start = binOffset + (view['byteOffset'] as int? ?? 0) + (accessor['byteOffset'] as int? ?? 0);
-    final data = ByteData.sublistView(bytes);
-    return List<int>.generate(count, (index) {
-      final offset = start + index * stride;
-      return switch (componentType) {
-        5121 => data.getUint8(offset),
-        5123 => data.getUint16(offset, Endian.little),
-        5125 => data.getUint32(offset, Endian.little),
-        _ => 0,
-      };
-    });
-  }
-
-  static int _u32(Uint8List bytes, int offset) => ByteData.sublistView(bytes).getUint32(offset, Endian.little);
-
-  static String _ascii(Uint8List bytes, int start, int length) =>
-      String.fromCharCodes(bytes.sublist(start, start + length));
-
-  static double _signedArea(Offset a, Offset b, Offset c) =>
-      (b.dx - a.dx) * (c.dy - a.dy) - (b.dy - a.dy) * (c.dx - a.dx);
-
-  static _Vec3 _normal(_Vec3 a, _Vec3 b, _Vec3 c) {
-    final ux = b.x - a.x;
-    final uy = b.y - a.y;
-    final uz = b.z - a.z;
-    final vx = c.x - a.x;
-    final vy = c.y - a.y;
-    final vz = c.z - a.z;
-    return _Vec3(uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx);
-  }
-
-  static double _shade(_Vec3 normal) {
-    final length = math.sqrt(
-      normal.x * normal.x + normal.y * normal.y + normal.z * normal.z,
-    );
-    if (length == 0) {
-      return 0.55;
-    }
-    final nx = normal.x / length;
-    final ny = normal.y / length;
-    final nz = normal.z / length;
-    final light = nx * -0.28 + ny * 0.82 + nz * -0.5;
-    return (0.44 + light * 0.38).clamp(0.22, 0.9).toDouble();
-  }
-
-  static Color _mixShade(Color color, double shade) {
-    final target = shade > 0.55 ? _lighten(color, shade - 0.55) : _darken(color, 0.55 - shade);
-    return Color.lerp(color, target, 0.8)!;
-  }
-}
-
-class _GlbTriangle {
-  const _GlbTriangle(this.a, this.b, this.c);
-
-  final _Vec3 a;
-  final _Vec3 b;
-  final _Vec3 c;
-}
-
-class _ProjectedTriangle {
-  const _ProjectedTriangle(this.a, this.b, this.c, this.depth, this.color);
-
-  final Offset a;
-  final Offset b;
-  final Offset c;
-  final double depth;
-  final Color color;
 }
 
 class _Vec3 {
