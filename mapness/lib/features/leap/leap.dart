@@ -48,7 +48,7 @@ class Leap extends _$Leap {
 
     final eventDateRange = ref.watch(dgisEnvironmentProvider.select((value) => value.value?.leapDateRange));
 
-    return eventDateRange?.isNow ?? false;
+    return eventDateRange?.isVisibleNow ?? false;
   }
 
   Future<void> initializeGlobalMarker() async {
