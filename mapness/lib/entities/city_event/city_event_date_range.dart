@@ -3,8 +3,9 @@ part of 'city_event.dart';
 class CityEventDateRange extends Equatable {
   final DateTime from;
   final DateTime to;
+  final bool? enabled;
 
-  const CityEventDateRange(this.from, this.to);
+  const CityEventDateRange(this.from, this.to, {this.enabled});
 
   factory CityEventDateRange.cityscapeDefault() =>
       CityEventDateRange(DateTime(DateTime.now().year, 11, 17), DateTime(DateTime.now().year, 11, 20));
@@ -24,13 +25,18 @@ class CityEventDateRange extends Equatable {
     try {
       final fromValue = json?['from'] as String?;
       final toValue = json?['to'] as String?;
+      final enabledValue = json?['enabled'] as bool?;
       if (fromValue == null || toValue == null) {
         return defaults;
       }
 
       DateTime? tryParse(String date) => DateFormat('dd-MM-yy').tryParse(date);
 
-      return CityEventDateRange(tryParse(fromValue) ?? defaults.from, tryParse(toValue) ?? defaults.to);
+      return CityEventDateRange(
+        tryParse(fromValue) ?? defaults.from,
+        tryParse(toValue) ?? defaults.to,
+        enabled: enabledValue ?? defaults.enabled,
+      );
     } catch (e) {
       debugPrint('Failed to parse CityEventDateRange: $e');
       return defaults;
@@ -38,9 +44,18 @@ class CityEventDateRange extends Equatable {
   }
 
   @override
-  List<Object?> get props => [from, to];
+  List<Object?> get props => [from, to, enabled];
 
   bool get isNow => isDateInRange(DateTime.now());
+
+  bool get isVisibleNow {
+    final enabled = this.enabled;
+    if (enabled == null) {
+      return isNow;
+    }
+
+    return enabled && DateTime.now().isBefore(to.add(const Duration(days: 1)));
+  }
 
   bool isDateInRange(DateTime dateTime) {
     // we add one day to include the last day in range when checking
