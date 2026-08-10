@@ -109,6 +109,7 @@ class MapObjectManager extends _$MapObjectManager {
 
     ref.onDispose(() async {
       await dgisController.removeAllMarkers(fromManager: manager);
+      await dgisController.removeAllModels(fromManager: manager);
       await dgisController.removeMapObjectManager(manager);
     });
 
@@ -168,6 +169,44 @@ class MapObjectManager extends _$MapObjectManager {
     _markers.clear();
   }
 
+  /// --- 3D MODEL ---
+  List<ModelMapObject> get models => _models;
+
+  final _models = <ModelMapObject>[];
+
+  Future<void> addModel(ModelMapObject model) async {
+    await ref.read(dgisControllerProvider).value?.addModel(model, toManager: await future);
+
+    _models.add(model);
+  }
+
+  Future<void> addModels(List<ModelMapObject> models) async {
+    await ref.read(dgisControllerProvider).value?.addModels(models, toManager: await future);
+
+    _models.addAll(models);
+  }
+
+  Future<void> setModelOptions(
+    String modelId,
+    ChangeModelMapObjectOptionsMessage options,
+  ) async => await ref.read(dgisControllerProvider).value?.setModelOptions(modelId, options);
+
+  Future<void> removeModelById(String modelId) async {
+    _models.removeWhere((element) => element.id == modelId);
+    final manager = await future;
+    try {
+      unawaited(ref.read(dgisControllerProvider).value?.removeModel(modelId, fromManager: manager));
+    } catch (ex, _) {
+      logger.log('Error removing model: ${ex.toString()}');
+    }
+  }
+
+  Future<void> removeAllModels() async {
+    await ref.read(dgisControllerProvider).value?.removeAllModels(fromManager: await future);
+
+    _models.clear();
+  }
+
   /// --- POLYLINE ---
 
   Future<void> addPolyLines(List<Polyline> polylines) async {
@@ -199,6 +238,7 @@ class MapObjectManager extends _$MapObjectManager {
 
   Future<void> removeAll() async {
     await removeAllMarkers();
+    await removeAllModels();
     await removeAllPolygons();
     await removeAllPolyLines();
   }

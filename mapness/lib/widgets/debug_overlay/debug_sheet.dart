@@ -11,8 +11,10 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/app_icon_quick_actions_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
 import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
+import 'package:mapness/widgets/debug_overlay/debug_3d_model_panel.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
+import 'package:mapness/widgets/debug_overlay/debug_style_attributes_panel.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 import 'package:mapness/widgets/debug_overlay/makkah_places_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
@@ -20,6 +22,7 @@ import 'package:mapness/widgets/debug_overlay/satellite_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
 import 'package:mapness/widgets/debug_overlay/special_theme_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
+import 'package:mapness/widgets/debug_overlay/tifo_backend_debug_panel.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
@@ -75,12 +78,16 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Debug3DModelPanel(),
+                    const TifoBackendDebugPanel(),
+
                     _AppInfoCard(packageInfo: _packageInfo),
                     const SpecialThemeDebugPanel(),
                     const MakkahPlacesDebugPanel(),
                     _QuickActionsCard(
                       draggableController: widget._draggableController,
                     ),
+                    const DebugStyleAttributesPanel(),
                     const AppIconQuickActionsDebugPanel(),
                     const DebugServerUrl(),
                     const SsoCredentialView(),
@@ -168,6 +175,14 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
             const DebugBadge(
               label: 'DEV',
               color: DebugTheme.warning,
+            ),
+            const SizedBox(width: 8),
+            _CloseButton(
+              onTap: () => widget._draggableController.animateTo(
+                0,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.linear,
+              ),
             ),
           ],
         ),
@@ -329,6 +344,37 @@ class _InfoItem extends StatelessWidget {
           ),
         ),
       ],
+    ),
+  );
+}
+
+class _CloseButton extends StatelessWidget {
+  const _CloseButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    button: true,
+    label: 'Close debug panel',
+    child: GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: DebugTheme.surfaceLight,
+          border: Border.all(color: DebugTheme.border),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: const Icon(
+          Icons.close_rounded,
+          size: 18,
+          color: DebugTheme.textSecondary,
+        ),
+      ),
     ),
   );
 }

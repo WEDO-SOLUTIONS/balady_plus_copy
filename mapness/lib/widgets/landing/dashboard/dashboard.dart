@@ -205,6 +205,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 bottom: (widget.bottomSheetController.sheetHeight + 50).clamp(0.0, double.infinity),
                 child: eventLogo,
               ),
+            // TIFO entry now lives in the map controls column (TifoControl),
+            // not as a debug-gated FAB here.
           ],
         ),
       ),

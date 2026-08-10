@@ -1,0 +1,225 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+
+/// Two-step onboarding flow (BRD US-04), rebuilt to the Figma light design:
+///   STEP 1 — Choose your team (roster data-driven from `GET /clubs`, rendered
+///            as solid team-color cards; season-lock banner);
+///   STEP 2 — Your Tokens (welcome-bonus acknowledgement).
+/// Confirming calls `POST /clubs/select` (grants the welcome bonus) then shows
+/// step 2; "Claim the map" pops `true`. "Maybe Later"/back pops `false`
+/// (browse-only).
+class TifoTeamSelectScreen extends ConsumerStatefulWidget {
+  const TifoTeamSelectScreen({super.key});
+
+  @override
+  ConsumerState<TifoTeamSelectScreen> createState() => _TifoTeamSelectScreenState();
+}
+
+class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
+  int _step = 1;
+  String? _selectedId;
+  bool _isBusy = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    if (ref.read(tifoSessionProvider).clubs.isEmpty) {
+      Future.microtask(() => ref.read(tifoSessionProvider.notifier).load());
+    }
+  }
+
+  void _pop(bool result) => Navigator.of(context).pop(result);
+
+  Future<void> _confirm() async {
+    final clubId = _selectedId;
+    if (clubId == null) {
+      return;
+    }
+    setState(() {
+      _isBusy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(tifoSessionProvider.notifier).selectClub(clubId);
+      if (mounted) {
+        setState(() {
+          _isBusy = false;
+          _step = 2;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isBusy = false;
+          _error = e.toString();
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final clubs = ref.watch(tifoSessionProvider.select((s) => s.clubs));
+
+    return Scaffold(
+      backgroundColor: context.colors.foregroundSurfacePush,
+      body: Column(
+        children: [
+          TifoStepHeader(
+            step: _step,
+            total: 2,
+            title: _step == 1 ? 'Choose your team' : 'Your Tokens',
+            onBack: () => _step == 1 ? _pop(false) : setState(() => _step = 1),
+          ),
+          Expanded(child: _step == 1 ? _buildTeamList(clubs) : _buildWelcomeBonus()),
+          _buildBottom(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTeamList(List<TifoClubInfo> clubs) {
+    if (clubs.isEmpty) {
+      return const Center(child: CircularProgressIndicator(color: TifoColors.accent));
+    }
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
+      children: [
+        const TifoInfoBanner(
+          icon: Icons.lock_outline_rounded,
+          title: 'Your team will be locked for the season',
+          subtitle: 'You can change teams when the next season begins.',
+        ),
+        const SizedBox(height: 16),
+        for (final club in clubs)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _TeamCard(
+              club: club,
+              selected: _selectedId == club.id,
+              onTap: () => setState(() => _selectedId = club.id),
+            ),
+          ),
+        if (_error != null) ...[
+          const SizedBox(height: 4),
+          Text(_error!, style: const TextStyle(color: Color(0xFFE5484D), fontSize: 13)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildWelcomeBonus() {
+    final balance = ref.watch(tifoSessionProvider.select((s) => s.profile?.balance));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: TifoColors.accentContainer,
+              borderRadius: BorderRadius.circular(TifoRadii.ml),
+              border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              children: [
+                const Text('🎁', style: TextStyle(fontSize: 36)),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('WELCOME BONUS', style: TifoText.overline.copyWith(color: TifoColors.textSoft)),
+                    const SizedBox(height: 2),
+                    Text('${balance ?? 10} tokens', style: TifoText.h3.copyWith(color: TifoColors.accentSoft)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottom() => Container(
+    decoration: const BoxDecoration(
+      border: Border(top: BorderSide(color: TifoColors.border)),
+    ),
+    child: SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_step == 1)
+              TifoPrimaryButton(
+                label: 'Confirm Team',
+                busy: _isBusy,
+                onPressed: _selectedId != null ? _confirm : null,
+              )
+            else
+              TifoPrimaryButton(label: 'Claim the map', onPressed: () => _pop(true)),
+            const SizedBox(height: 4),
+            TifoGhostButton(label: 'Maybe Later', onPressed: _isBusy ? null : () => _pop(false)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+/// Full-width solid team-color card; selected → accent ring + white check.
+class _TeamCard extends StatelessWidget {
+  const _TeamCard({required this.club, required this.selected, required this.onTap});
+
+  final TifoClubInfo club;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Color(club.colorArgb);
+    final ink = tifoInkOn(color);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Container(
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(TifoRadii.l),
+          border: Border.all(
+            color: selected ? TifoColors.accent : Colors.transparent,
+            width: 3,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                club.name,
+                style: TifoText.bodyLSemi.copyWith(color: ink),
+              ),
+            ),
+            if (selected)
+              Container(
+                width: 24,
+                height: 24,
+                decoration: const BoxDecoration(color: TifoColors.accent, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: const Icon(Icons.check_rounded, size: 15, color: Colors.white),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -13,6 +13,14 @@ class MarkerTapEvent extends TapEvent {
   final int id;
 }
 
+class ModelTapEvent extends TapEvent {
+  const ModelTapEvent(this.id);
+
+  static const name = "onModelTap";
+
+  final String id;
+}
+
 class ClusterTapEvent extends TapEvent {
   static const name = "onClusterTap";
 }
@@ -67,14 +75,7 @@ class MyLocationTapEvent extends TapEvent {
 }
 
 class RoadEventTapEvent extends TapEvent {
-  RoadEventTapEvent(
-    this.id,
-    this.title,
-    this.description,
-    this.startTime,
-    this.finishTime,
-    this.latLng,
-  );
+  RoadEventTapEvent(this.id, this.title, this.description, this.startTime, this.finishTime, this.latLng);
 
   static const name = "onRoadEventTap";
 
@@ -90,13 +91,11 @@ class RoadEventTapEvent extends TapEvent {
 @immutable
 class DgisObjectId {
   /// Constructor
-  const DgisObjectId({
-    required this.objectId,
-    required this.entranceId,
-  });
+  const DgisObjectId({required this.objectId, required this.entranceId});
 
   /// Dgis object id
   final int objectId;
+
   /// Entrance id
   final int entranceId;
 

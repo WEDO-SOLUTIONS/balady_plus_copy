@@ -1,5 +1,4 @@
 import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';

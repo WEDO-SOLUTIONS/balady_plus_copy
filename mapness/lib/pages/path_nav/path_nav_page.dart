@@ -32,6 +32,7 @@ import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/tifo/tifo_trip_rewards.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
@@ -875,6 +876,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final streamAudioWasPlayingBeforeFinish = ref.read(streamAudioProvider).isEffectivelyPlaying;
 
     _sendAnalitycs();
+    // TIFO US-16: a completed trip earns tokens. Fire-and-forget — the backend
+    // validates and rewards; a signed-out user or a failed call is a no-op.
+    unawaited(reportTifoTripCompleted(ref));
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) {
