@@ -254,7 +254,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
       }
     }();
     if (dataAndError != null) {
-      return PoiLoadingOrErrorSheet(sheetHeight: 360, contentHeight: 300, data: dataAndError);
+      return PoiLoadingOrErrorSheet(sheetHeight: 360, data: dataAndError);
     }
 
     if (data == null) {
