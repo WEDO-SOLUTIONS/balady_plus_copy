@@ -15,6 +15,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 import 'package:just_audio_platform_interface/just_audio_platform_interface.dart';
 import 'package:just_audio_platform_interface/method_channel_just_audio.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
@@ -33,6 +34,7 @@ class PenaltyApp extends StatelessWidget {
     this.showColliderDebug = false,
     this.sessionTimeoutSeconds = 30,
     this.locale,
+    this.goalkeeperDifficulty = const TifoGoalkeeperDifficulty(),
   });
 
   /// The host app's in-app language, so the message-card dialogs (Still
@@ -78,6 +80,10 @@ class PenaltyApp extends StatelessWidget {
   /// `tifoDebugColliderOverlayProvider` in the debug panel.
   final bool showColliderDebug;
 
+  /// Debug-only goalkeeper tuning knobs (QA); defaults match the game's
+  /// normal (non-debug) behavior. See `tifoDebugGoalkeeperDifficultyProvider`.
+  final TifoGoalkeeperDifficulty goalkeeperDifficulty;
+
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -95,6 +101,7 @@ class PenaltyApp extends StatelessWidget {
       keeperColor: keeperColor,
       showColliderDebug: showColliderDebug,
       sessionTimeoutSeconds: sessionTimeoutSeconds,
+      goalkeeperDifficulty: goalkeeperDifficulty,
     ),
   );
 }
@@ -159,6 +166,7 @@ class PenaltyGamePage extends StatefulWidget {
     this.keeperColor,
     this.showColliderDebug = false,
     this.sessionTimeoutSeconds = 30,
+    this.goalkeeperDifficulty = const TifoGoalkeeperDifficulty(),
   });
 
   final ValueChanged<TifoShootoutOutcome>? onComplete;
@@ -169,6 +177,7 @@ class PenaltyGamePage extends StatefulWidget {
   final String? keeperColor;
   final bool showColliderDebug;
   final int sessionTimeoutSeconds;
+  final TifoGoalkeeperDifficulty goalkeeperDifficulty;
 
   @override
   State<PenaltyGamePage> createState() => _PenaltyGamePageState();
@@ -186,6 +195,7 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
           strikerColor: widget.strikerColor,
           keeperColor: widget.keeperColor,
           showColliderDebug: widget.showColliderDebug,
+          goalkeeperDifficulty: widget.goalkeeperDifficulty,
         )
         ..onReady = () {
           final onReady = widget.onReady;
@@ -1387,6 +1397,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     this.strikerColor,
     this.keeperColor,
     this.showColliderDebug = false,
+    this.goalkeeperDifficulty = const TifoGoalkeeperDifficulty(),
   });
 
   /// Fired exactly once, when the session ends. Carries goals, misses and the
@@ -1399,6 +1410,10 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   /// See [PenaltyApp.strikerColor] / [PenaltyApp.keeperColor].
   final String? strikerColor;
   final String? keeperColor;
+
+  /// Debug-only goalkeeper tuning knobs (QA); defaults match the game's
+  /// normal (non-debug) behavior. See `tifoDebugGoalkeeperDifficultyProvider`.
+  final TifoGoalkeeperDifficulty goalkeeperDifficulty;
 
   /// QA aid — draws a box tightly sized to the keeper (see
   /// `_GoalkeeperModel._keeperColliderFor`) and the ball's touch/collision
@@ -1562,13 +1577,13 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   double _spin = 0;
 
   /// Seconds after the kick before the keeper's dive clock starts ticking —
-  /// he holds his idle stance until the ball has covered [_reactionDelayFraction]
-  /// of its flight, instead of committing to a dive the instant it's struck.
-  /// Computed per-shot in `_shootAtTarget` as a fraction of that shot's
-  /// flight time, so faster shots still leave enough of the ~0.58s dive
-  /// clock to play out before the ball arrives.
+  /// he holds his idle stance until the ball has covered
+  /// [TifoGoalkeeperDifficulty.reactionDelayFraction] of its flight, instead
+  /// of committing to a dive the instant it's struck. Computed per-shot in
+  /// `_shootAtTarget` as a fraction of that shot's flight time, so faster
+  /// shots still leave enough of the ~0.58s dive clock to play out before the
+  /// ball arrives.
   double _reactionDelay = 0;
-  static const double _reactionDelayFraction = 0.4;
   int _goals = 0;
   int _shots = 0;
   int _saves = 0;
@@ -1778,7 +1793,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     _shots++;
 
     final flightTime = _flightTimeFor(power);
-    _reactionDelay = flightTime * _reactionDelayFraction;
+    _reactionDelay = flightTime * goalkeeperDifficulty.reactionDelayFraction;
     final flightTarget = _aimTarget.copy();
     flightTarget.z = _goalZ + 0.2;
 
@@ -1788,7 +1803,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       (flightTarget.z - _ball.z) / flightTime,
     );
 
-    final keeperError = (_random.nextDouble() - 0.5) * 2.1;
+    final keeperError = (_random.nextDouble() - 0.5) * goalkeeperDifficulty.aimError;
     _keeperTargetX = (flightTarget.x * 0.72 + keeperError)
         .clamp(-_goalHalfWidth + 0.75, _goalHalfWidth - 0.75)
         .toDouble();
@@ -3862,9 +3877,9 @@ class _GoalkeeperModel {
       // Full real speed (realFrames/30) played back too slowly — this is
       // the ONLY knob for that: 2.0 plays it twice real speed (~1.2s for
       // diveLowCenter's 73 frames), 1.0 would be true real-time (~2.43s),
-      // higher shortens it further.
-      const centerDiveSpeedFactor = 2.0;
-      final centerDiveSeconds = realFrames / 30.0 / centerDiveSpeedFactor;
+      // higher shortens it further. QA-tunable via
+      // `game.goalkeeperDifficulty.centerDiveSpeedFactor`.
+      final centerDiveSeconds = realFrames / 30.0 / game.goalkeeperDifficulty.centerDiveSpeedFactor;
       final centerElapsed = diveElapsed - 0.08 * diveWindowSeconds;
       final centerProgress = (centerElapsed / centerDiveSeconds).clamp(0.0, 1.0).toDouble();
       final pose = _motionPose(motion, centerProgress, fallback: idleSprite);

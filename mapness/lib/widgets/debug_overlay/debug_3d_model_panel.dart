@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
@@ -208,6 +209,7 @@ class Debug3DModelPanel extends ConsumerWidget {
     final strikerColor = colorOverride.enabled ? colorOverride.strikerColor : null;
     final keeperColor = colorOverride.enabled ? colorOverride.keeperColor : null;
     final showColliderDebug = ref.read(tifoDebugColliderOverlayProvider);
+    final goalkeeperDifficulty = ref.read(tifoDebugGoalkeeperDifficultyProvider);
     unawaited(
       navigator.push<void>(
         MaterialPageRoute<void>(
@@ -216,6 +218,7 @@ class Debug3DModelPanel extends ConsumerWidget {
             strikerColor: strikerColor,
             keeperColor: keeperColor,
             showColliderDebug: showColliderDebug,
+            goalkeeperDifficulty: goalkeeperDifficulty,
             onComplete: (_) {
               Future<void>.delayed(const Duration(seconds: 2), () {
                 rootNavigatorKey.currentState?.pop();

@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
@@ -162,6 +163,19 @@ class _TifoBackendDebugPanelState extends ConsumerState<TifoBackendDebugPanel> {
             );
           },
         ),
+        const DebugDivider(),
+        Text(
+          'Goalkeeper difficulty',
+          style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textSecondary),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Raw numbers, not named presets — dial these in per playthrough and report back '
+          'which values felt easy/medium/hard.',
+          style: context.textStyles.captionSmallRegular.copyWith(color: DebugTheme.textMuted),
+        ),
+        const SizedBox(height: 8),
+        const _GoalkeeperDifficultySliders(),
         const DebugDivider(),
         Text(
           'Kit colors',
@@ -555,6 +569,118 @@ class _ColorOverrideSwitcher extends ConsumerWidget {
                 onPressed: () => onSelect(color),
               ),
     ],
+  );
+}
+
+/// Numeric sliders for the goalkeeper tuning knobs consumed by `PenaltyGame`
+/// (see `TifoGoalkeeperDifficulty`). Deliberately raw values rather than
+/// named difficulty presets — QA dials these in per playthrough and reports
+/// back which combinations feel easy/medium/hard, so we can bake named
+/// presets from real feedback instead of guessing.
+class _GoalkeeperDifficultySliders extends ConsumerWidget {
+  const _GoalkeeperDifficultySliders();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final difficulty = ref.watch(tifoDebugGoalkeeperDifficultyProvider);
+    final controller = ref.read(tifoDebugGoalkeeperDifficultyProvider.notifier);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _DifficultySlider(
+          label: 'Reaction delay fraction',
+          subtitle: 'Higher = keeper commits to a dive later (easier)',
+          value: difficulty.reactionDelayFraction,
+          min: 0.05,
+          max: 0.9,
+          onChanged: controller.setReactionDelayFraction,
+        ),
+        _DifficultySlider(
+          label: 'Aim error',
+          subtitle: 'Higher = keeper positions himself less accurately (easier)',
+          value: difficulty.aimError,
+          min: 0,
+          max: 4,
+          onChanged: controller.setAimError,
+        ),
+        _DifficultySlider(
+          label: 'Center dive speed factor',
+          subtitle: 'Higher = center dive plays faster, keeper reaches sooner (harder)',
+          value: difficulty.centerDiveSpeedFactor,
+          min: 0.5,
+          max: 4,
+          onChanged: controller.setCenterDiveSpeedFactor,
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: DebugOutlinedButton(
+            label: 'Reset to defaults',
+            icon: Icons.restart_alt_rounded,
+            color: DebugTheme.info,
+            isCompact: true,
+            onPressed: controller.reset,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DifficultySlider extends StatelessWidget {
+  const _DifficultySlider({
+    required this.label,
+    required this.subtitle,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.onChanged,
+  });
+
+  final String label;
+  final String subtitle;
+  final double value;
+  final double min;
+  final double max;
+  final ValueChanged<double> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: context.textStyles.bodySmallMedium.copyWith(color: DebugTheme.textPrimary),
+              ),
+            ),
+            DebugBadge(label: value.toStringAsFixed(2), color: DebugTheme.info),
+          ],
+        ),
+        Text(
+          subtitle,
+          style: context.textStyles.captionSmallRegular.copyWith(color: DebugTheme.textMuted),
+        ),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: DebugTheme.accent,
+            inactiveTrackColor: DebugTheme.surfaceLight,
+            thumbColor: DebugTheme.accentLight,
+            overlayColor: DebugTheme.accent.withOpacity(0.2),
+          ),
+          child: Slider(
+            value: value.clamp(min, max),
+            min: min,
+            max: max,
+            divisions: 100,
+            onChanged: onChanged,
+          ),
+        ),
+      ],
+    ),
   );
 }
 

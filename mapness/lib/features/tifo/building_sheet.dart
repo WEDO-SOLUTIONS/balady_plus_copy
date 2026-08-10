@@ -9,6 +9,7 @@ import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
+import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/features/tifo/penalty/penalty_result_screen.dart';
@@ -398,6 +399,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             strikerColor: strikerColor,
             keeperColor: keeperColor,
             showColliderDebug: container.read(tifoDebugColliderOverlayProvider),
+            goalkeeperDifficulty: container.read(tifoDebugGoalkeeperDifficultyProvider),
             sessionTimeoutSeconds: session.config.liveLockTimeoutSeconds,
             locale: container.read(appLanguageProvider).locale,
             onReady: (arm) => unawaited(
