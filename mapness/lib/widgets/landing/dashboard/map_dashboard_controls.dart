@@ -155,7 +155,7 @@ class MapDashboardControls extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    // First game launch on this device only.
+                    // Any session where the player hasn't cleared every play gate yet.
                     if (ref.watch(tifoBuildingsMapLayerProvider) &&
                         !ref.watch(tifoSessionProvider.select((s) => s.isPlayReady)))
                       const TifoJoinPill(),

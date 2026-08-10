@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/building_sheet.dart';
@@ -11,6 +10,7 @@ import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_districts_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -80,6 +80,12 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
 
   bool get _buildingsMode => _zoom >= _buildingMinZoom;
 
+  /// Hive box + key the ⚽ toggle is persisted under, so a killed/relaunched
+  /// app comes back up with the layer in the state the player left it in
+  /// instead of always cold-starting disabled.
+  static const String _persistBoxName = 'tifo';
+  static const String _persistKey = 'layerEnabled';
+
   @override
   bool build() {
     ref
@@ -94,7 +100,37 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         }
       })
       ..onDispose(_teardown);
-    return false; // disabled
+    // Fire-and-forget: restore the persisted toggle once the Hive box opens
+    // and the native map is ready — `enable()` awaits `dgisControllerProvider`
+    // itself, so this doesn't race the map's own startup.
+    unawaited(_restorePersistedState());
+    return false; // disabled until the restore above (if any) flips it on
+  }
+
+  Future<void> _restorePersistedState() async {
+    try {
+      final box = await ref.read(hiveProvider(_persistBoxName).future);
+      if (!ref.mounted) {
+        return;
+      }
+      if (box.get(_persistKey) == true) {
+        await enable();
+      }
+    } catch (error, stackTrace) {
+      logger.log('[tifo-map] failed to restore persisted layer state: $error\n$stackTrace');
+    }
+  }
+
+  Future<void> _persistEnabled(bool enabled) async {
+    try {
+      final box = await ref.read(hiveProvider(_persistBoxName).future);
+      if (!ref.mounted) {
+        return;
+      }
+      await box.put(_persistKey, enabled);
+    } catch (error, stackTrace) {
+      logger.log('[tifo-map] failed to persist layer state: $error\n$stackTrace');
+    }
   }
 
   bool get isEnabled => state;
@@ -104,6 +140,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = true;
+    unawaited(_persistEnabled(true));
     try {
       final controller = await ref.read(dgisControllerProvider.future);
       _buildingsManager ??= await controller.createMapObjectManager(layerId: MapObjectLayers.defaultLayerId);
@@ -154,6 +191,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       return;
     }
     state = false;
+    unawaited(_persistEnabled(false));
     _debounce?.cancel();
     await _visibleSub?.cancel();
     _visibleSub = null;
