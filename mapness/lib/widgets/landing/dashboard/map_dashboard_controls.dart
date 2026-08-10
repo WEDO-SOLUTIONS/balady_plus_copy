@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -13,10 +15,7 @@ import 'package:mapness/widgets/landing/eta_sharing_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
-import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
-import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/widgets/landing/tifo_control.dart';
-import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
@@ -157,7 +156,8 @@ class MapDashboardControls extends ConsumerWidget {
                       ],
                     ),
                     // First game launch on this device only.
-                    if (ref.watch(tifoBuildingsMapLayerProvider) && ref.watch(tifoFlowProvider).showJoinPill)
+                    if (ref.watch(tifoBuildingsMapLayerProvider) &&
+                        !ref.watch(tifoSessionProvider.select((s) => s.isPlayReady)))
                       const TifoJoinPill(),
                   ],
                 ),

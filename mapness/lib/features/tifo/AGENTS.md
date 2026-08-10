@@ -85,11 +85,14 @@ first unmet step; Close(X) leaves the map untouched):
   (`TifoDemoDistrictSheet`, `TifoDemoBuildingSheet`, `TifoDemoPenaltyHud`,
   `TifoDemoProfile`, `TifoDemoTeamSelect`) are kept on purpose — design has
   re-cut this sequence twice already.
-- `TifoJoinPill` ("Dominate with your team →", node 589:85824) renders **only
-  during the very first game launch on this device**: persisted `hasLaunched`
-  flag in Hive box `'tifo'` (`TifoFlowController.markGameLaunched`). To see it
-  again: wipe the app or clear that box (a debug reset button is a welcome
-  addition).
+- `TifoJoinPill` ("Dominate with your team →", node 589:85824) renders
+  whenever the TIFO layer is on **and** the player hasn't cleared every play
+  gate yet (`!TifoSessionState.isPlayReady`, i.e. `nextStep != ready`) — it
+  targets any not-play-ready session, not just the first-ever launch.
+  Previously this was gated by a one-shot persisted `hasLaunched` Hive flag
+  (`TifoFlowController.markGameLaunched`), so it silently stopped appearing
+  after the very first session even for a player who still hadn't picked a
+  team — fixed 2026-08-10.
 - Legacy: `tifo_tutorial_sheet.dart` (intro sheet, no longer auto-offered —
   the journey owns the tutorial gate; `consumeTutorialOffer` and its Hive
   flag are orphaned), fullscreen `tifo_tutorial.dart` + debug

@@ -11,7 +11,6 @@ class TifoFlowState {
     required this.hasSelectedTeam,
     required this.hasSeenTutorial,
     required this.hasSeenEntry,
-    this.showJoinPill = false,
   });
 
   final bool hasSelectedTeam;
@@ -21,11 +20,6 @@ class TifoFlowState {
   /// second ⚽ tap just toggles the map layer instead of re-showing the intro.
   final bool hasSeenEntry;
 
-  /// The floating "Dominate with your team" pill (design node 398:8792) is
-  /// shown only during the very first game launch on this device — true for
-  /// that session only, gated by the persisted `hasLaunched` Hive flag.
-  final bool showJoinPill;
-
   /// True iff a ⚽ tap should kick off the tutorial right now.
   bool get shouldPlayTutorial => hasSelectedTeam && !hasSeenTutorial;
 
@@ -33,12 +27,10 @@ class TifoFlowState {
     bool? hasSelectedTeam,
     bool? hasSeenTutorial,
     bool? hasSeenEntry,
-    bool? showJoinPill,
   }) => TifoFlowState(
     hasSelectedTeam: hasSelectedTeam ?? this.hasSelectedTeam,
     hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
     hasSeenEntry: hasSeenEntry ?? this.hasSeenEntry,
-    showJoinPill: showJoinPill ?? this.showJoinPill,
   );
 }
 
@@ -69,18 +61,6 @@ class TifoFlowController extends Notifier<TifoFlowState> {
       return;
     }
     state = state.copyWith(hasSeenEntry: true);
-  }
-
-  /// Called when the TIFO layer gets enabled. On the very first launch ever
-  /// (per device) turns the "Dominate with your team" pill on for this session
-  /// and stamps the persisted flag so later launches never show it again.
-  Future<void> markGameLaunched() async {
-    final box = await ref.read(hiveProvider('tifo').future);
-    final hasLaunched = box.get('hasLaunched') == true;
-    if (!hasLaunched) {
-      await box.put('hasLaunched', true);
-      state = state.copyWith(showJoinPill: true);
-    }
   }
 
   /// One-shot, persisted gate for the tutorial intro sheet (BRD: the tutorial

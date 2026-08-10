@@ -77,6 +77,11 @@ class TifoSessionState {
     return TifoJourneyStep.ready;
   }
 
+  /// True once every play-gate is cleared (tutorial seen, logged in, club
+  /// picked). Drives "Dominate with your team" — that pill targets players
+  /// who still have a gate left, not just first-ever-launch users.
+  bool get isPlayReady => nextStep == TifoJourneyStep.ready;
+
   TifoSessionState copyWith({
     TifoProfile? profile,
     List<TifoClubInfo>? clubs,

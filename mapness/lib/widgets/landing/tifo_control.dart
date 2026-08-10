@@ -73,8 +73,6 @@ class TifoControl extends ConsumerWidget {
     // matter how the intro was dismissed (Close(X) → Landing WITH the
     // overlay the user just switched on; the popup gates only the journey).
     await layer.enable();
-    // Very first launch ever → show the floating "Dominate" pill this session.
-    await flow.markGameLaunched();
     // BRD V2: the entry CTA routes to the first unmet gate (tutorial →
     // team selected, login at team confirmation — US-01 BR-01); an
     // onboarded player just lands on the map. The journey owns every gate
