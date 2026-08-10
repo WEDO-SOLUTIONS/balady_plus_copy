@@ -68,6 +68,10 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     // challenge — show that up front instead of letting them tap Challenge
     // and hit a gate failure.
     final canChallenge = session.isPlayReady;
+    // The server 409s `play/start` for a building the player's own club
+    // already holds — used to only surface after the game had already
+    // opened and closed again. Block the CTA up front instead.
+    final isOwnBuilding = _building.ownerClubSlug != null && _building.ownerClubSlug == session.myClub?.id;
 
     return SafeArea(
       top: false,
@@ -189,7 +193,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               ),
             ),
 
-            if (_building.isAvailable) ...[
+            if (_building.isAvailable && !isOwnBuilding) ...[
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -219,13 +223,15 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
             const SizedBox(height: 20),
 
             // CTA by status.
-            if (_building.isAvailable && canChallenge)
+            if (_building.isAvailable && canChallenge && !isOwnBuilding)
               TifoPrimaryButton(
                 label: isClaim ? l10n.tifoClaimBuilding : l10n.tifoChallenge,
                 leadingEmoji: '⚽',
                 busy: _isBusy,
                 onPressed: _isBusy ? null : _onPlayPressed,
               )
+            else if (isOwnBuilding)
+              _disabledBar(l10n.tifoOwnBuildingHint)
             else if (_building.isAvailable)
               _disabledBar(l10n.tifoNotPlayReady)
             else
@@ -241,7 +247,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                     side: const BorderSide(color: Color(0x33D9A400)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
-                  onPressed: (_building.isAvailable && !_isBusy) ? _mockCapture : null,
+                  onPressed: (_building.isAvailable && !_isBusy && !isOwnBuilding) ? _mockCapture : null,
                   icon: const Icon(Icons.bolt_rounded, size: 18),
                   label: const Text('Mock capture (skip game)'),
                 ),
