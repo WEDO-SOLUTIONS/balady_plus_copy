@@ -56,6 +56,7 @@ import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -266,10 +267,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       if (!mounted) {
         return;
       }
+      await ref.read(leapProvider.notifier).initializeGlobalMarker();
+      if (!mounted) {
+        return;
+      }
       final mapStyle = ref.read(activeCityEventProvider)?.stylePath;
 
       if (mapStyle != null) {
         _updateMapStyle(mapStyle);
+      }
+
+      await _updateGlobalMarkerLeap(ref);
+      if (!mounted) {
+        return;
       }
 
       // Sync BaladyThemeNotifier with the persisted darkModeProvider state
@@ -458,6 +468,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     }
   }
 
+  Future<void> _updateGlobalMarkerLeap(WidgetRef ref) async {
+    if (!mounted) {
+      return;
+    }
+    final isLeapNow = ref.read(leapProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(leapProvider.notifier);
+
+    if (isLeapNow && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
   Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
     final notifier = ref.read(wRCProvider.notifier);
     if (wrcEnabled) {
@@ -577,6 +602,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         }
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
+        _updateGlobalMarkerLeap(ref);
       })
       ..listen<CityEventType?>(activeCityEventProvider, (prev, next) {
         if (prev == next) {
@@ -595,12 +621,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       ..listen<bool>(foundingDayUrbiProvider, (prev, next) {
         _updateGlobalMarkerFoundingDay(ref);
       })
+      ..listen<bool>(leapProvider, (prev, next) {
+        _updateGlobalMarkerLeap(ref);
+      })
       ..listen<bool>(wRCProvider, (prev, next) {
         _updateAllMarkersWRC(ref, next);
       })
       ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
+        _updateGlobalMarkerLeap(ref);
         _updateSpecificMarkerWRC(ref, prev, next);
       })
       // listen for changes in car connection state. But do not rebuild widget

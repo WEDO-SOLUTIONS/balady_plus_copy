@@ -18,26 +18,26 @@ class CityEventBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () => onTap?.call(),
-        child: MultiStateSheetBuilder(
-          defaultState: ThreeStateSheet.hidden,
-          builder: (context, state, interpolation, child) => Padding(
-            padding: EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$1x * (1 - interpolation) : 0),
+    behavior: HitTestBehavior.translucent,
+    onTap: () => onTap?.call(),
+    child: MultiStateSheetBuilder(
+      defaultState: ThreeStateSheet.hidden,
+      builder: (context, state, interpolation, child) => Padding(
+        padding: EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$1x * (1 - interpolation) : 0),
+        child: SizedBox(
+          height: (Spacing.$10x) * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+          width: double.infinity,
+          child: Transform.translate(
+            offset: Offset(0, config.verticalOffset),
             child: SizedBox(
-              height: (Spacing.$10x) * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
-              width: double.infinity,
-              child: Transform.translate(
-                offset: Offset(0, config.verticalOffset),
-                child: SizedBox(
-                  height: Spacing.$12x,
-                  child: _EventBanner(config: config),
-                ),
-              ),
+              height: Spacing.$12x,
+              child: _EventBanner(config: config),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _EventBanner extends StatelessWidget {
@@ -82,10 +82,31 @@ class _EventBanner extends StatelessWidget {
                   style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.successOnSuccess),
                   textAlign: TextAlign.end,
                 )
-              : Text(
-                  config.getText(context.l10n),
-                  style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.successOnSuccess),
-                  textAlign: TextAlign.end,
+              : Builder(
+                  builder: (context) {
+                    final style = context.textStyles.captionLargeSemiBold.copyWith(
+                      color: context.colors.successOnSuccess,
+                    );
+                    return Row(
+                      textDirection: TextDirection.rtl,
+                      children: [
+                        Text(
+                          config.getText(context.l10n),
+                          textDirection: TextDirection.ltr,
+                          style: style,
+                        ),
+                        Text(
+                          context.locale.languageCode == 'en' ? ', ' : ' ،',
+                          style: style,
+                        ),
+                        Text(
+                          'LEAP 2026',
+                          textDirection: TextDirection.rtl,
+                          style: style,
+                        ),
+                      ],
+                    );
+                  },
                 ),
         ),
       ),

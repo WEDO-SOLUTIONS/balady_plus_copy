@@ -4,6 +4,7 @@ import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day_debug.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -31,6 +32,9 @@ class ActiveCityEvent extends _$ActiveCityEvent {
     if (ref.watch(foundingDayUrbiProvider)) {
       return CityEventType.foundingDay;
     }
+    if (ref.watch(leapDebugProvider)) {
+      return CityEventType.leap;
+    }
 
     // Check actual date ranges from remote config
     final env = ref.watch(dgisEnvironmentProvider).value;
@@ -48,6 +52,9 @@ class ActiveCityEvent extends _$ActiveCityEvent {
     }
     if (env.foundingDayDateRange.isNow) {
       activeEvents.add(CityEventType.foundingDay);
+    }
+    if (env.leapDateRange.isVisibleNow) {
+      activeEvents.add(CityEventType.leap);
     }
 
     // Return event with highest priority (lowest number)
