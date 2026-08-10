@@ -611,6 +611,14 @@ class _GoalkeeperDifficultySliders extends ConsumerWidget {
           max: 4,
           onChanged: controller.setCenterDiveSpeedFactor,
         ),
+        _DifficultySlider(
+          label: 'Lateral dive speed',
+          subtitle: 'Higher = keeper runs/dives to the ball\'s side sooner (harder)',
+          value: difficulty.lateralDiveSpeed,
+          min: 1,
+          max: 10,
+          onChanged: controller.setLateralDiveSpeed,
+        ),
         Align(
           alignment: Alignment.centerLeft,
           child: DebugOutlinedButton(

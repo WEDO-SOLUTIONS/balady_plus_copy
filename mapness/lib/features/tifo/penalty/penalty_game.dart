@@ -1693,7 +1693,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
 
     if (_state == _ShotState.flying) {
       _shotTime += dt;
-      _keeperX += (_keeperTargetX - _keeperX) * (1 - math.exp(-dt * 4.8));
+      _keeperX += (_keeperTargetX - _keeperX) * (1 - math.exp(-dt * goalkeeperDifficulty.lateralDiveSpeed));
       // Ball stays put at the striker's foot until `_shotTime` reaches the
       // kick animation's contact instant (`_StrikerModel.windupSeconds`) —
       // previously it started flying from `_shotTime == 0`, i.e. the exact

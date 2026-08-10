@@ -11,6 +11,7 @@ class TifoGoalkeeperDifficulty {
     this.reactionDelayFraction = 0.4,
     this.aimError = 2.1,
     this.centerDiveSpeedFactor = 2.0,
+    this.lateralDiveSpeed = 4.8,
   });
 
   /// Fraction of the ball's flight time the keeper waits before starting to
@@ -27,14 +28,22 @@ class TifoGoalkeeperDifficulty {
   /// striker.
   final double centerDiveSpeedFactor;
 
+  /// Exponential approach rate (per second) the keeper's horizontal position
+  /// closes on the target position while the ball is flying — i.e. how fast
+  /// he "runs"/dives sideways toward where the ball is headed. Higher = he
+  /// gets there sooner = harder for the striker.
+  final double lateralDiveSpeed;
+
   TifoGoalkeeperDifficulty copyWith({
     double? reactionDelayFraction,
     double? aimError,
     double? centerDiveSpeedFactor,
+    double? lateralDiveSpeed,
   }) => TifoGoalkeeperDifficulty(
     reactionDelayFraction: reactionDelayFraction ?? this.reactionDelayFraction,
     aimError: aimError ?? this.aimError,
     centerDiveSpeedFactor: centerDiveSpeedFactor ?? this.centerDiveSpeedFactor,
+    lateralDiveSpeed: lateralDiveSpeed ?? this.lateralDiveSpeed,
   );
 }
 
@@ -47,6 +56,8 @@ class TifoDebugGoalkeeperDifficultyController extends Notifier<TifoGoalkeeperDif
   void setAimError(double value) => state = state.copyWith(aimError: value);
 
   void setCenterDiveSpeedFactor(double value) => state = state.copyWith(centerDiveSpeedFactor: value);
+
+  void setLateralDiveSpeed(double value) => state = state.copyWith(lateralDiveSpeed: value);
 
   void reset() => state = const TifoGoalkeeperDifficulty();
 }
