@@ -405,7 +405,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               container.read(tifoBuildingsPollerProvider.notifier).start();
               // Short beat so the last GOAL!/MISS! flash is readable, then
               // submit — kept tight because the clock is still running.
-              Future<void>.delayed(const Duration(milliseconds: 250), () {
+              Future<void>.delayed(const Duration(seconds: 2), () {
                 rootNavigatorKey.currentState?.pop();
                 unawaited(_submit(playSession: session, outcome: outcome));
               });

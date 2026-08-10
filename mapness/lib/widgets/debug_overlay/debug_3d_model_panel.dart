@@ -217,7 +217,7 @@ class Debug3DModelPanel extends ConsumerWidget {
             keeperColor: keeperColor,
             showColliderDebug: showColliderDebug,
             onComplete: (_) {
-              Future<void>.delayed(const Duration(milliseconds: 850), () {
+              Future<void>.delayed(const Duration(seconds: 2), () {
                 rootNavigatorKey.currentState?.pop();
               });
             },
