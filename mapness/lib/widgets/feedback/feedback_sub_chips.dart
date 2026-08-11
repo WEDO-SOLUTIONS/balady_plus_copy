@@ -163,7 +163,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                             entry.key.icon,
                             width: 24,
                             height: 24,
-                            colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
                           ),
                           text: ContentRowTextOptions(title: item.label),
                         )
@@ -177,7 +177,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                               entry.key.icon,
                               width: 24,
                               height: 24,
-                              colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
+                              colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
                             ),
                             Spacing.$1_5x.widthBox,
                             Expanded(
@@ -200,7 +200,12 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                                 padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x),
                                 child: Row(
                                   children: [
-                                    const SizedBox(width: 24),
+                                    SvgPicture.network(
+                                      entry.key.icon,
+                                      width: 24,
+                                      height: 24,
+                                      colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
+                                    ),
                                     Spacing.$1_5x.widthBox,
                                     Expanded(
                                       child: Text(
