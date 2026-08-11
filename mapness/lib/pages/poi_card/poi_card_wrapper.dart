@@ -164,24 +164,20 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
         .value
         ?.convertToDirectoryObject(context);
     final isParkingPoi = widget.objectId.objectId == parkingObjectId;
-    final gisData = isParkingPoi ? storeParkingData : gisPoiCardState?.gisObjectIdMessage;
+    final data = isParkingPoi ? storeParkingData : gisPoiCardState?.gisObjectIdMessage;
 
     if (isParkingPoi) {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
     ref.watch(dgisEnvironmentProvider);
-    final leapPoi = ref.read(leapProvider.notifier).getLeapPoi(widget.objectId.objectId);
-    final leapData = leapPoi?.mergeDirectoryObjectMessage(context.l10n, gisData);
-    final data = leapData ?? gisData;
-    final poiCardState = leapData == null
-        ? gisPoiCardState
-        : gisPoiCardState?.copyWith(gisObjectIdMessage: leapData) ??
-              PoiCardState(
-                showEntrances: false,
-                isLoading: false,
-                gisObjectIdMessage: leapData,
-                organizations: null,
-              );
+    final poiCardState =
+        gisPoiCardState ??
+        PoiCardState(
+          showEntrances: false,
+          isLoading: false,
+          gisObjectIdMessage: data,
+          organizations: null,
+        );
 
     final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
@@ -229,9 +225,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     final objectId = data?.id?.objectId;
 
     final dataAndError = () {
-      if (leapData != null) {
-        return null;
-      }
       if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
         return const PoiLoading();
       }
