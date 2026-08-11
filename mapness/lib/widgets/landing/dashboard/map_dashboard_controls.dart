@@ -52,6 +52,7 @@ class MapDashboardControls extends ConsumerWidget {
               ),
             ),
           ),
+
           const MapQuickFiltersDefault(
             forMap: true,
           ),
@@ -60,7 +61,16 @@ class MapDashboardControls extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const WeatherControl(),
+                      uikit.Spacing.$1_5x.heightBox,
+                      const ParkingControl(),
+                    ],
+                  ),
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -132,16 +142,7 @@ class MapDashboardControls extends ConsumerWidget {
                                 // on (⚽ toggle).
                                 if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
                                   const TifoHelpControl(),
-                                  uikit.Spacing.$1_5x.heightBox,
                                 ],
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const WeatherControl(),
-                                    uikit.Spacing.$1_5x.heightBox,
-                                    const ParkingControl(),
-                                  ],
-                                ),
                               ],
                             ),
                           ),
