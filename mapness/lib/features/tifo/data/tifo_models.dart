@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 /// Neutral (unclaimed) building — sandy, NOT a club color (BRD FR-08) and
 /// distinct from the host map's green base buildings. Ideally sourced from the
 /// server `palette.neutral` (GET /config) — hardcoded until we parse it.
-const int kTifoNeutralFillArgb = 0x59D9A441;
-const int kTifoNeutralStrokeArgb = 0xE6D9A441;
+const int kTifoNeutralFillArgb = 0x804C5E41;
+const int kTifoNeutralStrokeArgb = 0xE64C5E41;
 
 /// One entry of the data-driven season roster (`GET /clubs`). The roster is
 /// per-season data (BRD), so screens render from this list — never a
@@ -231,7 +231,7 @@ class TifoLeaderRow {
   final String clubId;
   final int buildings;
   final int districts;
-  final int ownershipPct;
+  final double ownershipPct;
 
   static TifoLeaderRow? fromJson(Map<String, dynamic> json) {
     final club = json['club']?.toString();
@@ -243,7 +243,7 @@ class TifoLeaderRow {
       clubId: club,
       buildings: (json['buildings'] as num?)?.toInt() ?? 0,
       districts: (json['districtsLed'] as num?)?.toInt() ?? 0,
-      ownershipPct: (json['ownershipPct'] as num?)?.toInt() ?? 0,
+      ownershipPct: (json['ownershipPct'] as num?)?.toDouble() ?? 0,
     );
   }
 }

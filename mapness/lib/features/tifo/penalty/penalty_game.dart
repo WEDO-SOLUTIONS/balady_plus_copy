@@ -453,7 +453,7 @@ class _PenaltyHudPanel extends StatelessWidget {
               ValueListenableBuilder<bool>(
                 valueListenable: game.armedNotifier,
                 builder: (_, armed, _) => Text(
-                  armed ? 'Penalty challenge' : 'Preparing the pitch…',
+                  armed ? AppLocalizations.of(context).tifoPenaltyChallenge : 'Preparing the pitch…',
                   style: const TextStyle(color: _title, fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
@@ -467,7 +467,7 @@ class _PenaltyHudPanel extends StatelessWidget {
                       builder: (_, misses, _) {
                         final remaining = (game.missesAllowed - misses).clamp(0, game.missesAllowed);
                         return _HudColumn(
-                          label: 'misses remaining',
+                          label: AppLocalizations.of(context).tifoMissesRemaining,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -491,14 +491,14 @@ class _PenaltyHudPanel extends StatelessWidget {
                     child: ValueListenableBuilder<int>(
                       valueListenable: game.goalsNotifier,
                       builder: (_, goals, _) => _HudColumn(
-                        label: 'Scored',
+                        label: AppLocalizations.of(context).tifoScored,
                         child: _HudScore(value: goals),
                       ),
                     ),
                   ),
                   Expanded(
                     child: _HudColumn(
-                      label: 'Score to beat',
+                      label: AppLocalizations.of(context).tifoScoreToBeat,
                       child: _HudScore(value: scoreToBeat),
                     ),
                   ),
@@ -551,7 +551,10 @@ class _HudScore extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 2),
-      const Text('goals', style: TextStyle(color: _PenaltyHudPanel._caption, fontSize: 11)),
+      Text(
+        AppLocalizations.of(context).tifoGoals,
+        style: const TextStyle(color: _PenaltyHudPanel._caption, fontSize: 11),
+      ),
     ],
   );
 }

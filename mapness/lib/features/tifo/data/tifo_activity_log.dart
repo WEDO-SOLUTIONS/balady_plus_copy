@@ -17,10 +17,9 @@ const _kTifoActivityKey = 'entries';
 enum TifoActivityType { win, loss, tripCompleted }
 
 class TifoActivityEntry {
-  const TifoActivityEntry({required this.type, required this.label, required this.timestamp, this.tokenDelta});
+  const TifoActivityEntry({required this.type, required this.timestamp, this.tokenDelta});
 
   final TifoActivityType type;
-  final String label;
   final DateTime timestamp;
 
   /// Token balance change to show alongside the label (e.g. "+3 ⚡"), null when
@@ -29,27 +28,25 @@ class TifoActivityEntry {
 
   Map<String, dynamic> toJson() => {
     'type': type.name,
-    'label': label,
     'timestamp': timestamp.toIso8601String(),
     if (tokenDelta != null) 'tokenDelta': tokenDelta,
   };
 
+  /// The label is intentionally NOT persisted: entries are read back and
+  /// displayed on demand via [TifoActivityType], so an entry written in one
+  /// app language always renders in whatever language is active later —
+  /// switching languages mid-session (or between sessions) never leaves
+  /// stale-language text sitting in a saved entry.
   static TifoActivityEntry? fromJson(Object? raw) {
     if (raw is! Map) {
       return null;
     }
     final type = TifoActivityType.values.asNameMap()[raw['type']?.toString()];
-    final label = raw['label']?.toString();
     final timestamp = DateTime.tryParse(raw['timestamp']?.toString() ?? '');
-    if (type == null || label == null || timestamp == null) {
+    if (type == null || timestamp == null) {
       return null;
     }
-    return TifoActivityEntry(
-      type: type,
-      label: label,
-      timestamp: timestamp,
-      tokenDelta: (raw['tokenDelta'] as num?)?.toInt(),
-    );
+    return TifoActivityEntry(type: type, timestamp: timestamp, tokenDelta: (raw['tokenDelta'] as num?)?.toInt());
   }
 }
 

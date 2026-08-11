@@ -236,6 +236,15 @@ class TifoSessionController extends Notifier<TifoSessionState> {
       // Non-fatal.
     }
   }
+
+  /// Called when the app language changes: [load] normally reuses `clubs`
+  /// once loaded (`state.clubs.isEmpty ? … : state.clubs`), so a plain
+  /// `load()` would keep serving club names in the old locale. Clearing the
+  /// cached roster first forces a fresh `/clubs` fetch with the new locale.
+  Future<void> forceRefresh() async {
+    state = state.copyWith(clubs: const []);
+    await load();
+  }
 }
 
 final tifoSessionProvider = NotifierProvider<TifoSessionController, TifoSessionState>(TifoSessionController.new);

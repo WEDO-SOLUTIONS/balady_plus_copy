@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 
 /// District details bottom sheet — Figma "district details" (node 696:119272,
@@ -20,7 +22,7 @@ Future<void> showTifoDistrictSheet(
 }) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
-  backgroundColor: TifoColors.surface,
+  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
   builder: (_) => _DistrictSheet(district: district, summary: summary),
 );
@@ -128,7 +130,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: TifoColors.surface,
+                      color: context.colors.foregroundSurfacePush,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: TifoColors.accentContainer),
                     ),
@@ -136,7 +138,12 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                   ),
                 ),
               ),
-              const Center(child: Text('District', style: TifoText.h3)),
+              Center(
+                child: Text(
+                  AppLocalizations.of(context).tifoDistrictLabel,
+                  style: TifoText.h3.copyWith(color: context.colors.foregroundDefault),
+                ),
+              ),
               const SizedBox(height: 4),
               Center(
                 child: Text(
@@ -160,7 +167,10 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Current Owner', style: TifoText.captionMedium.copyWith(color: TifoColors.accent)),
+                          Text(
+                            AppLocalizations.of(context).tifoCurrentOwner,
+                            style: TifoText.captionMedium.copyWith(color: TifoColors.accent),
+                          ),
                           const SizedBox(height: 12),
                           Row(
                             children: [
@@ -184,7 +194,8 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                                     ),
                                     if (summary != null && !summary.isNeutral)
                                       Text(
-                                        'Since ${summary.standingDays} day${summary.standingDays == 1 ? '' : 's'} ago',
+                                        '${AppLocalizations.of(context).tifoSince} '
+                                        '${tifoStandingDaysAgo(context, summary.standingDays)}',
                                         style: TifoText.captionRegular.copyWith(color: TifoColors.accent),
                                       ),
                                   ],
@@ -198,7 +209,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                                     style: TifoText.h2.copyWith(color: TifoColors.accent),
                                   ),
                                   Text(
-                                    'district control',
+                                    AppLocalizations.of(context).tifoDistrictControl,
                                     style: TifoText.captionRegular.copyWith(color: TifoColors.accent),
                                   ),
                                 ],
@@ -213,24 +224,27 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                     Container(
                       padding: const EdgeInsets.all(17.5),
                       decoration: BoxDecoration(
-                        color: TifoColors.surface,
+                        color: context.colors.foregroundSurfacePush,
                         borderRadius: BorderRadius.circular(TifoRadii.l),
                         border: Border.all(color: TifoColors.neutralFill, width: 1.5),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Overview', style: TifoText.captionMedium.copyWith(color: TifoColors.textStrong)),
+                          Text(
+                            AppLocalizations.of(context).tifoOverview,
+                            style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+                          ),
                           const SizedBox(height: 12),
                           Row(
                             children: [
                               const Icon(Icons.apartment_rounded, size: 40, color: TifoColors.accentSoft),
                               const SizedBox(width: 16),
-                              _stat('${summary?.totalBuildings ?? 0}', 'in this district'),
+                              _stat('${summary?.totalBuildings ?? 0}', AppLocalizations.of(context).tifoInThisDistrict),
                               _divider(),
-                              _stat('${summary?.claimed ?? 0}', 'claimed'),
+                              _stat('${summary?.claimed ?? 0}', AppLocalizations.of(context).claimed),
                               _divider(),
-                              _stat('${summary?.free ?? 0}', 'free'),
+                              _stat('${summary?.free ?? 0}', AppLocalizations.of(context).tifoFree),
                             ],
                           ),
                         ],
@@ -242,7 +256,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                       Container(
                         padding: const EdgeInsets.all(17.5),
                         decoration: BoxDecoration(
-                          color: TifoColors.surface,
+                          color: context.colors.foregroundSurfacePush,
                           borderRadius: BorderRadius.circular(TifoRadii.l),
                           border: Border.all(color: TifoColors.neutralFill, width: 1.5),
                         ),
@@ -250,8 +264,8 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Buildings claimed by each team',
-                              style: TifoText.captionMedium.copyWith(color: TifoColors.textStrong),
+                              AppLocalizations.of(context).tifoBuildingsClaimedByEachTeam,
+                              style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
                             ),
                             for (final entry in breakdown) _clubRow(session, entry.key, entry.value),
                           ],
@@ -262,7 +276,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
               ),
               const SizedBox(height: 16),
               TifoPrimaryButton(
-                label: 'Take over the district',
+                label: AppLocalizations.of(context).tifoTakeOverTheDistrict,
                 trailingArrow: true,
                 onPressed: () => unawaited(_takeOver()),
               ),
@@ -289,15 +303,21 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                   style: TifoText.h4.copyWith(color: color),
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text('in this district', style: TifoText.captionRegular.copyWith(color: TifoColors.textStrong)),
+                Text(
+                  AppLocalizations.of(context).tifoInThisDistrict,
+                  style: TifoText.captionRegular.copyWith(color: context.colors.foregroundDefault),
+                ),
               ],
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('$claimed', style: TifoText.bodyL),
-              Text('claimed', style: TifoText.captionRegular.copyWith(color: TifoColors.textStrong)),
+              Text('$claimed', style: TifoText.bodyL.copyWith(color: context.colors.foregroundDefault)),
+              Text(
+                AppLocalizations.of(context).claimed,
+                style: TifoText.captionRegular.copyWith(color: context.colors.foregroundDefault),
+              ),
             ],
           ),
         ],
@@ -305,12 +325,12 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
     );
   }
 
-  static Widget _stat(String value, String label) => Expanded(
+  Widget _stat(String value, String label) => Expanded(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(value, style: TifoText.h2.copyWith(color: TifoColors.accentSoft)),
-        Text(label, style: TifoText.captionRegular.copyWith(color: TifoColors.textStrong)),
+        Text(label, style: TifoText.captionRegular.copyWith(color: context.colors.foregroundDefault)),
       ],
     ),
   );

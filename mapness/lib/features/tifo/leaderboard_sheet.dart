@@ -308,7 +308,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             children: [
               Expanded(
                 child: _StatTile(
-                  label: 'Current tokens',
+                  label: AppLocalizations.of(context).currentTokens,
                   value: '${profile?.balance ?? 0}',
                   chipBg: const Color(0xFFEDE9FE),
                   icon: Icons.bolt_rounded,
@@ -327,9 +327,9 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
             children: [
               Expanded(
                 child: _StatTile(
-                  label: 'Every trip you complete earns you tokens.',
+                  label: AppLocalizations.of(context).everyTripYouCompleteEarnsYouTokens,
                   value: '${profile?.tripTokensToday ?? 0}',
-                  caption: 'Today',
+                  caption: AppLocalizations.of(context).today,
                   chipBg: const Color(0xFFE3F5EB),
                   icon: Icons.location_on_rounded,
                   iconColor: TifoColors.accentSoft,
@@ -338,9 +338,9 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
               const SizedBox(width: 10),
               Expanded(
                 child: _StatTile(
-                  label: 'Tokens earned',
+                  label: AppLocalizations.of(context).tokensEarned,
                   value: '${profile?.allTimeEarned ?? 0}',
-                  caption: 'All time',
+                  caption: AppLocalizations.of(context).allTime,
                   chipBg: const Color(0xFFE3F5EB),
                   icon: Icons.account_balance_rounded,
                   iconColor: TifoColors.accentSoft,
@@ -364,7 +364,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 children: [
                   Icon(Icons.sports_esports_rounded, size: 18, color: context.colors.foregroundDefault),
                   const SizedBox(width: 8),
-                  Text('Matches Played', style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault)),
+                  Text(
+                    AppLocalizations.of(context).matchesPlayed,
+                    style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                  ),
                 ],
               ),
               const SizedBox(height: 14),
@@ -374,28 +377,28 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 children: [
                   _MatchStat(
                     value: '${profile?.gamesTotal ?? 0}',
-                    label: 'Total',
+                    label: AppLocalizations.of(context).total,
                     chipBg: const Color(0xFFF2F4F7),
                     icon: Icons.sports_esports_rounded,
                     iconColor: const Color(0xFF6A7282),
                   ),
                   _MatchStat(
                     value: '${profile?.gamesWon ?? 0}',
-                    label: 'Wins',
+                    label: AppLocalizations.of(context).wins,
                     chipBg: const Color(0xFFFFF4D6),
                     icon: Icons.emoji_events_rounded,
                     iconColor: const Color(0xFFD9A400),
                   ),
                   _MatchStat(
                     value: '${profile?.gamesLost ?? 0}',
-                    label: 'Losses',
+                    label: AppLocalizations.of(context).losses,
                     chipBg: const Color(0xFFFEE4E2),
                     icon: Icons.cancel_rounded,
                     iconColor: const Color(0xFFF04438),
                   ),
                   _MatchStat(
                     value: '${profile?.buildingsOwned ?? 0}',
-                    label: 'Claimed',
+                    label: AppLocalizations.of(context).claimed,
                     chipBg: const Color(0xFFE3F5EB),
                     icon: Icons.apartment_rounded,
                     iconColor: TifoColors.accentSoft,
@@ -424,7 +427,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
           children: [
             Expanded(
               child: Text(
-                'Recent Activity',
+                AppLocalizations.of(context).recentActivity,
                 style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
@@ -434,7 +437,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('View all', style: TifoText.captionMedium.copyWith(color: TifoColors.accent, fontSize: 13)),
+                    Text(
+                      AppLocalizations.of(context).viewAll,
+                      style: TifoText.captionMedium.copyWith(color: TifoColors.accent, fontSize: 13),
+                    ),
                     const Icon(Icons.chevron_right_rounded, size: 16, color: TifoColors.accent),
                   ],
                 ),
@@ -443,7 +449,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
         ),
         const SizedBox(height: 4),
         if (activity.isEmpty)
-          Text('No Data', style: TifoText.captionRegular.copyWith(fontSize: 13))
+          Text(AppLocalizations.of(context).noData, style: TifoText.captionRegular.copyWith(fontSize: 13))
         else
           for (final entry in activity.take(3)) _ActivityRow(entry: entry),
       ],
@@ -454,14 +460,14 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
     context: context,
     backgroundColor: TifoColors.surface,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-    builder: (_) => SafeArea(
+    builder: (sheetContext) => SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Recent Activity', style: TifoText.bodyLSemi),
+            Text(AppLocalizations.of(sheetContext).recentActivity, style: TifoText.bodyLSemi),
             const SizedBox(height: 8),
             Flexible(
               child: ListView(
@@ -487,6 +493,12 @@ class _ActivityRow extends StatelessWidget {
     TifoActivityType.tripCompleted: (Icons.location_on_rounded, Color(0xFFEDE9FE), Color(0xFF7C3AED)),
   };
 
+  static String _label(BuildContext context, TifoActivityType type) => switch (type) {
+    TifoActivityType.win => AppLocalizations.of(context).youWonAPenaltyChallenge,
+    TifoActivityType.loss => AppLocalizations.of(context).youLostAPenaltyChallenge,
+    TifoActivityType.tripCompleted => AppLocalizations.of(context).tripCompleted,
+  };
+
   @override
   Widget build(BuildContext context) {
     final (icon, chipBg, iconColor) = _iconByType[entry.type]!;
@@ -502,7 +514,10 @@ class _ActivityRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(entry.label, style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault)),
+            child: Text(
+              _label(context, entry.type),
+              style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+            ),
           ),
           if (entry.tokenDelta != null) ...[
             Text(
@@ -513,24 +528,25 @@ class _ActivityRow extends StatelessWidget {
             const Icon(Icons.bolt_rounded, size: 12, color: Color(0xFF7C3AED)),
             const SizedBox(width: 6),
           ],
-          Text(_relativeTime(entry.timestamp), style: TifoText.captionRegular),
+          Text(_relativeTime(context, entry.timestamp), style: TifoText.captionRegular),
         ],
       ),
     );
   }
 
-  static String _relativeTime(DateTime timestamp) {
+  static String _relativeTime(BuildContext context, DateTime timestamp) {
+    final l10n = AppLocalizations.of(context);
     final diff = DateTime.now().difference(timestamp);
     if (diff.inMinutes < 1) {
-      return 'Just now';
+      return l10n.tifoJustNow;
     }
     if (diff.inHours < 1) {
-      return '${diff.inMinutes}m ago';
+      return l10n.tifoMinutesAgo(tifoLocalizedDigits(context, diff.inMinutes));
     }
     if (diff.inDays < 1) {
-      return '${diff.inHours}h ago';
+      return l10n.tifoHoursAgo(tifoLocalizedDigits(context, diff.inHours));
     }
-    return '${diff.inDays}d ago';
+    return l10n.tifoDaysAgo(tifoLocalizedDigits(context, diff.inDays));
   }
 }
 
@@ -717,7 +733,7 @@ class _NextDailyTileState extends State<_NextDailyTile> {
     final seconds = _left % 60;
     final two = (int v) => v.toString().padLeft(2, '0');
     return _StatTile(
-      label: 'Next daily tokens in',
+      label: AppLocalizations.of(context).nextDailyTokensIn,
       value: _left <= 0 ? '--' : '${two(hours)}:${two(minutes)}',
       caption: _left <= 0 ? 'hh:mm' : '${two(seconds)}s',
       chipBg: const Color(0xFFFFF1E0),

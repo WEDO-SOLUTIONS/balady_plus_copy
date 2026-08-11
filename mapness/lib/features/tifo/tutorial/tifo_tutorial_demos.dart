@@ -92,7 +92,10 @@ class TifoDemoDistrictSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Current Owner', style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft)),
+              Text(
+                AppLocalizations.of(context).tifoCurrentOwner,
+                style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
+              ),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -103,7 +106,10 @@ class TifoDemoDistrictSheet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Team Name', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent)),
-                        const Text('Since 3 days ago', style: TifoText.captionRegular),
+                        Text(
+                          '${AppLocalizations.of(context).tifoSince} ${tifoStandingDaysAgo(context, 3)}',
+                          style: TifoText.captionRegular,
+                        ),
                       ],
                     ),
                   ),
@@ -111,7 +117,7 @@ class TifoDemoDistrictSheet extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text('62%', style: TifoText.h2.copyWith(color: TifoColors.accent)),
-                      const Text('district control', style: TifoText.captionRegular),
+                      Text(AppLocalizations.of(context).tifoDistrictControl, style: TifoText.captionRegular),
                     ],
                   ),
                 ],
@@ -126,17 +132,20 @@ class TifoDemoDistrictSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Overview', style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault)),
+              Text(
+                AppLocalizations.of(context).tifoOverview,
+                style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault),
+              ),
               const SizedBox(height: 10),
               Row(
                 children: [
                   const Icon(Icons.apartment_rounded, size: 28, color: TifoColors.accentSoft),
                   const SizedBox(width: 8),
-                  _stat('48', 'in this district'),
+                  _stat('48', AppLocalizations.of(context).tifoInThisDistrict),
                   _divider(),
-                  _stat('31', 'claimed'),
+                  _stat('31', AppLocalizations.of(context).claimed),
                   _divider(),
-                  _stat('17', 'free'),
+                  _stat('17', AppLocalizations.of(context).tifoFree),
                 ],
               ),
             ],
@@ -149,7 +158,7 @@ class TifoDemoDistrictSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Buildings claimed by each team', style: TifoText.captionMedium),
+              Text(AppLocalizations.of(context).tifoBuildingsClaimedByEachTeam, style: TifoText.captionMedium),
               const SizedBox(height: 4),
               for (final (name, color, claimed) in _rows(context))
                 Padding(
@@ -161,7 +170,7 @@ class TifoDemoDistrictSheet extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(name, style: TifoText.bodyLSemi.copyWith(color: color == _yellow ? _amber : color)),
-                            const Text('in this district', style: TifoText.captionRegular),
+                            Text(AppLocalizations.of(context).tifoInThisDistrict, style: TifoText.captionRegular),
                           ],
                         ),
                       ),
@@ -169,7 +178,7 @@ class TifoDemoDistrictSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text('$claimed', style: TifoText.bodyLSemi),
-                          const Text('claimed', style: TifoText.captionRegular),
+                          Text(AppLocalizations.of(context).claimed, style: TifoText.captionRegular),
                         ],
                       ),
                     ],
@@ -179,7 +188,7 @@ class TifoDemoDistrictSheet extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        const TifoPrimaryButton(label: 'Take over the district', trailingArrow: true),
+        TifoPrimaryButton(label: AppLocalizations.of(context).tifoTakeOverTheDistrict, trailingArrow: true),
       ],
     ),
   );
@@ -248,7 +257,10 @@ class TifoDemoBuildingSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Current Owner', style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft)),
+                  Text(
+                    AppLocalizations.of(context).tifoCurrentOwner,
+                    style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
+                  ),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -261,7 +273,10 @@ class TifoDemoBuildingSheet extends StatelessWidget {
                             AppLocalizations.of(context).sandTeam,
                             style: TifoText.bodyLSemi.copyWith(color: TifoColors.accent),
                           ),
-                          const Text('Since 3 days ago', style: TifoText.captionRegular),
+                          Text(
+                            '${AppLocalizations.of(context).tifoSince} ${tifoStandingDaysAgo(context, 3)}',
+                            style: TifoText.captionRegular,
+                          ),
                         ],
                       ),
                     ],
@@ -276,10 +291,13 @@ class TifoDemoBuildingSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Unclaimed', style: TifoText.h2.copyWith(color: TifoColors.textSoft)),
+                  Text(
+                    AppLocalizations.of(context).tifoUnclaimed,
+                    style: TifoText.h2.copyWith(color: TifoColors.textSoft),
+                  ),
                   const SizedBox(height: 4),
                   Text(
-                    "This building hasn't been claimed yet.",
+                    AppLocalizations.of(context).tifoNotClaimedYet,
                     style: TifoText.captionRegular.copyWith(color: TifoColors.accentSoft),
                   ),
                 ],
@@ -295,10 +313,16 @@ class TifoDemoBuildingSheet extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Current score to beat', style: TifoText.captionMedium.copyWith(color: TifoColors.accent)),
+                      Text(
+                        AppLocalizations.of(context).tifoCurrentScoreToBeat,
+                        style: TifoText.captionMedium.copyWith(color: TifoColors.accent),
+                      ),
                       const SizedBox(height: 4),
                       Text('$score', style: TifoText.h2.copyWith(color: TifoColors.accent)),
-                      Text('goals', style: TifoText.captionRegular.copyWith(color: TifoColors.accentSoft)),
+                      Text(
+                        AppLocalizations.of(context).tifoGoals,
+                        style: TifoText.captionRegular.copyWith(color: TifoColors.accentSoft),
+                      ),
                     ],
                   ),
                 ),
@@ -500,23 +524,29 @@ class TifoDemoPenaltyHud extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Penalty challenge', style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted)),
+              Text(
+                AppLocalizations.of(context).tifoPenaltyChallenge,
+                style: TifoText.bodyLSemi.copyWith(color: TifoColors.accentMuted),
+              ),
               const SizedBox(height: 10),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _hudCell('misses remaining', const Text('⚽ ❌ ❌', style: TextStyle(fontSize: 16))),
-                  const SizedBox(width: 20),
                   _hudCell(
-                    'Scored',
-                    Text('4', style: TifoText.h3.copyWith(color: TifoColors.accentMuted)),
-                    sub: 'goals',
+                    AppLocalizations.of(context).tifoMissesRemaining,
+                    const Text('⚽ ❌ ❌', style: TextStyle(fontSize: 16)),
                   ),
                   const SizedBox(width: 20),
                   _hudCell(
-                    'Score to beat',
+                    AppLocalizations.of(context).tifoScored,
+                    Text('4', style: TifoText.h3.copyWith(color: TifoColors.accentMuted)),
+                    sub: AppLocalizations.of(context).tifoGoals,
+                  ),
+                  const SizedBox(width: 20),
+                  _hudCell(
+                    AppLocalizations.of(context).tifoScoreToBeat,
                     Text('12', style: TifoText.h3.copyWith(color: TifoColors.accentMuted)),
-                    sub: 'goals',
+                    sub: AppLocalizations.of(context).tifoGoals,
                   ),
                 ],
               ),
@@ -794,17 +824,27 @@ class TifoDemoProfile extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                Expanded(child: _statCard('Current tokens', '⚡ 15')),
+                Expanded(child: _statCard(AppLocalizations.of(context).currentTokens, '⚡ 15')),
                 const SizedBox(width: 10),
-                Expanded(child: _statCard('Next daily tokens in', '🕐 08:24:17', sub: 'mm:ss')),
+                Expanded(
+                  child: _statCard(AppLocalizations.of(context).nextDailyTokensIn, '🕐 08:24:17', sub: 'mm:ss'),
+                ),
               ],
             ),
             const SizedBox(height: 10),
             Row(
               children: [
-                Expanded(child: _statCard('Every trip you complete\nearns you tokens.', '📍 3')),
+                Expanded(
+                  child: _statCard(AppLocalizations.of(context).everyTripYouCompleteEarnsYouTokens, '📍 3'),
+                ),
                 const SizedBox(width: 10),
-                Expanded(child: _statCard('Tokens earned', '🏦 64', sub: 'All time')),
+                Expanded(
+                  child: _statCard(
+                    AppLocalizations.of(context).tokensEarned,
+                    '🏦 64',
+                    sub: AppLocalizations.of(context).allTime,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10),
@@ -814,14 +854,14 @@ class TifoDemoProfile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('🎮 Matches Played', style: TifoText.bodyLSemi),
+                  Text('🎮 ${AppLocalizations.of(context).matchesPlayed}', style: TifoText.bodyLSemi),
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      _matchStat('32', 'Total'),
-                      _matchStat('18', 'Wins'),
-                      _matchStat('7', 'Losses'),
-                      _matchStat('18', 'Claimed'),
+                      _matchStat('32', AppLocalizations.of(context).total),
+                      _matchStat('18', AppLocalizations.of(context).wins),
+                      _matchStat('7', AppLocalizations.of(context).losses),
+                      _matchStat('18', AppLocalizations.of(context).claimed),
                     ],
                   ),
                 ],
@@ -830,14 +870,17 @@ class TifoDemoProfile extends StatelessWidget {
             const SizedBox(height: 14),
             Row(
               children: [
-                const Expanded(child: Text('Recent Activity', style: TifoText.bodyLSemi)),
-                Text('View all ›', style: TifoText.captionMedium.copyWith(color: TifoColors.accent)),
+                Expanded(child: Text(AppLocalizations.of(context).recentActivity, style: TifoText.bodyLSemi)),
+                Text(
+                  '${AppLocalizations.of(context).viewAll} ›',
+                  style: TifoText.captionMedium.copyWith(color: TifoColors.accent),
+                ),
               ],
             ),
             const SizedBox(height: 8),
-            _activity('🏆', 'You won a penalty challenge', '2h ago'),
-            _activity('❌', 'You lost a penalty challenge', '2h ago'),
-            _activity('📍', 'Trip completed  +3 ⚡', '5h ago'),
+            _activity('🏆', AppLocalizations.of(context).youWonAPenaltyChallenge, '2h ago'),
+            _activity('❌', AppLocalizations.of(context).youLostAPenaltyChallenge, '2h ago'),
+            _activity('📍', '${AppLocalizations.of(context).tripCompleted}  +3 ⚡', '5h ago'),
             const Spacer(),
             TifoPrimaryButton(label: AppLocalizations.of(context).dominateWithYourTeam, trailingArrow: true),
           ],
@@ -1007,12 +1050,12 @@ class TifoDemoTeamSelect extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const TifoStepHeader(step: 1, total: 2, title: 'Choose your team'),
+            TifoStepHeader(step: 1, total: 2, title: AppLocalizations.of(context).chooseYourTeam),
             const SizedBox(height: 4),
-            const TifoInfoBanner(
+            TifoInfoBanner(
               icon: Icons.lock_outline_rounded,
-              title: 'Your team will be locked for the season',
-              subtitle: 'You can change teams when the next season begins.',
+              title: AppLocalizations.of(context).yourTeamWillBeLockedForTheSeason,
+              subtitle: AppLocalizations.of(context).youCanChangeTeamsWhenTheNextSeasonBegins,
             ),
             const SizedBox(height: 12),
             for (final (name, color, selected) in _teams(context))

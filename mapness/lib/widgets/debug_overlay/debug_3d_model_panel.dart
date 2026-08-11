@@ -8,6 +8,7 @@ import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_color_override.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_goalkeeper_difficulty.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 
@@ -219,6 +220,7 @@ class Debug3DModelPanel extends ConsumerWidget {
             keeperColor: keeperColor,
             showColliderDebug: showColliderDebug,
             goalkeeperDifficulty: goalkeeperDifficulty,
+            locale: ref.read(appLanguageProvider).locale,
             onComplete: (_) {
               Future<void>.delayed(const Duration(seconds: 2), () {
                 rootNavigatorKey.currentState?.pop();
