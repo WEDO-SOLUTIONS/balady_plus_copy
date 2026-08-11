@@ -209,7 +209,7 @@ class PoiContentSliver extends ConsumerWidget {
     final about = data.getAbout(context.l10n, customAbout: forceShow ? localAboutText : null);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
-    final isLeapObject = ref.read(leapProvider.notifier).isLeapObject(data.id!.objectId);
+    final isLeapObject = ref.read(leapProvider.notifier).isLeapObjectId(data.id!.objectId);
 
     final fullAddress = data.getFullAddress(
       briefInfo,
