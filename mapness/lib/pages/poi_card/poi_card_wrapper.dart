@@ -169,7 +169,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper>
     if (isParkingPoi) {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
-
+    ref.watch(dgisEnvironmentProvider);
     final leapPoi = ref.read(leapProvider.notifier).getLeapPoi(widget.objectId.objectId);
     final leapData = leapPoi?.mergeDirectoryObjectMessage(context.l10n, gisData);
     final data = leapData ?? gisData;

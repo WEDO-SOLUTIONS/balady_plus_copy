@@ -154,6 +154,12 @@ class LeapPoi extends Equatable {
   DirectoryObjectMessage mergeDirectoryObjectMessage(AppLocalizations l10n, DirectoryObjectMessage? other) {
     final leapDirectoryObject = toDirectoryObjectMessage(l10n);
 
+    final leapContactTypes = leapDirectoryObject.contactInfos.map((contact) => contact.type).toSet();
+    final contactInfos = [
+      ...leapDirectoryObject.contactInfos,
+      ...?other?.contactInfos.where((contact) => !leapContactTypes.contains(contact.type)),
+    ];
+
     return DirectoryObjectMessage(
       types: other?.types ?? leapDirectoryObject.types,
       title: leapDirectoryObject.title,
@@ -170,9 +176,7 @@ class LeapPoi extends Equatable {
       contextAttributes: other?.contextAttributes ?? leapDirectoryObject.contextAttributes,
       timeZoneOffset: other?.timeZoneOffset ?? leapDirectoryObject.timeZoneOffset,
       openingHours: leapDirectoryObject.openingHours,
-      contactInfos: (other?.contactInfos != null && other!.contactInfos.isNotEmpty)
-          ? other.contactInfos
-          : leapDirectoryObject.contactInfos,
+      contactInfos: contactInfos,
       reviews: other?.reviews ?? leapDirectoryObject.reviews,
       parkingInfo: other?.parkingInfo ?? leapDirectoryObject.parkingInfo,
       workStatus: leapDirectoryObject.workStatus,
@@ -180,7 +184,7 @@ class LeapPoi extends Equatable {
       buildingLevels: other?.buildingLevels ?? leapDirectoryObject.buildingLevels,
       entrances: other?.entrances ?? leapDirectoryObject.entrances,
       tradeLicense: other?.tradeLicense ?? leapDirectoryObject.tradeLicense,
-      buildingInfo: other?.buildingInfo ?? leapDirectoryObject.buildingInfo,
+      buildingInfo: leapDirectoryObject.buildingInfo,
       rubricIds: other?.rubricIds ?? leapDirectoryObject.rubricIds,
       orgInfo: other?.orgInfo ?? leapDirectoryObject.orgInfo,
       group: other?.group ?? leapDirectoryObject.group,
