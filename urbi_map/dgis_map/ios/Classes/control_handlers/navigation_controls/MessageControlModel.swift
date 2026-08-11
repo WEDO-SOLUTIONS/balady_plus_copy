@@ -44,11 +44,15 @@ class MessageControlModel {
             "state": state,
         ])
 
-        NotificationCenter.default.post(
-            name: .dgisNavigationMessageTick,
-            object: nil,
-            userInfo: ["state": state]
-        )
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationMessageTick,
+                object: nil,
+                userInfo: ["state": state]
+            )
+        }
     }
     
     func cancel() {

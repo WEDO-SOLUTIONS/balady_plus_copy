@@ -104,11 +104,16 @@ class SpeedControlModel {
             userInfo["speedLimit"] = speedLimit
         }
 
-        NotificationCenter.default.post(
-            name: .dgisNavigationSpeedTick,
-            object: nil,
-            userInfo: userInfo
-        )
+        // Runs on the SDK's internal queue while it holds its engine lock. Posting to
+        // main-queue observers waits for them, and a concurrent main-thread call back
+        // into the SDK then deadlocks — never post synchronously from an SDK callback.
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: .dgisNavigationSpeedTick,
+                object: nil,
+                userInfo: userInfo
+            )
+        }
     }
 
     private func cameraListener(_ cameraInfo: CameraProgressInfo?) {

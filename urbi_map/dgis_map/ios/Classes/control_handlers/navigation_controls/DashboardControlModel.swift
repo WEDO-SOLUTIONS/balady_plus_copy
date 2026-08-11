@@ -87,11 +87,15 @@ class DashboardControlModel {
         userInfo["trafficShares"] = timeline.shares
         userInfo["trafficLevels"] = timeline.levels
 
-        NotificationCenter.default.post(
-            name: .dgisNavigationDashboardTick,
-            object: nil,
-            userInfo: userInfo
-        )
+        // SDK callback thread: a synchronous post waits for main-queue observers and can
+        // deadlock against main-thread calls into the SDK — post async on main instead.
+        DispatchQueue.main.async { [userInfo] in
+            NotificationCenter.default.post(
+                name: .dgisNavigationDashboardTick,
+                object: nil,
+                userInfo: userInfo
+            )
+        }
     }
 
     /// Traveled fraction of the route plus its traffic colouring, aggregated into
