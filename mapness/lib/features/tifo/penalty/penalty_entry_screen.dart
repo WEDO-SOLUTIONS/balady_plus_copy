@@ -6,6 +6,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_collider_overlay.dart';
 import 'package:mapness/features/tifo/penalty/penalty_game.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/debug_3d_model.dart';
 
 /// Penalty Challenge entry screen — Figma node 2:2541.
@@ -98,6 +99,7 @@ class PenaltyEntryScreen extends ConsumerWidget {
         fullscreenDialog: true,
         builder: (_) => PenaltyApp(
           showColliderDebug: ref.read(tifoDebugColliderOverlayProvider),
+          locale: ref.read(appLanguageProvider).locale,
           onComplete: (outcome) {
             if (handled) return;
             handled = true;

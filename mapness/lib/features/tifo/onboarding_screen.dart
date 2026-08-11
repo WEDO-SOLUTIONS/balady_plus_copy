@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// TIFO onboarding — Figma `StepOnboarding` (node 1:6913 / 1:6916).
 ///
@@ -550,9 +551,9 @@ class _BottomCta extends StatelessWidget {
               const SizedBox(height: 8),
               TextButton(
                 onPressed: () => Navigator.of(context).maybePop(),
-                child: const Text(
-                  'Maybe Later',
-                  style: TextStyle(
+                child: Text(
+                  AppLocalizations.of(context).maybeLater,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 13,
                     height: 19.5 / 13,

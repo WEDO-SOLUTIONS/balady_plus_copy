@@ -9,6 +9,7 @@ import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Debug-only overrides for the TIFO backend. Empty fields fall back to the
@@ -170,9 +171,16 @@ class TifoApiException implements Exception {
 }
 
 class TifoApi {
-  TifoApi(this._resolve);
+  TifoApi(this._resolve, {String Function() localeCode = _defaultLocaleCode}) : _localeCode = localeCode;
+
+  static String _defaultLocaleCode() => 'en';
 
   final Future<TifoResolvedConfig> Function() _resolve;
+
+  /// Backend locale code (`en`/`ar`) sent on every request — resolves the
+  /// app's current language so responses (e.g. club names) come back
+  /// localized instead of always English.
+  final String Function() _localeCode;
 
   final Dio _dio = Dio(
     BaseOptions(
@@ -190,7 +198,7 @@ class TifoApi {
 
   String _url(String baseUrl, String path) {
     final sep = path.contains('?') ? '&' : '?';
-    return '$baseUrl$path${sep}locale=en';
+    return '$baseUrl$path${sep}locale=${_localeCode()}';
   }
 
   /// `GET /buildings?bbox=minLng,minLat,maxLng,maxLat`. [cancelToken] lets the
@@ -390,4 +398,9 @@ class TifoApi {
   }
 }
 
-final tifoApiProvider = Provider<TifoApi>((ref) => TifoApi(() => resolveTifoConfig(ref)));
+final tifoApiProvider = Provider<TifoApi>(
+  (ref) => TifoApi(
+    () => resolveTifoConfig(ref),
+    localeCode: () => ref.read(appLanguageProvider).baladyCompat,
+  ),
+);

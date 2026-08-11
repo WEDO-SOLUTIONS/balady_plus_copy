@@ -57,8 +57,7 @@ class TifoEntryScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: Text(
-                  'Capture the city.\nLead your team.',
-                  textDirection: TextDirection.ltr,
+                  AppLocalizations.of(context).captureTheCityLeadYourTeam,
                   style: TifoText.h2.copyWith(color: Colors.white, fontSize: 30, height: 1.2),
                 ),
               ),

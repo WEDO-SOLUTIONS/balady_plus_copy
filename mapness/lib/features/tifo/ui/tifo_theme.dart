@@ -1,5 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/lib/ar_functions.dart';
 
 /// TIFO design tokens, pulled from the Figma variables (`accent/*`,
 /// `neutral/*`, `English/*` type ramp). The design font is "Golos Text" — not
@@ -20,7 +22,7 @@ abstract final class TifoColors {
   static const Color amber = Color(0xFFD9A400);
 
   /// Fallback fill for a neutral / unowned entity.
-  static const Color neutralFill = Color(0xFF9DA4AE);
+  static const Color neutralFill = Color(0xFF4C5E41);
 }
 
 abstract final class TifoRadii {
@@ -235,6 +237,35 @@ class TifoGhostButton extends StatelessWidget {
   );
 }
 
+/// `intl`'s NumberFormat doesn't map to Eastern Arabic-Indic digits for the
+/// `ar` locale in this project's pinned version — render them manually so
+/// "STEP 1 OF 2" reads "الخطوة ١ من ٢" instead of keeping Western digits.
+String tifoLocalizedDigits(BuildContext context, int n) {
+  if (Localizations.localeOf(context).languageCode != 'ar') {
+    return '$n';
+  }
+  const easternArabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  return n.toString().split('').map((d) => easternArabicDigits[int.parse(d)]).join();
+}
+
+/// "Since N day(s) ago" — Arabic day counts need the full 0/1/2/few/many/other
+/// plural set (see [ArPlurals]/[getPluralForAr]), not just singular/plural.
+/// Zero/one/two bake the count into the translation itself; few/many/other
+/// prepend the (locale-formatted) number, matching the existing
+/// `ArPlurals.stations`/`.transfers` helpers.
+String tifoStandingDaysAgo(BuildContext context, int days) {
+  final l10n = AppLocalizations.of(context);
+  final digits = tifoLocalizedDigits(context, days);
+  return switch (getPluralForAr(days)) {
+    Plurals.zero => l10n.tifoStandingDaysZero,
+    Plurals.one => l10n.tifoStandingDaysOne,
+    Plurals.two => l10n.tifoStandingDaysTwo,
+    Plurals.few => '$digits ${l10n.tifoStandingDaysFew}',
+    Plurals.many => '$digits ${l10n.tifoStandingDaysMany}',
+    Plurals.others => '$digits ${l10n.tifoStandingDaysOther}',
+  };
+}
+
 /// Onboarding step header: back chevron + "STEP n OF m" + title + a segmented
 /// progress bar (`filled` of `total` segments in accent).
 class TifoStepHeader extends StatelessWidget {
@@ -267,7 +298,12 @@ class TifoStepHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('STEP $step OF $total', style: TifoText.overline),
+                  Text(
+                    AppLocalizations.of(
+                      context,
+                    ).stepOfTotal(tifoLocalizedDigits(context, step), tifoLocalizedDigits(context, total)),
+                    style: TifoText.overline,
+                  ),
                   const SizedBox(height: 2),
                   Text(title, style: TifoText.h3.copyWith(color: context.colors.foregroundDefault)),
                 ],

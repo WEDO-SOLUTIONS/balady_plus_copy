@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// Two-step onboarding flow (BRD US-04), rebuilt to the Figma light design:
 ///   STEP 1 — Choose your team (roster data-driven from `GET /clubs`, rendered
@@ -73,7 +74,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
           TifoStepHeader(
             step: _step,
             total: 2,
-            title: _step == 1 ? 'Choose your team' : 'Your Tokens',
+            title: _step == 1 ? AppLocalizations.of(context).chooseYourTeam : AppLocalizations.of(context).yourTokens,
             onBack: () => _step == 1 ? _pop(false) : setState(() => _step = 1),
           ),
           Expanded(child: _step == 1 ? _buildTeamList(clubs) : _buildWelcomeBonus()),
@@ -90,10 +91,10 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
       children: [
-        const TifoInfoBanner(
+        TifoInfoBanner(
           icon: Icons.lock_outline_rounded,
-          title: 'Your team will be locked for the season',
-          subtitle: 'You can change teams when the next season begins.',
+          title: AppLocalizations.of(context).yourTeamWillBeLockedForTheSeason,
+          subtitle: AppLocalizations.of(context).youCanChangeTeamsWhenTheNextSeasonBegins,
         ),
         const SizedBox(height: 16),
         for (final club in clubs)
@@ -134,9 +135,15 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('WELCOME BONUS', style: TifoText.overline.copyWith(color: TifoColors.textSoft)),
+                    Text(
+                      AppLocalizations.of(context).welcomeBonus,
+                      style: TifoText.overline.copyWith(color: TifoColors.textSoft),
+                    ),
                     const SizedBox(height: 2),
-                    Text('${balance ?? 10} tokens', style: TifoText.h3.copyWith(color: TifoColors.accentSoft)),
+                    Text(
+                      AppLocalizations.of(context).tokensCount(tifoLocalizedDigits(context, balance ?? 10)),
+                      style: TifoText.h3.copyWith(color: TifoColors.accentSoft),
+                    ),
                   ],
                 ),
               ],
@@ -160,14 +167,17 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
           children: [
             if (_step == 1)
               TifoPrimaryButton(
-                label: 'Confirm Team',
+                label: AppLocalizations.of(context).confirmTeam,
                 busy: _isBusy,
                 onPressed: _selectedId != null ? _confirm : null,
               )
             else
-              TifoPrimaryButton(label: 'Claim the map', onPressed: () => _pop(true)),
+              TifoPrimaryButton(label: AppLocalizations.of(context).claimTheMap, onPressed: () => _pop(true)),
             const SizedBox(height: 4),
-            TifoGhostButton(label: 'Maybe Later', onPressed: _isBusy ? null : () => _pop(false)),
+            TifoGhostButton(
+              label: AppLocalizations.of(context).maybeLater,
+              onPressed: _isBusy ? null : () => _pop(false),
+            ),
           ],
         ),
       ),

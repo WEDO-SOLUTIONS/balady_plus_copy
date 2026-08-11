@@ -42,12 +42,7 @@ Future<void> reportTifoTripCompleted(WidgetRef ref) async {
       '(today ${reward.tripTokensToday}$cap, balance ${reward.balance})',
     );
     await activityLog.add(
-      TifoActivityEntry(
-        type: TifoActivityType.tripCompleted,
-        label: 'Trip completed',
-        timestamp: DateTime.now(),
-        tokenDelta: reward.reward,
-      ),
+      TifoActivityEntry(type: TifoActivityType.tripCompleted, timestamp: DateTime.now(), tokenDelta: reward.reward),
     );
     // Keep the profile tiles (balance, trips today) honest without waiting for
     // the player to reopen the game.

@@ -482,7 +482,6 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               .add(
                 TifoActivityEntry(
                   type: result.isWin ? TifoActivityType.win : TifoActivityType.loss,
-                  label: result.isWin ? 'You won a penalty challenge' : 'You lost a penalty challenge',
                   timestamp: DateTime.now(),
                 ),
               ),

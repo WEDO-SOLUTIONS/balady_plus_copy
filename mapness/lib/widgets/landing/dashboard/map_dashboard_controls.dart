@@ -115,7 +115,7 @@ class MapDashboardControls extends ConsumerWidget {
                 // placed in the row: as a flex child it would be squeezed to a
                 // third of the width and the label would break.
                 Stack(
-                  alignment: Alignment.center,
+                  alignment: Alignment.bottomCenter,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
