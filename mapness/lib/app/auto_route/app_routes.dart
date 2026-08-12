@@ -235,6 +235,12 @@ class AppRouter extends RootStackRouter {
           path: 'picker',
         ),
         CustomRoute(
+          path: 'favorite_lists',
+          page: FavoriteListsRoute.page,
+          fullscreenDialog: true,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
           path: 'feedback',
           page: AppFeedbackSheet.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
