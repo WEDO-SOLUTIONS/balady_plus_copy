@@ -321,8 +321,11 @@ class TifoApi {
 
   /// Rewards a completed Balady+ trip (US-16, API v2.4 §4.5). Idempotent per
   /// [tripId]: a replay returns `alreadyRewarded` and credits nothing.
-  Future<TifoTripReward> completeTrip(String tripId) async =>
-      TifoTripReward.fromJson(await _post('/trips/complete', body: {'tripId': tripId}));
+  /// [distanceKm] is required for the server's "minimum 1 km" qualification
+  /// check — without it every trip fails validation and earns nothing.
+  Future<TifoTripReward> completeTrip(String tripId, double distanceKm) async => TifoTripReward.fromJson(
+    await _post('/trips/complete', body: {'tripId': tripId, 'distanceKm': distanceKm}),
+  );
 
   Future<void> completeOnboarding() => _post('/onboarding/complete');
 
