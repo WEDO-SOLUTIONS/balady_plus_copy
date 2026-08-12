@@ -7,14 +7,13 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
+import 'package:mapness/features/balady_analytics/events/search_events.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart' as ui;
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
@@ -32,6 +31,8 @@ class MapSearchHistory extends ConsumerWidget {
     return ui.SearchHistory(
       iconColor: context.colors.foregroundMuted,
       onTap: (item, index, historyList) async {
+        // Balady analytics: a tapped history record is a selected result.
+        trackSearchResultSelected(query: item.title, rank: index + 1, resultType: SearchResultType.history);
         // DataFinder: tapping a past search counts as `History` input, and the
         // resulting search_results_exposure must report search_type: History.
         ref
@@ -50,13 +51,6 @@ class MapSearchHistory extends ConsumerWidget {
                 objectId: item.id?.objectId ?? 0,
                 entranceId: item.id?.entranceId ?? 0,
               ),
-            );
-
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.object,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {'objectId': item.id?.objectId},
             );
 
             // todo rewrite

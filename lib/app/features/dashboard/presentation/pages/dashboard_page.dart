@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
+import 'package:balady_plus/app/core/utils/constants/analytics_events.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/message_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
@@ -30,8 +30,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
   void initState() {
     super.initState();
     CommonFunctions.sendEventToAnalytics(AppEvents.delegators);
-    CommonFunctions.sendUXCamEvent(UXCamEvents.openDashboard);
-    CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Dashboard_Event);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.openDashboard);
+    CommonFunctions.sendAnalyticsEvent(AnalyticsEvents.DashBoard_Click_Dashboard_Event);
   }
 
   @override
@@ -69,8 +69,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   margin: const EdgeInsets.all(16),
                                   padding: const EdgeInsets.all(16),
                                   height: 64,
-                                  decoration:  BoxDecoration(
-
+                                  decoration: BoxDecoration(
                                     color: Theme.of(context).cardColor,
 
                                     borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -78,19 +77,18 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                       DrawIconBasedTypeWidget(
+                                      DrawIconBasedTypeWidget(
                                         icon: IconPath.aboutBalady,
                                         iconColor: Theme.of(context).primaryColor,
                                       ),
-                                      SizedBox(width: 8,),
+                                      SizedBox(width: 8),
                                       Expanded(
                                         child: CustomTextWidget(
-                                            "the_following_data".tr(),
-                                            maxLines: 10,
-                                            textStyle: Theme.of(context).textTheme.labelMedium,
-                                          ),
-
-                                      )
+                                          "the_following_data".tr(),
+                                          maxLines: 10,
+                                          textStyle: Theme.of(context).textTheme.labelMedium,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -101,8 +99,8 @@ class _DashBoardPageState extends State<DashBoardPage> {
                                   itemBuilder: (context, index) {
                                     if (index == 0) return const VolunteerDashboardCard();
                                     return DashboardCard(
-                                        card: state
-                                            .cards[index - 1]); //add index - 1 when uncommenting VolunteerDashboardCard
+                                      card: state.cards[index - 1],
+                                    ); //add index - 1 when uncommenting VolunteerDashboardCard
                                   },
                                 ),
                               ],
@@ -121,9 +119,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
 }
 
 class NoDataComponent extends StatelessWidget {
-  const NoDataComponent({
-    super.key,
-  });
+  const NoDataComponent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -131,10 +127,7 @@ class NoDataComponent extends StatelessWidget {
       height: 257,
       margin: const EdgeInsets.only(top: 24),
       width: MediaQuery.sizeOf(context).width,
-      decoration:  BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        boxShadow: Constants.boxShadow,
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(16)), boxShadow: Constants.boxShadow),
       child: const NoDataWidget(),
     );
   }

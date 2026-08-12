@@ -6,8 +6,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/stories/lib/stories_row.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
@@ -48,15 +46,10 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> with AutomaticKee
   }
 
   void _openStory(BuildContext context, String id) {
-    Metrics.logEventAdvanced(
-      MetricsConstants.exploreKeys.storyBanner,
-      group: MetricsConstants.exploreTag,
-      action: MetricAction.tap.name,
-      props: {'id': id},
-    );
-
     ref.read(storiesOpenStateProvider.notifier).open();
-    ref.read(appRouterProvider).push(
+    ref
+        .read(appRouterProvider)
+        .push(
           StoriesRoute(
             type: StoryTypes.network,
             initialStoryId: id,

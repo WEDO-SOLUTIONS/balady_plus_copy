@@ -11,7 +11,6 @@ import 'package:mapness/features/app_analytics/models/datafinder_models.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -124,15 +123,6 @@ class NaviSearchResults extends ConsumerWidget {
     }
 
     sendSuggestionPressed();
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.searchKeys.searchResult,
-      group: MetricsConstants.searchTag,
-      action: MetricAction.tap.toString(),
-      props: {
-        'object': item.id!.objectId,
-      },
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.router.replaceOrPush(
