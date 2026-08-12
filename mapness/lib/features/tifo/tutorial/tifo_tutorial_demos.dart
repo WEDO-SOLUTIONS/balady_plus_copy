@@ -419,7 +419,7 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                             '🪙 ${AppLocalizations.of(context).tokensNeeded}',
                             style: TifoText.captionMedium.copyWith(color: _amber),
                           ),
-                          Text('1', style: TifoText.h2.copyWith(color: _amber)),
+                          Text('2', style: TifoText.h2.copyWith(color: _amber)),
                         ],
                       ),
                     ),

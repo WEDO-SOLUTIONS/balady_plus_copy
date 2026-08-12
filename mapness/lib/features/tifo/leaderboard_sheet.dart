@@ -18,15 +18,30 @@ final tifoLeaderboardProvider = FutureProvider.autoDispose<List<TifoLeaderRow>>(
   (ref) => ref.read(tifoApiProvider).getLeaderboards(),
 );
 
+/// Guards [showTifoLeaderboardSheet] against a rapid double-tap on the
+/// trophy control stacking two `ModalBottomSheetRoute`s (seen as the
+/// Table/Profile tabs rendering twice). Deliberately module-level rather
+/// than State on the trophy button: that button mounts inside a
+/// conditional list in `MapDashboardControls`, and a rebuild of its
+/// siblings can recreate its Element (resetting any State-held flag)
+/// between the two taps.
+bool _leaderboardSheetOpening = false;
+
 /// Leaderboard + Dashboard bottom-sheet (BRD US-09/US-10), one panel with
 /// Table / Profile tabs, opened from the trophy map control.
-Future<void> showTifoLeaderboardSheet(BuildContext context) => showModalBottomSheet<void>(
-  context: context,
-  isScrollControlled: true,
-  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
-  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-  builder: (_) => const _LeaderboardSheet(),
-);
+Future<void> showTifoLeaderboardSheet(BuildContext context) {
+  if (_leaderboardSheetOpening) {
+    return Future<void>.value();
+  }
+  _leaderboardSheetOpening = true;
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: context.themeRead.colors.foregroundSurfacePush,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+    builder: (_) => const _LeaderboardSheet(),
+  ).whenComplete(() => _leaderboardSheetOpening = false);
+}
 
 class _LeaderboardSheet extends ConsumerStatefulWidget {
   const _LeaderboardSheet();
