@@ -5,6 +5,7 @@ import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day_debug.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -18,10 +19,16 @@ part 'active_city_event.g.dart';
 /// Priority order: WRC (1) > Saudi National Day (2) > Cityscape (3)
 ///
 /// Debug overrides take precedence over actual date ranges.
+///
+/// TIFO ("game mode") pre-empts every city event: while its map layer is on,
+/// no city event should be shown at the same time.
 @riverpod
 class ActiveCityEvent extends _$ActiveCityEvent {
   @override
   CityEventType? build() {
+    if (ref.watch(tifoBuildingsMapLayerProvider)) {
+      return null;
+    }
     if (ref.watch(saudiNationalDayProvider)) {
       return CityEventType.saudiNationalDay;
     }
