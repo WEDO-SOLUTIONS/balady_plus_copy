@@ -105,6 +105,11 @@ class Search extends _$Search {
   // Should be canceled
   Timer? _fullSearchTimer;
 
+  // Debounces fetchSuggest so it doesn't fire on every keystroke while the
+  // user is still typing (e.g. entering coordinates digit by digit).
+  Timer? _searchQueryDebounce;
+  static const _searchQueryDebounceDuration = Duration(milliseconds: 400);
+
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
@@ -132,6 +137,8 @@ class Search extends _$Search {
     _currentQueryLocale = null;
     _fullSearchTimer?.cancel();
     _fullSearchTimer = null;
+    _searchQueryDebounce?.cancel();
+    _searchQueryDebounce = null;
     _suggestionSessionId = null;
     _searchSessionId = null;
     _requestId = '';
@@ -270,11 +277,16 @@ class Search extends _$Search {
   }
 
   Future<void> searchQueryChanged(String query) async {
+    _searchQueryDebounce?.cancel();
+
     if (query.isEmpty) {
       clear();
+      return;
     }
 
-    await fetchSuggest(query);
+    _searchQueryDebounce = Timer(_searchQueryDebounceDuration, () {
+      fetchSuggest(query);
+    });
   }
 
   Future<void> searchAddress(String query) async {
