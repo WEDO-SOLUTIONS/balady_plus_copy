@@ -7,6 +7,7 @@ import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart' hide Search;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -162,8 +163,10 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                                           const LayersControl(),
                                           const SizedBox(height: 8),
                                           const DimensionControl(),
-                                          const SizedBox(height: 8),
-                                          const TifoControl(),
+                                          if (ref.watch(tifoAvailableProvider)) ...[
+                                            const SizedBox(height: 8),
+                                            const TifoControl(),
+                                          ],
                                           const Spacer(),
                                           const CompassControl(),
                                           const SizedBox(height: 8),

@@ -87,8 +87,10 @@ class MapDashboardControls extends ConsumerWidget {
                       const LayersControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
                       const DimensionControl(),
-                      const SizedBox(height: uikit.Spacing.$2x),
-                      const TifoControl(),
+                      if (ref.watch(tifoAvailableProvider)) ...[
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        const TifoControl(),
+                      ],
                       if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
                         const SizedBox(height: uikit.Spacing.$2x),
                         const TifoLeaderboardControl(),
