@@ -97,7 +97,9 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
     final leaderColor = leaderClub != null
         ? Color(leaderClub.colorArgb)
         : Color(summary?.leaderColorArgb ?? kTifoNeutralStrokeArgb);
-    final leaderName = summary == null || summary.isNeutral ? 'Unclaimed' : (leaderClub?.name ?? leaderSlug!);
+    final leaderName = summary == null || summary.isNeutral
+        ? AppLocalizations.of(context).tifoUnclaimed
+        : (leaderClub?.name ?? leaderSlug!);
 
     // Per-club breakdown, most buildings first. Slugs resolve to roster
     // names/colors once the session loads; until then show the raw slug.
