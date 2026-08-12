@@ -34,6 +34,9 @@ class EnvironmentConfig {
   final CityEventDateRange saudiNationalDayDateRange;
   final CityEventDateRange foundingDayDateRange;
   final CityEventDateRange wrcEventDateRange;
+  // TIFO isn't a city event itself — it just reuses the same remote-config
+  // shape (see CityEventDateRange.tifoDefault for the placeholder window).
+  final CityEventDateRange tifoDateRange;
 
   EnvironmentConfig({
     required this.url,
@@ -56,6 +59,7 @@ class EnvironmentConfig {
     required this.saudiNationalDayDateRange,
     required this.foundingDayDateRange,
     required this.wrcEventDateRange,
+    required this.tifoDateRange,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -99,6 +103,10 @@ class EnvironmentConfig {
       json['wrcEventDateRange'] as Map<String, dynamic>?,
       CityEventDateRange.wrcDefault(),
     ),
+    tifoDateRange: CityEventDateRange.fromJson(
+      json['tifoDateRange'] as Map<String, dynamic>?,
+      CityEventDateRange.tifoDefault(),
+    ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -141,6 +149,7 @@ class EnvironmentConfig {
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -164,6 +173,7 @@ class EnvironmentConfig {
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -187,6 +197,7 @@ class EnvironmentConfig {
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -212,5 +223,6 @@ class EnvironmentConfig {
     saudiNationalDayDateRange: CityEventDateRange.saudiNationalDayDefault(),
     foundingDayDateRange: CityEventDateRange.foundingDayDefault(),
     wrcEventDateRange: CityEventDateRange.wrcDefault(),
+    tifoDateRange: CityEventDateRange.tifoDefault(),
   );
 }

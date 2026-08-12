@@ -6,6 +6,27 @@ import 'package:flutter/foundation.dart';
 const int kTifoNeutralFillArgb = 0x804C5E41;
 const int kTifoNeutralStrokeArgb = 0xE64C5E41;
 
+/// The five club colors the penalty-result hero art (US-14) ships for. This
+/// is NOT the season roster (that stays data-driven, `GET /clubs` — see
+/// [TifoClubInfo]) — it's just the fixed set of win/lose art the design team
+/// delivered. [tifoResultColorKeyFor] matches a club id/name or a building's
+/// `ownerClubSlug` against these by substring, so it works whether the
+/// backend sends `"blue-team"`, `"Blue"`, or similar.
+const tifoResultColorKeys = ['black', 'blue', 'red', 'sand', 'yellow'];
+
+String? tifoResultColorKeyFor(String? slugOrName) {
+  if (slugOrName == null) {
+    return null;
+  }
+  final lower = slugOrName.toLowerCase();
+  for (final key in tifoResultColorKeys) {
+    if (lower.contains(key)) {
+      return key;
+    }
+  }
+  return null;
+}
+
 /// One entry of the data-driven season roster (`GET /clubs`). The roster is
 /// per-season data (BRD), so screens render from this list — never a
 /// hardcoded enum.

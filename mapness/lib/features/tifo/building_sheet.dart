@@ -505,7 +505,17 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       // Fullscreen Win/Loss/voided hero (US-14); errors keep the small dialog.
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) {
-        unawaited(showTifoPenaltyResult(ctx, result, scoreToBeat: _building.scoreToBeat));
+        unawaited(
+          showTifoPenaltyResult(
+            ctx,
+            result,
+            winnerColorKey: tifoResultColorKeyFor(container.read(tifoSessionProvider).myClub?.id),
+            // Building's owner BEFORE this attempt — `applyOwnership` above only
+            // mutates `tifoBuildingsProvider`'s map, not this widget's own
+            // `_building` field, so this still reads the pre-capture value.
+            buildingOwnerColorKeyBeforePlay: tifoResultColorKeyFor(_building.ownerClubSlug),
+          ),
+        );
       }
     } catch (e) {
       final message = e is TifoApiException ? e.message : e.toString();
@@ -555,7 +565,13 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
 
     final resultCtx = rootNavigatorKey.currentContext;
     if (resultCtx != null) {
-      unawaited(precacheTifoResultImages(resultCtx));
+      unawaited(
+        precacheTifoResultImages(
+          resultCtx,
+          winnerColorKey: tifoResultColorKeyFor(ref.read(tifoSessionProvider).myClub?.id),
+          buildingOwnerColorKey: tifoResultColorKeyFor(_building.ownerClubSlug),
+        ),
+      );
     }
     final api = ref.read(tifoApiProvider);
     try {

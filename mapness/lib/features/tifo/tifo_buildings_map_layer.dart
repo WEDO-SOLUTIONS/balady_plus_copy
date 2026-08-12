@@ -10,10 +10,24 @@ import 'package:mapness/features/tifo/providers/tifo_buildings_poller.dart';
 import 'package:mapness/features/tifo/providers/tifo_buildings_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_districts_provider.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+
+/// Whether TIFO itself is allowed to run right now. TIFO is NOT a city event
+/// (it doesn't compete for `ActiveCityEvent`'s single slot — see that
+/// provider's own pre-emption of city events when TIFO is on), but its
+/// Remote Config schedule reuses the exact same date-range shape
+/// (`CityEventDateRange.tifoDefault`: 12 Aug 2026 through end of Oct 2026,
+/// a placeholder until the backend ships its own `tifoDateRange` value).
+/// While the environment config hasn't loaded yet, defaults to unavailable —
+/// a missing schedule means the game is off, not on by default.
+final tifoAvailableProvider = Provider<bool>((ref) {
+  final env = ref.watch(dgisEnvironmentProvider).value;
+  return env?.tifoDateRange.isNow ?? false;
+});
 
 /// Renders the TIFO layer on the dgis map with a zoom-based level of detail
 /// (API v2.4 §3):
@@ -112,6 +126,15 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
           unawaited(_syncBuildings(ref.read(tifoBuildingsProvider)));
         }
       })
+      // The Remote Config schedule can close mid-session (an admin ends the
+      // event window while players are on the map) — turn the layer off
+      // itself rather than leaving an unschedulable game running.
+      ..listen<bool>(tifoAvailableProvider, (_, available) {
+        if (!available && state) {
+          logger.log('[tifo-map] disabling: tifoDateRange no longer visible');
+          unawaited(disable());
+        }
+      })
       ..onDispose(_teardown);
     // Fire-and-forget: restore the persisted toggle once the Hive box opens
     // and the native map is ready — `enable()` awaits `dgisControllerProvider`
@@ -126,7 +149,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
       if (!ref.mounted) {
         return;
       }
-      if (box.get(_persistKey) == true) {
+      if (box.get(_persistKey) == true && ref.read(tifoAvailableProvider)) {
         await enable();
       }
     } catch (error, stackTrace) {
@@ -149,7 +172,7 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
   bool get isEnabled => state;
 
   Future<void> enable() async {
-    if (state) {
+    if (state || !ref.read(tifoAvailableProvider)) {
       return;
     }
     state = true;
