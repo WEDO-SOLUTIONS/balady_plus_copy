@@ -149,20 +149,11 @@ class AiSummaryPalette {
     ),
     // Dark amber on the gold gradient — matches Figma 1777:23840 icon tint.
     sparkleColor: const Color(0xFF9D6808),
-    // Font and color intentionally match the address-section title above this
-    // card (ContentRow's bodyLargeSemiBold + context.colors.foregroundDefault)
-    // instead of the Makkah brand tokens used elsewhere in this palette —
-    // see BALADY-3626. `_aiSummaryFont` ('Golos Text') isn't a registered font
-    // family in this app, so it silently fell back to the system font; the
-    // uikit bundles the same typeface as 'Golos' and requires the package arg.
-    labelTextStyle: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      height: 20 / 16,
-      color: Color(0xFF1B1B1B),
-      fontFamily: 'Golos',
-      package: 'balady_uikit',
-    ),
+    // Only the color is consumed here: the header pulls its font from the
+    // locale-aware context.textStyles (Golos / IBMPlexSansArabic), which a
+    // const palette cannot resolve — see BALADY-3626. Color matches the
+    // address-section title (foregroundDefault) instead of the Makkah brown.
+    labelTextStyle: const TextStyle(color: Color(0xFF1B1B1B)),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
@@ -228,16 +219,9 @@ class AiSummaryPalette {
       color: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
     ),
     sparkleColor: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
-    // Font fixed to the registered uikit font, same as the light variant
-    // above — color is unchanged (already correct per BALADY-3626).
-    labelTextStyle: const TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      height: 20 / 16,
-      color: MakkahPoiConstants.darkPrimaryTextColor,
-      fontFamily: 'Golos',
-      package: 'balady_uikit',
-    ),
+    // Only the color is consumed — see the light palette note (BALADY-3626).
+    // Dark color unchanged: it was already correct per the ticket.
+    labelTextStyle: const TextStyle(color: MakkahPoiConstants.darkPrimaryTextColor),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
       fontSize: 14,
