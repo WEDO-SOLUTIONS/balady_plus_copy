@@ -26,7 +26,7 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// a missing schedule means the game is off, not on by default.
 final tifoAvailableProvider = Provider<bool>((ref) {
   final env = ref.watch(dgisEnvironmentProvider).value;
-  return env?.tifoDateRange.isNow ?? false;
+  return env?.tifoDateRange.isVisibleNow ?? false;
 });
 
 /// Renders the TIFO layer on the dgis map with a zoom-based level of detail
