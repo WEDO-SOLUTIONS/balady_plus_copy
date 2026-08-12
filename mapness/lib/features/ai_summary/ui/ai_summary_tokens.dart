@@ -149,12 +149,19 @@ class AiSummaryPalette {
     ),
     // Dark amber on the gold gradient — matches Figma 1777:23840 icon tint.
     sparkleColor: const Color(0xFF9D6808),
+    // Font and color intentionally match the address-section title above this
+    // card (ContentRow's bodyLargeSemiBold + context.colors.foregroundDefault)
+    // instead of the Makkah brand tokens used elsewhere in this palette —
+    // see BALADY-3626. `_aiSummaryFont` ('Golos Text') isn't a registered font
+    // family in this app, so it silently fell back to the system font; the
+    // uikit bundles the same typeface as 'Golos' and requires the package arg.
     labelTextStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       height: 20 / 16,
-      color: MakkahPoiConstants.primaryTextColor,
-      fontFamily: _aiSummaryFont,
+      color: Color(0xFF1B1B1B),
+      fontFamily: 'Golos',
+      package: 'balady_uikit',
     ),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
@@ -221,12 +228,15 @@ class AiSummaryPalette {
       color: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
     ),
     sparkleColor: MakkahPoiConstants.darkPrimaryTextColor.withOpacity(0.8),
+    // Font fixed to the registered uikit font, same as the light variant
+    // above — color is unchanged (already correct per BALADY-3626).
     labelTextStyle: const TextStyle(
       fontSize: 16,
       fontWeight: FontWeight.w600,
       height: 20 / 16,
       color: MakkahPoiConstants.darkPrimaryTextColor,
-      fontFamily: _aiSummaryFont,
+      fontFamily: 'Golos',
+      package: 'balady_uikit',
     ),
     descriptionTextStyle: TextStyle(
       fontFamily: _aiSummaryFont,
