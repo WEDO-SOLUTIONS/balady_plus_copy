@@ -100,6 +100,23 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
     super.dispose();
   }
 
+  // Backend occasionally sends empty or invalid icon URLs; SvgPicture.network
+  // throws on those ("No host specified in URI" / "Invalid SVG data"), so fall
+  // back to a blank placeholder of the same size instead of crashing the sheet.
+  Widget _categoryIcon(String url, Color color) {
+    final uri = Uri.tryParse(url.trim());
+    if (uri == null || !uri.hasScheme || uri.host.isEmpty) {
+      return const SizedBox.square(dimension: 24);
+    }
+    return SvgPicture.network(
+      uri.toString(),
+      width: 24,
+      height: 24,
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+      errorBuilder: (_, __, ___) => const SizedBox.square(dimension: 24),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final variants = widget.field.variants.map(
@@ -159,12 +176,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         ContentRow(
                           onTap: () => Navigator.pop(context, item),
                           leadingPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
-                          leading: SvgPicture.network(
-                            entry.key.icon,
-                            width: 24,
-                            height: 24,
-                            colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
-                          ),
+                          leading: _categoryIcon(entry.key.icon, context.colors.foregroundDefault),
                           text: ContentRowTextOptions(title: item.label),
                         )
                   else
@@ -173,12 +185,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$2x),
                         child: Row(
                           children: [
-                            SvgPicture.network(
-                              entry.key.icon,
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
-                            ),
+                            _categoryIcon(entry.key.icon, context.colors.foregroundMuted),
                             Spacing.$1_5x.widthBox,
                             Expanded(
                               child: Text(
@@ -200,12 +207,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                                 padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x),
                                 child: Row(
                                   children: [
-                                    SvgPicture.network(
-                                      entry.key.icon,
-                                      width: 24,
-                                      height: 24,
-                                      colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
-                                    ),
+                                    _categoryIcon(entry.key.icon, context.colors.foregroundDefault),
                                     Spacing.$1_5x.widthBox,
                                     Expanded(
                                       child: Text(
