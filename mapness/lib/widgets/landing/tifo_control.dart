@@ -116,37 +116,22 @@ class _ActiveTifoButton extends StatelessWidget {
 
 /// Trophy control (BT-05) — opens the Leaderboard/Dashboard sheet. Shown next
 /// to [TifoControl] while the TIFO layer is on.
-class TifoLeaderboardControl extends ConsumerStatefulWidget {
+///
+/// Rapid-double-tap protection lives in [showTifoLeaderboardSheet] itself,
+/// not here: this button mounts inside a conditional list in
+/// `MapDashboardControls`, so a sibling rebuild can recreate its Element
+/// (and any State it held) between two fast taps.
+class TifoLeaderboardControl extends StatelessWidget {
   const TifoLeaderboardControl({super.key});
-
-  @override
-  ConsumerState<TifoLeaderboardControl> createState() => _TifoLeaderboardControlState();
-}
-
-class _TifoLeaderboardControlState extends ConsumerState<TifoLeaderboardControl> {
-  // The trophy appears right under the finger the instant the ⚽ is tapped,
-  // so a rapid second tap can fire before the first sheet route settles,
-  // stacking two ModalBottomSheetRoutes on top of each other.
-  bool _isOpening = false;
 
   @override
   Widget build(BuildContext context) => MapButton(
     onTap: () {
-      if (_isOpening) {
-        return;
-      }
       final ctx = rootNavigatorKey.currentContext;
       if (ctx == null) {
         return;
       }
-      _isOpening = true;
-      unawaited(
-        showTifoLeaderboardSheet(ctx).whenComplete(() {
-          if (mounted) {
-            _isOpening = false;
-          }
-        }),
-      );
+      unawaited(showTifoLeaderboardSheet(ctx));
     },
     child: Icon(Icons.emoji_events_rounded, size: 24, color: context.colors.accentDefault),
   );
