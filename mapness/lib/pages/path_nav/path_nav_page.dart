@@ -91,6 +91,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
   bool _isEndingTrip = false;
+  // Guards `_finishNavigation` against firing more than once for the same
+  // trip: the SDK's `finished` event, the ETA<=5m fallback, and the
+  // pedestrian-switch fallback can each independently trigger it, and
+  // without this every extra call sends its own TIFO trip-reward request
+  // (each with a fresh random tripId, so the backend can't dedupe them).
+  bool _navigationFinishReported = false;
 
   // Cache for indoor support check to avoid network delay on arrival
   bool? _cachedIndoorSupport;
@@ -871,6 +877,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _finishNavigation() async {
+    if (_navigationFinishReported) {
+      return;
+    }
+    _navigationFinishReported = true;
+
     // iOS: DGis "arrival" voice can stop in-app radio. Capture current state so we can
     // restore it after the voice finishes (best-effort, delayed).
     final streamAudioWasPlayingBeforeFinish = ref.read(streamAudioProvider).isEffectivelyPlaying;
@@ -878,7 +889,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _sendAnalitycs();
     // TIFO US-16: a completed trip earns tokens. Fire-and-forget — the backend
     // validates and rewards; a signed-out user or a failed call is a no-op.
-    unawaited(reportTifoTripCompleted(ref));
+    // Read the route's distance now, before `clearRoute()` below wipes it.
+    final tripDistanceKm = (ref.read(currentRouteProvider)?.route.distance ?? 0) / 1000;
+    unawaited(reportTifoTripCompleted(ref, distanceKm: tripDistanceKm));
     _navigationState.value = PathNavState.finished;
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) {

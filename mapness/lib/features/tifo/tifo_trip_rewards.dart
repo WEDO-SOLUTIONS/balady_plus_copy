@@ -8,14 +8,16 @@ import 'package:uuid/uuid.dart';
 /// US-16 "Earn tokens": a completed Balady+ trip credits TIFO tokens
 /// (BRD V2: flat +2 per qualifying trip, minimum 1 km).
 ///
-/// The client only REPORTS the trip — the reward amount, the distance /
-/// duration / plausibility validation and the daily cap all live server-side
-/// (API v2.4 §4.5), so nothing here can be tuned or gamed from the app.
+/// The client only REPORTS the trip — the reward amount and the daily cap
+/// live server-side (API v2.4 §4.5), so nothing here can be tuned or gamed
+/// from the app. [distanceKm] is still sent because the backend has no other
+/// way to measure the pedestrian route walked; it is only used server-side
+/// to gate the "minimum 1 km" qualification, not trusted for anything else.
 ///
 /// Deliberately silent: a rejected trip shows no UI (the BRD asks for silent
 /// rejection so abusers can't learn the thresholds) and a failed call is
 /// swallowed — token accrual must never interrupt the end of a navigation.
-Future<void> reportTifoTripCompleted(WidgetRef ref) async {
+Future<void> reportTifoTripCompleted(WidgetRef ref, {required double distanceKm}) async {
   // Read everything BEFORE the first await: the navigation page pops home
   // right after the trip ends, and these must outlive its `ref`.
   final api = ref.read(tifoApiProvider);
@@ -28,7 +30,7 @@ Future<void> reportTifoTripCompleted(WidgetRef ref) async {
     if (await api.isGuestSession()) {
       return;
     }
-    final reward = await api.completeTrip(const Uuid().v4());
+    final reward = await api.completeTrip(const Uuid().v4(), distanceKm);
     if (!reward.validated) {
       logger.log('[tifo] trip rejected by the backend (validation) — no tokens');
       return;
