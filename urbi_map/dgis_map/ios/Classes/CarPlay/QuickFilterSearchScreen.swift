@@ -23,26 +23,39 @@ class QuickFilterSearchScreen {
         self.interfaceController = interfaceController
     }
 
+    // CarPlay caps a `CPListTemplate` at `maximumItemCount` items and the
+    // interface controller's push stack at `maxTemplateStackDepth` templates,
+    // unlike the phone app's infinite-scroll results list. We reserve the last
+    // slot on each page for a "load more" row that fetches the next `Page` via
+    // the SDK's own pagination and pushes it as a fresh `CPListTemplate` with
+    // its own reserved slot, so the pattern repeats until either the results
+    // or the stack depth run out (BALADY-3682).
+    private static let maxTemplateStackDepth = 5
+
     private var searchCancellable: Cancellable?
     private var nextPageCancellable: Cancellable?
     private weak var listTemplate: CPListTemplate?
     private var currentPage: Page?
-    private var requestedPageSize: Int32 = 0
     private var hasMoreItems = false
     private var displayedItems: [DirectoryObject] = []
 
     func createTemplate() -> CPListTemplate {
-        let listTemplate = CPListTemplate(title: nil, sections: [])
-
-        listTemplate.backButton = CPBarButton.makeBack(onBackTap)
-        self.listTemplate = listTemplate
+        let listTemplate = makeListTemplate()
 
         searchCancellable = searchManager.search(query: buildSearchQuery())
             .sinkOnMainThread { [weak self] searchResult in
-                self?.showSearchResult(searchResult)
+                guard let page = searchResult.firstPage else { return }
+                self?.showPage(page)
             } failure: { _ in
             }
 
+        return listTemplate
+    }
+
+    private func makeListTemplate() -> CPListTemplate {
+        let listTemplate = CPListTemplate(title: nil, sections: [])
+        listTemplate.backButton = CPBarButton.makeBack(onBackTap)
+        self.listTemplate = listTemplate
         return listTemplate
     }
 
@@ -54,11 +67,8 @@ class QuickFilterSearchScreen {
         let language = Locale.current.languageOrDefault
         let queryText = quickFilter.query[language] ?? ""
 
-        let pageSize = Int32(CPListTemplate.maximumItemCount)
-        requestedPageSize = pageSize
-
         return SearchQueryBuilder.fromQueryText(queryText: queryText)
-            .setPageSize(pageSize: pageSize)
+            .setPageSize(pageSize: Int32(CPListTemplate.maximumItemCount))
             .setLocale(
                 locale: Locale.makeLocale(localeStr: language.identifier)
             )
@@ -70,15 +80,12 @@ class QuickFilterSearchScreen {
             .build()
     }
 
-    // CarPlay's `CPListTemplate`/`CPSearchTemplate` can only render one page of
-    // results at a time (`CPListTemplate.maximumItemCount`), unlike the phone
-    // app's infinite-scroll results list. We surface a trailing "load more" row
-    // that fetches the next `Page` via the SDK's own pagination (BALADY-3682).
-    private func showSearchResult(_ searchResult: SearchResult) {
-        guard let page = searchResult.firstPage else { return }
+    private func showPage(_ page: Page) {
         currentPage = page
         displayedItems = page.items
-        hasMoreItems = page.items.count >= Int(requestedPageSize)
+        // Optimistic: we only learn there's no next page once fetchNextPage
+        // itself comes back nil/empty/failed.
+        hasMoreItems = !page.items.isEmpty
         renderSections()
     }
 
@@ -95,16 +102,13 @@ class QuickFilterSearchScreen {
             defer { completion() }
             guard let self else { return }
 
-            guard let nextPage else {
+            guard let nextPage, !nextPage.items.isEmpty else {
                 self.hasMoreItems = false
                 self.renderSections()
                 return
             }
 
-            self.currentPage = nextPage
-            self.displayedItems.append(contentsOf: nextPage.items)
-            self.hasMoreItems = nextPage.items.count >= Int(self.requestedPageSize)
-            self.renderSections()
+            self.pushNextPage(nextPage)
         } failure: { [weak self] _ in
             self?.hasMoreItems = false
             self?.renderSections()
@@ -112,14 +116,33 @@ class QuickFilterSearchScreen {
         }
     }
 
+    // Pushes the next page as its own screen/template so it gets a fresh
+    // `maximumItemCount` budget; `nextScreen` is kept alive by its own list
+    // items' handler closures once its template is in the CarPlay stack; see
+    // `HistoryScreen.show(with:)`/`FavoritesScreen` for the same pattern.
+    private func pushNextPage(_ page: Page) {
+        let nextScreen = QuickFilterSearchScreen(
+            map: map,
+            quickFilter: quickFilter,
+            searchManager: searchManager,
+            searchNavigation: searchNavigation,
+            interfaceController: interfaceController
+        )
+        nextScreen.makeListTemplate().show(with: interfaceController)
+        nextScreen.showPage(page)
+    }
+
     private func renderSections() {
         guard let listTemplate else { return }
 
         let budget = CPListTemplate.maximumItemCount
-        var listItems = displayedItems.map(mapCPListItem)
-        if listItems.count > budget {
-            listItems = Array(listItems.prefix(budget))
-        } else if hasMoreItems && listItems.count < budget {
+        let canPushNextPage = interfaceController.templates.count < Self.maxTemplateStackDepth
+        let showLoadMore = hasMoreItems && canPushNextPage
+
+        var listItems = displayedItems
+            .prefix(showLoadMore ? budget - 1 : budget)
+            .map(mapCPListItem)
+        if showLoadMore {
             listItems.append(makeLoadMoreItem())
         }
 
