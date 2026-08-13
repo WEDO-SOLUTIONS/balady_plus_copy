@@ -304,6 +304,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       scrollControlDisabledMaxHeightRatio: 0.9,
       builder: (modalContext) => ChangePathSheet(
         onConfirm: _onConfirm,
+        navType: _navType ?? RouteSearchOptionsMessage.car,
         myLocation: myLocation == null
             ? null
             : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
