@@ -22,7 +22,7 @@ abstract final class TifoColors {
   static const Color amber = Color(0xFFD9A400);
 
   /// Fallback fill for a neutral / unowned entity.
-  static const Color neutralFill = Color(0xFF4C5E41);
+  static const Color neutralFill = Color(0xFF7BBF8A);
 }
 
 abstract final class TifoRadii {
@@ -41,80 +41,65 @@ abstract final class TifoSpacing {
   static const double x6 = 24;
 }
 
-/// Type ramp (`English/*` in Figma). Uses the "Golos" family bundled in the
-/// `balady_uikit` package (weights 400–900); sizes/weights match the design.
+/// Type ramp (`English/*` in Figma). Font is intentionally NOT set here —
+/// these styles inherit `fontFamily`/`package` from the ambient [ThemeData]
+/// (`entry_point.dart`'s `_fontFamily()`), which already swaps "Golos"
+/// (English, `balady_uikit`) for "IBM Plex Sans Arabic"
+/// (`balady_design_system`) based on the active app language. Hardcoding
+/// Golos here would keep TIFO on a Latin-only font even in Arabic. The
+/// isolated `PenaltyApp`/`MaterialApp` (the Flame game) mirrors the same
+/// switch in its own `theme.fontFamily` so this still resolves correctly
+/// there.
 abstract final class TifoText {
-  /// The design font, shipped as fonts in `balady_uikit`.
-  static const String family = 'Golos';
-  static const String package = 'balady_uikit';
-
   static const TextStyle h2 = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 24,
     fontWeight: FontWeight.w600,
     height: 1.1,
     color: TifoColors.textDefault,
   );
   static const TextStyle h3 = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 20,
     fontWeight: FontWeight.w600,
     height: 1.1,
     color: TifoColors.textDefault,
   );
   static const TextStyle h4 = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 18,
     fontWeight: FontWeight.w500,
     height: 1.1,
     color: TifoColors.textDefault,
   );
   static const TextStyle bodyL = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 16,
     fontWeight: FontWeight.w400,
     height: 1.25,
     color: TifoColors.textDefault,
   );
   static const TextStyle bodyLSemi = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     height: 1.25,
     color: TifoColors.textDefault,
   );
   static const TextStyle button = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     height: 1.5,
     color: TifoColors.onAccent,
   );
   static const TextStyle captionRegular = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 11,
     fontWeight: FontWeight.w400,
     height: 14 / 11,
     color: TifoColors.textSoft,
   );
   static const TextStyle captionMedium = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 11,
     fontWeight: FontWeight.w500,
     height: 14 / 11,
     color: TifoColors.textSoft,
   );
   static const TextStyle overline = TextStyle(
-    fontFamily: family,
-    package: package,
     fontSize: 11,
     fontWeight: FontWeight.w600,
     letterSpacing: 0.6,

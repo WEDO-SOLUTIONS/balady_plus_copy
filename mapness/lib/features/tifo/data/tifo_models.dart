@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 /// Neutral (unclaimed) building — sandy, NOT a club color (BRD FR-08) and
 /// distinct from the host map's green base buildings. Ideally sourced from the
 /// server `palette.neutral` (GET /config) — hardcoded until we parse it.
-const int kTifoNeutralFillArgb = 0x804C5E41;
-const int kTifoNeutralStrokeArgb = 0xE64C5E41;
+const int kTifoNeutralFillArgb = 0x6E7BBF8A;
+const int kTifoNeutralStrokeArgb = 0xE67BBF8A;
 
 /// The five club colors the penalty-result hero art (US-14) ships for. This
 /// is NOT the season roster (that stays data-driven, `GET /clubs` — see
