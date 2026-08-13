@@ -38,6 +38,7 @@ import 'package:mapness/features/favourites/mappers/directory_object_message_map
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/leap/leap.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/data/poi_data_google.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
