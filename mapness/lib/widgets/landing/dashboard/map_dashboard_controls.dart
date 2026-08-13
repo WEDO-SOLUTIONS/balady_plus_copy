@@ -63,21 +63,21 @@ class MapDashboardControls extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const WeatherControl(),
-                      uikit.Spacing.$1_5x.heightBox,
-                      const ParkingControl(),
-                    ],
-                  ),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Spacer(),
-                      IndoorControl(),
-                      Spacer(),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const WeatherControl(),
+                          uikit.Spacing.$1_5x.heightBox,
+                          const ParkingControl(),
+                        ],
+                      ),
+                      const Spacer(),
+                      const IndoorControl(),
+                      const Spacer(),
                     ],
                   ),
                   const Spacer(),
