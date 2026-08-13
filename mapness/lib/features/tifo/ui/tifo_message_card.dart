@@ -31,11 +31,11 @@ class TifoMessageCard extends ConsumerWidget {
   final String title;
   final String body;
 
-  /// Shows the shared error/empty-state illustration above the title (light
-  /// / dark theme aware, same asset as [ErrorImageWidget]) — the noticeCard /
-  /// Not enough tokens / Connection lost states in the Figma frame; the
-  /// confirm prompts (Still playing? / Leave challenge? / Skip tutorial) have
-  /// none.
+  /// Shows the error/empty-state illustration above the title (light / dark
+  /// theme aware; TIFO-green-tinted variant of the app's shared
+  /// [ErrorImageWidget] artwork) — the noticeCard / Not enough tokens /
+  /// Connection lost states in the Figma frame; the confirm prompts (Still
+  /// playing? / Leave challenge? / Skip tutorial) have none.
   final bool showIllustration;
 
   /// Top-right close button. Null hides it.
@@ -87,7 +87,7 @@ class TifoMessageCard extends ConsumerWidget {
           ],
           if (showIllustration) ...[
             Center(
-              child: (isDark ? Assets.imagesSvg.illustrationErrorDark : Assets.imagesSvg.illustrationError).svg(
+              child: (isDark ? Assets.tifo.images.illustrationErrorDark : Assets.tifo.images.illustrationError).svg(
                 width: 160,
               ),
             ),

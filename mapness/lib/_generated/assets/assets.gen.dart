@@ -1252,17 +1252,112 @@ class $AssetsTifoBackgroundsGen {
   /// File path: assets/tifo/backgrounds/result_draw.jpg
   AssetGenImage get resultDraw => const AssetGenImage('assets/tifo/backgrounds/result_draw.jpg');
 
+  /// File path: assets/tifo/backgrounds/result_lose_black.png
+  AssetGenImage get resultLoseBlack => const AssetGenImage('assets/tifo/backgrounds/result_lose_black.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_black_en.png
+  AssetGenImage get resultLoseBlackEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_black_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_blue.png
+  AssetGenImage get resultLoseBlue => const AssetGenImage('assets/tifo/backgrounds/result_lose_blue.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_blue_en.png
+  AssetGenImage get resultLoseBlueEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_blue_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_red.png
+  AssetGenImage get resultLoseRed => const AssetGenImage('assets/tifo/backgrounds/result_lose_red.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_red_en.png
+  AssetGenImage get resultLoseRedEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_red_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_sand.png
+  AssetGenImage get resultLoseSand => const AssetGenImage('assets/tifo/backgrounds/result_lose_sand.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_sand_en.png
+  AssetGenImage get resultLoseSandEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_sand_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_unclaimed.png
+  AssetGenImage get resultLoseUnclaimed => const AssetGenImage('assets/tifo/backgrounds/result_lose_unclaimed.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_unclaimed_en.png
+  AssetGenImage get resultLoseUnclaimedEn =>
+      const AssetGenImage('assets/tifo/backgrounds/result_lose_unclaimed_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_yellow.png
+  AssetGenImage get resultLoseYellow => const AssetGenImage('assets/tifo/backgrounds/result_lose_yellow.png');
+
+  /// File path: assets/tifo/backgrounds/result_lose_yellow_en.png
+  AssetGenImage get resultLoseYellowEn => const AssetGenImage('assets/tifo/backgrounds/result_lose_yellow_en.png');
+
   /// File path: assets/tifo/backgrounds/result_loss.jpg
   AssetGenImage get resultLoss => const AssetGenImage('assets/tifo/backgrounds/result_loss.jpg');
 
   /// File path: assets/tifo/backgrounds/result_win.jpg
   AssetGenImage get resultWin => const AssetGenImage('assets/tifo/backgrounds/result_win.jpg');
 
+  /// File path: assets/tifo/backgrounds/result_win_black.png
+  AssetGenImage get resultWinBlack => const AssetGenImage('assets/tifo/backgrounds/result_win_black.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_black_en.png
+  AssetGenImage get resultWinBlackEn => const AssetGenImage('assets/tifo/backgrounds/result_win_black_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_blue.png
+  AssetGenImage get resultWinBlue => const AssetGenImage('assets/tifo/backgrounds/result_win_blue.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_blue_en.png
+  AssetGenImage get resultWinBlueEn => const AssetGenImage('assets/tifo/backgrounds/result_win_blue_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_red.png
+  AssetGenImage get resultWinRed => const AssetGenImage('assets/tifo/backgrounds/result_win_red.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_red_en.png
+  AssetGenImage get resultWinRedEn => const AssetGenImage('assets/tifo/backgrounds/result_win_red_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_sand.png
+  AssetGenImage get resultWinSand => const AssetGenImage('assets/tifo/backgrounds/result_win_sand.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_sand_en.png
+  AssetGenImage get resultWinSandEn => const AssetGenImage('assets/tifo/backgrounds/result_win_sand_en.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_yellow.png
+  AssetGenImage get resultWinYellow => const AssetGenImage('assets/tifo/backgrounds/result_win_yellow.png');
+
+  /// File path: assets/tifo/backgrounds/result_win_yellow_en.png
+  AssetGenImage get resultWinYellowEn => const AssetGenImage('assets/tifo/backgrounds/result_win_yellow_en.png');
+
   /// File path: assets/tifo/backgrounds/stadium_goal_background.jpg
   AssetGenImage get stadiumGoalBackground => const AssetGenImage('assets/tifo/backgrounds/stadium_goal_background.jpg');
 
   /// List of all assets
-  List<AssetGenImage> get values => [entryHero, resultDraw, resultLoss, resultWin, stadiumGoalBackground];
+  List<AssetGenImage> get values => [
+    entryHero,
+    resultDraw,
+    resultLoseBlack,
+    resultLoseBlackEn,
+    resultLoseBlue,
+    resultLoseBlueEn,
+    resultLoseRed,
+    resultLoseRedEn,
+    resultLoseSand,
+    resultLoseSandEn,
+    resultLoseUnclaimed,
+    resultLoseUnclaimedEn,
+    resultLoseYellow,
+    resultLoseYellowEn,
+    resultLoss,
+    resultWin,
+    resultWinBlack,
+    resultWinBlackEn,
+    resultWinBlue,
+    resultWinBlueEn,
+    resultWinRed,
+    resultWinRedEn,
+    resultWinSand,
+    resultWinSandEn,
+    resultWinYellow,
+    resultWinYellowEn,
+    stadiumGoalBackground,
+  ];
 }
 
 class $AssetsTifoImagesGen {
@@ -1271,11 +1366,17 @@ class $AssetsTifoImagesGen {
   /// File path: assets/tifo/images/ball.png
   AssetGenImage get ball => const AssetGenImage('assets/tifo/images/ball.png');
 
+  /// File path: assets/tifo/images/illustration_error.svg
+  SvgGenImage get illustrationError => const SvgGenImage('assets/tifo/images/illustration_error.svg');
+
+  /// File path: assets/tifo/images/illustration_error_dark.svg
+  SvgGenImage get illustrationErrorDark => const SvgGenImage('assets/tifo/images/illustration_error_dark.svg');
+
   /// File path: assets/tifo/images/penalty_preview.png
   AssetGenImage get penaltyPreview => const AssetGenImage('assets/tifo/images/penalty_preview.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [ball, penaltyPreview];
+  List<dynamic> get values => [ball, illustrationError, illustrationErrorDark, penaltyPreview];
 }
 
 class $AssetsTifoModelsGen {

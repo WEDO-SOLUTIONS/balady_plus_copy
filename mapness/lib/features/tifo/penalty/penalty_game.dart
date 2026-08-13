@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:audio_session/audio_session.dart';
@@ -42,6 +41,12 @@ class PenaltyApp extends StatelessWidget {
   /// its own [MaterialApp] (fullscreen Flame game, isolated theme), which
   /// otherwise falls back to the device locale. Null uses the device locale.
   final Locale? locale;
+
+  /// Mirrors `entry_point.dart`'s `_fontFamily()` so this isolated
+  /// [MaterialApp] renders the same "Golos"/"IBM Plex Sans Arabic" swap as
+  /// the rest of the app instead of Flutter's Material default.
+  String get _fontFamily =>
+      locale?.languageCode == 'ar' ? 'packages/balady_design_system/IBMPlexSansArabic' : 'packages/balady_uikit/Golos';
 
   /// Fires once the session ends. Carries goals, misses and the per-kick event
   /// log — the log must be forwarded to `/buildings/{id}/play`, since the
@@ -88,7 +93,7 @@ class PenaltyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
     title: 'Penalty 3D',
-    theme: ThemeData.dark(useMaterial3: true),
+    theme: ThemeData(brightness: Brightness.dark, useMaterial3: true, fontFamily: _fontFamily),
     locale: locale,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
