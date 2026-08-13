@@ -396,11 +396,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       widget.data.address?.buildingName ??
                       widget.poiCardDataFromGoogle?.displayName ??
                       widget.data.pinTitle(l10n),
-                  subTitle:
-                      _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
-                      (widget.objectId == 70030077050725730
-                          ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
-                          : (['تسوية', 'مستوطنة'].contains(widget.data.subtitle) ? 'نطاق' : widget.data.subtitle)),
+                  subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
+                    (widget.objectId == 70030077050725730
+                        ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
+                        :widget.objectId == 70030076677108076?(context.locale.languageCode == 'en' ? 'Global tech conference' : 'مؤتمر تقني عالمي'): (['تسوية', 'مستوطنة'].contains(widget.data.subtitle) ? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
                       const TextSpan(text: ' • '),
