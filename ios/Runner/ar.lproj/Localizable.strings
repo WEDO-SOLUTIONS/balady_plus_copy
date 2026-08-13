@@ -28,6 +28,7 @@
 "quickFilterMarkets" = "الآسواق";
 "quickFilterHotels" = "الفنادق";
 "quickFilterFuel" = "الوقود";
+"quickFilterSearchScreenLoadMoreTitle" = "عرض المزيد من النتائج";
 "favouritesScreenTitle" = "المفضلة";
 "favouritesScreenBackButton" = "بحث";
 "favouritesScreenLoadingPlaceholder" = "جار التحميل";

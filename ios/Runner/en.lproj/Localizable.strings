@@ -28,6 +28,7 @@
 "quickFilterMarkets" = "Market";
 "quickFilterHotels" = "Hotels";
 "quickFilterFuel" = "Fuel";
+"quickFilterSearchScreenLoadMoreTitle" = "Show more results";
 "favouritesScreenTitle" = "Favourites";
 "favouritesScreenBackButton" = "Search";
 "favouritesScreenLoadingPlaceholder" = "Loading";
