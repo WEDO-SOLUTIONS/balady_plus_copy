@@ -269,6 +269,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> saveNavigationState() async {
+    // Public transport (Metro) never starts the native navigator (NavigationHandler
+    // skips navigationManager.start for PT), so the SDK would pack an empty DISABLED
+    // state here. Persisting it on every lock poisons the restore path with a state
+    // that can never be restored (BALADY-3790).
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      return;
+    }
+
     final dgisController = await ref.read(dgisControllerProvider.future);
     if (!mounted) {
       return;
@@ -284,6 +292,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<bool> restoreNavigationState() async {
+    // There is no native navigation session to restore for public transport: the
+    // active Metro route lives in the route editor and is streamed through
+    // activePublicTransportRouteProvider. Falling through to the generic restore
+    // would always fail for PT (getCurrentNavigationState reports disabled and the
+    // packed state has no route) and pop the page, resetting the active Metro trip
+    // after device lock/unlock (BALADY-3790).
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      return true;
+    }
+
     final dgisController = await ref.read(dgisControllerProvider.future);
     if (!mounted) {
       return false;
@@ -983,6 +1001,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Notify the listeners about the end of the trip
   Future<void> _naviEvent(NavigationEvent event) async {
+    // PT never starts the native navigator, so navigation state events can only
+    // originate from other flows sharing the NavigationManager (free roam, CarPlay,
+    // Android Auto). They must not end an active Metro trip (BALADY-3790); PT trips
+    // end via the end-trip button or the carConnectionProvider listener.
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      return;
+    }
+
     switch (event) {
       case NavigationEvent.navigation:
         _ignoreEndEventsUntilNavigation = false;
