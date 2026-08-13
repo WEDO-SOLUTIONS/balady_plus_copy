@@ -213,7 +213,14 @@ class LeapConfig extends CityEventConfig {
       sdk.GeoPointWithElevationMessage(latitude: 25.2515625, longitude: 46.3869375, elevation: 0);
 
   @override
-  int get objectId => 40722022671692732;
+  int get objectId => 70030076677108076;
+
+  @override
+  Set<int> get additionalObjectIds => const {
+    70030076677108076,
+    40722022671692732,
+    49852393786060074,
+  };
 
   @override
   String get globalMarkerId => 'leap_global';

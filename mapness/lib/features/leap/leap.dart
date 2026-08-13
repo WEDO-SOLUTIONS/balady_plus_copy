@@ -108,10 +108,11 @@ class Leap extends _$Leap {
     await mapManager?.setMarkerOptions(_config.globalMarkerId, sdk.ChangeMarkerOptionsMessage(isVisible: false));
   }
 
-  bool isLeapObject(int objectId) => _config.objectId == objectId && state;
+  bool isLeapObjectId(int objectId) => _config.objectId == objectId || _config.additionalObjectIds.contains(objectId);
 
+  bool isLeapObject(int objectId) => isLeapObjectId(objectId) && state;
   LeapPoi? getLeapPoi(int objectId) {
-    if (!isLeapObject(objectId)) {
+    if (!isLeapObjectId(objectId)) {
       return null;
     }
 
