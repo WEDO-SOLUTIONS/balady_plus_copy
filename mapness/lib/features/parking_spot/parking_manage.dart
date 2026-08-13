@@ -11,6 +11,7 @@ import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -146,7 +147,7 @@ class _ParkingManage extends _$ParkingManage {
   Future<MarkerTextStyleMessage> _markerStyle(String title) async {
     final darkMode = await ref.watch(darkModeProvider.future);
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
-    final font = title.containsArabic() || isArabic ? poiMapFontAr : poiMapFontEn;
+    final font = title.containsArabic() || isArabic ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn;
 
     return MarkerTextStyleMessage(
       fontSize: 13,
