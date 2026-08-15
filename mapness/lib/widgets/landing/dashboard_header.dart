@@ -131,6 +131,22 @@ class MapQuickFiltersDefault extends ConsumerWidget {
             }
           },
         ),
+        FilterItemConfig(
+          filterType: FilterType.custom,
+          icon: GeneralIcons.block,
+          semanticsLabel: context.l10n.goToNavigator,
+          onTap: () async {
+            final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+            if (isAllowed) {
+              ref
+                  .read(advertMetricsProvider.notifier)
+                  .sendEvent(
+                    AdvertMetricsKeys.exploreLandingEngagement,
+                  );
+              await context.router.push(const FavoriteListsRoute());
+            }
+          },
+        ),
       ],
     ),
   );

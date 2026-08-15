@@ -241,6 +241,33 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'edit_my_addresses',
+          page: EditMyAddressesRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'create_favorite_list',
+          page: CreateFavoriteListRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'favorite_item_menu',
+          page: FavoriteItemMenuRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'delete_favorite_list_submit',
+          page: DeleteFavoriteListSubmitRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'edit_favorite_list_item_name',
+          page: EditFavoriteListItemNameRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
           path: 'feedback',
           page: AppFeedbackSheet.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
