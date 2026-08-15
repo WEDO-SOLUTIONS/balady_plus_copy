@@ -373,6 +373,10 @@ class NavigationHandler {
             )
         ))
         
+        // HB-128: the trip was started from the phone; if CarPlay is connected
+        // the driver expects the car screen to switch to Balady+ on its own.
+        FlutterCarPlaySceneDelegate.activateCarScreen()
+        
         completion(Result.success(()))
     }
     
