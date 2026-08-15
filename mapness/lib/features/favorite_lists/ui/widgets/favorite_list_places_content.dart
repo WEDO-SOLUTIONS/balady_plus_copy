@@ -132,7 +132,7 @@ class _FavoriteListPlaceTile extends ConsumerWidget {
                     spacing: Spacing.$1x,
                     children: [
                       Text(
-                        poi.title,
+                        place.customName ?? poi.title,
                         style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                       ),
                       Text(

@@ -268,6 +268,12 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
+          path: 'pick_favorite_list',
+          page: PickFavoriteListRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
           path: 'feedback',
           page: AppFeedbackSheet.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,

@@ -304,13 +304,16 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           },
           onAddPointToRoute: () => _onAddObjectPointToRoute(context, context.l10n, ref, widget.data),
           onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, context.l10n, ref, widget.data),
-          onTapFavorite: (item) {
+          onTapFavorite: () {
             _bssOnFavouritesTap();
-            _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
+            _onFavoriteTap(context: context, ref: ref, data: widget.data);
           },
         ),
         header: PoiHeader(
-          title: widget.data.address?.buildingName ?? widget.data.title,
+          title:
+              ref.watch(customPlaceNicknameProvider(widget.objectId.toString())).value ??
+              widget.data.address?.buildingName ??
+              widget.data.title,
           subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
           subTitleExtraInlineSpans: [
             if (poiHeaderSubTitle != null) ...[

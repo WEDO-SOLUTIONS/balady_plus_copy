@@ -8,6 +8,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -97,7 +98,8 @@ class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
                     await dataSource.removePlaceFromList(listId, place.placeId);
                     ref
                       ..invalidate(favoriteListsProvider)
-                      ..invalidate(favoriteListDetailProvider(listId: listId));
+                      ..invalidate(favoriteListDetailProvider(listId: listId))
+                      ..invalidate(aggregatedFavoriteMarkersProvider);
                     if (context.mounted) {
                       context.router.pop(true);
                     }
@@ -107,7 +109,7 @@ class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
                       final message = e is FavoriteListsApiException
                           ? e.localizedMessage(ref.read(appLanguageProvider))
                           : context.l10n.somethingWentWrongPleaseTryAgainLater;
-                      ToastOverlay.of(context).show(title: message);
+                      ToastOverlay.of(context).show(title: message, isDismissible: true);
                     }
                   }
                 },

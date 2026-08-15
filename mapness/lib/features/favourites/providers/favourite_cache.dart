@@ -258,6 +258,7 @@ class _FavouriteCache extends _$FavouriteCache {
   }
 
   FavouriteItem? getFavouriteOrNull(int objectId) {
+    // todo(claude-replace-fav-api): call api to get favorite
     if (!state.hasValue) {
       return null;
     }

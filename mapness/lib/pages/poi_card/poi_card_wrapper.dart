@@ -396,13 +396,15 @@ Future<void> _onFavoriteTap({
   required BuildContext context,
   required WidgetRef ref,
   required DirectoryObjectMessage data,
-  FavouriteItem? favouriteItem,
 }) async {
+  // todo remove
+  await toggleFavoriteDirectoryObject(context: context, ref: ref, data: data);
+  return;
   await ref
       .read(authMethodsProvider.notifier)
       .authOrOpen(
         context,
-        callback: () {
+        callback: () async {
           Metrics.logEventAdvanced(
             MetricsConstants.poiKeys.addToFavorite,
             group: MetricsConstants.poiTag,
@@ -410,7 +412,7 @@ Future<void> _onFavoriteTap({
             props: {'objectId': data.id?.objectId},
           );
 
-          toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+          await toggleFavoriteDirectoryObject(context: context, ref: ref, data: data);
         },
       );
 }

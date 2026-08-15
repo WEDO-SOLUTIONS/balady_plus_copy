@@ -52,40 +52,12 @@ void openRoutingRoutes(
   );
 }
 
-void toggleFavoriteDirectoryObject({
+Future<void> toggleFavoriteDirectoryObject({
   required BuildContext context,
   required WidgetRef ref,
   required DirectoryObjectMessage data,
-  required FavouriteItem? favouriteItem,
-}) {
-  final favState = ref.read(favouriteCacheProvider).value;
-  final favRepo = ref.read(favouriteCacheProvider.notifier);
-
-  /// if already in favourites - remove
-  if (favouriteItem != null) {
-    favRepo.deleteItem(favouriteItem);
-    return;
-  }
-
-  FavouriteItem? favItem = favouriteItem;
-  if (favItem == null && data.markerPosition != null && data.id != null) {
-    favItem = data.mapToFavourite();
-  }
-
-  if (favItem == null) {
-    return;
-  }
-
-  /// do not show dialog if home and work are set
-  if (favState?.home != null && favState?.work != null) {
-    favRepo.addItem(data.mapToFavourite());
-  } else {
-    /// Build the rich POI here, where [data] (addr/type/marker) is still in
-    /// hand, so `favorite_add` reports poi_addr/poi_type/poi_distance.
-    final loc = ref.read(locationProvider);
-    final favoritePoi = data.toDataFinderPoi(myLat: loc?.latitude, myLon: loc?.longitude);
-
-    /// show dialog to choose home, work or regular
-    context.router.push(PoiFavoriteDialogRoute(favItem: favItem, favoritePoi: favoritePoi));
-  }
+}) async {
+  /// Экран сам показывает текущее членство (чекбоксы) и Дом/Работу;
+  /// сохранение списков идёт единым bulkAssignPlaceToLists по кнопке Save.
+  await context.router.push(PickFavoriteListRoute(data: data));
 }

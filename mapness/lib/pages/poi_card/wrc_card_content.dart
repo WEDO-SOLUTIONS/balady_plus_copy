@@ -152,14 +152,14 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
           },
           onAddPointToRoute: () => _onAddEmptyPointToRoute(context, l10n, ref, _objectId, _closestPoints),
           onRemovePointFromRoute: () => _onRemoveEmptyPointToRoute(context, l10n, ref, _objectId, _closestPoints),
-          onTapFavorite: (item) {
+          onTapFavorite: () {
             _bssOnFavouritesTap();
-            _onFavoriteTap(context: context, ref: ref, data: wrcDirectoryObject, favouriteItem: item);
+            _onFavoriteTap(context: context, ref: ref, data: wrcDirectoryObject);
           },
         ),
         header: PoiHeader(
           bottomSheetController: _bottomSheetController,
-          title: wrcDirectoryObject.title,
+          title: ref.watch(customPlaceNicknameProvider(_objectId.toString())).value ?? wrcDirectoryObject.title,
           subTitle: wrcDirectoryObject.subtitle,
           parkingInfo: wrcDirectoryObject.parkingInfo,
           poiCardState: poiCardState,

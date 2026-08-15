@@ -143,7 +143,7 @@ class CreateFavoriteListPage extends HookConsumerWidget {
                 final message = e is FavoriteListsApiException
                     ? e.localizedMessage(ref.read(appLanguageProvider))
                     : context.l10n.somethingWentWrongPleaseTryAgainLater;
-                ToastOverlay.of(context).show(title: message);
+                ToastOverlay.of(context).show(title: message, isDismissible: true);
               }
             }
           },

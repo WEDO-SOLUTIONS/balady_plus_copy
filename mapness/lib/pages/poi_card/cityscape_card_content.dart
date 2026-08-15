@@ -178,14 +178,14 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
           onAddPointToRoute: () => _onAddEmptyPointToRoute(context, l10n, ref, widget.objectId, widget.closestPoint),
           onRemovePointFromRoute: () =>
               _onRemoveEmptyPointToRoute(context, l10n, ref, widget.objectId, widget.closestPoint),
-          onTapFavorite: (item) {
+          onTapFavorite: () {
             _bssOnFavouritesTap();
-            _onFavoriteTap(context: context, ref: ref, data: customCityscapeData, favouriteItem: item);
+            _onFavoriteTap(context: context, ref: ref, data: customCityscapeData);
           },
         ),
         header: PoiHeader(
           bottomSheetController: _bottomSheetController,
-          title: customCityscapeData.title,
+          title: ref.watch(customPlaceNicknameProvider(widget.objectId.toString())).value ?? customCityscapeData.title,
           subTitle: customCityscapeData.subtitle,
           parkingInfo: customCityscapeData.parkingInfo,
           poiCardState: poiCardState,
