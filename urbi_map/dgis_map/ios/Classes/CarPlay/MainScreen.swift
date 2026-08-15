@@ -96,6 +96,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.mapButtons = []
         navigationSessionManeuvers.cancel()
         indoorControlHandler.cancel()
+        // HB-23: the map view tears itself down here, on CarPlay disconnect,
+        // and no longer on every `viewDidDisappear` — switching to another
+        // CarPlay app must leave the map attached to the navigation manager.
+        dgisCarPlayMapView.dispose()
         window.rootViewController = nil
         moveCameraCancellable?.cancel()
         
