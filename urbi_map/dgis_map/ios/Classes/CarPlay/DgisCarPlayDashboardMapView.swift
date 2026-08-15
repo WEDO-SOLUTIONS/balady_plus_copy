@@ -18,11 +18,26 @@ class DgisCarPlayDashboardMapView: UIViewController {
     private var tunnelDetector: TunnelDetector?
     private var isInTunnel = false
 
+    /// Dashboard window — kept for its screen scale, see `MapOptions.carScreen`.
+    private let cpWindow: UIWindow
+
+    init(cpWindow: UIWindow) {
+        self.cpWindow = cpWindow
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let sdk = DgisMapInitializer.shared.getSdkContainer()
         
-        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
+        // HB-57: the dashboard is a car screen too — same density fix as the
+        // main CarPlay map.
+        guard let mapFactory = try? sdk.makeMapFactory(options: .carScreen(for: cpWindow)),
+              let context = try? sdk.context else {
             fatalError("Plugin has not been initialized")
         }
         
