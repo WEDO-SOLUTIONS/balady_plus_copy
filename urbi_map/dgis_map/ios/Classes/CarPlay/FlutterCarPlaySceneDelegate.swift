@@ -41,7 +41,8 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         
         let sdk = DgisMapInitializer.shared.getSdkContainer()
         
-        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
+        guard let mapFactory = try? sdk.makeMapFactory(options: .carScreen(for: window)),
+              let context = try? sdk.context else {
             fatalError("Plugin has not been initialized")
         }
         

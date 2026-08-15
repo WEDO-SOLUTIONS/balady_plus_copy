@@ -413,6 +413,23 @@ extension UIView {
     }
 }
 
+extension MapOptions {
+    /// Map options for a map drawn on a car screen — the main CarPlay map and
+    /// the dashboard one.
+    ///
+    /// HB-57: `MapOptions.default` leaves the device density unset, so the SDK
+    /// sizes the map for the *phone's* screen — 3x on a Pro Max — while the
+    /// head unit is a 2x display. Everything the style sizes in screen units,
+    /// the 3D car model included, then comes out ~1.5x too large; QA logged the
+    /// cursor as "roughly the size of two buildings". Handing the SDK the car
+    /// screen's own scale sizes the map for the screen it is actually drawn on.
+    static func carScreen(for window: UIWindow) -> MapOptions {
+        var options = MapOptions.default
+        options.deviceDensity = DeviceDensity(value: Float(window.screen.scale))
+        return options
+    }
+}
+
 extension Map {
     func loadStyle(styleFactory: DGis.IStyleFactory) -> DGis.Cancellable? {
         let stylePath = FlutterDartProject.lookupKey(forAsset: "packages/map_styles/src/styles.2gis")
