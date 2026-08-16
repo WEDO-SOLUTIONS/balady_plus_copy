@@ -428,7 +428,7 @@ class TifoBallIcon extends StatelessWidget {
 /// one, so the same screen looked different per language. An icon with an
 /// explicit color renders identically in every locale.
 class TifoMissMark extends StatelessWidget {
-  const TifoMissMark({super.key, this.size = 14});
+  const TifoMissMark({super.key, this.size = 20});
 
   final double size;
 
