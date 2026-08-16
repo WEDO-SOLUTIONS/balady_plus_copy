@@ -641,7 +641,7 @@ class _LeaderRowTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     club?.name ?? row.clubId,
-                    style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                    style: TifoText.bodyMSemi.copyWith(color: context.colors.foregroundDefault),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -652,7 +652,7 @@ class _LeaderRowTile extends StatelessWidget {
             flex: 2,
             child: Text(
               '${row.districts}',
-              style: TifoText.bodyL.copyWith(color: context.colors.foregroundDefault),
+              style: TifoText.bodyMSemi.copyWith(color: context.colors.foregroundDefault),
               textAlign: TextAlign.center,
             ),
           ),
@@ -660,7 +660,7 @@ class _LeaderRowTile extends StatelessWidget {
             flex: 2,
             child: Text(
               '${row.buildings}',
-              style: TifoText.bodyL.copyWith(color: context.colors.foregroundDefault),
+              style: TifoText.bodyMSemi.copyWith(color: context.colors.foregroundDefault),
               textAlign: TextAlign.center,
             ),
           ),
@@ -671,7 +671,7 @@ class _LeaderRowTile extends StatelessWidget {
               children: [
                 Text(
                   '${row.ownershipPct}%',
-                  style: TifoText.captionMedium.copyWith(color: context.colors.foregroundDefault),
+                  style: TifoText.bodyMSemi.copyWith(color: context.colors.foregroundDefault),
                 ),
                 const SizedBox(height: 3),
                 ClipRRect(

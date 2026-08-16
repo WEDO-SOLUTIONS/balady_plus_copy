@@ -81,6 +81,12 @@ abstract final class TifoText {
     height: 1.25,
     color: TifoColors.textDefault,
   );
+  static const TextStyle bodyMSemi = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    height: 1.25,
+    color: TifoColors.textDefault,
+  );
   static const TextStyle button = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
