@@ -487,7 +487,7 @@ class _PenaltyHudPanel extends StatelessWidget {
                               for (var i = 0; i < misses; i++)
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 2),
-                                  child: Text('❌', style: TextStyle(fontSize: 14)),
+                                  child: TifoMissMark(),
                                 ),
                             ],
                           ),
