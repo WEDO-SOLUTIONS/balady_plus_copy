@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/entry_screen.dart';
@@ -182,36 +183,49 @@ class TifoJoinPill extends ConsumerWidget {
   const TifoJoinPill({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => DecoratedBox(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(16),
-      boxShadow: const [BoxShadow(color: Color(0x4D16A34A), offset: Offset(0, 4), blurRadius: 10)],
-    ),
-    child: Material(
-      color: TifoColors.accent,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
+  Widget build(BuildContext context, WidgetRef ref) => Directionality(
+    // `MapDashboardControls` pins its whole lower band to LTR so the map
+    // buttons keep their fixed on-screen sides, and only restores the app
+    // direction around the header. This pill is text, not a map button — it
+    // has to read in the app's language direction, so it opts back in the
+    // same way `MapHiddenStateControls` and the sheets do.
+    textDirection: ref.watch(uiDirectionProvider),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => unawaited(TifoJourney(ref).ensurePlayReady(context)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                AppLocalizations.of(context).dominateWithYourTeam,
-                style: const TextStyle(
-                  fontFamily: 'Golos',
-                  package: 'balady_uikit',
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  height: 1.25,
-                  color: Colors.white,
+        boxShadow: const [BoxShadow(color: Color(0x4D16A34A), offset: Offset(0, 4), blurRadius: 10)],
+      ),
+      child: Material(
+        color: TifoColors.accent,
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => unawaited(TifoJourney(ref).ensurePlayReady(context)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context).dominateWithYourTeam,
+                    // The type ramp deliberately carries no font of its own: it
+                    // inherits the ThemeData swap between Golos (en) and IBM
+                    // Plex Sans Arabic (ar) — see [TifoText]. This pill used to
+                    // pin "Golos" inline, which is Latin-only, so the Arabic
+                    // label fell back to whatever face the system offered.
+                    style: TifoText.bodyLSemi.copyWith(color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 8),
-              const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
-            ],
+                const SizedBox(width: 8),
+                // Directional by design: `arrow_forward_rounded` carries
+                // `matchTextDirection`, so it points left in Arabic, and the Row
+                // reorders itself under the RTL scope above.
+                const Icon(Icons.arrow_forward_rounded, size: 16, color: Colors.white),
+              ],
+            ),
           ),
         ),
       ),
