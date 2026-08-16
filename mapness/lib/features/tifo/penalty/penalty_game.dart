@@ -343,6 +343,9 @@ class _PenaltyGamePageState extends State<PenaltyGamePage> {
 
   @override
   Widget build(BuildContext context) {
+    // The game paints its result flash outside the widget tree — feed it the
+    // localized copy from here, where a Localizations scope exists.
+    _perspectiveGame.labels = PenaltyResultLabels.of(context);
     Widget body;
     switch (_view) {
       case _PenaltyView.perspective:
@@ -1398,6 +1401,63 @@ enum _KeeperMotion {
 /// [_StrikerModel._atlasSpecs]) baked at native frame density.
 enum _StrikerMotion { idle, windup, kick, settle }
 
+/// Localized copy for the result flash the game paints after each kick
+/// (GOAL! / SAVE! / MISS!). Flame renders straight to a canvas, outside the
+/// widget tree, so it can't reach [AppLocalizations] itself — the page resolves
+/// the strings and hands them over. The English defaults keep the standalone
+/// debug entry (`debug_3d_model_panel`) working without a Localizations scope.
+@immutable
+class PenaltyResultLabels {
+  const PenaltyResultLabels({
+    this.goal = 'GOAL!',
+    this.save = 'SAVE!',
+    this.miss = 'MISS!',
+    this.fontFamily,
+    this.textDirection = TextDirection.ltr,
+  });
+
+  factory PenaltyResultLabels.of(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return PenaltyResultLabels(
+      goal: l10n.tifoPenaltyGoal,
+      save: l10n.tifoPenaltySave,
+      miss: l10n.tifoPenaltyMiss,
+      // Arabic only: the flash's default face has no Arabic glyphs, so it
+      // would fall back to whatever the system offers. English keeps the
+      // untouched default face the design was signed off on.
+      fontFamily: isArabic ? 'packages/balady_design_system/IBMPlexSansArabic' : null,
+      // Flame lays text out on a raw canvas — no [Directionality] reaches it,
+      // and its default is LTR. That mis-places the neutral-direction "!" in
+      // "جوول!" / "تصدي!" / "ضاعت!" at the wrong end of the word, so the
+      // paragraph direction has to be handed over explicitly.
+      textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+    );
+  }
+
+  final String goal;
+  final String save;
+  final String miss;
+
+  /// Face for the flash; null → Flame's default text style.
+  final String? fontFamily;
+
+  /// Paragraph direction for the flash — see [PenaltyResultLabels.of].
+  final TextDirection textDirection;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PenaltyResultLabels &&
+      other.goal == goal &&
+      other.save == save &&
+      other.miss == miss &&
+      other.fontFamily == fontFamily &&
+      other.textDirection == textDirection;
+
+  @override
+  int get hashCode => Object.hash(goal, save, miss, fontFamily, textDirection);
+}
+
 class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
   PenaltyGame({
     this.onComplete,
@@ -1550,17 +1610,36 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
       ],
     ),
   );
-  final _resultText = TextPaint(
-    style: const TextStyle(
+  static TextPaint _resultTextPaint(PenaltyResultLabels labels) => TextPaint(
+    textDirection: labels.textDirection,
+    style: TextStyle(
       color: Colors.white,
       fontSize: 44,
       fontWeight: FontWeight.w900,
       letterSpacing: 0,
-      shadows: [
+      fontFamily: labels.fontFamily,
+      shadows: const [
         Shadow(color: Color(0xBB000000), blurRadius: 7, offset: Offset(0, 2)),
       ],
     ),
   );
+
+  TextPaint _resultText = _resultTextPaint(const PenaltyResultLabels());
+
+  PenaltyResultLabels _labels = const PenaltyResultLabels();
+
+  /// Result-flash copy. Assigned from the page's `build`, so a locale switch
+  /// is picked up; the setter is a no-op when nothing changed, since build
+  /// runs far more often than the locale does.
+  PenaltyResultLabels get labels => _labels;
+
+  set labels(PenaltyResultLabels value) {
+    if (value == _labels) {
+      return;
+    }
+    _labels = value;
+    _resultText = _resultTextPaint(value);
+  }
 
   _ShotState _state = _ShotState.aiming;
   _Vec3 _ball = _Vec3(0, _ballRadius, _ballStartZ);
@@ -1714,7 +1793,7 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
           _resolveShot();
         }
         if (_ball.y < -1 || _ball.z > _goalZ + 8) {
-          _finish(_ShotState.missed, 'MISS!');
+          _finish(_ShotState.missed, _labels.miss);
         }
       }
       return;
@@ -1908,15 +1987,15 @@ class PenaltyGame extends FlameGame with TapCallbacks, DragCallbacks {
     if (saved) {
       _saves++;
       _velocity = _Vec3((_ball.x - _keeperX).signOrZero * 3.1, 2.2, -5.1);
-      _finish(_ShotState.saved, 'SAVE!');
+      _finish(_ShotState.saved, _labels.save);
     } else if (insideFrame) {
       _goals++;
       _velocity.x *= 0.22;
       _velocity.y *= 0.12;
       _velocity.z *= 0.22;
-      _finish(_ShotState.goal, 'GOAL!');
+      _finish(_ShotState.goal, _labels.goal);
     } else {
-      _finish(_ShotState.missed, 'MISS!');
+      _finish(_ShotState.missed, _labels.miss);
     }
   }
 
