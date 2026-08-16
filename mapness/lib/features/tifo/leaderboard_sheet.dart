@@ -191,7 +191,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                         child: Text(
                           AppLocalizations.of(context).mapDominance,
                           style: TifoText.captionMedium,
-                          textAlign: TextAlign.end,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                       const SizedBox(width: 16),
