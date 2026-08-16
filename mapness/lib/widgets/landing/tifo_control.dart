@@ -10,6 +10,7 @@ import 'package:mapness/features/tifo/leaderboard_sheet.dart';
 import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
+import 'package:mapness/features/tifo/tifo_surface.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -53,6 +54,10 @@ class TifoControl extends ConsumerWidget {
 
   Future<void> _onTap(BuildContext context, WidgetRef ref, {required bool enabled}) async {
     logger.log('[tifo] ⚽ tap: enabled=$enabled');
+    // Anchor the whole flow to the surface this tap happened on: the entry
+    // popup and the layer toggle below are both awaited, and the player can
+    // switch tabs meanwhile — the gate screens must not follow them there.
+    final surface = TifoSurface.capture(ref);
     final layer = ref.read(tifoBuildingsMapLayerProvider.notifier);
     if (enabled) {
       await layer.disable();
@@ -62,17 +67,32 @@ class TifoControl extends ConsumerWidget {
     // node 286:20818). Pushed on the root navigator — the control's own
     // context may sit outside it.
     final flow = ref.read(tifoFlowProvider.notifier);
+    final journey = TifoJourney(ref);
     var proceed = false;
     if (!ref.read(tifoFlowProvider).hasSeenEntry) {
       final entryCtx = rootNavigatorKey.currentContext ?? context;
-      proceed = await showTifoEntry(entryCtx);
+      // The CTA carries the play-gate's network prep under its own spinner,
+      // and the layer turns on underneath the popup — so by the time the
+      // player is back on the map the next gate screen is already going up.
+      // Both used to run AFTER the popup closed, which is the gap the player
+      // slipped through into another tab.
+      final entry = showTifoEntry(entryCtx, onEnter: journey.prepare);
+      // FR-01: the ⚽ is the overlay toggle — the tap turns the layer on no
+      // matter how the intro was dismissed (Close(X) → Landing WITH the
+      // overlay the user just switched on; the popup gates only the journey).
+      // A bridge failure here must not swallow the popup's result: the entry
+      // future is already in flight and nothing else would await it.
+      try {
+        await layer.enable();
+      } catch (e) {
+        logger.log('[tifo] layer enable failed under the entry popup: $e');
+      }
+      proceed = await entry;
       logger.log('[tifo] entry popup result: $proceed');
       flow.markEntrySeen();
+    } else {
+      await layer.enable();
     }
-    // FR-01: the ⚽ is the overlay toggle — the tap turns the layer on no
-    // matter how the intro was dismissed (Close(X) → Landing WITH the
-    // overlay the user just switched on; the popup gates only the journey).
-    await layer.enable();
     // BRD V2: the entry CTA routes to the first unmet gate (tutorial →
     // team selected, login at team confirmation — US-01 BR-01); an
     // onboarded player just lands on the map. The journey owns every gate
@@ -80,7 +100,7 @@ class TifoControl extends ConsumerWidget {
     if (proceed) {
       final journeyCtx = rootNavigatorKey.currentContext;
       if (journeyCtx != null) {
-        await TifoJourney(ref).ensurePlayReady(journeyCtx);
+        await journey.ensurePlayReady(journeyCtx, from: surface);
       }
     }
   }
