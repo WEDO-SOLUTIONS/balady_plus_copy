@@ -408,6 +408,12 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/tifo_help.svg
   SvgGenImage get tifoHelp => const SvgGenImage('assets/images_svg/tifo_help.svg');
 
+  /// File path: assets/images_svg/tifo_tokens.svg
+  SvgGenImage get tifoTokens => const SvgGenImage('assets/images_svg/tifo_tokens.svg');
+
+  /// File path: assets/images_svg/tifo_trip_marker.svg
+  SvgGenImage get tifoTripMarker => const SvgGenImage('assets/images_svg/tifo_trip_marker.svg');
+
   /// File path: assets/images_svg/union.svg
   SvgGenImage get union => const SvgGenImage('assets/images_svg/union.svg');
 
@@ -440,6 +446,8 @@ class $AssetsImagesSvgGen {
     lostLocationDark,
     sadFace,
     tifoHelp,
+    tifoTokens,
+    tifoTripMarker,
     union,
   ];
 }

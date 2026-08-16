@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/tifo/data/tifo_activity_log.dart';
 import 'package:mapness/features/tifo/data/tifo_api.dart';
@@ -324,8 +325,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   label: AppLocalizations.of(context).currentTokens,
                   value: '${profile?.balance ?? 0}',
                   chipBg: context.colors.extra01ContainerDefault,
-                  icon: Icons.bolt_rounded,
-                  iconColor: context.colors.extra01Default,
+                  icon: Icon(Icons.bolt_rounded, size: 16, color: context.colors.extra01Default),
                 ),
               ),
               const SizedBox(width: 10),
@@ -343,9 +343,13 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   label: AppLocalizations.of(context).everyTripYouCompleteEarnsYouTokens,
                   value: '${profile?.tripTokensToday ?? 0}',
                   caption: AppLocalizations.of(context).today,
-                  chipBg: context.colors.accentContainerDefault,
-                  icon: Icons.location_on_rounded,
-                  iconColor: context.colors.accentDefault,
+                  chipBg: context.colors.extra01ContainerDefault,
+                  // Design artwork (Marker) — multi-color, so it is drawn as-is
+                  // instead of being tinted like the Material-glyph tiles.
+                  icon: Assets.imagesSvg.tifoTripMarker.svg(
+                    height: 16,
+                    width: 16,
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
@@ -355,8 +359,8 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   value: '${profile?.allTimeEarned ?? 0}',
                   caption: AppLocalizations.of(context).allTime,
                   chipBg: context.colors.accentContainerDefault,
-                  icon: Icons.account_balance_rounded,
-                  iconColor: context.colors.accentDefault,
+                  // Design artwork (coins) — multi-color, drawn untinted.
+                  icon: Assets.imagesSvg.tifoTokens.svg(width: 16, height: 16),
                 ),
               ),
             ],
@@ -509,22 +513,27 @@ class _ActivityRow extends StatelessWidget {
     TifoActivityType.tripCompleted => AppLocalizations.of(context).tripCompleted,
   };
 
-  Map<TifoActivityType, (IconData, Color, Color)> _iconByType(BuildContext context) => {
+  /// Chip artwork + its background per activity type. The artwork is built
+  /// ready to paint: Material glyphs stay themed, while the trip marker is
+  /// design artwork (multi-color) and must be drawn untinted.
+  Map<TifoActivityType, (Widget, Color)> _iconByType(BuildContext context) => {
     TifoActivityType.win: (
-      Icons.emoji_events_rounded,
+      Icon(Icons.emoji_events_rounded, size: 15, color: context.colors.warningDefault),
       context.colors.warningContainerDefault,
-      context.colors.warningDefault,
     ),
-    TifoActivityType.loss: (Icons.cancel_rounded, context.colors.errorContainerDefault, context.colors.errorDefault),
+    TifoActivityType.loss: (
+      Icon(Icons.cancel_rounded, size: 15, color: context.colors.errorDefault),
+      context.colors.errorContainerDefault,
+    ),
     TifoActivityType.tripCompleted: (
-      Icons.location_on_rounded,
+      Assets.imagesSvg.tifoTripMarker.svg(height: 15),
       context.colors.extra01ContainerDefault,
-      context.colors.extra01Active,
     ),
   };
+
   @override
   Widget build(BuildContext context) {
-    final (icon, chipBg, iconColor) = _iconByType(context)[entry.type]!;
+    final (icon, chipBg) = _iconByType(context)[entry.type]!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -533,7 +542,7 @@ class _ActivityRow extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(color: chipBg, shape: BoxShape.circle),
-            child: Icon(icon, size: 15, color: iconColor),
+            child: Center(child: icon),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -760,8 +769,7 @@ class _NextDailyTileState extends State<_NextDailyTile> {
       value: _left <= 0 ? '--' : '${two(hours)}:${two(minutes)}',
       caption: _left <= 0 ? 'hh:mm' : '${two(seconds)}s',
       chipBg: context.colors.warningContainerDefault,
-      icon: Icons.schedule_rounded,
-      iconColor: context.colors.warningActive,
+      icon: Icon(Icons.schedule_rounded, size: 16, color: context.colors.warningActive),
     );
   }
 }
@@ -774,7 +782,6 @@ class _StatTile extends StatelessWidget {
     required this.value,
     required this.chipBg,
     required this.icon,
-    required this.iconColor,
     this.caption,
   });
 
@@ -782,8 +789,11 @@ class _StatTile extends StatelessWidget {
   final String value;
   final String? caption;
   final Color chipBg;
-  final IconData icon;
-  final Color iconColor;
+
+  /// Chip artwork, already sized and colored — a themed [Icon] for the tiles
+  /// design left on Material glyphs, or a multi-color SVG for the ones it
+  /// gave artwork to (which must NOT be tinted).
+  final Widget icon;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -805,7 +815,7 @@ class _StatTile extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(color: chipBg, shape: BoxShape.circle),
-              child: Icon(icon, size: 16, color: iconColor),
+              child: Center(child: icon),
             ),
             const SizedBox(width: 8),
             Expanded(
