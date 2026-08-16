@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
@@ -88,7 +89,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final isAddressUsedAsTitle =
       (fullStreetAddress != null && fullStreetAddress == markerTitle) ||
       (shortStreetAddress != null && shortStreetAddress == markerTitle);
-  final showPinLabel = markerTitle.isNotEmpty && !directoryObject.isDroppedPin && !isAddressUsedAsTitle;
+
+  final isLeapObject = ref.watch(leapProvider.notifier).isLeapObject(objectId.objectId);
+  final showPinLabel =
+      markerTitle.isNotEmpty && !directoryObject.isDroppedPin && !isAddressUsedAsTitle && !isLeapObject;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(
