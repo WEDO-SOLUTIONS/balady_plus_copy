@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_list_places_content.dart';
 import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_indicator.dart';
@@ -109,7 +110,10 @@ class FavoriteListsPage extends HookConsumerWidget {
                     ),
                     ...favoriteListsAsync.when(
                       data: (lists) => lists.map((list) {
-                        final leading = Icon(SystemIcons.bookmarkFill, color: context.colors.accentDefault);
+                        final leading = Icon(
+                          SystemIcons.bookmarkFill,
+                          color: list.markerColorCode.getColor(context.colors),
+                        );
                         final text = ContentRowTextOptions(
                           title: list.name,
                           subtitle: _favoriteListSubtitle(context, list),
