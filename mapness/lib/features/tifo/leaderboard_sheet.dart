@@ -256,13 +256,13 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
               children: [
                 Expanded(
                   child: Text(
-                    'Please log in to view your profile.',
+                    AppLocalizations.of(context).tifoLogInToViewProfile,
                     style: TifoText.captionMedium.copyWith(color: TifoColors.accent, fontSize: 13),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Material(
-                  color: const Color(0xFFF2F4F7),
+                  color: context.colors.neutralContainerDefault,
                   borderRadius: BorderRadius.circular(TifoRadii.ml),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(TifoRadii.ml),
@@ -274,9 +274,12 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                         await ref.read(tifoSessionProvider.notifier).load();
                       }
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-                      child: Text('Log in', style: TifoText.bodyLSemi),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                      child: Text(
+                        AppLocalizations.of(context).tifoLogIn,
+                        style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                      ),
                     ),
                   ),
                 ),
