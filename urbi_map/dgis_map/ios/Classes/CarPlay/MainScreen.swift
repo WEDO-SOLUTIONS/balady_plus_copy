@@ -416,12 +416,40 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         )
     }
 
+    /// Glyph for a `CPMapButton`.
+    ///
+    /// BALADY-3776: the three map buttons were handed the `ZoomIn` / `ZoomOut` /
+    /// `FollowOn` artwork, which is the *phone's* map-control design — a filled
+    /// rounded square with its own background and 1px border baked into the PNG
+    /// (the files are literally named `ButtonControl`). CarPlay draws its own
+    /// round button and fits the image into it, so the square's fill and border
+    /// survived as dark slivers along the top, bottom and sides of the circle,
+    /// with the corners cut off. `CPMapButton` offers no background colour to
+    /// correct that — `image`, `focusedImage`, `isEnabled`, `isHidden` is the
+    /// entire API — so the image itself has to be a bare glyph on transparency
+    /// and let the system own the button chrome.
+    ///
+    /// System symbols also keep the buttons on the same footing as the bar
+    /// buttons after BALADY-3776: no forced rendering mode, so CarPlay tints
+    /// them for whichever content style the head unit asks for.
+    ///
+    /// `focusedImage` is deliberately left unset: CarPlay derives it from the
+    /// glyph's alpha channel, which is what `CPMapButton` documents.
+    private func mapButtonGlyph(_ systemName: String) -> UIImage? {
+        UIImage(
+            systemName: systemName,
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: 22,
+                weight: .semibold
+            )
+        )
+    }
+
     private func makeZoomInButton() -> CPMapButton {
         let button = CPMapButton(handler: onZoomInTap)
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "ZoomIn")!
-        button.focusedImage = UIImage(named: "ZoomIn")!
+        button.image = mapButtonGlyph("plus")
 
         return button
     }
@@ -430,8 +458,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let button = CPMapButton(handler: onZoomOutTap)
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "ZoomOut")!
-        button.focusedImage = UIImage(named: "ZoomOut")!
+        button.image = mapButtonGlyph("minus")
 
         return button
     }
@@ -440,8 +467,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let button = CPMapButton(handler: onMyLocationMapTap)
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "FollowOn")!
-        button.focusedImage = UIImage(named: "FollowOn")!
+        button.image = mapButtonGlyph("location.north.fill")
         return button
     }
 
