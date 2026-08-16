@@ -642,7 +642,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
                       child: Text(
                         AppLocalizations.of(context).mapDominance,
                         style: TifoText.captionMedium,
-                        textAlign: TextAlign.end,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     const SizedBox(width: 14),
