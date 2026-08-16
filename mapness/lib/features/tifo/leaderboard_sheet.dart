@@ -37,7 +37,7 @@ Future<void> showTifoLeaderboardSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: context.themeRead.colors.foregroundSurfacePush,
+    backgroundColor: context.themeRead.colors.backgroundSurface1,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     builder: (_) => const _LeaderboardSheet(),
   ).whenComplete(() => _leaderboardSheetOpening = false);
@@ -94,15 +94,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: context.colors.foregroundMuted,
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: context.colors.foregroundMuted,
-                      ),
-                    ),
+                    color: context.colors.neutralContainerDefault,
+                    borderRadius: BorderRadius.circular(TifoRadii.ml),
                   ),
-                  child: Icon(Icons.close_rounded, size: 18, color: context.colors.foregroundDefault),
+                  child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
                 ),
               ),
             ),
@@ -159,7 +154,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
-              color: context.colors.foregroundSurfacePush,
+              color: context.colors.backgroundSurface1,
               borderRadius: BorderRadius.circular(TifoRadii.l),
               border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
             ),
@@ -218,8 +213,8 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 Container(
                   width: 28,
                   height: 28,
-                  decoration: const BoxDecoration(color: Color(0xFFEDE9FE), shape: BoxShape.circle),
-                  child: const Icon(Icons.bolt_rounded, size: 16, color: Color(0xFF7C3AED)),
+                  decoration: BoxDecoration(color: context.colors.extra01ContainerDefault, shape: BoxShape.circle),
+                  child: Icon(Icons.bolt_rounded, size: 16, color: context.colors.extra01Active),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -325,9 +320,9 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                 child: _StatTile(
                   label: AppLocalizations.of(context).currentTokens,
                   value: '${profile?.balance ?? 0}',
-                  chipBg: const Color(0xFFEDE9FE),
+                  chipBg: context.colors.extra01ContainerDefault,
                   icon: Icons.bolt_rounded,
-                  iconColor: const Color(0xFF7C3AED),
+                  iconColor: context.colors.extra01Default,
                 ),
               ),
               const SizedBox(width: 10),
@@ -345,9 +340,9 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   label: AppLocalizations.of(context).everyTripYouCompleteEarnsYouTokens,
                   value: '${profile?.tripTokensToday ?? 0}',
                   caption: AppLocalizations.of(context).today,
-                  chipBg: const Color(0xFFE3F5EB),
+                  chipBg: context.colors.accentContainerDefault,
                   icon: Icons.location_on_rounded,
-                  iconColor: TifoColors.accentSoft,
+                  iconColor: context.colors.accentDefault,
                 ),
               ),
               const SizedBox(width: 10),
@@ -356,9 +351,9 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   label: AppLocalizations.of(context).tokensEarned,
                   value: '${profile?.allTimeEarned ?? 0}',
                   caption: AppLocalizations.of(context).allTime,
-                  chipBg: const Color(0xFFE3F5EB),
+                  chipBg: context.colors.accentContainerDefault,
                   icon: Icons.account_balance_rounded,
-                  iconColor: TifoColors.accentSoft,
+                  iconColor: context.colors.accentDefault,
                 ),
               ),
             ],
@@ -368,7 +363,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
         Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: context.colors.foregroundSurfacePush,
+            color: context.colors.backgroundSurface1,
             borderRadius: BorderRadius.circular(TifoRadii.l),
             border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
           ),
@@ -393,30 +388,30 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
                   _MatchStat(
                     value: '${profile?.gamesTotal ?? 0}',
                     label: AppLocalizations.of(context).total,
-                    chipBg: const Color(0xFFF2F4F7),
+                    chipBg: context.colors.neutralContainerDefault,
                     icon: Icons.sports_esports_rounded,
-                    iconColor: const Color(0xFF6A7282),
+                    iconColor: context.colors.staticSoftBlue,
                   ),
                   _MatchStat(
                     value: '${profile?.gamesWon ?? 0}',
                     label: AppLocalizations.of(context).wins,
-                    chipBg: const Color(0xFFFFF4D6),
+                    chipBg: context.colors.warningContainerDefault,
                     icon: Icons.emoji_events_rounded,
-                    iconColor: const Color(0xFFD9A400),
+                    iconColor: context.colors.warningSoft,
                   ),
                   _MatchStat(
                     value: '${profile?.gamesLost ?? 0}',
                     label: AppLocalizations.of(context).losses,
-                    chipBg: const Color(0xFFFEE4E2),
+                    chipBg: context.colors.errorContainerDefault,
                     icon: Icons.cancel_rounded,
-                    iconColor: const Color(0xFFF04438),
+                    iconColor: context.colors.errorDefault,
                   ),
                   _MatchStat(
                     value: '${profile?.buildingsOwned ?? 0}',
                     label: AppLocalizations.of(context).claimed,
-                    chipBg: const Color(0xFFE3F5EB),
+                    chipBg: context.colors.accentContainerDefault,
                     icon: Icons.apartment_rounded,
-                    iconColor: TifoColors.accentSoft,
+                    iconColor: context.colors.accentDefault,
                   ),
                 ],
               ),
@@ -473,7 +468,7 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
 
   void _showAllActivity(List<TifoActivityEntry> activity) => showModalBottomSheet<void>(
     context: context,
-    backgroundColor: TifoColors.surface,
+    backgroundColor: context.themeRead.colors.backgroundSurface1,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     builder: (sheetContext) => SafeArea(
       child: Padding(
@@ -482,7 +477,10 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(AppLocalizations.of(sheetContext).recentActivity, style: TifoText.bodyLSemi),
+            Text(
+              AppLocalizations.of(sheetContext).recentActivity,
+              style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+            ),
             const SizedBox(height: 8),
             Flexible(
               child: ListView(
@@ -502,21 +500,28 @@ class _ActivityRow extends StatelessWidget {
 
   final TifoActivityEntry entry;
 
-  static const _iconByType = {
-    TifoActivityType.win: (Icons.emoji_events_rounded, Color(0xFFFFF4D6), Color(0xFFD9A400)),
-    TifoActivityType.loss: (Icons.cancel_rounded, Color(0xFFFEE4E2), Color(0xFFF04438)),
-    TifoActivityType.tripCompleted: (Icons.location_on_rounded, Color(0xFFEDE9FE), Color(0xFF7C3AED)),
-  };
-
   static String _label(BuildContext context, TifoActivityType type) => switch (type) {
     TifoActivityType.win => AppLocalizations.of(context).youWonAPenaltyChallenge,
     TifoActivityType.loss => AppLocalizations.of(context).youLostAPenaltyChallenge,
     TifoActivityType.tripCompleted => AppLocalizations.of(context).tripCompleted,
   };
 
+  Map<TifoActivityType, (IconData, Color, Color)> _iconByType(BuildContext context) => {
+    TifoActivityType.win: (
+      Icons.emoji_events_rounded,
+      context.colors.warningContainerDefault,
+      context.colors.warningDefault,
+    ),
+    TifoActivityType.loss: (Icons.cancel_rounded, context.colors.errorContainerDefault, context.colors.errorDefault),
+    TifoActivityType.tripCompleted: (
+      Icons.location_on_rounded,
+      context.colors.extra01ContainerDefault,
+      context.colors.extra01Active,
+    ),
+  };
   @override
   Widget build(BuildContext context) {
-    final (icon, chipBg, iconColor) = _iconByType[entry.type]!;
+    final (icon, chipBg, iconColor) = _iconByType(context)[entry.type]!;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -589,7 +594,7 @@ class _Tabs extends StatelessWidget {
         height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: active ? TifoColors.accent : context.colors.foregroundSurfacePush,
+          color: active ? TifoColors.accent : context.colors.backgroundSurface1,
           borderRadius: BorderRadius.circular(TifoRadii.ml),
           border: Border.all(color: active ? TifoColors.accent : TifoColors.border),
         ),
@@ -751,9 +756,9 @@ class _NextDailyTileState extends State<_NextDailyTile> {
       label: AppLocalizations.of(context).nextDailyTokensIn,
       value: _left <= 0 ? '--' : '${two(hours)}:${two(minutes)}',
       caption: _left <= 0 ? 'hh:mm' : '${two(seconds)}s',
-      chipBg: const Color(0xFFFFF1E0),
+      chipBg: context.colors.warningContainerDefault,
       icon: Icons.schedule_rounded,
-      iconColor: const Color(0xFFD97706),
+      iconColor: context.colors.warningActive,
     );
   }
 }
@@ -781,7 +786,7 @@ class _StatTile extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
-      color: context.colors.foregroundSurfacePush,
+      color: context.colors.backgroundSurface1,
       borderRadius: BorderRadius.circular(TifoRadii.l),
       border: Border.all(color: TifoColors.accentMuted.withValues(alpha: 0.5), width: 1.5),
     ),

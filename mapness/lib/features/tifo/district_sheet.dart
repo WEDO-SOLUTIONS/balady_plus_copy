@@ -22,7 +22,7 @@ Future<void> showTifoDistrictSheet(
 }) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
-  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
+  backgroundColor: context.themeRead.colors.backgroundSurface1,
   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
   builder: (_) => _DistrictSheet(district: district, summary: summary),
 );
@@ -132,7 +132,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: context.colors.foregroundSurfacePush,
+                      color: context.colors.neutralContainerDefault,
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: TifoColors.accentContainer),
                     ),
@@ -226,7 +226,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                     Container(
                       padding: const EdgeInsets.all(17.5),
                       decoration: BoxDecoration(
-                        color: context.colors.foregroundSurfacePush,
+                        color: context.colors.backgroundSurface1,
                         borderRadius: BorderRadius.circular(TifoRadii.l),
                         border: Border.all(color: TifoColors.neutralFill, width: 1.5),
                       ),
@@ -258,7 +258,7 @@ class _DistrictSheetState extends ConsumerState<_DistrictSheet> {
                       Container(
                         padding: const EdgeInsets.all(17.5),
                         decoration: BoxDecoration(
-                          color: context.colors.foregroundSurfacePush,
+                          color: context.colors.backgroundSurface1,
                           borderRadius: BorderRadius.circular(TifoRadii.l),
                           border: Border.all(color: TifoColors.neutralFill, width: 1.5),
                         ),

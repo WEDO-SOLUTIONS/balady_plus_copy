@@ -177,6 +177,7 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
                 onBack: _previous,
                 onNext: _next,
                 onClose: _exit,
+                bgColor: _index < 1 ? context.colors.backgroundSurface1 : context.colors.foregroundSurfacePush,
               ),
             ),
             _OverlayKind.tooltip => Align(
@@ -210,9 +211,11 @@ class _CoachSheet extends StatelessWidget {
     required this.onBack,
     required this.onNext,
     required this.onClose,
+    required this.bgColor,
   });
 
   final String title;
+  final Color bgColor;
   final String text;
   final int dot;
   final bool showBack;
@@ -224,7 +227,7 @@ class _CoachSheet extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     width: double.infinity,
     decoration: BoxDecoration(
-      color: context.colors.backgroundSurface1,
+      color: bgColor,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       boxShadow: const [
         BoxShadow(
@@ -264,8 +267,11 @@ class _CoachSheet extends StatelessWidget {
                   child: Container(
                     width: 34,
                     height: 34,
-                    decoration: BoxDecoration(color: context.colors.foregroundMuted, shape: BoxShape.circle),
-                    child: Icon(Icons.close_rounded, size: 18, color: context.colors.foregroundDefault),
+                    decoration: BoxDecoration(
+                      color: context.colors.neutralContainerDefault,
+                      borderRadius: BorderRadius.circular(TifoRadii.m),
+                    ),
+                    child: Icon(Icons.close_rounded, size: 18, color: context.colors.neutralOnContainer),
                   ),
                 ),
               ],
@@ -285,10 +291,10 @@ class _CoachSheet extends StatelessWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: context.colors.foregroundMuted,
+                        color: context.colors.neutralContainerDefault,
                         borderRadius: BorderRadius.circular(TifoRadii.l),
                       ),
-                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.foregroundDefault),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.neutralOnContainer),
                     ),
                   ),
                   const SizedBox(width: 12),

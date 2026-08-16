@@ -50,7 +50,7 @@ class TifoDemoPanel extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     width: double.infinity,
     decoration: BoxDecoration(
-      color: context.colors.foregroundSurfacePush,
+      color: context.colors.backgroundSurface1,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
     ),
     child: SafeArea(
@@ -473,10 +473,10 @@ class TifoDemoPenaltyPreview extends StatelessWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: context.colors.foregroundMuted,
+                        color: context.colors.neutralContainerDefault,
                         borderRadius: BorderRadius.circular(TifoRadii.l),
                       ),
-                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.foregroundDefault),
+                      child: Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: context.colors.neutralOnContainer),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -608,7 +608,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: _card(
             border: TifoColors.accentMuted.withValues(alpha: 0.5),
-            bg: context.colors.foregroundSurfacePush,
+            bg: context.colors.backgroundSurface1,
           ),
           child: Column(
             children: [
@@ -757,7 +757,7 @@ class TifoDemoLeaderboard extends StatelessWidget {
     height: 42,
     alignment: Alignment.center,
     decoration: BoxDecoration(
-      color: active ? TifoColors.accent : context.colors.foregroundSurfacePush,
+      color: active ? TifoColors.accent : context.colors.backgroundSurface1,
       borderRadius: BorderRadius.circular(TifoRadii.ml),
       border: Border.all(color: active ? TifoColors.accent : TifoColors.border),
     ),
@@ -947,7 +947,7 @@ class TifoDemoSupport extends StatelessWidget {
   Widget build(BuildContext context) {
     final steps = _steps(context);
     return ColoredBox(
-      color: context.colors.foregroundSurfacePush,
+      color: context.colors.backgroundSurface1,
       child: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
