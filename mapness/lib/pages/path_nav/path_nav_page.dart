@@ -1413,20 +1413,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
     }
 
+    // HB-23: the camera is positioned BEFORE follow is switched on, and nothing
+    // touches it afterwards. An explicit animateTo after startFollowNavigation
+    // counts as manual camera interaction for the SDK, so the follow controller
+    // stepped aside for its followReturnDelay (15s) and the camera sat facing
+    // north — never swinging in behind the car — until that delay ran out.
     if (followAfter) {
       await dgisController.startFollowNavigation();
-      if (position != null) {
-        if (_isLocationAccuracyAcceptable(position.latitude, position.longitude)) {
-          await cameraProvider.animateTo(
-            CameraPositionMessage(
-              point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-              zoom: 17.5,
-              tilt: 50,
-              bearing: 0,
-            ),
-          );
-        }
-      }
     }
   }
 

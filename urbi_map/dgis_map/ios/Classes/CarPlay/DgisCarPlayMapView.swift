@@ -169,7 +169,18 @@ class DgisCarPlayMapView: UIViewController {
         attributionLabel.attributedText = makeAttributionText()
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
+    /// Tears the car map down for good: detaches it from the navigation
+    /// manager, drops the my-location source and cancels every subscription.
+    ///
+    /// HB-23: this used to run from `viewDidDisappear`, which UIKit also calls
+    /// when the driver simply switches to another CarPlay app — the car screen
+    /// is not gone, it is merely covered. The map came back detached from
+    /// `mapManager`, so the follow controller no longer drove it and the route
+    /// stopped re-drawing until the driver tapped the my-location button
+    /// (`myLocation()` re-enables follow, which is exactly the workaround QA
+    /// described). Teardown now happens once, on CarPlay disconnect, driven by
+    /// `MainScreen.dispose()`.
+    func dispose() {
         DgisMapInitializer.shared.getNavigationManager().mapManager.removeMap(map: map)
         mapView.subviews.forEach { $0.removeFromSuperview() }
         if let myLocationSource = self.myLocationSource {
