@@ -4,7 +4,9 @@ import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/team_select_screen.dart';
 import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_login.dart';
+import 'package:mapness/features/tifo/tifo_surface.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_guided_tutorial.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Drives the BRD V2 play-gate (US-01 BR-01): route to the first unmet step
 /// in the order **tutorial → team selected** — a logged-out user goes to the
@@ -18,19 +20,39 @@ class TifoJourney {
 
   final WidgetRef ref;
 
-  Future<bool> ensurePlayReady(BuildContext context) async {
+  /// Everything the gate walk needs from the network BEFORE it can push its
+  /// first screen. Run it while a screen the player is already looking at
+  /// covers the app (the entry popup's CTA spinner) so the walk pushes with no
+  /// visible gap; [ensurePlayReady] repeats it and is a no-op once warm.
+  Future<void> prepare() async {
+    if (ref.read(tifoSessionProvider).profile == null) {
+      await ref.read(tifoSessionProvider.notifier).load();
+    }
+  }
+
+  /// [from] is the surface the play-intent was expressed on. Pass it when the
+  /// caller awaits something before starting the walk (the ⚽ entry popup, the
+  /// map-layer toggle) so the gate is anchored to the tap, not to whatever is
+  /// on screen once those awaits resolve. Defaults to "here, now".
+  Future<bool> ensurePlayReady(BuildContext context, {TifoSurface? from}) async {
+    final surface = from ?? TifoSurface.capture(ref);
     final session = ref.read(tifoSessionProvider.notifier);
 
     // Ensure we have a fresh profile to gate on. On staging this also lazily
-    // registers the user.
-    if (ref.read(tifoSessionProvider).profile == null) {
-      await session.load();
-    }
+    // registers the user. Already warm when the caller ran [prepare].
+    await prepare();
 
     // Walk the gates. Re-read state after each step since the profile changes.
     // Cap iterations so a backend hiccup can't spin forever.
     for (var guard = 0; guard < 4; guard++) {
+      // The player may have left the map while the step above was awaiting
+      // (BALADY: tutorial rendered on top of Settings after a quick tab
+      // switch) — a gate screen must never be pushed over an unrelated page.
       if (!context.mounted) {
+        return false;
+      }
+      if (!surface.isVisible(ref)) {
+        logger.log('[tifo] play-gate abandoned: player navigated away from the entry surface');
         return false;
       }
       final step = ref.read(tifoSessionProvider).nextStep;
@@ -64,7 +86,7 @@ class TifoJourney {
           final flow = ref.read(tifoFlowProvider.notifier);
           final alreadyStarted = await flow.hasCompletedTutorialOnDevice();
           if (!alreadyStarted) {
-            if (!context.mounted) {
+            if (!context.mounted || !surface.isVisible(ref)) {
               return false;
             }
             await showTifoGuidedTutorial(context);
