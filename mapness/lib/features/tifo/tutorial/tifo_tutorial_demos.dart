@@ -1,5 +1,6 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -534,7 +535,19 @@ class TifoDemoPenaltyHud extends StatelessWidget {
                 children: [
                   _hudCell(
                     AppLocalizations.of(context).tifoMissesRemaining,
-                    const Text('⚽ ❌ ❌', style: TextStyle(fontSize: 16)),
+                    // Mirrors the live HUD (ball asset + explicit cross)
+                    // rather than an emoji string, whose glyphs — and colors —
+                    // changed with the app language.
+                    const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TifoBallIcon(size: 16),
+                        SizedBox(width: 4),
+                        TifoMissMark(size: 16),
+                        SizedBox(width: 4),
+                        TifoMissMark(size: 16),
+                      ],
+                    ),
                   ),
                   const SizedBox(width: 20),
                   _hudCell(
@@ -878,9 +891,22 @@ class TifoDemoProfile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            _activity('🏆', AppLocalizations.of(context).youWonAPenaltyChallenge, '2h ago'),
-            _activity('❌', AppLocalizations.of(context).youLostAPenaltyChallenge, '2h ago'),
-            _activity('📍', '${AppLocalizations.of(context).tripCompleted}  +3 ⚡', '5h ago'),
+            _activity(
+              const Text('🏆', style: TextStyle(fontSize: 16)),
+              AppLocalizations.of(context).youWonAPenaltyChallenge,
+              '2h ago',
+            ),
+            _activity(
+              const TifoMissMark(size: 16),
+              AppLocalizations.of(context).youLostAPenaltyChallenge,
+              '2h ago',
+            ),
+            _activity(
+              // Same artwork the live activity list uses for this row.
+              Assets.imagesSvg.tifoTripMarker.svg(height: 16),
+              '${AppLocalizations.of(context).tripCompleted}  +3 ⚡',
+              '5h ago',
+            ),
             const Spacer(),
             TifoPrimaryButton(label: AppLocalizations.of(context).dominateWithYourTeam, trailingArrow: true),
           ],
@@ -912,11 +938,11 @@ class TifoDemoProfile extends StatelessWidget {
     ),
   );
 
-  static Widget _activity(String emoji, String text, String time) => Padding(
+  static Widget _activity(Widget leading, String text, String time) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 6),
     child: Row(
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 16)),
+        leading,
         const SizedBox(width: 10),
         Expanded(
           child: Text(text, style: TifoText.captionMedium.copyWith(color: TifoColors.textDefault)),

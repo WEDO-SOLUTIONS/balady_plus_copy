@@ -23,6 +23,11 @@ abstract final class TifoColors {
 
   /// Fallback fill for a neutral / unowned entity.
   static const Color neutralFill = Color(0xFF7BBF8A);
+
+  /// Miss-cross red — the design system's `error/default`. Pinned as a
+  /// constant rather than read from `context.colors`: the penalty HUD renders
+  /// inside the game's own `MaterialApp`, which carries no color extension.
+  static const Color miss = Color(0xFFE0373D);
 }
 
 abstract final class TifoRadii {
@@ -413,4 +418,20 @@ class TifoBallIcon extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// A spent attempt in the penalty HUD (and its tutorial replica).
+///
+/// Was a ❌ emoji, and an emoji's glyph is chosen by FONT FALLBACK from the
+/// ambient family: under the Arabic face the chain resolved to a monochrome
+/// cross — white on the dark HUD — while under Golos it resolved to the color
+/// one, so the same screen looked different per language. An icon with an
+/// explicit color renders identically in every locale.
+class TifoMissMark extends StatelessWidget {
+  const TifoMissMark({super.key, this.size = 14});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Icon(Icons.close_rounded, size: size, color: TifoColors.miss);
 }
