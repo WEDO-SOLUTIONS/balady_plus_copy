@@ -68,7 +68,7 @@ class _TifoTeamSelectScreenState extends ConsumerState<TifoTeamSelectScreen> {
     final clubs = ref.watch(tifoSessionProvider.select((s) => s.clubs));
 
     return Scaffold(
-      backgroundColor: context.colors.foregroundSurfacePush,
+      backgroundColor: context.colors.backgroundSurface1,
       body: Column(
         children: [
           TifoStepHeader(

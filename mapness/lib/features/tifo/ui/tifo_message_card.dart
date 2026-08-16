@@ -111,13 +111,13 @@ class TifoMessageCard extends ConsumerWidget {
                     width: 32,
                     height: 32,
                     decoration: BoxDecoration(
-                      color: context.colors.foregroundMuted,
+                      color: context.colors.neutralContainerDefault,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
                       Icons.close_rounded,
                       size: 16,
-                      color: context.colors.foregroundDefault,
+                      color: context.colors.neutralOnContainer,
                     ),
                   ),
                 ),
@@ -167,7 +167,7 @@ Future<T?> showTifoMessageDialog<T>(
 }) => showModalBottomSheet<T>(
   context: context,
   isDismissible: barrierDismissible,
-  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
+  backgroundColor: context.themeRead.colors.backgroundSurface1,
   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
   builder: (_) => SafeArea(top: false, minimum: const EdgeInsets.only(bottom: 20), child: card),
 );

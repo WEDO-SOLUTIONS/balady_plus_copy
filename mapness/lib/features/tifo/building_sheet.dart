@@ -31,7 +31,7 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 Future<void> showTifoBuildingSheet(BuildContext context, TifoBuilding building) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
-  backgroundColor: context.themeRead.colors.foregroundSurfacePush,
+  backgroundColor: context.themeRead.colors.backgroundSurface1,
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
   ),
@@ -199,17 +199,17 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
-                  color: TifoColors.accentContainer,
                   borderRadius: BorderRadius.circular(TifoRadii.ml),
+                  border: Border.all(color: context.colors.extra01Active),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.bolt_rounded, size: 18, color: TifoColors.accentSoft),
+                    Icon(Icons.bolt_rounded, size: 18, color: context.colors.extra01Active),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         isClaim ? l10n.tifoClaimHint : l10n.tifoChallengeHint,
-                        style: TifoText.captionMedium.copyWith(color: TifoColors.accentSoft),
+                        style: TifoText.captionMedium.copyWith(color: context.colors.extra01Active),
                       ),
                     ),
                   ],
@@ -264,7 +264,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     width: double.infinity,
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: context.colors.foregroundSurfacePush,
+      color: context.colors.backgroundSurface1,
       borderRadius: BorderRadius.circular(TifoRadii.ml),
       border: Border.all(color: TifoColors.border),
     ),
@@ -637,8 +637,8 @@ class _CloseBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: context.colors.foregroundMuted,
-    shape: CircleBorder(side: BorderSide(color: context.colors.foregroundMuted)),
+    color: context.colors.neutralContainerDefault,
+    shape: CircleBorder(side: BorderSide(color: context.colors.neutralContainerDefault)),
     child: InkWell(
       customBorder: const CircleBorder(),
       onTap: onTap,
@@ -648,7 +648,7 @@ class _CloseBtn extends StatelessWidget {
         child: Icon(
           Icons.close_rounded,
           size: 18,
-          color: context.colors.foregroundDefault,
+          color: context.colors.neutralOnContainer,
         ),
       ),
     ),

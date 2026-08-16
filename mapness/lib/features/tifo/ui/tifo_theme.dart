@@ -193,7 +193,7 @@ class TifoSecondaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: const Color(0xFFF3F4F6),
+    color: context.colors.neutralContainerDefault,
     borderRadius: BorderRadius.circular(TifoRadii.l),
     child: InkWell(
       borderRadius: BorderRadius.circular(TifoRadii.l),
@@ -201,7 +201,7 @@ class TifoSecondaryButton extends StatelessWidget {
       child: SizedBox(
         height: 48,
         child: Center(
-          child: Text(label, style: TifoText.bodyLSemi.copyWith(color: TifoColors.textStrong)),
+          child: Text(label, style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault)),
         ),
       ),
     ),
@@ -365,12 +365,12 @@ class _CircleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-    color: context.colors.foregroundMuted,
-    shape: CircleBorder(side: BorderSide(color: context.colors.foregroundMuted)),
+    color: context.colors.neutralContainerDefault,
+    shape: CircleBorder(side: BorderSide(color: context.colors.neutralContainerDefault)),
     child: InkWell(
       customBorder: const CircleBorder(),
       onTap: onTap,
-      child: SizedBox(width: 36, height: 36, child: Icon(icon, size: 16, color: context.colors.foregroundDefault)),
+      child: SizedBox(width: 36, height: 36, child: Icon(icon, size: 16, color: context.colors.neutralOnContainer)),
     ),
   );
 }
