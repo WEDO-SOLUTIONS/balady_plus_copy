@@ -21,6 +21,7 @@ abstract class VolunteerProfileRepository {
   Future<Either<Failure, List<VolunteerLookup>>> getLvls();
   Future<Either<Failure, List<VolunteerLookup>>> getInterests();
   Future<Either<Failure, List<VolunteerLookup>>> getVolunteeringFields();
+  Future<Either<Failure, List<VolunteerLookup>>> getVolunteeringServices(String parentId);
   Future<Either<Failure, CVUploadResponse>> uploadCV(FileDataItem file);
   Future<Either<Failure, void>> submitProfile(
       Map<String, dynamic> profileData, String profileId);

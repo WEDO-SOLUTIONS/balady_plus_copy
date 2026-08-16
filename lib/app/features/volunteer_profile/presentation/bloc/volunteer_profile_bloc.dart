@@ -16,6 +16,7 @@ import '../../domain/use_cases/get_regions.dart';
 import '../../domain/use_cases/get_skills.dart';
 import '../../domain/use_cases/get_specializations.dart';
 import '../../domain/use_cases/get_volunteering_fields.dart';
+import '../../domain/use_cases/get_volunteering_services.dart';
 import '../../domain/use_cases/submit_profile.dart';
 import '../../domain/use_cases/upload_cv.dart';
 
@@ -34,6 +35,7 @@ class VolunteerProfileBloc
   final GetLvls getLvls;
   final GetInterests getInterests;
   final GetVolunteeringFields getVolunteeringFields;
+  final GetVolunteeringServices getVolunteeringServices;
   final GetBloodTypes getBloodTypes;
   final GetDiseases getDiseases;
   final UploadCV uploadCV;
@@ -50,6 +52,7 @@ class VolunteerProfileBloc
     required this.getLvls,
     required this.getInterests,
     required this.getVolunteeringFields,
+    required this.getVolunteeringServices,
     required this.getBloodTypes,
     required this.getDiseases,
     required this.uploadCV,
@@ -73,6 +76,7 @@ class VolunteerProfileBloc
     on<FetchLvls>(_onFetchLvls);
     on<FetchInterests>(_onFetchInterests);
     on<FetchVolunteeringFields>(_onFetchVolunteeringFields);
+    on<FetchVolunteeringServices>(_onFetchVolunteeringServices);
     on<FetchBloodTypes>(_onFetchBloodTypes);
     on<FetchDiseases>(_onFetchDiseases);
     on<UpdateMedicalInfo>(_onUpdateMedicalInfo);
@@ -247,6 +251,16 @@ class VolunteerProfileBloc
             volunteeringTypeId: volunteeringTypeId,
             isIndividualSelected: isIndividualSelected,
             isGroupSelected: isGroupSelected,
+            volunteeringDomainServiceNames: profile.volunteeringDomainServices
+                    ?.where((s) => s.parentName != null)
+                    .map((s) => s.parentName!)
+                    .toList() ??
+                [],
+            volunteeringDomainServiceId: profile.volunteeringDomainServices
+                    ?.isNotEmpty ==
+                true
+                ? profile.volunteeringDomainServices!.first.parentId?.toString()
+                : null,
             interests: profile.interests?.name != null
                 ? [profile.interests!.name!]
                 : [],
@@ -280,6 +294,11 @@ class VolunteerProfileBloc
           add(const FetchVolunteeringFields());
           add(const FetchBloodTypes());
           add(const FetchDiseases());
+          // Fetch child services for the pre-selected domain so the dropdown pre-selects correctly
+          final domainId = profile.volunteeringDomainServices?.isNotEmpty == true
+              ? profile.volunteeringDomainServices!.first.parentId?.toString()
+              : null;
+          if (domainId != null) add(FetchVolunteeringServices(domainId));
         },
       );
     } catch (e) {
@@ -492,6 +511,20 @@ class VolunteerProfileBloc
     );
   }
 
+  Future<void> _onFetchVolunteeringServices(
+    FetchVolunteeringServices event,
+    Emitter<VolunteerProfileState> emit,
+  ) async {
+    emit(state.copyWith(isLoadingVolunteeringServices: true, volunteeringServicesList: []));
+    final result = await getVolunteeringServices(event.parentId);
+    result.fold(
+      (failure) => emit(
+        state.copyWith(isLoadingVolunteeringServices: false, errorMessage: 'failed_to_load_volunteering_services'.tr()),
+      ),
+      (services) => emit(state.copyWith(isLoadingVolunteeringServices: false, volunteeringServicesList: services)),
+    );
+  }
+
   void _onUpdatePersonalInfo(
     UpdatePersonalInfo event,
     Emitter<VolunteerProfileState> emit,
@@ -584,9 +617,17 @@ class VolunteerProfileBloc
       volunteeringLevelId:
           event.volunteeringLevelId ?? state.volunteeringLevelId,
       volunteeringWorkField:
-          event.volunteeringWorkField ?? state.volunteeringWorkField,
+          event.volunteeringWorkField == null && event.volunteeringDomainServiceId != null
+              ? null
+              : event.volunteeringWorkField ?? state.volunteeringWorkField,
       volunteeringWorkFieldId:
-          event.volunteeringWorkFieldId ?? state.volunteeringWorkFieldId,
+          event.volunteeringWorkFieldId == null && event.volunteeringDomainServiceId != null
+              ? null
+              : event.volunteeringWorkFieldId ?? state.volunteeringWorkFieldId,
+        volunteeringService: event.volunteeringService ?? state.volunteeringService,
+        volunteeringServiceId: event.volunteeringServiceId ?? state.volunteeringServiceId,
+        volunteeringDomainServiceId: event.volunteeringDomainServiceId ?? state.volunteeringDomainServiceId,
+        volunteeringDomainServiceNames: event.volunteeringDomainServiceNames ?? state.volunteeringDomainServiceNames,
       volunteeringType: volunteeringType,
       volunteeringTypeId: volunteeringTypeId,
       isIndividualSelected: isIndividualSelected,
@@ -727,7 +768,7 @@ class VolunteerProfileBloc
         'skills': state.skillsIds.isNotEmpty
             ? state.skillsIds.first
             : null, // Use ID instead of name
-        'volunteering': state.volunteeringWorkFieldId, // Use ID instead of name
+        'volunteering': state.volunteeringServiceId, // Use ID instead of name
         'volunteerCV': state.cvFileId?.toString(),
       };
 

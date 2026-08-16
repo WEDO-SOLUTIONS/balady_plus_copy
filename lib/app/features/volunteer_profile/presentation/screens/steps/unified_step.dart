@@ -397,7 +397,12 @@ class _UnifiedStepState extends State<UnifiedStep> {
           else
             DropdownButtonFormField<String>(
               dropdownColor: Theme.of(context).cardColor,
-              initialValue: state.volunteeringWorkFieldId,
+              initialValue:
+                  state.volunteeringFieldsList
+                      .where((f) => (f.numberOfServices ?? 0) != 0)
+                      .any((f) => f.tid == state.volunteeringWorkFieldId)
+                  ? state.volunteeringWorkFieldId
+                  : null,
               decoration: InputDecoration(
                 hint: Text('choose'.tr()),
                 border: OutlineInputBorder(
@@ -408,7 +413,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                   vertical: 15.0,
                 ),
               ),
-              items: state.volunteeringFieldsList.isEmpty
+              items: state.volunteeringFieldsList.where((f) => (f.numberOfServices ?? 0) != 0).isEmpty
                   ? [
                       DropdownMenuItem<String>(
                         child: Center(
@@ -424,25 +429,25 @@ class _UnifiedStepState extends State<UnifiedStep> {
                       ),
                     ]
                   : state.volunteeringFieldsList
-                        .map(
-                          (field) => DropdownMenuItem<String>(
-                            value: field.tid.toString(),
-                            child: Center(
-                              child: Text(
-                                field.name,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
-                                  fontWeight: FontWeight.w500,
-                                ),
+                        .where((f) => (f.numberOfServices ?? 0) != 0)
+                        // deduplicate by tid in case API returns duplicates
+                        .fold<List<dynamic>>([], (acc, f) => acc.any((e) => e.tid == f.tid) ? acc : (acc..add(f)))
+                        .cast<dynamic>()
+                        .map((field) => DropdownMenuItem<String>(
+                          value: field.tid.toString(),
+                          child: Center(
+                            child: Text(
+                              field.name,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),
-                        )
+                        ))
                         .toList(),
-              onChanged: state.volunteeringFieldsList.isEmpty
+              onChanged: state.volunteeringFieldsList.where((f) => (f.numberOfServices ?? 0) != 0).isEmpty
                   ? null
                   : (value) {
                       if (value != null) {
@@ -462,6 +467,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                             isGroupSelected: state.isGroupSelected,
                           ),
                         );
+                        context.read<VolunteerProfileBloc>().add(FetchVolunteeringServices(value));
                       }
                     },
               validator: (value) {
@@ -471,6 +477,91 @@ class _UnifiedStepState extends State<UnifiedStep> {
                 return null;
               },
             ),
+          if (state.volunteeringWorkFieldId != null && state.volunteeringWorkFieldId!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              'volunteer_service'.tr(),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            if (state.isLoadingVolunteeringServices)
+              const Center(child: CircularProgressIndicator())
+            else
+              DropdownButtonFormField<String>(
+                dropdownColor: Theme.of(context).cardColor,
+                initialValue: state.volunteeringServicesList
+                        .any((s) => s.tid == state.volunteeringServiceId)
+                    ? state.volunteeringServiceId
+                    : null,
+                decoration: InputDecoration(
+                  hint: Text('choose'.tr()),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 15.0),
+                ),
+                items: state.volunteeringServicesList.isEmpty
+                    ? [
+                        DropdownMenuItem<String>(
+                          child: Center(
+                            child: Text(
+                              'no_volunteering_services_available'.tr(),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.onSurface,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]
+                    : state.volunteeringServicesList
+                          // deduplicate by tid in case API returns duplicates
+                          .fold<List<dynamic>>([], (acc, s) => acc.any((e) => e.tid == s.tid) ? acc : (acc..add(s)))
+                          .cast<dynamic>()
+                          .map((service) => DropdownMenuItem<String>(
+                            value: service.tid.toString(),
+                            child: Center(
+                              child: Text(
+                                service.name,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ))
+                          .toList(),
+                onChanged: state.volunteeringServicesList.isEmpty
+                    ? null
+                    : (value) {
+                        if (value != null) {
+                          final selectedService = state.volunteeringServicesList.firstWhere(
+                            (service) => service.tid.toString() == value,
+                          );
+                          context.read<VolunteerProfileBloc>().add(
+                            UpdateVolunteeringInterests(
+                              skills: state.skills,
+                              skillsIds: state.skillsIds,
+                              volunteeringLevel: state.volunteeringLevel,
+                              volunteeringLevelId: state.volunteeringLevelId,
+                              volunteeringWorkField: state.volunteeringWorkField,
+                              volunteeringWorkFieldId: state.volunteeringWorkFieldId,
+                              volunteeringService: selectedService.name,
+                              volunteeringServiceId: value,
+                              isIndividualSelected: state.isIndividualSelected,
+                              isGroupSelected: state.isGroupSelected,
+                            ),
+                          );
+                        }
+                      },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'please_select_volunteering_service'.tr();
+                  }
+                  return null;
+                },
+              ),
+          ],
           const SizedBox(height: 80),
         ],
       ),

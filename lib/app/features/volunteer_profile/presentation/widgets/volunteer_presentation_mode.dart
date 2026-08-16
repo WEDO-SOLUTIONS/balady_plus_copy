@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,10 @@ import '../bloc/volunteer_profile_state.dart';
 class VolunteerPresentationMode extends StatefulWidget {
   final bool isEditMode;
 
-  const VolunteerPresentationMode({super.key, this.isEditMode = false});
+  const VolunteerPresentationMode({
+    super.key,
+    this.isEditMode = false,
+  });
 
   @override
   State<VolunteerPresentationMode> createState() =>
@@ -347,13 +349,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   void _validateForm() {
     final state = context.read<VolunteerProfileBloc>().state;
-    // Unified Step validation - only required fields
-    final isEmailValid =
-        Helpers.validateEmail(_emailController.text) == null &&
-        _emailController.text.trim().isNotEmpty;
-    final isPhoneValid =
-        Helpers.validateMobile(_phoneController.text) == null &&
-        _phoneController.text.trim().isNotEmpty;
+    // Only require non-empty; API data may not conform to strict input format rules
+    final isEmailValid = _emailController.text.trim().isNotEmpty;
+    final isPhoneValid = _phoneController.text.trim().isNotEmpty;
     final isRegionValid = state.regionId != null && state.regionId!.isNotEmpty;
     final isCityValid = state.cityId != null && state.cityId!.isNotEmpty;
     final isQualificationValid =
@@ -361,9 +359,11 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         state.educationalQualificationId!.isNotEmpty;
     final isVolunteeringWorkFieldValid =
         state.volunteeringWorkFieldId != null &&
-        state.volunteeringWorkFieldId!.isNotEmpty;
+        state.volunteeringWorkFieldId!.isNotEmpty &&
+        state.volunteeringServicesList.any(
+          (s) => s.tid.toString() == state.volunteeringWorkFieldId,
+        );
 
-    // All required unified step fields must be valid
     final valid =
         isEmailValid &&
         isPhoneValid &&
@@ -388,8 +388,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       if (_isEditMode) {
         _emailController.text = state.email ?? '';
         _phoneController.text = state.phoneNumber ?? '';
-        // Validate form on any Bloc state change (for dropdowns/checkboxes)
-        // _validateForm();
+        _validateForm();
       }
     },
     child: BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(
@@ -548,33 +547,62 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       },
     ),
 
-    // Volunteering Work Field - dropdown in edit mode
+    // Volunteering Work Field = parent domain, drives child services list
     _buildDropdownOrInfoRow(
       'volunteering_work_field_required'.tr(),
-      state.volunteeringWorkField ?? 'not_selected'.tr(),
-      _isEditMode ? state.volunteeringFieldsList : null,
-      state.volunteeringWorkFieldId,
+      state.volunteeringDomainServiceNames.isNotEmpty
+          ? state.volunteeringDomainServiceNames.join('، ')
+          : 'not_selected'.tr(),
+      _isEditMode
+          ? state.volunteeringFieldsList.where((f) => (f.numberOfServices ?? 0) != 0).toList()
+          : null,
+      state.volunteeringDomainServiceId,
       (value) {
         if (value != null) {
-          final selectedField = state.volunteeringFieldsList.firstWhere(
-            (field) => field.tid.toString() == value,
+          final selected = state.volunteeringFieldsList.firstWhere(
+            (f) => f.tid.toString() == value,
           );
           context.read<VolunteerProfileBloc>().add(
             UpdateVolunteeringInterests(
-              skills: state.skills,
-              skillsIds: state.skillsIds,
-              volunteeringLevel: state.volunteeringLevel,
-              volunteeringLevelId: state.volunteeringLevelId,
-              volunteeringWorkField: selectedField.name,
-              volunteeringWorkFieldId: value,
-              isIndividualSelected: state.isIndividualSelected,
-              isGroupSelected: state.isGroupSelected,
+              volunteeringDomainServiceId: value,
+              volunteeringDomainServiceNames: [selected.name],
+              // clear stale child selection when parent changes
+              volunteeringWorkField: null,
+              volunteeringWorkFieldId: null,
             ),
           );
+          context.read<VolunteerProfileBloc>().add(FetchVolunteeringServices(value));
         }
       },
-      isLast: true,
+      isLast: !_isEditMode && state.volunteeringWorkField == null,
     ),
+    if (_isEditMode || state.volunteeringWorkField != null)
+      _buildDropdownOrInfoRow(
+        'volunteering_domain_services'.tr(),
+        state.volunteeringWorkField ?? 'not_selected'.tr(),
+        _isEditMode ? state.volunteeringServicesList : null,
+        state.volunteeringWorkFieldId,
+        (value) {
+          if (value != null) {
+            final selectedField = state.volunteeringServicesList.firstWhere(
+              (field) => field.tid.toString() == value,
+            );
+            context.read<VolunteerProfileBloc>().add(
+              UpdateVolunteeringInterests(
+                skills: state.skills,
+                skillsIds: state.skillsIds,
+                volunteeringLevel: state.volunteeringLevel,
+                volunteeringLevelId: state.volunteeringLevelId,
+                volunteeringWorkField: selectedField.name,
+                volunteeringWorkFieldId: value,
+                isIndividualSelected: state.isIndividualSelected,
+                isGroupSelected: state.isGroupSelected,
+              ),
+            );
+          }
+        },
+        isLast: true,
+      ),
   ];
 
   List<Widget> _buildVolunteeringInterestsRows(VolunteerProfileState state) => [
@@ -1003,9 +1031,17 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           child: Center(child: CircularProgressIndicator()),
         );
       }
+
+      // Safety check: ensure initialValue exists in items list, otherwise use null
+      final regionItems = state.regionsList.map((region) => region.tid.toString()).toList();
+      final validInitialValue = state.regionId?.isNotEmpty == true && regionItems.contains(state.regionId)
+          ? state.regionId
+          : null;
+
       return DropdownButtonFormField<String>(
+        key: ValueKey('region_${state.regionsList.length}_$validInitialValue'),
         dropdownColor: Theme.of(context).cardColor,
-        initialValue: state.regionId?.isEmpty == true ? null : state.regionId,
+        initialValue: validInitialValue,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -1032,6 +1068,8 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             final selectedRegion = state.regionsList.firstWhere(
               (region) => region.tid.toString() == value,
             );
+            // Reset cityId when region changes to prevent dropdown value mismatch
+            // The cityId from previous region selection won't exist in new citiesList
             context.read<VolunteerProfileBloc>().add(
               UpdatePersonalInfo(
                 email: state.email,
@@ -1043,7 +1081,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                 region: selectedRegion.name,
                 regionId: value,
                 city: '',
-                cityId: '',
+                cityId: '', // Reset cityId to prevent mismatch when cities list changes
               ),
             );
             context.read<VolunteerProfileBloc>().add(FetchCities(value));
@@ -1059,9 +1097,16 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         );
       }
 
+      // Safety check: ensure initialValue exists in items list, otherwise use null
+      final cityItems = state.citiesList.map((city) => city.tid.toString()).toList();
+      final validInitialValue = state.cityId?.isNotEmpty == true && cityItems.contains(state.cityId)
+          ? state.cityId
+          : null;
+
       return DropdownButtonFormField<String>(
+        key: ValueKey('city_${state.citiesList.length}_$validInitialValue'),
         dropdownColor: Theme.of(context).cardColor,
-        initialValue: state.cityId?.isEmpty == true ? null : state.cityId,
+        initialValue: validInitialValue,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -1149,6 +1194,33 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     }
   }
 
+  /// Builds a safe dropdown that validates the initialValue exists in the items list
+  Widget _buildSafeDropdown({
+    required List<dynamic> items,
+    required String? selectedValue,
+    required Function(String?)? onChanged,
+  }) {
+    final validItemValues = items.map((item) => item.tid.toString()).toList();
+    final safeValue = selectedValue?.isNotEmpty == true && validItemValues.contains(selectedValue)
+        ? selectedValue
+        : null;
+
+    // Key forces widget recreation when items load or selected value changes
+    return DropdownButtonFormField<String>(
+      key: ValueKey('${items.length}_$safeValue'),
+      dropdownColor: Theme.of(context).cardColor,
+      isExpanded: true,
+      initialValue: safeValue,
+      decoration: InputDecoration(
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        hintStyle: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w200),
+      ),
+      items: items.map((item) => DropdownMenuItem<String>(value: item.tid.toString(), child: Text(item.name))).toList(),
+      onChanged: onChanged,
+    );
+  }
+
   // Helper method to build dropdown or info row based on edit mode
   Widget _buildDropdownOrInfoRow(
     String label,
@@ -1185,32 +1257,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         const SizedBox(width: 16),
         Expanded(
           child: _isEditMode && items != null
-              ? DropdownButtonFormField<String>(
-                  dropdownColor: Theme.of(context).cardColor,
-                  initialValue: selectedValue?.isEmpty == true
-                      ? null
-                      : selectedValue,
-                  decoration:  InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    hintStyle: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      fontWeight: FontWeight.w200,
-                    )
-                  ),
-
-                  items: items
-                      .map(
-                        (item) => DropdownMenuItem<String>(
-                          value: item.tid.toString(),
-                          child: Text(item.name),
-                        ),
-                      )
-                      .toList(),
+              ? _buildSafeDropdown(items: items, selectedValue: selectedValue,
                   onChanged: onChanged,
                 )
               : Text(
@@ -1228,87 +1275,78 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   // Helper method for work experience row (special case with years)
   Widget _buildWorkExperienceRow(VolunteerProfileState state) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    decoration: BoxDecoration(
-      border: Border(
-        bottom: BorderSide(color: Theme.of(context).colorScheme.surface),
-      ),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text(
-            'work_experience'.tr(),
-            style: TextStyle(
-              fontSize: 14,
-              color: Theme.of(context).colorScheme.onSurface.withAlpha(100),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Color(0xFFF0F0F0),
             ),
           ),
         ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _isEditMode
-              ? DropdownButtonFormField<String>(
-                  dropdownColor: Theme.of(context).cardColor,
-                  initialValue:
-                      state.workExperience?.isEmpty == true ||
-                          state.workExperience == 'null'
-                      ? null
-                      : state.workExperience,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                  ),
-                  items: List.generate(51, (index) => index)
-                      .map(
-                        (year) => DropdownMenuItem<String>(
-                          value: year.toString(),
-                          child: Text(
-                            '$year ${year == 0
-                                ? 'no_experience'.tr()
-                                : year == 1
-                                ? 'one_year'.tr()
-                                : 'years'.tr()}',
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (value) {
-                    context.read<VolunteerProfileBloc>().add(
-                      UpdateScientificInfo(
-                        educationalQualification:
-                            state.educationalQualification,
-                        educationalQualificationId:
-                            state.educationalQualificationId,
-                        specialization: state.specialization,
-                        specializationId: state.specializationId,
-                        profession: state.profession,
-                        workExperience: value,
-                        language: state.language,
-                        languageId: state.languageId,
-                        scientificExperienceSummary:
-                            state.scientificExperienceSummary,
-                      ),
-                    );
-                  },
-                )
-              : Text(
-                  _getWorkExperienceText(state.workExperience),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontWeight: FontWeight.w500,
-                  ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 120,
+              child: Text(
+                'work_experience'.tr(),
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
                 ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _isEditMode
+                  ? DropdownButtonFormField<String>(
+                      initialValue: state.workExperience?.isEmpty == true ||
+                              state.workExperience == 'null'
+                          ? null
+                          : state.workExperience,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      items: List.generate(51, (index) => index)
+                          .map((year) => DropdownMenuItem<String>(
+                                value: year.toString(),
+                                child: Text(
+                                    '$year ${year == 0 ? 'no_experience'.tr() : year == 1 ? 'one_year'.tr() : 'years'.tr()}'),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        context.read<VolunteerProfileBloc>().add(
+                              UpdateScientificInfo(
+                                educationalQualification:
+                                    state.educationalQualification,
+                                educationalQualificationId:
+                                    state.educationalQualificationId,
+                                specialization: state.specialization,
+                                specializationId: state.specializationId,
+                                profession: state.profession,
+                                workExperience: value,
+                                language: state.language,
+                                languageId: state.languageId,
+                                scientificExperienceSummary:
+                                    state.scientificExperienceSummary,
+                              ),
+                            );
+                      },
+                    )
+                  : Text(
+                      _getWorkExperienceText(state.workExperience),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   // Helper method for volunteering type preference (checkboxes)
   Widget _buildVolunteeringTypeRow(VolunteerProfileState state) => Container(

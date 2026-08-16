@@ -237,17 +237,17 @@ packages:
     dependency: transitive
     description:
       name: balady_design_system
-      sha256: "0f70319b7212b5f3aa38aff41dd28d41800f5e12222ccf3031de844438dc44da"
+      sha256: "9cd5ec9903d0273f82ce18654d7e208244245cebd7402da387901a912f1ec3be"
       url: "https://unpub.balady.gov.sa"
     source: hosted
-    version: "0.0.18"
+    version: "0.0.2-dev"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+576"
+    version: "3.30.3+595"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -2193,10 +2193,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "3843ad3e139fbd0cf346aba646105e7aaf0fbd85b95552274aac0b442156fc66"
+      sha256: "20f9f26517872badb224cc885a09acf5f0e7fdf5f65e29072bfd353b8e40ead5"
       url: "https://unpub.balady.gov.sa"
     source: hosted
-    version: "1.3.8"
+    version: "1.3.9"
   matcher:
     dependency: transitive
     description:
@@ -2633,10 +2633,10 @@ packages:
     dependency: "direct main"
     description:
       name: rangers_applog_flutter_plugin
-      sha256: "144b574592d093236edd4be59546e8f1e2b1fcf50e21f0e75ce372a32bd100a7"
+      sha256: "60dd764c29726016a502e4a4a20f367a0714418d3e0af2e48e956ca670316c50"
       url: "https://pub.dev"
     source: hosted
-    version: "1.6.0"
+    version: "1.6.1"
   redis:
     dependency: transitive
     description:
