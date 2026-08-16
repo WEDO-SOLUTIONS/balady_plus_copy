@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
@@ -104,9 +105,13 @@ class CreateFavoriteListPage extends HookConsumerWidget {
                 // TODO(claude): localize string
                 subtitle: 'Customizable',
               ),
-              onTap: () {
-                // todo edit somehow
-                color.value = MarkerColorCode.values[(color.value.index + 1) % MarkerColorCode.values.length];
+              onTap: () async {
+                final picked = await context.router.push<MarkerColorCode>(
+                  MarkerColorPickerRoute(selectedColor: color.value),
+                );
+                if (picked != null) {
+                  color.value = picked;
+                }
               },
             ),
           ],

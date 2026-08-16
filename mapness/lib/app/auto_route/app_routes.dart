@@ -274,6 +274,12 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
+          path: 'marker_color_picker',
+          page: MarkerColorPickerRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
           path: 'feedback',
           page: AppFeedbackSheet.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
