@@ -392,6 +392,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
                       (widget.objectId == 70030077050725730
                           ? (context.locale.languageCode == 'en' ? 'Settlement' : 'نطاق')
+                          : widget.objectId == 70030076677108076
+                          ? (context.locale.languageCode == 'en' ? 'Global tech conference' : 'مؤتمر تقني عالمي')
                           : (['تسوية', 'مستوطنة'].contains(widget.data.subtitle) ? 'نطاق' : widget.data.subtitle)),
                   subTitleExtraInlineSpans: [
                     if (poiHeaderSubTitle != null) ...[
