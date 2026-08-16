@@ -958,6 +958,17 @@ class TifoDemoProfile extends StatelessWidget {
 class TifoDemoSupport extends StatelessWidget {
   const TifoDemoSupport({super.key});
 
+  /// One "How to play" sparkle. A widget span carries no ambient text style,
+  /// so it restates the header's own ([TifoText.overline]) and pads for the
+  /// letter-spacing the header applies to real text spans.
+  static InlineSpan _sparkle(double size) => WidgetSpan(
+    alignment: PlaceholderAlignment.middle,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 1),
+      child: Text('✦', style: TifoText.overline.copyWith(fontSize: size)),
+    ),
+  );
+
   List<String> _steps(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return [
@@ -1003,8 +1014,23 @@ class TifoDemoSupport extends StatelessWidget {
               TifoPrimaryButton(label: AppLocalizations.of(context).replayTutorial, trailingArrow: true),
               const SizedBox(height: 20),
               Center(
-                child: Text(
-                  '✦✦  ${AppLocalizations.of(context).howToPlay}  ✦✦',
+                // Per-glyph sizes (10/7 … 7/10) — the sparkles taper towards
+                // the label, so they can't share one Text style. They ride in
+                // WidgetSpans rather than TextSpans because text spans align on
+                // the BASELINE, which drops the small ones below the line;
+                // `PlaceholderAlignment.middle` centres every sparkle on the
+                // label's own middle instead.
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      _sparkle(10),
+                      _sparkle(7),
+                      TextSpan(text: '  ${AppLocalizations.of(context).howToPlay}  '),
+                      _sparkle(7),
+                      _sparkle(10),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
                   style: TifoText.overline.copyWith(letterSpacing: 2),
                 ),
               ),
