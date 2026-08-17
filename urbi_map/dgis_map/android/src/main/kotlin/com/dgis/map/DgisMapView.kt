@@ -515,31 +515,43 @@ class DgisMapView(
         try {
             mapView.takeSnapshot(Alignment.BOTTOM_LEFT).apply {
                 onResult { imageData ->
-                    val bytes: ByteArray? =
-                            when (imageData.format) {
-                                ImageFormat.PNG -> imageData.data
-                                ImageFormat.RGBA_8888 -> {
-                                    val bitmap =
-                                            android.graphics.Bitmap.createBitmap(
-                                                    imageData.size.width,
-                                                    imageData.size.height,
-                                                    android.graphics.Bitmap.Config.ARGB_8888
-                                            )
-                                    bitmap.copyPixelsFromBuffer(
-                                            java.nio.ByteBuffer.wrap(imageData.data)
-                                    )
-                                    val out = java.io.ByteArrayOutputStream()
-                                    bitmap.compress(
-                                            android.graphics.Bitmap.CompressFormat.PNG,
-                                            100,
-                                            out
-                                    )
-                                    bitmap.recycle()
-                                    out.toByteArray()
+                    // Encode off the main thread: a full-screen frame is a few
+                    // MB of pixels, and the Dart side has a hard budget for
+                    // snapshot+decode before it gives up on the frame.
+                    CoroutineScope(Dispatchers.Default).launch {
+                        val bytes: ByteArray? = runCatching {
+                                when (imageData.format) {
+                                    ImageFormat.PNG -> imageData.data
+                                    ImageFormat.RGBA_8888 -> {
+                                        val bitmap =
+                                                android.graphics.Bitmap.createBitmap(
+                                                        imageData.size.width,
+                                                        imageData.size.height,
+                                                        android.graphics.Bitmap.Config.ARGB_8888
+                                                )
+                                        bitmap.copyPixelsFromBuffer(
+                                                java.nio.ByteBuffer.wrap(imageData.data)
+                                        )
+                                        val out = java.io.ByteArrayOutputStream()
+                                        // JPEG, not PNG: the frame only lives for the
+                                        // duration of the swap curtain, and PNG(100) of a
+                                        // 1080x2400 frame routinely blew past the Dart
+                                        // timeout, which turned the curtain into a plain
+                                        // (near-white) fallback (BALADY-3772).
+                                        bitmap.compress(
+                                                android.graphics.Bitmap.CompressFormat.JPEG,
+                                                85,
+                                                out
+                                        )
+                                        bitmap.recycle()
+                                        out.toByteArray()
+                                    }
+                                    else -> null
                                 }
-                                else -> null
-                            }
-                    mainHandler.post { callback(Result.success(bytes)) }
+                        }.onFailure { Log.w("DgisMapView", "takeMapSnapshot encode failed: $it") }
+                                .getOrNull()
+                        mainHandler.post { callback(Result.success(bytes)) }
+                    }
                 }
                 onError { mainHandler.post { callback(Result.success(null)) } }
             }

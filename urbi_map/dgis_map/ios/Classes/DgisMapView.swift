@@ -543,9 +543,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         cancelable.append(
             snapshotter.makeImage().sink(
                 receiveValue: { image in
-                    let bytes = image.pngData().map { FlutterStandardTypedData(bytes: $0) }
-                    DispatchQueue.main.async {
-                        completion(Result.success(bytes))
+                    // Encode off the main thread, and as JPEG rather than PNG: the
+                    // frame only lives for the duration of the swap curtain, and
+                    // pngData() of a full-screen 3x frame is slow enough to eat
+                    // into the Dart-side snapshot budget (BALADY-3772).
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        let bytes = image.jpegData(compressionQuality: 0.85)
+                            .map { FlutterStandardTypedData(bytes: $0) }
+                        DispatchQueue.main.async {
+                            completion(Result.success(bytes))
+                        }
                     }
                 },
                 failure: { _ in
