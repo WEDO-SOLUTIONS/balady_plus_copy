@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
@@ -11,6 +15,7 @@ import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/favorite_pin_marker_bitmap.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -52,7 +57,17 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final favoriteColor = await ref.read(favoritePlaceMarkerColorProvider(objectId.objectId.toString()).future);
-  final bigIconPath = favoriteColor?.favoritePinIconPath ?? mapMarkerMapper.$2;
+  Uint8List? favoriteIconBytes;
+  if (favoriteColor != null) {
+    final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    favoriteIconBytes = await ref
+        .read(favoritePinMarkerBitmapProvider)
+        .render(
+          tint: favoriteColor.getColor(AppColorsThemeV3.palette(themes: theme)),
+          devicePixelRatio: devicePixelRatio,
+        );
+  }
+  final bigIconPath = favoriteColor == null ? mapMarkerMapper.$2 : null;
 
   final markerPosition = directoryObject.markerPosition;
   final fallbackPosition = closestPoint;
@@ -101,6 +116,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       text: showPinLabel ? directoryObject.title : null,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
+      iconBytes: favoriteIconBytes,
       anchor: MarkerAnchorMessage(x: 0.5, y: 0.5),
       width: favoriteColor != null ? 24 : null,
       id: poiPinId,

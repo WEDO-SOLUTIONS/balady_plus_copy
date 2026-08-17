@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
@@ -12,9 +14,11 @@ class Markers {
   static final defaultPinNewSaudiDay = Assets.icons.svg.icPinNewSaudiDay.keyName;
   static final defaultPinNewFoundingDay = Assets.icons.svg.placesNewFoundingDay.icDefault.keyName;
 
-  static Marker pinMarker(GeoPointWithElevationMessage position, {
+  static Marker pinMarker(
+    GeoPointWithElevationMessage position, {
     String? id,
     String? icon,
+    Uint8List? iconBytes,
     double? width,
     double? height,
     String? text,
@@ -23,19 +27,20 @@ class Markers {
     CityEventType? activeCityEvent,
     bool isDark = false,
     MarkerAnchorMessage? anchor,
-  }) =>
-      Marker(
-        id: id ?? 'PIN-MARKER',
-        options: MarkerOptionsMessage(
-          position: position,
-          icon: (icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? defaultPinNew).resolvedMarkerIcon(
-            size: width ?? defaultWidth,
-          ),
-          text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
-          textStyle: textStyle,
-          anchor: anchor ?? MarkerAnchorMessage(x: 0.5, y: 1),
-          animatedAppearance: true,
-          zIndex: 50,
-        ),
-      );
+  }) => Marker(
+    id: id ?? 'PIN-MARKER',
+    options: MarkerOptionsMessage(
+      position: position,
+      icon: iconBytes != null
+          ? PngBytesMarkerIcon(pngData: iconBytes, width: width ?? defaultWidth)
+          : (icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? defaultPinNew).resolvedMarkerIcon(
+              size: width ?? defaultWidth,
+            ),
+      text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
+      textStyle: textStyle,
+      anchor: anchor ?? MarkerAnchorMessage(x: 0.5, y: 1),
+      animatedAppearance: true,
+      zIndex: 50,
+    ),
+  );
 }

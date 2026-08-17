@@ -1,3 +1,5 @@
+// dart format width=120
+
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -5,7 +7,7 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
+// ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -246,70 +248,70 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
-        addCompany,
-        addCompanyFoundingDay,
-        addPhoto,
-        addPhotoFoundingDay,
-        backgroundOrnamentSaudiday,
-        calendarCard,
-        cityExpert,
-        cityExpertFoundingDay,
-        cityExpertSaudiDay,
-        cityscapeGlobal,
-        darkMapPreview,
-        dashboardBgPattern,
-        driveHomeArrowFoundingDay,
-        driveHomeArrow,
-        driveHomeArrowSaudiday,
-        driveHomeBackground,
-        driveHomeBackgroundDark,
-        driveHomeBackgroundFoundingDay,
-        driveHomeBackgroundSaudiday,
-        etaSheetBackground,
-        exploreMbc,
-        favoritesExampleArabic,
-        favoritesExampleArabicSaudiday,
-        favoritesExampleEnglish,
-        favoritesExampleEnglishSaudiday,
-        feedbackDashboard,
-        feedbackDashboardFoundingDay,
-        feedbackDashboardSaudiday,
-        feedbackEyes,
-        foundationDayBgPattern,
-        foundingDayAlHamdanHeritage,
-        foundingDayCircleLogo,
-        foundingDayDiriyahCulturalInstitution,
-        foundingDayHistoricalDirYiyah,
-        foundingDayLogo,
-        foundingDayNationalMuseum,
-        gaussianSplattingEntryPointDarkAr,
-        gaussianSplattingEntryPointDarkEn,
-        gaussianSplattingEntryPointLightAr,
-        gaussianSplattingEntryPointLightEn,
-        icArrowFeedback,
-        illustrationFlipContinueDark,
-        illustrationFlipContinueLight,
-        imgNearbyPlaceholder,
-        ishanSeefromtheskyUnsplash,
-        lightMapPreview,
-        markerEtaMask,
-        onboardingStory1,
-        onboardingStory2,
-        onboardingStory3,
-        qibla,
-        regionNotAvailable,
-        routeStory1,
-        routeStory2,
-        routeStory3,
-        saudiDaySplash,
-        saudiNationalFlag,
-        successAppFeedback,
-        successAppFeedbackDark,
-        sunrisePray,
-        treeAndParkBenchWhiteBackground,
-        wavinghand,
-        wrcDashboard
-      ];
+    addCompany,
+    addCompanyFoundingDay,
+    addPhoto,
+    addPhotoFoundingDay,
+    backgroundOrnamentSaudiday,
+    calendarCard,
+    cityExpert,
+    cityExpertFoundingDay,
+    cityExpertSaudiDay,
+    cityscapeGlobal,
+    darkMapPreview,
+    dashboardBgPattern,
+    driveHomeArrowFoundingDay,
+    driveHomeArrow,
+    driveHomeArrowSaudiday,
+    driveHomeBackground,
+    driveHomeBackgroundDark,
+    driveHomeBackgroundFoundingDay,
+    driveHomeBackgroundSaudiday,
+    etaSheetBackground,
+    exploreMbc,
+    favoritesExampleArabic,
+    favoritesExampleArabicSaudiday,
+    favoritesExampleEnglish,
+    favoritesExampleEnglishSaudiday,
+    feedbackDashboard,
+    feedbackDashboardFoundingDay,
+    feedbackDashboardSaudiday,
+    feedbackEyes,
+    foundationDayBgPattern,
+    foundingDayAlHamdanHeritage,
+    foundingDayCircleLogo,
+    foundingDayDiriyahCulturalInstitution,
+    foundingDayHistoricalDirYiyah,
+    foundingDayLogo,
+    foundingDayNationalMuseum,
+    gaussianSplattingEntryPointDarkAr,
+    gaussianSplattingEntryPointDarkEn,
+    gaussianSplattingEntryPointLightAr,
+    gaussianSplattingEntryPointLightEn,
+    icArrowFeedback,
+    illustrationFlipContinueDark,
+    illustrationFlipContinueLight,
+    imgNearbyPlaceholder,
+    ishanSeefromtheskyUnsplash,
+    lightMapPreview,
+    markerEtaMask,
+    onboardingStory1,
+    onboardingStory2,
+    onboardingStory3,
+    qibla,
+    regionNotAvailable,
+    routeStory1,
+    routeStory2,
+    routeStory3,
+    saudiDaySplash,
+    saudiNationalFlag,
+    successAppFeedback,
+    successAppFeedbackDark,
+    sunrisePray,
+    treeAndParkBenchWhiteBackground,
+    wavinghand,
+    wrcDashboard,
+  ];
 }
 
 class $AssetsImagesSvgGen {
@@ -408,34 +410,34 @@ class $AssetsImagesSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        illustrationErrorFoundationDay,
-        illustrationNotificationsFoundatonDay,
-        activeStar,
-        arBaladyLogo,
-        emptySearch,
-        enBaladyLogo,
-        etaAuthBlankUserMarker,
-        etaLostConnectionControl,
-        etaLostConnectionMarker,
-        etaNamedUser,
-        etaPhotoUser,
-        etaUnknownUser,
-        etaUnknownUserMarker,
-        happyFace,
-        illustrationError,
-        illustrationErrorDark,
-        illustrationNotifications,
-        illustrationNotificationsDark,
-        illustrationPercent,
-        illustrationPercentDark,
-        illustrationPercentFoundingDay,
-        illustrationThanks,
-        inactiveStar,
-        lostLocation,
-        lostLocationDark,
-        sadFace,
-        union
-      ];
+    illustrationErrorFoundationDay,
+    illustrationNotificationsFoundatonDay,
+    activeStar,
+    arBaladyLogo,
+    emptySearch,
+    enBaladyLogo,
+    etaAuthBlankUserMarker,
+    etaLostConnectionControl,
+    etaLostConnectionMarker,
+    etaNamedUser,
+    etaPhotoUser,
+    etaUnknownUser,
+    etaUnknownUserMarker,
+    happyFace,
+    illustrationError,
+    illustrationErrorDark,
+    illustrationNotifications,
+    illustrationNotificationsDark,
+    illustrationPercent,
+    illustrationPercentDark,
+    illustrationPercentFoundingDay,
+    illustrationThanks,
+    inactiveStar,
+    lostLocation,
+    lostLocationDark,
+    sadFace,
+    union,
+  ];
 }
 
 class $AssetsMapsGen {
@@ -812,102 +814,102 @@ class $AssetsIconsSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        car,
-        carActive,
-        carActiveFoundingDay,
-        carActiveSaudi,
-        cityscapeUniqueDefaultMarker,
-        cityscapeUniqueMarker,
-        currentLocationIcon,
-        darkCar,
-        darkCarActive,
-        foundingDayProfile,
-        historicDiriyahFort,
-        historicDiriyahFortDark,
-        ic2d,
-        ic3d,
-        icActionsContainer,
-        icArrowCompass,
-        icBestRoute,
-        icBug,
-        icCar,
-        icCarPoi,
-        icChevronDown,
-        icCityscapePin,
-        icClose,
-        icComplete,
-        icControlCompass,
-        icControlLocation,
-        icCopy,
-        icDarkCompass,
-        icDashboardSearch,
-        icDragIndicator,
-        icEntrance,
-        icFav,
-        icFilter,
-        icIwishMarkerCompleted,
-        icIwishMarkerPlanned,
-        icIwishMarkerSelected,
-        icKiblah,
-        icLangAr,
-        icLangEn,
-        icLanguageChange,
-        icMarkerMNewSaudiDay,
-        icMbcMood,
-        icMetroMarker,
-        icNotification,
-        icPhone,
-        icPinNewSaudiDay,
-        icProfile,
-        icProfile2,
-        icProfileLang,
-        icProfileLogout,
-        icRadioOff,
-        icRadioOn,
-        icRoutingCircle,
-        icRoutingLocation,
-        icSearchClear,
-        icShare,
-        icWrcMapMarkerAwardCeremony,
-        icWrcMapMarkerFanZone,
-        icWrcMapMarkerJeddahCornicheParade,
-        icWrcMapMarkerParking,
-        icWrcMapMarkerRallyStage,
-        icWrcMapMarkerServicePark,
-        icWrcMapMarkerShakedownStage,
-        icWrcMapMarkerSpecialSuperStage,
-        icWrcPinAwardCeremony,
-        icWrcPinFanZone,
-        icWrcPinJeddahCornicheParade,
-        icWrcPinParking,
-        icWrcPinRallyStage,
-        icWrcPinServicePark,
-        icWrcPinShakedownStage,
-        icWrcPinSpecialSuperStage,
-        icWrcSearchMarkerAwardCeremony,
-        icWrcSearchMarkerFanZone,
-        icWrcSearchMarkerJeddahCornicheParade,
-        icWrcSearchMarkerParking,
-        icWrcSearchMarkerRallyStage,
-        icWrcSearchMarkerServicePark,
-        icWrcSearchMarkerShakedownStage,
-        icWrcSearchMarkerSpecialSuperStage,
-        parkingControl,
-        percent,
-        photoGallery,
-        saFlag,
-        tadalalLogoAr,
-        tadalalLogoEn,
-        tagArrival,
-        tagDesign,
-        tagDirections,
-        tagEasyToUse,
-        tagGps,
-        tagNavi,
-        tagParking,
-        tagTraffic,
-        ukFlag
-      ];
+    car,
+    carActive,
+    carActiveFoundingDay,
+    carActiveSaudi,
+    cityscapeUniqueDefaultMarker,
+    cityscapeUniqueMarker,
+    currentLocationIcon,
+    darkCar,
+    darkCarActive,
+    foundingDayProfile,
+    historicDiriyahFort,
+    historicDiriyahFortDark,
+    ic2d,
+    ic3d,
+    icActionsContainer,
+    icArrowCompass,
+    icBestRoute,
+    icBug,
+    icCar,
+    icCarPoi,
+    icChevronDown,
+    icCityscapePin,
+    icClose,
+    icComplete,
+    icControlCompass,
+    icControlLocation,
+    icCopy,
+    icDarkCompass,
+    icDashboardSearch,
+    icDragIndicator,
+    icEntrance,
+    icFav,
+    icFilter,
+    icIwishMarkerCompleted,
+    icIwishMarkerPlanned,
+    icIwishMarkerSelected,
+    icKiblah,
+    icLangAr,
+    icLangEn,
+    icLanguageChange,
+    icMarkerMNewSaudiDay,
+    icMbcMood,
+    icMetroMarker,
+    icNotification,
+    icPhone,
+    icPinNewSaudiDay,
+    icProfile,
+    icProfile2,
+    icProfileLang,
+    icProfileLogout,
+    icRadioOff,
+    icRadioOn,
+    icRoutingCircle,
+    icRoutingLocation,
+    icSearchClear,
+    icShare,
+    icWrcMapMarkerAwardCeremony,
+    icWrcMapMarkerFanZone,
+    icWrcMapMarkerJeddahCornicheParade,
+    icWrcMapMarkerParking,
+    icWrcMapMarkerRallyStage,
+    icWrcMapMarkerServicePark,
+    icWrcMapMarkerShakedownStage,
+    icWrcMapMarkerSpecialSuperStage,
+    icWrcPinAwardCeremony,
+    icWrcPinFanZone,
+    icWrcPinJeddahCornicheParade,
+    icWrcPinParking,
+    icWrcPinRallyStage,
+    icWrcPinServicePark,
+    icWrcPinShakedownStage,
+    icWrcPinSpecialSuperStage,
+    icWrcSearchMarkerAwardCeremony,
+    icWrcSearchMarkerFanZone,
+    icWrcSearchMarkerJeddahCornicheParade,
+    icWrcSearchMarkerParking,
+    icWrcSearchMarkerRallyStage,
+    icWrcSearchMarkerServicePark,
+    icWrcSearchMarkerShakedownStage,
+    icWrcSearchMarkerSpecialSuperStage,
+    parkingControl,
+    percent,
+    photoGallery,
+    saFlag,
+    tadalalLogoAr,
+    tadalalLogoEn,
+    tagArrival,
+    tagDesign,
+    tagDirections,
+    tagEasyToUse,
+    tagGps,
+    tagNavi,
+    tagParking,
+    tagTraffic,
+    ukFlag,
+  ];
 }
 
 class $AssetsImagesAudioPlaceholdersGen {
@@ -1032,8 +1034,18 @@ class $AssetsImagesRamadanQuickActionsGen {
   AssetGenImage get transport => const AssetGenImage('assets/images/ramadan_quick_actions/transport.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [athkar, freeRoam, parking, qibla, quaran, roadEvent, safetyTips, sendLocation, snapAndSend, transport];
+  List<AssetGenImage> get values => [
+    athkar,
+    freeRoam,
+    parking,
+    qibla,
+    quaran,
+    roadEvent,
+    safetyTips,
+    sendLocation,
+    snapAndSend,
+    transport,
+  ];
 }
 
 class $AssetsImagesSaudiPassGen {
@@ -1095,8 +1107,17 @@ class $AssetsImagesSvgLayersGen {
   SvgGenImage get traffic => const SvgGenImage('assets/images_svg/layers/traffic.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values =>
-      [a3D, busSubMenu, favourites, makkahBus, metro, parking, roadEvents, shuttleBus, traffic];
+  List<SvgGenImage> get values => [
+    a3D,
+    busSubMenu,
+    favourites,
+    makkahBus,
+    metro,
+    parking,
+    roadEvents,
+    shuttleBus,
+    traffic,
+  ];
 }
 
 class $AssetsImagesSvgSaudiPassGen {
@@ -1190,8 +1211,17 @@ class $AssetsIconsSvgAudioGen {
   SvgGenImage get waves => const SvgGenImage('assets/icons/svg/audio/waves.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values =>
-      [audioStream, check, close, contextualBanner, pause, resume, seekBackward, seekForward, waves];
+  List<SvgGenImage> get values => [
+    audioStream,
+    check,
+    close,
+    contextualBanner,
+    pause,
+    resume,
+    seekBackward,
+    seekForward,
+    waves,
+  ];
 }
 
 class $AssetsIconsSvgDynamicPoiGen {
@@ -1237,17 +1267,17 @@ class $AssetsIconsSvgFavoriteGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icFavorite0Default,
-        icFavorite1Home,
-        icFavorite2Building,
-        icFavorite3City,
-        icFavorite4Building,
-        icFavorite5Restaurant,
-        icFavorite6Restaurant,
-        icFavorite7Coffee,
-        icFavorite8Store,
-        icFavorite9ShoppingBasket
-      ];
+    icFavorite0Default,
+    icFavorite1Home,
+    icFavorite2Building,
+    icFavorite3City,
+    icFavorite4Building,
+    icFavorite5Restaurant,
+    icFavorite6Restaurant,
+    icFavorite7Coffee,
+    icFavorite8Store,
+    icFavorite9ShoppingBasket,
+  ];
 }
 
 class $AssetsIconsSvgIntermediateStopNumbersGen {
@@ -1302,30 +1332,6 @@ class $AssetsIconsSvgLayersGen {
   /// File path: assets/icons/svg/layers/ic_fav_pin.svg
   SvgGenImage get icFavPin => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin.svg');
 
-  /// File path: assets/icons/svg/layers/ic_fav_pin_blue.svg
-  SvgGenImage get icFavPinBlue => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_blue.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_green.svg
-  SvgGenImage get icFavPinGreen => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_green.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_orange.svg
-  SvgGenImage get icFavPinOrange => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_orange.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_pink.svg
-  SvgGenImage get icFavPinPink => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_pink.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_purple.svg
-  SvgGenImage get icFavPinPurple => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_purple.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_red.svg
-  SvgGenImage get icFavPinRed => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_red.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_teal.svg
-  SvgGenImage get icFavPinTeal => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_teal.svg');
-
-  /// File path: assets/icons/svg/layers/ic_fav_pin_yellow.svg
-  SvgGenImage get icFavPinYellow => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_yellow.svg');
-
   /// File path: assets/icons/svg/layers/ic_fav_work.svg
   SvgGenImage get icFavWork => const SvgGenImage('assets/icons/svg/layers/ic_fav_work.svg');
 
@@ -1340,23 +1346,15 @@ class $AssetsIconsSvgLayersGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icBuildingPin,
-        icFancyPin,
-        icFavHome,
-        icFavPin,
-        icFavPinBlue,
-        icFavPinGreen,
-        icFavPinOrange,
-        icFavPinPink,
-        icFavPinPurple,
-        icFavPinRed,
-        icFavPinTeal,
-        icFavPinYellow,
-        icFavWork,
-        icInvestPin,
-        icJoyPin,
-        icParkingPin
-      ];
+    icBuildingPin,
+    icFancyPin,
+    icFavHome,
+    icFavPin,
+    icFavWork,
+    icInvestPin,
+    icJoyPin,
+    icParkingPin,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewGen {
@@ -1474,38 +1472,38 @@ class $AssetsIconsSvgPlacesBigNewSaudiDayGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewGen {
@@ -1600,31 +1598,31 @@ class $AssetsIconsSvgPlacesNewFoundingDayGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icDefault,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icDefault,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewFoundingDayBigGen {
@@ -1710,31 +1708,31 @@ class $AssetsIconsSvgPlacesNewFoundingDayBigGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icDefault,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icDefault,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
@@ -1871,44 +1869,44 @@ class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarServices,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDefault,
-        icEvents,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedia,
-        icMedicineLtr,
-        icMosques,
-        icMunicipalities,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarServices,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDefault,
+    icEvents,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedia,
+    icMedicineLtr,
+    icMosques,
+    icMunicipalities,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
@@ -2040,44 +2038,44 @@ class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarServices,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDefault,
-        icEvents,
-        icGasstationLtr,
-        icGym,
-        icHospital,
-        icHotels,
-        icMarkets,
-        icMedia,
-        icMedicineLtr,
-        icMosques,
-        icMunicipalities,
-        icPark,
-        icPoliceStation,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarServices,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDefault,
+    icEvents,
+    icGasstationLtr,
+    icGym,
+    icHospital,
+    icHotels,
+    icMarkets,
+    icMedia,
+    icMedicineLtr,
+    icMosques,
+    icMunicipalities,
+    icPark,
+    icPoliceStation,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewSaudiDayGen {
@@ -2181,39 +2179,39 @@ class $AssetsIconsSvgPlacesNewSaudiDayGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEventsLtr,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icPark,
-        icParking,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEventsLtr,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icPark,
+    icParking,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgProfileGen {
@@ -2419,25 +2417,25 @@ class $AssetsIconsSvgDynamicPoiGlyphsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        a900001MedicalHelp,
-        a900002LostAndFound,
-        a900003HajjSupport,
-        a900004KioskAndPos,
-        a900005AdditionalCategory,
-        a900006Stair,
-        a900007Service,
-        a900008Gate,
-        a900009PrayerHall,
-        a900010Landmark,
-        a900011LuggageStorage,
-        a900012WheelchairsCarts,
-        a900013PrayerAreaDisabled,
-        a900014EmergencyAssembly,
-        a900015RestrictedZone,
-        a900016VolunteerPoint,
-        a900017FreeWifi,
-        a900018PilgrimCamp
-      ];
+    a900001MedicalHelp,
+    a900002LostAndFound,
+    a900003HajjSupport,
+    a900004KioskAndPos,
+    a900005AdditionalCategory,
+    a900006Stair,
+    a900007Service,
+    a900008Gate,
+    a900009PrayerHall,
+    a900010Landmark,
+    a900011LuggageStorage,
+    a900012WheelchairsCarts,
+    a900013PrayerAreaDisabled,
+    a900014EmergencyAssembly,
+    a900015RestrictedZone,
+    a900016VolunteerPoint,
+    a900017FreeWifi,
+    a900018PilgrimCamp,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewDarkGen {
@@ -2565,46 +2563,46 @@ class $AssetsIconsSvgPlacesBigNewDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icNewPin,
-        icOffersPin,
-        icParking,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icNewPin,
+    icOffersPin,
+    icParking,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewLightGen {
@@ -2732,46 +2730,46 @@ class $AssetsIconsSvgPlacesBigNewLightGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icOffersPin,
-        icParking,
-        icPinNew,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icOffersPin,
+    icParking,
+    icPinNew,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesBigNewOldGen {
@@ -2878,40 +2876,40 @@ class $AssetsIconsSvgPlacesBigNewOldGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEvents,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icOffersPin,
-        icPark,
-        icPinNew,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEvents,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icOffersPin,
+    icPark,
+    icPinNew,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewDarkGen {
@@ -3042,47 +3040,47 @@ class $AssetsIconsSvgPlacesNewDarkGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icNewPin,
-        icOffers,
-        icOffersClusteringMarkerDark,
-        icParking,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icNewPin,
+    icOffers,
+    icOffersClusteringMarkerDark,
+    icParking,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewLightGen {
@@ -3213,47 +3211,47 @@ class $AssetsIconsSvgPlacesNewLightGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAirport,
-        icAnimals,
-        icArtAndDesign,
-        icBanks,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icBuildingMaterials,
-        icBusiness,
-        icCarService,
-        icChildrensGoods,
-        icCityTransport,
-        icClothingAndFootwear,
-        icConnection,
-        icConstruction,
-        icDentist,
-        icEducation,
-        icEvents,
-        icFuel,
-        icGym,
-        icHospital,
-        icHotels,
-        icMalls,
-        icMedia,
-        icMedicine,
-        icMosques,
-        icMunicipalities,
-        icNature,
-        icNewPin,
-        icOffers,
-        icOffersClusteringMarker,
-        icParking,
-        icPolice,
-        icQibla,
-        icRailwayTransport,
-        icRecreation,
-        icRestaurant,
-        icShops,
-        icWaterTransport,
-        icWc
-      ];
+    icAirport,
+    icAnimals,
+    icArtAndDesign,
+    icBanks,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icBuildingMaterials,
+    icBusiness,
+    icCarService,
+    icChildrensGoods,
+    icCityTransport,
+    icClothingAndFootwear,
+    icConnection,
+    icConstruction,
+    icDentist,
+    icEducation,
+    icEvents,
+    icFuel,
+    icGym,
+    icHospital,
+    icHotels,
+    icMalls,
+    icMedia,
+    icMedicine,
+    icMosques,
+    icMunicipalities,
+    icNature,
+    icNewPin,
+    icOffers,
+    icOffersClusteringMarker,
+    icParking,
+    icPolice,
+    icQibla,
+    icRailwayTransport,
+    icRecreation,
+    icRestaurant,
+    icShops,
+    icWaterTransport,
+    icWc,
+  ];
 }
 
 class $AssetsIconsSvgPlacesNewOldGen {
@@ -3377,49 +3375,49 @@ class $AssetsIconsSvgPlacesNewOldGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-        icAdditional,
-        icBarbershop,
-        icBeach,
-        icBeauty,
-        icCarServices,
-        icEventsLtr,
-        icFireStation,
-        icGasstationLtr,
-        icGym,
-        icHajjSupport,
-        icHealthCenter,
-        icHospital,
-        icHospitalPlace,
-        icHotels,
-        icKiosksRetail,
-        icLostAndFound,
-        icMarkerMNew,
-        icMarkets,
-        icMedicalHelp,
-        icMedicineLtr,
-        icMosques,
-        icOfferMarker,
-        icOfferMarkerDark,
-        icOffersClusteringMarker,
-        icOffersClusteringMarkerDark,
-        icPark,
-        icParking,
-        icParkingSpot,
-        icPoliceStation,
-        icQibla,
-        icRecreation,
-        icRestaurant,
-        icSchoolLtr,
-        icShopping,
-        icStairs,
-        icTooth,
-        icWaterPlaces,
-        icWc
-      ];
+    icAdditional,
+    icBarbershop,
+    icBeach,
+    icBeauty,
+    icCarServices,
+    icEventsLtr,
+    icFireStation,
+    icGasstationLtr,
+    icGym,
+    icHajjSupport,
+    icHealthCenter,
+    icHospital,
+    icHospitalPlace,
+    icHotels,
+    icKiosksRetail,
+    icLostAndFound,
+    icMarkerMNew,
+    icMarkets,
+    icMedicalHelp,
+    icMedicineLtr,
+    icMosques,
+    icOfferMarker,
+    icOfferMarkerDark,
+    icOffersClusteringMarker,
+    icOffersClusteringMarkerDark,
+    icPark,
+    icParking,
+    icParkingSpot,
+    icPoliceStation,
+    icQibla,
+    icRecreation,
+    icRestaurant,
+    icSchoolLtr,
+    icShopping,
+    icStairs,
+    icTooth,
+    icWaterPlaces,
+    icWc,
+  ];
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const String package = 'mapness';
 
@@ -3435,11 +3433,7 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  });
+  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}, this.animation});
 
   final String _assetName;
 
@@ -3447,6 +3441,7 @@ class AssetGenImage {
 
   final Size? size;
   final Set<String> flavors;
+  final AssetGenImageAnimation? animation;
 
   Image image({
     Key? key,
@@ -3469,7 +3464,7 @@ class AssetGenImage {
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
     @Deprecated('Do not specify package for a generated library asset') String? package = package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -3505,11 +3500,7 @@ class AssetGenImage {
     AssetBundle? bundle,
     @Deprecated('Do not specify package for a generated library asset') String? package = package,
   }) {
-    return AssetImage(
-      _assetName,
-      bundle: bundle,
-      package: package,
-    );
+    return AssetImage(_assetName, bundle: bundle, package: package);
   }
 
   String get path => _assetName;
@@ -3517,18 +3508,18 @@ class AssetGenImage {
   String get keyName => 'packages/mapness/$_assetName';
 }
 
-class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = false;
+class AssetGenImageAnimation {
+  const AssetGenImageAnimation({required this.isAnimation, required this.duration, required this.frames});
 
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size,
-    this.flavors = const {},
-  }) : _isVecFormat = true;
+  final bool isAnimation;
+  final Duration duration;
+  final int frames;
+}
+
+class SvgGenImage {
+  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}}) : _isVecFormat = false;
+
+  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}}) : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -3551,6 +3542,7 @@ class SvgGenImage {
     String? semanticsLabel,
     bool excludeFromSemantics = false,
     _svg.SvgTheme? theme,
+    _svg.ColorMapper? colorMapper,
     ColorFilter? colorFilter,
     Clip clipBehavior = Clip.hardEdge,
     @deprecated Color? color,
@@ -3559,17 +3551,14 @@ class SvgGenImage {
   }) {
     final _svg.BytesLoader loader;
     if (_isVecFormat) {
-      loader = _vg.AssetBytesLoader(
-        _assetName,
-        assetBundle: bundle,
-        packageName: package,
-      );
+      loader = _vg.AssetBytesLoader(_assetName, assetBundle: bundle, packageName: package);
     } else {
       loader = _svg.SvgAssetLoader(
         _assetName,
         assetBundle: bundle,
         packageName: package,
         theme: theme,
+        colorMapper: colorMapper,
       );
     }
     return _svg.SvgPicture(
