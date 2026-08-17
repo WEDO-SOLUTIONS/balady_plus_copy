@@ -19,11 +19,13 @@ import ru.dgis.sdk.routing.RoutePoint
  * The route tells us exactly where the tunnels are, so the state is derived from the route
  * position rather than measured on arrival:
  *
- *  * **Where.** Tunnel segments are folded into dark zones when a route arrives, merging any two
- *    less than [GAP_MERGE_METERS] apart. That swallows the short daylight gaps that flicker the
- *    theme (route-graph segmentation, ventilation openings, tunnel-to-tunnel interchanges) without
- *    deferring a genuine exit — this is the exit-side hysteresis, and being geometric it costs a
- *    real exit nothing.
+ *  * **Where.** Tunnel segments become dark zones as a route arrives. Only touching or overlapping
+ *    segments are joined, so a zone is a tunnel the route actually describes and nothing more.
+ *  * **Where, the gaps between them.** The short daylight gaps that flicker the theme (route-graph
+ *    segmentation, ventilation openings, tunnel-to-tunnel interchanges) are swallowed one at a
+ *    time, when the car reaches one, by [mergesGap] — a gap the car clears in a blink is not worth
+ *    a theme change. This is the exit-side hysteresis; being geometric it costs a genuine exit
+ *    nothing.
  *  * **When, entering.** A zone is entered [ENTER_LEAD_METERS] before the portal, so the map is
  *    already dark by the time the driver is under it instead of one position report late.
  *  * **When, reports stall.** A tunnel is precisely where satellite positioning gives up, so the
@@ -43,6 +45,16 @@ class TunnelDetector(
      */
     private data class DarkZone(val start: Long, val end: Long)
 
+    /**
+     * The standing answer to "is this particular daylight gap tunnel?", taken once on the way into
+     * the gap and held for its whole length.
+     *
+     * @property afterZoneEnd route distance the preceding zone ended at — this is what identifies
+     *   the gap.
+     * @property merge `true` = the gap counts as tunnel and the theme stays dark across it.
+     */
+    private data class GapVerdict(val afterZoneEnd: Long, val merge: Boolean)
+
     private val model = navigationManager.uiModel
 
     private var darkZones: List<DarkZone> = buildDarkZones(model.route.route.roadSubtypes)
@@ -55,6 +67,9 @@ class TunnelDetector(
     private var lastDistanceMillimeters: Long? = null
     private var lastReportElapsedRealtime = 0L
     private var speedMetersPerSecond = 0.0
+
+    /** Verdict on the daylight gap we are currently in, if we are in one. See [mergesGap]. */
+    private var gapVerdict: GapVerdict? = null
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private var coastRunnable: Runnable? = null
@@ -82,7 +97,17 @@ class TunnelDetector(
 
     private fun onRoutePositionChanged(position: RoutePoint?) = handle(position)
 
-    /** Folds the route's tunnel segments into the dark zones described on [GAP_MERGE_METERS]. */
+    /**
+     * Turns the route's tunnel segments into dark zones, joining only the ones that touch or
+     * overlap.
+     *
+     * Nothing is joined across a gap here. Doing that was the regression: each segment was compared
+     * against the zone built so far, which had already been stretched by the segment before it, so
+     * merging was transitive. A chain of tunnels with every gap under the window — an interchange in
+     * Riyadh — collapsed into one zone spanning the whole chain, and the theme stayed dark until the
+     * last tunnel of the chain was behind us. Gaps are now judged individually, and only when the
+     * car actually arrives at one; see [mergesGap].
+     */
     private fun buildDarkZones(roadSubtypes: RoadSubtypeRouteLongAttribute): List<DarkZone> {
         val zones = mutableListOf<DarkZone>()
 
@@ -95,7 +120,7 @@ class TunnelDetector(
             // `entries` runs along the route, so a segment can only extend the zone built so far
             // or start a new one.
             val last = zones.lastOrNull()
-            if (last != null && start - last.end <= GAP_MERGE_MILLIMETERS) {
+            if (last != null && start <= last.end) {
                 zones[zones.lastIndex] = last.copy(end = maxOf(last.end, end))
             } else {
                 zones.add(DarkZone(start, end))
@@ -156,18 +181,70 @@ class TunnelDetector(
         lastDistanceMillimeters = null
         lastReportElapsedRealtime = 0L
         speedMetersPerSecond = 0.0
+        // A gap verdict is only as good as the speed it was taken at, and it is keyed by a route
+        // distance — a new route renumbers those. Both callers (a reroute, guidance ending) mean the
+        // verdict has nothing left to refer to.
+        gapVerdict = null
+    }
+
+    private fun isInsideZone(distance: Long): Boolean {
+        var previousZoneEnd: Long? = null
+
+        // Zones run along the route, disjoint and in order.
+        for (zone in darkZones) {
+            if (distance < zone.start - ENTER_LEAD_MILLIMETERS) {
+                // Daylight, short of this zone's dark region. If a zone has already gone by, this is
+                // the gap between the two and the merge verdict decides the theme.
+                val previous = previousZoneEnd ?: return false
+                return mergesGap(afterZoneEnd = previous, beforeZoneStart = zone.start)
+            }
+            // The lead moves only the near edge: we go dark early and come back out at the portal
+            // the route actually gives us.
+            if (distance < zone.end) return true
+            previousZoneEnd = zone.end
+        }
+
+        return false
     }
 
     /**
-     * The lead moves only the near edge: we go dark early and come back out at the portal the
-     * route actually gives us.
+     * Decides whether the daylight between two tunnel segments is too brief to be worth surfacing,
+     * and so should be driven through dark.
+     *
+     * The comparison is against the daylight the driver would actually get, not the distance between
+     * the portals: the next zone already claims [ENTER_LEAD_METERS] of the gap for its own early
+     * entry. A 60 m gap with a 40 m lead is a 20 m flash of light — worse than staying dark — so the
+     * lead comes off the gap before the threshold is applied.
+     *
+     * The verdict is taken once, on the way into the gap, and latched by the gap's identity for its
+     * whole length. The threshold moves with the speed estimate, and re-deciding on every report
+     * would let a car hovering around the threshold flip the theme mid-gap; latching the answer —
+     * including a "no" — means the theme changes at most where a zone edge is.
      */
-    private fun isInsideZone(distance: Long): Boolean =
-        darkZones.any { distance >= it.start - ENTER_LEAD_MILLIMETERS && distance < it.end }
+    private fun mergesGap(afterZoneEnd: Long, beforeZoneStart: Long): Boolean {
+        val latched = gapVerdict
+        if (latched != null && latched.afterZoneEnd == afterZoneEnd) return latched.merge
+
+        val daylightMeters =
+            maxOf(0L, beforeZoneStart - ENTER_LEAD_MILLIMETERS - afterZoneEnd) / 1000.0
+        val threshold =
+            (speedMetersPerSecond * MERGE_GAP_SECONDS)
+                .coerceIn(MIN_MERGE_GAP_METERS, MAX_MERGE_GAP_METERS)
+
+        val merge = daylightMeters <= threshold
+        gapVerdict = GapVerdict(afterZoneEnd, merge)
+
+        return merge
+    }
 
     /**
      * First zone edge strictly ahead of [distance], in route millimetres — the point at which the
-     * reported state would change if the car kept going.
+     * reported state may change if the car kept going.
+     *
+     * Raw zone edges, gaps not taken into account: the far edge of a zone whose following gap turns
+     * out to be merged is not a state change at all. Scheduling that crossing anyway costs one
+     * [isInsideZone] call that [report] then discards as a no-op, and the alternative — resolving
+     * verdicts for gaps the car has not reached — would be deciding them at the wrong speed.
      */
     private fun nextBoundary(distance: Long): Long? {
         for (zone in darkZones) {
@@ -221,12 +298,33 @@ class TunnelDetector(
 
     private companion object {
         /**
-         * Daylight gap between two tunnel segments that still counts as tunnel. Long enough to
-         * cover how the road graph chops a single tunnel up and the gaps at interchanges, short
-         * enough that a genuine stretch of daylight brings the light theme straight back.
+         * Travel time a daylight gap has to be worth before it earns a theme change. What makes a
+         * gap flicker is not how long it is but how briefly it lasts, so the threshold is a duration
+         * and the metres follow from the speed: ~42 m at 100 km/h, ~25 m at 60 km/h, ~13 m in city
+         * traffic at 30 km/h. 1.5 s is the least daylight a driver could read as being out of the
+         * tunnel rather than as a flicker; below that, the pair of theme swaps costs more attention
+         * than the light it shows conveys.
          */
-        const val GAP_MERGE_METERS = 100L
-        const val GAP_MERGE_MILLIMETERS = GAP_MERGE_METERS * 1000
+        const val MERGE_GAP_SECONDS = 1.5
+
+        /**
+         * Floor under the merge threshold — for a car that is barely moving, and for the reports
+         * before any speed has been measured at all. Without it the threshold collapses towards zero
+         * exactly where the estimate is least trustworthy, and the artefacts the merge exists to
+         * hide (one tunnel chopped into pieces by the road graph, a ventilation opening) start
+         * flickering again. 25 m is what the time threshold itself asks for at 60 km/h, so the floor
+         * only takes over below that, where it stands in for 3 s of travel at 30 km/h.
+         */
+        const val MIN_MERGE_GAP_METERS = 25.0
+
+        /**
+         * Ceiling on the merge threshold: 100 m was the fixed window before this became a function
+         * of speed, so a gap that merges now would have merged then too — the change can only bring
+         * the light theme back sooner, never later. With the speed cap at
+         * [MAX_PLAUSIBLE_SPEED_METERS_PER_SECOND] the product tops out at 90 m, so this bound guards
+         * that property rather than trimming anything today.
+         */
+        const val MAX_MERGE_GAP_METERS = 100.0
 
         /**
          * How far ahead of a portal the map goes dark. Route positions arrive about once a second,
