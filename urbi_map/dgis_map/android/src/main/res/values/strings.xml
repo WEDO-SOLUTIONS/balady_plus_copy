@@ -10,11 +10,9 @@
   <string name="rerouting_message">Rerouting…</string>
   <string name="location_signal_lost_message">GPS signal lost.\nTrying to reconnect...</string>
   <string name="end_trip_alert_title">You arrived</string>
-  <string name="end_trip_alert_action">End trip</string>
 
   <!-- Navigation live updates (phone ongoing notification) -->
   <string name="live_update_open_action">Open in Balady+</string>
-  <string name="live_update_end_trip_action">End trip</string>
   <string name="live_update_arrived_message">You have arrived at your destination</string>
   <string name="live_update_eta_format">ETA %1$s</string>
   <string name="live_update_arrived_title">You\'ve arrived</string>
