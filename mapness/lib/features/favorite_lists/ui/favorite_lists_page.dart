@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
@@ -93,7 +95,7 @@ class FavoriteListsPage extends HookConsumerWidget {
                         titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
                       ),
                       onTap: () {
-                        context.router.push(const CreateFavoriteListRoute());
+                        context.router.push(CreateOrUpdateFavoriteListRoute());
                         // todo create new list
                       },
                     ),
@@ -121,16 +123,34 @@ class FavoriteListsPage extends HookConsumerWidget {
                         final hasPlaces = (list.placeCount ?? 0) > 0;
 
                         if (!hasPlaces) {
-                          return ContentRow(leading: leading, text: text);
+                          return ContentRow(
+                            leading: leading,
+                            text: text,
+                            onTap: () => context.router.push(FavoriteListDetailsRoute(list: list)),
+                          );
                         }
 
                         return ContentRowExpandable(
                           leading: leading,
                           text: text,
-                          trailing: ContentRowTextTrailingOptions(
-                            icon: SystemIcons.arrowCornerRightSmall,
-                            iconColor: context.colors.foregroundDefault,
-                          ),
+                          trailingBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) =>
+                              ContentRowCustomTrailingOptions(
+                                builder: (context) => InkWell(
+                                  onTap: toggleFunction,
+                                  child: Padding(
+                                    padding:
+                                        ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                                    child: Transform.rotate(
+                                      angle: pi / 2 * animationValue,
+                                      child: AppIcons(
+                                        iconData: SystemIcons.arrowCornerRightSmall,
+                                        color: context.colors.foregroundDefault,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          onTap: () => context.router.push(FavoriteListDetailsRoute(list: list)),
                           content: Padding(
                             padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
                             child: FavoriteListPlacesContent(listId: list.id),

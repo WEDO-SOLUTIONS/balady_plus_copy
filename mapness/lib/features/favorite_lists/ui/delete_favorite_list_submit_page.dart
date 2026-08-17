@@ -6,11 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
-import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
-import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
-import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
-import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
-import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -19,15 +14,42 @@ import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
-  final String listId;
-  final FavoriteListPlaceDto place;
+  final String title;
+  final String message;
+  final Future<void> Function() onConfirm;
 
-  const DeleteFavoriteListSubmitPage({required this.listId, required this.place, super.key});
+  const DeleteFavoriteListSubmitPage({
+    required this.title,
+    required this.message,
+    required this.onConfirm,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
     final isSubmitting = useState(false);
+
+    Future<void> confirm() async {
+      if (isSubmitting.value) {
+        return;
+      }
+      isSubmitting.value = true;
+      try {
+        await onConfirm();
+        if (context.mounted) {
+          context.router.pop(true);
+        }
+      } catch (e) {
+        isSubmitting.value = false;
+        if (context.mounted) {
+          final errorMessage = e is FavoriteListsApiException
+              ? e.localizedMessage(ref.read(appLanguageProvider))
+              : context.l10n.somethingWentWrongPleaseTryAgainLater;
+          ToastOverlay.of(context).show(title: errorMessage, isDismissible: true);
+        }
+      }
+    }
 
     return ToggleSheet(
       scrollController: scrollController,
@@ -51,13 +73,11 @@ class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
                 spacing: Spacing.$1x,
                 children: [
                   Text(
-                    // TODO(claude): localize string
-                    'Delete from list',
+                    title,
                     style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
                   ),
                   Text(
-                    // TODO(claude): localize string
-                    'Are you sure you want to delete this place from the list?',
+                    message,
                     style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ],
@@ -65,7 +85,7 @@ class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
             ),
             IconButton(
               onPressed: () => context.router.pop(),
-              icon: const Icon(Icons.close),
+              icon: const Icon(SystemIcons.close),
             ),
           ],
         ),
@@ -88,31 +108,7 @@ class DeleteFavoriteListSubmitPage extends HookConsumerWidget {
                 primaryLabel: context.l10n.delete,
                 buttonColorScheme: ButtonColorScheme.error,
                 buttonState: isSubmitting.value ? ButtonState.loading : ButtonState.defaultState,
-                onTap: () async {
-                  if (isSubmitting.value) {
-                    return;
-                  }
-                  isSubmitting.value = true;
-                  try {
-                    final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-                    await dataSource.removePlaceFromList(listId, place.placeId);
-                    ref
-                      ..invalidate(favoriteListsProvider)
-                      ..invalidate(favoriteListDetailProvider(listId: listId))
-                      ..invalidate(aggregatedFavoriteMarkersProvider);
-                    if (context.mounted) {
-                      context.router.pop(true);
-                    }
-                  } catch (e) {
-                    isSubmitting.value = false;
-                    if (context.mounted) {
-                      final message = e is FavoriteListsApiException
-                          ? e.localizedMessage(ref.read(appLanguageProvider))
-                          : context.l10n.somethingWentWrongPleaseTryAgainLater;
-                      ToastOverlay.of(context).show(title: message, isDismissible: true);
-                    }
-                  }
-                },
+                onTap: confirm,
               ),
             ),
           ],

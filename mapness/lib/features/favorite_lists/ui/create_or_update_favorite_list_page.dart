@@ -10,6 +10,7 @@ import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exceptio
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -18,18 +19,51 @@ import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
-class CreateFavoriteListPage extends HookConsumerWidget {
-  const CreateFavoriteListPage({super.key});
+class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
+  final String? listId;
+
+  const CreateOrUpdateFavoriteListPage({this.listId, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final listId = this.listId;
+    final isEditing = listId != null;
+
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
-    // TODO(claude): pass text to controller from params
     final listNameController = useTextEditingController();
-    // TODO(claude): pass text to controller from params
     final descriptionController = useTextEditingController();
     final color = useState(MarkerColorCode.blue);
     final isSubmitting = useState(false);
+    final isLoadingList = useState(isEditing);
+
+    useEffect(() {
+      if (listId == null) {
+        return null;
+      }
+      Future<void> loadList() async {
+        try {
+          final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+          final list = (await dataSource.getFavoriteListById(listId)).list;
+          listNameController.text = list.name;
+          descriptionController.text = list.description ?? '';
+          color.value = list.markerColorCode;
+        } catch (e) {
+          if (context.mounted) {
+            final message = e is FavoriteListsApiException
+                ? e.localizedMessage(ref.read(appLanguageProvider))
+                : context.l10n.somethingWentWrongPleaseTryAgainLater;
+            ToastOverlay.of(context).show(title: message, isDismissible: true);
+          }
+        } finally {
+          if (context.mounted) {
+            isLoadingList.value = false;
+          }
+        }
+      }
+
+      loadList();
+      return null;
+    }, [listId]);
 
     final value = useValueListenable(listNameController);
     final isValid = value.text.trim().isNotEmpty;
@@ -51,13 +85,13 @@ class CreateFavoriteListPage extends HookConsumerWidget {
             Expanded(
               child: Text(
                 // TODO(claude): localize string
-                'New list',
+                isEditing ? 'List settings' : 'New list',
                 style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
             IconButton(
               onPressed: () => context.router.pop(),
-              icon: const Icon(Icons.close),
+              icon: const Icon(SystemIcons.close),
             ),
           ],
         ),
@@ -118,10 +152,12 @@ class CreateFavoriteListPage extends HookConsumerWidget {
         ),
         const SizedBox(height: Spacing.$4x),
         BaladyAppButton(
-          // TODO(claude): localize string
-          primaryLabel: 'Create list',
+          primaryLabel: isEditing
+              ? context.l10n.save
+              // TODO(claude): localize string
+              : 'Create list',
           buttonColorScheme: ButtonColorScheme.accent,
-          buttonState: isSubmitting.value
+          buttonState: isSubmitting.value || isLoadingList.value
               ? ButtonState.loading
               : (isValid ? ButtonState.defaultState : ButtonState.disabled),
           onTap: () async {
@@ -131,13 +167,17 @@ class CreateFavoriteListPage extends HookConsumerWidget {
             isSubmitting.value = true;
             try {
               final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-              await dataSource.createFavoriteList(
-                FavoriteListRequestDto(
-                  name: listName,
-                  description: description.isEmpty ? null : description,
-                  markerColorCode: color.value,
-                ),
+              final request = FavoriteListRequestDto(
+                name: listName,
+                description: description.isEmpty ? null : description,
+                markerColorCode: color.value,
               );
+              if (listId != null) {
+                await dataSource.updateFavoriteList(listId, request);
+                ref.invalidate(favoriteListDetailProvider(listId: listId));
+              } else {
+                await dataSource.createFavoriteList(request);
+              }
               ref.invalidate(favoriteListsProvider);
               if (context.mounted) {
                 context.router.pop(true);

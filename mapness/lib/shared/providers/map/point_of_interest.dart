@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
@@ -50,7 +51,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final mapMarkerMapper = await ref
       .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
-  final bigIconPath = mapMarkerMapper.$2;
+  final favoriteColor = await ref.read(favoritePlaceMarkerColorProvider(objectId.objectId.toString()).future);
+  final bigIconPath = favoriteColor?.favoritePinIconPath ?? mapMarkerMapper.$2;
 
   final markerPosition = directoryObject.markerPosition;
   final fallbackPosition = closestPoint;
@@ -99,6 +101,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       text: showPinLabel ? directoryObject.title : null,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
+      anchor: MarkerAnchorMessage(x: 0.5, y: 0.5),
+      width: favoriteColor != null ? 24 : null,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),
       isDark: isDark,

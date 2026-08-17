@@ -41,7 +41,7 @@ class MarkerColorPickerPage extends HookConsumerWidget {
                 style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
-            IconButton(onPressed: () => context.router.pop(), icon: const Icon(Icons.close)),
+            IconButton(onPressed: () => context.router.pop(), icon: const Icon(SystemIcons.close)),
           ],
         ),
       ),

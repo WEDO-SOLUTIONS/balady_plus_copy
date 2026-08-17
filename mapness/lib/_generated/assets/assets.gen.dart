@@ -1280,6 +1280,30 @@ class $AssetsIconsSvgLayersGen {
   /// File path: assets/icons/svg/layers/ic_fav_pin.svg
   SvgGenImage get icFavPin => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin.svg');
 
+  /// File path: assets/icons/svg/layers/ic_fav_pin_blue.svg
+  SvgGenImage get icFavPinBlue => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_blue.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_green.svg
+  SvgGenImage get icFavPinGreen => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_green.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_orange.svg
+  SvgGenImage get icFavPinOrange => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_orange.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_pink.svg
+  SvgGenImage get icFavPinPink => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_pink.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_purple.svg
+  SvgGenImage get icFavPinPurple => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_purple.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_red.svg
+  SvgGenImage get icFavPinRed => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_red.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_teal.svg
+  SvgGenImage get icFavPinTeal => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_teal.svg');
+
+  /// File path: assets/icons/svg/layers/ic_fav_pin_yellow.svg
+  SvgGenImage get icFavPinYellow => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin_yellow.svg');
+
   /// File path: assets/icons/svg/layers/ic_fav_work.svg
   SvgGenImage get icFavWork => const SvgGenImage('assets/icons/svg/layers/ic_fav_work.svg');
 
@@ -1298,6 +1322,14 @@ class $AssetsIconsSvgLayersGen {
     icFancyPin,
     icFavHome,
     icFavPin,
+    icFavPinBlue,
+    icFavPinGreen,
+    icFavPinOrange,
+    icFavPinPink,
+    icFavPinPurple,
+    icFavPinRed,
+    icFavPinTeal,
+    icFavPinYellow,
     icFavWork,
     icInvestPin,
     icJoyPin,

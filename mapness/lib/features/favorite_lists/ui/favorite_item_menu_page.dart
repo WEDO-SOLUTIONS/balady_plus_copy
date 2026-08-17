@@ -10,6 +10,7 @@ import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exceptio
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -80,7 +81,20 @@ class FavoriteItemMenuPage extends HookConsumerWidget {
               ),
               onTap: () async {
                 final shouldClose = await context.router.push(
-                  DeleteFavoriteListSubmitRoute(listId: listId, place: place),
+                  DeleteFavoriteListSubmitRoute(
+                    // TODO(claude): localize string
+                    title: 'Delete from list',
+                    // TODO(claude): localize string
+                    message: 'Are you sure you want to delete this place from the list?',
+                    onConfirm: () async {
+                      final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                      await dataSource.removePlaceFromList(listId, place.placeId);
+                      ref
+                        ..invalidate(favoriteListsProvider)
+                        ..invalidate(favoriteListDetailProvider(listId: listId))
+                        ..invalidate(aggregatedFavoriteMarkersProvider);
+                    },
+                  ),
                 );
                 if (shouldClose == true) {
                   context.router.pop();

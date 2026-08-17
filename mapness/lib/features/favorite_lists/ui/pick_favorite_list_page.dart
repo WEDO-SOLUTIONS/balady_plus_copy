@@ -10,7 +10,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
-import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership_map.dart';
@@ -19,7 +18,7 @@ import 'package:mapness/features/favorite_lists/ui/widgets/favorite_progress_ind
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/multi_state_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:sheetify/sheetify.dart';
@@ -35,7 +34,11 @@ class PickFavoriteListPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
+    final sheetController = useMultiStateSheetController<ThreeStateSheet>(
+      behavior: FractionSnappingBehavior(fractions: {0.2, 0.5, 1.0}),
+      mapper: const ThreeStateMapper(),
+      initialState: ThreeStateSheet.open,
+    );
     final isSubmitting = useState(false);
     final favoriteListsAsync = ref.watch(favoriteListsProvider);
     final placeId = data.id?.objectId.toString();
@@ -127,8 +130,8 @@ class PickFavoriteListPage extends HookConsumerWidget {
       }
     }
 
-    return ToggleSheet(
-      scrollController: scrollController,
+    return MultiStateSheet(
+      scrollController: sheetController,
       backgroundColor: context.colors.backgroundSurface4,
       safeAreaColor: context.colors.backgroundSurface4,
       dragger: SheetDragger(draggerColor: context.colors.backgroundSurface5),
@@ -144,11 +147,11 @@ class PickFavoriteListPage extends HookConsumerWidget {
             Expanded(
               child: Text(
                 // TODO(claude): localize string
-                'Add to favorites',
+                'Save place',
                 style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
             ),
-            IconButton(onPressed: () => context.router.pop(), icon: const Icon(Icons.close)),
+            IconButton(onPressed: () => context.router.pop(), icon: const Icon(SystemIcons.close)),
           ],
         ),
       ),
@@ -194,7 +197,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
                 if (isSubmitting.value) {
                   return;
                 }
-                context.router.push(const CreateFavoriteListRoute());
+                context.router.push(CreateOrUpdateFavoriteListRoute());
               },
             ),
             ...favoriteListsAsync.when(

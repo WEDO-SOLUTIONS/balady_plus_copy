@@ -12,8 +12,7 @@ class Markers {
   static final defaultPinNewSaudiDay = Assets.icons.svg.icPinNewSaudiDay.keyName;
   static final defaultPinNewFoundingDay = Assets.icons.svg.placesNewFoundingDay.icDefault.keyName;
 
-  static Marker pinMarker(
-    GeoPointWithElevationMessage position, {
+  static Marker pinMarker(GeoPointWithElevationMessage position, {
     String? id,
     String? icon,
     double? width,
@@ -23,18 +22,20 @@ class Markers {
     int maxCharsPerLine = 40,
     CityEventType? activeCityEvent,
     bool isDark = false,
-  }) => Marker(
-    id: id ?? 'PIN-MARKER',
-    options: MarkerOptionsMessage(
-      position: position,
-      icon: (icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? defaultPinNew).resolvedMarkerIcon(
-        size: width ?? defaultWidth,
-      ),
-      text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
-      textStyle: textStyle,
-      anchor: MarkerAnchorMessage(x: 0.5, y: 1),
-      animatedAppearance: true,
-      zIndex: 50,
-    ),
-  );
+    MarkerAnchorMessage? anchor,
+  }) =>
+      Marker(
+        id: id ?? 'PIN-MARKER',
+        options: MarkerOptionsMessage(
+          position: position,
+          icon: (icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? defaultPinNew).resolvedMarkerIcon(
+            size: width ?? defaultWidth,
+          ),
+          text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
+          textStyle: textStyle,
+          anchor: anchor ?? MarkerAnchorMessage(x: 0.5, y: 1),
+          animatedAppearance: true,
+          zIndex: 50,
+        ),
+      );
 }

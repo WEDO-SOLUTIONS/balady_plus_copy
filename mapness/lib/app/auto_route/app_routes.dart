@@ -248,7 +248,7 @@ class AppRouter extends RootStackRouter {
         ),
         CustomRoute(
           path: 'create_favorite_list',
-          page: CreateFavoriteListRoute.page,
+          page: CreateOrUpdateFavoriteListRoute.page,
           opaque: false,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
@@ -276,6 +276,18 @@ class AppRouter extends RootStackRouter {
         CustomRoute(
           path: 'marker_color_picker',
           page: MarkerColorPickerRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'favorite_list_details',
+          page: FavoriteListDetailsRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: 'favorite_list_menu',
+          page: FavoriteListMenuRoute.page,
           opaque: false,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
