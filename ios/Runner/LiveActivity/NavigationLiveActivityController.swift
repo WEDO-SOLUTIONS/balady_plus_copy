@@ -17,14 +17,13 @@ import ActivityKit
 final class NavigationLiveActivityController {
     static let shared = NavigationLiveActivityController()
 
-    // Contract with the dgis_map plugin and EndTripIntent (raw strings are fixed).
+    // Contract with the dgis_map plugin (raw strings are fixed).
     private enum NotificationNames {
         static let dashboardTick = Notification.Name("dgis.navigation.dashboardTick")
         static let maneuverTick = Notification.Name("dgis.navigation.maneuverTick")
         static let speedTick = Notification.Name("dgis.navigation.speedTick")
         static let messageTick = Notification.Name("dgis.navigation.messageTick")
         static let stateChanged = Notification.Name("dgis.navigation.stateChanged")
-        static let endTripRequested = Notification.Name("balady.endTripRequested")
     }
 
     private struct SessionMetadata {
@@ -58,9 +57,6 @@ final class NavigationLiveActivityController {
         let speedLimit: Int?
         let isSpeeding: Bool
     }
-
-    /// Best-effort bridge back to Dart, wired up by NavigationLiveUpdatesChannel.
-    var onEndTripRequested: (() -> Void)?
 
     private var metadata: SessionMetadata?
     private var navigationState: String = "disabled"
@@ -112,11 +108,6 @@ final class NavigationLiveActivityController {
             forName: NotificationNames.messageTick, object: nil, queue: .main
         ) { [weak self] notification in
             self?.handleMessageTick(notification.userInfo)
-        })
-        observers.append(center.addObserver(
-            forName: NotificationNames.endTripRequested, object: nil, queue: .main
-        ) { [weak self] _ in
-            self?.handleEndTripRequested()
         })
 
         endStaleActivities()
@@ -230,13 +221,6 @@ final class NavigationLiveActivityController {
         updateActivityIfNeeded()
     }
 
-    private func handleEndTripRequested() {
-        // NavigationHandler stops the engine itself; here we tear the widget
-        // down immediately and let Dart clean up its side best-effort.
-        endActivity(dismissalPolicy: .immediate)
-        onEndTripRequested?()
-    }
-
     // MARK: - Activity lifecycle
 
     private func startActivityIfPossible() {
@@ -253,7 +237,6 @@ final class NavigationLiveActivityController {
             routeType: metadata.routeType,
             destinationName: metadata.destinationName,
             language: language,
-            endTripTitle: localized("end_trip"),
             openAppTitle: localized("open_app"),
             arrivedMessage: localized("arrived"),
             freeRoamTitle: localized("free_roam")
@@ -466,9 +449,8 @@ final class NavigationLiveActivityController {
 
     private static let strings: [String: [String: String]] = [
         // Mirrors mapness/lib/l10n/app_{en,ar}.arb:
-        // endTrip, youArrived, gpsLost, routeResearch.
+        // youArrived, gpsLost, routeResearch.
         "en": [
-            "end_trip": "End trip",
             "open_app": "Open Balady+",
             "arrived": "You've arrived",
             "free_roam": "Free roam",
@@ -480,7 +462,6 @@ final class NavigationLiveActivityController {
             "min": "min",
         ],
         "ar": [
-            "end_trip": "إنهاء الرحلة",
             "open_app": "فتح بلدي+",
             "arrived": "لقد وصلت إلى وجهتك",
             "free_roam": "التجول الحر",

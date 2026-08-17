@@ -4,7 +4,8 @@
 //
 //  MethodChannel bridge between Dart and NavigationLiveActivityController.
 //  Dart only supplies session metadata and teardown signals — all live data
-//  flows natively from the dgis_map plugin via NotificationCenter.
+//  flows natively from the dgis_map plugin via NotificationCenter. The bridge
+//  is one-way: nothing is sent back from the widget to Dart.
 //
 
 import Flutter
@@ -13,6 +14,7 @@ import Foundation
 final class NavigationLiveUpdatesChannel {
     static let channelName = "balady/navigation_live_updates"
 
+    /// Retained so the channel outlives `register`.
     private static var methodChannel: FlutterMethodChannel?
 
     static func register(messenger: FlutterBinaryMessenger) {
@@ -54,15 +56,7 @@ final class NavigationLiveUpdatesChannel {
         }
 
         if #available(iOS 16.2, *) {
-            NavigationLiveActivityController.shared.onEndTripRequested = {
-                notifyEndTripRequested()
-            }
             NavigationLiveActivityController.shared.activate()
         }
-    }
-
-    /// Best-effort notification to Dart that the user ended the trip from the widget.
-    static func notifyEndTripRequested() {
-        methodChannel?.invokeMethod("onEndTripRequested", arguments: nil)
     }
 }

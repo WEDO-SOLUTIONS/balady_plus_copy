@@ -9,7 +9,6 @@ extension Notification.Name {
     static let dgisNavigationSpeedTick = Notification.Name("dgis.navigation.speedTick")
     static let dgisNavigationMessageTick = Notification.Name("dgis.navigation.messageTick")
     static let dgisNavigationStateChanged = Notification.Name("dgis.navigation.stateChanged")
-    static let baladyEndTripRequested = Notification.Name("balady.endTripRequested")
 }
 
 class NavigationHandler {
@@ -39,8 +38,7 @@ class NavigationHandler {
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    private var endTripObserver: NSObjectProtocol?
-    
+
     // Models to observe channels and send events to Flutter
     private let speedControlModel: SpeedControlModel
     private let dashboardControlModel: DashboardControlModel
@@ -95,14 +93,6 @@ class NavigationHandler {
         )
         
         navigationManager.mapManager.addMap(map: map)
-
-        self.endTripObserver = NotificationCenter.default.addObserver(
-            forName: .baladyEndTripRequested,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            self?.stopNavigation()
-        }
     }
 
     private func stateChannelListener(_ state: State) {
@@ -218,10 +208,6 @@ class NavigationHandler {
         cancelable.forEach { $0.cancel() }
         moveCameraCancellable?.cancel()
         cancelable.removeAll()
-        if let endTripObserver = endTripObserver {
-            NotificationCenter.default.removeObserver(endTripObserver)
-            self.endTripObserver = nil
-        }
         self.dashboardControlModel.cancel()
         self.speedControlModel.cancel()
         self.messageControlModel.cancel()

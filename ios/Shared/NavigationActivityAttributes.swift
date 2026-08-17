@@ -67,7 +67,6 @@ struct NavigationActivityAttributes: ActivityAttributes {
     /// "en" or "ar" — drives layout direction in the extension.
     var language: String
     /// Pre-localized in the app process so the extension needs no string tables.
-    var endTripTitle: String
     var openAppTitle: String
     var arrivedMessage: String
     /// Headline for the free roam session, e.g. "Free roam".

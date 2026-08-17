@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D65EAD9A0BAA54E5B02004E /* EndTripIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */; };
 		0F222E031D48356CDE178CAE /* NavigationLiveUpdatesChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65D356F2DE1748290B504247 /* NavigationLiveUpdatesChannel.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		1ED85E2D2A8A4C8000187FA6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1ED85E2C2A8A4C8000187FA6 /* GoogleService-Info.plist */; };
@@ -15,7 +14,6 @@
 		40B53BCA2DE841D20027D851 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 40B53BC82DE841D20027D851 /* Localizable.strings */; };
 		44C538792A6AC53C003D7D2B /* dgissdk.key in Resources */ = {isa = PBXBuildFile; fileRef = 44C538782A6AC53C003D7D2B /* dgissdk.key */; };
 		47032401C871141FF2BECA70 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4E2F9F997578FE830D684AC /* Pods_Runner.framework */; };
-		54AEAB668989B226D3AF414A /* EndTripIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */; };
 		62ACA24D86ACB71A34F27077 /* Pods_InsiderNotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 058332C35F70E5A4D4547F11 /* Pods_InsiderNotificationContent.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		7EACA3219970F7A322014F81 /* NavigationLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33B5CE897C7083D79ED0EE3B /* NavigationLiveActivity.swift */; };
@@ -135,7 +133,6 @@
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7A79FDAEAB8227BD8CC1ACCB /* Pods-InsiderNotificationContent.release-stg.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.release-stg.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.release-stg.xcconfig"; sourceTree = "<group>"; };
-		7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = EndTripIntent.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		8D949DB78817222063156662 /* Pods-Runner.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-pre.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-pre.xcconfig"; sourceTree = "<group>"; };
 		923353CF73393E89D2C7421C /* Pods-InsiderNotificationContent.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.debug-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.debug-pre.xcconfig"; sourceTree = "<group>"; };
@@ -404,7 +401,6 @@
 			isa = PBXGroup;
 			children = (
 				00CC4B028195327116501956 /* NavigationActivityAttributes.swift */,
-				7AD187A9C2D2EA863F3E1C84 /* EndTripIntent.swift */,
 			);
 			name = Shared;
 			path = Shared;
@@ -783,7 +779,6 @@
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				98F4D4E12C6CB1B900CFF6EB /* SceneDelegate.swift in Sources */,
 				B7ABA527CCFEA163C8D57809 /* NavigationActivityAttributes.swift in Sources */,
-				54AEAB668989B226D3AF414A /* EndTripIntent.swift in Sources */,
 				846A09F77B7902CE5C13E21F /* NavigationLiveActivityController.swift in Sources */,
 				0F222E031D48356CDE178CAE /* NavigationLiveUpdatesChannel.swift in Sources */,
 			);
@@ -814,7 +809,6 @@
 				F6FE3E052D1126020011838B /* MovingViolationsLiveActivity.swift in Sources */,
 				F6FE3E032D1126020011838B /* MovingViolationsBundle.swift in Sources */,
 				888EA64F5EB04AE505763F01 /* NavigationActivityAttributes.swift in Sources */,
-				0D65EAD9A0BAA54E5B02004E /* EndTripIntent.swift in Sources */,
 				7EACA3219970F7A322014F81 /* NavigationLiveActivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

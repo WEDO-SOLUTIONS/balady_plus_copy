@@ -456,7 +456,8 @@ private struct RouteSummaryView: View {
     }
 }
 
-/// Arrival state: open the app, or end the trip from the lock screen.
+/// Arrival state: "Open in Balady+" is the only action here (BALADY-3795).
+/// The trip is ended from inside the app, never from the system surface.
 @available(iOS 16.2, *)
 private struct ArrivalActionsView: View {
     let context: ActivityViewContext<NavigationActivityAttributes>
@@ -465,12 +466,6 @@ private struct ArrivalActionsView: View {
         HStack(spacing: 8) {
             Link(destination: baladyAppURL ?? URL(string: "https://plus.balady.sa")!) {
                 actionLabel(context.attributes.openAppTitle, background: NavPalette.softButton)
-            }
-            if #available(iOS 17.0, *) {
-                Button(intent: EndTripIntent()) {
-                    actionLabel(context.attributes.endTripTitle, background: NavPalette.error)
-                }
-                .buttonStyle(.plain)
             }
         }
     }
