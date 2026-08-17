@@ -38,6 +38,10 @@ class _FavouriteCache extends _$FavouriteCache {
 
   static const _cacheFor = Duration(minutes: 30);
 
+  /// Write requests (POST/DELETE) get a longer timeout than the shared 5 s of [dGisNetworkProvider]:
+  /// a timed-out add is retried by the retry interceptor and shows up as a duplicate on the server.
+  static const _writeTimeout = Duration(seconds: 15);
+
   DateTime? _lastUpdate;
 
   /// One-shot flags consumed by the next [build]. Set by [forceRefresh] (locale change) or when the user changes.
@@ -338,7 +342,11 @@ class _FavouriteCache extends _$FavouriteCache {
         return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
       }),
     );
-    await dio.delete('favourites', data: request.writeToBuffer());
+    await dio.delete(
+      'favourites',
+      data: request.writeToBuffer(),
+      options: Options(sendTimeout: _writeTimeout, receiveTimeout: _writeTimeout),
+    );
   }
 
   Future<void> _addItemsRequest({
@@ -355,7 +363,11 @@ class _FavouriteCache extends _$FavouriteCache {
       }),
     );
     try {
-      final raw = await dio.post('favourites', data: request.writeToBuffer());
+      final raw = await dio.post(
+        'favourites',
+        data: request.writeToBuffer(),
+        options: Options(sendTimeout: _writeTimeout, receiveTimeout: _writeTimeout),
+      );
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
       await _updateState(newState);
     } on DioException catch (e) {
