@@ -29,6 +29,7 @@ enum MarkerColorCode {
   };
 
   String get favoritePinIconPath => switch (this) {
+    // todo(claude): remove these icons and get from FavoriteIconCode
     MarkerColorCode.blue => Assets.icons.svg.layers.icFavPinBlue.keyName,
     MarkerColorCode.green => Assets.icons.svg.layers.icFavPinGreen.keyName,
     MarkerColorCode.red => Assets.icons.svg.layers.icFavPinRed.keyName,

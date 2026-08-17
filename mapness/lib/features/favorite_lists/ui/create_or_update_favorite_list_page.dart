@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
@@ -35,6 +37,8 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     final color = useState(MarkerColorCode.blue);
     final isSubmitting = useState(false);
     final isLoadingList = useState(isEditing);
+    final selectedIcon = useState<FavoriteIconCode>(FavoriteIconCode.$default);
+    final isIconPickerExpanded = useState(false);
 
     useEffect(() {
       if (listId == null) {
@@ -47,6 +51,9 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
           listNameController.text = list.name;
           descriptionController.text = list.description ?? '';
           color.value = list.markerColorCode;
+
+          // todo(claude): pass icon from api when available
+          // selectedIcon.value = null;
         } catch (e) {
           if (context.mounted) {
             final message = e is FavoriteListsApiException
@@ -98,14 +105,80 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
       ),
       contentPadding: const EdgeInsets.all(Spacing.$4x),
       content: [
-        BaladyTextInput(
-          controller: listNameController,
-          config: BaladyInputConfig(
-            // TODO(claude): localize string
-            hintText: 'List Name',
-            fillColor: context.colors.backgroundSurface1,
-            hintColor: context.colors.foregroundSoft,
-          ),
+        Row(
+          spacing: Spacing.$3x,
+          children: [
+            Expanded(
+              child: BaladyTextInput(
+                controller: listNameController,
+                config: BaladyInputConfig(
+                  // TODO(claude): localize string
+                  hintText: 'List Name',
+                  fillColor: context.colors.backgroundSurface1,
+                  hintColor: context.colors.foregroundSoft,
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                isIconPickerExpanded.value = !isIconPickerExpanded.value;
+              },
+              child: Container(
+                padding: const EdgeInsets.all(Spacing.$3x),
+                decoration: BoxDecoration(
+                  color: context.colors.backgroundSurface1,
+                  borderRadius: BorderRadius.circular(Spacing.$2x),
+                ),
+                child: selectedIcon.value.getIcon().svg(
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(color.value.getColor(context.colors), BlendMode.srcIn),
+                ),
+              ),
+            ),
+          ],
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          alignment: Alignment.topCenter,
+          child: isIconPickerExpanded.value
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: Spacing.$4x),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                      decoration: BoxDecoration(
+                        color: context.colors.backgroundSurface1,
+                        borderRadius: BorderRadius.circular(Spacing.$2x),
+                      ),
+                      child: Wrap(
+                        spacing: Spacing.$3x,
+                        children: FavoriteIconCode.validValues
+                            .map(
+                              (e) => GestureDetector(
+                                onTap: () {
+                                  selectedIcon.value = e == selectedIcon.value ? FavoriteIconCode.$default : e;
+                                  isIconPickerExpanded.value = false;
+                                },
+                                child: e.getIcon().svg(
+                                  width: 24,
+                                  height: 24,
+                                  colorFilter: ColorFilter.mode(
+                                    e == selectedIcon.value
+                                        ? color.value.getColor(context.colors)
+                                        : context.colors.foregroundSoft,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                )
+              : const SizedBox.shrink(),
         ),
         const SizedBox(height: Spacing.$4x),
         BaladyTextInput(
