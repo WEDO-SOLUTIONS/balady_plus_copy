@@ -863,12 +863,16 @@ class NavigationScreen(
                 FavouritesPreviewScreen(carContext, mapController, favourites)
             )
         } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
-            // Replace rather than plain pop(): popping alone dropped the user back to the
-            // navigation screen on every favourites change instead of showing the new data.
+            // Replace the preview so the new data is shown. pop() synchronously resumes this
+            // screen, and onResume() above already re-pushes a preview with the updated
+            // favourites (unless navigation is running) — only push here if it did not, otherwise
+            // the stack ends up with two FavouritesPreviewScreens.
             screenManager.pop()
-            screenManager.push(
-                FavouritesPreviewScreen(carContext, mapController, favourites)
-            )
+            if (screenManager.top !is FavouritesPreviewScreen) {
+                screenManager.push(
+                    FavouritesPreviewScreen(carContext, mapController, favourites)
+                )
+            }
         } else if (screenManager.top is FavouritesScreen) {
             screenManager.pop()
             screenManager.push(
