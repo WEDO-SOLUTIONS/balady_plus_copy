@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.Icon
@@ -30,7 +29,6 @@ object NavNotificationBuilder {
 
     const val CHANNEL_ID = "NavigationLiveChannel"
     private const val CHANNEL_NAME = "Navigation"
-    const val ACTION_END_TRIP = "com.dgis.map.live_updates.END_TRIP"
     private const val BRAND_COLOR = "#147674"
     private const val ARRIVAL_TIMEOUT_MS = 180_000L
 
@@ -229,7 +227,10 @@ object NavNotificationBuilder {
         else -> TRAFFIC_UNKNOWN
     }
 
-    /** Arrival card: destination plus the two actions from the design. */
+    /**
+     * Arrival card: destination plus the single "Open in Balady+" action.
+     * BALADY-3795 — no "End trip" action here; the trip is ended inside the app.
+     */
     fun buildArrival(
         context: Context,
         metadata: LiveUpdatesCoordinator.SessionMetadata,
@@ -247,11 +248,6 @@ object NavNotificationBuilder {
                 0,
                 res.getString(R.string.live_update_open_action),
                 openAppPendingIntent(context),
-            )
-            .addAction(
-                0,
-                metadata.string("end_trip") { res.getString(R.string.live_update_end_trip_action) },
-                endTripPendingIntent(context),
             )
             .setOngoing(false)
             .setAutoCancel(true)
@@ -271,16 +267,6 @@ object NavNotificationBuilder {
             context,
             0,
             launchIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-    }
-
-    private fun endTripPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, EndTripReceiver::class.java).setAction(ACTION_END_TRIP)
-        return PendingIntent.getBroadcast(
-            context,
-            1,
-            intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
     }

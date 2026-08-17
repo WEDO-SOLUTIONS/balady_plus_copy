@@ -327,7 +327,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
-                        LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopNavigation)
+                        LiveUpdatesCoordinator.onSessionStarted(appContext)
                 }
 
                 callback(Result.success(Unit))
@@ -368,7 +368,7 @@ class NavigationHandler(
                                         ),
                                 trafficRoute = route
                         )
-                        LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopNavigation)
+                        LiveUpdatesCoordinator.onSessionStarted(appContext)
                 }
 
                 callback(Result.success(Unit))
@@ -384,7 +384,7 @@ class NavigationHandler(
                 setupCamera(speedRangeZoom = speedRangeZoom)
                 navigationManager.start()
                 // Free roam gets the same ongoing notification as guidance, minus the route.
-                LiveUpdatesCoordinator.onSessionStarted(appContext, ::stopFreeRoam)
+                LiveUpdatesCoordinator.onSessionStarted(appContext)
         }
 
         fun stopFreeRoam() {

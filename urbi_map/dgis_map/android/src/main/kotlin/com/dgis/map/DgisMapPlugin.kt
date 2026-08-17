@@ -65,7 +65,7 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
             }
         }
         liveUpdatesChannel = channel
-        LiveUpdatesCoordinator.attach(binding.applicationContext, channel)
+        LiveUpdatesCoordinator.attach(binding.applicationContext)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
@@ -73,7 +73,6 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
         PluginApi.setUp(binding.binaryMessenger, null)
         liveUpdatesChannel?.setMethodCallHandler(null)
         liveUpdatesChannel = null
-        LiveUpdatesCoordinator.detachChannel()
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {

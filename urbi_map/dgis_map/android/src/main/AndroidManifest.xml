@@ -9,9 +9,5 @@
             android:name="com.dgis.map.live_updates.NavigationForegroundService"
             android:exported="false"
             android:foregroundServiceType="location" />
-
-        <receiver
-            android:name="com.dgis.map.live_updates.EndTripReceiver"
-            android:exported="false" />
     </application>
 </manifest>
