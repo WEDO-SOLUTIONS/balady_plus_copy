@@ -40,7 +40,12 @@ class _FavouriteCache extends _$FavouriteCache {
 
   DateTime? _lastUpdate;
 
+  /// One-shot flags consumed by the next [build]. Set by [forceRefresh] (locale change) or when the user changes.
   bool _isForceRefresh = false;
+
+  /// The pending force refresh is a locale refresh: the server response is merged with the local list
+  /// (re-localise titles) instead of replacing it, so items that are missing from the response survive.
+  bool _localeRefresh = false;
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
@@ -379,12 +384,38 @@ class _FavouriteCache extends _$FavouriteCache {
     return response.toDomain();
   }
 
+  /// Re-fetches favourites after a locale change so cached titles get re-localised.
+  ///
+  /// Schedules a regular rebuild instead of calling [build] by hand (which ran a second, detached build whose result
+  /// was thrown away while its side effect — `cache` overwritten by the server response — stayed). The rebuild merges
+  /// the response with the local list, see [_localeRefresh].
   Future<void> forceRefresh() async {
     _isForceRefresh = true;
-    try {
-      await build();
-    } catch (_) {}
-    _isForceRefresh = false;
+    _localeRefresh = true;
+    ref.invalidateSelf();
+  }
+
+  /// Overlays the not-yet-synced queues on top of [state] for display: pending additions that the server does not
+  /// know about yet stay visible, pending deletions stay hidden. The Hive `cache` itself is not touched — it keeps
+  /// mirroring the server (or the merged locale-refresh) list; the queues are applied on every read.
+  Future<FavouritesState> _applyPendingSync(FavouritesState state, {required FavouritesState local}) async {
+    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
+    final addSync = (favoritesBox.get(_keyAddSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+        .cast<FavoriteCacheItem>();
+    final deleteSync = (favoritesBox.get(_keyDeleteSync, defaultValue: <FavoriteCacheItem>[]) as List<dynamic>)
+        .cast<FavoriteCacheItem>();
+    if (addSync.isEmpty && deleteSync.isEmpty) {
+      return state;
+    }
+
+    return applyPendingFavouriteSync(
+      state,
+      pendingAdd: addSync.map((e) => e.toDomain()).toList(),
+      pendingDelete: deleteSync.map((e) => e.toDomain()).toList(),
+      // The queues do not carry the item type; like [_sync], resolve home/work from the local list.
+      homeKey: local.home == null ? null : favouriteItemKey(local.home!),
+      workKey: local.work == null ? null : favouriteItemKey(local.work!),
+    );
   }
 
   @override
@@ -417,7 +448,6 @@ class _FavouriteCache extends _$FavouriteCache {
       final favoritesBox = await ref.read(hiveProvider(_boxName).future);
       await favoritesBox.delete(_keyCache);
       _lastUpdate = null;
-      _isForceRefresh = true;
     } else {
       // Only initialize last update if user hasn't changed
       await _initLastUpdate();
@@ -428,23 +458,38 @@ class _FavouriteCache extends _$FavouriteCache {
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
 
+    // Consume the one-shot flags now: a forceRefresh() that lands while this build is in flight sets them again
+    // and schedules another rebuild, which picks them up. A user change always means a plain (non-merge) fetch —
+    // the local cache has just been dropped.
+    final forceRefresh = _isForceRefresh || userHasChanged;
+    final mergeWithLocal = _localeRefresh && !userHasChanged;
+    _isForceRefresh = false;
+    _localeRefresh = false;
+
+    // Local list as it was before this build touched the network (post-sync): the base for the locale-refresh merge
+    // and the source of home/work identity for the pending-sync overlay.
+    final localState = await getFavouritesStateFromHive();
+
     FavouritesState result;
     try {
-      if (_isForceRefresh || !isCacheValid) {
+      if (forceRefresh || !isCacheValid) {
         logger.log(
-          'Fetching favorites from API for user: $currentUserId (forceRefresh: $_isForceRefresh, cacheValid: $isCacheValid)',
+          'Fetching favorites from API for user: $currentUserId (forceRefresh: $forceRefresh, mergeWithLocal: $mergeWithLocal, cacheValid: $isCacheValid)',
           logLevel: MapnessLogLevel.info,
         );
         final apiData = await _fetchFavourites();
-        await favoritesBox.put(_keyCache, apiData.toHive());
+        // A locale refresh is about re-localising what the user already has, not about reconciling with the
+        // server: keep local items the response lacks (freshly added ones may not be visible server-side yet).
+        final cacheData = mergeWithLocal ? mergeFavouritesWithLocal(server: apiData, local: localState) : apiData;
+        await favoritesBox.put(_keyCache, cacheData.toHive());
         _lastUpdate = DateTime.now();
         await _saveLastUpdate(currentUserId);
-        await _notifyMapAboutFavourites(apiData);
-        result = apiData;
-        logger.log('Successfully fetched ${result.items.length} favorites from API', logLevel: MapnessLogLevel.info);
+        result = await _applyPendingSync(cacheData, local: localState);
+        await _notifyMapAboutFavourites(result);
+        logger.log('Successfully fetched ${apiData.items.length} favorites from API', logLevel: MapnessLogLevel.info);
       } else {
         logger.log('Using cached favorites for user: $currentUserId', logLevel: MapnessLogLevel.info);
-        result = await getFavouritesStateFromHive();
+        result = await _applyPendingSync(localState, local: localState);
       }
     } on Exception catch (e) {
       logger.log('Error fetching favorites: $e', logLevel: MapnessLogLevel.critical);
@@ -457,7 +502,7 @@ class _FavouriteCache extends _$FavouriteCache {
         );
       } else {
         // For existing users, fall back to cache
-        result = await getFavouritesStateFromHive();
+        result = await _applyPendingSync(localState, local: localState);
       }
     }
 
@@ -474,6 +519,80 @@ class _FavouriteCache extends _$FavouriteCache {
     const newState = FavouritesState(items: []);
     await _updateState(newState);
   }
+}
+
+/// Identity of a favourite across its local and server representations. Locally created items use the entity id as
+/// [FavouriteItem.id], server items carry a server-side record id — the entity id is the key both sides share.
+String favouriteItemKey(FavouriteItem item) => item.entity?.id ?? item.id;
+
+/// Merges a freshly fetched [server] state into the [local] one for a locale refresh.
+///
+/// Every local item survives; the ones the server knows take the (re-localised) server copy, the ones it does not
+/// are kept as they are. Server-only items are appended. Home/work: a set local slot wins, taking the server copy
+/// when it refers to the same place; an empty local slot takes whatever the server has.
+FavouritesState mergeFavouritesWithLocal({required FavouritesState server, required FavouritesState local}) {
+  final serverByKey = {for (final item in server.items) favouriteItemKey(item): item};
+  final localKeys = local.items.map(favouriteItemKey).toSet();
+
+  FavouriteItem? mergeSlot(FavouriteItem? localSlot, FavouriteItem? serverSlot) {
+    if (localSlot == null) {
+      return serverSlot;
+    }
+    if (serverSlot != null && favouriteItemKey(serverSlot) == favouriteItemKey(localSlot)) {
+      return serverSlot;
+    }
+    return localSlot;
+  }
+
+  return FavouritesState(
+    items: [
+      for (final item in local.items) serverByKey[favouriteItemKey(item)] ?? item,
+      for (final item in server.items)
+        if (!localKeys.contains(favouriteItemKey(item))) item,
+    ],
+    home: mergeSlot(local.home, server.home),
+    work: mergeSlot(local.work, server.work),
+  );
+}
+
+/// Applies the not-yet-synced queues on top of [state]: [pendingAdd] items missing from it are added (into the
+/// home/work slot when their key matches [homeKey]/[workKey], into the list otherwise), [pendingDelete] items are
+/// removed. Deletions are applied last — they are the user's later intent.
+FavouritesState applyPendingFavouriteSync(
+  FavouritesState state, {
+  required List<FavouriteItem> pendingAdd,
+  required List<FavouriteItem> pendingDelete,
+  String? homeKey,
+  String? workKey,
+}) {
+  final items = [...state.items];
+  final keys = items.map(favouriteItemKey).toSet();
+  var home = state.home;
+  var work = state.work;
+
+  for (final item in pendingAdd) {
+    final key = favouriteItemKey(item);
+    if (key == homeKey) {
+      home = home != null && favouriteItemKey(home) == key ? home : item;
+    } else if (key == workKey) {
+      work = work != null && favouriteItemKey(work) == key ? work : item;
+    } else if (keys.add(key)) {
+      items.add(item);
+    }
+  }
+
+  for (final item in pendingDelete) {
+    final key = favouriteItemKey(item);
+    items.removeWhere((e) => favouriteItemKey(e) == key);
+    if (home != null && favouriteItemKey(home) == key) {
+      home = null;
+    }
+    if (work != null && favouriteItemKey(work) == key) {
+      work = null;
+    }
+  }
+
+  return FavouritesState(items: items, home: home, work: work);
 }
 
 Future<FavouritesState> getFavouritesStateFromHive() async {
