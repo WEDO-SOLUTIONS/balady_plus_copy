@@ -244,17 +244,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   void dispose() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-    // Only clear the callback if it is still ours: on the car -> pedestrian
-    // switch the replacing page may have already registered its own callback.
-    final liveUpdates = NavigationLiveUpdates.instance;
-    if (liveUpdates.onEndTripRequested == _onNativeEndTripRequested) {
-      liveUpdates.onEndTripRequested = null;
-    }
     // Belt-and-braces: the native side also ends the session on engine state,
     // but make sure the widget is removed on any in-app trip end path. Skipped
     // during the car -> pedestrian switch — the session continues on foot.
     if (!_isSwitchingToPedestrian) {
-      unawaited(liveUpdates.endSession());
+      unawaited(NavigationLiveUpdates.instance.endSession());
     }
 
     WidgetsBinding.instance.removeObserver(this);
@@ -396,7 +390,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
-    NavigationLiveUpdates.instance.onEndTripRequested = _onNativeEndTripRequested;
 
     if (widget.initAction == PathNavPageInitAction.startNavigation) {
       unawaited(isNavigationUser());
@@ -462,7 +455,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       language: ref.read(appLanguageProvider).baladyCompat,
       // Keys the native widgets look up; anything absent keeps its native default.
       strings: <String, String>{
-        'end_trip': l10n.endTrip,
         'arrived': l10n.youArrived,
         'gps_lost': l10n.gpsLost,
         'free_roam': l10n.freeRoam,
@@ -473,18 +465,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         'min': l10n.minutesShort,
       },
     );
-  }
-
-  /// The user tapped "End Trip" on the lock-screen widget. The native side has
-  /// already stopped the navigation engine and removed the widget — here we
-  /// only tear down the Dart session and close the page.
-  void _onNativeEndTripRequested() {
-    if (!mounted || _isEndingTrip || _isSwitchingToPedestrian) {
-      return;
-    }
-    if (_navigationState.value != PathNavState.finished) {
-      unawaited(_endTripAndShowHome());
-    }
   }
 
   Future<void> _prefetchIndoorInfo() async {

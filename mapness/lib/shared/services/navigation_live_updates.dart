@@ -5,23 +5,17 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 /// Android Live Updates / ongoing notification).
 ///
 /// The native side is fully data-driven by the navigation engine; Dart only
-/// supplies session metadata (destination, route type, language) and receives
-/// the "End Trip tapped on the widget" signal back. All outbound calls are
-/// best-effort: the native implementation may be absent on some
-/// platforms/builds, so failures are logged and swallowed.
+/// supplies session metadata (destination, route type, language) and teardown
+/// signals. The bridge is one-way — the system surfaces carry no action that
+/// calls back into the app. All outbound calls are best-effort: the native
+/// implementation may be absent on some platforms/builds, so failures are
+/// logged and swallowed.
 class NavigationLiveUpdates {
-  NavigationLiveUpdates._() {
-    _channel.setMethodCallHandler(_handleMethodCall);
-  }
+  NavigationLiveUpdates._();
 
   static final NavigationLiveUpdates instance = NavigationLiveUpdates._();
 
   static const MethodChannel _channel = MethodChannel('balady/navigation_live_updates');
-
-  /// Invoked when the user tapped "End Trip" on the lock-screen widget.
-  /// By the time this fires the native side has already stopped the navigation
-  /// engine and removed the widget — the callback only reconciles the Dart UI.
-  void Function()? onEndTripRequested;
 
   /// Sends the current navigation session metadata to the native side.
   ///
@@ -60,16 +54,5 @@ class NavigationLiveUpdates {
     } catch (e) {
       logger.log('NavigationLiveUpdates: endSession failed: $e', logLevel: MapnessLogLevel.info);
     }
-  }
-
-  Future<Object?> _handleMethodCall(MethodCall call) async {
-    switch (call.method) {
-      case 'onEndTripRequested':
-        onEndTripRequested?.call();
-      default:
-        // Unknown inbound method — ignore to stay forward-compatible.
-        break;
-    }
-    return null;
   }
 }
