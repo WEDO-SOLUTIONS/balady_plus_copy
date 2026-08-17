@@ -146,14 +146,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       // Re-sync sound settings from persistence in case CarPlay/Android Auto
       // changed the setting while the phone app was backgrounded.
       ref.read(soundSettingsProvider.notifier).syncFromPersistence();
-      // The user may have ended the trip from the lock-screen live updates
-      // widget while the app was backgrounded — reconcile UI with the engine.
+      // The trip may have ended natively (CarPlay / Android Auto, or the engine
+      // itself) while the app was backgrounded — reconcile UI with the engine.
       unawaited(_reconcileNavigationOnResume());
     }
   }
 
-  /// If the navigation engine was stopped externally (e.g. "End Trip" tapped on
-  /// the lock-screen widget while the Dart isolate was paused), close the page.
+  /// If the navigation engine was stopped externally (e.g. the trip was ended
+  /// from CarPlay while the Dart isolate was paused), close the page.
   Future<void> _reconcileNavigationOnResume() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     if (!mounted || _isEndingTrip || _isSwitchingToPedestrian) {

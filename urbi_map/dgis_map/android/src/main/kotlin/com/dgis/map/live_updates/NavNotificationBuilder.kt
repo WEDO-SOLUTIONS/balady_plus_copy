@@ -122,7 +122,7 @@ object NavNotificationBuilder {
 
     /**
      * Ongoing state: Balady mark, distance to the maneuver and the street it leads to.
-     * No actions — like on iOS, "End trip" only shows up on the arrival card.
+     * No actions — same as the iOS Live Activity while guidance is running.
      */
     fun buildOngoing(
         context: Context,
