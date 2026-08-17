@@ -520,7 +520,7 @@ class _FavouriteCache extends _$FavouriteCache {
 
     final link = ref.keepAlive();
     final timer = Timer(_cacheFor, link.close);
-    ref.onDispose(() => timer.cancel);
+    ref.onDispose(timer.cancel);
 
     return result;
   }
