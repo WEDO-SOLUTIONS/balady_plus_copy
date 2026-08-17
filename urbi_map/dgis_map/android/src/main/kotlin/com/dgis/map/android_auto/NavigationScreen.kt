@@ -59,7 +59,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.platform.Locale as SdkLocale
 import java.util.concurrent.CompletableFuture
@@ -800,12 +799,22 @@ class NavigationScreen(
     }
 
     fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
+        // Flutter sends the favourites entity id "<objectId>-<entranceId>", not a bare number: a
+        // plain toLong() threw NumberFormatException for every item added from the phone. Without
+        // a usable objectId there is nothing to look up — fall back to the message as-is.
+        val objectId = item.toDgisObjectIdOrNull()
+        if (objectId == null) {
+            Log.w(TAG, "Favourite ${item.id} has no numeric objectId, skipping SDK lookup")
+            onResult(item.toFavouriteItem())
+            return
+        }
+
         val locale = mapController.getLocale()
         // The SDK search is a native call on a handle that CarMapController closes with the
         // session; a favourites update racing that teardown must not take the process down.
         try {
             mapController.searchByDirectoryObjectIdWithLocale(
-                DgisObjectId(objectId = item.id.toLong()),
+                objectId,
                 SdkLocale(locale.language, "SA"),
                 resultCallback = { directoryObject ->
                     if (directoryObject == null) {
