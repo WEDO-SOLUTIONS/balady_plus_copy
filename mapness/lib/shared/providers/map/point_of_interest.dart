@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
@@ -64,6 +65,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         .read(favoritePinMarkerBitmapProvider)
         .render(
           tint: favoriteColor.getColor(AppColorsThemeV3.palette(themes: theme)),
+          // TODO(claude): pass real icon selection from API when available (see create_or_update_favorite_list_page.dart)
+          icon: FavoriteIconCode.$default,
           devicePixelRatio: devicePixelRatio,
         );
   }

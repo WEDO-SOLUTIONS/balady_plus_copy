@@ -1,11 +1,14 @@
 import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/shared/providers/map/favorite_pin_marker_bitmap.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -72,14 +75,16 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final markers = <Marker>[];
     final favItems = favItemsAsync.requireValue;
 
+    // todo(claude): here we need to fetch favorite items from api and draw them
+    final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+    final favoritePinIcon = PngBytesMarkerIcon(
+      pngData: await ref
+          .read(favoritePinMarkerBitmapProvider)
+          .render(tint: const Color(0xFF1E928F), icon: FavoriteIconCode.$default, devicePixelRatio: devicePixelRatio),
+      width: 24,
+    );
     for (final element in favItems.items) {
-      markers.add(
-        constructMarker(
-          element,
-          Assets.icons.svg.layers.icFavPin.keyName.markerIcon(),
-          router,
-        ),
-      );
+      markers.add(constructMarker(element, favoritePinIcon, router));
     }
 
     /// add home if exists

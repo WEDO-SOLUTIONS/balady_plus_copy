@@ -1329,9 +1329,6 @@ class $AssetsIconsSvgLayersGen {
   /// File path: assets/icons/svg/layers/ic_fav_home.svg
   SvgGenImage get icFavHome => const SvgGenImage('assets/icons/svg/layers/ic_fav_home.svg');
 
-  /// File path: assets/icons/svg/layers/ic_fav_pin.svg
-  SvgGenImage get icFavPin => const SvgGenImage('assets/icons/svg/layers/ic_fav_pin.svg');
-
   /// File path: assets/icons/svg/layers/ic_fav_work.svg
   SvgGenImage get icFavWork => const SvgGenImage('assets/icons/svg/layers/ic_fav_work.svg');
 
@@ -1349,7 +1346,6 @@ class $AssetsIconsSvgLayersGen {
     icBuildingPin,
     icFancyPin,
     icFavHome,
-    icFavPin,
     icFavWork,
     icInvestPin,
     icJoyPin,
