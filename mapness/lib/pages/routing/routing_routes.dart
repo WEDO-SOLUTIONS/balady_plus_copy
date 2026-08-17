@@ -107,7 +107,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     final sheetController = useToggleSheetController(isInteractive: false);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: context.read<ThemeController>().systemOverlayStyle,
+      value: context.watch<ThemeController>().systemOverlayStyle,
       child: ToggleSheet(
         shouldPop: (_) => false,
         backgroundColor: colors.backgroundSurface4,
