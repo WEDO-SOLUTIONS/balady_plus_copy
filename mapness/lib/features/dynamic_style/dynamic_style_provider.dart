@@ -1,5 +1,7 @@
+import 'dart:async';
+import 'dart:ui' as ui;
+
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/features/dynamic_style/dynamic_style_service.dart';
 import 'package:mapness/features/dynamic_style/map_style_store.dart';
@@ -73,8 +75,10 @@ class DynamicStyleController extends _$DynamicStyleController {
     // BALADY-3772: raise the curtain before tearing the MapView down so the
     // platform-view swap doesn't flash white. Prefer the freshest real map
     // frame; the widget falls back to a plain color when the native
-    // snapshot fails. Hidden again when the fresh map restores the camera.
-    ref.read(mapSwapCurtainProvider.notifier).show(image: await _takeMapFrame(currentController));
+    // snapshot fails. `show` resolves only once the curtain is actually
+    // rasterized — tearing down earlier is what leaked the white host
+    // background through. Hidden again when the fresh map restores the camera.
+    await ref.read(mapSwapCurtainProvider.notifier).show(image: await _takeMapFrame(currentController));
 
     // Invalidate BEFORE publish. `DgisController._setupControllerItself`
     // subscribes to `mapStyleStoreProvider` and fires
@@ -132,8 +136,9 @@ class DynamicStyleController extends _$DynamicStyleController {
       }
     }
 
-    // BALADY-3772: same white-flash curtain as in [applyOverrides].
-    ref.read(mapSwapCurtainProvider.notifier).show(image: await _takeMapFrame(currentController));
+    // BALADY-3772: same white-flash curtain as in [applyOverrides]; awaited
+    // for the same reason (must be on screen before the teardown).
+    await ref.read(mapSwapCurtainProvider.notifier).show(image: await _takeMapFrame(currentController));
 
     // Invalidate BEFORE the store publishes — see [applyOverrides] for the
     // reason (avoids a StyleBuilder Future racing against Map.close()).
@@ -145,19 +150,44 @@ class DynamicStyleController extends _$DynamicStyleController {
     ref.read(mapRecreationCounterProvider.notifier).bump();
   }
 
+  /// Native snapshot + decode must fit in here, or the curtain falls back to
+  /// a plain color. Generous on purpose: the swap itself takes seconds, and a
+  /// slow-but-real frame beats a fast fallback. Still bounded so a stuck
+  /// render queue can't hang the style swap.
+  static const _snapshotTimeout = Duration(milliseconds: 1500);
+
   /// Best-effort capture of the current map frame for the swap curtain
-  /// (BALADY-3772). Bounded by a short timeout so a stuck render queue can't
-  /// delay the actual style swap; any failure degrades to the plain-color
-  /// curtain.
-  Future<Uint8List?> _takeMapFrame(DgisMapController? controller) async {
+  /// (BALADY-3772), returned already decoded so the overlay is opaque on its
+  /// very first frame (see [MapSwapCurtainState.image]). Any failure
+  /// degrades to the plain-color curtain.
+  Future<ui.Image?> _takeMapFrame(DgisMapController? controller) async {
     if (controller == null) {
       return null;
     }
+    final pending = _snapshotAndDecode(controller);
     try {
-      return await controller.takeMapSnapshot().timeout(const Duration(milliseconds: 800));
+      return await pending.timeout(_snapshotTimeout);
+    } on TimeoutException {
+      logger.log('$_logTag map snapshot for the curtain timed out after ${_snapshotTimeout.inMilliseconds}ms');
+      // A late frame is useless now — release it instead of leaking the handle.
+      unawaited(pending.then((image) => image?.dispose(), onError: (_) {}));
+      return null;
     } on Exception catch (e) {
       logger.log('$_logTag failed to take map snapshot for the curtain: $e');
       return null;
+    }
+  }
+
+  Future<ui.Image?> _snapshotAndDecode(DgisMapController controller) async {
+    final bytes = await controller.takeMapSnapshot();
+    if (bytes == null) {
+      return null;
+    }
+    final codec = await ui.instantiateImageCodec(bytes);
+    try {
+      return (await codec.getNextFrame()).image;
+    } finally {
+      codec.dispose();
     }
   }
 }

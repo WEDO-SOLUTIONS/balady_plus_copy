@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/first_start.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/map_recreation.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/shared/providers/map/map_swap_curtain.dart';
 import 'package:mapness/shared/providers/map/navigation_controls_visibility.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/providers/map/tunnel_state.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
@@ -210,25 +212,39 @@ class _MapPageState extends ConsumerState<MapPage>
 
 /// BALADY-3772: cover over the map while a style swap recreates the native
 /// MapView (see [MapSwapCurtain]). Shows the map frame captured just before
-/// the teardown (fallback: plain surface color), appears instantly so no
+/// the teardown (fallback: a plain map-ground color), appears instantly so no
 /// white teardown frame leaks through, and fades out once the fresh map has
 /// restored the camera. Sits under [AutoRouter] so sheets and panels stay
 /// visible.
 class _MapSwapCurtain extends ConsumerWidget {
   const _MapSwapCurtain();
 
+  /// Fallback when there is no snapshot: roughly the ground color of the 2GIS
+  /// style in day / night appearance, so a curtain without a frame still reads
+  /// as "the map", not as a blank screen. Deliberately not a UI-kit surface
+  /// token — `backgroundSurface2` is near-white in the light theme, which made
+  /// the fallback itself the white flash.
+  static const _dayGround = Color(0xFFE8E4DA);
+  static const _nightGround = Color(0xFF1C2026);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final curtain = ref.watch(mapSwapCurtainProvider);
     final image = curtain.image;
+    // Same day/night resolution the map surface itself follows: the user's
+    // preference plus the transient tunnel override.
+    final isNight = (ref.watch(darkModeProvider).value?.isDark ?? false) || ref.watch(tunnelStateProvider);
     return Positioned.fill(
       child: IgnorePointer(
         child: AnimatedOpacity(
           opacity: curtain.visible ? 1 : 0,
-          duration: curtain.visible ? Duration.zero : const Duration(milliseconds: 300),
+          duration: curtain.visible ? Duration.zero : MapSwapCurtain.fadeOutDuration,
+          // RawImage clones the already-decoded frame and paints it on the very
+          // first frame — unlike Image.memory, whose async decode left this
+          // overlay transparent exactly when the old platform view went away.
           child: image != null
-              ? Image.memory(image, fit: BoxFit.cover, gaplessPlayback: true)
-              : ColoredBox(color: context.colors.backgroundSurface2),
+              ? RawImage(image: image, fit: BoxFit.cover)
+              : ColoredBox(color: isNight ? _nightGround : _dayGround),
         ),
       ),
     );
