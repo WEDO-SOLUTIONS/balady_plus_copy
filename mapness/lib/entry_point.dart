@@ -16,6 +16,7 @@ import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
+import 'package:collection/collection.dart';
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -24,12 +25,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+import 'package:mapness/features/app_analytics/insider_custom_action_handler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:http/http.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -39,9 +39,15 @@ import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
+import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
+import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
@@ -57,11 +63,6 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_initializer.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/app_icon_quick_actions_manager.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_action_handler.dart';
-import 'package:mapness/features/app_icon_quick_actions/providers/pending_app_icon_quick_action.dart';
-import 'package:mapness/features/app_icon_quick_actions/services/app_icon_quick_actions_platform.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/share_my_location_launch_intent.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -96,9 +97,11 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/short_link_repository.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -106,6 +109,8 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as p;
 import 'package:provider/provider.dart' as provider;
+import 'package:rangers_applog_flutter_plugin/rangers_applog_flutter_plugin.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sheetify/sheetify.dart';
 
 import 'features/search/providers/search.dart';
@@ -194,6 +199,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
   StreamSubscription? _navigationEventsListener;
+
   String _fontFamily() {
     final language = ref.watch(appLanguageProvider);
     return language == Language.arabic
@@ -764,7 +770,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
     final appLink = await _appLinks.getInitialLink();
 
-    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+    // the opened link might trigger duplicate events in uriLinkStream, so we throttle such values
+    _linkSubscription = _appLinks.uriLinkStream.throttleTime(const Duration(milliseconds: 500)).listen((
+      uri,
+    ) {
       if (kDebugMode) {
         logger.log('Deep link received: $uri');
       }
@@ -864,6 +873,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
           break;
         case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
           _startupLog('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          InsiderCustomActionHandler.handleCustomAction(data);
           break;
         default:
           _startupLog('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
@@ -876,51 +886,81 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await FlutterInsider.Instance.registerWithQuietPermission(false);
   }
 
-  Future<Uri?> getFinalRedirectUri(Uri uri) async {
-    final client = Client();
-    var currentUri = uri;
-    const redirectStatuses = {301, 302, 303, 307, 308};
+  // returns null if throws
+  Future<bool?> _handleShortLink(Uri uri) async {
+    final pathSegments = uri.pathSegments;
+    if (pathSegments.length != 1) {
+      return false;
+    }
 
     try {
-      while (true) {
-        final request = Request('GET', currentUri)..followRedirects = false;
-
-        final response = await client.send(request).timeout(const Duration(seconds: 10));
-        if (redirectStatuses.contains(response.statusCode)) {
-          final location = response.headers['location'];
-          if (location != null && location.isNotEmpty) {
-            currentUri = currentUri.resolve(location);
-            continue;
+      final code = pathSegments.first;
+      final response = await ref
+          .read(shortLinkRepositoryProvider)
+          .getLinkDetails(code)
+          .timeout(const Duration(seconds: 10));
+      switch (response) {
+        case ShortLinkResponsePoi(:final payload):
+          final poiId = int.tryParse(payload.poiId);
+          if (poiId != null) {
+            final lat = payload.lat;
+            final lon = payload.lon;
+            final latLon = lat != null && lon != null ? LatLng(latitude: lat, longitude: lon) : null;
+            _poiDeeplinkById(poiId, latLon);
           }
-        }
 
-        // If it's not a redirect status code, we have reached the end of the chain
-        break;
+        case ShortLinkResponsePoint(:final payload):
+          final l10n = ref.read(appLocaleProvider);
+          final location = await ref.read(getLocationSyncProvider().future);
+          final startPoint = RouteParamsPointWithLabel(
+            label: l10n.myLocation,
+            value: RouteParamsPoint(latitude: location.latitude, longitude: location.longitude),
+          );
+          final finishPoint = RouteParamsPointWithLabel(
+            label: 'B',
+            value: RouteParamsPoint(latitude: payload.lat, longitude: payload.lon),
+          );
+          ref
+              .read(appRouterProvider)
+              .replaceOrPush(
+                route: RoutingRoutesRoute(points: [startPoint, finishPoint]),
+                shouldPopAndPush: true,
+                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
+              );
+
+        case ShortLinkResponseTrip(:final payload):
+          ref
+              .read(appRouterProvider)
+              .replaceOrPush(
+                route: RoutingRoutesRoute(
+                  points: payload.route.toRouteParamsPointWithLabels(),
+                  navType: payload.route.type.toMessage(),
+                ),
+                shouldPopAndPush: true,
+                toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
+              );
       }
+      return true;
     } catch (e) {
-      logger.log('Error tracking redirect: $e', logLevel: MapnessLogLevel.error);
-      client.close();
+      logger.log('failed to get short link details: $e', logLevel: MapnessLogLevel.error);
       return null;
-    } finally {
-      client.close();
     }
-
-    return currentUri;
   }
 
-  Future<void> openAppLink(Uri sourceUri, {bool isFirstRun = false, bool fromQuickAction = false}) async {
+  Future<void> openAppLink(Uri uri, {bool isFirstRun = false, bool fromQuickAction = false}) async {
     await initCameraPositionPoint();
-    final uri = await getFinalRedirectUri(sourceUri);
 
-    if (uri == null) {
+    final shortLinkHandled = await _handleShortLink(uri);
+    if (shortLinkHandled == null) {
       final ctx = rootNavigatorKey.currentContext;
       if (ctx != null) {
-        ToastOverlay.of(ctx).showNoInternet(
-          onRetry: () => openAppLink(sourceUri, isFirstRun: isFirstRun),
-        );
+        ToastOverlay.of(ctx).showNoInternet(onRetry: () => openAppLink(uri, isFirstRun: isFirstRun));
       }
       return;
+    } else if (shortLinkHandled) {
+      return;
     }
+
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
     final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
@@ -1065,7 +1105,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         await router.push(MapnessServicesRoute());
       } else if (url.path == '/parking') {
         _openParking();
-      } else {
+      } else if (url.path == '/media') {
+        _openMediaCatelog();
+      }
+
+      else {
         await router.pushPath(url.toString());
       }
     }
@@ -1094,6 +1138,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
     await CommonFunctions.onLogin();
   }
 
+
+  Future<void> _openMediaCatelog() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    await router.push(const MediaCatalogRoute());
+  }
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
@@ -1229,37 +1278,55 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
 
   Future<void> _openQuickFilter(String filter) async {
     final AppRouter router = await ref.watch(appRouterProvider);
-    final quickFilter = QuickFilter.values.firstWhere(
-      (element) => element.name == filter,
+    final quickFilter = QuickFilter.values.firstWhereOrNull(
+      (element) => element.name.toLowerCase() == filter.toLowerCase(),
     );
-    unawaited(
-      ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': quickFilter.name}),
-    );
-    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+    final NaviQuickFilterMore? naviFilter = quickFilter == null
+        ? NaviQuickFilterMore.values.firstWhereOrNull(
+          (element) => element.name.toLowerCase() == filter.toLowerCase(),
+    ) : null;
 
-    final language = ref.read(appLanguageProvider);
+    if (quickFilter == null && naviFilter == null) return;
 
-    final query = quickFilter.query[language];
-    if (query != null) {
+    final String filterName = quickFilter?.name ?? naviFilter!.name;
       unawaited(
-        BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.deeplink,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.searchStart,
-              ownerName: BssUIElementNames.searchBar,
-            ),
-            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-          ),
-        ),
+        ref.read(urbiAnalyticsProvider).track('quickFilterSearch', properties: {'filter': filterName}),
       );
-    }
-    unawaited(router.push(SearchRoute(requestFocus: false)));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
-    });
+      ref.read(appAnalyticsProvider).categorySelected(filterName);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+      final language = ref.read(appLanguageProvider);
+
+       final String? query = quickFilter?.query[language] ?? naviFilter?.query[language];
+      if (query != null) {
+        unawaited(
+          BssService.instance.sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.deeplink,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.searchStart,
+                ownerName: BssUIElementNames.searchBar,
+              ),
+              payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+            ),
+          ),
+        );
+      }
+      unawaited(router.push(SearchRoute(requestFocus: false)));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final searchNotifier = ref.read(searchProvider(SearchScopeEnum.map.value).notifier);
+
+        if (quickFilter != null) {
+          searchNotifier.quickSearch(quickFilter);
+        } else if (naviFilter != null) {
+          searchNotifier.searchByText(naviFilter.name);
+        }
+
+      });
+
+
+
   }
 
   Future<void> _openStories(String id) async {
@@ -1303,7 +1370,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
         closestPoint: location,
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
+      toCompareRoutes: [RoutingRoutesRoute.page, PoiCardWidgetRoute.page],
     );
   }
 
