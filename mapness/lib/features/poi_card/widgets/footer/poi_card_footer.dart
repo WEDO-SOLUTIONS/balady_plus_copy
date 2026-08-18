@@ -34,6 +34,8 @@ ItemActionBar _footerSecondary({
   String? label,
   EdgeInsetsGeometry? innerPadding,
   ButtonType buttonType = ButtonType.secondary,
+  Color? bgColor,
+  BorderSide? border,
 }) {
   if (lifestyleStyle != null) {
     return lifestyleStyle.secondary(
@@ -42,6 +44,8 @@ ItemActionBar _footerSecondary({
       innerPadding: innerPadding,
       buttonType: buttonType,
       onPressed: onPressed,
+      bgColor: bgColor,
+      border: border,
     );
   }
 
@@ -117,8 +121,6 @@ class PoiCardFooter extends HookConsumerWidget {
 
     final currentRoute = ref.watch(currentRouteProvider);
     final isFavourite = objectId != null && ref.watch(isPlaceFavoritedProvider(objectId.toString()));
-    // todo(claude): set icon state instead of other icon
-    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final hasEntrances = data?.entrances.isNotEmpty == true;
     final hasContacts = data?.contactInfos.isNotEmpty == true;
@@ -169,9 +171,11 @@ class PoiCardFooter extends HookConsumerWidget {
           if (!parkingPoi && isFavourite)
             _footerSecondary(
               lifestyleStyle: lifestyleStyle,
-              icon: iconData,
+              icon: SystemIcons.bookmark,
               buttonType: ButtonType.primary,
               onPressed: onTapFavorite,
+              bgColor: isFavourite ? context.colors.foregroundMuted : null,
+              border: isFavourite ? BorderSide.none : null,
             ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
@@ -216,8 +220,10 @@ class PoiCardFooter extends HookConsumerWidget {
           if (!parkingPoi && !isFavourite)
             _footerSecondary(
               lifestyleStyle: lifestyleStyle,
-              icon: iconData,
+              icon: SystemIcons.bookmark,
               onPressed: onTapFavorite,
+              bgColor: isFavourite ? context.colors.foregroundMuted : null,
+              border: isFavourite ? BorderSide.none : null,
             ),
           _footerSecondary(
             lifestyleStyle: lifestyleStyle,

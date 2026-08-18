@@ -35,7 +35,7 @@ class PickFavoriteListPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sheetController = useMultiStateSheetController<ThreeStateSheet>(
-      behavior: FractionSnappingBehavior(fractions: {0.2, 0.5, 1.0}),
+      behavior: FractionSnappingBehavior(fractions: {0.2, 0.5, 0.9}),
       mapper: const ThreeStateMapper(),
       initialState: ThreeStateSheet.open,
     );
@@ -156,6 +156,19 @@ class PickFavoriteListPage extends HookConsumerWidget {
         ),
       ),
       contentPadding: const EdgeInsets.all(Spacing.$4x),
+
+      footer: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: BaladyAppButton(
+          // TODO(claude): localize string
+          primaryLabel: 'Save',
+          buttonColorScheme: ButtonColorScheme.accent,
+          buttonState: isSubmitting.value
+              ? ButtonState.loading
+              : (allListsResolved ? ButtonState.defaultState : ButtonState.disabled),
+          onTap: save,
+        ),
+      ),
       content: [
         ContentWrapper(
           color: context.colors.backgroundSurface1,
@@ -274,16 +287,6 @@ class PickFavoriteListPage extends HookConsumerWidget {
               ],
             ),
           ],
-        ),
-        const SizedBox(height: Spacing.$4x),
-        BaladyAppButton(
-          // TODO(claude): localize string
-          primaryLabel: 'Save',
-          buttonColorScheme: ButtonColorScheme.accent,
-          buttonState: isSubmitting.value
-              ? ButtonState.loading
-              : (allListsResolved ? ButtonState.defaultState : ButtonState.disabled),
-          onTap: save,
         ),
       ],
     );

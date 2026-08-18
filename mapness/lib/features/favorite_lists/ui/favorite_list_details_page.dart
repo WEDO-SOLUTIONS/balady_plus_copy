@@ -25,7 +25,7 @@ class FavoriteListDetailsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sheetController = useMultiStateSheetController<ThreeStateSheet>(
-      behavior: FractionSnappingBehavior(fractions: {0.0, 0.5, 1.0}),
+      behavior: FractionSnappingBehavior(fractions: {0.0, 0.5, 0.9}),
       mapper: const ThreeStateMapper(),
       initialState: ThreeStateSheet.open,
     );
