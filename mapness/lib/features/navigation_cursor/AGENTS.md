@@ -22,20 +22,30 @@ that shape edits inside `navigation_cursor/`.
 
 ## Style-swap pipeline
 
-Selecting a non-classic cursor overrides two entries inside the bundled
-2GIS style archive:
+Selecting a cursor pushes its GLB bytes straight to the live map:
+`DgisMapController.setNavigationCursorModel(bytes)` → native
+`MyLocationMapObject.setModelData` (2GIS SDK 12.8). No style repack, no
+`Map.close()`, no MapView recreate — the route, maneuvers, camera and
+follow mode are never touched, which is what closed the white-flash bug
+(BALADY-3772). Downloaded cursors ship one mesh for both appearances.
+
+Classic is not downloaded: its day/night meshes are read out of the
+bundled style archive on demand and cached in memory —
 
 - `zmap/vidoc/models/day_LIGHT_THEME_CAR_MODEL.glb`
 - `zmap/vidoc/models/night_DARK_THEME_CAR_MODEL.glb`
 
-Both get the same bytes. These paths are exposed as
-`kNavigationCursorCarModelPaths`; do not hardcode them in the
-controller or the UI — read the constant.
+exposed as `kNavigationCursorCarModelPaths` (index 0 = day, 1 = night).
+Do not hardcode them; read the constant.
 
-The heavy lifting (unzip + rewrite `styles.zss` refs + repack + reload)
-lives in `features/dynamic_style/` and is BE-184's territory. This
-feature only calls `DynamicStyleController.applyOverrides` /
-`resetToBundled`.
+The model is not part of the style any more, so it has to be re-applied
+whenever a map (re)initialises and whenever day/night flips:
+`DgisController` calls `NavigationCursorController.applyActive(controller)`
+in both places. `select()` also handles "no live map yet" by persisting
+the choice — `applyActive` picks it up on the next map init.
+
+`features/dynamic_style/` (repack/store/debug switcher) is unrelated to
+cursors now and remains BE-184's territory.
 
 ## Controller lifecycle rules
 
