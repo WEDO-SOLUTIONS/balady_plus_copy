@@ -9,7 +9,12 @@ class SearchHandler: NSObject {
 
     private let searchManager: SearchManager
     private let searchHistory: SearchHistory
-    private var objectSearchCancelable: Cancellable?
+    // Multiple concurrent searchByDirectoryObjectId calls (e.g. resolving positions for a
+    // batch of favorite places via Future.wait on the Dart side) must each keep their own
+    // cancelable alive until completion, otherwise a later call overwriting a single field
+    // would drop the SDK's required strong reference to the earlier one and its completion
+    // would never fire (surfacing as a client-side timeout).
+    private var objectSearchCancelables: [UUID: Cancellable] = [:]
     private var searchCancelable: Cancellable?
     private var itemMarkerInfosCancellable: Cancellable?
     private var suggestCancelable: Cancellable?
@@ -41,15 +46,18 @@ class SearchHandler: NSObject {
     }
 
     func cancel() {
-        self.objectSearchCancelable?.cancel()
+        self.objectSearchCancelables.values.forEach { $0.cancel() }
+        self.objectSearchCancelables.removeAll()
         self.searchCancelable?.cancel()
         self.suggestCancelable?.cancel()
         self.itemMarkerInfosCancellable?.cancel()
     }
 
     func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (Result<DirectoryObjectMessage, any Error>) -> Void) {
-        self.objectSearchCancelable = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
-            directoryObject in
+        let requestId = UUID()
+        objectSearchCancelables[requestId] = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
+            [weak self] directoryObject in
+            self?.objectSearchCancelables.removeValue(forKey: requestId)
             guard let response = directoryObject else {
                 completion(
                     Result.failure(
@@ -60,12 +68,13 @@ class SearchHandler: NSObject {
                 )))
                 return
             }
-            
+
             completion(
                 Result.success(
                 response.toMessage())
             )
-        } failure: { error in
+        } failure: { [weak self] error in
+            self?.objectSearchCancelables.removeValue(forKey: requestId)
             completion(Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
         }
     }

@@ -1,29 +1,32 @@
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
-import 'package:balady_uikit/core/colorsV2/base_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonEnum()
 enum MarkerColorCode {
+  darkGreen,
   blue,
-  green,
-  red,
   orange,
+  brown,
+  red,
   purple,
-  pink,
   yellow,
-  teal,
+  green,
+  darkRed,
+  turquoise,
   unknown;
 
   Color getColor(AppColorsThemeV3 colors) => switch (this) {
-    MarkerColorCode.blue => BaseColors.extra03,
-    MarkerColorCode.green => BaseColors.success,
-    MarkerColorCode.red => BaseColors.error,
-    MarkerColorCode.orange => BaseColors.warning,
-    MarkerColorCode.purple => BaseColors.extra01,
-    MarkerColorCode.pink => BaseColors.accentSecondary,
-    MarkerColorCode.yellow => BaseColors.extra02,
-    MarkerColorCode.teal => BaseColors.accent,
+    MarkerColorCode.darkGreen => const Color(0xFF1B8354),
+    MarkerColorCode.blue => const Color(0xFF1570EF),
+    MarkerColorCode.orange => const Color(0xFFF79009),
+    MarkerColorCode.brown => const Color(0xFFB54708),
+    MarkerColorCode.red => const Color(0xFFF04438),
+    MarkerColorCode.purple => const Color(0xFF6D428F),
+    MarkerColorCode.yellow => const Color(0xFFF5BD02),
+    MarkerColorCode.green => const Color(0xFF17B26A),
+    MarkerColorCode.darkRed => const Color(0xFF912018),
+    MarkerColorCode.turquoise => const Color(0xFF63D9D0),
     MarkerColorCode.unknown => colors.staticBlack,
   };
 }
