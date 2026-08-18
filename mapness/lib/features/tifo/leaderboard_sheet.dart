@@ -11,6 +11,7 @@ import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
 import 'package:mapness/features/tifo/tifo_journey.dart';
 import 'package:mapness/features/tifo/tifo_login.dart';
+import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
 import 'package:mapness/features/tifo/ui/tifo_theme.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -53,6 +54,10 @@ class _LeaderboardSheet extends ConsumerStatefulWidget {
 
 class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
   int _tab = 0; // 0 = Table (leaderboard), 1 = Profile (dashboard)
+
+  /// Guards the standings-load-error dialog against re-firing on every
+  /// rebuild while the error state persists (e.g. a sibling tab switch).
+  bool _standingsErrorShown = false;
 
   @override
   void initState() {
@@ -139,10 +144,41 @@ class _LeaderboardSheetState extends ConsumerState<_LeaderboardSheet> {
         padding: EdgeInsets.all(32),
         child: Center(child: CircularProgressIndicator(color: TifoColors.accent)),
       ),
-      error: (e, _) => Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text('Could not load standings.\n$e', style: TifoText.captionRegular),
-      ),
+      error: (e, _) {
+        if (!_standingsErrorShown) {
+          _standingsErrorShown = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+            final ctx = rootNavigatorKey.currentContext;
+            if (ctx == null) {
+              return;
+            }
+            final l10n = AppLocalizations.of(ctx);
+            unawaited(
+              showTifoMessageDialog<void>(
+                ctx,
+                card: TifoMessageCard(
+                  showIllustration: true,
+                  title: l10n.tifoSomethingWentWrongTitle,
+                  body: l10n.tifoSomethingWentWrongBody,
+                  primaryAction: TifoMessageAction(
+                    label: l10n.tifoRetry,
+                    // The sheet (and its autoDispose provider) is already
+                    // closed by the pop above — reopening it triggers a
+                    // fresh fetch rather than reusing the failed one.
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      unawaited(showTifoLeaderboardSheet(ctx));
+                    },
+                  ),
+                  onClose: () => Navigator.of(ctx).pop(),
+                ),
+              ),
+            );
+          });
+        }
+        return const SizedBox.shrink();
+      },
       data: (list) => ListView(
         shrinkWrap: true,
         children: [
