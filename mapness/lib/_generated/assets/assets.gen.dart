@@ -1265,6 +1265,9 @@ class $AssetsIconsSvgFavoriteGen {
   SvgGenImage get icFavorite9ShoppingBasket =>
       const SvgGenImage('assets/icons/svg/favorite/ic_favorite_9_shopping_basket.svg');
 
+  /// File path: assets/icons/svg/favorite/ic_favorite_pin.svg
+  SvgGenImage get icFavoritePin => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_pin.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
     icFavorite0Default,
@@ -1277,6 +1280,7 @@ class $AssetsIconsSvgFavoriteGen {
     icFavorite7Coffee,
     icFavorite8Store,
     icFavorite9ShoppingBasket,
+    icFavoritePin,
   ];
 }
 

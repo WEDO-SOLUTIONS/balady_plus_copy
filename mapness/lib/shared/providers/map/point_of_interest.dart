@@ -58,17 +58,16 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final favoriteColor = await ref.read(favoritePlaceMarkerColorProvider(objectId.objectId.toString()).future);
+  final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
   Uint8List? favoriteIconBytes;
   if (favoriteColor != null) {
     final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-    favoriteIconBytes = await ref
-        .read(favoritePinMarkerBitmapProvider)
-        .render(
-          tint: favoriteColor.getColor(AppColorsThemeV3.palette(themes: theme)),
-          // TODO(claude): pass real icon selection from API when available (see create_or_update_favorite_list_page.dart)
-          icon: FavoriteIconCode.$default,
-          devicePixelRatio: devicePixelRatio,
-        );
+    favoriteIconBytes = await favoritePinBitmap.renderTeardropPin(
+      tint: favoriteColor.getColor(AppColorsThemeV3.palette(themes: theme)),
+      // TODO(claude): pass real icon selection from API when available (see create_or_update_favorite_list_page.dart)
+      icon: FavoriteIconCode.$default,
+      devicePixelRatio: devicePixelRatio,
+    );
   }
   final bigIconPath = favoriteColor == null ? mapMarkerMapper.$2 : null;
 
@@ -120,8 +119,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       iconBytes: favoriteIconBytes,
-      anchor: MarkerAnchorMessage(x: 0.5, y: 0.5),
-      width: favoriteColor != null ? 24 : null,
+      anchor: favoriteColor != null
+          ? MarkerAnchorMessage(x: favoritePinBitmap.teardropAnchor.x, y: favoritePinBitmap.teardropAnchor.y)
+          : MarkerAnchorMessage(x: 0.5, y: 0.5),
+      width: favoriteColor != null ? favoritePinBitmap.teardropLogicalSize : null,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),
       isDark: isDark,

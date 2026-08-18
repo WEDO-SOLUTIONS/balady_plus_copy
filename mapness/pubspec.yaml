@@ -209,6 +209,7 @@ flutter:
     - assets/icons/svg/places_new_saudi_day/
     - assets/icons/svg/intermediate_stop_numbers/
     - assets/icons/svg/dynamic_poi/glyphs/
+    - assets/icons/svg/favorite/
     - assets/images/
     - assets/images/layers/
     - assets/images/makkah_quick_actions/
