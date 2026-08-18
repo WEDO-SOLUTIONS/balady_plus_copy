@@ -432,10 +432,10 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.getCameraPosition();
   }
 
-  /// Capture the current map frame as encoded PNG bytes; null when no frame
-  /// is available. Best-effort — used to mask MapView recreates (BALADY-3772).
-  Future<Uint8List?> takeMapSnapshot() {
-    return _api.takeMapSnapshot();
+  /// Swap the navigation-cursor 3D model on the live map (raw GLB bytes).
+  /// See `MapApi.setNavigationCursorModel`.
+  Future<void> setNavigationCursorModel(Uint8List glb) {
+    return _api.setNavigationCursorModel(glb);
   }
 
   /// Get nearest objects.

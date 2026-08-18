@@ -533,28 +533,23 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func takeMapSnapshot(completion: @escaping (Result<FlutterStandardTypedData?, any Error>) -> Void) {
-        // Best-effort by contract: any failure resolves to nil and the Dart
-        // side falls back to a plain colored curtain (BALADY-3772).
-        guard let snapshotter = self.mapFactory?.snapshotter else {
-            completion(Result.success(nil))
+    /// BALADY-3772: swap the 3D model of the my-location object (navigation
+    /// cursor) on the live map via `MyLocationMapObject.setModelData`. No style
+    /// reload, no MapView recreate — route, maneuvers and camera stay untouched.
+    /// Applies to whichever `MyLocationMapObjectSource` is currently on the map
+    /// (the default one or the one NavigationHandler installs for guidance).
+    func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let map = self.map else {
+            completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
             return
         }
-        cancelable.append(
-            snapshotter.makeImage().sink(
-                receiveValue: { image in
-                    let bytes = image.pngData().map { FlutterStandardTypedData(bytes: $0) }
-                    DispatchQueue.main.async {
-                        completion(Result.success(bytes))
-                    }
-                },
-                failure: { _ in
-                    DispatchQueue.main.async {
-                        completion(Result.success(nil))
-                    }
-                }
-            )
-        )
+        guard let source = map.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource else {
+            completion(.failure(PigeonError(code: "no_source", message: "setNavigationCursorModel: no MyLocationMapObjectSource on map", details: nil)))
+            return
+        }
+        let modelData = self.sdk.modelFactory.make(modelData: glb.data)
+        source.item.setModelData(data: modelData)
+        completion(.success(()))
     }
 
     func getCameraVisibleArea(completion: @escaping (Result<PolygonGeometryMessage, any Error>) -> Void) {

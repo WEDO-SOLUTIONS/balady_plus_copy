@@ -1525,11 +1525,14 @@ abstract class MapApi {
   @async
   CameraPositionMessage getCameraPosition();
 
-  /// Capture the current map frame as encoded PNG bytes. Returns null when
-  /// no frame is available (renderer not ready / snapshot failed). Used to
-  /// mask the MapView recreate during dynamic style swaps (BALADY-3772).
+  /// Swap the 3D model of the my-location object (the navigation cursor) on
+  /// the live map. [glb] is the raw GLB bytes. Backed by the SDK's
+  /// `MyLocationMapObject.setModelData` — no style reload and no MapView
+  /// recreate, so nothing on the map (route, maneuvers, camera) is disturbed
+  /// (BALADY-3772). Applies to whichever my-location source is currently on
+  /// the map (default or the navigation-time one).
   @async
-  Uint8List? takeMapSnapshot();
+  void setNavigationCursorModel(Uint8List glb);
 
   @async
   CameraPositionMessage calcPositionForRoute(CalcPositionOptionsMessage options);

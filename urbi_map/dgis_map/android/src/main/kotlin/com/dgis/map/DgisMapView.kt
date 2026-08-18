@@ -504,48 +504,35 @@ class DgisMapView(
         )
     }
 
-    override fun takeMapSnapshot(callback: (Result<ByteArray?>) -> Unit) {
-        // Best-effort by contract: any failure resolves to null and the Dart
-        // side falls back to a plain colored curtain (BALADY-3772).
-        if (map == null) {
-            callback(Result.success(null))
+    /**
+     * BALADY-3772: swap the 3D model of the my-location object (navigation cursor)
+     * on the live map via MyLocationMapObject.setModelData. No style reload, no
+     * MapView recreate — the route, maneuvers and camera stay untouched. Applies to
+     * whichever MyLocationMapObjectSource is currently on the map: the default one
+     * from onMapReady or the one NavigationHandler installs for guidance.
+     */
+    override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
+        val currentMap = map
+        if (currentMap == null) {
+            callback(Result.failure(IllegalStateException("setNavigationCursorModel: map is not ready")))
             return
         }
-        val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
         try {
-            mapView.takeSnapshot(Alignment.BOTTOM_LEFT).apply {
-                onResult { imageData ->
-                    val bytes: ByteArray? =
-                            when (imageData.format) {
-                                ImageFormat.PNG -> imageData.data
-                                ImageFormat.RGBA_8888 -> {
-                                    val bitmap =
-                                            android.graphics.Bitmap.createBitmap(
-                                                    imageData.size.width,
-                                                    imageData.size.height,
-                                                    android.graphics.Bitmap.Config.ARGB_8888
-                                            )
-                                    bitmap.copyPixelsFromBuffer(
-                                            java.nio.ByteBuffer.wrap(imageData.data)
-                                    )
-                                    val out = java.io.ByteArrayOutputStream()
-                                    bitmap.compress(
-                                            android.graphics.Bitmap.CompressFormat.PNG,
-                                            100,
-                                            out
-                                    )
-                                    bitmap.recycle()
-                                    out.toByteArray()
-                                }
-                                else -> null
-                            }
-                    mainHandler.post { callback(Result.success(bytes)) }
-                }
-                onError { mainHandler.post { callback(Result.success(null)) } }
+            val source = currentMap.sources.firstOrNull { it is MyLocationMapObjectSource }
+                    as? MyLocationMapObjectSource
+            if (source == null) {
+                callback(
+                        Result.failure(
+                                IllegalStateException("setNavigationCursorModel: no MyLocationMapObjectSource on map")
+                        )
+                )
+                return
             }
+            source.item.setModelData(createModelData(sdkContext, glb))
+            callback(Result.success(Unit))
         } catch (e: Exception) {
-            Log.w("DgisMapView", "takeMapSnapshot failed: $e")
-            callback(Result.success(null))
+            Log.w("DgisMapView", "setNavigationCursorModel failed: $e")
+            callback(Result.failure(e))
         }
     }
 
