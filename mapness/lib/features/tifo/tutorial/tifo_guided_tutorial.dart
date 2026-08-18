@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/tifo/tifo_flow_provider.dart';
 import 'package:mapness/features/tifo/tifo_tutorial_sheet.dart';
 import 'package:mapness/features/tifo/tutorial/tifo_tutorial_demos.dart';
 import 'package:mapness/features/tifo/ui/tifo_message_card.dart';
@@ -14,7 +18,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 /// Map steps have no background of their own: the route is transparent, so the
 /// live map (with the TIFO layer on) stays visible behind the coach. Every
 /// other step paints a canned demo replica — the tour never hits the backend.
-class TifoGuidedTutorial extends StatefulWidget {
+class TifoGuidedTutorial extends ConsumerStatefulWidget {
   const TifoGuidedTutorial({super.key, this.initialStep = 0});
 
   /// Index of the tour's closing screen (879:10224, the support/"Need help" step).
@@ -24,7 +28,7 @@ class TifoGuidedTutorial extends StatefulWidget {
   final int initialStep;
 
   @override
-  State<TifoGuidedTutorial> createState() => _TifoGuidedTutorialState();
+  ConsumerState<TifoGuidedTutorial> createState() => _TifoGuidedTutorialState();
 }
 
 /// Pushes the tour as a transparent fullscreen route. Resolves to `true` only
@@ -74,7 +78,7 @@ class _TourStep {
   final String? text;
 }
 
-class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
+class _TifoGuidedTutorialState extends ConsumerState<TifoGuidedTutorial> {
   /// Four screens, in the order design numbered them (Figma 848:9497,
   /// 848:9982, 848:10725, 879:10224) — down from the 13-step sequence that
   /// walked every sheet. The four progress dots finally match the step count.
@@ -100,7 +104,7 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
     // 4 — 879:10224: support screen behind the closing coach sheet.
     _TourStep(
       dot: 3,
-      background: const TifoDemoSupport(),
+      background: TifoDemoSupport(onReplayTutorial: _replay, replayBusy: _replaying),
       overlay: _OverlayKind.coachSheet,
       title: AppLocalizations.of(context).needHelp,
       text: AppLocalizations.of(context).visitSupportAnytimeToReviewTheRulesPenaltyMatchMechanicsScoring,
@@ -109,14 +113,56 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
 
   late int _index = widget.initialStep.clamp(0, _stepCount - 1);
 
+  /// True once the player has replayed the tour from the Support screen, so
+  /// the device flag [resetTutorial] cleared is re-stamped when this run ends.
+  bool _replayedFromSupport = false;
+
+  /// Guards the async flag reset against a double tap on "Replay tutorial".
+  bool _replaying = false;
+
   bool get _isLast => _index == _stepCount - 1;
 
   void _next() {
     if (_isLast) {
-      Navigator.of(context).pop(true);
+      unawaited(_finish(completed: true));
     } else {
       setState(() => _index++);
     }
+  }
+
+  /// Support → "Replay tutorial": clears the persisted "tutorial seen" flags
+  /// and rewinds this route to screen 1, so the tour runs exactly as it does
+  /// for a first-time player instead of resuming at the closing screen.
+  Future<void> _replay() async {
+    if (_replaying) {
+      return;
+    }
+    setState(() => _replaying = true);
+    try {
+      await ref.read(tifoFlowProvider.notifier).resetTutorial();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _replaying = false;
+          _replayedFromSupport = true;
+          _index = 0;
+        });
+      }
+    }
+  }
+
+  /// Closes the route. After a replay the device flag has to come back before
+  /// we leave (BR-02: the tour having been SHOWN clears the gate, finished or
+  /// skipped) — otherwise the next play attempt, or a later sign-in that mints
+  /// a fresh profile, would push the tour again unasked.
+  Future<void> _finish({required bool completed}) async {
+    if (_replayedFromSupport) {
+      await ref.read(tifoFlowProvider.notifier).markTutorialCompletedOnDevice();
+    }
+    if (!mounted) {
+      return;
+    }
+    Navigator.of(context).pop(completed);
   }
 
   void _previous() {
@@ -145,7 +191,7 @@ class _TifoGuidedTutorialState extends State<TifoGuidedTutorial> {
     );
     if (!mounted) return;
     if (skip ?? false) {
-      Navigator.of(context).pop(false);
+      await _finish(completed: false);
     }
   }
 
