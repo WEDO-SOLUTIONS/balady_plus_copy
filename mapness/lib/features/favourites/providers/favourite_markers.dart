@@ -161,7 +161,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     }
 
     /// add places from the favorite lists API (new API, colored by list)
-    final aggregatedMarkers = await ref.read(aggregatedFavoriteMarkersProvider.future);
+    final aggregatedMarkers = await ref.watch(aggregatedFavoriteMarkersProvider.future);
     if (!ref.mounted) {
       return;
     }

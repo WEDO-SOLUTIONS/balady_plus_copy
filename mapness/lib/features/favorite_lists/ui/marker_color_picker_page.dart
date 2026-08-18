@@ -53,35 +53,32 @@ class MarkerColorPickerPage extends HookConsumerWidget {
             color: context.colors.backgroundSurface1,
             borderRadius: BorderRadius.circular(Spacing.$3x),
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              spacing: Spacing.$1_5x,
-              children: MarkerColorCode.values.where((code) => code != MarkerColorCode.unknown).map((code) {
-                final isSelected = selected.value == code;
-                return GestureDetector(
-                  onTap: () => selected.value = code,
-                  child: Container(
-                    padding: const EdgeInsets.all(1),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: isSelected ? code.getColor(context.colors) : Colors.transparent,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(Spacing.$1x + 2),
+          child: Wrap(
+            spacing: Spacing.$1_5x,
+            children: MarkerColorCode.values.where((code) => code != MarkerColorCode.unknown).map((code) {
+              final isSelected = selected.value == code;
+              return GestureDetector(
+                onTap: () => selected.value = code,
+                child: Container(
+                  padding: const EdgeInsets.all(1),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: isSelected ? code.getColor(context.colors) : Colors.transparent,
+                      width: 2,
                     ),
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: code.getColor(context.colors),
-                        borderRadius: BorderRadius.circular(Spacing.$1x),
-                      ),
+                    borderRadius: BorderRadius.circular(Spacing.$1x + 2),
+                  ),
+                  child: Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: code.getColor(context.colors),
+                      borderRadius: BorderRadius.circular(Spacing.$1x),
                     ),
                   ),
-                );
-              }).toList(),
-            ),
+                ),
+              );
+            }).toList(),
           ),
         ),
         const SizedBox(height: Spacing.$4x),
