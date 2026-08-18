@@ -232,7 +232,7 @@
 
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="go.balady.sa" />
+                <data android:host="go.balady.gov.sa" />
             </intent-filter>
 
             <intent-filter android:autoVerify="true">
