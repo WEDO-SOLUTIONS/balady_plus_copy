@@ -1,12 +1,15 @@
 import 'dart:async';
 
+import 'package:archive/archive.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/features/dynamic_style/dynamic_style_provider.dart';
-import 'package:mapness/features/dynamic_style/dynamic_style_service.dart';
 import 'package:mapness/features/navigation_cursor/cursor_downloader.dart';
 import 'package:mapness/features/navigation_cursor/navigation_cursor.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -68,10 +71,16 @@ class NavigationCursorState {
 /// persisted list is trimmed and the active cursor rolls back to classic.
 ///
 /// select(cursor) is the single UI entry-point:
-///   * classic → [DynamicStyleController.resetToBundled].
-///   * non-classic + already downloaded → [_apply].
-///   * non-classic + missing → [CursorDownloader.download] → [_apply].
-/// Every path persists activeId, so a kill/restart lands on the same cursor.
+///   * classic → bundled day/night car GLB from the style archive.
+///   * non-classic + already downloaded → GLB from disk.
+///   * non-classic + missing → [CursorDownloader.download] → GLB from disk.
+/// The GLB bytes go straight to the live map via
+/// [DgisMapController.setNavigationCursorModel] (SDK
+/// `MyLocationMapObject.setModelData`) — no style repack, no MapView
+/// recreate, so the route, maneuvers and camera are never disturbed
+/// (BALADY-3772). Every path persists activeId; [applyActive] re-applies
+/// it whenever a map (re)initialises and when the day/night appearance
+/// flips (the bundled classic car has distinct day/night meshes).
 @Riverpod(keepAlive: true)
 class NavigationCursorController extends _$NavigationCursorController {
   @override
@@ -129,15 +138,17 @@ class NavigationCursorController extends _$NavigationCursorController {
     final sw = Stopwatch()..start();
     logger.log('$_logTag select: ${before.active.id} → ${cursor.id}');
     try {
-      if (cursor == NavigationCursor.classic) {
-        await ref.read(dynamicStyleControllerProvider.notifier).resetToBundled();
+      if (cursor != NavigationCursor.classic) {
+        await ref.read(cursorDownloaderProvider).download(cursor);
+      }
+      final controller = activeDgisController;
+      if (controller != null) {
+        await controller.setNavigationCursorModel(await _modelBytes(cursor));
       } else {
-        final downloader = ref.read(cursorDownloaderProvider);
-        final file = await downloader.download(cursor);
-        final bytes = await file.readAsBytes();
-        await ref.read(dynamicStyleControllerProvider.notifier).applyOverrides([
-          for (final path in kNavigationCursorCarModelPaths) StyleEntryOverride(archivePath: path, bytes: bytes),
-        ]);
+        // No live map right now (e.g. picker opened before the map mounted):
+        // the choice is persisted below and [applyActive] pushes it as soon
+        // as a map initialises.
+        logger.log('$_logTag select: no active map, ${cursor.id} will apply on next map init');
       }
       final newDownloaded = <String>{...state.downloadedIds, cursor.id};
       state = state.copyWith(active: cursor, downloadedIds: newDownloaded, clearInProgress: true);
@@ -157,6 +168,52 @@ class NavigationCursorController extends _$NavigationCursorController {
       );
       state = state.copyWith(clearInProgress: true, lastError: e);
     }
+  }
+
+  /// Push the persisted active cursor onto [controller]. Called by
+  /// [DgisController] once a map has initialised and whenever the day/night
+  /// appearance changes. Failures are logged, never thrown — a missing
+  /// model must not break map setup.
+  Future<void> applyActive(DgisMapController controller) async {
+    final cursor = state.active;
+    try {
+      await controller.setNavigationCursorModel(await _modelBytes(cursor));
+      logger.log('$_logTag applyActive: ${cursor.id}');
+    } catch (e, st) {
+      logger.log('$_logTag applyActive: FAILED for ${cursor.id}: $e\n$st', logLevel: MapnessLogLevel.warning);
+    }
+  }
+
+  /// GLB bytes for [cursor]. Downloaded cursors ship a single mesh; the
+  /// bundled classic car has separate day/night meshes inside the style
+  /// archive, picked by the current appearance.
+  Future<Uint8List> _modelBytes(NavigationCursor cursor) async {
+    if (cursor != NavigationCursor.classic) {
+      return (await ref.read(cursorDownloaderProvider).localFile(cursor)).readAsBytes();
+    }
+    final isDark = (await ref.read(darkModeProvider.future)).isDark;
+    final entryName = isDark ? kNavigationCursorCarModelPaths[1] : kNavigationCursorCarModelPaths[0];
+    return _bundledStyleEntry(entryName);
+  }
+
+  static final _bundledEntryCache = <String, Uint8List>{};
+
+  /// Read one entry out of the bundled `.2gis` (a zip). The archive is
+  /// ~10 MB and read only once per entry; both classic meshes get cached.
+  Future<Uint8List> _bundledStyleEntry(String name) async {
+    final cached = _bundledEntryCache[name];
+    if (cached != null) {
+      return cached;
+    }
+    final data = await rootBundle.load(MapnessConstants.mapStylesPath);
+    final archive = ZipDecoder().decodeBytes(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+    final entry = archive.files.firstWhere(
+      (f) => f.name == name,
+      orElse: () => throw StateError('bundled style has no $name'),
+    );
+    final bytes = Uint8List.fromList(entry.readBytes() ?? const <int>[]);
+    _bundledEntryCache[name] = bytes;
+    return bytes;
   }
 
   void clearError() {
@@ -184,10 +241,13 @@ class NavigationCursorController extends _$NavigationCursorController {
     if (previousActive == cursor) {
       newActive = NavigationCursor.classic;
       try {
-        await ref.read(dynamicStyleControllerProvider.notifier).resetToBundled();
+        final controller = activeDgisController;
+        if (controller != null) {
+          await controller.setNavigationCursorModel(await _modelBytes(NavigationCursor.classic));
+        }
       } catch (e, st) {
         logger.log(
-          '$_logTag deleteLocal: resetToBundled FAILED for ${cursor.id}: $e\n$st',
+          '$_logTag deleteLocal: reverting to classic FAILED for ${cursor.id}: $e\n$st',
           logLevel: MapnessLogLevel.warning,
         );
       }

@@ -1,8 +1,7 @@
-import 'package:flutter/services.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/features/dynamic_style/dynamic_style_service.dart';
 import 'package:mapness/features/dynamic_style/map_style_store.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/providers/map/map_recreation.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -31,8 +30,13 @@ class DynamicStyleController extends _$DynamicStyleController {
   /// Accumulative: reads the current on-disk archive, applies the listed
   /// entry overrides, writes to the store's next rotation slot, then commits.
   /// A fresh absolute path is required on every mutation because the 2GIS
-  /// SDK (12.8.0) caches decoded GLB resources by archive path and refuses
-  /// to reload them from the same file — see [MapStyleStore] for detail.
+  /// SDK (12.8.0) caches decoded resources by archive path and refuses to
+  /// reload them from the same file — see [MapStyleStore] for detail.
+  ///
+  /// The commit publishes a new store revision; [DgisController] listens and
+  /// re-runs `loadStylesFromPath` on the live map. Note this does NOT refresh
+  /// the navigation-cursor 3D model — that is set explicitly on the
+  /// my-location object via `setNavigationCursorModel` (BALADY-3772).
   ///
   /// To start from a clean bundled archive, call [resetToBundled] first (or
   /// pass empty [overrides], which shortcuts to reset).
@@ -46,20 +50,6 @@ class DynamicStyleController extends _$DynamicStyleController {
     final nextPath = store.allocateNextPath();
     final suffix = store.nextRevision;
 
-    // Snapshot the live camera BEFORE the native MapView is torn down.
-    // On 2GIS SDK 12.8.0 the process-scoped GLB mesh cache survives
-    // `loadStylesFromPath`, so swapping a car model requires recreating the
-    // MapView entirely. See [MapRecreationCounter] for the recreate protocol.
-    final currentController = activeDgisController;
-    if (currentController != null) {
-      try {
-        final position = await currentController.getCameraPosition();
-        ref.read(pendingCameraSnapshotProvider.notifier).set(position);
-      } on PlatformException catch (e) {
-        logger.log('$_logTag applyOverrides: failed to snapshot camera: $e');
-      }
-    }
-
     await service.repackInto(
       sourcePath: styleFile.path,
       targetPath: nextPath,
@@ -67,25 +57,8 @@ class DynamicStyleController extends _$DynamicStyleController {
       renameSuffix: suffix,
     );
 
-    // Invalidate BEFORE publish. `DgisController._setupControllerItself`
-    // subscribes to `mapStyleStoreProvider` and fires
-    // `controller.loadStylesFromPath` on any revision bump. If we publish
-    // first, that listener kicks off `StyleBuilder.loadStyle` on the
-    // native side, and its Future resolves AFTER we've called
-    // `Map.close()` (via the counter bump below) — which crashes with
-    // `IllegalStateException: Access to closed Java object`. Dropping the
-    // provider tears the listener down synchronously so the publish
-    // reaches no one.
-    ref.invalidate(dgisControllerProvider);
-
     await store.publishExternallyWritten(nextPath);
     logger.log('$_logTag applyOverrides: applied ${overrides.length} override(s) suffix=_v$suffix → $nextPath');
-
-    // Bump the recreation counter to remount DgisMap. The native
-    // `Map.close()` releases the SDK's mesh cache; the fresh MapView
-    // cold-decodes the already-published new archive on its first
-    // `onMapCreated → _loadActiveStyle` pass.
-    ref.read(mapRecreationCounterProvider.notifier).bump();
   }
 
   /// Download a compiled `.2gis` from [url] and swap it in.
@@ -104,33 +77,12 @@ class DynamicStyleController extends _$DynamicStyleController {
     logger.log('$_logTag applyStyleFromPath: swapped to $absolutePath');
   }
 
-  /// Drop any mutations and re-seed the store from the bundled asset.
-  ///
-  /// Runs the same MapView-recreate protocol as [applyOverrides]: without it
-  /// the 2GIS SDK returns the last-cached car model even after the archive
-  /// on disk is back to the bundled state — the mesh cache is keyed by the
-  /// last name the SDK saw at that archive slot, not by the current archive
-  /// contents.
+  /// Drop any mutations and re-seed the store from the bundled asset. The
+  /// store publishes a new revision; [DgisController] reloads it on the
+  /// live map.
   Future<void> resetToBundled() async {
-    // Snapshot the live camera before we tear the MapView down.
-    final currentController = activeDgisController;
-    if (currentController != null) {
-      try {
-        final position = await currentController.getCameraPosition();
-        ref.read(pendingCameraSnapshotProvider.notifier).set(position);
-      } on PlatformException catch (e) {
-        logger.log('$_logTag resetToBundled: failed to snapshot camera: $e');
-      }
-    }
-
-    // Invalidate BEFORE the store publishes — see [applyOverrides] for the
-    // reason (avoids a StyleBuilder Future racing against Map.close()).
-    ref.invalidate(dgisControllerProvider);
-
     await ref.read(mapStyleStoreProvider.notifier).resetToBundled();
     logger.log('$_logTag resetToBundled: restored bundled asset');
-
-    ref.read(mapRecreationCounterProvider.notifier).bump();
   }
 }
 
