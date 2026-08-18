@@ -1,16 +1,12 @@
-import 'dart:convert';
-
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/features/tifo/data/tifo_debug_identity.dart';
 import 'package:mapness/features/tifo/data/tifo_models.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 
 /// Debug-only overrides for the TIFO backend. Empty fields fall back to the
 /// system config. Applied ONLY when [tifoDebugModeProvider] is on — in normal
@@ -51,27 +47,39 @@ class TifoDebugModeController extends Notifier<bool> {
 
 final tifoDebugModeProvider = NotifierProvider<TifoDebugModeController, bool>(TifoDebugModeController.new);
 
-/// The TIFO backend is deployed on staging only, so the game intentionally
-/// pins that host on every app environment (prod included) instead of
-/// following `dgisEnvironmentProvider`. Re-point (or re-derive from the env)
-/// once TIFO ships to production.
+/// Known-staging fallback — used only when [dgisEnvironmentProvider] hasn't
+/// resolved yet (e.g. Hive/config not loaded), and as the debug-panel
+/// default. The real per-flavor base URL is derived in [resolveTifoConfig]
+/// below from the active environment's `url`, same host as the rest of
+/// urbi-lifestyle, with the TIFO path appended.
 const kTifoBaseUrl = 'https://urbi-lifestyle-stg.momah.gov.sa/1.0/api/v1/tifo';
 
 /// The effective TIFO base URL + bearer, resolved per request.
 ///
-/// Base URL is [kTifoBaseUrl]. Bearer is the system SSO access token
-/// (`tokenProvider`), so TIFO shares the app's login. Debug overrides only win
-/// when [tifoDebugModeProvider] is on. [TifoResolvedConfig.isGuest] is true
-/// when the bearer is the device fallback: staging lazily registers a profile
-/// for ANY bearer, so `/me` succeeding does NOT mean the user is signed in —
-/// gate login on this flag, not on the profile.
+/// Base URL follows [dgisEnvironmentProvider] — i.e. it changes with the
+/// build flavor (dev/staging/prod), same host as the rest of urbi-lifestyle,
+/// `/1.0/api/v1/tifo` appended. Bearer is the RAW system SSO access token
+/// (`tokenProvider`/`CommonProperties.token`) as-is — no hashing, no guest
+/// fallback — or empty when signed out. Debug overrides only win when
+/// [tifoDebugModeProvider] is on. [TifoResolvedConfig.isGuest] is true when
+/// the bearer is empty (signed out).
 typedef TifoResolvedConfig = ({String baseUrl, String token, bool isGuest});
 
 Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
   final debug = ref.read(tifoDebugModeProvider);
   final override = debug ? ref.read(tifoDebugConfigProvider) : const TifoConfig();
 
-  final baseUrl = override.baseUrl.isEmpty ? kTifoBaseUrl : override.baseUrl;
+  var baseUrl = override.baseUrl;
+  if (baseUrl.isEmpty) {
+    try {
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      baseUrl = '${Uri.parse(env.url).origin}/1.0/api/v1/tifo';
+    } catch (_) {
+      // Env config not ready/failed to load — known-staging fallback rather
+      // than leaving the game unreachable.
+      baseUrl = kTifoBaseUrl;
+    }
+  }
 
   // Debug panel "act as another user": the id IS the bearer on staging, so
   // this is the whole mechanism. Treated as signed in — the tester wants the
@@ -86,77 +94,14 @@ Future<TifoResolvedConfig> resolveTifoConfig(Ref ref) async {
     // value is NOT trusted below.
     await ref.read(tokenProvider.future);
   } catch (_) {
-    // No session — fall through to the guest bearer.
+    // No session — fall through to the empty bearer below.
   }
   // Read the LIVE cubit value, not the provider cache: the cache is fed by
-  // a stream subscription that can outlive a logout, and staging accepts
-  // any bearer as an opaque user id — a stale token silently keeps
-  // impersonating the previous user.
-  var token = CommonProperties.token;
-  if (token.isNotEmpty) {
-    return (baseUrl: baseUrl, token: _stableBearer(token), isGuest: false);
-  }
-  // Not signed in. The backend requires SOME bearer even for browse (401
-  // otherwise), and staging treats it as an opaque user id — identify the
-  // guest by device so browsing works pre-login (BRD US-01).
-  try {
-    final device = await ref.read(deviceInfoProvider.future);
-    token = 'tifo-guest-${device.deviceId ?? 'unknown'}';
-  } catch (_) {
-    token = 'tifo-guest-unknown';
-  }
-  return (baseUrl: baseUrl, token: token, isGuest: true);
-}
-
-/// Staging keys the player by the RAW bearer string (verified live:
-/// `/me` returns `userId` == the bearer, JWTs are NOT decoded — two tokens
-/// with the same `sub` get two profiles). Sending the SSO JWT as-is would
-/// mint a fresh profile on every re-login and token refresh, losing the
-/// club/balance each time.
-///
-/// Key the player by the PERSON, not the session: sha256 of the
-/// national/iqama id — it's identical across every login method (Nafath/SSO
-/// mints one `sub`, OTP another; the id number never changes), and the hash
-/// keeps PII off the wire. JWT/host `sub` is only a fallback for sessions
-/// where userInfo hasn't arrived. Remove once the backend validates tokens
-/// itself.
-String _stableBearer(String ssoToken) {
-  final idNo = CommonProperties.userInfo?.idNo;
-  if (idNo != null && idNo.isNotEmpty) {
-    return _tagged('idNo-hash', 'tifo-uid-${sha256.convert(utf8.encode(idNo))}');
-  }
-  final sub = _jwtSub(ssoToken) ?? CommonProperties.userInfo?.sub;
-  if (sub != null && sub.isNotEmpty) {
-    return _tagged('sub', 'tifo-sso-$sub');
-  }
-  // Raw token = a NEW backend profile on every login/refresh (staging keys by
-  // the bearer string). Logged loudly because it silently resets the player.
-  return _tagged('raw-token (UNSTABLE)', ssoToken);
-}
-
-/// Logs which identity strategy won, once per change — never the value
-/// itself, which is (or derives from) personal data.
-String? _lastIdentityStrategy;
-
-String _tagged(String strategy, String bearer) {
-  if (_lastIdentityStrategy != strategy) {
-    _lastIdentityStrategy = strategy;
-    logger.log('[tifo] player identity from: $strategy');
-  }
-  return bearer;
-}
-
-String? _jwtSub(String token) {
-  final parts = token.split('.');
-  if (parts.length != 3) {
-    return null;
-  }
-  try {
-    final payload = json.decode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
-    return payload is Map ? payload['sub']?.toString() : null;
-  } catch (_) {
-    return null;
-  }
+  // a stream subscription that can outlive a logout.
+  final token = CommonProperties.token;
+  // Only the raw system SSO token, or empty when signed out — no idNo/sub
+  // hashing, no guest device-id fallback.
+  return (baseUrl: baseUrl, token: token, isGuest: token.isEmpty);
 }
 
 /// Thrown for non-2xx responses so callers can surface the backend's message.
