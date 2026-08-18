@@ -22,7 +22,7 @@ abstract final class TifoColors {
   static const Color amber = Color(0xFFD9A400);
 
   /// Fallback fill for a neutral / unowned entity.
-  static const Color neutralFill = Color(0xFF7BBF8A);
+  static const Color neutralFill = Color(0xFFFCFBF2);
 
   /// Miss-cross red — the design system's `error/default`. Pinned as a
   /// constant rather than read from `context.colors`: the penalty HUD renders

@@ -1254,8 +1254,11 @@ class $AssetsTifoAudioGen {
 class $AssetsTifoBackgroundsGen {
   const $AssetsTifoBackgroundsGen();
 
-  /// File path: assets/tifo/backgrounds/entry_hero.jpg
-  AssetGenImage get entryHero => const AssetGenImage('assets/tifo/backgrounds/entry_hero.jpg');
+  /// File path: assets/tifo/backgrounds/entry_hero_ar.jpg
+  AssetGenImage get entryHeroAr => const AssetGenImage('assets/tifo/backgrounds/entry_hero_ar.jpg');
+
+  /// File path: assets/tifo/backgrounds/entry_hero_en.jpg
+  AssetGenImage get entryHeroEn => const AssetGenImage('assets/tifo/backgrounds/entry_hero_en.jpg');
 
   /// File path: assets/tifo/backgrounds/result_draw.jpg
   AssetGenImage get resultDraw => const AssetGenImage('assets/tifo/backgrounds/result_draw.jpg');
@@ -1338,7 +1341,8 @@ class $AssetsTifoBackgroundsGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
-    entryHero,
+    entryHeroAr,
+    entryHeroEn,
     resultDraw,
     resultLoseBlack,
     resultLoseBlackEn,

@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 /// Neutral (unclaimed) building — sandy, NOT a club color (BRD FR-08) and
 /// distinct from the host map's green base buildings. Ideally sourced from the
 /// server `palette.neutral` (GET /config) — hardcoded until we parse it.
-const int kTifoNeutralFillArgb = 0x6E7BBF8A;
-const int kTifoNeutralStrokeArgb = 0xE67BBF8A;
+const int kTifoNeutralFillArgb = 0xFFFCFBF2;
+const int kTifoNeutralStrokeArgb = 0xFFFCFBF2;
 
 /// The five club colors the penalty-result hero art (US-14) ships for. This
 /// is NOT the season roster (that stays data-driven, `GET /clubs` — see
@@ -45,10 +45,10 @@ class TifoClubInfo {
   final String short;
   final int colorArgb;
 
-  /// Semi-transparent fill for building/district polygons.
-  int get fillArgb => (colorArgb & 0x00FFFFFF) | 0xB3000000;
+  /// Opaque fill for building polygons.
+  int get fillArgb => (colorArgb & 0x00FFFFFF) | 0xFF000000;
 
-  /// Opaque stroke for building/district polygon borders.
+  /// Opaque stroke for building polygon borders.
   int get strokeArgb => (colorArgb & 0x00FFFFFF) | 0xFF000000;
 
   static TifoClubInfo? fromJson(Map<String, dynamic> json) {

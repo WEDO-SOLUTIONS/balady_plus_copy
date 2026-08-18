@@ -61,62 +61,63 @@ class _TifoEntryScreenState extends State<TifoEntryScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: _bg,
-    body: Stack(
-      fit: StackFit.expand,
-      children: [
-        // Full-bleed hero. The exported art already carries its own darkening,
-        // so it sits directly on the black scaffold; cover + top alignment keeps
-        // the horizon/flags framed as designed on taller screens.
-        Image(
-          image: const AssetImage('packages/mapness/assets/tifo/backgrounds/entry_hero.jpg'),
-          fit: BoxFit.cover,
-          alignment: Alignment.topCenter,
-          // Missing asset (e.g. app not fully rebuilt) must not kill the
-          // route — fall back to the plain dark scaffold.
-          errorBuilder: (_, _, _) => const SizedBox.expand(),
-        ),
-        // Top scrim so the stories bar / close stay legible over bright art.
-        const Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: 160,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0x66000000), Color(0x00000000)],
+  Widget build(BuildContext context) {
+    // The hero art already bakes in its own localized headline (English
+    // "Take over Riyadh…" / Arabic equivalent), so there's no separate
+    // Text headline drawn on top — that would double up with the image.
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final heroAsset = isArabic
+        ? 'packages/mapness/assets/tifo/backgrounds/entry_hero_ar.jpg'
+        : 'packages/mapness/assets/tifo/backgrounds/entry_hero_en.jpg';
+    return Scaffold(
+      backgroundColor: _bg,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Full-bleed hero. The exported art already carries its own darkening,
+          // so it sits directly on the black scaffold; cover + top alignment keeps
+          // the horizon/flags framed as designed on taller screens.
+          Image(
+            image: AssetImage(heroAsset),
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+            // Missing asset (e.g. app not fully rebuilt) must not kill the
+            // route — fall back to the plain dark scaffold.
+            errorBuilder: (_, _, _) => const SizedBox.expand(),
+          ),
+          // Top scrim so the stories bar / close stay legible over bright art.
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 160,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x66000000), Color(0x00000000)],
+                ),
               ),
             ),
           ),
-        ),
-        SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _StoriesBar(onClose: () => Navigator.of(context).maybePop(false)),
-              // Headline (design node 286:20818 content block).
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                child: Text(
-                  AppLocalizations.of(context).captureTheCityLeadYourTeam,
-                  style: TifoText.h2.copyWith(color: Colors.white, fontSize: 30, height: 1.2),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _StoriesBar(onClose: () => Navigator.of(context).maybePop(false)),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  child: _EnterButton(onPressed: () => unawaited(_enter()), busy: _busy),
                 ),
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                child: _EnterButton(onPressed: () => unawaited(_enter()), busy: _busy),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 /// Close row (design `stories-bar`): the design's stories progress track is an
