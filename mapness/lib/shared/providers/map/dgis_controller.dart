@@ -5,11 +5,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/features/dynamic_style/map_style_store.dart';
+import 'package:mapness/features/navigation_cursor/navigation_cursor_controller.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/map/map_recreation.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -94,30 +94,7 @@ class DgisController extends _$DgisController {
   Future<void> _initialize(DgisMapController controller) async {
     await _setupControllerItself(controller);
     await _setupLocation(controller);
-    await _restorePendingCamera(controller);
     await _setupVisibleRectUpdates(controller);
-  }
-
-  /// Applies a camera position stashed by [PendingCameraSnapshot] before a
-  /// MapView recreate (e.g. car-model swap). Called after the style loads and
-  /// the default-location intro finishes, so the user lands back where they
-  /// were rather than at the Kingdom Tower fallback. No-op when nothing is
-  /// pending.
-  Future<void> _restorePendingCamera(DgisMapController controller) async {
-    final pending = ref.read(pendingCameraSnapshotProvider);
-    if (pending == null) {
-      return;
-    }
-    ref.read(pendingCameraSnapshotProvider.notifier).clear();
-    try {
-      await controller.setCameraPosition(pending);
-      logger.log('[dgis_controller] restored pending camera after MapView recreate');
-    } on PlatformException catch (e) {
-      logger.log(
-        '[dgis_controller] failed to restore pending camera: $e',
-        logLevel: MapnessLogLevel.warning,
-      );
-    }
   }
 
   Future<void> _setupControllerItself(DgisMapController controller) async {
@@ -148,12 +125,21 @@ class DgisController extends _$DgisController {
     ref
       ..listen(darkModeProvider, (previous, next) {
         controller.setAppearance(next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+        // The bundled classic car has distinct day/night meshes; the
+        // navigation-cursor model is set explicitly on the my-location
+        // object (BALADY-3772), so re-push it for the new appearance.
+        unawaited(ref.read(navigationCursorControllerProvider.notifier).applyActive(controller));
       })
       ..listen(appLanguageProvider, (previous, next) {
         controller.overrideLocales(next == Language.arabic ? ['ar-SA'] : ['en-SA']);
       });
 
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
+
+    // BALADY-3772: the persisted navigation cursor is applied to the live
+    // my-location object rather than baked into the style, so push it once
+    // the map is up (and again on every recreate/init).
+    await ref.read(navigationCursorControllerProvider.notifier).applyActive(controller);
 
     try {
       // Voice
@@ -189,14 +175,7 @@ class DgisController extends _$DgisController {
   }
 
   Future<void> _setupLocation(DgisMapController controller) async {
-    // When a MapView recreate is in flight (e.g. car-model swap), the user
-    // already had a camera position we're about to restore in
-    // [_restorePendingCamera]. Skip the Kingdom Tower intro and the
-    // first-fix snap so we don't overwrite the restored position.
-    final hasPendingCamera = ref.read(pendingCameraSnapshotProvider) != null;
-    if (!hasPendingCamera) {
-      await _setDefaultLocation(controller);
-    }
+    await _setDefaultLocation(controller);
 
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
@@ -205,9 +184,7 @@ class DgisController extends _$DgisController {
       await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
     }
     await controller.toggleFollowState();
-    if (!hasPendingCamera) {
-      _moveToUserLocationOnFirstFix(controller);
-    }
+    _moveToUserLocationOnFirstFix(controller);
   }
 
   /// After the Kingdom Tower intro animation, waits for the first real GPS fix
