@@ -56,6 +56,12 @@ abstract final class TifoSpacing {
 /// switch in its own `theme.fontFamily` so this still resolves correctly
 /// there.
 abstract final class TifoText {
+  static const TextStyle h1 = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.w500,
+    height: 1.1,
+    color: TifoColors.textDefault,
+  );
   static const TextStyle h2 = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.w600,
