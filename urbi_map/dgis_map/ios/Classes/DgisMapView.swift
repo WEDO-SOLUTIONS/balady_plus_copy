@@ -524,6 +524,25 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    /// BALADY-3772: swap the 3D model of the my-location object (navigation
+    /// cursor) on the live map via `MyLocationMapObject.setModelData`. No style
+    /// reload, no MapView recreate — route, maneuvers and camera stay untouched.
+    /// Applies to whichever `MyLocationMapObjectSource` is currently on the map
+    /// (the default one or the one NavigationHandler installs for guidance).
+    func setNavigationCursorModel(glb: FlutterStandardTypedData, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let map = self.map else {
+            completion(.failure(PigeonError(code: "map_not_ready", message: "setNavigationCursorModel: map is not ready", details: nil)))
+            return
+        }
+        guard let source = map.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource else {
+            completion(.failure(PigeonError(code: "no_source", message: "setNavigationCursorModel: no MyLocationMapObjectSource on map", details: nil)))
+            return
+        }
+        let modelData = self.sdk.modelFactory.make(modelData: glb.data)
+        source.item.setModelData(data: modelData)
+        completion(.success(()))
+    }
+
     func getCameraVisibleArea(completion: @escaping (Result<PolygonGeometryMessage, any Error>) -> Void) {
         guard let map = self.map else {
             completion(Result.failure( FlutterError(

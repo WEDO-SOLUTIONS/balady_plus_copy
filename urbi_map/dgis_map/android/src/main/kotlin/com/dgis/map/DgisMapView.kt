@@ -478,6 +478,38 @@ class DgisMapView(
         )
     }
 
+    /**
+     * BALADY-3772: swap the 3D model of the my-location object (navigation cursor)
+     * on the live map via MyLocationMapObject.setModelData. No style reload, no
+     * MapView recreate — the route, maneuvers and camera stay untouched. Applies to
+     * whichever MyLocationMapObjectSource is currently on the map: the default one
+     * from onMapReady or the one NavigationHandler installs for guidance.
+     */
+    override fun setNavigationCursorModel(glb: ByteArray, callback: (Result<Unit>) -> Unit) {
+        val currentMap = map
+        if (currentMap == null) {
+            callback(Result.failure(IllegalStateException("setNavigationCursorModel: map is not ready")))
+            return
+        }
+        try {
+            val source = currentMap.sources.firstOrNull { it is MyLocationMapObjectSource }
+                    as? MyLocationMapObjectSource
+            if (source == null) {
+                callback(
+                        Result.failure(
+                                IllegalStateException("setNavigationCursorModel: no MyLocationMapObjectSource on map")
+                        )
+                )
+                return
+            }
+            source.item.setModelData(createModelData(sdkContext, glb))
+            callback(Result.success(Unit))
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "setNavigationCursorModel failed: $e")
+            callback(Result.failure(e))
+        }
+    }
+
     override fun getCameraVisibleArea(callback: (Result<PolygonGeometryMessage>) -> Unit) {
         val map =
                 map
