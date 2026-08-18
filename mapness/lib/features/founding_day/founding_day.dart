@@ -9,6 +9,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -158,7 +159,7 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
-    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
+    final fontName = isArabic ? MapnessConstants.poiMapFontAr : MapnessConstants.poiMapFontEn;
 
     return sdk.MarkerTextStyleMessage(
       fontSize: 10,
