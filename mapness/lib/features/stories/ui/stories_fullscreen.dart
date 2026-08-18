@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/balady_analytics/events/story_events.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -43,6 +44,15 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late final Future<List<StoryData>> _storiesData;
   bool _storiesDataInitialized = false;
 
+  List<StoryData> _stories = const [];
+
+  /// `story_viewed` bookkeeping: the story currently on screen and whether the
+  /// user has watched it through to the last frame. The event is fired once,
+  /// when the user leaves the story (switch/close/dispose), so `completed`
+  /// carries its final value.
+  String? _viewedStoryId;
+  bool _viewedStoryCompleted = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,9 +76,41 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   @override
   void dispose() {
+    _flushStoryViewed();
     _storyFrameController.dispose();
     _indexController.dispose();
     super.dispose();
+  }
+
+  /// Fires the pending `story_viewed` event (if any) with the final
+  /// `completed` value.
+  void _flushStoryViewed() {
+    final storyId = _viewedStoryId;
+    if (storyId == null) {
+      return;
+    }
+    _viewedStoryId = null;
+    StoryEvents.storyViewed(storyId: storyId, completed: _viewedStoryCompleted);
+  }
+
+  /// A story page became current: flush the previous story's view and start
+  /// tracking the new one.
+  void _onStoryShown(String storyId) {
+    if (_viewedStoryId == storyId) {
+      return;
+    }
+    _flushStoryViewed();
+    _viewedStoryId = storyId;
+    _viewedStoryCompleted = false;
+  }
+
+  /// Marks [storyId] as watched through to the last frame. No-op when the
+  /// story is not the one currently tracked (e.g. a neighbour page pre-built
+  /// during a swipe).
+  void _markStoryCompleted(String storyId) {
+    if (_viewedStoryId == storyId) {
+      _viewedStoryCompleted = true;
+    }
   }
 
   @override
@@ -98,6 +140,10 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       ref.read(appAnalyticsProvider).onboardingFlowCompleted();
     }
 
+    if (page >= 0 && page < _stories.length) {
+      _onStoryShown(_stories[page].storyId);
+    }
+
     _currentPage = page;
     _currentPageNotifier.value = _currentPage;
   }
@@ -119,6 +165,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       (element) => element.storyId == widget.initialStoryId,
     );
 
+    _stories = stories;
     _maxPages = stories.length;
 
     _setCurrentPage(index != -1 ? index : 0);
@@ -126,6 +173,12 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   }
 
   void _nextStory() {
+    // Players call this only when advancing past their last frame/video, so
+    // the current story was watched through.
+    final viewedStoryId = _viewedStoryId;
+    if (viewedStoryId != null) {
+      _markStoryCompleted(viewedStoryId);
+    }
     if (_currentPage + 1 >= _maxPages) {
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
       ref.read(appAnalyticsProvider).onboardingFlowCompleted();
@@ -149,47 +202,48 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   @override
   Widget build(BuildContext context) => FutureBuilder<List<StoryData>>(
-        future: _storiesData,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Material(
-              color: context.color.surfaceBaseInversePrimary,
-              child: Center(
-                child: Loading.medium(),
-              ),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const SizedBox.shrink();
-          }
-          final stories = snapshot.data ?? const [];
+    future: _storiesData,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Material(
+          color: context.color.surfaceBaseInversePrimary,
+          child: Center(
+            child: Loading.medium(),
+          ),
+        );
+      }
+      if (!snapshot.hasData) {
+        return const SizedBox.shrink();
+      }
+      final stories = snapshot.data ?? const [];
 
-          return Material(
-            color: context.color.surfaceBaseInversePrimary,
-            child: ValueListenableBuilder(
-              valueListenable: _currentPageNotifier,
-              builder: (_, page, __) => TransformerPageView(
-                onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
-                index: page,
-                controller: _indexController,
-                itemCount: stories.length,
-                itemBuilder: (context, index) => stories[index].videos.isNotEmpty
-                    ? StoryVideoPlayer(
-                        videos: stories[index].videos,
-                        onNextStory: _nextStory,
-                        onPreviousStory: _previousStory,
-                        storyId: stories[index].storyId,
-                        showSoundIcon: widget.showSoundIcon,
-                      )
-                    : StoryFramesPlayer(
-                        controller: _storyFrameController,
-                        story: stories[index],
-                        onNextStory: _nextStory,
-                        onPreviousStory: _previousStory,
-                      ),
-              ),
-            ),
-          );
-        },
+      return Material(
+        color: context.color.surfaceBaseInversePrimary,
+        child: ValueListenableBuilder(
+          valueListenable: _currentPageNotifier,
+          builder: (_, page, __) => TransformerPageView(
+            onPageChanged: (index) => index == null ? null : _setCurrentPage(index),
+            index: page,
+            controller: _indexController,
+            itemCount: stories.length,
+            itemBuilder: (context, index) => stories[index].videos.isNotEmpty
+                ? StoryVideoPlayer(
+                    videos: stories[index].videos,
+                    onNextStory: _nextStory,
+                    onPreviousStory: _previousStory,
+                    storyId: stories[index].storyId,
+                    showSoundIcon: widget.showSoundIcon,
+                  )
+                : StoryFramesPlayer(
+                    controller: _storyFrameController,
+                    story: stories[index],
+                    onNextStory: _nextStory,
+                    onPreviousStory: _previousStory,
+                    onLastFrameShown: () => _markStoryCompleted(stories[index].storyId),
+                  ),
+          ),
+        ),
       );
+    },
+  );
 }

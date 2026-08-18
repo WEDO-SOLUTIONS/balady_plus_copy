@@ -2,12 +2,11 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/balady_analytics/balady_analytics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,7 +16,6 @@ part 'auth_provider.g.dart';
 @riverpod
 class Auth extends _$Auth {
   Future<void> doAuth() async {
-    Metrics.logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
@@ -28,7 +26,6 @@ class Auth extends _$Auth {
   }
 
   Future<void> logOut() async {
-    Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
     await ref.read(profileImageProvider.notifier).clear();
 
@@ -44,14 +41,13 @@ class Auth extends _$Auth {
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logOut');
     await mixpanel?.reset();
-    await FlutterUxcam.setUserIdentity(null);
+    BaladyAnalytics.instance.resetIdentity();
 
     // Notify the map about authorization change
     await notifyAuthorizationChange(isAuthorized: false);
   }
 
   Future<void> tokenExpireLogout() async {
-    Metrics.logEvent('Auth/tokenExpireLogout');
     mixpanel?.timeEvent('Auth: tokenExpireLogout');
     await ref.read(profileImageProvider.notifier).clear();
     await sl<EntryPointCubit>().autoLogout();
@@ -112,9 +108,15 @@ class Auth extends _$Auth {
     ref.onDispose(authSubscription.cancel);
 
     final userId = CommonProperties.userInfo?.idNo;
-    await mixpanel?.identify('$userId');
-
-    await FlutterUxcam.setUserIdentity(userId);
+    // Identify only a real session. Passing null here meant logout to the
+    // analytics facade — every cold start of a logged-out app called reset(),
+    // minting a fresh anonymous distinct_id (a "new user" per launch). Reset
+    // belongs to the explicit logOut() path only. Mixpanel had the twin bug:
+    // '$userId' stringified null into the literal user "null".
+    if (userId != null) {
+      await mixpanel?.identify(userId);
+      BaladyAnalytics.instance.identify(userId: userId);
+    }
     return CommonProperties.userInfo;
   }
 

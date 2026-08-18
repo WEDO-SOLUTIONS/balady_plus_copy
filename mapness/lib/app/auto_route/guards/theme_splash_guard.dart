@@ -6,8 +6,6 @@ import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_state.dart';
 import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 /// Generic guard that shows themed splash screens based on the current [SpecialThemeMode].
 ///
@@ -38,12 +36,6 @@ final class ThemeSplashGuard extends AutoRouteGuard {
 
     // 2. Check if current theme has splash enabled
     if (!splashConfig.enabled) {
-      // Track splash disabled/not configured
-      Metrics.logEventAdvanced(
-        MetricsConstants.themesKeys.splashAutoSkipped,
-        group: MetricsConstants.themesTag,
-        props: {'theme': currentTheme.name, 'reason': 'disabled'},
-      );
       resolver.next();
       return;
     }
@@ -76,16 +68,6 @@ final class ThemeSplashGuard extends AutoRouteGuard {
         }
       });
     } else {
-      // Track splash already shown (skipped)
-      Metrics.logEventAdvanced(
-        MetricsConstants.themesKeys.splashSkipped,
-        group: MetricsConstants.themesTag,
-        props: {
-          'theme': currentTheme.name,
-          'reason': 'already_shown',
-          'strategy': splashConfig.persistenceStrategy.name,
-        },
-      );
       // Splash already shown for this theme, continue navigation
       resolver.next();
     }

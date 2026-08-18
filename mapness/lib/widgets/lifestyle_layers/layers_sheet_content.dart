@@ -7,9 +7,7 @@ import 'package:mapness/features/lifestyle_layers/providers/active_layers_tab.da
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/satellite/providers/base_map_switcher_enabled.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/layers/layer_sliver_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -39,14 +37,7 @@ class LayersSheetContent extends ConsumerWidget {
                   ),
                   const Spacer(),
                   AppButton.close(
-                    onTap: () {
-                      Metrics.logEventAdvanced(
-                        MetricsConstants.layersKeys.exitIcon,
-                        group: MetricsConstants.layersTag,
-                        action: MetricAction.tap.toString(),
-                      );
-                      onClose();
-                    },
+                    onTap: onClose,
                     color: context.colors.backgroundSurface5,
                     padding: EdgeInsets.zero,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
