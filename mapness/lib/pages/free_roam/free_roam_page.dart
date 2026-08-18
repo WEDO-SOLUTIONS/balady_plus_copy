@@ -111,7 +111,6 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
       strings: <String, String>{
         'free_roam': l10n.freeRoam,
         'gps_lost': l10n.gpsLost,
-        'end_trip': l10n.endTrip,
         'km': l10n.km,
         'm': l10n.meter,
         'h': l10n.hoursShort,

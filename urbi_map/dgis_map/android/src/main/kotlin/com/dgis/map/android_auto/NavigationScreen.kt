@@ -253,7 +253,7 @@ class NavigationScreen(
 
     }
 
-    private var isEndTripShown: Boolean = false
+    private var isArrivalAlertShown: Boolean = false
 
     private var isBetterRouteAlertShown: Boolean = false
 
@@ -339,7 +339,7 @@ class NavigationScreen(
                     mapController.showMyLocation()
                 }
                 customRenderer.clear()
-                showEndTrip()
+                showArrivalAlert()
             }
 
             NavigationState.DISABLED -> {
@@ -347,7 +347,7 @@ class NavigationScreen(
                     mapController.showMyLocation()
                 }
                 customRenderer.clear()
-                if (prevState != NavigationState.DISABLED && !isEndTripShown) {
+                if (prevState != NavigationState.DISABLED && !isArrivalAlertShown) {
                     stopNavigation()
                 }
             }
@@ -562,43 +562,48 @@ class NavigationScreen(
         }
     }
 
-    private fun showEndTrip() {
-        isEndTripShown = true
+    /**
+     * "You arrived" banner on the head unit. BALADY-3795 — it carries no "End trip"
+     * action; the session is torn down when the banner goes away (timeout, host
+     * cancellation or dismissal), and the trip can always be ended inside the app.
+     */
+    private fun showArrivalAlert() {
+        isArrivalAlertShown = true
         val title = CarText.create(getString(R.string.end_trip_alert_title))
-        val endTripAction =
-            Action.Builder()
-                .setTitle(getString(R.string.end_trip_alert_action))
-                .setFlags(Action.FLAG_DEFAULT)
-                .setBackgroundColor(CarColor.RED)
-                .setOnClickListener {
-                    appManager.dismissAlert(endTripAlertId)
-                    stopNavigation()
-                    invalidate()
-                }
 
-        val endTripAlert = Alert.Builder(endTripAlertId, title, 10000)
+        val arrivalAlert = Alert.Builder(arrivalAlertId, title, ARRIVAL_ALERT_DURATION_MS)
 
         if (destination?.name != null) {
-            endTripAlert.setSubtitle(destination!!.name!!)
+            arrivalAlert.setSubtitle(destination!!.name!!)
         }
-        endTripAlert
-            .addAction(endTripAction.build())
-            .setCallback(
-                object : AlertCallback {
-                    override fun onCancel(reason: Int) {}
-                    override fun onDismiss() {
-                        isEndTripShown = false
-                        invalidate()
-                    }
-                }
-            )
+        arrivalAlert.setCallback(
+            object : AlertCallback {
+                override fun onCancel(reason: Int) = finishArrival()
+                override fun onDismiss() = finishArrival()
+            }
+        )
         try {
-            appManager.showAlert(endTripAlert.build())
+            appManager.showAlert(arrivalAlert.build())
         } catch (e: Exception) {
-            // Host can reject showAlert; the end-of-trip prompt is not worth crashing over.
+            // Host can reject showAlert; the arrival banner is not worth crashing over.
             e.printStackTrace()
-            isEndTripShown = false
+            finishArrival()
         }
+    }
+
+    /** Ends the car-side session once the arrival banner is gone. Idempotent. */
+    private fun finishArrival() {
+        if (!isArrivalAlertShown) return
+        isArrivalAlertShown = false
+        // A new trip (or free roam) may have started while the banner was up —
+        // never tear that one down.
+        if (navigationState != NavigationState.FINISHED &&
+            navigationState != NavigationState.DISABLED
+        ) {
+            return
+        }
+        stopNavigation()
+        invalidate()
     }
 
     private fun showBetterRouteAlert(durationProfit: Int) {
@@ -917,8 +922,9 @@ class NavigationScreen(
 
     private companion object {
         const val TAG = "NavigationScreen"
-        const val endTripAlertId = 0
+        const val arrivalAlertId = 0
         const val betterRouteAlertId = 1
+        const val ARRIVAL_ALERT_DURATION_MS = 10_000L
 
         fun formatDistance(meters: Double): Pair<Double, Int> {
             if (meters > 3000) {

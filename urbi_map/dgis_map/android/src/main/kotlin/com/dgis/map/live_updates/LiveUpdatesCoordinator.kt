@@ -9,7 +9,6 @@ import androidx.car.app.connection.CarConnection
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import io.flutter.plugin.common.MethodChannel
 
 /**
  * Glue between the Flutter method channel ("balady/navigation_live_updates"), the existing
@@ -18,8 +17,9 @@ import io.flutter.plugin.common.MethodChannel
  * - Dart pushes session metadata (destination, route type, language, enabled toggle).
  * - NavigationHandler reports session start/stop and navigation state transitions.
  * - The coordinator owns the service lifecycle, suppresses the phone notification while
- *   Android Auto projection is connected, posts the arrival notification and forwards
- *   "End Trip" requests both natively (immediate stop) and to Dart (best-effort teardown).
+ *   Android Auto projection is connected and posts the arrival notification.
+ *
+ * The bridge is one-way: nothing is ever sent back from a notification to Dart.
  */
 object LiveUpdatesCoordinator {
 
@@ -53,8 +53,6 @@ object LiveUpdatesCoordinator {
         private set
 
     private var appContext: Context? = null
-    private var channel: MethodChannel? = null
-    private var stopNavigationCallback: (() -> Unit)? = null
     private var carConnection: CarConnection? = null
     private var carProjectionConnected = false
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -73,14 +71,8 @@ object LiveUpdatesCoordinator {
     }
 
     /** Called from DgisMapPlugin.onAttachedToEngine. */
-    fun attach(context: Context, methodChannel: MethodChannel) {
+    fun attach(context: Context) {
         appContext = context.applicationContext
-        channel = methodChannel
-    }
-
-    /** Called from DgisMapPlugin.onDetachedFromEngine. */
-    fun detachChannel() {
-        channel = null
     }
 
     fun setSessionMetadata(
@@ -109,12 +101,10 @@ object LiveUpdatesCoordinator {
 
     /**
      * Called by NavigationHandler after a successful non-public-transport
-     * navigationManager.start()/startSimulation(). [stopCallback] must stop navigation
-     * natively (NavigationHandler.stopNavigation).
+     * navigationManager.start()/startSimulation().
      */
-    fun onSessionStarted(context: Context, stopCallback: () -> Unit) {
+    fun onSessionStarted(context: Context) {
         appContext = context.applicationContext
-        stopNavigationCallback = stopCallback
         isSessionActive = true
         cancelArrivalNotification()
         runOnMain {
@@ -127,9 +117,8 @@ object LiveUpdatesCoordinator {
 
     /** Called by NavigationHandler.stopNavigation and on terminal states. Idempotent. */
     fun onSessionStopped() {
-        if (!isSessionActive && stopNavigationCallback == null) return
+        if (!isSessionActive) return
         isSessionActive = false
-        stopNavigationCallback = null
         runOnMain {
             stopService()
             unobserveCarConnection()
@@ -150,23 +139,6 @@ object LiveUpdatesCoordinator {
                 }
             }
             "disabled" -> onSessionStopped()
-        }
-    }
-
-    /** Invoked by EndTripReceiver when the user taps "End Trip" on the notification. */
-    fun requestEndTrip() {
-        runOnMain {
-            try {
-                stopNavigationCallback?.invoke()
-            } catch (e: Exception) {
-                Log.w(TAG, "End trip stop callback failed", e)
-            }
-            onSessionStopped()
-            try {
-                channel?.invokeMethod("onEndTripRequested", null)
-            } catch (e: Exception) {
-                Log.w(TAG, "onEndTripRequested dispatch failed", e)
-            }
         }
     }
 
