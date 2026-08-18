@@ -589,11 +589,11 @@ class TifoDemoLeaderboard extends StatelessWidget {
   List<(int, String, Color, int, int, int)> _rows(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return [
-      (1, l10n.blackTeam, _black, 18, 342, 48),
-      (2, l10n.blueTeam, _blue, 14, 268, 46),
-      (3, l10n.redTeam, _red, 11, 205, 36),
-      (4, l10n.sandTeam, _sand, 8, 142, 25),
-      (5, l10n.yellowTeam, _yellow, 6, 98, 17),
+      (1, l10n.blackTeam, _black, 18, 342, 15),
+      (2, l10n.blueTeam, _blue, 14, 268, 11),
+      (3, l10n.redTeam, _red, 11, 205, 23),
+      (4, l10n.sandTeam, _sand, 8, 142, 24),
+      (5, l10n.yellowTeam, _yellow, 6, 98, 27),
     ];
   }
 
