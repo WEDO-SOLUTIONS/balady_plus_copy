@@ -39,6 +39,9 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     final isLoadingList = useState(isEditing);
     final selectedIcon = useState<FavoriteIconCode>(FavoriteIconCode.$default);
     final isIconPickerExpanded = useState(false);
+    final originalValues = useState<({String name, String description, MarkerColorCode color, FavoriteIconCode icon})?>(
+      null,
+    );
 
     useEffect(() {
       if (listId == null) {
@@ -54,6 +57,12 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
 
           // todo(claude): pass icon from api when available
           // selectedIcon.value = null;
+          originalValues.value = (
+            name: list.name,
+            description: list.description ?? '',
+            color: list.markerColorCode,
+            icon: selectedIcon.value,
+          );
         } catch (e) {
           if (context.mounted) {
             final message = e is FavoriteListsApiException
@@ -73,7 +82,17 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     }, [listId]);
 
     final value = useValueListenable(listNameController);
+    final descriptionValue = useValueListenable(descriptionController);
     final isValid = value.text.trim().isNotEmpty;
+
+    final original = originalValues.value;
+    final isUnchanged =
+        isEditing &&
+        original != null &&
+        value.text.trim() == original.name &&
+        descriptionValue.text.trim() == original.description &&
+        color.value == original.color &&
+        selectedIcon.value == original.icon;
 
     return ToggleSheet(
       scrollController: scrollController,
@@ -225,46 +244,52 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
         ),
         const SizedBox(height: Spacing.$4x),
         BaladyAppButton(
-          primaryLabel: isEditing
+          primaryLabel: isUnchanged
+              // TODO(claude): localize string
+              ? 'Close without saving'
+              : isEditing
               ? context.l10n.save
               // TODO(claude): localize string
               : 'Create list',
-          buttonColorScheme: ButtonColorScheme.accent,
+          buttonColorScheme: isUnchanged ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent,
+          buttonType: isUnchanged ? ButtonType.secondary : ButtonType.primary,
           buttonState: isSubmitting.value || isLoadingList.value
               ? ButtonState.loading
               : (isValid ? ButtonState.defaultState : ButtonState.disabled),
-          onTap: () async {
-            final listName = listNameController.value.text.trim();
-            final description = descriptionController.value.text.trim();
+          onTap: isUnchanged
+              ? () => context.router.pop()
+              : () async {
+                  final listName = listNameController.value.text.trim();
+                  final description = descriptionController.value.text.trim();
 
-            isSubmitting.value = true;
-            try {
-              final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-              final request = FavoriteListRequestDto(
-                name: listName,
-                description: description.isEmpty ? null : description,
-                markerColorCode: color.value,
-              );
-              if (listId != null) {
-                await dataSource.updateFavoriteList(listId, request);
-                ref.invalidate(favoriteListDetailProvider(listId: listId));
-              } else {
-                await dataSource.createFavoriteList(request);
-              }
-              ref.invalidate(favoriteListsProvider);
-              if (context.mounted) {
-                context.router.pop(true);
-              }
-            } catch (e) {
-              isSubmitting.value = false;
-              if (context.mounted) {
-                final message = e is FavoriteListsApiException
-                    ? e.localizedMessage(ref.read(appLanguageProvider))
-                    : context.l10n.somethingWentWrongPleaseTryAgainLater;
-                ToastOverlay.of(context).show(title: message, isDismissible: true);
-              }
-            }
-          },
+                  isSubmitting.value = true;
+                  try {
+                    final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+                    final request = FavoriteListRequestDto(
+                      name: listName,
+                      description: description.isEmpty ? null : description,
+                      markerColorCode: color.value,
+                    );
+                    if (listId != null) {
+                      await dataSource.updateFavoriteList(listId, request);
+                      ref.invalidate(favoriteListDetailProvider(listId: listId));
+                    } else {
+                      await dataSource.createFavoriteList(request);
+                    }
+                    ref.invalidate(favoriteListsProvider);
+                    if (context.mounted) {
+                      context.router.pop(true);
+                    }
+                  } catch (e) {
+                    isSubmitting.value = false;
+                    if (context.mounted) {
+                      final message = e is FavoriteListsApiException
+                          ? e.localizedMessage(ref.read(appLanguageProvider))
+                          : context.l10n.somethingWentWrongPleaseTryAgainLater;
+                      ToastOverlay.of(context).show(title: message, isDismissible: true);
+                    }
+                  }
+                },
         ),
       ],
     );
