@@ -116,14 +116,12 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(l10n.tifoUnclaimed, style: TifoText.captionMedium),
-                        const SizedBox(height: 8),
+                        Text(l10n.tifoUnclaimed, style: TifoText.h1.copyWith(color: context.colors.accentDefault)),
+                        const SizedBox(height: 24),
                         Text(
-                          _building.displayName,
-                          style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                          l10n.tifoNotClaimedYet,
+                          style: TifoText.captionRegular.copyWith(color: context.colors.accentDefault),
                         ),
-                        const SizedBox(height: 2),
-                        Text(l10n.tifoNotClaimedYet, style: TifoText.captionRegular),
                       ],
                     )
                   : Column(
@@ -139,7 +137,12 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
                               decoration: BoxDecoration(color: ownerColor, borderRadius: BorderRadius.circular(12)),
                             ),
                             const SizedBox(width: 12),
-                            Expanded(child: Text(ownerClub?.name ?? _building.displayName, style: TifoText.bodyLSemi)),
+                            Expanded(
+                              child: Text(
+                                ownerClub?.name ?? _building.displayName,
+                                style: TifoText.bodyLSemi.copyWith(color: context.colors.foregroundDefault),
+                              ),
+                            ),
                           ],
                         ),
                       ],
