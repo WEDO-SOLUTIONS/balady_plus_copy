@@ -90,6 +90,21 @@ class TifoFlowController extends Notifier<TifoFlowState> {
     final box = await ref.read(hiveProvider('tifo').future);
     await box.put('tutorialCompleted', true);
   }
+
+  /// Support → "Replay tutorial": drops every device-side record that the
+  /// tutorial has already been seen, so the guided tour can run again from
+  /// screen 1 exactly as it does on a first launch.
+  ///
+  /// The per-profile server flag has no reset endpoint (`/tutorial/complete`
+  /// is one-way), and a replay is an explicit user action rather than an
+  /// unmet gate — so the tour re-stamps [markTutorialCompletedOnDevice] when
+  /// the replayed run ends and the player is never re-gated into it.
+  Future<void> resetTutorial() async {
+    final box = await ref.read(hiveProvider('tifo').future);
+    await box.delete('tutorialCompleted');
+    await box.delete('tutorialOffered');
+    state = state.copyWith(hasSeenTutorial: false);
+  }
 }
 
 final tifoFlowProvider = NotifierProvider<TifoFlowController, TifoFlowState>(TifoFlowController.new);

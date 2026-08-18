@@ -956,7 +956,16 @@ class TifoDemoProfile extends StatelessWidget {
 // ─── 12 · Support ───────────────────────────────────────────────────────────
 
 class TifoDemoSupport extends StatelessWidget {
-  const TifoDemoSupport({super.key});
+  const TifoDemoSupport({super.key, this.onReplayTutorial, this.replayBusy = false});
+
+  /// Support → "Replay tutorial" (BE-233 / build 3.30.1: the button rendered
+  /// permanently disabled because no handler was ever passed). Null keeps the
+  /// button in its disabled look for the pure-replica usages.
+  final VoidCallback? onReplayTutorial;
+
+  /// True while the replay is resetting the persisted tutorial flags, so a
+  /// double tap can't restart the tour twice.
+  final bool replayBusy;
 
   /// One "How to play" sparkle. A widget span carries no ambient text style,
   /// so it restates the header's own ([TifoText.overline]) and pads for the
@@ -1011,7 +1020,12 @@ class TifoDemoSupport extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 16),
-              TifoPrimaryButton(label: AppLocalizations.of(context).replayTutorial, trailingArrow: true),
+              TifoPrimaryButton(
+                label: AppLocalizations.of(context).replayTutorial,
+                trailingArrow: true,
+                busy: replayBusy,
+                onPressed: onReplayTutorial,
+              ),
               const SizedBox(height: 20),
               Center(
                 // Per-glyph sizes (10/7 … 7/10) — the sparkles taper towards

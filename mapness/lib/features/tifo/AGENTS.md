@@ -85,6 +85,18 @@ first unmet step; Close(X) leaves the map untouched):
   (`TifoDemoDistrictSheet`, `TifoDemoBuildingSheet`, `TifoDemoPenaltyHud`,
   `TifoDemoProfile`, `TifoDemoTeamSelect`) are kept on purpose — design has
   re-cut this sequence twice already.
+- Support screen (tour step 4, `TifoDemoSupport`) is what the ⚽ "?" control
+  opens (`initialStep: TifoGuidedTutorial.lastStep`). Its **"Replay tutorial"**
+  CTA rendered permanently disabled up to build 3.30.1 (876) because the
+  replica passed no `onPressed`; it now calls
+  `TifoFlowController.resetTutorial()` (clears the Hive `tutorialCompleted` /
+  `tutorialOffered` flags + in-memory `hasSeenTutorial`) and rewinds the route
+  to screen 1. When that replayed run ends — finished or skipped — the tour
+  re-stamps `markTutorialCompletedOnDevice()`, otherwise the cleared device
+  flag would re-gate the player into the tour on the next play attempt (or
+  right after a sign-in, which mints a fresh profile on staging). The server
+  flag is not reset: `/tutorial/complete` is one-way, there is no undo
+  endpoint — fixed 2026-08-18.
 - `TifoJoinPill` ("Dominate with your team →", node 589:85824) renders
   whenever the TIFO layer is on **and** the player hasn't cleared every play
   gate yet (`!TifoSessionState.isPlayReady`, i.e. `nextStep != ready`) — it
