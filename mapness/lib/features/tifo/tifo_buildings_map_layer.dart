@@ -513,8 +513,8 @@ class TifoBuildingsMapLayer extends Notifier<bool> {
         final summary = districtsState.summaries[district.id];
         // leaderColor is server-side paint-ready — the leader's hex OR the
         // neutral palette color — so use it directly (fallback grey if absent).
-        final baseArgb = summary?.leaderColorArgb ?? 0xFF7BBF8A;
-        final fill = (baseArgb & 0x00FFFFFF) | 0x40000000;
+        final baseArgb = summary?.leaderColorArgb ?? 0xFFFCFBF2;
+        final fill = (baseArgb & 0x00FFFFFF) | 0xE6000000;
         final prev = _drawnDistrictFill[district.id];
         if (prev == fill) {
           continue; // unchanged → keep the drawn polygons
