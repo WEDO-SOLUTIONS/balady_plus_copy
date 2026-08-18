@@ -123,9 +123,10 @@ class DgisMapView(
 
     /**
      * BALADY-3772: the navigation-cursor 3D model last set via
-     * [setNavigationCursorModel]. Kept so it survives every
-     * MyLocationMapObjectSource swap (guidance start/stop) — a fresh source
-     * comes up with the style's default mesh otherwise.
+     * [setNavigationCursorModel]. Re-applied by [NavigationHandler] whenever the
+     * my-location object may have (re)materialised its model: after a source
+     * swap and once a session reaches State.NAVIGATION — otherwise a fresh
+     * source (or a session started later) comes up with the style's default mesh.
      */
     private var navigationCursorModel: ModelData? = null
 

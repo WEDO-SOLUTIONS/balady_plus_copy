@@ -47,10 +47,11 @@ class NavigationHandler(
         private val eventSink: EventChannel.EventSink,
         private val map: Map,
         private val appContext: Context,
-        // BALADY-3772: guidance installs its own MyLocationMapObjectSource and
-        // restores the previous one on exit; the navigation-cursor 3D model set
-        // via setModelData lives on the object, so the owner must re-apply it
-        // after every swap.
+        // BALADY-3772: the navigation-cursor 3D model is set on the my-location
+        // object via setModelData. It has to be re-applied whenever that object
+        // may have (re)materialised its model: after guidance swaps the source
+        // in/out, and when a session (guidance / free roam) starts — a model set
+        // while the cursor was still the idle dashboard marker is not shown.
         private val onMyLocationSourceReplaced: () -> Unit = {},
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
@@ -419,6 +420,10 @@ class NavigationHandler(
                                         )
                                 )
                                 isNavigating = true
+                                // The my-location object switches to its navigation (3D model)
+                                // representation only once the session is actually running —
+                                // a model pushed earlier is not shown. Re-apply it here.
+                                onMyLocationSourceReplaced()
                         }
                         State.ROUTE_SEARCH -> {
                                 eventSink.success(

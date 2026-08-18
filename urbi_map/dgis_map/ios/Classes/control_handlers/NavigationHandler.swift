@@ -36,9 +36,11 @@ class NavigationHandler {
     private let maneuverControlModel: ManeuverControlModel
     
     private let oldSource: DGis.Source?
-    /// BALADY-3772: guidance installs its own MyLocationMapObjectSource; the
-    /// navigation-cursor 3D model set via setModelData lives on the object, so
-    /// the owner (DgisMapView) re-applies it after the swap.
+    /// BALADY-3772: the navigation-cursor 3D model is set on the my-location
+    /// object via setModelData. The owner (DgisMapView) re-applies it whenever
+    /// that object may have (re)materialised its model: after guidance swaps
+    /// the source and when a session (guidance / free roam) starts — a model
+    /// set while the cursor was still the idle dashboard marker is not shown.
     var onMyLocationSourceReplaced: (() -> Void)?
     
     private(set) var isNavigating: Bool = false
@@ -468,6 +470,7 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.start()
+            onMyLocationSourceReplaced?()
         } catch {
             completion(
                 Result.failure(
