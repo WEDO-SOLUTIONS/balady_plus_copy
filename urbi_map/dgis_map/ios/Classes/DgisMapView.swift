@@ -122,6 +122,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel,
             view: self._view
         )
+        self.navigationHandler?.onMyLocationSourceReplaced = { [weak self] in
+            self?.reapplyNavigationCursorModel()
+        }
         
         self.carPlayHandler = CarPlayHandler(eventChannel: eventChannel)
         
@@ -540,7 +543,21 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         let modelData = self.sdk.modelFactory.make(modelData: glb.data)
         source.item.setModelData(data: modelData)
+        self.navigationCursorModel = modelData
         completion(.success(()))
+    }
+
+    /// BALADY-3772: the navigation-cursor 3D model last set via
+    /// `setNavigationCursorModel`. Kept so it survives a
+    /// `MyLocationMapObjectSource` swap (guidance start) — a fresh source comes
+    /// up with the style's default mesh otherwise.
+    private var navigationCursorModel: ModelData?
+
+    private func reapplyNavigationCursorModel() {
+        guard let model = self.navigationCursorModel,
+              let source = self.map?.sources.first(where: { $0 is MyLocationMapObjectSource }) as? MyLocationMapObjectSource
+        else { return }
+        source.item.setModelData(data: model)
     }
 
     func getCameraVisibleArea(completion: @escaping (Result<PolygonGeometryMessage, any Error>) -> Void) {

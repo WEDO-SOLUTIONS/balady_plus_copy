@@ -47,6 +47,11 @@ class NavigationHandler(
         private val eventSink: EventChannel.EventSink,
         private val map: Map,
         private val appContext: Context,
+        // BALADY-3772: guidance installs its own MyLocationMapObjectSource and
+        // restores the previous one on exit; the navigation-cursor 3D model set
+        // via setModelData lives on the object, so the owner must re-apply it
+        // after every swap.
+        private val onMyLocationSourceReplaced: () -> Unit = {},
 ) : AutoCloseable {
         private val context: SdkContext = sdkContext
         private val voicesManager = getVoiceManager(sdkContext)
@@ -198,6 +203,7 @@ class NavigationHandler(
                         }
                         map.addSource(oldSource!!)
                         oldSource = null
+                        onMyLocationSourceReplaced()
                 }
         }
 
@@ -313,6 +319,7 @@ class NavigationHandler(
                                                 )
                                 )
                         )
+                        onMyLocationSourceReplaced()
                 }
 
                 if (!options.isPublicTransport) {

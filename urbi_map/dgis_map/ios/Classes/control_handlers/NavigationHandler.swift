@@ -36,6 +36,10 @@ class NavigationHandler {
     private let maneuverControlModel: ManeuverControlModel
     
     private let oldSource: DGis.Source?
+    /// BALADY-3772: guidance installs its own MyLocationMapObjectSource; the
+    /// navigation-cursor 3D model set via setModelData lives on the object, so
+    /// the owner (DgisMapView) re-applies it after the swap.
+    var onMyLocationSourceReplaced: (() -> Void)?
     
     private(set) var isNavigating: Bool = false
 
@@ -334,6 +338,7 @@ class NavigationHandler {
                 bearingThreshold: Bearing(value: 90)
             )
         ))
+        onMyLocationSourceReplaced?()
         
         completion(Result.success(()))
     }

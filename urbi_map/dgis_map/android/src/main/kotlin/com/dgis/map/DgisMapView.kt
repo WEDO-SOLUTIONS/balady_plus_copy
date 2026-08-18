@@ -117,7 +117,27 @@ class DgisMapView(
                 eventSink = eventSink,
                 map = map!!,
                 appContext = context,
+                onMyLocationSourceReplaced = ::reapplyNavigationCursorModel,
         )
+    }
+
+    /**
+     * BALADY-3772: the navigation-cursor 3D model last set via
+     * [setNavigationCursorModel]. Kept so it survives every
+     * MyLocationMapObjectSource swap (guidance start/stop) — a fresh source
+     * comes up with the style's default mesh otherwise.
+     */
+    private var navigationCursorModel: ModelData? = null
+
+    private fun reapplyNavigationCursorModel() {
+        val model = navigationCursorModel ?: return
+        val source = map?.sources?.firstOrNull { it is MyLocationMapObjectSource }
+                as? MyLocationMapObjectSource ?: return
+        try {
+            source.item.setModelData(model)
+        } catch (e: Exception) {
+            Log.w("DgisMapView", "re-applying navigation cursor model failed: $e")
+        }
     }
     private val packagesHandler by unsafeLazy {
         PackagesHandler(
@@ -502,7 +522,9 @@ class DgisMapView(
                 )
                 return
             }
-            source.item.setModelData(createModelData(sdkContext, glb))
+            val model = createModelData(sdkContext, glb)
+            source.item.setModelData(model)
+            navigationCursorModel = model
             callback(Result.success(Unit))
         } catch (e: Exception) {
             Log.w("DgisMapView", "setNavigationCursorModel failed: $e")
