@@ -5,8 +5,19 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'favorite_lists.g.dart';
 
 @riverpod
-Future<List<FavoriteListDto>> favoriteLists(Ref ref) async {
+Future<FavoriteListsResponseDto> favoriteListsResponse(Ref ref) async {
   final dataSource = await ref.watch(favoriteListsRemoteDataSourceProvider.future);
-  final response = await dataSource.getFavoriteLists();
+  return dataSource.getFavoriteLists();
+}
+
+@riverpod
+Future<List<FavoriteListDto>> favoriteLists(Ref ref) async {
+  final response = await ref.watch(favoriteListsResponseProvider.future);
   return response.lists;
+}
+
+@riverpod
+Future<FavoriteListLimitsDto> favoriteListLimits(Ref ref) async {
+  final response = await ref.watch(favoriteListsResponseProvider.future);
+  return response.limits;
 }

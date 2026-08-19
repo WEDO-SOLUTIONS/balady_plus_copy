@@ -26,6 +26,14 @@ class FavoriteListsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final favoriteListsAsync = ref.watch(favoriteListsProvider);
+    final favoriteListLimitsAsync = ref.watch(favoriteListLimitsProvider);
+    final canCreateMoreLists = favoriteListsAsync.maybeWhen(
+      data: (lists) => favoriteListLimitsAsync.maybeWhen(
+        data: (limits) => lists.length < limits.maxLists,
+        orElse: () => true,
+      ),
+      orElse: () => true,
+    );
 
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
@@ -88,18 +96,18 @@ class FavoriteListsPage extends HookConsumerWidget {
                 child: ContentWrapper(
                   color: context.colors.backgroundSurface1,
                   children: [
-                    ContentRow(
-                      leading: Icon(SystemIcons.zoomPlus, color: context.colors.accentDefault, size: 24),
-                      // TODO(claude): localize string
-                      text: ContentRowTextOptions(
-                        title: 'Create a new list',
-                        titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
+                    if (canCreateMoreLists)
+                      ContentRow(
+                        leading: Icon(SystemIcons.zoomPlus, color: context.colors.accentDefault, size: 24),
+                        // TODO(claude): localize string
+                        text: ContentRowTextOptions(
+                          title: 'Create a new list',
+                          titleOptions: ContentRowTextOption(baseColor: context.colors.accentDefault),
+                        ),
+                        onTap: () {
+                          context.router.push(CreateOrUpdateFavoriteListRoute());
+                        },
                       ),
-                      onTap: () {
-                        context.router.push(CreateOrUpdateFavoriteListRoute());
-                        // todo create new list
-                      },
-                    ),
                     ContentRow(
                       leading: Icon(SystemIcons.bookmarkAdd, color: context.colors.accentDefault, size: 24),
                       text: ContentRowTextOptions(
