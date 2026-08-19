@@ -34,12 +34,28 @@ class HuaweiLocationProvider(private val context: Context) {
         callback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.locations.lastOrNull()?.let {
+                    if (isGpsJitter(it)) return@let
                     lastLocation = it
                     onLocationUpdate(it)
                 }
             }
         }
         client?.requestLocationUpdates(request, callback, thread.looper)
+    }
+
+    /**
+     * Huawei's fused provider doesn't smooth fixes the way Google's does, so consecutive
+     * readings can drift a few meters apart while the device is stationary, making the car
+     * marker appear to move at 0 km/h. Drop fixes that look like GPS noise rather than
+     * real movement: near-zero reported speed and displacement within the fix's own accuracy.
+     */
+    private fun isGpsJitter(location: Location): Boolean {
+        val previous = lastLocation ?: return false
+        val isNearlyStationary = !location.hasSpeed() || location.speed < STATIONARY_SPEED_THRESHOLD_MPS
+        if (!isNearlyStationary) return false
+
+        val jitterRadius = maxOf(location.accuracy, MIN_JITTER_RADIUS_METERS)
+        return location.distanceTo(previous) < jitterRadius
     }
 
     fun getLastKnownLocation(onResult: (Location?) -> Unit) {
@@ -60,5 +76,10 @@ class HuaweiLocationProvider(private val context: Context) {
     fun stopLocationUpdates() {
         callback?.let { client?.removeLocationUpdates(it) }
         Log.d("HuaweiLocationProvider", "Huawei Location updates stopped.")
+    }
+
+    companion object {
+        private const val STATIONARY_SPEED_THRESHOLD_MPS = 1.0f
+        private const val MIN_JITTER_RADIUS_METERS = 5f
     }
 }
