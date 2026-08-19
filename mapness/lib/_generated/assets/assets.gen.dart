@@ -1237,6 +1237,9 @@ class $AssetsIconsSvgFavoriteGen {
   /// File path: assets/icons/svg/favorite/ic_favorite_0_default.svg
   SvgGenImage get icFavorite0Default => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_0_default.svg');
 
+  /// File path: assets/icons/svg/favorite/ic_favorite_10_heart.svg
+  SvgGenImage get icFavorite10Heart => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_10_heart.svg');
+
   /// File path: assets/icons/svg/favorite/ic_favorite_1_home.svg
   SvgGenImage get icFavorite1Home => const SvgGenImage('assets/icons/svg/favorite/ic_favorite_1_home.svg');
 
@@ -1274,6 +1277,7 @@ class $AssetsIconsSvgFavoriteGen {
   /// List of all assets
   List<SvgGenImage> get values => [
     icFavorite0Default,
+    icFavorite10Heart,
     icFavorite1Home,
     icFavorite2Building,
     icFavorite3City,

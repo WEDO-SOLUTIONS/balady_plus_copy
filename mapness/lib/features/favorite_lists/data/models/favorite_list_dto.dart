@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_place_dto.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/data/models/pagination_dto.dart';
 
@@ -37,10 +38,11 @@ abstract class FavoriteListDto with _$FavoriteListDto {
     required final String id,
     required final String name,
     required final String? description,
-    @JsonKey(unknownEnumValue: MarkerColorCode.unknown) required final MarkerColorCode markerColorCode,
     required final bool isDefault,
     required final DateTime createdAt,
     required final DateTime updatedAt,
+    @JsonKey(unknownEnumValue: MarkerColorCode.unknown) required final MarkerColorCode markerColorCode,
+    @JsonKey(unknownEnumValue: FavoriteIconType.$default) final FavoriteIconType? iconType,
     // Present on "get all"/"get by id" responses, absent on create/update responses.
     final MarkerColorDto? markerColor,
     final int? placeCount,
@@ -56,6 +58,7 @@ abstract class FavoriteListRequestDto with _$FavoriteListRequestDto {
     required final String name,
     final String? description,
     @JsonKey(unknownEnumValue: MarkerColorCode.unknown) final MarkerColorCode? markerColorCode,
+    @JsonKey(unknownEnumValue: FavoriteIconType.$default) final FavoriteIconType? iconType,
   }) = _FavoriteListRequestDto;
 
   factory FavoriteListRequestDto.fromJson(Map<String, dynamic> json) => _$FavoriteListRequestDtoFromJson(json);

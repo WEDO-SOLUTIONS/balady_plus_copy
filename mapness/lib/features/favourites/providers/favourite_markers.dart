@@ -4,7 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
@@ -68,13 +68,29 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
 
   Future<({GeoPointWithElevationMessage position, String title})?> _resolvePlace(
     DgisMapController dgisController,
-    String placeId,
+    MapMarkerDto marker,
   ) async {
-    final cached = _resolvedPlaces[placeId];
+    final cached = _resolvedPlaces[marker.placeId];
     if (cached != null) {
       return cached;
     }
-    final objectId = int.tryParse(placeId);
+
+    final point = marker.point;
+    if (point != null) {
+      final position = GeoPointWithElevationMessage(latitude: point.lat, longitude: point.lon, elevation: 1);
+      // The API doesn't return a name — resolve it via the directory lookup,
+      // but a failure there no longer removes the marker: its position is
+      // already known from the API.
+      final title = await _resolveTitle(dgisController, marker.placeId);
+      final resolved = (position: position, title: title ?? '');
+      _resolvedPlaces[marker.placeId] = resolved;
+      return resolved;
+    }
+
+    // No coordinates from the API for this place (legacy/unresolved) — fall
+    // back to resolving both position and title from the same directory
+    // lookup, as before `point` existed.
+    final objectId = int.tryParse(marker.placeId);
     if (objectId == null) {
       return null;
     }
@@ -96,9 +112,26 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
         ),
         title: directoryObject.title,
       );
-      _resolvedPlaces[placeId] = resolved;
+      _resolvedPlaces[marker.placeId] = resolved;
       return resolved;
     } catch (e) {
+      return null;
+    }
+  }
+
+  Future<String?> _resolveTitle(DgisMapController dgisController, String placeId) async {
+    final objectId = int.tryParse(placeId);
+    if (objectId == null) {
+      return null;
+    }
+    try {
+      final directoryObject = await dgisController
+          .searchByObjectId(
+            DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+          )
+          .timeout(const Duration(seconds: 10));
+      return directoryObject.title;
+    } catch (_) {
       return null;
     }
   }
@@ -128,7 +161,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
     final favoritePinIcon = PngBytesMarkerIcon(
       pngData: await ref
           .read(favoritePinMarkerBitmapProvider)
-          .render(tint: const Color(0xFF1E928F), icon: FavoriteIconCode.$default, devicePixelRatio: devicePixelRatio),
+          .render(tint: const Color(0xFF1E928F), icon: FavoriteIconType.$default, devicePixelRatio: devicePixelRatio),
       width: 24,
     );
     if (!ref.mounted) {
@@ -173,7 +206,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
 
     final favoriteListMarkers = await Future.wait(
       aggregatedMarkers.map((marker) async {
-        final resolved = await _resolvePlace(dgisController, marker.placeId);
+        final resolved = await _resolvePlace(dgisController, marker);
         if (resolved == null) {
           return null;
         }
@@ -182,7 +215,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
               .read(favoritePinMarkerBitmapProvider)
               .render(
                 tint: marker.markerColorCode.getColor(colors),
-                icon: FavoriteIconCode.$default,
+                icon: marker.iconType ?? FavoriteIconType.$default,
                 devicePixelRatio: devicePixelRatio,
               );
           return constructFavoriteListPlaceMarker(

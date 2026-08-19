@@ -4,14 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favorite_pin_marker_bitmap.g.dart';
 
 /// Runtime composer for favorite-list pin markers. Loads the pin frame
 /// (`ic_favorite_pin_frame.svg` — white disc + tinted rounded-square ring)
-/// and the selected [FavoriteIconCode] glyph, both tinted with the same
+/// and the selected [FavoriteIconType] glyph, both tinted with the same
 /// color via `SvgTheme.currentColor`, composites the glyph on top, and
 /// rasterizes the result to PNG bytes for `PngBytesMarkerIcon`. Results are
 /// cached per `(tint, icon)` so repeat combinations are free.
@@ -52,7 +52,7 @@ class FavoritePinMarkerBitmap {
 
   Future<Uint8List> render({
     required Color tint,
-    required FavoriteIconCode icon,
+    required FavoriteIconType icon,
     required double devicePixelRatio,
   }) async {
     final key = _CacheKey(tint: tint, icon: icon);
@@ -114,7 +114,7 @@ class FavoritePinMarkerBitmap {
   /// everywhere else (favourites layer) and is left untouched.
   Future<Uint8List> renderTeardropPin({
     required Color tint,
-    required FavoriteIconCode icon,
+    required FavoriteIconType icon,
     required double devicePixelRatio,
   }) async {
     final key = _CacheKey(tint: tint, icon: icon);
@@ -174,7 +174,7 @@ class _CacheKey {
   const _CacheKey({required this.tint, required this.icon});
 
   final Color tint;
-  final FavoriteIconCode icon;
+  final FavoriteIconType icon;
 
   @override
   bool operator ==(Object other) => other is _CacheKey && other.tint == tint && other.icon == icon;

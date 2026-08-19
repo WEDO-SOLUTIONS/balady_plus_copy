@@ -10,8 +10,9 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exception.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/data/models/favorite_list_dto.dart';
-import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
+import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -37,9 +38,9 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     final color = useState(MarkerColorCode.blue);
     final isSubmitting = useState(false);
     final isLoadingList = useState(isEditing);
-    final selectedIcon = useState<FavoriteIconCode>(FavoriteIconCode.$default);
+    final selectedIcon = useState<FavoriteIconType>(FavoriteIconType.$default);
     final isIconPickerExpanded = useState(false);
-    final originalValues = useState<({String name, String description, MarkerColorCode color, FavoriteIconCode icon})?>(
+    final originalValues = useState<({String name, String description, MarkerColorCode color, FavoriteIconType icon})?>(
       null,
     );
 
@@ -54,9 +55,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
           listNameController.text = list.name;
           descriptionController.text = list.description ?? '';
           color.value = list.markerColorCode;
-
-          // todo(claude): pass icon from api when available
-          // selectedIcon.value = null;
+          selectedIcon.value = list.iconType ?? FavoriteIconType.$default;
           originalValues.value = (
             name: list.name,
             description: list.description ?? '',
@@ -173,11 +172,11 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                       ),
                       child: Wrap(
                         spacing: Spacing.$3x,
-                        children: FavoriteIconCode.validValues
+                        children: FavoriteIconType.validValues
                             .map(
                               (e) => GestureDetector(
                                 onTap: () {
-                                  selectedIcon.value = e == selectedIcon.value ? FavoriteIconCode.$default : e;
+                                  selectedIcon.value = e == selectedIcon.value ? FavoriteIconType.$default : e;
                                   isIconPickerExpanded.value = false;
                                 },
                                 child: e.getIcon().svg(
@@ -269,6 +268,7 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                       name: listName,
                       description: description.isEmpty ? null : description,
                       markerColorCode: color.value,
+                      iconType: selectedIcon.value,
                     );
                     if (listId != null) {
                       await dataSource.updateFavoriteList(listId, request);
@@ -276,7 +276,9 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                     } else {
                       await dataSource.createFavoriteList(request);
                     }
-                    ref.invalidate(favoriteListsProvider);
+                    ref
+                      ..invalidate(favoriteListsProvider)
+                      ..invalidate(aggregatedFavoriteMarkersProvider);
                     if (context.mounted) {
                       context.router.pop(true);
                     }

@@ -7,7 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
-import 'package:mapness/features/favorite_lists/data/models/icon_code.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
@@ -57,19 +57,18 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final mapMarkerMapper = await ref
       .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
-  final favoriteColor = await ref.read(favoritePlaceMarkerColorProvider(objectId.objectId.toString()).future);
+  final favoriteMarker = await ref.read(favoritePlaceMarkerProvider(objectId.objectId.toString()).future);
   final favoritePinBitmap = ref.read(favoritePinMarkerBitmapProvider);
   Uint8List? favoriteIconBytes;
-  if (favoriteColor != null) {
+  if (favoriteMarker != null) {
     final devicePixelRatio = WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
     favoriteIconBytes = await favoritePinBitmap.renderTeardropPin(
-      tint: favoriteColor.getColor(AppColorsThemeV3.palette(themes: theme)),
-      // TODO(claude): pass real icon selection from API when available (see create_or_update_favorite_list_page.dart)
-      icon: FavoriteIconCode.$default,
+      tint: favoriteMarker.markerColorCode.getColor(AppColorsThemeV3.palette(themes: theme)),
+      icon: favoriteMarker.iconType ?? FavoriteIconType.$default,
       devicePixelRatio: devicePixelRatio,
     );
   }
-  final bigIconPath = favoriteColor == null ? mapMarkerMapper.$2 : null;
+  final bigIconPath = favoriteMarker == null ? mapMarkerMapper.$2 : null;
 
   final markerPosition = directoryObject.markerPosition;
   final fallbackPosition = closestPoint;
@@ -119,10 +118,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       iconBytes: favoriteIconBytes,
-      anchor: favoriteColor != null
+      anchor: favoriteMarker != null
           ? MarkerAnchorMessage(x: favoritePinBitmap.teardropAnchor.x, y: favoritePinBitmap.teardropAnchor.y)
           : MarkerAnchorMessage(x: 0.5, y: 0.5),
-      width: favoriteColor != null ? favoritePinBitmap.teardropLogicalSize : null,
+      width: favoriteMarker != null ? favoritePinBitmap.teardropLogicalSize : null,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),
       isDark: isDark,

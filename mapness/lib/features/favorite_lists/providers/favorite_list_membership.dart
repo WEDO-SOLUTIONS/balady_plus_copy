@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
+import 'package:mapness/features/favorite_lists/data/models/map_marker_dto.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,9 +16,9 @@ bool isPlaceFavorited(Ref ref, String placeId) {
   return markers?.any((marker) => marker.placeId == placeId) ?? false;
 }
 
-/// Эффективный цвет маркера места, если оно избранное (иначе `null`).
+/// Маркер места в агрегированном списке избранного (цвет + иконка), если оно избранное (иначе `null`).
 @riverpod
-Future<MarkerColorCode?> favoritePlaceMarkerColor(Ref ref, String placeId) async {
+Future<MapMarkerDto?> favoritePlaceMarker(Ref ref, String placeId) async {
   final markers = await ref.watch(aggregatedFavoriteMarkersProvider.future);
-  return markers.firstWhereOrNull((marker) => marker.placeId == placeId)?.markerColorCode;
+  return markers.firstWhereOrNull((marker) => marker.placeId == placeId);
 }
