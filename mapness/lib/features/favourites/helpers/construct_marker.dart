@@ -36,6 +36,8 @@ Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter rou
   );
 }
 
+String favoriteListPlaceMarkerId(String placeId) => 'favorite-list-place-$placeId';
+
 Marker constructFavoriteListPlaceMarker(
   MapMarkerDto marker,
   GeoPointWithElevationMessage position,
@@ -46,7 +48,7 @@ Marker constructFavoriteListPlaceMarker(
   final objectId = int.tryParse(marker.placeId);
 
   return Marker(
-    id: 'favorite-list-place-${marker.placeId}',
+    id: favoriteListPlaceMarkerId(marker.placeId),
     options: MarkerOptionsMessage(position: position, icon: icon, text: title),
     onTap: objectId == null
         ? null

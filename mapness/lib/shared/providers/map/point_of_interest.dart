@@ -9,6 +9,7 @@ import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_membership.dart';
+import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
@@ -127,6 +128,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       isDark: isDark,
     ),
     objectId: objectId.objectId,
+    favouriteMarkerId: favoriteMarker != null ? favoriteListPlaceMarkerId(objectId.objectId.toString()) : null,
   );
 
   final highlightController = ref.watch(highlightProvider.notifier);
