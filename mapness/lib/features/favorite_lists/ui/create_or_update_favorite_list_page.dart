@@ -15,6 +15,7 @@ import 'package:mapness/features/favorite_lists/data/models/marker_color_code.da
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_list_detail.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -23,14 +24,14 @@ import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
-  final String? listId;
+  final FavoriteListFormParams params;
 
-  const CreateOrUpdateFavoriteListPage({this.listId, super.key});
+  const CreateOrUpdateFavoriteListPage({this.params = const CreateFavoriteListParams(), super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final listId = this.listId;
-    final isEditing = listId != null;
+    final params = this.params;
+    final isEditing = params is UpdateFavoriteListParams;
 
     final scrollController = useToggleSheetController(onClose: (_) => context.router.pop());
     final listNameController = useTextEditingController();
@@ -45,40 +46,49 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
     );
 
     useEffect(() {
-      if (listId == null) {
-        return null;
-      }
-      Future<void> loadList() async {
-        try {
-          final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
-          final list = (await dataSource.getFavoriteListById(listId)).list;
-          listNameController.text = list.name;
-          descriptionController.text = list.description ?? '';
-          color.value = list.markerColorCode;
-          selectedIcon.value = list.iconType ?? FavoriteIconType.$default;
-          originalValues.value = (
-            name: list.name,
-            description: list.description ?? '',
-            color: list.markerColorCode,
-            icon: selectedIcon.value,
-          );
-        } catch (e) {
-          if (context.mounted) {
-            final message = e is FavoriteListsApiException
-                ? e.localizedMessage(ref.read(appLanguageProvider))
-                : context.l10n.somethingWentWrongPleaseTryAgainLater;
-            ToastOverlay.of(context).show(title: message, isDismissible: true);
-          }
-        } finally {
-          if (context.mounted) {
-            isLoadingList.value = false;
-          }
-        }
-      }
+      switch (params) {
+        case CreateFavoriteListParams():
+          return null;
 
-      loadList();
-      return null;
-    }, [listId]);
+        case AcceptSharedFavoriteListParams(:final preview):
+          listNameController.text = preview.list.name;
+          descriptionController.text = preview.list.description ?? '';
+          color.value = preview.list.markerColorCode;
+          return null;
+
+        case UpdateFavoriteListParams(:final listId):
+          Future<void> loadList() async {
+            try {
+              final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
+              final list = (await dataSource.getFavoriteListById(listId)).list;
+              listNameController.text = list.name;
+              descriptionController.text = list.description ?? '';
+              color.value = list.markerColorCode;
+              selectedIcon.value = list.iconType ?? FavoriteIconType.$default;
+              originalValues.value = (
+                name: list.name,
+                description: list.description ?? '',
+                color: list.markerColorCode,
+                icon: selectedIcon.value,
+              );
+            } catch (e) {
+              if (context.mounted) {
+                final message = e is FavoriteListsApiException
+                    ? e.localizedMessage(ref.read(appLanguageProvider))
+                    : context.l10n.somethingWentWrongPleaseTryAgainLater;
+                ToastOverlay.of(context).show(title: message, isDismissible: true);
+              }
+            } finally {
+              if (context.mounted) {
+                isLoadingList.value = false;
+              }
+            }
+          }
+
+          loadList();
+          return null;
+      }
+    }, [params]);
 
     final value = useValueListenable(listNameController);
     final descriptionValue = useValueListenable(descriptionController);
@@ -270,11 +280,17 @@ class CreateOrUpdateFavoriteListPage extends HookConsumerWidget {
                       markerColorCode: color.value,
                       iconType: selectedIcon.value,
                     );
-                    if (listId != null) {
-                      await dataSource.updateFavoriteList(listId, request);
-                      ref.invalidate(favoriteListDetailProvider(listId: listId));
-                    } else {
-                      await dataSource.createFavoriteList(request);
+                    switch (params) {
+                      case CreateFavoriteListParams():
+                        await dataSource.createFavoriteList(request);
+                      case UpdateFavoriteListParams(:final listId):
+                        await dataSource.updateFavoriteList(listId, request);
+                        ref.invalidate(favoriteListDetailProvider(listId: listId));
+                      case AcceptSharedFavoriteListParams(:final shareToken):
+                        final acceptResult = await dataSource.acceptShareLink(shareToken);
+                        final listId = acceptResult.list.id;
+                        await dataSource.updateFavoriteList(listId, request);
+                        ref.invalidate(favoriteListDetailProvider(listId: listId));
                     }
                     ref
                       ..invalidate(favoriteListsProvider)

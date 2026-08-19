@@ -247,7 +247,7 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
-          path: 'create_favorite_list',
+          path: 'create_or_update_favorite_list',
           page: CreateOrUpdateFavoriteListRoute.page,
           opaque: false,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,

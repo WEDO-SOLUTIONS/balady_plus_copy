@@ -11,6 +11,7 @@ import 'package:mapness/features/favorite_lists/data/favorite_lists_api_exceptio
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
 import 'package:mapness/features/favorite_lists/providers/aggregated_favorite_markers.dart';
 import 'package:mapness/features/favorite_lists/providers/favorite_lists.dart';
+import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -94,7 +95,9 @@ class FavoriteListMenuPage extends HookConsumerWidget {
                 title: 'List settings',
               ),
               onTap: () async {
-                final shouldClose = await context.router.push(CreateOrUpdateFavoriteListRoute(listId: listId));
+                final shouldClose = await context.router.push(
+                  CreateOrUpdateFavoriteListRoute(params: UpdateFavoriteListParams(listId: listId)),
+                );
                 if (shouldClose == true) {
                   context.router.pop();
                 }

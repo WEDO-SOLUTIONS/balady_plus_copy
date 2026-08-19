@@ -53,6 +53,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/dynamic_poi/dynamic_poi_layer_provider.dart';
 import 'package:mapness/features/favorite_lists/data/favorite_lists_remote_datasource.dart';
+import 'package:mapness/features/favorite_lists/ui/models/favorite_list_form_params.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -869,7 +870,34 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with Widg
       try {
         final dataSource = await ref.read(favoriteListsRemoteDataSourceProvider.future);
         final preview = await dataSource.previewShareLink(code);
-        logger.log('Favorite list share link preview: $preview');
+        void showShortLinkToast(String title) {
+          final ctx = rootNavigatorKey.currentContext;
+          if (ctx != null) {
+            ToastOverlay.of(ctx).show(title: title, isDismissible: true);
+          }
+        }
+
+        if (preview.isOwnList) {
+          // TODO(claude): localize string
+          showShortLinkToast('This is your own list');
+          return true;
+        }
+        if (preview.alreadyAccepted) {
+          // TODO(claude): localize string
+          showShortLinkToast('You have already added this shared list to your favorites');
+          return true;
+        }
+        if (!preview.canAccept) {
+          showShortLinkToast(ref.read(appLocaleProvider).somethingWentWrongPleaseTryAgainLater);
+          return true;
+        }
+        ref
+            .read(appRouterProvider)
+            .push(
+              CreateOrUpdateFavoriteListRoute(
+                params: AcceptSharedFavoriteListParams(shareToken: code, preview: preview),
+              ),
+            );
         return true;
       } catch (e) {
         logger.log('failed to get favorite list share link details: $e', logLevel: MapnessLogLevel.error);

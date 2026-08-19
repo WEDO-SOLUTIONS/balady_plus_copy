@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mapness/features/favorite_lists/data/models/icon_type.dart';
 import 'package:mapness/features/favorite_lists/data/models/marker_color_code.dart';
 import 'package:mapness/features/favorite_lists/data/models/pagination_dto.dart';
 import 'package:mapness/features/favorite_lists/data/models/place_type.dart';
@@ -60,4 +61,31 @@ abstract class SharedListPreviewDto with _$SharedListPreviewDto {
   }) = _SharedListPreviewDto;
 
   factory SharedListPreviewDto.fromJson(Map<String, dynamic> json) => _$SharedListPreviewDtoFromJson(json);
+}
+
+@freezed
+abstract class AcceptedFavoriteListDto with _$AcceptedFavoriteListDto {
+  factory AcceptedFavoriteListDto({
+    required final String id,
+    required final String name,
+    required final String? description,
+    @JsonKey(unknownEnumValue: MarkerColorCode.unknown) required final MarkerColorCode markerColorCode,
+    required final bool isDefault,
+    @JsonKey(unknownEnumValue: FavoriteIconType.$default) final FavoriteIconType? iconType,
+    final int? placeCount,
+  }) = _AcceptedFavoriteListDto;
+
+  factory AcceptedFavoriteListDto.fromJson(Map<String, dynamic> json) => _$AcceptedFavoriteListDtoFromJson(json);
+}
+
+@freezed
+abstract class AcceptShareLinkResultDto with _$AcceptShareLinkResultDto {
+  factory AcceptShareLinkResultDto({
+    required final bool alreadyAccepted,
+    required final AcceptedFavoriteListDto list,
+    required final int importedCount,
+    required final bool nameWasAdjusted,
+  }) = _AcceptShareLinkResultDto;
+
+  factory AcceptShareLinkResultDto.fromJson(Map<String, dynamic> json) => _$AcceptShareLinkResultDtoFromJson(json);
 }

@@ -62,8 +62,7 @@ abstract class FavoriteListsRemoteDataSource {
 
   Future<SharedListPreviewDto> previewShareLink(String shareToken);
 
-  /// Response schema is not documented yet — kept raw until a real payload is confirmed.
-  Future<Map<String, dynamic>> acceptShareLink(String shareToken);
+  Future<AcceptShareLinkResultDto> acceptShareLink(String shareToken);
 
   /// Response schema is not documented yet — kept raw until a real payload is confirmed.
   Future<Map<String, dynamic>> migrateLegacyFavorites(List<String> legacyPlaceIds);
@@ -224,8 +223,11 @@ class _FavoriteListsRemoteDataSource implements FavoriteListsRemoteDataSource {
   );
 
   @override
-  Future<Map<String, dynamic>> acceptShareLink(String shareToken) =>
-      _request('acceptShareLink', () => dio.post('/shared/$shareToken/accept'), (json) => json);
+  Future<AcceptShareLinkResultDto> acceptShareLink(String shareToken) => _request(
+    'acceptShareLink',
+    () => dio.post('/shared/$shareToken/accept'),
+    AcceptShareLinkResultDto.fromJson,
+  );
 
   @override
   Future<Map<String, dynamic>> migrateLegacyFavorites(List<String> legacyPlaceIds) => _request(
