@@ -11,7 +11,6 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -89,13 +88,6 @@ class RoutingSearchResults extends ConsumerWidget {
             ? null
             : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         onTap: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.routesKeys.searchElement,
-            group: MetricsConstants.routesTag,
-            action: MetricAction.tap.toString(),
-            props: {'item': item.id?.objectId},
-          );
-
           _bssAnalyticRequest(results: results, item: item);
 
           final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;

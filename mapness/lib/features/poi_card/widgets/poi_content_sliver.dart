@@ -16,6 +16,7 @@ import 'package:mapness/features/favourites/mappers/directory_object_message_map
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/jeddah_bus/repo.dart';
+import 'package:mapness/features/leap/leap.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
@@ -31,9 +32,7 @@ import 'package:mapness/features/special_themes/core/places_activation_config.da
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/scroll_paper_about_widget.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
@@ -173,12 +172,6 @@ class PoiContentSliver extends ConsumerWidget {
     // Favourite
     final favouritesState = ref.watch(favouriteCacheProvider);
     final void Function() onFavouritePressed = () {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.favorites,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-      );
-
       context.router.push(const FavouritesRoute());
     };
     final favourites = data.getFavourites(favouritesState, context.l10n, onFavouritePressed);
@@ -208,6 +201,19 @@ class PoiContentSliver extends ConsumerWidget {
     final about = data.getAbout(context.l10n, customAbout: forceShow ? localAboutText : null);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
+    final isLeapObject = ref.read(leapProvider.notifier).isLeapObjectId(data.id!.objectId);
+
+    final fullAddress = data.getFullAddress(
+      briefInfo,
+      context.l10n,
+      onEntrancesTap,
+      canUseCustomData ? activeCityEvent?.addressLogoAsset : null,
+    );
+    final hasAddressContent =
+        fullAddress.fullAddress.trim().isNotEmpty ||
+        fullAddress.floors != null ||
+        (fullAddress.entrances?.count ?? 0) > 0 ||
+        (fullAddress.types?.isNotEmpty ?? false);
 
     final jeddahBusData = ref.watch(jeddahBusLayerRepoProvider).value;
     final jeddahBusStation = jeddahBusData?.getStationByDirectoryObject(data);
@@ -249,17 +255,11 @@ class PoiContentSliver extends ConsumerWidget {
                   activeCityEvent: activeCityEvent,
                 ),
               ),
-            Padding(
-              padding: itemPadding,
-              child: PoiContentFullAddressCard(
-                data: data.getFullAddress(
-                  briefInfo,
-                  context.l10n,
-                  onEntrancesTap,
-                  canUseCustomData ? activeCityEvent?.addressLogoAsset : null,
-                ),
+            if (!isLeapObject || hasAddressContent)
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFullAddressCard(data: fullAddress),
               ),
-            ),
             AiSummarySection(
               poiId: data.id!.objectId.toString(),
               objectTypes: data.types.map((t) => t.type).toList(growable: false),

@@ -3,13 +3,16 @@ part of 'city_event.dart';
 enum CityEventType {
   saudiNationalDay(priority: 2),
   cityscape(priority: 3),
-  foundingDay(priority: 4);
+  foundingDay(priority: 4),
+  leap(priority: 5);
 
   final int priority;
 
   const CityEventType({required this.priority});
 
   bool get isFoundingDay => this == CityEventType.foundingDay;
+
+  bool get isLeap => this == CityEventType.leap;
 
   bool get isSaudiNationalDay => this == CityEventType.saudiNationalDay;
 

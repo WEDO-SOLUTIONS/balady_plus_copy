@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/tifo/providers/tifo_session_provider.dart';
+import 'package:mapness/features/tifo/tifo_buildings_map_layer.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -13,7 +15,7 @@ import 'package:mapness/widgets/landing/eta_sharing_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
-import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/landing/tifo_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
@@ -50,6 +52,7 @@ class MapDashboardControls extends ConsumerWidget {
               ),
             ),
           ),
+
           const MapQuickFiltersDefault(
             forMap: true,
           ),
@@ -58,14 +61,23 @@ class MapDashboardControls extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Spacer(),
-                      IndoorControl(),
-                      Spacer(),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const WeatherControl(),
+                          uikit.Spacing.$1_5x.heightBox,
+                          const ParkingControl(),
+                        ],
+                      ),
+                      const Spacer(),
+                      const IndoorControl(),
+                      const Spacer(),
                     ],
                   ),
                   const Spacer(),
@@ -75,8 +87,21 @@ class MapDashboardControls extends ConsumerWidget {
                       const LayersControl(),
                       const SizedBox(height: uikit.Spacing.$2x),
                       const DimensionControl(),
+                      if (ref.watch(tifoAvailableProvider)) ...[
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        const TifoControl(),
+                      ],
+                      if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
+                        const SizedBox(height: uikit.Spacing.$2x),
+                        const TifoLeaderboardControl(),
+                      ],
                       const SizedBox(height: uikit.Spacing.$2x),
-                      if (kDebugMode) ...[
+                      // The debug zoom stack (2 buttons) is the one item this
+                      // column can't fit once the TIFO trophy joins it — hence
+                      // the "BOTTOM OVERFLOWED" banner on debug builds. Give
+                      // way to the game controls instead of overflowing; zoom
+                      // is still reachable by pinching.
+                      if (kDebugMode && !ref.watch(tifoBuildingsMapLayerProvider)) ...[
                         const Spacer(),
                         const ZoomControl(),
                       ],
@@ -95,29 +120,48 @@ class MapDashboardControls extends ConsumerWidget {
             child: Column(
               children: [
                 const SizedBox(height: uikit.Spacing.$2x),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                // "Dominate with your team" belongs to this bottom control band,
+                // centred between the weather chip and the follow arrow (design
+                // 398:8792 / 848:10725) — on a line of its own above them it
+                // read as floating loose over the map. Overlaid rather than
+                // placed in the row: as a flex child it would be squeezed to a
+                // third of the width and the label would break.
+                Stack(
+                  alignment: Alignment.bottomCenter,
                   children: [
-                    Expanded(
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const WeatherControl(),
-                            uikit.Spacing.$1_5x.heightBox,
-                            const ParkingControl(),
-                          ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Rules/support entry point — only meaningful
+                                // once the player has actually turned the game
+                                // on (⚽ toggle).
+                                if (ref.watch(tifoBuildingsMapLayerProvider)) ...[
+                                  const TifoHelpControl(),
+                                ],
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                        const EtaSharingControl(),
+                        const Expanded(
+                          child: Align(
+                            alignment: AlignmentDirectional.centerEnd,
+                            child: FollowControl(),
+                          ),
+                        ),
+                      ],
                     ),
-                    const EtaSharingControl(),
-                    const Expanded(
-                      child: Align(
-                        alignment: AlignmentDirectional.centerEnd,
-                        child: FollowControl(),
-                      ),
-                    ),
+                    // Any session where the player hasn't cleared every play gate yet.
+                    if (ref.watch(tifoBuildingsMapLayerProvider) &&
+                        !ref.watch(tifoSessionProvider.select((s) => s.isPlayReady)))
+                      const TifoJoinPill(),
                   ],
                 ),
                 if (!isNationalDay) uikit.Spacing.$4x.heightBox,
