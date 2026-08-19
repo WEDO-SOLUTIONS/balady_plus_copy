@@ -79,6 +79,8 @@ class ObjectTapHandler(
     private val iconCache = mutableMapOf<String, Image>()
 
     private var renderedObjectsCloseable: AutoCloseable? = null
+    private var overlayPoiCloseable: AutoCloseable? = null
+    private val overlayPoiSearchRadius = ScreenDistance(5F)
 
     fun objectTapListener(roi: RenderedObjectInfo) {
         //        when (val tappedObject = roi.item.item) {
@@ -148,7 +150,7 @@ class ObjectTapHandler(
                 val userData = tappedObject.userData
 
                 if (userData is PolylineId) {
-                    onPolylineTap(userData.id)
+                    dispatchPoiUnderOverlay(roi) { onPolylineTap(userData.id) }
                     return
                 }
             }
@@ -196,6 +198,29 @@ class ObjectTapHandler(
                             null,
                     )
         }
+    }
+
+    private fun dispatchPoiUnderOverlay(roi: RenderedObjectInfo, onNoObjectFound: () -> Unit) {
+        val screenPoint = map.camera.projection.mapToScreen(roi.closestMapPoint)
+
+        if (screenPoint == null) {
+            onNoObjectFound()
+            return
+        }
+
+        overlayPoiCloseable =
+                map.getRenderedObjects(screenPoint, overlayPoiSearchRadius).apply {
+                    onResult { objects ->
+                        val poi = objects.firstOrNull { it.item.item is DgisMapObject }
+
+                        if (poi == null) {
+                            onNoObjectFound()
+                        } else {
+                            onDgisMapObjectTap(poi.item.item as DgisMapObject, poi)
+                        }
+                    }
+                    onError { onNoObjectFound() }
+                }
     }
 
     /// --- HELPERS ---
