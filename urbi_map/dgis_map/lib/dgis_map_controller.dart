@@ -242,9 +242,8 @@ class DgisMapController {
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
 
-  /// Current map frame as encoded PNG bytes; null when no frame is available.
-  /// Best-effort — used to mask MapView recreates (BALADY-3772).
-  Future<Uint8List?> takeMapSnapshot() => _instance.takeMapSnapshot();
+  /// Swap the navigation-cursor 3D model on the live map (raw GLB bytes).
+  Future<void> setNavigationCursorModel(Uint8List glb) => _instance.setNavigationCursorModel(glb);
 
   /// Returns nearest objects to camera position.
   Future<List<RenderedObjectMessage>> getNearestObjects() => _instance.getNearestObjects();
