@@ -240,7 +240,6 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
               _disabledBar(l10n.tifoNotPlayReady)
             else
               _disabledBar(_building.status == 'live' ? l10n.tifoBuildingLiveHint : l10n.tifoBuildingCooldownHint),
-
             if (kDebugMode) ...[
               const SizedBox(height: 8),
               SizedBox(
@@ -278,7 +277,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
     width: double.infinity,
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     decoration: BoxDecoration(
-      color: TifoColors.neutralFill.withValues(alpha: 0.85),
+      color: context.colors.foregroundSoft,
       borderRadius: BorderRadius.circular(TifoRadii.l),
     ),
     child: Row(
@@ -445,7 +444,7 @@ class _TifoBuildingSheetState extends ConsumerState<_TifoBuildingSheet> {
       return session;
     } catch (e) {
       rootNavigatorKey.currentState?.pop();
-      _showResult(e is TifoApiException ? '${e.statusCode}: ${e.message}' : e.toString(), onRetry: _onPlayPressed);
+      _showResult(e is TifoApiException ? e.message : e.toString(), onRetry: _onPlayPressed);
       return null;
     }
   }
